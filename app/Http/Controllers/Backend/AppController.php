@@ -64,6 +64,8 @@ class AppController extends Controller
                 'message' => $request->message,
             ];
 
+            $input['message'] = str_replace(['{', '}'], ['<', '>'], $request->message);
+
             $shortcodes = [
                 '[[subject]]' => $input['subject'],
                 '[[message]]' => $input['message'],

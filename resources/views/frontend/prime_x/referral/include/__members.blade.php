@@ -7,7 +7,7 @@
 @section('content')
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
-            <div class="card-body p-6 pb-0">
+            <div class="card-body px-6 pb-0">
 {{--                <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">--}}
 {{--                    <div class="filter">--}}
 {{--                        <form action="{{ route('user.referral.members') }}" method="get">--}}
@@ -38,7 +38,7 @@
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden basicTable_wrapper">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <thead class="">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
 

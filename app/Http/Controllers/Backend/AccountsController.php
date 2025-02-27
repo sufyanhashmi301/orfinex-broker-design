@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\ForexAccountStatus;
 use App\Enums\IBStatus;
+use App\Enums\TraderType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Exports\RealAccountExport;
@@ -52,6 +53,7 @@ class   AccountsController extends Controller
      */
     public function forexAccounts(Request $request, $type = 'real', $id = null)
     {
+//        dd($type);
         $loggedInUser = auth()->user(); // Get the logged-in admin or user
 
         // Get attached user IDs for non-Super-Admin users
@@ -72,7 +74,6 @@ class   AccountsController extends Controller
                 $data = collect(); // Empty collection if no attached users
             }
         }
-
         if ($id) {
             $data->where('user_id', $id);
         }
@@ -80,6 +81,7 @@ class   AccountsController extends Controller
         // Apply additional filters
         $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
         $data->applyFilters($filters);
+//        dd($type,$data->get());
 
         // If request is Ajax, return data in Datatables format
         if ($request->ajax()) {
@@ -120,7 +122,7 @@ class   AccountsController extends Controller
                 $withoutBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', 0)
+                    ->where('Balance', '<=',0)
                     ->count();
             }
         } catch (\Exception $e) {
@@ -224,15 +226,25 @@ class   AccountsController extends Controller
             ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
             ->first();
 
-        if ($forexAccount) {
-            if ($forexAccount->login >= $schema->end_range) {
-                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-                notify()->error($message, 'Error');
-                return redirect()->back();
+        if (setting('is_forex_group_range', 'global')) {
+//            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBy('login', 'desc')->first();
+            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)
+                ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
+                ->first();
+            // Check if an account exists
+            if ($forexAccount) {
+                // Validate if the login is within the range
+                if ($forexAccount->login < $schema->start_range || $forexAccount->login >= $schema->end_range) {
+                    // Reset to start_range if the login is out of range
+                    $login = $schema->start_range;
+                } else {
+                    // Increment login if within range
+                    $login = ++$forexAccount->login;
+                }
+            } else {
+                // Start from start_range if no accounts exist
+                $login = $schema->start_range;
             }
-            $login = $forexAccount->login++;
-        } else {
-            $login = $schema->start_range;
         }
         $group = '';
         if ($request->account_type === 'real') {
@@ -240,8 +252,8 @@ class   AccountsController extends Controller
         } elseif ($request->account_type === 'demo') {
             $group = $request->is_islamic ? $schema->demo_islamic : $schema->demo_swap_free;
         }
-
-        $server = config('forextrading.server');
+        $server = $this->getServe($request,$schema);
+        $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
 
         $data = [
@@ -261,89 +273,133 @@ class   AccountsController extends Controller
             "email" => $user->email,
             "agent" => 0,
             "account" => "",
-            "company" => env('APP_NAME', 'Company'),
+            "company" => setting('site_title', 'global'),
             "language" => 0,
             "phonePassword" => 'SNNH@2024@bol',
             "status" => "RE",
             "masterPassword" => $password,
             "investorPassword" => 'SNNH@2024@bol'
         ];
-//        dd($data,$accountType);
-        if ($accountType == 'real') {
-            $response = $this->forexApiService->createUser($data);
-        } else {
-            $response = $this->forexApiService->createUserDemo($data);
+        $retryCount = 0;
+        $maxRetries = 3;
+        $success = false;
+
+        while ($retryCount < $maxRetries) {
+            if ($accountType == 'real') {
+                $response = $this->forexApiService->createUser($data);
+            } else {
+                $response = $this->forexApiService->createUserDemo($data);
+            }
+
+            if ($response['success']) {
+                $success = true;
+                break;
+            }
+
+            // Increment login and retry
+            $login++;
+            $data['login'] = $login;
+            $retryCount++;
         }
-        if ($response['success']) {
+
+        if ($success) {
             $resResult = $response['result'];
             $mt5Login = $resResult['login'];
-//            dd($response,$response->data[0]->Login);
+
             if ($mt5Login && $resResult['responseCode'] == 0) {
-                $rightData =  [
+                $rightData = [
                     "login" => $mt5Login,
                     "rights" => 'USER_RIGHT_ENABLED',
-
                 ];
                 $this->forexApiService->setUserRights($rightData);
 
-                $accountData = $request->all();
+                // Save account in DB
+                $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
+                $this->sendNotification($user,$mt5Login,$password,$schema,$server);
 
-                $accountData['forex_schema_id'] = $schema->id;
-                $accountData['login'] = $mt5Login;
-                $accountData['account_name'] = $request->account_name;
-                $accountData['account_type'] = $accountType;
-                $accountData['user_id'] = $user->id;
-                $accountData['currency'] = setting('site_currency', 'global');
-                $accountData['group'] = $data['group'];
-                $accountData['leverage'] = $data['leverage'];
-                $accountData['status'] = ForexAccountStatus::Ongoing;
-                $accountData['server'] = $server;
-                $accountData['created_by'] = $user->id;
-                $accountData['first_min_deposit_paid'] = 0;
-                $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                $forexTrading = ForexAccount::create($accountData);
-
-                if ($user->ref_id) {
-                    $referrer = User::find($user->ref_id);
-                    if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
-                        $data = [
-                            'login' => $mt5Login,
-                            'agent' => $referrer->ib_login,
-                        ];
-                        $this->forexApiService->updateAgentAccount($data);
-                    }
-                }
-//                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
-//                    event(new NewForexAccountEvent($forexTrading));
-
-
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
-//
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
-//                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
-//                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
-
-                notify()->success('Successfully Created Account', 'success');
+                notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->back();
-
-//                return redirect()->route('user.forex-account-logs');
             }
-
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-
         }
 
         notify()->error('Some error occurred! please try again', 'Error');
         return redirect()->back();
     }
+    public function getServe($request,$schema)
 
+    {
+
+        $server = '';
+        if($schema->trader_type == TraderType::MT5) {
+            if ($request->account_type === 'real') {
+                $server = setting('live_server', 'platform_api');
+            } elseif ($request->account_type === 'demo') {
+                $server = setting('demo_server', 'platform_api');
+            }
+        }elseif($schema->trader_type == TraderType::X9) {
+            if ($request->account_type === 'real') {
+                $server = setting('x9_name', 'x9_api');
+            } elseif ($request->account_type === 'demo') {
+                $server = setting('x9_name', 'x9_api');
+            }
+        }
+
+        return $server;
+    }
+
+    public function getGroup($user,$request, $schema)
+    {
+        $group = '';
+        if ($request->account_type === 'real') {
+            $referral = $user->referralRelationship;
+            if($referral && isset($referral->multi_level_id)){
+                $group = $referral->multiLevel->group_tag;
+            }else {
+                $group = $request->is_islamic ? $schema->real_islamic : $schema->real_swap_free;
+            }
+        } elseif ($request->account_type === 'demo') {
+            $group = $request->is_islamic ? $schema->demo_islamic : $schema->demo_swap_free;
+        }
+        return $group;
+    }
+    public function saveAccount($request,$schema,$mt5Login,$accountType,$user,$data,$server)
+    {
+        $accountData = $request->all();
+
+        $accountData['forex_schema_id'] = $schema->id;
+        $accountData['login'] = $mt5Login;
+        $accountData['account_name'] = $request->account_name;
+        $accountData['account_type'] = $accountType;
+        $accountData['user_id'] = $user->id;
+        $accountData['currency'] = setting('site_currency', 'global');
+        $accountData['group'] = $data['group'];
+        $accountData['leverage'] = $data['leverage'];
+        $accountData['status'] = ForexAccountStatus::Ongoing;
+        $accountData['server'] = $server;
+        $accountData['created_by'] = $user->id;
+        $accountData['first_min_deposit_paid'] = 0;
+        $accountData['trader_type'] = $schema->trader_type;
+        $accountData['trading_platform'] = $schema->trader_type;
+        $forexTrading = ForexAccount::create($accountData);
+
+        return true;
+    }
+    public function sendNotification($user,$mt5Login,$password,$schema,$server)
+    {
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $mt5Login,
+            '[[password]]' => $password,
+            '[[plan_name]]' => $schema->title,
+            '[[server]]' => $server,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+//
+        $this->mailNotify($user->email, 'user_forex_account_creation', $shortcodes);
+//                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
+//                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
+    }
     public function getLeverage(Request $request)
     {
         $request->validate([

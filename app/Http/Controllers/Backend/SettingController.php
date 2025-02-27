@@ -166,6 +166,11 @@ class SettingController extends Controller
                         $val = self::imageUploadTrait($val, $oldImage);
                     }
 
+                    if (is_string($val)) {
+                        // Replace `{` and `}` with `<` and `>`
+                        $val = str_replace(['{', '}'], ['<', '>'], $val);
+                    }
+
                     Setting::add($key, $val, Setting::getDataType($key, $section));
                 }
             }

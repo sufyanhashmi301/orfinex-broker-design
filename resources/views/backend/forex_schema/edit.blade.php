@@ -381,10 +381,11 @@
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="basicTinymce" name="desc">
-                            {{$schema->desc}}
+                        <textarea class="summernote">
+                            {{ $schema->desc }}
                         </textarea>
                     </div>
+                    <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">

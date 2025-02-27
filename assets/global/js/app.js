@@ -841,19 +841,32 @@
     }
   });
 
-  tinymce.init({
-    selector: 'textarea.basicTinymce',
-    height: 300,
-    plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+  $('.summernote').summernote({
+    height: 150,
+    minHeight: null,
+    maxHeight: null,
+    focus: true,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']]
     ],
-    toolbar: 'undo redo | blocks | ' +
-        'bold italic backcolor | alignleft aligncenter ' +
-        'alignright alignjustify | bullist numlist outdent indent | ' +
-        'removeformat | help',
-    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+    callbacks: {
+        onChange: function(contents, $editable) {
+
+            var markupStr = contents;
+            markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
+
+            var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
+
+            html_container.val(markupStr);
+        }
+    }
   });
 
   $('[data-toggle="fullscreen"]').on("click", function(e) {

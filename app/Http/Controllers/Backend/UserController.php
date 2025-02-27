@@ -91,7 +91,6 @@ class UserController extends Controller
             } else {
                 // Get the attached users if the user is not a Super-Admin
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
                 if ($attachedUserIds->isNotEmpty()) {
                     // Show only attached users
                     $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
@@ -131,7 +130,7 @@ class UserController extends Controller
         if (!$user) {
             return back()->with('error', 'User not found.');
         }
-    
+
         $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
         $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
         switch ($type) {
@@ -762,6 +761,7 @@ class UserController extends Controller
      */
     public function mailSend(Request $request)
     {
+        $message = $request->input('message');
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
@@ -778,7 +778,7 @@ class UserController extends Controller
 
             $input = [
                 'subject' => $request->subject,
-                'message' => $request->message,
+                'message' => str_replace(['{', '}'], ['<', '>'], $message),
             ];
 
             $shortcodes = [

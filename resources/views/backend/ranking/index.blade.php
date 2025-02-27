@@ -53,7 +53,7 @@
                                         {{ $ranking->bonus.' '.$currency }}
                                     </td>
                                     <td class="table-td">
-                                        {{ $ranking->description }}
+                                        {!! $ranking->description !!}
                                     </td>
                                     <td class="table-td">
                                         @if($ranking->status)

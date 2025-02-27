@@ -248,8 +248,9 @@
                                 <div class="input-area fw-normal relative">
                                     <label for="" class="form-label">{{ __('Payment Details:') }}</label>
                                     <div class="site-editor">
-                                <textarea class="basicTinymce" name="payment_details">{!! $method->payment_details !!}</textarea>
+                                        <textarea class="summernote">{!! $method->payment_details !!}</textarea>
                                     </div>
+                                    <input type="hidden" name="payment_details" value="{{ str_replace(['<', '>'], ['{', '}'], $method->payment_details) }}">
                                 </div>
                             </div>
                         @endif

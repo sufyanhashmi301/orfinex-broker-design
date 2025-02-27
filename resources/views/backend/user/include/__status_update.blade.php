@@ -167,7 +167,7 @@
                     {{ __('Current Balance') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
-                    {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                    {{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}
                 </div>
             </div>
             <div class="text-center">
@@ -175,7 +175,7 @@
                     {{ __('Current Equity') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
-                    {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                    {{ setting('currency_symbol','global') . mt5_total_equity($user->id) }}
                 </div>
             </div>
         </div>

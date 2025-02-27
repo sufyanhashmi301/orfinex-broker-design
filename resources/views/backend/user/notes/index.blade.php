@@ -8,7 +8,7 @@
     </div>
 
     <div class="card">
-        <div class="card-body p-6 pt-3">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden">
@@ -65,12 +65,12 @@
         {data: 'description', name: 'description'},
         {data: 'admin_name', name: 'admin.name'},
         {
-            data: 'created_at', 
+            data: 'created_at',
             name: 'created_at',
             render: function(data) {
                 // Create a new Date object
                 var date = new Date(data);
-                
+
                 // Get year, month, day, hours, minutes, and seconds
                 var year = date.getFullYear();
                 var month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based

@@ -78,6 +78,8 @@ class IBSchemaController extends Controller
 
         $input = $request->all();
 
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],
@@ -132,6 +134,9 @@ class IBSchemaController extends Controller
 
         $schema = IbSchema::find($id);
         $input = $request->all();
+
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
 //dd($input);
         $finalData = [
             'title' => $input['title'],

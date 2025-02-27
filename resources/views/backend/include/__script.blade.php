@@ -11,7 +11,7 @@
 <script src="{{ asset('backend/js/main.js?var=5') }}"></script>
 <script src="{{ asset('global/js/pusher.min.js') }}"></script>
 <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
-<script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
 <script src="{{ asset('global/js/app.js') }}"></script>
 <script src="{{ asset('global/js/custom.js?var=6') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>

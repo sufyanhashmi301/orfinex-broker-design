@@ -91,7 +91,6 @@ class UserController extends Controller
             } else {
                 // Get the attached users if the user is not a Super-Admin
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
                 if ($attachedUserIds->isNotEmpty()) {
                     // Show only attached users
                     $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);

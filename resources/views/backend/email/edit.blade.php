@@ -234,11 +234,7 @@
         </div>
     </div>
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('global/summernote/summernote-lite.min.css') }}">
-@endsection
 @section('script')
-    <script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
     <script>
         $('.summernote').summernote({
             height: 150, // set editor height
@@ -253,6 +249,7 @@
             // console.log(markupStr);
 
             $('.html-message-body').val(markupStr.replace(/</g, '{').replace(/>/g, '}'))
+
             var bottom = $('.summernote').eq(1).summernote('code');
 
             // $('.html-message-body').val($('.note-editable').html().replace(/</g, '{').replace(/>/g, '}'))

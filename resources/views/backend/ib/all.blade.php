@@ -212,18 +212,7 @@
                     }
                 });
             });
-            //confirm IB
-            $('#dataTable').on('click', '.approve-btn', function () {
-                // Open the confirmation modal
-                $('#confirmModal').modal('show');
-                var rowData = table.row($(this).closest('tr')).data()
-                // Handle the "Confirm" button click inside the modal
-                $('#confirmBtn').on('click', function () {
-                    // var rowData = table.row($(this).closest('tr')).data();
-                    approveUser(rowData.id);
 
-                });
-            });
 
             //reject IB
             $('#dataTable').on('click', '.reject-btn', function () {
@@ -240,57 +229,50 @@
                 });
             });
 
-            // Function to user
-            function approveUser(userId) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("admin.ib.approve") }}',
-                    data: {user_id: userId},
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (res) {
-                        if (res.success) {
-                            tNotify('success', res.success);
-                            $('#confirmModal').modal('hide');
-                            if (res.reload) {
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 900);
-                            }
-                            if (res.redirect) {
-                                setTimeout(function () {
-                                    window.location.replace(res.redirect);
-                                }, 900);
-                            }
-                            if (res.modal) {
-                                $('#' + modalId).modal('toggle');
-                                // NioApp.Form.errors(res, true);
-                                // btn.prop('disabled', false);
-                            }
-                        } else if (res.append) {
-                            $('#' + appendId).html(res.append);
-                            // NioApp.Toast(res.error, 'warning');
-                            // setTimeout(function(){ location.reload(); }, 900);
-                        } else if (res.error) {
-                            // NioApp.Toast(res.error, 'warning');
-                            // tNotify('warning', res.message);
-                            tNotify('warning', res.error);
-                            // setTimeout(function(){ location.reload(); }, 900);
-                        } else if (res.errors) {
-                            NioApp.Form.errors(res, true);
-                            tNotify('warning', res.message);
-                            btn.prop('disabled', false);
-                        }
-                        table.ajax.reload();
-                    },
-                    error: function (error) {
-                        // console.log(data.responseJSON.message,'data.message')
-                        tNotify('warning', error.responseJSON.message);
-                        // console.error(error);
-                    }
+            (function ($) {
+                "use strict";
+                // Edit Button Click Event
+                $('#dataTable').on('click', '.edit-btn', function() {
+                    let userId = $(this).data('user-id');
+                    let fullName = $(this).data('full-name');
+                    let ibGroupId = $(this).data('ib-group-id');
+
+                    // Populate Modal Fields
+                    $('#modalUserName').text(fullName);
+                    $('#modalUserId').val(userId);
+                    $('#ibGroupIDSelect').val(ibGroupId).change();
+
+                    // Show the Modal
+                    $('#addIBModal').modal('show');
                 });
-            }
+
+                // Handle Form Submission
+                $('#addIBModalForm').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = $(this);
+                    var actionUrl = form.attr('action');
+                    var formData = form.serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: actionUrl,
+                        data: formData,
+                        success: function(res) {
+                            if(res.success){
+                                tNotify('success', res.success);
+                                $('#addIBModal').modal('hide');
+                                setTimeout(function(){ location.reload(); }, 900);
+                            }
+                            else if(res.error){
+                                tNotify('warning', res.error);
+                            }
+                        },
+                        error: function(error) {
+                            tNotify('warning', error.responseJSON.message);
+                        }
+                    });
+                });
+            })(jQuery);
 
             function rejectUser(userId) {
                 $.ajax({

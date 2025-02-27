@@ -124,8 +124,32 @@
             $.get(url, function (data) {
                 $('#edit-group-body').append(data);
                 $('#editIbGroupModal').modal('show'); // Correct modal ID
-                tinymce.init({
-                    selector: 'textarea.basicTinymce',
+                $('.summernote').summernote({
+                    height: 150,
+                    minHeight: null,
+                    maxHeight: null,
+                    focus: true,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    callbacks: {
+                        onChange: function(contents, $editable) {
+
+                            var markupStr = contents;
+                            markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
+
+                            var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
+
+                            html_container.val(markupStr);
+                        }
+                    }
                 });
                 $('#rebate_rule_id_edit').select2();
             }).fail(function () {

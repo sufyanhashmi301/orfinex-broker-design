@@ -21,6 +21,9 @@
                       enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     <input type="hidden" name="id" value="{{ $template->id }}">
+                    <div>
+                        {!! $template->message_body !!}
+                    </div>
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Message Body') }}
                             <iconify-icon
@@ -32,9 +35,10 @@
                             </iconify-icon>
                         </label>
                         <div class="md:col-span-9 col-span-12">
-                            <textarea name="message_body" class="form-control basicTinymce" cols="30" rows="8">
-                                {{ br2nl($template->message_body) }}
+                            <textarea class="form-control summernote" cols="30" rows="8">
+                                {{ $template->message_body }}
                             </textarea>
+                            <input type="hidden" name="message_body" value="{{ str_replace(['<', '>'], ['{', '}'], $template->message_body) }}">
                             <p class="paragraph text-sm mb-0 mt-2">
                                 <i icon-name="alert-triangle"></i>
                                 {{ __('The Shortcuts you can use') }}

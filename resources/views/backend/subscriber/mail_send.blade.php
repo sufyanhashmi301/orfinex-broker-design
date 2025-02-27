@@ -19,7 +19,8 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Email Details') }}</label>
-                        <textarea name="message" class="form-control basicTinymce" rows="6"></textarea>
+                        <textarea class="form-control summernote" rows="6"></textarea>
+                        <input type="hidden" name="message">
                     </div>
 
                     <div class="action-btns text-right">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
+use App\Models\IbGroup;
 use App\Models\IbQuestion;
 use App\Models\IbSchema;
 use App\Exports\ApprovedIbExport;
@@ -132,7 +133,9 @@ class IBController extends Controller
                 ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.pending');
+        $ibGroups = IbGroup::where('status', 1)->get();
+
+        return view('backend.ib.pending',compact('ibGroups'));
     }
 
     public function IbApprovedList(Request $request)
@@ -155,7 +158,8 @@ class IBController extends Controller
                 ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.approved');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.approved',compact('ibGroups'));
     }
 
     public function IbRejectedList(Request $request)
@@ -184,7 +188,8 @@ class IBController extends Controller
                 ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.rejected');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.rejected',compact('ibGroups'));
     }
 
     public function IbAllList(Request $request)
@@ -206,13 +211,17 @@ class IBController extends Controller
 //                ->editColumn('username', function ($request) {
 //                    return safe($request->username);
 //                })
+//                ->addColumn('ib_group', function ($user) {
+//                    return view('backend.ib.include.__action', ['user' => $user]);
+//                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
                 ->rawColumns(['username','email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.all');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.all',compact('ibGroups'));
     }
 
     public function answerView(User $user)
@@ -590,7 +599,12 @@ class IBController extends Controller
         $user = User::find($userID);
         if (!blank($user)) {
             $user->ib_status = IBStatus::REJECTED;
+            $user->ib_group_id = null;
             $user->save();
+
+            $ibGroup = null;
+            $this->manageUserRebateRules($user, $ibGroup);
+
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }
     }

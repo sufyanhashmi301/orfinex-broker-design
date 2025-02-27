@@ -77,8 +77,10 @@ class SmsController extends Controller
         }
 
         $input = $request->all();
+        $input['message_body'] = str_replace(['{', '}'], ['<', '>'], $request->message_body);
+
         $data = [
-            'message_body' => nl2br($input['message_body']),
+            'message_body' => htmlspecialchars_decode($input['message_body']),
             'status' => $input['status'],
         ];
 

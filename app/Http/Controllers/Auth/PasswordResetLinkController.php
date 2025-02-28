@@ -69,4 +69,46 @@ class PasswordResetLinkController extends Controller
         return redirect()->back()->with('status', __('We have emailed your password reset link!'));
 
     }
+
+    public function getPassword()
+    {
+        return view('frontend::auth.get-password');
+    }
+
+    public function sendPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back();
+        }
+
+        $password = $this->generateUniquePassword();
+
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($password);
+        $user->save();
+
+        $shortcodes = [
+            '[[site_password]]' => $password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        $this->mailNotify($request->email, 'user_password_send', $shortcodes);
+        return redirect()->back()->with('status', __('We have emailed your new password!'));
+    }
+
+    private function generateUniquePassword()
+    {
+        do {
+            $password = Str::random(8);
+        } while (User::whereRaw("password = ?", [Hash::make($password)])->exists());
+
+        return $password;
+    }
+
 }

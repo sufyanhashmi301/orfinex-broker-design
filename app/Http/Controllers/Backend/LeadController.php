@@ -34,21 +34,18 @@ class LeadController extends Controller
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $leads = Lead::with('owner');
             } else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $leads = Lead::whereIn('lead_owner', $attachedUserIds)->with('owner');;
-                } else {
-                    $leads = Lead::where('lead_owner', $loggedInUser->id)->with('owner');;
-                }
+                $leads = Lead::whereIn('lead_owner', [$loggedInUser->id])->with('owner');
             }
 
             return Datatables::of($leads)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.lead.include.__user')
+                ->editColumn('client_email', function($lead) {
+                    return '<span class="lowercase">' . $lead->client_email . '</span>';
+                })
                 ->editColumn('owner', 'backend.lead.include.__owner')
                 ->addColumn('action', 'backend.lead.include.__action')
-                ->rawColumns(['username', 'owner', 'action'])
+                ->rawColumns(['username', 'client_email', 'owner', 'action'])
                 ->make(true);
 
         }

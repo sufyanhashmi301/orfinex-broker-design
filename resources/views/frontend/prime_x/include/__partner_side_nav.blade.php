@@ -105,6 +105,14 @@
             </a>
         </li>
         @endif
+        <li class="md:hidden">
+            <a href="{{ route('user.dashboard') }}" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>
+                    <span>{{ __('Client Area') }}</span>
+                </span>
+            </a>
+        </li>
 
         <li class="block md:hidden">
             <form method="POST" action="{{ route('logout') }}" id="logout-form" class="mt-5 mb-3">
@@ -119,7 +127,7 @@
         </li>
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
+<div class="stickySetting_menu sticky hidden md:block z-10 bottom-0 px-6 py-3">
     <a href="{{ route('user.dashboard') }}" class="navItem loaderBtn">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>

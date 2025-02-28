@@ -43,19 +43,19 @@
             <div class="grid grid-cols-12 gap-3">
                 <div class="lg:col-span-8 col-span-12">
                     <ul class="space-y-3">
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Name') }}</span>
                                 <span>{{ $lead->first_name.' '.$lead->last_name }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Email') }}</span>
                                 <span>{{ $lead->client_email }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Lead Owner') }}</span>
                                 <span>
@@ -73,61 +73,61 @@
                                 </span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Lead Source') }}</span>
                                 <span>{{ $source->name }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Company Name') }}</span>
                                 <span>{{ $lead->company_name ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Website') }}</span>
                                 <span>{{ $lead->website ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Mobile') }}</span>
                                 <span>{{ $lead->phone }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Office Phone Number') }}</span>
                                 <span>{{ $lead->office_phone_number ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Country') }}</span>
                                 <span>{{ $lead->country ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('State') }}</span>
                                 <span>{{ $lead->state ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('City') }}</span>
                                 <span>{{ $lead->city ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Postal Code') }}</span>
                                 <span>{{ $lead->postal_code ?? '-'  }}</span>
                             </div>
                         </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                        <li class="text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2">
                             <div class="flex justify-between">
                                 <span>{{ __('Address') }}</span>
                                 <span>{{ $lead->address ?? '-' }}</span>

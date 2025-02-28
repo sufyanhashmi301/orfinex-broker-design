@@ -90,9 +90,17 @@ class NotificationController extends Controller
     //notification template
     public function template(Request $request)
     {
-        if ($request->ajax()) {
-            $data = PushNotificationTemplate::query()->latest();
+        $type = $request->get('type', 'admin');
 
+        $data = PushNotificationTemplate::query()->latest();
+
+        if ($type === 'admin') {
+            $data->where('for', 'Admin');
+        } elseif ($type === 'user') {
+            $data->where('for', 'User');
+        }
+
+        if ($request->ajax()) {
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.push_notification.include.__name')
@@ -102,7 +110,7 @@ class NotificationController extends Controller
                 ->make(true);
         }
 
-        return view('backend.push_notification.template');
+        return view('backend.push_notification.template', compact('type'));
     }
 
     public function editTemplate($id)
@@ -125,6 +133,8 @@ class NotificationController extends Controller
         }
 
         $input = $request->all();
+        $input['message_body'] = str_replace(['{', '}'], ['<', '>'], $request->message_body);
+
         $data = [
             'message_body' => nl2br($input['message_body']),
             'title' => $input['title'],

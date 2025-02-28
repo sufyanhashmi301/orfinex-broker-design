@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UpdatePluginsData::class);
         $this->call(LeadStagesSeeder::class);
         $this->call(LeadSourcesSeeder::class);
+        $this->call(LeadPipelineSeeder::class);
 
 
     }

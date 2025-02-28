@@ -275,11 +275,9 @@ class ReferralController extends Controller
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('balance', 'backend/user/include/__total_balance_mt5')
                 ->editColumn('full_name', function ($data) {
                     return $data->first_name . ' ' . $data->last_name;
-                })
-                ->editColumn('balance', function ($request) {
-                    return $request->balance . ' ' . setting('site_currency');
                 })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);

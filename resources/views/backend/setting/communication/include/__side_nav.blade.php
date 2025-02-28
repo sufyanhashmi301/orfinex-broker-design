@@ -28,5 +28,10 @@
             </a>
         </li>
         @endcanany
+        <li>
+            <a href="{{ route('admin.template.notification.index') }}" class="navItem {{ isActive('admin.template.notification*') }}">
+                {{ __('Notification Temp...')}}
+            </a>
+        </li>
     </ul>
 @endsection

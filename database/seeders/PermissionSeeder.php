@@ -44,6 +44,8 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'kyc-status-update'],
             ['category' => 'Customer Management', 'name' => 'ib-partner-list'],
             ['category' => 'Customer Management', 'name' => 'approve-ib-member'],
+            ['category' => 'Customer Management', 'name' => 'customer-bonus'],
+            ['category' => 'Customer Management', 'name' => 'customer-funds'],
 
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
             ['category' => 'Deposit Management', 'name' => 'deposit-export'],

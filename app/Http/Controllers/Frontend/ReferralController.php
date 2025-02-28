@@ -24,7 +24,7 @@ class ReferralController extends Controller
     use ForexApiTrait;
     public function ibRequest()
     {
-        if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED){
+        if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || isset(auth()->user()->ref_id)){
             return redirect()->route('user.multi-level.ib.dashboard');
         }
 //        dd('ss');
@@ -46,6 +46,10 @@ class ReferralController extends Controller
     }
     public function referral()
     {
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id)){
+
+        }
+
         if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED){
             return redirect()->route('user.multi-level.ib.dashboard');
         }

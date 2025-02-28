@@ -76,6 +76,7 @@ class DepositController extends Controller
     public function methodStore(Request $request)
     {
         $input = $request->all();
+        $input['payment_details'] = str_replace(['{', '}'], ['<', '>'], $request->payment_details);
 
         $validator = Validator::make($input, [
             'logo' => 'required_if:type,==,manual',
@@ -143,6 +144,7 @@ class DepositController extends Controller
     public function methodUpdate($id, Request $request)
     {
         $input = $request->all();
+        $input['payment_details'] = str_replace(['{', '}'], ['<', '>'], $request->payment_details);
 //        dd($input);
         $validator = Validator::make($input, [
             'name' => 'required',

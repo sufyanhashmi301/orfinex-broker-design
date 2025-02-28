@@ -25,7 +25,8 @@
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Details (Optional)') }}</label>
-                                <textarea name="desc" class="form-control basicTinymce mb-0" rows="6" placeholder="Details about the IB group"></textarea>
+                                <textarea class="form-control summernote mb-0" rows="6" placeholder="Details about the IB group"></textarea>
+                                <input type="hidden" name="desc">
                             </div>
                             <div class="input-area">
                                 <label for="rebate_rule_id" class="form-label">{{ __('Attach Rebate Rule(s) (Optional)') }}</label>

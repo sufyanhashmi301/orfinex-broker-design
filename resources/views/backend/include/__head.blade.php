@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('global/css/custom.css?var=2.2') }}"/>
     <link rel="stylesheet" href="{{ asset('global/css/rt-plugins.css') }}">
     <link rel="stylesheet" href="{{ asset('global/css/intlTelInput.css') }}">
+    <link rel="stylesheet" href="{{ asset('global/summernote/summernote-lite.min.css') }}">
     <link rel="stylesheet" href="{{ asset('global/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
     @include('global.__styles')

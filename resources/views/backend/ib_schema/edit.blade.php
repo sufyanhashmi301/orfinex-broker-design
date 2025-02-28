@@ -77,8 +77,9 @@
                             <div class="input-area fw-normal">
                                 <label for="" class="form-label">{{ __('Detail:') }}</label>
                                 <div class="site-editor">
-                                <textarea class="basicTinymce" name="desc">{{$schema->desc}}</textarea>
+                                    <textarea class="summernote">{{$schema->desc}}</textarea>
                                 </div>
+                                <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2">

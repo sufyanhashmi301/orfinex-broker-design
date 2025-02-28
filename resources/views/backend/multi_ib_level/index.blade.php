@@ -1,14 +1,16 @@
 @extends('backend.layouts.app')
-
+@section('title')
+    {{ __('Levels') }}
+@endsection
 @section('content')
 
     <!-- Title and Buttons Section -->
-    <div class="page-header flex justify-between items-center p-6 bg-white shadow-sm dark:bg-slate-800">
-        <h1 class="text-lg font-semibold text-gray-800 dark:text-white">
+    <div class="pageTitle flex justify-between items-center mb-6">
+        <h1 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Levels') }}
         </h1>
         <div>
-            <a href="javascript:;" class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#levelModal">
+            <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#levelModal">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
@@ -20,7 +22,7 @@
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden">
+                    <div class="overflow-hidden basicTable_wrapper">
                         <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
                             <thead>
                                 <tr>
@@ -43,19 +45,19 @@
                                                 <button type="button" class="action-btn edit-level" data-bs-toggle="modal" data-bs-target="#editLevelModal" data-id="{{ $level->id }}">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </button>
-                                                
-                                                
+
+
                                                 <button type="button" class="action-btn delete-level" data-bs-toggle="modal" data-bs-target="#deleteLevelModal" data-id="{{ $level->id }}" data-title="{{ $level->title }}">
                                                     <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                                 </button>
-                                                
+
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5">
+                        <div class="flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5 mt-auto">
                             <p class="text-sm text-gray-700">
                                 Showing <span class="font-medium">{{ $levels->firstItem() }}</span> to <span class="font-medium">{{ $levels->lastItem() }}</span> of <span class="font-medium">{{ $levels->total() }}</span> results
                             </p>
@@ -69,15 +71,15 @@
 
     <!-- Modals -->
 @include('backend.multi_ib_level.modal.__create_level')
- 
 
-   
+
+
 @include('backend.multi_ib_level.modal.__edit_level')
- 
 
-   
+
+
 @include('backend.multi_ib_level.modal.__delete_level')
- 
+
 
 @endsection
 

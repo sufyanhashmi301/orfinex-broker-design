@@ -118,6 +118,8 @@ class ForexSchemaController extends Controller
 
         $input = $request->all();
 
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
         $finalData = [
             'trader_type' => $input['trader_type'],
             'title' => $input['title'],
@@ -206,6 +208,9 @@ class ForexSchemaController extends Controller
 //        dd($request->all());
         $schema = ForexSchema::find($id);
         $input = $request->all();
+
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],

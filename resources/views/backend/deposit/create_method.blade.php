@@ -183,8 +183,9 @@
                                 <div class="input-area relative fw-normal">
                                     <label for="" class="form-label">{{ __('Payment Details:') }}</label>
                                     <div class="site-editor">
-                                        <textarea class="basicTinymce" name="payment_details"></textarea>
+                                        <textarea class="summernote"></textarea>
                                     </div>
+                                    <input type="hidden" name="payment_details">
                                 </div>
                             </div>
                         @endif

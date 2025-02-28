@@ -125,7 +125,8 @@
                         <div class="col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Description:') }}</label>
-                                <textarea name="description" class="form-control basicTinymce" rows="6">{{ old('description', $bonus->description ?? '') }}</textarea>
+                                <textarea class="form-control summernote" rows="6">{{ old('description', $bonus->description ?? '') }}</textarea>
+                                <input type="hidden" name="description">
                             </div>
                             <small><span class="" style="color: red;">{{ $errors->first('description') }}</span></small>
                         </div>

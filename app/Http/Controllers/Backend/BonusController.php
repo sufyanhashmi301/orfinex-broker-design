@@ -38,7 +38,7 @@ class BonusController extends Controller
         return view('backend.bonus.index', compact('bonuses'));
     }
 
-    /** 
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -58,6 +58,7 @@ class BonusController extends Controller
      */
     public function store(StoreBonusRequest $request)
     {
+        $request['description'] = str_replace(['{', '}'], ['<', '>'], $request->description);
         $bonus = Bonus::create($request->validated());
 
         $this->bonusService->assignBonusToAccountType($bonus, $request->forex_account_types);
@@ -72,7 +73,7 @@ class BonusController extends Controller
      */
     public function addBonusByAdmin(UserAssignBonusRequest $request, User $user){
         $response = $this->bonusService->addBonus($request, $user);
-        
+
         $response['status'] == 'error' ? notify()->error($response['message'], $response['status']) : notify()->success($response['message'], $response['status']);
 
         return redirect()->back();
@@ -101,11 +102,11 @@ class BonusController extends Controller
         $kyc_levels = $this->kyc_levels;
         return view('backend.bonus.create', compact('kyc_levels'))
         ->with([
-                'bonus' => Bonus::where('id', $bonus_id)->with('forex_schemas')->first(), 
+                'bonus' => Bonus::where('id', $bonus_id)->with('forex_schemas')->first(),
                 'forex_account_types' => $forex_account_types
             ]);
     }
-    
+
 
     /**
      * Update the specified resource in storage.

@@ -10,7 +10,7 @@
         <div id="{{ __('stage-container__').$stage->slug }}" class="min-h-full" data-stage-id="{{ $stage->id }}" data-stage-slug="{{ $stage->slug }}">
             @if ($stage->deals->isEmpty())
                 <div class="p-2">
-                    <a href="javascript:;" class="non-draggable w-full leading-0 inline-flex justify-center bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal px-2 py-5">
+                    <a href="javascript:;" data-pipeline-id="{{ $pipeline->id }}" class="non-draggable w-full leading-0 inline-flex justify-center bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal px-2 py-5">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
                             <span>{{ __('Add Deal') }}</span>

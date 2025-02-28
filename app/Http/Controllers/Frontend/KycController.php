@@ -185,6 +185,7 @@ class KycController extends Controller
             '[[status]]' => 'Pending',
         ];
 
+        $this->mailNotify($user->email, 'kyc_request', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'kyc_request', $shortcodes);
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
         notify()->success(__(' KYC Updated'));
@@ -250,6 +251,7 @@ class KycController extends Controller
             '[[kyc_type]]' => $kyc->name,
             '[[status]]' => 'Pending',
         ];
+        $this->mailNotify($user->email, 'kyc_request', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'kyc_request', $shortcodes);
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
         notify()->success(__(' KYC Updated'));

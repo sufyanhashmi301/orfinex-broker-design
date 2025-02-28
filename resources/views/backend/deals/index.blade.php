@@ -14,7 +14,7 @@
                     <select id="pipeline_select" class="select2 form-control">
                         <option value="">{{ __('Select Pipeline') }}</option>
                         @foreach($pipelinesbox as $option)
-                            <option value="{{ $option->id }}" @if($pipeline->id == $option->id) selected @endif>
+                            <option value="{{ $option->id }}" @if($pipeline && $pipeline->id == $option->id) selected @endif>
                                 {{ $option->name }}
                             </option>
                         @endforeach
@@ -53,7 +53,7 @@
                     <div id="{{ __('stage-container__').$stage->slug }}" class="min-h-full" data-stage-id="{{ $stage->id }}" data-stage-slug="{{ $stage->slug }}">
                         @if ($stage->deals->isEmpty())
                             <div class="p-2">
-                                <a href="javascript:;" class="non-draggable w-full leading-0 inline-flex justify-center bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal px-2 py-5">
+                                <a href="{{ route('admin.deal.create') }}" data-pipeline-id="{{ $pipeline->id }}" class="non-draggable w-full leading-0 inline-flex justify-center bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal px-2 py-5">
                                     <span class="flex items-center">
                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
                                         <span>{{ __('Add Deal') }}</span>
@@ -92,6 +92,13 @@
 @endsection
 @section('script')
     <script>
+        $(document).ready(function (){
+            $('.createDeal').click(function() {
+                var pipelineId = $(this).data('pipeline-id');
+                var url = "{{ route('admin.deal.create') }}?pipeline_id=" + pipelineId;
+                window.location.href = url;
+            });
+        })
         function initializeDragula(containers) {
             dragula(containers)
             .on('drop', function (el, target) {

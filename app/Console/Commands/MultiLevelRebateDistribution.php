@@ -279,7 +279,8 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getMT5Deals($login, $lastDealTime, $sysmbols)
     {
-        $table = 'mt5_deals_' . Carbon::now()->year;
+        $table = 'mt5_deals';
+//        $table = 'mt5_deals_' . Carbon::now()->year;
 //        dd($table,$login,$lastDealTime,$sysmbols);
 
 

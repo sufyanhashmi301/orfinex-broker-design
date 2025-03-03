@@ -23,6 +23,8 @@ class UpdateForexAccounts extends Command
                 $account->save();
                 $this->info("Updated account ID {$account->id} with schema ID {$schema->id}");
             } else {
+                $account->forex_schema_id = 16;
+                $account->save();
                 $this->warn("No matching schema found for group: {$account->group}");
             }
         }

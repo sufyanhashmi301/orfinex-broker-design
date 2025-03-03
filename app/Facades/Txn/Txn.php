@@ -490,6 +490,7 @@ class Txn
 
                 //$this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 first_min_deposit($transaction->target_id);
+
             } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
 //                $userAccount = get_user_account($transaction->user_id);
                 $userAccount = get_user_account_by_wallet_id($transaction->target_id);
@@ -512,9 +513,6 @@ class Txn
             //                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
             //            }
         }
-        //            dd('ss');
-        //        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
-        // Apply deduction for withdrawals only
 
         // withdrawal by user
         if($status == TxnStatus::Pending && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){

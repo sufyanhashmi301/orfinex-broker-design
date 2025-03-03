@@ -22,12 +22,14 @@ use App\Traits\NotifyTrait;
 use App\Traits\Payment;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\WithdrawHistoryExport;
@@ -247,6 +249,9 @@ class WithdrawController extends Controller
      */
     public function withdrawNow(Request $request)
     {
+        try {
+            DB::beginTransaction();
+
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disabled Now'));
         }
@@ -421,6 +426,7 @@ class WithdrawController extends Controller
     // Re-encode and save the updated manual_field_data
     $txnInfo->manual_field_data = json_encode($manualFieldData);
     $txnInfo->save();
+    DB::commit();
 
     // Handle automatic withdrawals
     if ($withdrawMethod->type == 'auto') {
@@ -457,6 +463,12 @@ class WithdrawController extends Controller
     $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
     return redirect()->route('user.notify');
+
+    } catch (Exception $e) {
+            DB::rollBack();
+            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
+            return redirect()->back()->withInput();
+        }
 }
 
 

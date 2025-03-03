@@ -92,6 +92,7 @@
 
             $('#converted-amount').val(parseFloat((amount * globalData.rate).toFixed(4)).toString())
         })
+
         $('#converted-amount').on('keyup', function (e) {
             "use strict"
             var converted_amount = $(this).val();

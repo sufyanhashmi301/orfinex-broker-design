@@ -274,6 +274,7 @@
                                 {{ __('Save Changes') }}
                             </button>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -406,8 +407,6 @@
                 }
             });
         });
-
-
 
     </script>
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Str;
 use Txn;
 use Exception;
@@ -364,94 +366,81 @@ class WithdrawController extends Controller
         $input = $request->all();
         $id = $input['id'];
         $approvalCause = $input['message'];
-        $transaction = Transaction::find($id);
-        $user = User::find($transaction->user_id);
-//dd($input);
-        $shortcodes = [
-            '[[full_name]]' => $transaction->user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[method_name]]' => $transaction->method,
-            '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $approvalCause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
 
-        if (isset($input['approve'])) {
-//            if (setting('withdraw_deduction', 'features')) {//on approval from admin
-//                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-//                notify()->success('Approve successfully');
-//            }else{ //on request
-//                $balance = $this->forexApiService->getValidatedBalance([
-//                    'login' => $transaction->target_id
-//                ]);
-//                $totalAmount = BigDecimal::of($transaction->amount);
-//                if ($totalAmount->compareTo($balance) > 0) {
-//                    notify()->error(__('Insufficient Balance in Your Account'), 'Error');
-//                    return redirect()->back();
-//                }
-//                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-//                $data = [
-//                    'login' => $transaction->target_id,
-//                    'Amount' => $totalAmount,
-//                    'type' => 2,//withdraw
-//                    'TransactionComments' => $comment
-//                ];
-//                $withdrawResponse = $this->forexApiService->balanceOperation($data);
-//                if ($withdrawResponse['success']) {
-                    $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-                  if($txn) {
-                      $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
-                        notify()->success('Approve successfully');
-                  }
-//                } else {
-//                    notify()->error(__('Something went wrong! Please try again!'), 'Error');
-//                    return redirect()->back();
-//                }
-//            }
-        } elseif (isset($input['reject'])) {
-
-            // Fetch deduction status from transaction
-            $manualFieldData = json_decode($transaction->manual_field_data, true);
-            $deductionStatus = isset($manualFieldData['Deduction Status']['value']) ? $manualFieldData['Deduction Status']['value'] : 'Not Deducted';
-
-            // If deduction was applied, create a refund transaction
-            if ($deductionStatus === 'Deducted') {
-                $newTransaction = $transaction->replicate();
-                $newTransaction->type = TxnType::Refund;
-                $newTransaction->status = TxnStatus::None;
-                $newTransaction['method'] = 'system';
-                $newTransaction->tnx = 'TRX' . strtoupper(Str::random(10));
-                $newTransaction->save();
-                $newTransaction->refresh();
-                // If deduction was applied, reverse the payment
-                if ($deductionStatus === 'Deducted') {
-                    if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
-                        // Reverse deduction for Forex account
-                        $this->reverseForexWithdrawal($newTransaction);
-                    } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value) {
-                        // Reverse deduction for Wallet account
-//                    dd($transaction);
-                        $this->reverseWalletWithdrawal($newTransaction);
-                    }
-    }
-                $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-                if($txn) {
-                    $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
-                }
+        DB::beginTransaction();
+        try {
+            $transaction = Transaction::where('id', $id)->lockForUpdate()->first();
+            if (!$transaction) {
+                notify()->error('Transaction not found');
+                DB::rollBack();
+                return redirect()->back();
             }
 
-            Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+            if ($transaction->status != TxnStatus::Pending) {
+                notify()->warning('This transaction has already been processed.');
+                DB::rollBack();
+                return redirect()->back();
+            }
 
-            notify()->success('Reject successfully');
-        }
+            $user = User::find($transaction->user_id);
+            $shortcodes = [
+                '[[full_name]]' => $transaction->user->full_name,
+                '[[txn]]' => $transaction->tnx,
+                '[[method_name]]' => $transaction->method,
+                '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[message]]' => $approvalCause,
+                '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+            ];
+
+            if (isset($input['approve'])) {
+                $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                if ($txn) {
+                    $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
+                    notify()->success('Approve successfully');
+                }
+            } elseif (isset($input['reject'])) {
+                $manualFieldData = json_decode($transaction->manual_field_data, true);
+                $deductionStatus = isset($manualFieldData['Deduction Status']['value']) ? $manualFieldData['Deduction Status']['value'] : 'Not Deducted';
+
+                if ($deductionStatus === 'Deducted') {
+                    $newTransaction = $transaction->replicate();
+                    $newTransaction->type = TxnType::Refund;
+                    $newTransaction->status = TxnStatus::None;
+                    $newTransaction['method'] = 'system';
+                    $newTransaction->tnx = 'TRX' . strtoupper(Str::random(10));
+                    $newTransaction->save();
+                    $newTransaction->refresh();
+
+                    if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                        $this->reverseForexWithdrawal($newTransaction);
+                    } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value) {
+                        $this->reverseWalletWithdrawal($newTransaction);
+                    }
+
+                    $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                    if ($txn) {
+                        $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+                    }
+                }
+
+                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                notify()->success('Reject successfully');
+            }
 
             $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
 
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Withdraw action failed: ' . $e->getMessage());
+            notify()->error('An error occurred while processing the withdrawal. Please try again.');
             return redirect()->back();
         }
+    }
 
     private function reverseForexWithdrawal($transaction)
     {

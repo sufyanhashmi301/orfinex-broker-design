@@ -49,7 +49,7 @@
                     @if( file_exists('assets/' . $value) || str_contains($value, 'amazonaws.com'))
                         <img src="{{ asset($value) }}" alt=""/>
                     @else
-                        <strong>{{ asset($value) }}</strong>
+                        <strong>{{ $value }}</strong>
                     @endif
                 @endif
             </li>

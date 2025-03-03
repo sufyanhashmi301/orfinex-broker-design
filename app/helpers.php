@@ -759,6 +759,14 @@ if (!function_exists('show_kyc_notice')) {
         $user = Auth::user();
         $kyc_invoke_at = kyc_invoke_at();
 
+        if(!$user->kyc) {
+            return [
+                'show' => false,
+                'message' => ''
+            ];
+            
+        }
+
         if($user->kyc->status == KycStatusEnums::UNVERIFIED) {
 
             // Account Purchase (Always)

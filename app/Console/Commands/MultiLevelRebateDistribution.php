@@ -125,22 +125,24 @@ class MultiLevelRebateDistribution extends Command
     protected function saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel)
     {
         foreach ($deals as $deal) {
-            $data = [
-                'user_id' => $childUserId,
-                'login' => $deal->Login,
-                'deal' => $deal->Deal,
-                'dealer' => $deal->Dealer,
-                'order' => $deal->Order,
-                'symbol' => $deal->Symbol,
-                'volume' => $deal->Volume,
-                'volume_closed' => $deal->VolumeClosed,
-                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
-                'time' => $deal->Time
-            ];
-             $metaDeal = MetaDeal::create($data);
+            if(!MetaDeal::where('login',$deal->Login)->where('deal',$deal->Deal)->where('order',$deal->Order)->exists()) {
+                $data = [
+                    'user_id' => $childUserId,
+                    'login' => $deal->Login,
+                    'deal' => $deal->Deal,
+                    'dealer' => $deal->Dealer,
+                    'order' => $deal->Order,
+                    'symbol' => $deal->Symbol,
+                    'volume' => $deal->Volume,
+                    'volume_closed' => $deal->VolumeClosed,
+                    'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
+                    'time' => $deal->Time
+                ];
+                $metaDeal = MetaDeal::create($data);
 //            $metaDeal = MetaDeal::find(78);
 //             dd($metaDeal);
-            $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
+                $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
+            }
         }
     }
 

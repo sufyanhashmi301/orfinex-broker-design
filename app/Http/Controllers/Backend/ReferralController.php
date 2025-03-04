@@ -287,7 +287,7 @@ class ReferralController extends Controller
                 })
 
                 ->addColumn('action', 'backend.user.include.__direct_referral_action')
-                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
+                ->rawColumns(['avatar', 'kyc','balance', 'status', 'action'])
                 ->make(true);
         }
     }

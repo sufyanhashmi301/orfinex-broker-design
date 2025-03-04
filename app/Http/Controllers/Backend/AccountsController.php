@@ -255,6 +255,11 @@ class   AccountsController extends Controller
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
+        if($user->phone){
+            $phone = $user->phone;
+        }else{
+            $phone = '+91';
+        }
 
         $data = [
             "login" => $login,
@@ -269,7 +274,7 @@ class   AccountsController extends Controller
             "state" => "",
             "zipCode" => $user->zip_code,
             "address" => $user->address,
-            "phone" => $user->phone,
+            "phone" => $phone,
             "email" => $user->email,
             "agent" => 0,
             "account" => "",

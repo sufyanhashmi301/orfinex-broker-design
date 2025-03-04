@@ -152,6 +152,12 @@ class ForexAccountController extends GatewayController
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
+        if($user->phone){
+            $phone = $user->phone;
+        }else{
+            $phone = '+91';
+
+        }
 //        dd($traderType,$group,$server);
 
         if ($traderType == TraderType::MT5) {
@@ -168,7 +174,7 @@ class ForexAccountController extends GatewayController
                 "state" => "",
                 "zipCode" => $user->zip_code,
                 "address" => $user->address,
-                "phone" => $user->phone,
+                "phone" => $phone,
                 "email" => $user->email,
                 "agent" => 0,
                 "account" => "",

@@ -130,9 +130,8 @@
                 </span>
             </a>
         </li>
-
 {{--        @if(setting('sign_up_referral', 'permission'))--}}
-            @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || isset(auth()->user()->ref_id))
             <li>
                 <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
@@ -141,7 +140,17 @@
                     </span>
                 </a>
             </li>
-                @endif
+        @elseif(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id))
+            <li>
+                <a href="{{ route('user.ib.request') }}" class="navItem {{ isActive('user.ib.request')}}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="grommet-icons:resources"></iconify-icon>
+                    <span>{{ __('Request Master IB') }}</span>
+                </span>
+                </a>
+            </li>
+        @endif
+
 {{--        @endif--}}
 
         <li>
@@ -179,7 +188,7 @@
         </li> --}}
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
+<div class="stickySetting_menu sticky hidden md:block z-10 bottom-0 px-6 py-3">
     <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>

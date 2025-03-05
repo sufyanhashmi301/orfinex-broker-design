@@ -20,11 +20,11 @@
     .dark .app-header, .dark .logo-segment {
         background-color: rgba({{ implode(' ', getColorFromSettings('header_bg_dark')) }} / var(--tw-bg-opacity));
     }
-    .app-header .header-text-color {
+    .app-header .header-text-color, .mobileUserInfo .header-text-color {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('header_color')) }} / var(--tw-text-opacity));
     }
-    .dark .app-header .header-text-color {
+    .dark .app-header .header-text-color, .dark .mobileUserInfo .header-text-color {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('header_color_dark')) }} / var(--tw-text-opacity));
     }

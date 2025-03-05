@@ -121,9 +121,10 @@
                             <div class="col-span-2">
                                 <div class="input-area">
                                     <label for="" class="form-label">{{ __('Description:') }}</label>
-                                    <textarea name="description" class="form-control basicTinymce" rows="5" placeholder="Description">
+                                    <textarea class="form-control summernote" rows="5" placeholder="Description">
                                         {{ old('description') }}
                                     </textarea>
+                                    <input type="hidden" name="description">
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">

@@ -7,12 +7,16 @@ use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexSchema;
+use App\Models\IbQuestion;
+use App\Models\LevelReferral;
 use App\Models\MetaDeal;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\UserIbRule;
+use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MultiLevelIBController extends Controller
 {
@@ -24,6 +28,16 @@ class MultiLevelIBController extends Controller
     public function index()
     {
         $user = auth()->user();
+//        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ref_id)){
+//            return redirect()->route('user.referral');
+//
+//        }else
+
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id)) {
+
+            return redirect()->route('user.ib.request');
+        }
+
         $user_id = $user->id;
         $totalMonthlyReferrals = $user->getReferral->monthlyRelationships()->count();
         $sourceFrom = AccountBalanceType::IB_WALLET;
@@ -105,6 +119,9 @@ class MultiLevelIBController extends Controller
 
     public function rules()
     {
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED){
+            return redirect()->route('user.multi-level.ib.dashboard');
+        }
         $user = auth()->user(); // Get the authenticated user
 
         // Fetch UserIbRules with related schemas and rebate rules

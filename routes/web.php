@@ -129,13 +129,13 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     });
 
     // Multi Level
-    Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
+    Route::group(['middleware' => 'IB','prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
         Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
         Route::get('rules', [MultiLevelIBController::class, 'rules'])->name('rules');
         Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
         Route::post('/get-scheme-rules', [MultiLevelIBController::class, 'getSchemeRules'])->name('get.scheme.rules');
     });
-    Route::group(['prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
+    Route::group(['middleware' => 'IB','prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
         Route::post('/store', [UserIbRuleController::class, 'store'])->name('store');
         Route::get('//{id}/levels', [UserIbRuleController::class, 'showLevels'])->name('levels');
         Route::post('/level/update', [UserIbRuleController::class, 'updateLevels'])->name('level.update');
@@ -187,6 +187,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
     Route::group(['middleware' => 'KYC'], function () {
         Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('ib-request', [ReferralController::class, 'ibRequest'])->name('ib.request');
         Route::get('referral/members', [ReferralController::class, 'referralMembers'])->name('referral.members');
         Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
         Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');

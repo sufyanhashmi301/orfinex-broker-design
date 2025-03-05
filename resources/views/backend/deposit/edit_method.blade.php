@@ -248,8 +248,9 @@
                                 <div class="input-area fw-normal relative">
                                     <label for="" class="form-label">{{ __('Payment Details:') }}</label>
                                     <div class="site-editor">
-                                <textarea class="basicTinymce" name="payment_details">{!! $method->payment_details !!}</textarea>
+                                        <textarea class="summernote">{!! $method->payment_details !!}</textarea>
                                     </div>
+                                    <input type="hidden" name="payment_details" value="{{ str_replace(['<', '>'], ['{', '}'], $method->payment_details) }}">
                                 </div>
                             </div>
                         @endif
@@ -273,6 +274,7 @@
                                 {{ __('Save Changes') }}
                             </button>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -351,7 +353,7 @@
         }
         $('#myForm').on('submit', function(event) {
             event.preventDefault(); // Prevent the default action
-            tinyMCE.triggerSave();
+            // tinyMCE.triggerSave();
             var form = $(this);
             var submitButton = $('#submitForm');
 
@@ -405,8 +407,6 @@
                 }
             });
         });
-
-
 
     </script>
 

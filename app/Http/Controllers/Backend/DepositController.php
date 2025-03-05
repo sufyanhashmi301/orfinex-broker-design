@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\ForexAccountStatus;
 use App\Models\Account;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Txn;
 use Purifier;
 use DataTables;
@@ -76,6 +77,7 @@ class DepositController extends Controller
     public function methodStore(Request $request)
     {
         $input = $request->all();
+        $input['payment_details'] = str_replace(['{', '}'], ['<', '>'], $request->payment_details);
 
         $validator = Validator::make($input, [
             'logo' => 'required_if:type,==,manual',
@@ -143,6 +145,7 @@ class DepositController extends Controller
     public function methodUpdate($id, Request $request)
     {
         $input = $request->all();
+        $input['payment_details'] = str_replace(['{', '}'], ['<', '>'], $request->payment_details);
 //        dd($input);
         $validator = Validator::make($input, [
             'name' => 'required',
@@ -307,9 +310,12 @@ class DepositController extends Controller
                 ->editColumn('charge', function ($request) {
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username', 'action'])
+                ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 
@@ -344,58 +350,70 @@ class DepositController extends Controller
 
     public function actionNow(Request $request)
     {
-
         $input = $request->all();
         $id = $input['id'];
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
 
-        $shortcodes = [
-            '[[full_name]]' => $transaction->user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[gateway_name]]' => $transaction->method,
-            '[[deposit_amount]]' => $transaction->amount,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $approvalCause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
+        if (!$transaction) {
+            notify()->error('Transaction not found');
+            return redirect()->back();
+        }
 
-        if (isset($input['approve'])) {
+        // Prevent double processing
+        DB::beginTransaction();
+        try {
+            $existingTransaction = Transaction::where('id', $id)->lockForUpdate()->first();
+            if ($existingTransaction->status != TxnStatus::Pending) {
+                notify()->warning('This transaction has already been processed.');
+                DB::rollBack();
+                return redirect()->back();
+            }
 
+            $shortcodes = [
+                '[[full_name]]' => $transaction->user->full_name,
+                '[[txn]]' => $transaction->tnx,
+                '[[gateway_name]]' => $transaction->method,
+                '[[deposit_amount]]' => $transaction->amount,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[message]]' => $approvalCause,
+                '[[status]]' => isset($input['approve']) ? 'approved' : 'rejected',
+            ];
+
+            if (isset($input['approve'])) {
+                // Update transaction
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
-                $transaction->pay_amount = $input['final_amount'];
-                if(isset($input['pay_amount'])) {
-                    $transaction->pay_amount = $input['pay_amount'];
-                }
+                $transaction->pay_amount = $input['pay_amount'] ?? $input['final_amount'];
                 $transaction->save();
-                $transaction = $transaction->fresh();
 
-            Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                // Call transaction update method
+                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
-
-            notify()->success('Approve successfully');
-
-        } elseif (isset($input['reject'])) {
-            $invest = Invest::where('transaction_id', $id)->first();
-
-            if ($invest) {
-                $invest->delete();
+                // Notify user
+                $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
+                notify()->success('Deposit approved successfully.');
+            } elseif (isset($input['reject'])) {
+                // Reject transaction
+                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
+                notify()->success('Deposit rejected successfully.');
             }
-            Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
-            notify()->success('Reject successfully');
+
+            $transaction->approval_cause = $approvalCause;
+            $transaction->action_by = auth()->user()->id;
+            $transaction->save();
+            DB::commit();
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Deposit action failed: ' . $e->getMessage());
+            notify()->error('An error occurred while processing the deposit. Please try again.');
+            return redirect()->back();
         }
-        $transaction->approval_cause = $approvalCause;
-        $transaction->save();
-        $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.deposit.log'), $transaction->user->id);
-        $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
-
-        return redirect()->back();
     }
-
     public function export(Request $request)
     {
 

@@ -292,17 +292,6 @@
 
 @section('payment-script')
     <script>
-
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
-
-    </script>
-    <script>
         $("#currency").on('change', function () {
             $('#currency-selected').text(this.value);
         });

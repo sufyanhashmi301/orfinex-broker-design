@@ -37,16 +37,17 @@ class SymbolService
 
             notify()->success(__('Status Changed successfully'));
             return ['success'=>false];
-        }
+        }else {
 
-        $symbol = new Symbol();
-        $symbol->symbol_id = $data->Symbol_ID;
-        $symbol->symbol = $data->Symbol;
-        $symbol->path = $data->Path;
-        $symbol->description = $data->Description;
-        $symbol->contract_size = $data->ContractSize;
-        $symbol->status = 1;
-        $symbol->save();
+            $symbol = new Symbol();
+            $symbol->symbol_id = $data->Symbol_ID;
+            $symbol->symbol = $data->Symbol;
+            $symbol->path = $data->Path;
+            $symbol->description = $data->Description;
+            $symbol->contract_size = $data->ContractSize;
+            $symbol->status = 1;
+            $symbol->save();
+        }
         notify()->success(__('Symbol enabled successfully'));
         return ['success' => true];
     }

@@ -219,7 +219,7 @@
     <script>
 
         let get_rate = (code) => {
-            
+
             $.ajax({
                 url:  '{{ route("admin.settings.currency.get-rate", ":code") }}'.replace(':code', code),
                 type: 'GET',
@@ -248,14 +248,6 @@
         $('#currency').on('change', function(){
             get_rate($(this).val())
         })
-
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
 
     </script>
     <script>

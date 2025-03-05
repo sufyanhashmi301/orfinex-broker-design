@@ -91,7 +91,6 @@ class UserController extends Controller
             } else {
                 // Get the attached users if the user is not a Super-Admin
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
                 if ($attachedUserIds->isNotEmpty()) {
                     // Show only attached users
                     $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
@@ -131,7 +130,7 @@ class UserController extends Controller
         if (!$user) {
             return back()->with('error', 'User not found.');
         }
-    
+
         $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
         $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
         switch ($type) {
@@ -762,6 +761,7 @@ class UserController extends Controller
      */
     public function mailSend(Request $request)
     {
+        $message = $request->input('message');
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
@@ -778,7 +778,7 @@ class UserController extends Controller
 
             $input = [
                 'subject' => $request->subject,
-                'message' => $request->message,
+                'message' => str_replace(['{', '}'], ['<', '>'], $message),
             ];
 
             $shortcodes = [
@@ -823,16 +823,45 @@ class UserController extends Controller
      */
     public function transaction($id, Request $request)
     {
-
         if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)->latest();
+            $data = Transaction::where('user_id', $id)
+                ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->rawColumns(['status', 'type', 'final_amount'])
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->rawColumns(['status', 'type','action_by', 'final_amount'])
+                ->make(true);
+        }
+    }
+
+    public function ibBonus($id, Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Transaction::where('user_id', $id)
+                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
+                ->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('status', 'backend.user.include.__txn_status')
+                ->editColumn('type', 'backend.user.include.__txn_type')
+                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->addColumn('action', function ($row) {
+                    // Replicate the same structure and styling
+                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </span>';
+                })
+                ->rawColumns(['status', 'type', 'final_amount', 'action'])
                 ->make(true);
         }
     }

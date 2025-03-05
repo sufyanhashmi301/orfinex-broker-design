@@ -67,6 +67,8 @@ class RankingController extends Controller
 
         $input = $request->all();
 
+        $input['description'] = str_replace(['{', '}'], ['<', '>'], $request->description);
+
         Ranking::create([
             'icon' => self::imageUploadTrait($input['icon']),
             'ranking' => $input['ranking'],
@@ -115,6 +117,8 @@ class RankingController extends Controller
         }
 
         $input = $request->all();
+
+        $input['description'] = str_replace(['{', '}'], ['<', '>'], $request->description);
 
         if ($ranking->id == 1 && $input['status'] == 0) {
             notify()->error('Default Rank Status Not Updated', 'Error');

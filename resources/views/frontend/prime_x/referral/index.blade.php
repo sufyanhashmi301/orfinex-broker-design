@@ -4,11 +4,13 @@
 @endsection
 @section('content')
 
-    @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)
-            @include('frontend::referral.include.__dashboard')
-            @include('frontend::referral.modal.__qr_code')
-        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+{{--    @if(request()->routeIs('user.referral'))--}}
+{{--        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)--}}
+{{--            @include('frontend::referral.include.__dashboard')--}}
+{{--            @include('frontend::referral.modal.__qr_code')--}}
+{{--        @else--}}
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING )
+
             <div class="card basicTable_wrapper items-center justify-center">
                 <div class="card-body p-6">
                     <div class="max-w-2xl progress-steps-form">
@@ -42,7 +44,8 @@
                     </div>
                 </div>
             </div>
-        @else
+       @elseif((auth()->user()->ib_status == \App\Enums\IBStatus::UNPROCESSED) && !isset(auth()->user()->ref_id))
+
             <div class="card">
                 <div class="p-6">
                     <h4 class="card-title mb-2">
@@ -157,7 +160,7 @@
                 </div>
             </div>
         @endif
-    @endif
+{{--    @endif--}}
     @if(request()->routeIs('user.referral.members'))
             @include('frontend::referral.include.__members')
     @endif

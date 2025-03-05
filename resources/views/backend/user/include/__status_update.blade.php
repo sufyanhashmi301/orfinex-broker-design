@@ -39,7 +39,7 @@
                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                 </a>
             @endcan
-            @can('customer-balance-add-or-subtract')
+            @can('customer-funds')
                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
                     <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                        data-tippy-theme="dark" data-tippy-content="Add Funds">
@@ -47,12 +47,14 @@
                     </a>
                 </span>
             @endcan
+            @can('customer-bonus')
             <span data-bs-toggle="modal" data-bs-target="#addSubBonus">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                    data-tippy-theme="dark" data-tippy-content="Add Bonus">
                     <iconify-icon icon="lucide:credit-card"></iconify-icon>
                 </a>
             </span>
+            @endcan
             {{--@can('Delete User')--}}
             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModall">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"

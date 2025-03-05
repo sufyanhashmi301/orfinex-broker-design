@@ -45,9 +45,10 @@
                                 <label class="form-label pt-0">
                                     {{ __($field['label']) }}
                                 </label>
-                                <textarea name="{{ $field['name'] }}" class="form-control basicTinymce @if($errors->has($field['name'])) has-error @endif" rows="6">
+                                <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif" rows="6">
                                     {{oldSetting($field['name'],$section)}}
                                 </textarea>
+                                <input type="hidden" name="{{ $field['name'] }}" value="{{ str_replace(['<', '>'], ['{', '}'], oldSetting($field['name'], $section)) }}">
                             </div>
                         @else
                             <div class="input-area">

@@ -827,13 +827,16 @@ class UserController extends Controller
             $data = Transaction::where('user_id', $id)
                 ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
                 ->latest();
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->rawColumns(['status', 'type', 'final_amount'])
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->rawColumns(['status', 'type','action_by', 'final_amount'])
                 ->make(true);
         }
     }
@@ -844,7 +847,7 @@ class UserController extends Controller
             $data = Transaction::where('user_id', $id)
                 ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
                 ->latest();
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')

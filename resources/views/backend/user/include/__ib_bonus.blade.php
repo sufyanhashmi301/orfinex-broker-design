@@ -27,6 +27,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
@@ -81,6 +82,7 @@
                 ajax: "{{ route('admin.user.ib_bonus',$user->id) }}",
                 columns: [
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
                     {data: 'target_id', name: 'target_id'},

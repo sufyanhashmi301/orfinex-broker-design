@@ -337,9 +337,12 @@ class WithdrawController extends Controller
                 ->editColumn('charge', function ($request) {
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'amount', 'username', 'action'])
+                ->rawColumns(['created_at', 'action_by','status', 'type', 'amount', 'username', 'action'])
                 ->make(true);
         }
 
@@ -410,6 +413,7 @@ class WithdrawController extends Controller
                     $newTransaction->status = TxnStatus::None;
                     $newTransaction['method'] = 'system';
                     $newTransaction->tnx = 'TRX' . strtoupper(Str::random(10));
+                    $newTransaction->action_by = auth()->user()->id;
                     $newTransaction->save();
                     $newTransaction->refresh();
 
@@ -428,6 +432,8 @@ class WithdrawController extends Controller
                 Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
                 notify()->success('Reject successfully');
             }
+            $transaction->action_by = auth()->user()->id;
+            $transaction->save();
 
             $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);

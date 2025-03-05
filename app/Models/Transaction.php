@@ -91,6 +91,10 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class)->withDefault();
     }
+    public function staff()
+    {
+        return $this->belongsTo(Admin::class,'action_by','id');
+    }
     public function depositMethod()
     {
         return $this->belongsTo(DepositMethod::class,'method','gateway_code');

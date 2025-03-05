@@ -59,6 +59,7 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
@@ -136,6 +137,7 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},

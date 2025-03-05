@@ -310,9 +310,12 @@ class DepositController extends Controller
                 ->editColumn('charge', function ($request) {
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username', 'action'])
+                ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 
@@ -399,6 +402,7 @@ class DepositController extends Controller
             }
 
             $transaction->approval_cause = $approvalCause;
+            $transaction->action_by = auth()->user()->id;
             $transaction->save();
             DB::commit();
 

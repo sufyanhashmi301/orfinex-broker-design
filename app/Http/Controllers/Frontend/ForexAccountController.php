@@ -558,6 +558,7 @@ class ForexAccountController extends GatewayController
         if ($request->invest_password) {
 //            $updateUserApiResponse = $this->updateInvestorPassword($request->login, $request->invest_password);
 //        dd($updateUserApiResponse->object());
+
             $data = [
                 'login' => $request->login,
                 'password' => $request->invest_password,

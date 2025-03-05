@@ -353,7 +353,7 @@
         }
         $('#myForm').on('submit', function(event) {
             event.preventDefault(); // Prevent the default action
-            tinyMCE.triggerSave();
+            // tinyMCE.triggerSave();
             var form = $(this);
             var submitButton = $('#submitForm');
 

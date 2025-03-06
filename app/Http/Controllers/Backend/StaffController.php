@@ -348,5 +348,12 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function staffLogin($id)
+    {
+        Auth::guard('admin')->loginUsingId($id);
+
+        return redirect()->route('admin.dashboard');
+    }
+
 
 }

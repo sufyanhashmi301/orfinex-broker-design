@@ -106,8 +106,8 @@
 
                     <div class="xl:col-span-4 lg:col-span-6 col-span-12">
                         <div class="flex justify-between items-end space-x-5">
-                            <div class="input-area">
-                                <select name="fields[${i}][validation]" class="form-control w-100">
+                            <div class="input-area w-full">
+                                <select name="fields[${i}][validation]" class="form-control">
                                     <option value="required">Required</option>
                                     <option value="nullable">Optional</option>
                                 </select>

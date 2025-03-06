@@ -74,12 +74,18 @@ class StaffController extends Controller
 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
-        $departments = Department::with('children')->whereNull('parent_id')->get();
-        $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.create', compact('roles','departments','designations'))->render();
+        if ($request->ajax()) {
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+            $view = view('backend.staff.create', compact('roles', 'departments', 'designations'))->render();
+
+            // Send back the view HTML as a response
+            return response()->json(['html' => $view]);
+        }
     }
 
     /**

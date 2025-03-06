@@ -270,7 +270,7 @@ class EmailTemplatesSeeder extends Seeder
             [
                 'name' => 'KYC Request',
                 'code' => 'kyc_request',
-                'for' => 'Admin',
+                'for' => 'User',
                 'banner' => 'global/images/0ZsjvNVZRHnqegdDAPdK.png',
                 'title' => 'KYC Request',
                 'subject' => 'KYC Request',
@@ -288,7 +288,7 @@ class EmailTemplatesSeeder extends Seeder
                 'support_link' => '',
                 'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high-risk investments.',
                 'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
-                'status' => 0,
+                'status' => 1,
                 'created_at' => '2024-03-07 15:16:40',
                 'updated_at' => '2024-03-07 15:16:40',
             ],

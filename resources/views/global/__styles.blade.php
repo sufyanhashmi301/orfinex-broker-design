@@ -223,7 +223,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('warning_color')) }} / var(--tw-text-opacity));
     }
-    .text-danger{
+    .text-danger, .error{
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('danger_color')) }} / var(--tw-text-opacity));
     }
@@ -237,6 +237,9 @@
         border-color:  rgba({{ implode(' ', getColorFromSettings('warning_color')) }});
     }
     .border-danger {
+        border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
+    }
+    .\!border-danger {
         border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
     }
     .badge-primary, .tag.label-info{

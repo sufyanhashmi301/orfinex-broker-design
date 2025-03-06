@@ -65,41 +65,48 @@
                 <div class="card-body p-6 pt-3">
                     <form action="{{route('admin.deposit.now')}}" method="post" >
                         @csrf
-                        <div class="grid grid-cols-12 items-center gap-5">
-                            <div class="input-area col-span-12">
+                        <div class="space-y-5">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('User') }}</label>
-                                <select name="user_id" class="select2 form-control w-full">
-                                    <option selected="">{{__('Select User')}}</option>
+                                <select name="user_id" class="select2 form-control w-full" data-placeholder="Select Option">
                                     @foreach($users as $user)
                                         <option value="{{the_hash($user->id) }}"  class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $user->full_name }} ({{ $user->email }})</option>
                                     @endforeach
                                 </select>
+                                @error('user_id')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <div class="input-area col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
-                                <select name="target_id" class="select2 form-control w-full">
-                                      </select>
+                                <select name="target_id" class="select2 form-control w-full" data-placeholder="Select Account"></select>
+                                @error('target_id')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <div class="input-area col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Payment Method') }}</label>
-                                <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                    <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
+                                <select name="gateway_code" id="gatewaySelect" class="select2 form-control w-full" data-placeholder="Select Option">
                                     @foreach($gateways as $gateway)
                                         <option value="{{ $gateway->gateway_code }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $gateway->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('gateway_code')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <div class="input-area col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="amount" class="form-control"
-                                           oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
-                                           aria-describedby="basic-addon1">
+                                    <input type="text" name="amount" class="form-control" oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount" aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
+                                @error('amount')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
-                            <div class="input-area col-span-12 conversion hidden">
+                            <div class="input-area conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
                                     <input type="text"  class="form-control"
@@ -110,12 +117,12 @@
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
 {{--                            <div class="manual-row"></div>--}}
-                            <div class="input-area col-span-12">
+                            <div class="input-area">
                                 <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
                                 <textarea class="form-control summernote" rows="5"></textarea>
                                 <input type="hidden" name="approval_cause">
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
@@ -185,7 +192,7 @@
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text deposit-action">
 
                         </div>
                     </div>

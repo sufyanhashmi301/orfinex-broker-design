@@ -22,9 +22,9 @@
 @stack('single-script')
 <script>
 
-    function removeLoader(loader) {
+    function hideLoader(loader) {
         if (loader) {
-            loader.parentElement.removeChild(loader);
+            loader.style.display = 'none';
         }
     }
 
@@ -46,16 +46,17 @@
 
             const transitionEndHandler = () => {
                 loader.removeEventListener('transitionend', transitionEndHandler);
-                removeLoader(loader);
+                hideLoader(loader);
             };
 
             loader.addEventListener('transitionend', transitionEndHandler);
 
             setTimeout(() => {
-                removeLoader(loader);
+                hideLoader(loader);
             }, removalTimeout);
         }
     });
+
 
     $(document).ready(function () {
         function calculateHeights() {

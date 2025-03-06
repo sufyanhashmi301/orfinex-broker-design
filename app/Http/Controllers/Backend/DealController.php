@@ -81,6 +81,7 @@ class DealController extends Controller
             'close_date' => 'required|date',
             'value' => 'required|numeric',
         ]);
+
         $data['added_by'] = auth()->id();
 
         $deal = Deal::create($data);

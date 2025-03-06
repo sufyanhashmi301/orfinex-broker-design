@@ -92,8 +92,10 @@
                             value="{{$schema->title}}"
                             class="form-control"
                             placeholder="Forex Account Title"
-                            required
                         />
+                        @error('title')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
@@ -103,8 +105,10 @@
                             name="badge"
                             value="{{$schema->badge}}"
                             placeholder="Account Type Badge"
-                            required
                         />
+                        @error('badge')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Priority:') }}</label>
@@ -115,8 +119,10 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Priority e.g 1,2,3.."
-                            required
                         />
+                        @error('priority')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
@@ -129,6 +135,9 @@
                             placeholder="Account Limit"
 
                         />
+                        @error('account_limit')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range Start(Min 5 digits):') }}</label>
@@ -141,6 +150,9 @@
                             placeholder="Start Range"
 
                         />
+                        @error('start_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range End(Min 5 digits):') }}</label>
@@ -153,6 +165,9 @@
                             placeholder="End Range"
 
                         />
+                        @error('end_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -171,8 +186,10 @@
                             placeholder="Account Type Spread"
                             name="spread"
                             value="{{$schema->spread}}"
-                            required
                         />
+                        @error('spread')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
@@ -182,8 +199,10 @@
                             placeholder="Account Type Commission"
                             name="commission"
                             value="{{$schema->commission}}"
-                            required
                         />
+                        @error('commission')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Leverage:') }}</label>
@@ -193,8 +212,10 @@
                             class="form-control"
                             placeholder="leverage e.g 10,20,50"
                             value="{{$schema->leverage}}"
-                            required
                         />
+                        @error('leverage')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
@@ -219,6 +240,9 @@
                             placeholder="Min Amount"
 
                         />
+                        @error('min_amount')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -240,6 +264,9 @@
                                     <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
                                 @endforeach
                             </select>
+                            @error('real_swap_free')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
 {{--                        <div class="input-area">--}}
 {{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
 {{--                            <input--}}
@@ -280,6 +307,9 @@
                                         <option value="{{$group->group}}" @if($group->group == $schema->real_islamic) selected @endif>{{ $group->group}}</option>
                                     @endforeach
                                 </select>
+                                @error('real_islamic')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
 {{--                                <input--}}
 {{--                                    type="text"--}}
 {{--                                    name="real_islamic"--}}
@@ -315,6 +345,9 @@
                                     <option value="{{$group->group}}" @if($group->group == $schema->demo_swap_free) selected @endif>{{ $group->group}}</option>
                                 @endforeach
                             </select>
+                            @error('demo_swap_free')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
 {{--                            <input--}}
 {{--                                type="text"--}}
 {{--                                name="demo_swap_free"--}}
@@ -352,6 +385,9 @@
                                         <option value="{{$group->group}}" @if($group->group == $schema->demo_islamic) selected @endif>{{ $group->group}}</option>
                                     @endforeach
                                 </select>
+                                @error('demo_islamic')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
 {{--                                <input--}}
 {{--                                    type="text"--}}
 {{--                                    name="demo_islamic"--}}

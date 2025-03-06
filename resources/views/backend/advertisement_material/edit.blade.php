@@ -44,6 +44,9 @@
                                             <span>{{ __('Update Image') }}</span>
                                         </label>
                                     </div>
+                                    @error('img')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -56,6 +59,9 @@
                                         <option value="{{$language->name}}" @if( $language->name == $advertisement->language ) selected @endif>{{$language->name}}</option>
                                     @endforeach
                                 </select>
+                                @error('language')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
                         </div>
@@ -63,15 +69,16 @@
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select Type') }}</label>
                                 <select class="select2 form-control w-full" name="type" placeholder="Language" multiple>
-                                    <option  value="social_media"  @if( 'social_media' == $advertisement->type ) selected @endif>
+                                    <option value="social_media"  @if( 'social_media' == $advertisement->type ) selected @endif>
                                         {{ __('Social Media') }}
                                     </option>
-                                    <option  value="website_banner" @if( 'website_banner' == $advertisement->type ) selected @endif>
+                                    <option value="website_banner" @if( 'website_banner' == $advertisement->type ) selected @endif>
                                         {{ __('Website Banner') }}
                                     </option>
-
-
                                 </select>
+                                @error('type')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
                         </div>

@@ -22,7 +22,7 @@
                                 {{ __('Salutation:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="salutation" class="select2 form-control" required>
+                            <select name="salutation" class="select2 form-control">
                                 <option value="mr">{{ __('Mr') }}</option>
                                 <option value="mrs">{{ __('Mrs') }}</option>
                                 <option value="miss">{{ __('Miss') }}</option>
@@ -30,6 +30,9 @@
                                 <option value="sir">{{ __('Sir') }}</option>
                                 <option value="madam">{{ __('Madam') }}</option>
                             </select>
+                            @error('salutation')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -41,8 +44,11 @@
                                 name="first_name"
                                 class="form-control mb-0"
                                 placeholder="e.g. John"
-                                required
+                                value="{{ old('first_name') }}"
                             />
+                            @error('first_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -54,8 +60,11 @@
                                 name="last_name"
                                 class="form-control mb-0"
                                 placeholder="e.g. Doe"
-                                required
+                                value="{{ old('last_name') }}"
                             />
+                            @error('last_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -67,8 +76,11 @@
                                 name="client_email"
                                 class="form-control mb-0"
                                 placeholder="e.g. johndoe@example.com"
-                                required
+                                value="{{ old('client_email') }}"
                             />
+                            @error('client_email')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -80,38 +92,47 @@
                                 name="phone"
                                 class="form-control mb-0"
                                 placeholder="e.g. 1234567890"
-                                required
+                                value="{{ old('phone') }}"
                             />
+                            @error('phone')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
                                 {{ __('Lead Source:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="source_id" class="select2 form-control" required>
+                            <select name="source_id" class="select2 form-control">
                                 @foreach($sources as $source)
                                     <option value="{{ $source->id }}">{{ $source->name }}</option>
                                 @endforeach
                             </select>
+                            @error('source_id')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
                                 {{ __('Lead Owner:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="lead_owner" id="leadOwner" class="form-control" required>
+                            <select name="lead_owner" id="leadOwner" class="form-control">
                                 @foreach($staff as $staff)
                                     <option data-avatar="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" data-role="{{ $staff->getRoleNames()->first() }}" value="{{ $staff->id }}">
                                         {{ $staff->first_name .' '. $staff->last_name }}
                                     </option>
                                 @endforeach
                             </select>
+                            @error('lead_owner')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="lg:col-span-3">
                             <div class="input-area mt-3">
                                 <div class="checkbox-area">
-                                    <label class="inline-flex items-center cursor-pointer" id="toggleDealForm">
-                                        <input type="checkbox" class="hidden" name="create_deal">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="toggleDealForm" class="hidden" name="create_deal" @if(old('create_deal') == 'on') checked @endif>
                                         <span class="h-4 w-4 border flex-none border-slate-400 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                             <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
                                         </span>
@@ -133,7 +154,16 @@
                             {{ __('Deal Name:') }}
                             <span class="text-xs text-danger">*</span>
                         </label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Acme Corporation">
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            placeholder="e.g. Acme Corporation"
+                            value="{{ old('name') }}"
+                        >
+                        @error('name')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
@@ -146,6 +176,9 @@
                                 <option value="{{ $pipeline->id }}">{{ $pipeline->name }}</option>
                             @endforeach
                         </select>
+                        @error('lead_pipeline_id')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
@@ -155,6 +188,9 @@
                         <select name="pipeline_stage_id" id="stages" class="select2 form-control">
                             <option value="">{{ __('select stage') }}</option>
                         </select>
+                        @error('stages')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
@@ -167,13 +203,19 @@
                                 {{ setting('site_currency', 'global') }}
                             </span>
                         </div>
+                        @error('value')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
                             {{ __('Close Date') }}
                             <span class="text-xs text-danger">*</span>
                         </label>
-                        <input type="text" name="close_date" class="form-control py-2 flatpickr flatpickr-input" readonly>
+                        <input type="text" name="close_date" class="form-control py-2 flatpickr flatpickr-input" value="{{ old('close_date') }}" readonly>
+                        @error('close_date')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -191,15 +233,15 @@
                     <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Company Name:') }}</label>
-                            <input type="text" name="company_name" class="form-control" placeholder="e.g. Acme Corporation">
+                            <input type="text" name="company_name" class="form-control" placeholder="e.g. Acme Corporation" value="{{ old('company_name') }}">
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Website:') }}</label>
-                            <input type="text" name="website" class="form-control" placeholder="e.g. https://www.example.com">
+                            <input type="text" name="website" class="form-control" placeholder="e.g. https://www.example.com" value="{{ old('website') }}">
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Office Phone Number:') }}</label>
-                            <input type="tel" name="office_phone_number" class="form-control" placeholder="e.g. 1234567890">
+                            <input type="tel" name="office_phone_number" class="form-control" placeholder="e.g. 1234567890" value="{{ old('office_phone_number') }}">
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Country:') }}</label>
@@ -214,20 +256,20 @@
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('State:') }}</label>
-                            <input type="text" name="state" class="form-control" placeholder="e.g. California, Rajasthan, Dubai">
+                            <input type="text" name="state" class="form-control" placeholder="e.g. California, Rajasthan, Dubai" value="{{ old('state') }}">
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('City:') }}</label>
-                            <input type="text" name="city" class="form-control" placeholder="e.g. New York, Jaipur, Dubai">
+                            <input type="text" name="city" class="form-control" placeholder="e.g. New York, Jaipur, Dubai" value="{{ old('city') }}">
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Postal code:') }}</label>
-                            <input type="text" name="postal_code" class="form-control" placeholder="e.g. 90250">
+                            <input type="text" name="postal_code" class="form-control" placeholder="e.g. 90250" value="{{ old('postal_code') }}">
                         </div>
                         <div class="lg:col-span-3">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Address:') }}</label>
-                                <textarea name="address" class="form-control" rows="3" placeholder="e.g. 132, My Street, Kingston, New York 12401"></textarea>
+                                <textarea name="address" class="form-control" rows="3" placeholder="e.g. 132, My Street, Kingston, New York 12401">{{ old('address') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -245,8 +287,19 @@
 @section('script')
     <script !src="">
         $(document).ready(function() {
+            if ($('#toggleDealForm').is(':checked')) {
+                $('#deal-form').removeClass('hidden');
+            } else {
+                $('#deal-form').addClass('hidden');
+            }
+
+            // Toggle the deal form visibility when the checkbox is changed
             $('#toggleDealForm').change(function() {
-                $('#deal-form').toggleClass('hidden');
+                if ($(this).is(':checked')) {
+                    $('#deal-form').removeClass('hidden');
+                } else {
+                    $('#deal-form').addClass('hidden');
+                }
             });
 
             $('#companyDetailsToggle').click(function() {

@@ -27,6 +27,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('lead_id')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
@@ -34,6 +37,9 @@
                             <span class="text-xs text-danger">*</span>
                         </label>
                         <input type="text" name="name" class="form-control" value="{{ $deal->name }}">
+                        @error('name')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
@@ -48,6 +54,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('lead_pipeline_id')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
@@ -62,6 +71,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('pipeline_stage_id')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
@@ -74,6 +86,9 @@
                                 {{ setting('site_currency', 'global') }}
                             </span>
                         </div>
+                        @error('value')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
@@ -81,6 +96,9 @@
                             <span class="text-xs text-danger">*</span>
                         </label>
                         <input type="text" name="close_date" class="form-control py-2 flatpickr flatpickr-input" value="{{ $deal->close_date }}" readonly>
+                        @error('close_date')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>

@@ -179,7 +179,6 @@ class SettingController extends Controller
                 Cache::forget('mt5_db_credentials');
             }
             notify()->success(__('Settings has been saved'));
-
             return redirect()->back();
 
         } catch (Exception $e) {

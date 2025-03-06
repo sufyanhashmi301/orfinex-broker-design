@@ -3,15 +3,6 @@
     {{ __('New Customer') }}
 @endsection
 @section('content')
-@if($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
     <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="space-y-5">
@@ -24,25 +15,33 @@
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('First Name') }}
+                                <span class="text-xs text-danger">*</span>
                             </label>
-                            <input type="text" name="first_name" class="form-control" placeholder="" required>
+                            <input type="text" name="first_name" class="form-control" placeholder="e.g. John">
+                            @error('first_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Last Name') }}
+                                <span class="text-xs text-danger">*</span>
                             </label>
-                            <input type="text" name="last_name" class="form-control" placeholder="" required>
+                            <input type="text" name="last_name" class="form-control" placeholder="e.g. Doe">
+                            @error('last_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         @if(getPageSetting('country_show'))
                             <div class="input-area relative">
                                 <label class="form-label">
                                     {{ __('Country') }}
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <div class="relative">
                                     <select name="country" id="countrySelect" class="select2 form-control w-full" data-placeholder="Select Country">
                                         <option value="" disabled selected>Select Country</option> <!-- Placeholder option -->
-
                                         @foreach( getCountries() as $country)
                                             <option value="{{ $country['name'].':'.$country['dial_code'] }}"
                                                 @if( old('country') == $country['name'].':'.$country['dial_code']) selected @endif
@@ -52,6 +51,9 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @error('country')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endif
 
@@ -59,17 +61,26 @@
                         <label class="form-label">
                             {{ __('Username') }}
                         </label>
-                        <input type="text" name="username" class="form-control" placeholder="">
+                        <input type="text" name="username" class="form-control" placeholder="e.g. johndoe">
+                        @error('username')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Phone') }}
                             </label>
-                            <input type="text" name="phone" class="form-control" placeholder="">
+                            <input type="text" name="phone" class="form-control" placeholder="e.g. 1234567890">
+                            @error('phone')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label">{{ __('Email') }}</label>
-                            <input type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="">
+                            <label class="form-label">
+                                {{ __('Email') }}
+                                <span class="text-xs text-danger">*</span>
+                            </label>
+                            <input type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="e.g. johndoe@example.com">
                             @error('email')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -84,33 +95,47 @@
                                 <option value="female">{{ __('Female') }}</option>
                                 <option value="other">{{ __('Other') }}</option>
                             </select>
+                            @error('gender')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Date Of Birth') }}
                             </label>
                             <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth') }}">
+                            @error('date_of_birth')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
-
 
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('City') }}
                             </label>
-                            <input type="text" name="city" class="form-control" placeholder="">
+                            <input type="text" name="city" class="form-control" placeholder="e.g. New York, Jaipur, Dubai">
+                            @error('city')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Zip Code') }}
                             </label>
-                            <input type="text" name="zip_code" class="form-control" placeholder="">
+                            <input type="text" name="zip_code" class="form-control" placeholder="e.g. 90250">
+                            @error('zip_code')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Address') }}
                             </label>
-                            <input type="text" name="address" class="form-control" placeholder="">
+                            <input type="text" name="address" class="form-control" placeholder="e.g. 132, My Street, Kingston, New York 12401">
+                            @error('address')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
@@ -121,12 +146,18 @@
                                     <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                            @error('risk_profile_tags')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area relative lg:col-span-3">
                             <label class="form-label">
                                 {{ __('Comment') }}
                             </label>
                             <textarea name="comment" class="form-control" rows="3"></textarea>
+                            @error('comment')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -142,8 +173,12 @@
                             <div class="input-area">
                                 <label for="" class="form-label">
                                     {{ __('Password') }}
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input type="password" name="password" class="form-control" placeholder="********">
+                                @error('password')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-8 col-span-12">
@@ -213,7 +248,7 @@
                         <div class="card-body space-y-5 p-6">
                             <div class="input-area relative">
                                 <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
-                                <select name="kyc" id="status" class="form-control">
+                                <select name="kyc" id="status" class="select2 form-control">
                                     <option value="">{{ __('Select') }}</option>
 
                                     {{-- Loop through KYC Levels --}}
@@ -230,6 +265,9 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('kyc')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
 

@@ -30,7 +30,6 @@
                                             name="img"
                                             id="advertisement_material-icon"
                                             accept=".gif, .jpg, .png"
-                                            required
                                         />
                                         <label for="advertisement_material-icon">
                                             <img
@@ -41,6 +40,9 @@
                                             <span>{{ __('Upload Image') }}</span>
                                         </label>
                                     </div>
+                                    @error('img')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -51,27 +53,32 @@
                                     @foreach($languages as $language)
                                         <option value="{{$language->name}}">{{$language->name}}</option>
                                     @endforeach
-
                                 </select>
+                                @error('language')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select Type') }}</label>
-                                <select  name="type" class="select2 form-control w-full" placeholder="Manage Type" multiple>
+                                <select name="type" class="select2 form-control w-full" placeholder="Manage Type" multiple>
 
                                     {{--@foreach( getCountries() as $country)--}}
                                     {{--<option  value="{{ $country['name'] }}">--}}
                                     {{--{{ $country['name']  }}--}}
                                     {{--</option>--}}
                                     {{--@endforeach--}}
-                                    <option  value="social_media" >
+                                    <option value="social_media" >
                                         {{ __('Social Media') }}
                                     </option>
-                                    <option  value="website_banner" >
+                                    <option value="website_banner" >
                                         {{ __('Website Banner') }}
                                     </option>
                                 </select>
+                                @error('type')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-span-1">

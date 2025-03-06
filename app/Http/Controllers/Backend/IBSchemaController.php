@@ -71,9 +71,7 @@ class IBSchemaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $input = $request->all();
@@ -127,9 +125,7 @@ class IBSchemaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $schema = IbSchema::find($id);

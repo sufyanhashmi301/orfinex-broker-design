@@ -146,7 +146,6 @@
                         d.email = $('#email').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
-
                     }
                 },
                 columns: [
@@ -171,7 +170,7 @@
 
             var id = $(this).data('id');
 
-            console.log(id);
+            // console.log(id);
 
             var url = '{{ route("admin.kyc.action",":id") }}';
             url = url.replace(':id', id);

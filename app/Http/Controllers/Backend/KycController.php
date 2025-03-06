@@ -381,63 +381,124 @@ class KycController extends Controller
      * @return RedirectResponse
      */
     public function actionNow(Request $request)
-    {
+{
+    $input = $request->all();
+    $user = User::find($input['id']);
+    $kycCredential = json_decode($user->kyc_credential, true);
+    $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
 
-//        dd($request->all());
-        $input = $request->all();
-        $user = User::find($input['id']);
-//        $kycLevel3Status = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
-        $kycCredential = json_decode($user->kyc_credential, true);
-        $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
-            $user->update([
-                'kyc' => $input['status'],
-               'kyc_credential' => $kycCredential,
-           ]);
-
-        $shortcodes = [
-            '[[full_name]]' => $user->full_name,
-            '[[email]]' => $user->email,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
-            '[[message]]' => $input['message'],
-            '[[status]]' => $input['status'],
-        ];
-        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
-        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
-        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
-
-        notify()->success(__('KYC Update Successfully'));
-
-        return redirect()->route('admin.kyc.all');
+    // Determine the status based on which button was clicked
+    if ($request->has('approve')) {
+        $status = \App\Enums\KYCStatus::Level2->value;
+    } elseif ($request->has('reject')) {
+        $status = \App\Enums\KYCStatus::Rejected->value;
+    } else {
+        // Handle cases where neither button was clicked
+        notify()->error('Invalid action.');
+        return redirect()->back();
     }
-    public function actionLevel3Now(Request $request)
-    {
-        $input = $request->all();
-        $user = User::find($input['id']);
-        $kycCredential = json_decode($user->kyc_level3_credential, true);
-        $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
+
+    $shortcodes = [
+        '[[full_name]]' => $user->full_name,
+        '[[email]]' => $user->email,
+        '[[site_title]]' => setting('site_title', 'global'),
+        '[[site_url]]' => route('home'),
+        '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
+        '[[message]]' => $input['message'],
+        '[[status]]' => $status,
+    ];
+
+    if ($status == \App\Enums\KYCStatus::Level2->value) {
+        // Approve KYC
         $user->update([
-            'kyc' => $input['status'],
-            'kyc_level3_credential' => $kycCredential,
+            'kyc' => \App\Enums\KYCStatus::Level2->value,
+            'kyc_credential' => $kycCredential,
         ]);
-        $shortcodes = [
-            '[[full_name]]' => $user->full_name,
-            '[[email]]' => $user->email,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
-            '[[message]]' => $input['message'],
-            '[[status]]' => $input['status'],
-        ];
-        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
-        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
-        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
 
-        notify()->success(__('KYC Update Successfully'));
+        // Send approval email
+        $this->mailNotify($user->email, 'kyc_approve', $shortcodes);
 
-        return redirect()->route('admin.kyc.all');
+        notify()->success('KYC Approved Successfully');
+    } elseif ($status == \App\Enums\KYCStatus::Rejected->value) {
+        // Reject KYC
+        $user->update([
+            'kyc' => \App\Enums\KYCStatus::Rejected->value,
+            'kyc_credential' => $kycCredential,
+        ]);
+
+        // Send rejection email
+        $this->mailNotify($user->email, 'kyc_reject', $shortcodes);
+
+        notify()->success('KYC Rejected Successfully');
     }
+
+    // Send push and SMS notifications
+    $this->pushNotify('kyc_status_update', $shortcodes, route('user.kyc'), $user->id);
+    $this->smsNotify('kyc_status_update', $shortcodes, $user->phone);
+
+    return redirect()->route('admin.kyc.all');
+}
+public function actionLevel3Now(Request $request)
+{
+    $input = $request->all();
+
+    // Log the form submission
+    \Log::info("KYC Level 3 form submitted with data: ", $input);
+
+    $user = User::find($input['id']);
+    $kycCredential = json_decode($user->kyc_level3_credential, true);
+    $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
+
+    // Determine the action (approve or reject)
+    if ($request->has('approve')) {
+        $status = \App\Enums\KYCStatus::Level3->value;
+        $template = 'kyc_approve'; // Template for approval
+    } elseif ($request->has('reject')) {
+        $status = \App\Enums\KYCStatus::RejectLevel3->value;
+        $template = 'kyc_reject'; // Template for rejection
+    } else {
+        // Handle cases where neither button was clicked
+        notify()->error(__('Invalid action.'));
+        return redirect()->back();
+    }
+
+    // Update user's KYC details
+    $user->update([
+        'kyc' => $status,
+        'kyc_level3_credential' => $kycCredential,
+    ]);
+
+    // Prepare shortcodes for notifications
+    $shortcodes = [
+        '[[full_name]]' => $user->full_name,
+        '[[email]]' => $user->email,
+        '[[site_title]]' => setting('site_title', 'global'),
+        '[[site_url]]' => route('home'),
+        '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
+        '[[message]]' => $input['message'],
+        '[[status]]' => $status,
+    ];
+
+    // Log the email sending attempt
+   
+
+    // Send email to the user
+    $this->mailNotify($user->email, $template, $shortcodes);
+
+    // Log the SMS sending attempt
+
+    // Send SMS to the user
+    $this->smsNotify('kyc_action', $shortcodes, $user->phone);
+
+    // Log the push notification sending attempt
+
+    // Send push notification to the user
+    $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
+
+    notify()->success(__('KYC Update Successfully'));
+
+    return redirect()->route('admin.kyc.all');
+}
     /**
      * Update the specified resource in storage.
      *

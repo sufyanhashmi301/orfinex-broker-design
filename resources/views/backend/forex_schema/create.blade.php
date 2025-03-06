@@ -87,8 +87,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="input-area">
                         <label class="form-label">{{ __('Active Trader Type') }}</label>
-                        <input type="text" name="trader_type" class="form-control"
-                               placeholder="Platform Group" value="{{setting('active_trader_type', 'features')}}" readonly/>
+                        <input
+                            type="text"
+                            name="trader_type"
+                            class="form-control"
+                            placeholder="Platform Group"
+                            value="{{setting('active_trader_type', 'features')}}"
+                            readonly
+                        />
+                        @error('trader_type')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Title:') }}</label>
@@ -97,8 +106,10 @@
                             name="title"
                             class="form-control"
                             placeholder="Account Title"
-                            required
                         />
+                        @error('title')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
@@ -107,7 +118,6 @@
                             class="form-control"
                             placeholder="Account Type Badge"
                             name="badge"
-                            required
                         />
                     </div>
                     <div class="input-area">
@@ -118,8 +128,10 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Priority e.g 1,2,3.."
-                            required
                         />
+                        @error('priority')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
@@ -131,6 +143,9 @@
                             placeholder="Account Limit"
 
                         />
+                        @error('account_limit')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range Start(Min 5 digits):') }}</label>
@@ -142,6 +157,9 @@
                             placeholder="Start Range"
 
                         />
+                        @error('start_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range End(Min 5 digits):') }}</label>
@@ -153,6 +171,9 @@
                             placeholder="End Range"
 
                         />
+                        @error('end_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -170,8 +191,10 @@
                             class="form-control keyFeatureInput"
                             placeholder="Account Type Spread"
                             name="spread"
-                            required
                         />
+                        @error('spread')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
@@ -180,8 +203,10 @@
                             class="form-control"
                             placeholder="Account Type Commission"
                             name="commission"
-                            required
                         />
+                        @error('commission')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Leverage:') }}</label>
@@ -190,8 +215,10 @@
                             name="leverage"
                             class="form-control"
                             placeholder="leverage e.g 10,20,50"
-                            required
                         />
+                        @error('leverage')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
@@ -214,6 +241,9 @@
                             placeholder="Min Amount"
 
                         />
+                        @error('min_amount')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -226,7 +256,6 @@
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
-
                         @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Platform Group') }}</label>
@@ -236,6 +265,9 @@
                                         <option value="{{$group->group}}">{{ $group->group}}</option>
                                     @endforeach
                                 </select>
+                                @error('real_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                             <div class="input-area">
@@ -252,6 +284,9 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('real_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endif
 {{--                        <div class="input-area">--}}
@@ -299,6 +334,9 @@
                                             <option value="{{$group->group}}">{{ $group->group}}</option>
                                         @endforeach
                                     </select>
+                                    @error('real_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                                 <div class="input-area">
@@ -315,6 +353,9 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('real_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             @endif
                         </div>
@@ -368,6 +409,9 @@
                                         <option value="{{$group->group}}">{{ $group->group}}</option>
                                     @endforeach
                                 </select>
+                                @error('demo_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                             <div class="input-area">
@@ -384,6 +428,9 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('demo_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endif
                         <div class="input-area !mb-7">
@@ -424,6 +471,9 @@
                                             <option value="{{$group->group}}">{{ $group->group}}</option>
                                         @endforeach
                                     </select>
+                                    @error('demo_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                                 <div class="input-area">
@@ -440,6 +490,9 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('demo_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             @endif
                         </div>

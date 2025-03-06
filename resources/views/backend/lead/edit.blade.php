@@ -23,7 +23,7 @@
                                 {{ __('Salutation:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="salutation" class="select2 form-control" required>
+                            <select name="salutation" class="select2 form-control">
                                 <option value="mr" @if($lead->salutation == 'mr') selected @endif>{{ __('Mr') }}</option>
                                 <option value="mrs" @if($lead->salutation == 'mrs') selected @endif>{{ __('Mrs') }}</option>
                                 <option value="miss" @if($lead->salutation == 'miss') selected @endif>{{ __('Miss') }}</option>
@@ -42,8 +42,10 @@
                                 name="first_name"
                                 class="form-control mb-0"
                                 value="{{ old('first_name', $lead->first_name) }}"
-                                required
                             />
+                            @error('first_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -55,8 +57,10 @@
                                 name="last_name"
                                 class="form-control mb-0"
                                 value="{{ old('last_name', $lead->last_name) }}"
-                                required
                             />
+                            @error('last_name')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -68,8 +72,10 @@
                                 name="client_email"
                                 class="form-control mb-0"
                                 value="{{ old('client_email', $lead->client_email) }}"
-                                required
                             />
+                            @error('client_email')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
@@ -81,28 +87,33 @@
                                 name="phone"
                                 class="form-control mb-0"
                                 value="{{ old('phone', $lead->phone) }}"
-                                required
                             />
+                            @error('phone')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
                                 {{ __('Lead Source:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="source_id" class="select2 form-control" required>
+                            <select name="source_id" class="select2 form-control">
                                 @foreach($sources as $source)
                                     <option value="{{ $source->id }}" {{ $source->id == old('source_id', $lead->source_id) ? 'selected' : '' }}>
                                         {{ $source->name }}
                                     </option>
                                 @endforeach
                             </select>
+                            @error('source_id')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
                                 {{ __('Lead Owner:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
-                            <select name="lead_owner" id="leadOwner" class="form-control" required>
+                            <select name="lead_owner" id="leadOwner" class="form-control">
                                 @foreach($staff as $staff)
                                     <option data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}" data-role="{{ $staff->getRoleNames()->first() }}"
                                         {{ $staff->id == old('lead_owner', $lead->lead_owner) ? 'selected' : '' }}
@@ -111,10 +122,13 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('lead_owner')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>s
 
             <div class="card">
                 <div class="card-header">

@@ -55,8 +55,9 @@ class IBController extends Controller
     public function edit($id)
     {
         $kyc = IbQuestion::find($id);
+        $fields = json_decode($kyc->fields, true);
 
-        return view('backend.ib.edit', compact('kyc'));
+        return view('backend.ib.edit', compact('kyc', 'fields'));
     }
 
     public function update(Request $request, $id)
@@ -619,9 +620,7 @@ class IBController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $data = [

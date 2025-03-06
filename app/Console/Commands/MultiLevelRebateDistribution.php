@@ -273,11 +273,10 @@ class MultiLevelRebateDistribution extends Command
     }
     protected function getLastDeal($childUserId, $login)
     {
-        return Carbon::now()->subDay(6)->startOfDay();
                 return MetaDeal::where('login', $login)
             ->where('user_id', $childUserId)
             ->latest('time')
-            ->value('time') ?: Carbon::now()->subDay(5)->startOfDay();
+            ->value('time') ?: Carbon::now()->startOfDay();
 
     }
 

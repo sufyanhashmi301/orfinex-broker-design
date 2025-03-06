@@ -18,7 +18,6 @@
                                 name="first_name"
                                 class="form-control mb-0"
                                 placeholder="First Name"
-                                required
                             />
                         </div>
                         <div class="input-area !mt-0">
@@ -31,7 +30,6 @@
                                 name="last_name"
                                 class="form-control mb-0"
                                 placeholder="Last Name"
-                                required
                             />
                         </div>
                         <div class="input-area !mt-0">
@@ -44,7 +42,6 @@
                                 name="name"
                                 class="form-control mb-0"
                                 placeholder="Staff Name"
-                                required
                             />
                         </div>
                         <div class="input-area">
@@ -120,7 +117,7 @@
                         {{ __('Select Role:') }}
                         <span class="text-xs text-danger">*</span>
                     </label>
-                    <select name="role" class="select2 form-control w-100" required>
+                    <select name="role" class="select2 form-control w-100">
                         @foreach($roles as $role)
                             <option value="{{$role->name}}">{{ str_replace('-', ' ', $role->name) }}</option>
                         @endforeach
@@ -249,7 +246,6 @@
                         name="email"
                         class="form-control mb-0"
                         placeholder="Staff Email"
-                        required
                     />
                 </div>
                 <div class="input-area">
@@ -262,7 +258,6 @@
                         name="password"
                         class="form-control mb-0"
                         placeholder="Password"
-                        required
                     />
                 </div>
                 <div class="input-area">
@@ -275,7 +270,6 @@
                         name="confirm-password"
                         class="form-control mb-0"
                         placeholder="Confirm Password"
-                        required
                     />
                 </div>
                 <div class="input-area lg:col-span-3">

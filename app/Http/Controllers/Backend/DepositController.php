@@ -512,9 +512,9 @@ class DepositController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(),  __('Error'));
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
         $userID = get_hash($request->user_id);
         $user = User::findOrFail($userID);
 

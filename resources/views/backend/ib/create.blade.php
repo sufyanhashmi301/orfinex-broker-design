@@ -22,7 +22,10 @@
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Name:') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control"
-                            placeholder="Question Type Name" required/>
+                            placeholder="Question Type Name"/>
+                        @error('name')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center mb-3">
@@ -101,12 +104,17 @@
                         </div>
                     </div>
 
-                    <div class="xl:col-span-3 lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <select name="fields[${i}][validation]" class="form-control w-100">
-                                <option value="required">Required</option>
-                                <option value="nullable">Optional</option>
-                            </select>
+                    <div class="xl:col-span-4 lg:col-span-6 col-span-12">
+                        <div class="flex justify-between items-end space-x-5">
+                            <div class="input-area">
+                                <select name="fields[${i}][validation]" class="form-control w-100">
+                                    <option value="required">Required</option>
+                                    <option value="nullable">Optional</option>
+                                </select>
+                            </div>
+                            <button type="button" class="delete_field inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                            </button>
                         </div>
                     </div>
                 </div>`;
@@ -135,16 +143,16 @@
             $(document).on('click', '.add-option', function () {
                 var optionsContainer = $(this).closest('.options');
                 var optionRow = optionsContainer.find('.option-row:first').clone();
-                optionRow.find('.box-input').val('');
+                optionRow.find('.form-control').val('');
                 optionsContainer.append(optionRow);
             });
 
-            $(document).on('focus', '.box-input', function () {
+            $(document).on('focus', '.form-control', function () {
                 $(this).closest('.option-remove-row').find('.delete-option').prop('disabled', false);
             });
 
-            $(document).on('click', '.delete_desc', function () {
-                $(this).closest('.option-remove-row').parent().remove();
+            $(document).on('click', '.delete_field', function () {
+                $(this).closest('.option-remove-row').remove();
             });
         });
     </script>

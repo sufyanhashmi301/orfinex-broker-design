@@ -25,14 +25,24 @@
                     @endif
                 </div>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-5">
-                    <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
-                        {{ $staff->email }}
-                    </div>
-                    <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:phone"></iconify-icon>
-                        {{ $staff->phone }}
-                    </div>
+                    @if($staff->email)
+                        <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
+                            {{ $staff->email }}
+                        </div>
+                    @endif
+                    @if($staff->phone)
+                        <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:phone"></iconify-icon>
+                            {{ $staff->phone }}
+                        </div>
+                    @endif
+                    @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin') && $staff->getRoleNames()->first() != 'Super-Admin')
+                        <a href="{{ route('admin.staff.login', $staff->id) }}" target="_blank" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-add-outline"></iconify-icon>
+                            {{ __('Login As Staff') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -74,12 +74,18 @@ class StaffController extends Controller
 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
-        $departments = Department::with('children')->whereNull('parent_id')->get();
-        $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.create', compact('roles','departments','designations'))->render();
+        if ($request->ajax()) {
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+            $view = view('backend.staff.create', compact('roles', 'departments', 'designations'))->render();
+
+            // Send back the view HTML as a response
+            return response()->json(['html' => $view]);
+        }
     }
 
     /**
@@ -341,6 +347,45 @@ class StaffController extends Controller
 
         return redirect()->back();
     }
+
+    public function staffLogin($id)
+    {
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->getRoleNames()->contains('Super-Admin')) {
+
+            session(['super_admin_id' => Auth::guard('admin')->user()->id]);
+
+            Auth::guard('admin')->loginUsingId($id);
+
+            session(['impersonated_id' => $id]);
+
+            notify()->success('Logged in as staff successfully');
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
+        return redirect()->back();
+    }
+
+    public function stopImpersonation()
+    {
+        if (Auth::guard('admin')->check() && session('impersonated_id')) {
+
+            $superAdminId = session('super_admin_id');
+
+            Auth::guard('admin')->logout();
+
+            Auth::guard('admin')->loginUsingId($superAdminId);
+
+            session()->forget('impersonated_id');
+            session()->forget('super_admin_id');
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
+        return redirect()->back();
+    }
+
 
 
 }

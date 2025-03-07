@@ -442,8 +442,6 @@ public function actionLevel3Now(Request $request)
 {
     $input = $request->all();
 
-    // Log the form submission
-    \Log::info("KYC Level 3 form submitted with data: ", $input);
 
     $user = User::find($input['id']);
     $kycCredential = json_decode($user->kyc_level3_credential, true);
@@ -479,18 +477,11 @@ public function actionLevel3Now(Request $request)
         '[[status]]' => $status,
     ];
 
-    // Log the email sending attempt
-   
-
     // Send email to the user
     $this->mailNotify($user->email, $template, $shortcodes);
 
-    // Log the SMS sending attempt
-
     // Send SMS to the user
     $this->smsNotify('kyc_action', $shortcodes, $user->phone);
-
-    // Log the push notification sending attempt
 
     // Send push notification to the user
     $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);

@@ -24,6 +24,19 @@
             </div>
 
             <div class="nav-tools flex items-center md:space-x-4 space-x-3 rtl:space-x-reverse leading-0">
+
+                @if(session('impersonated_id'))
+                    <div class="relative">
+                        <form action="{{ route('admin.stop.impersonation') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-danger inline-flex items-center jsutify-center">
+                                <iconify-icon class="text-lg mr-2" icon="bi:stop-fill"></iconify-icon>
+                                {{ __('Stop Impersonation') }}
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
                 <div>
                     <button class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] bg-slate-50 bg-opacity-10 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <iconify-icon class="text-white text-xl" icon="lucide:plus"></iconify-icon>

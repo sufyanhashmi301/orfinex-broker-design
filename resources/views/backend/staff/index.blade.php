@@ -91,7 +91,7 @@
             $('#loader_placeholder').removeClass('hidden');
 
             $.get(createStaffRoute, function (data) {
-                $('#edit-staff-body').append(data);
+                $('#edit-staff-body').append(data.html);
                 $('#loader_placeholder').addClass('hidden');
             });
 

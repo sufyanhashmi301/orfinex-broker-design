@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between mb-5">
+<div class="flex items-center justify-between p-5">
     <h3 class="text-xl font-medium dark:text-white capitalize">
         {{ __('Deposit Approval Action') }}
     </h3>
@@ -9,7 +9,7 @@
         <span class="sr-only">Close modal</span>
     </button>
 </div>
-<div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+<div class="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
     <form action="{{ route('admin.deposit.action.now') }}" method="post" class="space-y-5">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">

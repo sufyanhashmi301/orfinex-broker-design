@@ -202,6 +202,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
 
+    Route::get('login/{id}', [StaffController::class, 'staffLogin'])->name('staff.login');
+    Route::post('stop-impersonation', [StaffController::class, 'stopImpersonation'])->name('stop.impersonation');
+
+
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');

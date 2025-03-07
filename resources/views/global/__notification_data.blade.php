@@ -1,8 +1,8 @@
-<button type="button" class="item notification-dot lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer
-rounded-lg text-[20px] flex flex-col items-center justify-center" data-bs-toggle="dropdown" aria-expanded="false">
+<button type="button" class="item notification-dot lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" data-bs-toggle="dropdown" aria-expanded="false">
     <iconify-icon class="animate-tada header-text-color text-xl" @class(['bell-ringng' => $totalUnread > 0]) icon="heroicons-outline:bell" icon-name="bell-ring"></iconify-icon>
-    <div class="number absolute -right-1 lg:top-0 -top-[6px] h-4 w-4 bg-red-500 text-[8px] font-semibold flex flex-col items-center
-    justify-center rounded-full text-white z-[99]">{{ $totalUnread }}</div>
+    <div class="number absolute -right-1 lg:top-0 -top-[6px] h-4 w-4 bg-red-500 text-[8px] font-semibold flex flex-col items-center justify-center rounded-full text-white z-[99]">
+        {{ $totalUnread }}
+    </div>
 </button>
 <div class="dropdown-menu dropdown-menu-end notification-pop dropdown-menu z-10 hidden bg-white shadow w-[335px] border dark:border-slate-700 !top-[10px] rounded-md overflow-hidden lrt:origin-top-right rtl:origin-top-left">
     <div class="d-flex align-items-center justify-content-between flex items-center justify-between py-4 px-4">

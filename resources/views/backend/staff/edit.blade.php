@@ -38,7 +38,7 @@
                         </div>
                     @endif
                     @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin') && $staff->getRoleNames()->first() != 'Super-Admin')
-                        <a href="{{ route('admin.staff.login', $staff->id) }}" target="_blank" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
+                        <a href="{{ route('admin.staff.login', $staff->id) }}" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
                             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-add-outline"></iconify-icon>
                             {{ __('Login As Staff') }}
                         </a>

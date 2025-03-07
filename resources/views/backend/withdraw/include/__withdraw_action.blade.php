@@ -12,23 +12,31 @@
 </div>
 <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
     <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-        {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
+        <span class="mr-2">{{ __('Account:') }}</span>
+        <span class="font-medium">{{ $data->target_id}}</span>
     </li>
     <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-        {{ __('Withdraw Amount') }}: <strong>{{ $data->amount .' '. $currency }}</strong>
+        <span class="mr-2">{{ __('Withdraw Amount:') }}</span>
+        <span class="font-medium">{{ $data->amount .' '. $currency }}</span>
     </li>
     <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-        {{ __('Pay Amount') }}: <strong>{{ $data->pay_amount .' '. $data->pay_currency }}</strong>
+        <span class="mr-2">{{ __('Pay Amount:') }}</span>
+        <span class="font-medium">{{ $data->pay_amount .' '. $data->pay_currency }}</span>
     </li>
 </ul>
 
 <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
     @foreach( json_decode($data->manual_field_data,true) as $name => $field_data)
         <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-            {{ $name }}: @if( $field_data['type'] == 'file' )
-                <img src="{{ asset($field_data['value']) }}" alt=""/>
+            <span class="mr-2">{{ $name }}:</span>
+            @if( $field_data['type'] == 'file' )
+                <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 my-2" style="background-image: url('{{ asset($field_data['value']) }}')"></div>
+                <div class="flex justify-end gap-3">
+                    <a href="{{ asset($field_data['value']) }}" class="btn-link" download>{{ __('Download') }}</a>
+                    <a href="{{ asset($field_data['value']) }}" class="btn-link" target="_blank">{{ __('View') }}</a>
+                </div>
             @else
-                <strong>{{ $field_data['value'] }}</strong>
+                <span class="font-medium">{{ $field_data['value'] }}</span>
             @endif
         </li>
     @endforeach

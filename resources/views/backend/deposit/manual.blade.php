@@ -60,11 +60,13 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -139,11 +141,13 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},
                     {data: 'charge', name: 'charge'},
                     {data: 'method', name: 'method'},
+                    {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]

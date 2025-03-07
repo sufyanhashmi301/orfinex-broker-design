@@ -49,26 +49,8 @@
 <div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-96px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu mt-3">
         <li class="sidebar-menu-title">{{ __('MENU') }}</li>
-        @if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED)
 
-        <li>
-            <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral')}}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon"  icon="lucide:network"></iconify-icon>
-                    <span>{{ __('Referrals') }}</span>
-                </span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('user.ib.request') }}" class="navItem {{ isActive('user.ib.request')}}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="grommet-icons:resources"></iconify-icon>
-                    <span>{{ __('Request Master IB') }}</span>
-                </span>
-            </a>
-        </li>
-        @endif
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || isset(auth()->user()->ref_id))
         <li>
             <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem {{ isActive('user.multi-level.ib.dashboard') }}">
                 <span class="flex items-center">
@@ -123,6 +105,14 @@
             </a>
         </li>
         @endif
+        <li class="md:hidden">
+            <a href="{{ route('user.dashboard') }}" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>
+                    <span>{{ __('Client Area') }}</span>
+                </span>
+            </a>
+        </li>
 
         <li class="block md:hidden">
             <form method="POST" action="{{ route('logout') }}" id="logout-form" class="mt-5 mb-3">
@@ -137,7 +127,7 @@
         </li>
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
+<div class="stickySetting_menu sticky hidden md:block z-10 bottom-0 px-6 py-3">
     <a href="{{ route('user.dashboard') }}" class="navItem loaderBtn">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>

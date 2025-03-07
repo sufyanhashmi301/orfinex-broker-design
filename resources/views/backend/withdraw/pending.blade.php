@@ -59,6 +59,7 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
@@ -87,7 +88,7 @@
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text max-h-[calc(100vh-200px)] overflow-y-auto deposit-action p-6">
 
                         </div>
                     </div>
@@ -136,6 +137,7 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},

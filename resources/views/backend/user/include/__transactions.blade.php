@@ -6,7 +6,7 @@
 >
     <div class="card">
         <div class="card-header">
-            
+
             <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
                 @csrf
                 <div class="input-area relative">
@@ -27,12 +27,14 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -69,12 +71,15 @@
                 ajax: "{{ route('admin.user.transaction',$user->id) }}",
                 columns: [
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
                     {data: 'status', name: 'status'},
+                    {data: 'action_by', name: 'action_by'},
+
                 ]
             });
         })(jQuery);

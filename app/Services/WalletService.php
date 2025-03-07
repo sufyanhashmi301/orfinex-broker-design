@@ -77,6 +77,8 @@ class WalletService
 
         $account = get_user_account_by_wallet_id($transaction->target_id);
         $accountId = $account->id;
+//dd($account);
+//        dd($transaction);
 
         $ledger->credit = $transaction->amount;
         $ledger->account_id = $accountId;

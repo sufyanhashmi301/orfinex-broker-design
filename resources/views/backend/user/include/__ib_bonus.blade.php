@@ -6,7 +6,7 @@
 >
     <div class="card">
         <div class="card-header">
-            
+
             <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
                 @csrf
                 <div class="input-area relative">
@@ -23,10 +23,11 @@
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="user-transaction-dataTable">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="user-ib-transaction-dataTable">
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
@@ -61,7 +62,7 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-transaction-dataTable').DataTable({
+            $('#user-ib-transaction-dataTable').DataTable({
                 dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
@@ -81,6 +82,7 @@
                 ajax: "{{ route('admin.user.ib_bonus',$user->id) }}",
                 columns: [
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
                     {data: 'target_id', name: 'target_id'},

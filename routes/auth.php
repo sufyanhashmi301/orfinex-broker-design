@@ -46,8 +46,11 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 
 
-        Route::get('{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
-        Route::get('{provider}/callback', [SocialiteController::class, 'callback'])->name('social.callback');
+    Route::get('{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
+    Route::get('{provider}/callback', [SocialiteController::class, 'callback'])->name('social.callback');
+
+    Route::get('get-password', [PasswordResetLinkController::class, 'getPassword'])->name('password.get');
+    Route::post('get-password', [PasswordResetLinkController::class, 'sendPassword'])->name('password.send');
 
 });
 

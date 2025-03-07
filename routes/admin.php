@@ -214,6 +214,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
     });
 
@@ -391,6 +392,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
+        Route::get('customer/kycpermissions', 'kycPermissions')->name('customer.kycpermissions');
 
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');

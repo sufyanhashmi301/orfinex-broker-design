@@ -66,6 +66,9 @@
 <!-- Modal for Account details -->
 @include('backend.investment.modal.__account_details')
 
+<!-- Modal for Change Account Type -->
+@include('backend.investment.modal.__change_type')
+
 <!-- Modal for Account leverage -->
 @include('backend.investment.modal.__change_leverage')
 

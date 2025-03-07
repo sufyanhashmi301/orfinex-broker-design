@@ -405,6 +405,23 @@ class   AccountsController extends Controller
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
     }
+
+    public function getSchema(Request $request)
+    {
+        // Retrieve the login value from the request
+        $login = $request->input('login');
+
+        // Fetch the ForexAccount record using the provided login value
+        $forexTrading = ForexAccount::where('login', $login)->firstOrFail();
+
+        // Retrieve all ForexSchema records
+        $schemas = ForexSchema::all();
+
+        // Return the view with the fetched data
+        return view('backend.investment.modal.__change_type_render', compact('forexTrading', 'schemas'));
+    }
+
+
     public function getLeverage(Request $request)
     {
         $request->validate([
@@ -590,142 +607,160 @@ class   AccountsController extends Controller
     }
 
     public function updateAccountInfo(Request $request)
-    {
-        $request->validate([
-            'login' => ['required', 'integer', new ForexLoginBelongsToUserGeneral],
-            'leverage' => 'sometimes|nullable|numeric|gt:0',
-            'main_password' => [
-                'sometimes',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
-            ],
-            'invest_password' => [
-                'sometimes',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
-            ],
-        ]);
-        $updateUserUrl = config('forextrading.updateUserUrl');
+{
+    // Validate request inputs
+    $request->validate([
+        'login' => ['required', 'integer'],
+        'leverage' => 'sometimes|nullable|numeric|gt:0',
+        'main_password' => [
+            'sometimes',
+            'min:8',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+        ],
+        'invest_password' => [
+            'sometimes',
+            'min:8',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+        ],
+        'forex_schema_id' => 'sometimes|exists:forex_schemas,id',
+    ]);
 
-        $dataArray = [];
-        $dataArray['Login'] = $request->login;
-
-        if ($request->leverage) {
-            $forexAccount = ForexAccount::where('login',$request->login)->first();
-            if($forexAccount->leverage == $request->leverage){
-                return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
-
-            }
-            if(!$forexAccount) {
-                return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
-            }
-            $data = [
-                'last_leverage' => $forexAccount->leverage,
-                'updated_leverage' => $request->leverage,
-            ];
-            if(setting('leverage_approval','features')  == 'by_admin') {
-                LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id,
-                    'forex_account_id' => $forexAccount->id], $data);
-                $mailType   = 'user_pending_leverage';
-                $this->leverageMailNotify($request,$mailType);
-                return response()->json(['success' => __('Leverage update request successfully submitted. An admin will review and process it shortly.'), 'reload' => true]);
-            }else{
-                // Prepare data for the API call
-                $data = [
-                    'login' => $forexAccount->login,
-                    'leverageAmount' => $request->leverage,
-                ];
-
-                // Call the API to update leverage
-                $response = $this->forexApiService->setUserLeverage($data);
-
-                // Update leverage in ForexAccount model
-
-                $forexAccount->leverage = $request->leverage;
-                $forexAccount->save();
-
-                $mailType   = 'user_approved_leverage';
-                $this->leverageMailNotify($request,$mailType);
-
-                // Send email notification
-                return response()->json(['success' => __('Leverage Update Approved and Updated Successfully!.'), 'reload' => true]);
-
-                $message = 'Leverage Update Approved and Updated Successfully!';
-            }
-        }
-
-        if ($request->name) {
-            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
-            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
-
-        }
-        if ($request->main_password) {
-            $dataArray['MainPassword'] = $request->main_password;
-
-            $data = [
-                'login' => $request->login,
-                'password' => $request->main_password,
-            ];
-            $updateUserApiResponse = $this->forexApiService->resetMasterPassword($data);
-            if ($updateUserApiResponse['success']) {
-                $shortcodes = [
-                    '[[full_name]]' => auth()->user()->full_name,
-                    '[[login]]' => $request->login,
-                    '[[password]]' =>  $request->main_password,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                ];
-
-                $this->mailNotify(auth()->user()->email, 'user_update_master_password', $shortcodes);
-
-                return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
-            } else {
-                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
-            }
-        }
-        if ($request->invest_password) {
-            $data = [
-                'login' => $request->login,
-                'password' => $request->invest_password,
-            ];
-            $updateUserApiResponse = $this->forexApiService->resetInvestorPassword($data);
-            if ($updateUserApiResponse['success']) {
-                $shortcodes = [
-                    '[[full_name]]' => auth()->user()->full_name,
-                    '[[login]]' => $request->login,
-                    '[[password]]' =>  $request->invest_password,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                ];
-
-                $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
-
-                return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
-            } else {
-                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
-            }
-        }
-        if ($request->archive) {
-            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
-
-            $shortcodes = [
-                '[[full_name]]' => auth()->user()->full_name,
-                '[[login]]' => $request->login,
-                '[[password]]' =>  $request->invest_password,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-            ];
-
-            $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
-
-            return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
-        }
-        if ($request->reactive) {
-            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
-            return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
-        }
-
+    // Call respective methods based on the provided input
+    if ($request->leverage) {
+        return $this->updateLeverage($request);
     }
+
+    if ($request->name) {
+        return $this->updateAccountName($request);
+    }
+// its for change account type
+    if ($request->forex_schema_id) {
+        return $this->updateForexSchema($request);
+    }
+
+    if ($request->main_password) {
+        return $this->resetMainPassword($request);
+    }
+
+    if ($request->invest_password) {
+        return $this->resetInvestorPassword($request);
+    }
+
+    if ($request->archive) {
+        return $this->archiveAccount($request);
+    }
+
+    if ($request->reactive) {
+        return $this->reactivateAccount($request);
+    }
+}
+
+// Update leverage of a forex account
+private function updateLeverage($request)
+{
+    // Fetch the forex account using login
+    $forexAccount = ForexAccount::where('login', $request->login)->first();
+
+    if (!$forexAccount) {
+        return response()->json(['error' => __('Invalid forex account!'), 'reload' => false]);
+    }
+
+    // Prevent updating to the same leverage value
+    if ($forexAccount->leverage == $request->leverage) {
+        return response()->json(['error' => __('Leverage :leverage is already assigned.', ['leverage' => $request->leverage]), 'reload' => false]);
+    }
+
+    // Check if leverage change requires admin approval
+    if (setting('leverage_approval', 'features') == 'by_admin') {
+        LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id, 'forex_account_id' => $forexAccount->id], [
+            'last_leverage' => $forexAccount->leverage,
+            'updated_leverage' => $request->leverage,
+        ]);
+
+        $this->leverageMailNotify($request, 'user_pending_leverage');
+
+        return response()->json(['success' => __('Leverage update request submitted.'), 'reload' => true]);
+    } else {
+        // Update leverage directly
+        $this->forexApiService->setUserLeverage([
+            'login' => $forexAccount->login,
+            'leverageAmount' => $request->leverage,
+        ]);
+
+        $forexAccount->update(['leverage' => $request->leverage]);
+        $this->leverageMailNotify($request, 'user_approved_leverage');
+
+        return response()->json(['success' => __('Leverage updated successfully!'), 'reload' => true]);
+    }
+}
+
+// Update account name
+private function updateAccountName($request)
+{
+    ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
+    return response()->json(['success' => __('Account name updated successfully.'), 'reload' => true]);
+}
+
+// Update Forex Schema and Group
+private function updateForexSchema($request)
+{
+    $forexAccount = ForexAccount::where('login', $request->login)->first();
+    if (!$forexAccount) {
+        return response()->json(['error' => __('Forex account not found.'), 'reload' => false]);
+    }
+
+    $schema = ForexSchema::find($request->forex_schema_id);
+    if (!$schema) {
+        return response()->json(['error' => __('Invalid Forex Schema.'), 'reload' => false]);
+    }
+
+    // Determine the appropriate group
+    $group = ($forexAccount->account_type === 'real') ? $schema->real_swap_free : $schema->demo_swap_free;
+    $forexAccount->update(['forex_schema_id' => $request->forex_schema_id, 'group' => $group]);
+
+    $response = $this->forexApiService->updateUserGroup([
+        'login' => $forexAccount->login,
+        'group' => $group,
+    ]);
+
+    return $response['success']
+        ? response()->json(['success' => __('Forex Schema updated successfully.'), 'reload' => true])
+        : response()->json(['error' => __('Failed to update group.'), 'reload' => false]);
+}
+
+// Reset Main Password
+private function resetMainPassword($request)
+{
+    $response = $this->forexApiService->resetMasterPassword([
+        'login' => $request->login,
+        'password' => $request->main_password,
+    ]);
+    return response()->json(['success' => __('Password updated successfully.'), 'reload' => false]);
+}
+
+// Reset Investor Password
+private function resetInvestorPassword($request)
+{
+    $response = $this->forexApiService->resetInvestorPassword([
+        'login' => $request->login,
+        'password' => $request->invest_password,
+    ]);
+    return response()->json(['success' => __('Investor Password updated successfully.'), 'reload' => false]);
+}
+
+// Archive Account
+private function archiveAccount($request)
+{
+    ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
+    return response()->json(['success' => __('Account archived successfully.'), 'reload' => true]);
+}
+
+// Reactivate Account
+private function reactivateAccount($request)
+{
+    ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
+    return response()->json(['success' => __('Account reactivated successfully.'), 'reload' => true]);
+}
 
     public function leverageMailNotify($request, $mailType)
     {

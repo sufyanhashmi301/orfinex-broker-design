@@ -73,8 +73,15 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
+
+//sample Data for updateUserGroup
+//        {
+//            "login": 9997820,
+//             "group": "real\\Classic\\Islamic1a"
+//        }
     public function updateUserGroup($data)
     {
+
         $endpoint = 'user/updateMT5Group';
         return $this->post($endpoint, $data);
     }

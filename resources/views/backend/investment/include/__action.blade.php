@@ -31,6 +31,17 @@
                    data-equity="{{ get_mt5_account_equity($login) }}">{{ __('Account Details') }}</a>
             </li>
             <li>
+                <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-type"
+                   href="javascript:void(0);"
+                   type="button"
+                   data-bs-toggle="modal"
+                   data-bs-target="#changeAccountType"
+                   data-login="{{ $login }}"
+                   data-forex_schema_id="{{ $forex_schema_id }}"
+                   data-action="{{ route('admin.forex.get.schema') }}">{{ __('Change Account Type') }}</a>
+            </li>
+            
+            <li>
                 <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-leverage"
                    href=""
                    type="button"
@@ -64,6 +75,7 @@
                    data-bs-toggle="modal"
                    data-bs-target="#changeInvestorPass" data-login="{{ $login }}">{{ __('Change investor password') }}</a>
             </li>
+            
             <li>
                 @if($status == \App\Enums\ForexAccountStatus::Archive)
                     <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white archive-login" href=""

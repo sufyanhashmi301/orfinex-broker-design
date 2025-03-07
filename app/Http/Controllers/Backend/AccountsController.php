@@ -410,17 +410,17 @@ class   AccountsController extends Controller
     {
         // Retrieve the login value from the request
         $login = $request->input('login');
-    
+
         // Fetch the ForexAccount record using the provided login value
         $forexTrading = ForexAccount::where('login', $login)->firstOrFail();
-    
+
         // Retrieve all ForexSchema records
         $schemas = ForexSchema::all();
-    
+
         // Return the view with the fetched data
         return view('backend.investment.modal.__change_type_render', compact('forexTrading', 'schemas'));
     }
-    
+
 
     public function getLeverage(Request $request)
     {
@@ -708,21 +708,21 @@ private function updateForexSchema($request)
     if (!$forexAccount) {
         return response()->json(['error' => __('Forex account not found.'), 'reload' => false]);
     }
-    
+
     $schema = ForexSchema::find($request->forex_schema_id);
     if (!$schema) {
         return response()->json(['error' => __('Invalid Forex Schema.'), 'reload' => false]);
     }
-    
+
     // Determine the appropriate group
-    $group = ($forexAccount->account_type === 'real') ? $schema->real_islamic : $schema->demo_islamic;
+    $group = ($forexAccount->account_type === 'real') ? $schema->real_swap_free : $schema->demo_swap_free;
     $forexAccount->update(['forex_schema_id' => $request->forex_schema_id, 'group' => $group]);
-    
+
     $response = $this->forexApiService->updateUserGroup([
         'login' => $forexAccount->login,
         'group' => $group,
     ]);
-    
+
     return $response['success']
         ? response()->json(['success' => __('Forex Schema updated successfully.'), 'reload' => true])
         : response()->json(['error' => __('Failed to update group.'), 'reload' => false]);

@@ -5,7 +5,7 @@
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize" id="modalTitle">
-                            {{ __('Change Forex Schema') }}
+                            {{ __('Change Account Type') }}
                         </h3>
                         <p class="dark:text-white">
                             {{ __('Account:') }}

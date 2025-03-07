@@ -610,7 +610,7 @@ class   AccountsController extends Controller
 {
     // Validate request inputs
     $request->validate([
-        'login' => ['required', 'integer', new ForexLoginBelongsToUserGeneral],
+        'login' => ['required', 'integer'],
         'leverage' => 'sometimes|nullable|numeric|gt:0',
         'main_password' => [
             'sometimes',

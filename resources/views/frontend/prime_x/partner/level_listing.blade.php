@@ -73,7 +73,7 @@
 
     <!-- Update Shares Modal -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="updateSharesModal" tabindex="-1" aria-labelledby="updateSharesModalLabel" aria-hidden="true">
-        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                 <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                     <div class="flex items-center justify-between rounded-t p-5">
@@ -98,11 +98,11 @@
                             </div>
 
                             <!-- Dynamic Levels Input Fields -->
-                            <div id="levelsContainer">
+                            <div id="levelsContainer" class="space-y-4">
                                 @foreach($levels as $level)
-                                    <div class="mb-3">
+                                    <div class="input-area">
                                         <label class="form-label">{{ __('Level ' . $level->level_order . ' Shares') }}</label>
-                                        <div class="flex flex-wrap gap-2">
+                                        <div class="grid md:grid-cols-5 grid-cols-1 gap-2">
                                             @for($i = 1; $i <= $level->level_order; $i++)
                                                 @php
                                                     // Retrieve individual share record instead of sum
@@ -127,7 +127,11 @@
                                 @endforeach
                             </div>
 
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full mt-4">{{ __('Save Changes') }}</button>
+                            <div class="text-right mt-10">
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                    {{ __('Save Changes') }}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -163,7 +163,127 @@ class   AccountsController extends Controller
                 return Excel::download(new DemoAcoountExport($request), 'demo-accounts.xlsx');
         }
     }
+    public function forexAccountCheckNow(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'account_number' => 'required|integer',
+            'schema_id' => 'required',
+           
+            'account_type' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!in_array($value, ['real', 'demo'])) {
+                        $fail('The ' . $attribute . ' must be either real or demo.');
+                    }
+                },
+            ],
+            'is_islamic' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $schema = ForexSchema::find($request->schema_id);
+                    if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
+                        $fail('The selected schema does not support Islamic account for Real account type.');
+                    }
+                    if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
+                        $fail('The selected schema does not support Islamic account for Demo account type.');
+                    }
+                },
+            ],
+            'leverage' => 'required',
+            'account_name' => 'required',
+        ], [
+            'main_password.required' => __('The main password field is required.'),
+            'main_password.min' => __('The main password must be at least 8 characters long.'),
+            'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
+            'account_type.required' => 'The account type is required.',
+            'leverage.not_regex' => __('Kindly select a valid leverage.'),
+        ]);
 
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back();
+        }
+
+        $accountNumber = $request->account_number;
+        $user = User::find($request->user_id);
+        $schema = ForexSchema::find($request->schema_id);
+        $accountType = $request->account_type;
+
+        // Check if account number already exists in ForexAccount table
+        if (ForexAccount::where('login', $accountNumber)->exists()) {
+            notify()->error(__('Account number already exists.'), 'Error');
+            return redirect()->back();
+        }
+
+        // Check if account number exists in MT5 database
+        try {
+            $mt5Account = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $accountNumber)
+                ->first();
+
+            if ($mt5Account) {
+                notify()->error(__('Account number already exists in MT5.'), 'Error');
+                return redirect()->back();
+            }
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when checking account: ' . $e->getMessage());
+            notify()->error(__('Failed to check account in MT5.'), 'Error');
+            return redirect()->back();
+        }
+
+        $group = $this->getGroup($user, $request, $schema);
+        $server = $this->getServe($request, $schema);
+        $password = $request->main_password;
+        $phone = $user->phone ?: '+91';
+
+        $data = [
+            "login" => $accountNumber,
+            "group" => $group,
+            "firstName" => $user->first_name,
+            "middleName" => "",
+            "lastName" => $user->last_name,
+            "leverage" => $request->leverage,
+            "rights" => "USER_RIGHT_ALL",
+            "country" => $user->country,
+            "city" => $user->city,
+            "state" => "",
+            "zipCode" => $user->zip_code,
+            "address" => $user->address,
+            "phone" => $phone,
+            "email" => $user->email,
+            "agent" => 0,
+            "account" => "",
+            "company" => setting('site_title', 'global'),
+            "language" => 0,
+            "phonePassword" => 'SNNH@2024@bol',
+            "status" => "RE",
+            "masterPassword" => $password,
+            "investorPassword" => 'SNNH@2024@bol'
+        ];
+
+        $response = ($accountType == 'real')
+            ? $this->forexApiService->createUser($data)
+            : $this->forexApiService->createUserDemo($data);
+
+        if ($response['success']) {
+            $resResult = $response['result'];
+            $mt5Login = $resResult['login'];
+
+            if ($mt5Login && $resResult['responseCode'] == 0) {
+                $rightData = ["login" => $mt5Login, "rights" => 'USER_RIGHT_ENABLED'];
+                $this->forexApiService->setUserRights($rightData);
+
+                $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
+                $this->sendNotification($user, $mt5Login, $password, $schema, $server);
+
+                notify()->success(__('Successfully Created Account'), 'success');
+                return redirect()->back();
+            }
+        }
+
+        notify()->error('Some error occurred! please try again', 'Error');
+        return redirect()->back();
+    }
 
     public function forexAccountCreateNow(Request $request)
     {

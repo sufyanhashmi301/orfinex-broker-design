@@ -172,19 +172,11 @@
     #page-loader .dot {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
-    .bg-primary, .btn-primary{
+    .bg-primary {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
-    .btn-primary {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-ring-opacity));
-    }
-    .bg-secondary, .btn-secondary{
+    .bg-secondary {
         background-color: rgba({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-bg-opacity));
-    }
-    .btn-secondary {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-ring-opacity));
     }
     .bg-success, .btn-success, .switch-field input:checked + label {
         background-color: rgba({{ implode(' ', getColorFromSettings('success_color')) }} / var(--tw-bg-opacity));

@@ -416,7 +416,7 @@ class KycController extends Controller
         ]);
 
         // Send approval email
-        $this->mailNotify($user->email, 'kyc_approve', $shortcodes);
+        $this->mailNotify($user->email, 'kyc_approve_level_2', $shortcodes);
 
         notify()->success('KYC Approved Successfully');
     } elseif ($status == \App\Enums\KYCStatus::Rejected->value) {
@@ -427,7 +427,7 @@ class KycController extends Controller
         ]);
 
         // Send rejection email
-        $this->mailNotify($user->email, 'kyc_reject', $shortcodes);
+        $this->mailNotify($user->email, 'kyc_reject_level_2', $shortcodes);
 
         notify()->success('KYC Rejected Successfully');
     }
@@ -442,7 +442,6 @@ public function actionLevel3Now(Request $request)
 {
     $input = $request->all();
 
-
     $user = User::find($input['id']);
     $kycCredential = json_decode($user->kyc_level3_credential, true);
     $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
@@ -450,10 +449,10 @@ public function actionLevel3Now(Request $request)
     // Determine the action (approve or reject)
     if ($request->has('approve')) {
         $status = \App\Enums\KYCStatus::Level3->value;
-        $template = 'kyc_approve'; // Template for approval
+        $template = 'kyc_approve_level_3'; // Template for approval
     } elseif ($request->has('reject')) {
         $status = \App\Enums\KYCStatus::RejectLevel3->value;
-        $template = 'kyc_reject'; // Template for rejection
+        $template = 'kyc_reject_level_3'; // Template for rejection
     } else {
         // Handle cases where neither button was clicked
         notify()->error(__('Invalid action.'));

@@ -584,17 +584,17 @@ class DepositController extends Controller
         $gatewayInfo->currency, $payAmount, $userID, null, 'User',
         $manualData ?? [], $approvalCause, $targetId, $targetType
     );
-//    dd($txnInfo);
-$shortcodes = [
-    '[[full_name]]' => $txnInfo->user->full_name,
-    '[[txn]]' => $txnInfo->tnx,
-    '[[gateway_name]]' => $txnInfo->method,
-    '[[deposit_amount]]' => $txnInfo->amount,
-    '[[site_title]]' => setting('site_title', 'global'),
-    '[[site_url]]' => route('home'),
-    '[[message]]' => $txnInfo->approval_cause,
-    '[[status]]' =>  'approved' ,
-];
+    //    dd($txnInfo);
+    $shortcodes = [
+        '[[full_name]]' => $txnInfo->user->full_name,
+        '[[txn]]' => $txnInfo->tnx,
+        '[[gateway_name]]' => $txnInfo->method,
+        '[[deposit_amount]]' => $txnInfo->amount,
+        '[[site_title]]' => setting('site_title', 'global'),
+        '[[site_url]]' => route('home'),
+        '[[message]]' => $txnInfo->approval_cause,
+        '[[status]]' =>  'approved' ,
+    ];
     if ($request->is_auto_approve == true) {
         Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, $approvalCause);
         $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_approve', $shortcodes);

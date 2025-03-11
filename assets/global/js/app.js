@@ -846,6 +846,7 @@
     minHeight: null,
     maxHeight: null,
     focus: true,
+    dialogsInBody: true,
     toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'underline', 'clear']],

@@ -7,18 +7,18 @@
         <div class="col-span-12">
             <div class="card">
                 <div class="card-body px-6 pb-6">
-                    <div class="overflow-x-auto -mx-6">
+                    <div class="overflow-x-auto basicTable_wrapper -mx-6">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class=" border-t border-slate-100 dark:border-slate-800">
-                            <tr>
-{{--                                <th class="table-th">{{ __('Schema') }}</th>--}}
-                                <th class="table-th">{{ __('Rebate Rule') }}</th>
-                                <th class="table-th">{{ __('Symbols') }}</th>
-                                <th class="table-th">{{ __('Total Rebate') }}</th>
-                                <th class="table-th">{{ __('Master IB Share') }}</th>
-{{--                                <th class="table-th">{{ __('Sub IB Share') }}</th>--}}
-                                <th class="table-th">{{ __('Action') }}</th>
-                            </tr>
+                            <thead class="">
+                                <tr>
+    {{--                                <th class="table-th">{{ __('Schema') }}</th>--}}
+                                    <th class="table-th">{{ __('Rebate Rule') }}</th>
+                                    <th class="table-th">{{ __('Symbols') }}</th>
+                                    <th class="table-th">{{ __('Total Rebate') }}</th>
+                                    <th class="table-th">{{ __('Master IB Share') }}</th>
+    {{--                                <th class="table-th">{{ __('Sub IB Share') }}</th>--}}
+                                    <th class="table-th">{{ __('Action') }}</th>
+                                </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                             @foreach($userIbRules as $userIbRule)
@@ -36,9 +36,11 @@
                                     </td>
                                     <!-- Symbols -->
                                     <td class="table-td">
-                                        @foreach($userIbRule->rebateRule->symbolGroups->flatMap->symbols as $symbol)
-                                            <p>{{ $symbol->symbol }}</p>
-                                        @endforeach
+                                        <ul class="flex flex-wrap items-center gap-3">
+                                            @foreach($userIbRule->rebateRule->symbolGroups->flatMap->symbols as $symbol)
+                                                <li class="badge badge-secondary uppercase">{{ $symbol->symbol }}</li>
+                                            @endforeach
+                                        </ul>
                                     </td>
                                     <!-- Rebate Amount -->
                                     <td class="table-td">

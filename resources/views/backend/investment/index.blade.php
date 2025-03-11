@@ -196,6 +196,9 @@
         </div>
     </div>
     <!-- Modal for Account details -->
+    @include('backend.investment.modal.__change_type')
+    
+    <!-- Modal for Account details -->
     @include('backend.investment.modal.__account_details')
 
     <!-- Modal for Account leverage -->

@@ -94,7 +94,7 @@
     </div>
 
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
                         <div class="popup-body-text deposit-action">
@@ -170,6 +170,35 @@
                         $('.deposit-action').append(response)
                         imagePreview()
                         $('#transaction-action-modal').modal('show');
+
+                        $('.summernote').summernote({
+                            height: 150,
+                            minHeight: null,
+                            maxHeight: null,
+                            focus: true,
+                            dialogsInBody: true,
+                            toolbar: [
+                                ['style', ['style']],
+                                ['font', ['bold', 'underline', 'clear']],
+                                ['fontsize', ['fontsize']],
+                                ['color', ['color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['table', ['table']],
+                                ['insert', ['link', 'picture', 'video']],
+                                ['view', ['fullscreen', 'codeview', 'help']]
+                            ],
+                            callbacks: {
+                                onChange: function(contents, $editable) {
+
+                                    var markupStr = contents;
+                                    markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
+
+                                    var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
+
+                                    html_container.val(markupStr);
+                                }
+                            }
+                        })
 
                     }
                 });

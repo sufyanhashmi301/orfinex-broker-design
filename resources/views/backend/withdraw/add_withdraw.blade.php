@@ -17,59 +17,100 @@
                     <h4 class="card-title">{{ __('Add Withdraw') }}</h4>
                 </div>
                 <div class="card-body p-6 pt-3">
-                    <form action="" method="post">
+                    <form action="{{ route('admin.withdraw.now') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="account_type" id="account_type" value="{{ old('account_type') }}">
                         <div class="grid grid-cols-12 items-center gap-5">
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Transaction By') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="customer wallet">{{ __('Customer Wallet') }}</option>
-                                    <option value="trading account">{{ __('Trading Account') }}</option>
+                            <div class="input-area col-span-12">
+                                <label for="" class="form-label">{{ __('User') }}</label>
+                                <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User" required>
+                                    <option value="">{{ __('Select User') }}</option>
+                                    @foreach($users as $user)
+                                        <option value="{{the_hash($user->id) }}"  class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $user->full_name }} ({{ $user->email }})
+                                        </option>
+                                    @endforeach
                                 </select>
+                                @error('user_id')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="customer wallet">{{ __('Customer Wallet') }}</option>
-                                    <option value="trading account">{{ __('Trading Account') }}</option>
+                                <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required>
+                                    <option value="">{{__('Select Account')}}</option>
                                 </select>
-                            </div>
-                            <div class="input-area col-span-12">
-                                <label for="" class="form-label">{{ __('Payment Method') }}</label>
-                                <select name="gateway_code" class="select2 form-control">
-                                    <option selected="">--Select Gateway--</option>
-                                    <option value="perfectmoney-usd">Perfect Money</option>
-                                    <option value="BANKPK">Bank Transfer - PKR</option>
-                                    <option value="USDT-TRC20">USDT</option>
-                                    <option value="BANKAED">Bank Transfer - AED</option>
-                                </select>
+
+                                @error('target_id')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Base Currency') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="usd">{{ __('USD') }}</option>
-                                    <option value="eur">{{ __('EUR') }}</option>
-                                    <option value="btc">{{ __('BTC') }}</option>
-                                    <option value="bnb">{{ __('BNB') }}</option>
-                                </select>
-                            </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Account Currency') }}</label>
-                                <input type="text" name="" class="form-control w-full" placeholder="PKR" readonly>
+                                <label for="" class="form-label">{{ __('Withdraw Account') }}</label>
+                                <select name="withdraw_account" id="withdrawAccountId" class="select2 form-control w-full" data-placeholder="Select Account" required></select>
+                                @error('withdraw_account')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
                                 <label for="" class="form-label">{{ __('Amount') }}</label>
-                                <input type="text" name="" class="form-control" placeholder="1000">
+                                <div class="relative">
+                                    <input type="text" name="amount" id="amount"
+                                        oninput="this.value = validateDouble(this.value)"
+                                        class="form-control withdrawAmount"
+                                        placeholder="{{ __('Enter Amount') }}"
+                                        value="{{ old('amount') }}"
+                                        aria-describedby="basic-addon1"
+                                        required>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">
+                                        {{ $currency }}
+                                    </span>
+                                </div>
+                                <div class="error !text-xs withdrawAmountRange"></div>
+                                @error('amount')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="input-area lg:col-span-6 col-span-12 conversion hidden">
+                                <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        oninput="this.value = validateDouble(this.value)"
+                                        class="form-control"
+                                        id="converted-amount"
+                                        placeholder="{{ __('Enter Amount') }}"
+                                        aria-describedby="basic-addon2">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon2">
+                                        {{ $currency }}
+                                    </span>
+                                </div>
+                                <div class="error !text-xs conversion-rate"></div>
+                            </div>
+                            <div class="col-span-12 -mx-3">
+                                <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
+                                    <tbody class="selectDetailsTbody">
+                                        <tr class="border-b border-slate-100 dark:border-slate-700 detailsCol">
+                                            <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-3 py-2">
+                                                <strong>{{ __('Withdraw Amount') }}</strong>
+                                            </td>
+                                            <td class="dark:text-slate-300">
+                                                <span class="withdrawAmount">{{ old('amount') }}</span>
+                                                {{ $currency }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label opacity-0">{{ __('Auto Approve') }}</label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
-                                        <input class="form-check-input" type="hidden" value="0" name=""/>
+                                        <input class="form-check-input" type="hidden" value="0" name="is_auto_approve"/>
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="" value="1" class="sr-only peer" >
+                                            <input type="checkbox" name="is_auto_approve" value="1" class="sr-only peer" >
                                             <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
@@ -77,8 +118,7 @@
                             </div>
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea class="form-control summernote" rows="5"></textarea>
-                                <input type="hidden" name="comments">
+                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -133,7 +173,7 @@
     </div>
     @can('transaction-action')
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
                         <div class="popup-body-text deposit-action">
@@ -147,6 +187,10 @@
 @endsection
 @section('script')
     <script !src="">
+        "use strict";
+        var info = [];
+        var currency = @json($currency);
+
         (function ($) {
             "use strict";
 
@@ -193,9 +237,11 @@
                         {data: 'action', name: 'action'},
                     ]
                 });
+
             $('#filter').click(function () {
                 table.draw();
             });
+
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
 
@@ -205,7 +251,7 @@
                     method: 'GET',
                     success: function(response) {
                         $('.deposit-action').append(response)
-                        imagePreview()
+                        imagePreview();
                         $('#transaction-action-modal').modal('show');
 
                     }
@@ -213,6 +259,117 @@
             });
         })(jQuery);
 
+        $('select[name="user_id"]').on('change', function() {
+            var userId = $(this).val();
+            $('select[name="target_id"]').empty();
+            if (userId) {
+
+                var url = '{{ route("admin.withdraw.get.user.accounts", ":userId") }}';
+                url = url.replace(':userId', userId);
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+
+                        $('select[name="target_id"]').empty();
+                        $('select[name="withdraw_account"]').empty();
+                        $('select[name="target_id"]').append('<option value="">{{__('Select Account')}}</option>');
+                        // Populate forex accounts
+                        $.each(data.forexAccounts, function(key, account) {
+                            $('select[name="target_id"]').append('<option value="'+ account.login +'" data-type="forex">'+ account.login_title +' - '+ account.account_name + ' ('+ account.equity +' USD)</option>');
+                        });
+
+                        // Populate wallets
+                        $.each(data.wallets, function(key, wallet) {
+                            $('select[name="target_id"]').append('<option value="'+ wallet.wallet_id +'" data-type="wallet">'+ wallet.wallet_name +' ('+ wallet.amount +' USD)</option>');
+                        });
+
+                        $.each(data.withdrawAccounts, function(key, withdrawAccount) {
+                            if (key === 0) {
+                                $('select[name="withdraw_account"]').append('<option value="" disabled selected>Select Withdrawal Account</option>');
+                            }
+                            $('select[name="withdraw_account"]').append(
+                                '<option value="'+ withdrawAccount.id +'" data-type="withdrawal">' + withdrawAccount.method_name + '</option>'
+                            );
+                        });
+
+                    }
+                });
+            } else {
+                $('select[name="target_id"]').empty();
+                $('select[name="withdraw_account"]').empty();
+            }
+        });
+
+        // Capture the selected account and append the `data-type` to the form
+        $('body').on('change', '#tradingAccount', function (e) {
+                e.preventDefault();
+
+            var selectedOption = $(this).find('option:selected');
+            var dataType = selectedOption.data('type');
+            console.log(dataType,'dataType');
+
+            $('#account_type').val(dataType);
+        });
+
+        $("#withdrawAccountId").on('change', function (e) {
+            e.preventDefault();
+            $('.selectDetailsTbody').children().not(':first', ':second').remove();
+            var accountId = $(this).val()
+            var amount = $('.withdrawAmount').val();
+
+            if (!isNaN(accountId)) {
+                var url = '{{ route("admin.withdraw.details",['accountId' => ':accountId', 'amount' => ':amount']) }}';
+                url = url.replace(':accountId', accountId,);
+                url = url.replace(':amount', amount);
+
+                $.get(url, function (data) {
+                    info = data.info;
+                    if (info.pay_currency === currency) {
+                        $('.conversion').addClass('hidden');
+                    } else {
+                        $('.conversion').removeClass('hidden');
+                        $('#basic-addon2').text(info.pay_currency);
+                        $('#amount').trigger('keyup')
+                        $('.conversion-rate').text('1' + ' ' + currency + ' = ' + info.rate + ' ' + info.pay_currency)
+
+                    }
+                    $(data.html).insertAfter(".detailsCol");
+
+                    $('.withdrawAmountRange').text(info.range)
+                    $('.processing-time').text(info.processing_time)
+                })
+            }
+        });
+
+        $("#amount").on('keyup', function (e) {
+            "use strict"
+            e.preventDefault();
+            var amount = $(this).val()
+            var charge = info.charge_type === 'percentage' ? calPercentage(amount, info.charge) : info.charge
+            $('.withdrawAmount').text(amount)
+            $('.withdrawFee').text(charge)
+            $('.processing-time').text(info.processing_time)
+            $('.withdrawAmountRange').text(info.range)
+            $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+            $('#converted-amount').val(parseFloat((amount * info.rate).toFixed(4)).toString())
+        });
+
+        $("#converted-amount").on('keyup', function (e) {
+            "use strict"
+            e.preventDefault();
+            var converted_amount = $(this).val();
+            var amount = parseFloat((converted_amount / info.rate).toFixed(4)).toString();
+            $('#amount').val(amount);
+            var charge = info.charge_type === 'percentage' ? calPercentage(amount, info.charge) : info.charge
+            $('.withdrawAmount').text(amount)
+            $('.withdrawFee').text(charge)
+            $('.processing-time').text(info.processing_time)
+            $('.withdrawAmountRange').text(info.range)
+            $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+        });
 
     </script>
 @endsection

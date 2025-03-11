@@ -651,10 +651,11 @@ class WithdrawController extends Controller
         ], [
             'target_id.required' => __('Kindly select the account to withdraw'),
         ]);
-        
+
         $approvalCause = str_replace(['{', '}'], ['<', '>'], $request->approval_cause ?? 'none');
 
         if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 

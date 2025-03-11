@@ -19,7 +19,7 @@
                 <div class="card-body p-6 pt-3">
                     <form action="{{ route('admin.withdraw.now') }}" method="post">
                         @csrf
-                        <input type="hidden" name="account_type" value="{{ old('account_type') }}">
+                        <input type="hidden" name="account_type" id="account_type" value="{{ old('account_type') }}">
                         <div class="grid grid-cols-12 items-center gap-5">
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('User') }}</label>
@@ -37,7 +37,10 @@
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
-                                <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required></select>
+                                <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required>
+                                    <option value="">{{__('Select Account')}}</option>
+                                </select>
+
                                 @error('target_id')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
@@ -115,8 +118,7 @@
                             </div>
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea class="form-control summernote" rows="5"></textarea>
-                                <input type="hidden" name="approval_cause">
+                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -251,34 +253,7 @@
                         $('.deposit-action').append(response)
                         imagePreview();
                         $('#transaction-action-modal').modal('show');
-                        $('.summernote').summernote({
-                            height: 150,
-                            minHeight: null,
-                            maxHeight: null,
-                            focus: true,
-                            dialogsInBody: true,
-                            toolbar: [
-                                ['style', ['style']],
-                                ['font', ['bold', 'underline', 'clear']],
-                                ['fontsize', ['fontsize']],
-                                ['color', ['color']],
-                                ['para', ['ul', 'ol', 'paragraph']],
-                                ['table', ['table']],
-                                ['insert', ['link', 'picture', 'video']],
-                                ['view', ['fullscreen', 'codeview', 'help']]
-                            ],
-                            callbacks: {
-                                onChange: function(contents, $editable) {
 
-                                    var markupStr = contents;
-                                    markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
-
-                                    var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
-
-                                    html_container.val(markupStr);
-                                }
-                            }
-                        });
                     }
                 });
             });
@@ -300,7 +275,7 @@
 
                         $('select[name="target_id"]').empty();
                         $('select[name="withdraw_account"]').empty();
-
+                        $('select[name="target_id"]').append('<option value="">{{__('Select Account')}}</option>');
                         // Populate forex accounts
                         $.each(data.forexAccounts, function(key, account) {
                             $('select[name="target_id"]').append('<option value="'+ account.login +'" data-type="forex">'+ account.login_title +' - '+ account.account_name + ' ('+ account.equity +' USD)</option>');
@@ -329,13 +304,14 @@
         });
 
         // Capture the selected account and append the `data-type` to the form
-        $("#tradingAccount").on('change', function (e) {
-            e.preventDefault();
+        $('body').on('change', '#tradingAccount', function (e) {
+                e.preventDefault();
 
             var selectedOption = $(this).find('option:selected');
             var dataType = selectedOption.data('type');
+            console.log(dataType,'dataType');
 
-            $('input[name="account_type"]').val(dataType);
+            $('#account_type').val(dataType);
         });
 
         $("#withdrawAccountId").on('change', function (e) {

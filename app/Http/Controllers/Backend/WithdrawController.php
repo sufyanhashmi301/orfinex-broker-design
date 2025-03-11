@@ -634,7 +634,7 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
         $input = $request->all();
-
+//dd($input);
         $targetId = get_hash($input['target_id']);
         $targetType = TxnTargetType::Wallet->value;
 

@@ -67,16 +67,19 @@
             {{ __('Access Now') }}
         </button>
     </form>
-    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
-            {{ __('Powered by') }}
+    @if(!setting('is_whitelabel', 'global'))
+        <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+            <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                {{ __('Powered by') }}
+            </div>
         </div>
-    </div>
-    <div class="text-center mt-3">
-        <a href="https://brokeret.com/" target="__blank">
-            <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-8 inline-flex" alt="">
-        </a>
-    </div>
+
+        <div class="text-center mt-3">
+            <a href="https://brokeret.com/" target="__blank">
+                <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-8 inline-flex" alt="">
+            </a>
+        </div>
+    @endif
 </div>
 
 @endsection

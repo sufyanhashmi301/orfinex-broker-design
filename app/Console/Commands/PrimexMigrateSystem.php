@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Country;
 use App\Models\Ranking;
 use Illuminate\Console\Command;
 use DB;
@@ -92,16 +93,17 @@ class PrimexMigrateSystem extends Command
                     $this->info("Email already exists: name: {$backupUser->f_name}, Email: {$existingUser->email}");
                     $duplicateCount++;
                 } else {
-                    // Handle splitting the name into first_name and last_name
-                    $nameParts = explode(' ', $backupUser->f_name);
-                    $firstName = array_shift($nameParts); // Take the first part as the first name
-                    $lastName = implode(' ', $nameParts); // Combine the remaining parts as the last name
-
-                    // If lastName is empty, set it to firstName
-                    if (empty($lastName)) {
-                        $lastName = $firstName;
-                    }
-
+//                    // Handle splitting the name into first_name and last_name
+//                    $nameParts = explode(' ', $backupUser->f_name);
+//                    $firstName = array_shift($nameParts); // Take the first part as the first name
+//                    $lastName = implode(' ', $nameParts); // Combine the remaining parts as the last name
+//
+//                    // If lastName is empty, set it to firstName
+//                    if (empty($lastName)) {
+//                        $lastName = $firstName;
+//                    }
+                    $firstName = $backupUser->f_name;
+                    $lastName = $backupUser->l_name;
                     // Generate a unique username
                     $usernameBase = $firstName;
                     $username = $usernameBase . rand(1000, 9999);
@@ -109,23 +111,27 @@ class PrimexMigrateSystem extends Command
                         $username = $usernameBase . rand(1000, 9999);
                     }
 
-                    // Determine KYC level
-//                    $kyc = match($backupUser->verification_level) {
-//                        'Not Verified' => 0,
-//                        'Verified (Basic Level)' => 1,
-//                        'Verified (Advanced Level)' => 4,
-//                        'IB Level' => 5,
-//                        default => 0,
-//                    };
-                    $kyc = 4;
-                    $countryName = 'United Arab Emirates';
-                    $phone = '';
+                    $kyc=0;
+                    if($backupUser->kyc == 1){
+                        $kyc = 4;
+                    }
+
+                    $country = Country::where('name',$backupUser->country)->first();
+                    if($country){
+                        $countryName = $country->name;
+                    }else{
+                        $countryName = 'United Arab Emirates';
+                    }
 //                    dd($backupUser->phone);
                     if($backupUser->phone){
                         $phone = $backupUser->phone;
                     }else{
                         $phone = '+971';
                     }
+
+                    $createdAt = isset($backupUser->register_time)
+                        ? Carbon::createFromFormat('Y-m-d', $backupUser->register_time)->format('Y-m-d H:i')
+                        : Carbon::now()->format('Y-m-d');
                     // Assign user attributes
                     $user = new User();
                     $user->ranking_id = $rank->id;
@@ -148,13 +154,12 @@ class PrimexMigrateSystem extends Command
                     $user->account_limit = 10;
 
                     $user->kyc_credential = null; // Assuming kyc_credential is a JSON field
-                    $user->created_at = Carbon::now();
+                    $user->created_at = $createdAt;
                     $user->updated_at = Carbon::now();
-                    $user->password = Hash::make('primex12345');  // Default password
+                    $user->password = Hash::make('ggccfx@12345');  // Default password
 
                     // Save the user
                     $user->save();
-
                     // Increment the created users counter
                     $createdUsersCount++;
                 }

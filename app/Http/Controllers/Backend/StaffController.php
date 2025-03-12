@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
+use App\Models\IbGroup;
 use App\Traits\ImageUpload;
 use Arr;
 use DB;
@@ -56,7 +57,7 @@ class StaffController extends Controller
         $activeStaffCount = Admin::where('status', true)->count();
         $inactiveStaffCount = Admin::where('status', false)->count();
         $users = User::all(); // Fetch all users
-        $attachedUsers = $staff->users; // Fetch attached users
+       
         if ($request->ajax()) {
             $status = $request->status; // active or inactive
             if ($status == 'active') {
@@ -70,7 +71,7 @@ class StaffController extends Controller
             ]);
         }
 
-        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users'));
 
     }
 
@@ -157,9 +158,9 @@ class StaffController extends Controller
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
         $users = User::all(); // Fetch all users
-        $attachedUsers = $staff->users; // Fetch attached users
+        $ibGroups = IbGroup::all(); // Fetch all IB groups
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users','ibGroups'))->render();
     }
 
 
@@ -200,6 +201,7 @@ class StaffController extends Controller
                 'status'      => 'boolean',
                 'department'  => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
+                'ib_groups'   => 'nullable|array',
             ]);
 
             if ($validator->fails()) {
@@ -232,7 +234,14 @@ class StaffController extends Controller
             }
 
             if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
-                $staff->users()->sync($request->input('user_ids', []));
+                $staff->ibGroups()->sync($request->input('ib_groups', []));
+    
+                // Assign users based on the selected IB groups
+                $ibGroupIds = $request->input('ib_groups', []);
+                $users = User::whereIn('ib_group_id', $ibGroupIds)->get();
+    
+                // Sync users to the staff member
+                $staff->users()->sync($users->pluck('id')->toArray());
             }
 
             return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);

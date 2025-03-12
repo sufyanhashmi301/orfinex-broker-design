@@ -408,17 +408,19 @@
 {{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
                 <div class="input-area">
-                    <label class="form-label">{{ __('Attach Users:') }}</label>
-                    <select name="user_ids[]" class="select2 form-control w-full" multiple>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}" @if($attachedUsers->contains($user->id)) selected @endif>
-                                {{ $user->full_name }}({{ $user->email }})
+                    <label class="form-label">{{ __('IB Groups:') }}</label>
+                    <select name="ib_groups[]" class="select2 form-control w-full" multiple>
+                        @foreach($ibGroups as $ibGroup)
+                            <option value="{{ $ibGroup->id }}"
+                                {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
+                                {{ $ibGroup->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
             @endif
-{{--            </div>--}}
+
+            {{--            </div>--}}
 
             <div class="action-btns text-right mt-10">
                 <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">

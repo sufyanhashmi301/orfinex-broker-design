@@ -90,7 +90,7 @@ class RebateRuleController extends Controller
     public function update(StoreRebateRuleRequest $request, $id)
     {
 //        try {
-            $rebateRule = $this->rebateRuleService->updateRebateRule($id, $request);
+        $rebateRule = $this->rebateRuleService->updateRebateRule($id, $request);
 
             // Sync IB Groups with the Rebate Rule
 //            $rebateRule->ibGroups()->sync($request->ib_groups);

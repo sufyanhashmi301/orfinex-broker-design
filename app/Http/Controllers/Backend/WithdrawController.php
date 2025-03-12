@@ -545,11 +545,20 @@ class WithdrawController extends Controller
     }
 
     public function addWithdraw()
-    {
-        $users = User::where('status',1)->get();
-        return view('backend.withdraw.add_withdraw', compact('users'));
+{
+    $loggedInUser = auth()->user();
+
+    // Fetch users based on the logged-in user's role
+    if ($loggedInUser->hasRole('Super-Admin')) {
+        // If Super-Admin, show all users
+        $users = User::where('status', 1)->get();
+    } else {
+        // If not Super-Admin, show only assigned users
+        $users = $loggedInUser->users()->where('status', 1)->get();
     }
 
+    return view('backend.withdraw.add_withdraw', compact('users'));
+}
     public function getUserAccounts($userId)
     {
         $userId = get_hash($userId);

@@ -26,7 +26,7 @@
                                 <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User" required>
                                     <option value="">{{ __('Select User') }}</option>
                                     @foreach($users as $user)
-                                        <option value="{{the_hash($user->id) }}"  class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                        <option value="{{ the_hash($user->id) }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
                                             {{ $user->full_name }} ({{ $user->email }})
                                         </option>
                                     @endforeach
@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="error !text-xs conversion-rate"></div>
                             </div>
-                            <div class="col-span-12 -mx-3">
+                            <div class="withdrawDetailsTable hidden col-span-12 -mx-3">
                                 <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                     <tbody class="selectDetailsTbody">
                                         <tr class="border-b border-slate-100 dark:border-slate-700 detailsCol">
@@ -217,8 +217,8 @@
                     ajax: {
                         url: "{{ route('admin.withdraw.history') }}",
                         data: function (d) {
+                            d.user_id = $('select[name="user_id"]').val(); 
                             d.email = $('#email').val();
-                            d.status = $('#status').val();
                             d.status = $('#status').val();
                             d.created_at = $('#created_at').val();
 
@@ -237,7 +237,9 @@
                         {data: 'action', name: 'action'},
                     ]
                 });
-
+                $('select[name="user_id"]').on('change', function() {
+        table.draw();
+    });
             $('#filter').click(function () {
                 table.draw();
             });
@@ -316,6 +318,9 @@
 
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
+
+            $('.withdrawDetailsTable').removeClass('hidden');
+
             $('.selectDetailsTbody').children().not(':first', ':second').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();

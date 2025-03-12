@@ -448,20 +448,24 @@ class DepositController extends Controller
     public function addDeposit()
     {
         $gateways = DepositMethod::where('status', 1)->get();
-        $users = User::where('status',1)->get();
-
-//        dd($gateways);
-//        $clientIp = request()->ip();
-//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $loggedInUser = auth()->user();
+    
+        // Fetch users based on the logged-in user's role
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            // If Super-Admin, show all users
+            $users = User::where('status', 1)->get();
+        } else {
+            // If not Super-Admin, show only assigned users
+            $users = $loggedInUser->users()->where('status', 1)->get();
+        }
+    
         $forexAccounts = ForexAccount::with('schema')->traderType()
-//            ->where('user_id', auth()->id())
             ->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
-        return view('backend.deposit.add_deposit', compact( 'users','gateways', 'forexAccounts'));
+    
+        return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
     }
     public function getUserAccounts($userId)
     {

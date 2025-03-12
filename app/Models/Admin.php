@@ -11,7 +11,9 @@ use Spatie\Permission\Traits\HasRoles;
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
-
+    protected $casts = [
+        'ib_groups' => 'array',
+    ];
     protected $fillable = [
         'employee_id',
         'department_id',
@@ -39,6 +41,7 @@ class Admin extends Authenticatable
         'google2fa_secret',
         'two_fa',
         'session_expiry',
+        'ib_groups',
         'key',
     ];
     public function users()

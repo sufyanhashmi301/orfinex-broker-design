@@ -8,7 +8,7 @@
             <div class="card-body p-5">
                 <div class="flex space-x-3 rtl:space-x-reverse">
                     <div class="flex-none">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
             <div class="card-body p-5">
                 <div class="flex space-x-3 rtl:space-x-reverse">
                     <div class="flex-none">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
             <div class="card-body p-5">
                 <div class="flex space-x-3 rtl:space-x-reverse">
                     <div class="flex-none">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
             <div class="card-body p-5">
                 <div class="flex space-x-3 rtl:space-x-reverse">
                     <div class="flex-none">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>

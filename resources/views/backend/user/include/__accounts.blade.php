@@ -1,10 +1,17 @@
 <div class="tab-pane space-y-5 fade" id="pills-transfer" role="tabpanel" aria-labelledby="pills-transfer-tab">
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Account') }}</h4>
-            <a href="javascript:;" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
-                {{ __('Add New') }}
-            </a>
+        <div class="card-header flex items-center justify-between">
+            <h4 class="card-title text-lg font-semibold">{{ __('Account') }}</h4>
+            <div class="flex space-x-2">
+                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                    type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
+                    <i class="fa fa-plus"></i> {{ __('Add New') }}
+                </a>
+                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                    type="button" data-bs-toggle="modal" data-bs-target="#addmt5Account">
+                    <i class="fa fa-user-plus"></i> {{ __('Account Mapping') }}
+                </a>
+            </div>
         </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -65,6 +72,9 @@
 
 <!-- Modal for Account details -->
 @include('backend.investment.modal.__account_details')
+
+<!-- Modal for Change Account Type -->
+@include('backend.investment.modal.__change_type')
 
 <!-- Modal for Account leverage -->
 @include('backend.investment.modal.__change_leverage')

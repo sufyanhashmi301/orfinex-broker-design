@@ -202,6 +202,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
 
+    Route::get('login/{id}', [StaffController::class, 'staffLogin'])->name('staff.login');
+    Route::post('stop-impersonation', [StaffController::class, 'stopImpersonation'])->name('stop.impersonation');
+
+
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
@@ -214,6 +218,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
     });
 
@@ -231,6 +236,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
 
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::post('forex-account-check', [AccountsController::class, 'forexAccountCheckNow'])->name('forex-account-check');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
     Route::get('pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');
@@ -292,6 +298,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('action-now', 'actionNow')->name('action.now');
 
         Route::get('add', 'addWithdraw')->name('add');
+        Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
+        Route::get('details/{accountId}/{amount?}', 'details')->name('details');
+        Route::post('now', 'withdrawNow')->name('now');
     });
 
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
@@ -391,6 +400,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
+        Route::get('customer/kycpermissions', 'kycPermissions')->name('customer.kycpermissions');
 
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');

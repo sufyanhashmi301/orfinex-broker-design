@@ -6,8 +6,8 @@
 <div class="card">
     <div class="card-body p-6">
         @include('backend.setting.site_setting.include.form.__open_action')
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-5">
             @foreach( $fields['elements'] as $key => $field)
                 @if($field['type'] == 'file')
                     <div class="input-area">
@@ -41,12 +41,12 @@
                         <div class="flex items-center space-x-7 flex-wrap">
                             <div class="success-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input 
-                                        type="radio" 
+                                    <input
+                                        type="radio"
                                         id="active1-{{$key}}"
-                                        class="hidden site-currency-type" 
-                                        name="{{$field['name']}}" 
-                                        value="fiat" 
+                                        class="hidden site-currency-type"
+                                        name="{{$field['name']}}"
+                                        value="fiat"
                                         @checked(oldSetting($field['name'],$section) == 'fiat')
                                     >
                                     <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
@@ -57,12 +57,12 @@
                             </div>
                             <div class="success-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input 
-                                        type="radio" 
+                                    <input
+                                        type="radio"
                                         id="disable0-{{$key}}"
-                                        class="hidden site-currency-type" 
-                                        name="{{$field['name']}}" 
-                                        value="crypto" 
+                                        class="hidden site-currency-type"
+                                        name="{{$field['name']}}"
+                                        value="crypto"
                                         @checked(oldSetting($field['name'],$section) == 'crypto')
                                     >
                                     <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
@@ -115,7 +115,7 @@
                             </select>
                         @endif
 
-                      
+
                         @if($field['name'] == 'home_redirect')
                             <select name="{{$field['name']}}" class="form-control w-100" id="">
                             <option @selected(oldSetting($field['name'],$section) == '/')
@@ -129,7 +129,7 @@
                                 @endif
                             @endforeach
                             </select>
-                            
+
                         @endif
 
                         @if($field['name'] == 'session_expiry')
@@ -145,11 +145,27 @@
                                     </option>
                                 @endforeach
                             </select>
-                            
+
                         @endif
 
-                        
 
+
+                    </div>
+                @elseif($field['type'] == 'checkbox')
+                    <div class="input-area">
+                        <label for="" class="invisible">{{ __($field['label']) }}</label>
+                        <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="form-label !w-auto pt-0 !mb-0">
+                                {{ __($field['label']) }}
+                            </div>
+                            <div class="form-switch ps-0" style="line-height:0;">
+                                <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <input type="checkbox" name="{{$field['name']}}" value="1" @if(oldSetting($field['name'],$section)) checked @endif class="sr-only peer">
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 @else
                     <div class="input-area">
@@ -166,7 +182,7 @@
                             />
 
                             @if($field['data'] == 'double')
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1"> 
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
                                     {{ setting('site_currency','global') }}
                                 </span>
                             @endif

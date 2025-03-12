@@ -25,14 +25,24 @@
                     @endif
                 </div>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-5">
-                    <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
-                        {{ $staff->email }}
-                    </div>
-                    <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:phone"></iconify-icon>
-                        {{ $staff->phone }}
-                    </div>
+                    @if($staff->email)
+                        <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
+                            {{ $staff->email }}
+                        </div>
+                    @endif
+                    @if($staff->phone)
+                        <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:phone"></iconify-icon>
+                            {{ $staff->phone }}
+                        </div>
+                    @endif
+                    @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin') && $staff->getRoleNames()->first() != 'Super-Admin')
+                        <a href="{{ route('admin.staff.login', $staff->id) }}" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-add-outline"></iconify-icon>
+                            {{ __('Login As Staff') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -398,17 +408,19 @@
 {{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
                 <div class="input-area">
-                    <label class="form-label">{{ __('Attach Users:') }}</label>
-                    <select name="user_ids[]" class="select2 form-control w-full" multiple>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}" @if($attachedUsers->contains($user->id)) selected @endif>
-                                {{ $user->full_name }}({{ $user->email }})
+                    <label class="form-label">{{ __('IB Groups:') }}</label>
+                    <select name="ib_groups[]" class="select2 form-control w-full" multiple>
+                        @foreach($ibGroups as $ibGroup)
+                            <option value="{{ $ibGroup->id }}"
+                                {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
+                                {{ $ibGroup->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
             @endif
-{{--            </div>--}}
+
+            {{--            </div>--}}
 
             <div class="action-btns text-right mt-10">
                 <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">

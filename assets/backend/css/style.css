@@ -40,7 +40,7 @@
 }
 .admin-notifications > button iconify-icon {
     --tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity));
+    color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
 }
 .admin-notifications > button:hover {
     border-radius: 0.5rem;

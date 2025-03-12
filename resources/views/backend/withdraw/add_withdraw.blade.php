@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="error !text-xs conversion-rate"></div>
                             </div>
-                            <div class="col-span-12 -mx-3">
+                            <div class="withdrawDetailsTable hidden col-span-12 -mx-3">
                                 <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                     <tbody class="selectDetailsTbody">
                                         <tr class="border-b border-slate-100 dark:border-slate-700 detailsCol">
@@ -316,6 +316,9 @@
 
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
+
+            $('.withdrawDetailsTable').removeClass('hidden');
+
             $('.selectDetailsTbody').children().not(':first', ':second').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();

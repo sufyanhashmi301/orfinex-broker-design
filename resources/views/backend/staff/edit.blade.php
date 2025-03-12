@@ -408,17 +408,19 @@
 {{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
                 <div class="input-area">
-                    <label class="form-label">{{ __('Risk Profile Tags:') }}</label>
-                    <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple>
-                        @foreach($ibGroups as $user)
-                            <option value="{{ $user->id }}">
-                                {{ $user->name }}
+                    <label class="form-label">{{ __('IB Groups:') }}</label>
+                    <select name="ib_groups[]" class="select2 form-control w-full" multiple>
+                        @foreach($ibGroups as $ibGroup)
+                            <option value="{{ $ibGroup->id }}"
+                                {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
+                                {{ $ibGroup->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
             @endif
-{{--            </div>--}}
+
+            {{--            </div>--}}
 
             <div class="action-btns text-right mt-10">
                 <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">
@@ -431,4 +433,44 @@
     </div>
 
 </form>
+
+@if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
+
+<div class="card">
+    <div class="card-body px-6 pt-3">
+        <div class="overflow-x-auto -mx-6">
+            <div class="inline-block min-w-full align-middle">
+                <div class="overflow-hidden">
+                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                        <thead>
+{{--                        <tr>--}}
+{{--                            <th scope="col" class="table-th">{{ __('Name') }}</th>--}}
+{{--                            <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
+{{--                        </tr>--}}
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                        @forelse($attachedUsers as $user)
+                            <tr>
+                                <td class="table-td">
+                                    <strong>{{$user->full_name }}</strong>
+                                </td>
+                                <td class="table-td">
+                                    <strong>{{$user->email }}</strong>
+                                </td>
+                            </tr>
+                        @empty
+                        <tr>
+                            <td class="table-td text-center" colspan="2">
+                                {{__('No User Attached!')}}
+                            </td>
+                        </tr>
+                        @endforelse
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+@endif
 

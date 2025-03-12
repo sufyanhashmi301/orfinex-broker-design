@@ -40,6 +40,7 @@ class UserImport extends Model
 		'country',
 		'email',
 		'phone',
+		'kyc',
 		'leverage',
 		'register_time'
 	];

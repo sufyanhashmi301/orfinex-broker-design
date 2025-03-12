@@ -37,7 +37,7 @@ class SyncForexAccountsViaEmail extends Command
         // Process users in chunks
         User::where('id', '>=', $startingUserId)
             ->orderBy('id')
-            ->chunk(100, function ($users) {
+            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
@@ -72,7 +72,11 @@ class SyncForexAccountsViaEmail extends Command
 //                                }
 
                             $schema = ForexSchema::find(1);
-                            $accountType = 'real';
+                            if (strpos($accountData['group'], 'demo') !== false) {
+                                $accountType = 'demo';
+                            } else {
+                                $accountType = 'real';
+                            }
                             if ($schema) {
 
                                 // Prepare the account data to be saved

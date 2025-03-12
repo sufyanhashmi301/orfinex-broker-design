@@ -35,9 +35,9 @@ class SyncForexAccountsViaEmail extends Command
         }
 
         // Process users in chunks
-        User::where('id', '>=', $startingUserId)
-            ->orderBy('id')
-            ->chunk(50, function ($users) {
+        $users = User::where('id', '>=', $startingUserId)
+            ->orderBy('id')->take(35)->get();
+//            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
@@ -113,7 +113,7 @@ class SyncForexAccountsViaEmail extends Command
                         $this->error("Failed to fetch account data for user {$user->email}.");
                     }
                 }
-            });
+//            });
 
         $this->info("Forex accounts synchronization completed.");
     }

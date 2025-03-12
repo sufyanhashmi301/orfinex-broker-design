@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
+use App\Models\IbGroup;
 use App\Traits\ImageUpload;
 use Arr;
 use DB;
@@ -26,6 +27,7 @@ use Spatie\Permission\Models\Role;
 class StaffController extends Controller
 {
     use ImageUpload;
+
     /**
      * Display a listing of the resource.
      *
@@ -109,7 +111,7 @@ class StaffController extends Controller
             'date_of_joining' => 'nullable|date',
             'work_phone' => 'nullable|string',
             'phone' => 'nullable|string',
-             'key' => 'nullable|string',
+            'key' => 'nullable|string',
         ]);
 
         // If validation fails, return error
@@ -147,7 +149,7 @@ class StaffController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return string
      */
     public function edit($id)
@@ -157,16 +159,17 @@ class StaffController extends Controller
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
         $users = User::all(); // Fetch all users
+        $ibGroups = IbGroup::all(); // Fetch all IB groups
         $attachedUsers = $staff->users; // Fetch attached users
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'attachedUsers'))->render();
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function update(Request $request, $id)
@@ -178,28 +181,15 @@ class StaffController extends Controller
         }
 
         try {
-//            if (auth()->user()->hasRole('Super-Admin')) {
-//                $validator = Validator::make($request->all(), [
-//                    'key' => 'required|string',
-//                ]);
-//
-//                if ($validator->fails()) {
-//                    return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
-//                }
-//
-//                $staff->update(['key' => $request->input('key')]);
-//
-//                return response()->json(['success' => true, 'message' => 'Key updated successfully.']);
-//            }
-
             $validator = Validator::make($request->all(), [
-                'name'        => 'required',
-                'email'       => 'required|email|unique:admins,email,' . $id,
-                'password'    => 'nullable|same:confirm-password',
-                'role'        => ['nullable', Rule::notIn('Super-Admin')],
-                'status'      => 'boolean',
-                'department'  => 'nullable|exists:departments,id',
+                'name' => 'required',
+                'email' => 'required|email|unique:admins,email,' . $id,
+                'password' => 'nullable|same:confirm-password',
+                'role' => ['nullable', Rule::notIn('Super-Admin')],
+                'status' => 'boolean',
+                'department' => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
+                'ib_groups' => 'nullable|array',
             ]);
 
             if ($validator->fails()) {
@@ -207,7 +197,6 @@ class StaffController extends Controller
             }
 
             $input = $request->all();
-//            dd($input);
             $input['employee_id'] = $request->input('employee_id') ?: null;
             $input['department_id'] = $request->input('department_id') ?: null;
             $input['designation_id'] = $request->input('designation_id') ?: null;
@@ -223,6 +212,7 @@ class StaffController extends Controller
                 $logo = self::imageUploadTrait($request->file('avatar'), $staff->avatar);
                 $input['avatar'] = $logo;
             }
+            // Save IB Groups
 
             $staff->update($input);
 
@@ -232,7 +222,29 @@ class StaffController extends Controller
             }
 
             if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
-                $staff->users()->sync($request->input('user_ids', []));
+                // Get all users belonging to the given IB groups
+//                dd($request->input('ib_groups', []));
+                $allUsers = [];
+                $ibUsers = User::whereIn('ib_group_id', $request->input('ib_groups', []))->pluck('id')->toArray();
+//                dd($ibUsers);
+                if (empty($ibUsers)) {
+                    $staff->users()->sync($allUsers);
+                } else {
+
+                    // Get the complete referral network (including IB users)
+                    $networkUsers = $this->getReferralNetwork($ibUsers);
+
+                    // Merge IB group users with their referral network
+                    $allUsers = array_unique(array_merge($ibUsers, $networkUsers));
+
+                    // Sync users with the staff member
+                    $staff->users()->sync($allUsers);
+
+                    $input['ib_groups'] = $request->input('ib_groups', []);
+                    $staff->update($input);
+
+
+                }
             }
 
             return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
@@ -240,6 +252,24 @@ class StaffController extends Controller
             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Recursive function to fetch referral network.
+     */
+    private function getReferralNetwork(array $parentIds)
+    {
+        $allUsers = [];
+//dd($parentIds);
+        while (!empty($parentIds)) {
+            // Get all users who have these parent IDs as ref_id
+            $users = User::whereIn('ref_id', $parentIds)->pluck('id')->toArray();
+            $allUsers = array_merge($allUsers, $users);
+            $parentIds = $users; // Continue recursion with new found users
+        }
+
+        return $allUsers;
+    }
+
 
     protected function invalidateUserSession($user)
     {
@@ -265,7 +295,7 @@ class StaffController extends Controller
     {
 
         $user = Admin::find($id);
-        if (null == $user->google2fa_secret){
+        if (null == $user->google2fa_secret) {
             $google2fa = app('pragmarx.google2fa');
             $secret = $google2fa->generateSecretKey();
             //dd($user,$google2fa,$secret);
@@ -276,10 +306,12 @@ class StaffController extends Controller
 
         return view('backend.staff.security.index', compact('user'));
     }
+
     public function twoFaPin()
     {
         return view('backend.auth.two_fa_pin');
     }
+
     public function twoFa()
     {
 
@@ -385,7 +417,6 @@ class StaffController extends Controller
         notify()->error('Unauthorized action.');
         return redirect()->back();
     }
-
 
 
 }

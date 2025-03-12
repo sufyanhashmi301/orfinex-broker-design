@@ -236,6 +236,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
 
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::post('forex-account-check', [AccountsController::class, 'forexAccountCheckNow'])->name('forex-account-check');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
     Route::get('pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');
@@ -297,6 +298,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('action-now', 'actionNow')->name('action.now');
 
         Route::get('add', 'addWithdraw')->name('add');
+        Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
+        Route::get('details/{accountId}/{amount?}', 'details')->name('details');
+        Route::post('now', 'withdrawNow')->name('now');
     });
 
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {

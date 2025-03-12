@@ -102,8 +102,8 @@ class PrimexMigrateSystem extends Command
 //                    if (empty($lastName)) {
 //                        $lastName = $firstName;
 //                    }
-                    $firstName = $backupUser->f_name;
-                    $lastName = $backupUser->l_name;
+                    $firstName = $backupUser->f_name ?? 'user';
+                    $lastName = $backupUser->l_name ?? $firstName;
                     // Generate a unique username
                     $usernameBase = $firstName;
                     $username = $usernameBase . rand(1000, 9999);

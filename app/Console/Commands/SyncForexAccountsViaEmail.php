@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 use App\Enums\ForexAccountStatus;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\ForexApiService;
 use Illuminate\Console\Command;
@@ -23,28 +24,27 @@ class SyncForexAccountsViaEmail extends Command
 
     public function handle()
     {
-        // Get the last created ForexAccount
-        $lastForexAccount = ForexAccount::orderBy('id', 'desc')->first();
 
-        if ($lastForexAccount) {
-            $startingUserId = $lastForexAccount->user_id;
+
+        // Get the last created ForexAccount
+//        $lastForexAccount = ForexAccount::orderBy('id', 'desc')->first();
+
+        $startingUserId = setting('last_user_id_sync_via_email_command', $section = null, $default = 1230);
             $this->info("Starting from user with ID {$startingUserId}.");
-        } else {
-            $startingUserId = 1;
-            $this->info("No previous forex account found. Starting from the first user.");
-        }
+
 
         // Process users in chunks
-        $users = User::where('id', '>=', $startingUserId)
+        $users = User::where('id', '>=', ++$startingUserId)
             ->orderBy('id')->take(35)->get();
 //            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
                     $response = $this->forexApiService->getUserByEmail(['email' => $email]);
-                    $this->info("Api Response of ID:  {$user->id} for user {$user->email} get successfully.");
 
                     if ($response['success'] && isset($response['result']) && is_array($response['result'])) {
+                        $this->info("Api Response of ID:  {$user->id} for user {$user->email} get successfully.");
+                        Setting::set('last_user_id_sync_via_email_command', $user->id);
                         foreach ($response['result'] as $accountData) {
 
                             // Check if the account with the same login already exists

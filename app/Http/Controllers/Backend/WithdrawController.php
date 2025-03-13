@@ -546,8 +546,64 @@ class WithdrawController extends Controller
 
     public function addWithdraw()
     {
+
         $users = User::where('status',1)->get();
-        return view('backend.withdraw.add_withdraw', compact('users'));
+
+        $withdrawMethods = WithdrawMethod::where('status', true)
+            ->where(function($query) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All');
+            })->get();
+
+        return view('backend.withdraw.add_withdraw', compact('users', 'withdrawMethods'));
+    }
+
+    public function withdrawAccount($id)
+    {
+        $withdrawMethod = WithdrawMethod::find($id);
+
+        if ($withdrawMethod) {
+            return view('backend.withdraw.include.__account', compact('withdrawMethod'))->render();
+        }
+
+        return '';
+    }
+
+    public function accountStore(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'withdraw_method_id' => 'required',
+            'method_name' => 'required',
+            'credentials' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), __('Error'));
+            return redirect()->back();
+        }
+
+        $input = $request->all();
+
+        $credentials = $input['credentials'];
+        foreach ($credentials as $key => $value) {
+            if (is_file($value['value'])) {
+                $credentials[$key]['value'] = self::imageUploadTrait($value['value']);
+            }
+        }
+
+        $data = [
+            'user_id' => get_hash($input['user_id']),
+            'withdraw_method_id' => $input['withdraw_method_id'],
+            'method_name' => $input['method_name'],
+            'credentials' => json_encode($credentials),
+        ];
+
+        WithdrawAccount::create($data);
+
+        notify()->success(__('Successfully Withdraw Account Created'), 'success');
+
+        return redirect()->back();
     }
 
     public function getUserAccounts($userId)

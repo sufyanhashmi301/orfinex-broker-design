@@ -46,7 +46,15 @@
                                 @enderror
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Withdraw Account') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="flex justify-between">
+                                        {{ __('Withdraw Account') }}
+                                        <a href="javascript:;" class="inline-flex items-center btn-link withdraw_account_btn hidden">
+                                            <iconify-icon icon="lucide:plus" class="text-base ltr:mr-1 rtl:ml-1 font-light"></iconify-icon>
+                                            {{ __('Add New') }}
+                                        </a>
+                                    </span>
+                                </label>
                                 <select name="withdraw_account" id="withdrawAccountId" class="select2 form-control w-full" data-placeholder="Select Account" required></select>
                                 @error('withdraw_account')
                                     <span class="error">{{ $message }}</span>
@@ -184,6 +192,10 @@
             </div>
         </div>
     @endcan
+
+    {{-- modal for withdraw account--}}
+    @include('backend.withdraw.modals.__new_account')
+
 @endsection
 @section('script')
     <script !src="">
@@ -262,8 +274,10 @@
         $('select[name="user_id"]').on('change', function() {
             var userId = $(this).val();
             $('select[name="target_id"]').empty();
-            if (userId) {
+            $('select[name="withdraw_account"]').empty();
+            $('.withdrawDetailsTable').addClass('hidden');
 
+            if (userId) {
                 var url = '{{ route("admin.withdraw.get.user.accounts", ":userId") }}';
                 url = url.replace(':userId', userId);
 
@@ -275,6 +289,7 @@
 
                         $('select[name="target_id"]').empty();
                         $('select[name="withdraw_account"]').empty();
+
                         $('select[name="target_id"]').append('<option value="">{{__('Select Account')}}</option>');
                         // Populate forex accounts
                         $.each(data.forexAccounts, function(key, account) {
@@ -294,6 +309,12 @@
                                 '<option value="'+ withdrawAccount.id +'" data-type="withdrawal">' + withdrawAccount.method_name + '</option>'
                             );
                         });
+
+                        if(data.withdrawAccounts.length === 0) {
+                            $('.withdraw_account_btn').removeClass('hidden');
+                        }else{
+                            $('.withdraw_account_btn').addClass('hidden');
+                        }
 
                     }
                 });
@@ -372,6 +393,33 @@
             $('.processing-time').text(info.processing_time)
             $('.withdrawAmountRange').text(info.range)
             $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+        });
+
+        $('body').on('click', '.withdraw_account_btn', function (e) {
+            "use strict"
+            e.preventDefault();
+
+            var userId = $('select[name="user_id"]').val();
+            $('#userId__input').val(userId);
+
+            $('#newWithdrawAccountModal').modal('show');
+        })
+
+        $("body").on('change', '#selectMethod', function (e) {
+            "use strict"
+            e.preventDefault();
+
+            //$('.manual-row').empty();
+            $('.selectMethodRow').children().not(':first').remove();
+
+            var id = $(this).val()
+
+            var url = '{{ route("admin.withdraw.account",":id") }}';
+            url = url.replace(':id', id);
+            $.get(url, function (data) {
+                $(data).insertAfter(".selectMethodCol");
+                imagePreview()
+            })
         });
 
     </script>

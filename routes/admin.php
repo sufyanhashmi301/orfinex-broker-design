@@ -236,7 +236,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
 
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
-    Route::post('forex-account-check', [AccountsController::class, 'forexAccountCheckNow'])->name('forex-account-check');
+    Route::post('forex-account-map', [AccountsController::class, 'forexAccountMap'])->name('forex-account-map');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
     Route::get('pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');

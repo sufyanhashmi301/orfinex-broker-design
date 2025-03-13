@@ -301,6 +301,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');
         Route::post('now', 'withdrawNow')->name('now');
+        Route::get('method/{id}', 'withdrawAccount')->name('account');
+        Route::post('account/store', 'accountStore')->name('account.store');
     });
 
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {

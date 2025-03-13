@@ -20,8 +20,8 @@
                     <form action="{{ route('admin.withdraw.now') }}" method="post">
                         @csrf
                         <input type="hidden" name="account_type" id="account_type" value="{{ old('account_type') }}">
-                        <div class="grid grid-cols-12 items-center gap-5">
-                            <div class="input-area col-span-12">
+                        <div class="space-y-5">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('User') }}</label>
                                 <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User" required>
                                     <option value="">{{ __('Select User') }}</option>
@@ -35,7 +35,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
                                 <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required>
                                     <option value="">{{__('Select Account')}}</option>
@@ -45,14 +45,22 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Withdraw Account') }}</label>
+                            <div class="input-area">
+                                <label for="" class="form-label">
+                                    <span class="flex justify-between">
+                                        {{ __('Withdraw Account') }}
+                                        <a href="javascript:;" class="inline-flex items-center btn-link withdraw_account_btn hidden">
+                                            <iconify-icon icon="lucide:plus" class="text-base ltr:mr-1 rtl:ml-1 font-light"></iconify-icon>
+                                            {{ __('Add New') }}
+                                        </a>
+                                    </span>
+                                </label>
                                 <select name="withdraw_account" id="withdrawAccountId" class="select2 form-control w-full" data-placeholder="Select Account" required></select>
                                 @error('withdraw_account')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount"
@@ -71,7 +79,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12 conversion hidden">
+                            <div class="input-area conversion hidden">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input
@@ -102,7 +110,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Comments') }}</label>
+                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
+                            </div>
+                            <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
@@ -115,10 +127,6 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="input-area col-span-12">
-                                <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -184,6 +192,10 @@
             </div>
         </div>
     @endcan
+
+    {{-- modal for withdraw account--}}
+    @include('backend.withdraw.modals.__new_account')
+
 @endsection
 @section('script')
     <script !src="">
@@ -217,7 +229,7 @@
                     ajax: {
                         url: "{{ route('admin.withdraw.history') }}",
                         data: function (d) {
-                            d.user_id = $('select[name="user_id"]').val(); 
+                            d.user_id = $('select[name="user_id"]').val();
                             d.email = $('#email').val();
                             d.status = $('#status').val();
                             d.created_at = $('#created_at').val();
@@ -264,8 +276,10 @@
         $('select[name="user_id"]').on('change', function() {
             var userId = $(this).val();
             $('select[name="target_id"]').empty();
-            if (userId) {
+            $('select[name="withdraw_account"]').empty();
+            $('.withdrawDetailsTable').addClass('hidden');
 
+            if (userId) {
                 var url = '{{ route("admin.withdraw.get.user.accounts", ":userId") }}';
                 url = url.replace(':userId', userId);
 
@@ -277,6 +291,7 @@
 
                         $('select[name="target_id"]').empty();
                         $('select[name="withdraw_account"]').empty();
+
                         $('select[name="target_id"]').append('<option value="">{{__('Select Account')}}</option>');
                         // Populate forex accounts
                         $.each(data.forexAccounts, function(key, account) {
@@ -296,6 +311,12 @@
                                 '<option value="'+ withdrawAccount.id +'" data-type="withdrawal">' + withdrawAccount.method_name + '</option>'
                             );
                         });
+
+                        if(data.withdrawAccounts.length === 0) {
+                            $('.withdraw_account_btn').removeClass('hidden');
+                        }else{
+                            $('.withdraw_account_btn').addClass('hidden');
+                        }
 
                     }
                 });
@@ -374,6 +395,33 @@
             $('.processing-time').text(info.processing_time)
             $('.withdrawAmountRange').text(info.range)
             $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+        });
+
+        $('body').on('click', '.withdraw_account_btn', function (e) {
+            "use strict"
+            e.preventDefault();
+
+            var userId = $('select[name="user_id"]').val();
+            $('#userId__input').val(userId);
+
+            $('#newWithdrawAccountModal').modal('show');
+        })
+
+        $("body").on('change', '#selectMethod', function (e) {
+            "use strict"
+            e.preventDefault();
+
+            //$('.manual-row').empty();
+            $('.selectMethodRow').children().not(':first').remove();
+
+            var id = $(this).val()
+
+            var url = '{{ route("admin.withdraw.account",":id") }}';
+            url = url.replace(':id', id);
+            $.get(url, function (data) {
+                $(data).insertAfter(".selectMethodCol");
+                imagePreview()
+            })
         });
 
     </script>

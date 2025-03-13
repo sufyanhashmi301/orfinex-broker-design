@@ -42,6 +42,7 @@ class SyncForexAccountsViaEmail extends Command
                     // Fetch account data using email
                     $email = $user->email;
                     $response = $this->forexApiService->getUserByEmail(['email' => $email]);
+                    $this->info("Api Response of ID:  {$user->id} for user {$user->email} get successfully.");
 
                     if ($response['success'] && isset($response['result']) && is_array($response['result'])) {
                         foreach ($response['result'] as $accountData) {
@@ -103,7 +104,7 @@ class SyncForexAccountsViaEmail extends Command
                                 // Save the account to the database
                                 ForexAccount::create($forexAccountData);
 
-//                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
+                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
                             } else {
                                 // Log the missing group and login
                                 $this->error("No matching ForexSchema found for group {$accountData['group']} with login {$accountData['login']}.");

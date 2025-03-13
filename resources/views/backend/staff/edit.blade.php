@@ -105,20 +105,20 @@
                             />
                         </div>
                         @if(auth()->user()->hasRole('Super-Admin'))
-                <div class="input-area">
-                    <label for="key" class="form-label">
-                        {{ __('Key:') }}
-                    </label>
-                    <input
-                        type="text"
-                        id="key"
-                        name="key"
-                        class="form-control mb-0"
-                        value="{{ $staff->key ?? '' }}"
-                        placeholder="Enter unique key"
-                    />
-                </div>
-                @endif
+                            <div class="input-area">
+                                <label for="key" class="form-label">
+                                    {{ __('Key:') }}
+                                </label>
+                                <input
+                                    type="text"
+                                    id="key"
+                                    name="key"
+                                    class="form-control mb-0"
+                                    value="{{ $staff->key ?? '' }}"
+                                    placeholder="Enter unique key"
+                                />
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="input-area">
@@ -157,13 +157,11 @@
                     <select name="department_id" class="select2 form-control w-100" id="department">
                         <option value="">Select</option>
                         @foreach($departments as $department)
-                            <option value="{{ $department->id }}"
-                                    @if($staff->departments && $staff->departments->contains($department->id)) selected @endif>
+                            <option value="{{ $department->id }}" @if($staff->department && $staff->department->id == $department->id) selected @endif>
                                 {{ $department->name }}
                             </option>
                             @foreach($department->children as $child)
-                                <option value="{{ $child->id }}"
-                                        @if($staff->departments && $staff->departments->contains($child->id)) selected @endif>
+                                <option value="{{ $child->id }}" @if($staff->department && $staff->department->id == $child->id) selected @endif>
                                     -- {{ $child->name }}
                                 </option>
                             @endforeach
@@ -176,13 +174,11 @@
                     <select name="designation_id" class="select2 form-control w-100" id="designation">
                         <option value="">Select</option>
                         @foreach($designations as $designation)
-                            <option value="{{ $designation->id }}"
-                                    @if($staff->designations && $staff->designations->contains($designation->id)) selected @endif>
+                            <option value="{{ $designation->id }}" @if($staff->designation && $staff->designation->id == $designation->id) selected @endif>
                                 {{ $designation->name }}
                             </option>
                             @foreach($designation->children as $child)
-                                <option value="{{ $child->id }}"
-                                        @if($staff->designations && $staff->designations->contains($child->id)) selected @endif>
+                                <option value="{{ $child->id }}" @if($staff->designation && $staff->designation->id == $child->id) selected @endif>
                                     -- {{ $child->name }}
                                 </option>
                             @endforeach
@@ -397,26 +393,70 @@
         </div>
     </div>
 
-        <div class="card">
-
-        <div class="card-header">
-            @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
+    <div class="card">
+        @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
+            <div class="card-header">
                 <h4 class="card-title">{{ __('Attach Users') }}</h4>
-            @endif
-        </div>
+            </div>
+        @endif
         <div class="card-body p-6">
-{{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
-                <div class="input-area">
-                    <label class="form-label">{{ __('IB Groups:') }}</label>
-                    <select name="ib_groups[]" class="select2 form-control w-full" multiple>
-                        @foreach($ibGroups as $ibGroup)
-                            <option value="{{ $ibGroup->id }}"
-                                {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
-                                {{ $ibGroup->name }}
+                <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                    <div class="input-area">
+                        <label class="form-label">{{ __('IB Groups:') }}</label>
+                        <select name="ib_groups[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
+                            <option value="all" @if(in_array('all', $staff->ib_groups ?? [])) selected @endif>
+                                {{ __('All') }}
                             </option>
-                        @endforeach
-                    </select>
+                            @foreach($ibGroups as $ibGroup)
+                                <option value="{{ $ibGroup->id }}"
+                                    {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
+                                    {{ $ibGroup->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Account Types:') }}</label>
+                        <select name="account_types[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
+                            <option value="all" @if(in_array('all', $staff->account_types ?? [])) selected @endif>
+                                {{ __('All') }}
+                            </option>
+                            @foreach($schemas as $schema)
+                                <option value="{{ $schema->id }}"
+                                    {{ in_array($schema->id, $staff->account_types ?? []) ? 'selected' : '' }}>
+                                    {{ $schema->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto -mx-6 mt-6">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                @forelse($attachedUsers as $user)
+                                    <tr>
+                                        <td class="table-td">
+                                            <strong>{{$user->full_name }}</strong>
+                                        </td>
+                                        <td class="table-td">
+                                            <strong>{{$user->email }}</strong>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td class="table-td text-center" colspan="2">
+                                            {{__('No User Attached!')}}
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -433,44 +473,4 @@
     </div>
 
 </form>
-
-@if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
-
-<div class="card">
-    <div class="card-body px-6 pt-3">
-        <div class="overflow-x-auto -mx-6">
-            <div class="inline-block min-w-full align-middle">
-                <div class="overflow-hidden">
-                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                        <thead>
-{{--                        <tr>--}}
-{{--                            <th scope="col" class="table-th">{{ __('Name') }}</th>--}}
-{{--                            <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
-{{--                        </tr>--}}
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                        @forelse($attachedUsers as $user)
-                            <tr>
-                                <td class="table-td">
-                                    <strong>{{$user->full_name }}</strong>
-                                </td>
-                                <td class="table-td">
-                                    <strong>{{$user->email }}</strong>
-                                </td>
-                            </tr>
-                        @empty
-                        <tr>
-                            <td class="table-td text-center" colspan="2">
-                                {{__('No User Attached!')}}
-                            </td>
-                        </tr>
-                        @endforelse
-                </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-@endif
 

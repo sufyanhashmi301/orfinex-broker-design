@@ -42,6 +42,7 @@ class SyncForexAccountsViaEmail extends Command
                     // Fetch account data using email
                     $email = $user->email;
                     $response = $this->forexApiService->getUserByEmail(['email' => $email]);
+                    $this->info("Api Response of ID:  {$user->id} for user {$user->email} get successfully.");
 
                     if ($response['success'] && isset($response['result']) && is_array($response['result'])) {
                         foreach ($response['result'] as $accountData) {

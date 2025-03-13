@@ -401,19 +401,38 @@
         @endif
         <div class="card-body p-6">
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
-                <div class="input-area">
-                    <label class="form-label">{{ __('IB Groups:') }}</label>
-                    <select name="ib_groups[]" class="select2 form-control w-full" multiple>
-                        @foreach($ibGroups as $ibGroup)
-                            <option value="{{ $ibGroup->id }}"
-                                {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
-                                {{ $ibGroup->name }}
+                <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                    <div class="input-area">
+                        <label class="form-label">{{ __('IB Groups:') }}</label>
+                        <select name="ib_groups[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
+                            <option value="all" @if(in_array('all', $staff->ib_groups ?? [])) selected @endif>
+                                {{ __('All') }}
                             </option>
-                        @endforeach
-                    </select>
+                            @foreach($ibGroups as $ibGroup)
+                                <option value="{{ $ibGroup->id }}"
+                                    {{ in_array($ibGroup->id, $staff->ib_groups ?? []) ? 'selected' : '' }}>
+                                    {{ $ibGroup->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Account Types:') }}</label>
+                        <select name="account_types[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
+                            <option value="all" @if(in_array('all', $staff->account_types ?? [])) selected @endif>
+                                {{ __('All') }}
+                            </option>
+                            @foreach($schemas as $schema)
+                                <option value="{{ $schema->id }}"
+                                    {{ in_array($schema->id, $staff->account_types ?? []) ? 'selected' : '' }}>
+                                    {{ $schema->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-6">
+                <div class="overflow-x-auto -mx-6 mt-6">
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">

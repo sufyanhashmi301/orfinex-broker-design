@@ -8,6 +8,8 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
 use App\Models\IbGroup;
+use App\Models\ForexSchema;
+use App\Models\ForexAccount;
 use App\Traits\ImageUpload;
 use Arr;
 use DB;
@@ -160,9 +162,10 @@ class StaffController extends Controller
         $designations = Designation::with('children')->whereNull('parent_id')->get();
         $users = User::all(); // Fetch all users
         $ibGroups = IbGroup::all(); // Fetch all IB groups
+        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
         $attachedUsers = $staff->users; // Fetch attached users
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'attachedUsers'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
     }
 
 
@@ -190,6 +193,7 @@ class StaffController extends Controller
                 'department' => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
                 'ib_groups' => 'nullable|array',
+                'account_types' => 'nullable|array',
             ]);
 
             if ($validator->fails()) {
@@ -222,29 +226,32 @@ class StaffController extends Controller
             }
 
             if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
+
                 // Get all users belonging to the given IB groups
-//                dd($request->input('ib_groups', []));
-                $allUsers = [];
-                $ibUsers = User::whereIn('ib_group_id', $request->input('ib_groups', []))->pluck('id')->toArray();
-//                dd($ibUsers);
-                if (empty($ibUsers)) {
-                    $staff->users()->sync($allUsers);
+                if (in_array('all', $request->input('ib_groups', []))) {
+                    $ibUsers = User::pluck('id')->toArray();
                 } else {
-
-                    // Get the complete referral network (including IB users)
-                    $networkUsers = $this->getReferralNetwork($ibUsers);
-
-                    // Merge IB group users with their referral network
-                    $allUsers = array_unique(array_merge($ibUsers, $networkUsers));
-
-                    // Sync users with the staff member
-                    $staff->users()->sync($allUsers);
-
-                    $input['ib_groups'] = $request->input('ib_groups', []);
-                    $staff->update($input);
-
-
+                    $ibUsers = User::whereIn('ib_group_id', $request->input('ib_groups', []))->pluck('id')->toArray();
                 }
+
+                if (in_array('all', $request->input('account_types', []))) {
+                    $accountTypeUsers = ForexAccount::with('user')->get()->pluck('user.id')->toArray();
+                } else {
+                    $accountTypeUsers = ForexAccount::whereIn('forex_schema_id', $request->input('account_types', []))->with('user')->get()->pluck('user.id')->toArray();
+                }
+
+                // Get the complete referral network (including IB users)
+                $networkUsers = $this->getReferralNetwork($ibUsers);
+
+                // Merge IB group users with their referral network
+                $allUsers = array_unique(array_merge($ibUsers, $networkUsers, $accountTypeUsers));
+
+                // Sync users with the staff member
+                $staff->users()->sync($allUsers);
+
+                $input['ib_groups'] = $request->input('ib_groups', []);
+                $input['account_types'] = $request->input('account_types', []);
+                $staff->update($input);
             }
 
 
@@ -253,9 +260,10 @@ class StaffController extends Controller
             $designations = Designation::with('children')->whereNull('parent_id')->get();
             $users = User::all(); // Fetch all users
             $ibGroups = IbGroup::all();
+            $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
             $attachedUsers = $staff->users; // Fetch attached users
 
-            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'attachedUsers'))->render();
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
 
             return response()->json([
                 'success' => true,

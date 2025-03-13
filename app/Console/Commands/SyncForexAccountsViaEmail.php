@@ -54,37 +54,40 @@ class SyncForexAccountsViaEmail extends Command
                                 continue;
                             }
 
-                            // Determine the ForexSchema and account type based on group
-//                            $schema = ForexSchema::where('real_swap_free', $accountData['group'])
-//                                ->orWhere('real_islamic', $accountData['group'])
-//                                ->orWhere('demo_swap_free', $accountData['group'])
-//                                ->orWhere('demo_islamic', $accountData['group'])
-//                                ->first();
-//
-//                            if ($schema) {
-//                                // Determine account type
-//                                if ($schema->real_swap_free == $accountData['group'] || $schema->real_islamic == $accountData['group']) {
-//                                    $accountType = 'real';
-//                                } elseif ($schema->demo_swap_free == $accountData['group'] || $schema->demo_islamic == $accountData['group']) {
-//                                    $accountType = 'demo';
-//                                } else {
-//                                    $this->error("No valid account type could be determined for group {$accountData['group']}.");
-//                                    continue;
-//                                }
 
-                            $schema = ForexSchema::find(1);
                             if (strpos($accountData['group'], 'demo') !== false) {
                                 $accountType = 'demo';
                             } else {
                                 $accountType = 'real';
                             }
+                            // Determine the ForexSchema and account type based on group
+                            $schema = ForexSchema::where('real_swap_free', $accountData['group'])
+                                ->orWhere('real_islamic', $accountData['group'])
+                                ->orWhere('demo_swap_free', $accountData['group'])
+                                ->orWhere('demo_islamic', $accountData['group'])
+                                ->first();
+
+                            if ($schema) {
+                                // Determine account type
+                                if ($schema->real_swap_free == $accountData['group'] || $schema->real_islamic == $accountData['group']) {
+                                    $accountType = 'real';
+                                } elseif ($schema->demo_swap_free == $accountData['group'] || $schema->demo_islamic == $accountData['group']) {
+                                    $accountType = 'demo';
+                                } else {
+                                    $this->error("No valid account type could be determined for group {$accountData['group']}.");
+                                    continue;
+                                }
+                            }else{
+                                $schema = ForexSchema::find(1);
+                            }
+
                             if ($schema) {
 
                                 // Prepare the account data to be saved
                                 $forexAccountData = [
                                     'forex_schema_id' => $schema->id,
                                     'login' => $accountData['login'],
-                                    'account_name' => $accountData['name'],
+                                    'account_name' => 'account-'.$accountData['login'],
                                     'account_type' => $accountType,
                                     'user_id' => $user->id,
                                     'currency' => setting('site_currency', 'global'),

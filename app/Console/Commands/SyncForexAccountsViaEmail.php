@@ -35,9 +35,9 @@ class SyncForexAccountsViaEmail extends Command
         }
 
         // Process users in chunks
-        User::where('id', '>=', $startingUserId)
-            ->orderBy('id')
-            ->chunk(100, function ($users) {
+        $users = User::where('id', '>=', $startingUserId)
+            ->orderBy('id')->take(35)->get();
+//            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
@@ -54,22 +54,30 @@ class SyncForexAccountsViaEmail extends Command
                             }
 
                             // Determine the ForexSchema and account type based on group
-                            $schema = ForexSchema::where('real_swap_free', $accountData['group'])
-                                ->orWhere('real_islamic', $accountData['group'])
-                                ->orWhere('demo_swap_free', $accountData['group'])
-                                ->orWhere('demo_islamic', $accountData['group'])
-                                ->first();
+//                            $schema = ForexSchema::where('real_swap_free', $accountData['group'])
+//                                ->orWhere('real_islamic', $accountData['group'])
+//                                ->orWhere('demo_swap_free', $accountData['group'])
+//                                ->orWhere('demo_islamic', $accountData['group'])
+//                                ->first();
+//
+//                            if ($schema) {
+//                                // Determine account type
+//                                if ($schema->real_swap_free == $accountData['group'] || $schema->real_islamic == $accountData['group']) {
+//                                    $accountType = 'real';
+//                                } elseif ($schema->demo_swap_free == $accountData['group'] || $schema->demo_islamic == $accountData['group']) {
+//                                    $accountType = 'demo';
+//                                } else {
+//                                    $this->error("No valid account type could be determined for group {$accountData['group']}.");
+//                                    continue;
+//                                }
 
+                            $schema = ForexSchema::find(1);
+                            if (strpos($accountData['group'], 'demo') !== false) {
+                                $accountType = 'demo';
+                            } else {
+                                $accountType = 'real';
+                            }
                             if ($schema) {
-                                // Determine account type
-                                if ($schema->real_swap_free == $accountData['group'] || $schema->real_islamic == $accountData['group']) {
-                                    $accountType = 'real';
-                                } elseif ($schema->demo_swap_free == $accountData['group'] || $schema->demo_islamic == $accountData['group']) {
-                                    $accountType = 'demo';
-                                } else {
-                                    $this->error("No valid account type could be determined for group {$accountData['group']}.");
-                                    continue;
-                                }
 
                                 // Prepare the account data to be saved
                                 $forexAccountData = [
@@ -86,7 +94,7 @@ class SyncForexAccountsViaEmail extends Command
                                     'credit' => $accountData['credit'], // Credit from API response
                                     'status' => ForexAccountStatus::Ongoing,
                                     'created_by' => $user->id,
-                                    'first_min_deposit_paid' => 0,
+                                    'first_min_deposit_paid' => 1,
                                     'trading_platform' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
                                     'server' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
                                     'agent' => $accountData['agent'], // Agent from API response
@@ -105,7 +113,7 @@ class SyncForexAccountsViaEmail extends Command
                         $this->error("Failed to fetch account data for user {$user->email}.");
                     }
                 }
-            });
+//            });
 
         $this->info("Forex accounts synchronization completed.");
     }

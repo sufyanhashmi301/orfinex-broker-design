@@ -247,7 +247,22 @@ class StaffController extends Controller
                 }
             }
 
-            return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+            $users = User::all(); // Fetch all users
+            $ibGroups = IbGroup::all();
+            $attachedUsers = $staff->users; // Fetch attached users
+
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'attachedUsers'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Staff updated successfully!',
+                'updatedHtml' => $updatedStaff
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }

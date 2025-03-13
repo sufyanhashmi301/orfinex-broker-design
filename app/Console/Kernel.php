@@ -10,8 +10,6 @@ use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
 
-use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
-
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;

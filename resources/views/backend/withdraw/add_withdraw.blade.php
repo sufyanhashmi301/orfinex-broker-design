@@ -20,8 +20,8 @@
                     <form action="{{ route('admin.withdraw.now') }}" method="post">
                         @csrf
                         <input type="hidden" name="account_type" id="account_type" value="{{ old('account_type') }}">
-                        <div class="grid grid-cols-12 items-center gap-5">
-                            <div class="input-area col-span-12">
+                        <div class="space-y-5">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('User') }}</label>
                                 <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User" required>
                                     <option value="">{{ __('Select User') }}</option>
@@ -35,7 +35,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
                                 <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required>
                                     <option value="">{{__('Select Account')}}</option>
@@ -45,7 +45,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">
                                     <span class="flex justify-between">
                                         {{ __('Withdraw Account') }}
@@ -60,7 +60,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
                                 <label for="" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount"
@@ -79,7 +79,7 @@
                                     <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12 conversion hidden">
+                            <div class="input-area conversion hidden">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input
@@ -110,7 +110,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Comments') }}</label>
+                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
+                            </div>
+                            <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
@@ -123,10 +127,6 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="input-area col-span-12">
-                                <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -229,7 +229,7 @@
                     ajax: {
                         url: "{{ route('admin.withdraw.history') }}",
                         data: function (d) {
-                            d.user_id = $('select[name="user_id"]').val(); 
+                            d.user_id = $('select[name="user_id"]').val();
                             d.email = $('#email').val();
                             d.status = $('#status').val();
                             d.created_at = $('#created_at').val();

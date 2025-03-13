@@ -29,13 +29,13 @@ class SyncForexAccountsViaEmail extends Command
         // Get the last created ForexAccount
 //        $lastForexAccount = ForexAccount::orderBy('id', 'desc')->first();
 
-        $startingUserId = setting('last_user_id_sync_via_email_command', $section = null, $default = 1230);
+        $startingUserId = setting('last_user_id_sync_via_email_command', $section = null, $default = 1);
             $this->info("Starting from user with ID {$startingUserId}.");
 
 
         // Process users in chunks
         $users = User::where('id', '>=', ++$startingUserId)
-            ->orderBy('id')->take(35)->get();
+            ->orderBy('id')->take(50)->get();
 //            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email

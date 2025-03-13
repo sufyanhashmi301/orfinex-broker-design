@@ -8,7 +8,7 @@
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize" id="addForexAccountLabel">
-                    {{ __('Add New Account') }}
+                    {{ __('Map Account') }}
                 </h3>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                     <svg aria-hidden="true" class="w-5 h-5 dark:fill-white" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -18,10 +18,9 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form class="space-y-5" action="{{route('admin.forex-account-check')}}" method="post" enctype="multipart/form-data">
+                <form class="space-y-5" action="{{route('admin.forex-account-map')}}" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="user_id" value="{{$user->id}}">
                     @csrf
-                    <input type="hidden" name="account_type" id="account-type" value="real">
 
                     {{-- New Input Field for Account Number --}}
                     <div class="input-area">
@@ -30,7 +29,7 @@
                     </div>
 
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Select Account Type:') }}</label>
+                        <label class="form-label" for="">{{ __('Select Account schema:') }}</label>
                         <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-schema" name="schema_id" required>
                             <option value="">
                                 {{__('Select')}}
@@ -44,6 +43,14 @@
                                     {{$plans->title}}
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Select Account Type:') }}</label>
+                        <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-type" name="account_type" required>
+                            <option value="">{{__('Select')}}</option>
+                            <option value="real">{{__('Real')}}</option>
+                            <option value="demo">{{__('Demo')}}</option>
                         </select>
                     </div>
                     <div class="input-area">
@@ -69,10 +76,10 @@
                         <label class="form-label" for="">{{ __('Account Nickname:') }}</label>
                         <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
                     </div>
-                   
+
                     <div class="mt-4">
                         <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account">
-                            {{ __('Create Account') }}
+                            {{ __('Map Account') }}
                         </button>
                         <button type="button" class="btn inline-flex justify-center btn-outline-dark" data-bs-dismiss="modal">
                             {{ __('Cancel') }}

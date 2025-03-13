@@ -103,7 +103,7 @@ class SyncForexAccountsViaEmail extends Command
                                 // Save the account to the database
                                 ForexAccount::create($forexAccountData);
 
-//                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
+                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
                             } else {
                                 // Log the missing group and login
                                 $this->error("No matching ForexSchema found for group {$accountData['group']} with login {$accountData['login']}.");

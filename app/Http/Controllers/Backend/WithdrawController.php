@@ -547,7 +547,15 @@ class WithdrawController extends Controller
     public function addWithdraw()
     {
 
-        $users = User::where('status',1)->get();
+        $loggedInUser = auth()->user();
+
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            // If Super-Admin, show all users
+            $users = User::where('status', 1)->get();
+        } else {
+            // If not Super-Admin, show only assigned users
+            $users = $loggedInUser->users()->where('status', 1)->get();
+        }
 
         $withdrawMethods = WithdrawMethod::where('status', true)
             ->where(function($query) {
@@ -602,7 +610,6 @@ class WithdrawController extends Controller
         WithdrawAccount::create($data);
 
         notify()->success(__('Successfully Withdraw Account Created'), 'success');
-
         return redirect()->back();
     }
 

@@ -160,7 +160,7 @@ class StaffController extends Controller
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        $users = User::all(); // Fetch all users
+        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
         $ibGroups = IbGroup::all(); // Fetch all IB groups
         $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
         $attachedUsers = $staff->users; // Fetch attached users
@@ -227,6 +227,8 @@ class StaffController extends Controller
 
             if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
 
+                $userIds = $request->input('user_ids', []);
+
                 // Get all users belonging to the given IB groups
                 if (in_array('all', $request->input('ib_groups', []))) {
                     $ibUsers = User::pluck('id')->toArray();
@@ -244,7 +246,7 @@ class StaffController extends Controller
                 $networkUsers = $this->getReferralNetwork($ibUsers);
 
                 // Merge IB group users with their referral network
-                $allUsers = array_unique(array_merge($ibUsers, $networkUsers, $accountTypeUsers));
+                $allUsers = array_unique(array_merge($ibUsers, $networkUsers, $accountTypeUsers, $userIds));
 
                 // Sync users with the staff member
                 $staff->users()->sync($allUsers);
@@ -258,7 +260,7 @@ class StaffController extends Controller
             $roles = Role::whereNot('name', 'Super-Admin')->get();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
-            $users = User::all(); // Fetch all users
+            $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
             $ibGroups = IbGroup::all();
             $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
             $attachedUsers = $staff->users; // Fetch attached users
@@ -292,6 +294,33 @@ class StaffController extends Controller
 
         return $allUsers;
     }
+
+    public function detachUser(Request $request, $staffId)
+    {
+
+        $staff = Admin::findOrFail($staffId);
+        $userId = $request->input('user_id');
+
+        // Detach the user from the staff
+        $staff->users()->detach($userId);
+
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
+        $ibGroups = IbGroup::all();
+        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User detach successfully!',
+            'updatedHtml' => $updatedStaff
+        ]);
+    }
+
 
 
     protected function invalidateUserSession($user)

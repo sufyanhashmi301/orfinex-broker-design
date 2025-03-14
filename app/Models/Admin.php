@@ -13,6 +13,7 @@ class Admin extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
     protected $casts = [
         'ib_groups' => 'array',
+        'account_types' => 'array',
     ];
     protected $fillable = [
         'employee_id',
@@ -42,6 +43,7 @@ class Admin extends Authenticatable
         'two_fa',
         'session_expiry',
         'ib_groups',
+        'account_types',
         'key',
     ];
     public function users()

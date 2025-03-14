@@ -152,6 +152,8 @@
                 success: function (response) {
                     if (response.success) {
                         tNotify('success', response.message);
+                        $('#edit-staff-body').html(response.updatedHtml);
+                        $('.select2').select2();
                     } else {
                         tNotify('error', response.message);
                     }

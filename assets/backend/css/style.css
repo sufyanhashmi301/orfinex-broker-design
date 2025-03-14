@@ -169,3 +169,10 @@
     --tw-bg-opacity: 1;
     background-color: rgb(30 41 59 / var(--tw-bg-opacity));
 }
+
+.note-group-select-from-files {
+    display: none;
+}
+.note-modal-footer {
+    height: 70px;
+}

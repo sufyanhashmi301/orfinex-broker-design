@@ -23,10 +23,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('sync:forex-accounts-via-email')->everyThreeMinutes();
+//        $schedule->command('sync:forex-accounts-via-email')->everyThreeMinutes();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
-        $schedule->command('rebate:distribution')->everyFiveMinutes();
+//        $schedule->command('rebate:distribution')->everyFiveMinutes();
 
     }
 

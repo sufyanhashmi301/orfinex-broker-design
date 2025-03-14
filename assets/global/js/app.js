@@ -854,7 +854,7 @@
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
+        ['insert', ['link', 'picture', 'insertImageURL']],
         ['view', ['fullscreen', 'codeview', 'help']]
     ],
     callbacks: {
@@ -866,6 +866,16 @@
             var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
 
             html_container.val(markupStr);
+        },
+        onImageLinkInsert: function(url) {
+            var $img = $('<img>').attr({ src: url });
+
+            $img.css({
+                width: '100%',
+                height: 'auto'
+            });
+
+            $(this).summernote('insertNode', $img[0]);
         }
     }
   });

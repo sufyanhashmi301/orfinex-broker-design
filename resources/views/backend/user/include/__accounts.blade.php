@@ -5,7 +5,7 @@
             <div class="flex space-x-2">
                 <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
                     type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
-                    <i class="fa fa-plus"></i> {{ __('Add New') }}
+                    <i class="fa fa-plus"></i> {{ __('Add New Account') }}
                 </a>
                 <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
                     type="button" data-bs-toggle="modal" data-bs-target="#addmt5Account">
@@ -75,6 +75,9 @@
 
 <!-- Modal for Change Account Type -->
 @include('backend.investment.modal.__change_type')
+
+<!-- Modal for Change Account schema -->
+@include('backend.investment.modal.__change_schema')
 
 <!-- Modal for Account leverage -->
 @include('backend.investment.modal.__change_leverage')

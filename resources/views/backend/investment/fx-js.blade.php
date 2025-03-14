@@ -314,4 +314,24 @@ $('body').on('click', '#submit-forex-schema', function () {
     }
 });
 
+$('body').on('click', '.dropdown-update-account-type', function () {
+        // Set the login value in the modal
+        $('#update-account-type-modal-login').text($(this).data('login'));
+        $('#update-account-type-modal-login').val($(this).data('login'));
+
+        // Set the selected value in the dropdown
+        $('#account-type').val($(this).data('account_type'));
+    });
+
+$('body').on('click', '#submit-account-type', function () {
+    var accountType = $('#account-type').val();
+    if (accountType) {
+        var btn = $(this);
+        btn.prop('disabled', true);
+        let formData = new FormData();
+        formData.append('login', $('#update-account-type-modal-login').val());
+        formData.append('account_type', accountType);  // Updated field
+        update_user_info(formData, btn);
+    }
+});
 </script>

@@ -97,8 +97,8 @@
             <p class="text-lg text-center text-slate-600 dark:text-slate-100">
                 {{ __('This feature is not currently associated with your account or plan. To unlock this feature, please contact us to upgrade your account or activate it.') }}
                 <span class="text-sm block mt-2">
-                    {{ __('For assistance, reach out to our support team or visit ') }}
-                    <a href="https://brokeret.com/" class="btn-link" target="_blank">{{ __('www.brokeret.com') }}</a>
+                    {{ __('For assistance, reach out to our support team or visit') }}
+                    <a href="https://brokeret.com/" class="btn-link" target="_blank">www.brokeret.com</a>
                 </span>
             </p>
         </div>
@@ -117,7 +117,7 @@
                 {{ __('This feature is not currently associated with your account or plan. To unlock this feature, please contact us to upgrade your account or activate it.') }}
                 <span class="text-sm block mt-2">
                     {{ __('For assistance, reach out to our support team or visit ') }}
-                    <a href="https://brokeret.com/" class="btn-link" target="_blank">{{ __('www.brokeret.com') }}</a>
+                    <a href="https://brokeret.com/" class="btn-link" target="_blank">www.brokeret.com</a>
                 </span>
             </p>
         </div>
@@ -136,7 +136,7 @@
                 {{ __('This feature is not currently associated with your account or plan. To unlock this feature, please contact us to upgrade your account or activate it.') }}
                 <span class="text-sm block mt-2">
                     {{ __('For assistance, reach out to our support team or visit ') }}
-                    <a href="https://brokeret.com/" class="btn-link" target="_blank">{{ __('www.brokeret.com') }}</a>
+                    <a href="https://brokeret.com/" class="btn-link" target="_blank">www.brokeret.com</a>
                 </span>
             </p>
         </div>

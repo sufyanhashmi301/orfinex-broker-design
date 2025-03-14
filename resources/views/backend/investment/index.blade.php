@@ -196,8 +196,8 @@
         </div>
     </div>
     <!-- Modal for Account details -->
+    @include('backend.investment.modal.__change_schema')
     @include('backend.investment.modal.__change_type')
-    
     <!-- Modal for Account details -->
     @include('backend.investment.modal.__account_details')
 

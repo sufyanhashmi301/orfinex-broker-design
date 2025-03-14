@@ -423,7 +423,7 @@
 
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')
-    @include('backend.user.include.__forex_mt5_account')
+    @include('backend.user.include.__forex_account_mapping')
 
     {{-- Modal for Add or Subtract Bonus --}}
     @include('backend.user.include.__bonus')

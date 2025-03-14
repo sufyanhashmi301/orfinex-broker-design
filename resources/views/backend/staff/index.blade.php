@@ -64,13 +64,21 @@
     @can('staff-edit')
         @include('backend.staff.modal.__edit_staff')
     @endcan
-    <!-- Modal for Edit Staff-->
 
     <!-- Delete Confirmation Modal -->
     @include('backend.staff.include.__delete')
 
+    {{-- Detach User Modal--}}
+    @include('backend.staff.modal.__detach_user')
 
+@endsection
 
+@section('style')
+    <style>
+        .dataTables_wrapper {
+            min-height: unset !important;
+        }
+    </style>
 @endsection
 
 @section('script')
@@ -81,7 +89,7 @@
 
         $('.staffList-close-btn').click(function(){
             $('#staff-list__container, .mobile-close-overlay').removeClass('in');
-        })
+        });
 
         $('body').on('click', '#create-staff', function (event) {
             "use strict";
@@ -93,6 +101,14 @@
             $.get(createStaffRoute, function (data) {
                 $('#edit-staff-body').append(data.html);
                 $('#loader_placeholder').addClass('hidden');
+
+                $('.select2').select2();
+                $('.flatpickr').flatpickr();
+                $(".dateOfBirth").flatpickr({
+                    dateFormat: "d.m.Y",
+                    maxDate: "15.12.2017"
+                });
+
             });
 
         });
@@ -125,6 +141,28 @@
                 $('#edit-staff-body').append(data);
                 $('#loader_placeholder').addClass('hidden');
                 $('.select2').select2();
+                $('.flatpickr').flatpickr();
+                $(".dateOfBirth").flatpickr({
+                    dateFormat: "d.m.Y",
+                    maxDate: "15.12.2017"
+                });
+
+                $('.data-table').DataTable().destroy();
+                $(".data-table").DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    lengthChange: false,
+                    info: true,
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:"
+                    },
+                });
+
             });
         });
 
@@ -154,6 +192,27 @@
                         tNotify('success', response.message);
                         $('#edit-staff-body').html(response.updatedHtml);
                         $('.select2').select2();
+                        $('.flatpickr').flatpickr();
+                        $(".dateOfBirth").flatpickr({
+                            dateFormat: "d.m.Y",
+                            maxDate: "15.12.2017"
+                        });
+
+                        $('.data-table').DataTable().destroy();
+                        $(".data-table").DataTable({
+                            dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                            lengthChange: false,
+                            info: true,
+                            language: {
+                                lengthMenu: "Show _MENU_ entries",
+                                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                                paginate: {
+                                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                                },
+                                search: "Search:"
+                            },
+                        });
                     } else {
                         tNotify('error', response.message);
                     }
@@ -207,10 +266,68 @@
             });
         });
 
-        $(".dateOfBirth").flatpickr({
-            dateFormat: "d.m.Y",
-            maxDate: "15.12.2017"
+        $('body').on('click', '.userDetachBtn', function (e) {
+            e.preventDefault();
+            let userId = $(this).data('user-id');
+            let staffId = $(this).data('staff-id');
+            var name = $(this).data('name');
+
+            var url = '{{ route("admin.staff.detachUser", ":staffId") }}';
+            url = url.replace(':staffId', staffId);
+            $('#detachUserForm').attr('action', url);
+
+            $('#userIdInput').val(userId);
+            $('.name').html(name);
+            $('#detachUserModal').modal('show');
         });
+
+        // Handle the form submission using AJAX
+        $('#detachUserForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#detachUserModal').modal('hide');
+
+            var formData = $(this).serialize();
+
+            // Perform the AJAX request
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Handle the response on success
+                    tNotify('success', response.message);
+                    $('#edit-staff-body').html(response.updatedHtml);
+                    $('.select2').select2();
+                    $('.flatpickr').flatpickr();
+                    $(".dateOfBirth").flatpickr({
+                        dateFormat: "d.m.Y",
+                        maxDate: "15.12.2017"
+                    });
+
+                    $('.data-table').DataTable().destroy();
+                    $(".data-table").DataTable({
+                        dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                        lengthChange: false,
+                        info: true,
+                        language: {
+                            lengthMenu: "Show _MENU_ entries",
+                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                            paginate: {
+                                previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                                next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                            },
+                            search: "Search:"
+                        },
+                    });
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors (if any)
+                    tNotify('error', 'An error occurred while detaching the user.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
 
     </script>
 @endsection

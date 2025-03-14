@@ -506,7 +506,7 @@ class   AccountsController extends Controller
         $schemas = ForexSchema::all();
 
         // Return the view with the fetched data
-        return view('backend.investment.modal.__change_type_render', compact('forexTrading', 'schemas'));
+        return view('backend.investment.modal.__change_schema_render', compact('forexTrading', 'schemas'));
     }
 
 
@@ -731,7 +731,10 @@ class   AccountsController extends Controller
         if ($request->forex_schema_id) {
             return $this->updateForexSchema($request);
         }
-
+        if ($request->account_type) {
+            return $this->updateAccountType($request);
+        }
+ 
         if ($request->main_password) {
             return $this->resetMainPassword($request);
         }
@@ -886,5 +889,21 @@ class   AccountsController extends Controller
         // Send mail notification
         $this->mailNotify($user->email, $mailType, $shortcodes);
     }
+    public function updateAccountType(Request $request)
+{
+    $request->validate([
+        'login' => ['required', 'integer'],
+        'account_type' => ['required', 'in:real,demo'],
+    ]);
+
+    $updated = ForexAccount::where('login', $request->login)
+        ->update(['account_type' => $request->account_type]);
+
+    if ($updated) {
+        return response()->json(['success' => __('Successfully updated your account type.'), 'reload' => true]);
+    } else {
+        return response()->json(['error' => __('Failed to update account type. Please try again.')], 400);
+    }
+}
 
 }

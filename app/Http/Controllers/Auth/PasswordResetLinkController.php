@@ -57,10 +57,12 @@ class PasswordResetLinkController extends Controller
             'token' => $token,
             'created_at' => Carbon::now(),
         ]);
+        $user = User::where('email',$request->email)->first();
 
         $token = route('password.reset', ['token' => $token, 'email' => $request->email]);
 
         $shortcodes = [
+            '[[full_name]]' => $user->full_name,
             '[[token]]' => $token,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),

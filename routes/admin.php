@@ -204,6 +204,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::get('login/{id}', [StaffController::class, 'staffLogin'])->name('staff.login');
     Route::post('stop-impersonation', [StaffController::class, 'stopImpersonation'])->name('stop.impersonation');
+    Route::post('staff/{staffId}/detach-user', [StaffController::class, 'detachUser'])->name('staff.detachUser');
 
 
     //===============================  Plans Management ==================================
@@ -568,8 +569,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::resource('swap-multi-level', MultiLevelController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbol-groups', SymbolGroupController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
-    Route::post('symbols/store', [SymbolController::class, 'store']);
-    Route::post('all-symbols/store', [SymbolController::class, 'storeAllSymbols']);
+    Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
+    Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
+    Route::get('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 

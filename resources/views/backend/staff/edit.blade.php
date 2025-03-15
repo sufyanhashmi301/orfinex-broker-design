@@ -276,7 +276,7 @@
                     <input
                         type="text"
                         name="date_of_birth"
-                        class="form-control dateOfBirth"
+                        class="form-control flatpicket dateOfBirth"
                         value="{{ $staff->date_of_birth }}"
                         placeholder="2006-12-19"
                     >
@@ -430,29 +430,47 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Attach Users:') }}</label>
+                        <select name="user_ids[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}" @if($attachedUsers->contains($user->id)) selected @endif>
+                                    {{ $user->full_name }}({{ $user->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-6 mt-6">
+                <div class="overflow-x-auto -mx-6 dashcode-data-table mt-6">
+                    <span class=" col-span-8  hidden"></span>
+                    <span class="  col-span-4 hidden"></span>
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden">
-                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
+                                <thead class="bg-slate-200 dark:bg-slate-700">
+                                    <tr>
+                                        <th scope="col" class="table-th">{{ __('User') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Actions') }}</th>
+                                    </tr>
+                                </thead>
                                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                @forelse($attachedUsers as $user)
-                                    <tr>
-                                        <td class="table-td">
-                                            <strong>{{$user->full_name }}</strong>
-                                        </td>
-                                        <td class="table-td">
-                                            <strong>{{$user->email }}</strong>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td class="table-td text-center" colspan="2">
-                                            {{__('No User Attached!')}}
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                    @foreach($attachedUsers as $user)
+                                        <tr>
+                                            <td class="table-td">
+                                                <strong>{{ $user->full_name }}</strong>
+                                            </td>
+                                            <td class="table-td">
+                                                <strong class="lowercase">{{$user->email }}</strong>
+                                            </td>
+                                            <td class="table-td">
+                                                <button class="action-btn userDetachBtn" data-user-id="{{ $user->id }}" data-staff-id="{{ $staff->id }}" data-name="{{ $user->full_name }}" type="button">
+                                                    <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -473,4 +491,3 @@
     </div>
 
 </form>
-

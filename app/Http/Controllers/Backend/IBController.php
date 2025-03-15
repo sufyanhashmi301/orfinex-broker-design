@@ -5,9 +5,16 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
+use App\Models\IbGroup;
 use App\Models\IbQuestion;
 use App\Models\IbSchema;
+use App\Exports\ApprovedIbExport;
+use App\Exports\PendingIbExport;
+use App\Exports\RejectedIbExport;
+use App\Exports\IbExport;
+use App\Models\RebateRule;
 use App\Models\User;
+use App\Models\UserIbRule;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -15,6 +22,8 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class IBController extends Controller
 {
@@ -24,6 +33,10 @@ class IBController extends Controller
 
     public function __construct(ForexApiService $forexApiService)
     {
+        $this->middleware('permission:ib-list|ib-action|ib-form-manage|advertisement-material-edit', ['only' => ['index', 'update','IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
+         $this->middleware('permission:ib-list', ['only' => ['IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
+         $this->middleware('permission:ib-form-manage', ['only' => ['saveForm']]);
+         $this->middleware('permission:ib-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
     }
 
@@ -42,8 +55,9 @@ class IBController extends Controller
     public function edit($id)
     {
         $kyc = IbQuestion::find($id);
+        $fields = json_decode($kyc->fields, true);
 
-        return view('backend.ib.edit', compact('kyc'));
+        return view('backend.ib.edit', compact('kyc', 'fields'));
     }
 
     public function update(Request $request, $id)
@@ -83,71 +97,85 @@ class IBController extends Controller
         return redirect()->route('admin.ib-form.index');
     }
 
+
+
+    public function export(Request $request, $type)
+    {
+        switch ($type) {
+            case 'approved':
+                return Excel::download(new ApprovedIbExport($request), 'approved-ib.xlsx');
+            case 'pending':
+                return Excel::download(new PendingIbExport($request), 'pending-ib.xlsx');
+            case 'rejected':
+                return Excel::download(new RejectedIbExport($request), 'rejected-ib.xlsx');
+            default:
+                return Excel::download(new IbExport($request), 'ib.xlsx');
+        }
+    }
+
+
     public function IbPendingList(Request $request)
     {
         if ($request->ajax()) {
 
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::PENDING)->latest();
+            $data->applyFilters($filters);
 //            dd($data);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.pending');
+        $ibGroups = IbGroup::where('status', 1)->get();
+
+        return view('backend.ib.pending',compact('ibGroups'));
     }
 
     public function IbApprovedList(Request $request)
     {
         if ($request->ajax()) {
-
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+            $data->applyFilters($filters);
+
 //            dd($data);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.approved');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.approved',compact('ibGroups'));
     }
 
     public function IbRejectedList(Request $request)
     {
         if ($request->ajax()) {
 
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::REJECTED)->latest();
+            $data->applyFilters($filters);
 //            dd($data);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -158,37 +186,43 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.rejected');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.rejected',compact('ibGroups'));
     }
 
     public function IbAllList(Request $request)
     {
         if ($request->ajax()) {
+             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+             $data = User::latest();
+             $data->applyFilters($filters);
 
-            $data = User::latest();
+            // $data = User::latest();
 //            dd($data);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
+//                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
+//                ->editColumn('username', function ($request) {
+//                    return safe($request->username);
+//                })
+//                ->addColumn('ib_group', function ($user) {
+//                    return view('backend.ib.include.__action', ['user' => $user]);
+//                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['username','email', 'ib_status', 'action'])
                 ->make(true);
         }
-        return view('backend.ib.all');
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.all',compact('ibGroups'));
     }
 
     public function answerView(User $user)
@@ -201,71 +235,80 @@ class IBController extends Controller
 
     public function approveIbMember(Request $request)
     {
-//        dd($request->all());
-        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
-//       dd($userID);
+        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
         $isReload = ($request->get('reload')) ? $request->get('reload') : false;
 
         $user = User::find($userID);
+
         if (!blank($user)) {
-//            if ($user->status == UserStatus::INACTIVE) {
-//                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
-//            }
-            if ($user->ib_status == IBStatus::APPROVED) {
-                $message = __('User has already a member of IB Program');
+            $ibGroup = !empty($request->ib_group_id) ? (int)$request->ib_group_id : null;
+
+            // Validation: Check if the provided IB group is different
+            if ($user->ib_group_id === $ibGroup) {
+                $message = __('The provided IB Group is the same as the current one. No changes made.');
                 if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
+                    return response()->json(['title' => 'No Changes', 'error' => $message, 'reload' => false]);
                 } else {
-                    notify()->error($message, 'Error Log');
+                    notify()->info($message, 'No Changes');
                     return redirect()->back();
                 }
             }
-            $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
-            if (!$ibSchema) {
-                return false;
-            }
-            $group = $ibSchema->group;
-//            dd($group);
-            $responseLogin =  $this->createForexAccount($user, $group);
-//            dd($responseLogin);
-            if ($responseLogin) {
-                $user->ib_login = $responseLogin;
-                $user->ib_status = IBStatus::APPROVED;
-                $user->save();
 
-                add_child_agent($user);
+            // Update user status and IB group
+            $user->ib_status = IBStatus::APPROVED;
+            $user->ib_group_id = $ibGroup;
+            $user->save();
 
-                $shortcodes = [
-                    '[[full_name]]' => $user->full_name,
-                    '[[email]]' => $user->email,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                    '[[status]]' => IBStatus::APPROVED,
-                ];
-                $this->mailNotify($user->email, 'ib_action', $shortcodes);
-                $this->smsNotify('ib_action', $shortcodes, $user->phone);
-                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
-                $message = __('User has been successfully approved as IB Member');
-                if ($request->ajax()) {
-                    return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
-                } else {
-                    notify()->success($message, 'IB added');
-                    return redirect()->back();
-                }
+            // Add or Remove Rebate Rules
+            $this->manageUserRebateRules($user, $ibGroup);
+
+            // Notify the user
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::APPROVED,
+            ];
+            $this->mailNotify($user->email, 'ib_action', $shortcodes);
+            $this->smsNotify('ib_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+
+            $message = __('User has been successfully approved as IB Member');
+
+            if ($request->ajax()) {
+                return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
             } else {
-                $message = __('some error occurred.please try again');
-                if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
-                } else {
-                    notify()->error($message, 'Error Log');
-
-                    return redirect()->back();
-                }
+                notify()->success($message, 'IB added');
+                return redirect()->back();
             }
         }
-        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
+        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
     }
+    protected function manageUserRebateRules($user, $ibGroup)
+    {
+        // Remove existing rebate rules for the user
+        UserIbRule::where('user_id', $user->id)->delete();
+
+        if ($ibGroup) {
+            // Fetch all rebate rules associated with the IB Group
+            $rebateRules = RebateRule::whereHas('ibGroups', function ($query) use ($ibGroup) {
+                $query->where('ib_groups.id', $ibGroup);
+            })->get();
+
+            // Assign rebate rules to the user
+            foreach ($rebateRules as $rebateRule) {
+                UserIbRule::create([
+                    'user_id' => $user->id,
+                    'ib_group_id' => $ibGroup,
+                    'rebate_rule_id' => $rebateRule->id,
+//                    'sub_ib_share' => $rebateRule->rebate_amount // Example: Use rebate amount as sub_ib_share; modify as needed
+                ]);
+            }
+        }
+    }
+
 
     public function updateIbMember(Request $request)
     {
@@ -413,6 +456,7 @@ class IBController extends Controller
 
     }
 
+
     public function updateMIbMember(Request $request)
     {
         $input = $request->all();
@@ -532,7 +576,15 @@ class IBController extends Controller
             $resResult = $response['result'];
             $mt5Login = $resResult['login'];
             if ($mt5Login && $resResult['responseCode'] == 0) {
+                $rightData =  [
+                    "login" => $mt5Login,
+                    "rights" => 'USER_RIGHT_ENABLED',
+
+                ];
+                $this->forexApiService->setUserRights($rightData);
+
                 return $mt5Login;
+
             }
             return false;
         }
@@ -548,7 +600,12 @@ class IBController extends Controller
         $user = User::find($userID);
         if (!blank($user)) {
             $user->ib_status = IBStatus::REJECTED;
+            $user->ib_group_id = null;
             $user->save();
+
+            $ibGroup = null;
+            $this->manageUserRebateRules($user, $ibGroup);
+
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }
     }
@@ -563,9 +620,7 @@ class IBController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $data = [

@@ -26,9 +26,10 @@ class IBSchemaController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
-//        $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
+       $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
+       $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
+       $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
+       $this->middleware('permission:schema-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -70,12 +71,12 @@ class IBSchemaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $input = $request->all();
+
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         $finalData = [
             'title' => $input['title'],
@@ -124,13 +125,14 @@ class IBSchemaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $schema = IbSchema::find($id);
         $input = $request->all();
+
+        $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
 //dd($input);
         $finalData = [
             'title' => $input['title'],

@@ -3,10 +3,10 @@
     {{ __('Withdraw Account Edit') }}
 @endsection
 @section('content')
-    
+
     <div class="flex justify-end flex-wrap items-center mb-5">
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary inline-flex items-center">
+            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
                 {{ __('Withdraw Accounts') }}
             </a>
         </div>
@@ -16,8 +16,7 @@
             <div class="card">
                 <div class="card-body p-6">
                     <div class="progress-steps-form">
-                        <form action="{{ route('user.withdraw.account.update',$withdrawAccount->id) }}" method="post"
-                              enctype="multipart/form-data">
+                        <form action="{{ route('user.withdraw.account.update',$withdrawAccount->id) }}" method="post" enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
 
@@ -26,7 +25,7 @@
                                 <div class="input-area relative">
                                     <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name:') }}</label>
                                     <input type="text" name="method_name" class="form-control !text-lg"
-                                           placeholder="eg. Withdraw Method - USD"
+                                           placeholder="{{ __('eg. Withdraw Method - USD') }}"
                                            value="{{ $withdrawAccount->method_name }}">
                                 </div>
 
@@ -71,7 +70,7 @@
                                             <label for="exampleFormControlInput1" class="form-label">{{ $key }}</label>
                                             <textarea class="form-control !text-lg" rows="5"
                                                           @if($field['validation'] == 'required') required
-                                                          @endif placeholder="Send Money Note"
+                                                          @endif placeholder="{{ __('Send Money Note') }}"
                                                           name="credentials[{{$key}}][value]">{{$field['value']}}</textarea>
                                         </div>
 
@@ -96,8 +95,9 @@
 
                             </div>
                             <div class="buttons text-right mt-4">
-                                <button type="submit" class="btn inline-flex justify-center btn-dark">
-                                    {{ __('Update Withdraw Account') }}<i class="anticon anticon-double-right"></i>
+                                <button type="submit" class="btn inline-flex justify-center btn-primary">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
+                                    {{ __('Update Withdraw Account') }}
                                 </button>
                             </div>
                         </form>

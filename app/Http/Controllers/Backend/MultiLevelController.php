@@ -7,8 +7,10 @@ use App\Http\Requests\StoreSwapBasedAccountRequest;
 use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
+use App\Models\IbGroup;
 use App\Models\ReferralRelationship;
 use App\Models\Symbol;
+use App\Models\PlatformGroup;
 use App\Services\SwapBasedAccountService;
 use Illuminate\Http\Request;
 
@@ -67,13 +69,14 @@ class MultiLevelController extends Controller
             return redirect()->back();
         }
     }
-        public function edit($id)
+    public function edit($id)
 
     {
-        $multiLevelAccount = MultiLevel::findOrFail($id);
+        $multiLevelAccount = MultiLevel::with('rebateRule', 'ibGroups')->findOrFail($id);
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
-
-        return view('backend.multi_level.include.__editSwapBasForm', compact('multiLevelAccount','rebateRules'))->render();
+        $ibGroups = IbGroup::where('status', 1)->orderBy('name', 'asc')->get();
+        $platformGroups = PlatformGroup::where('status', 1)->where('risk_book_id', 0)->get();
+        return view('backend.multi_level.include.__editSwapBasForm', compact('multiLevelAccount','rebateRules', 'ibGroups', 'platformGroups'))->render();
 
     }
 
@@ -91,6 +94,7 @@ class MultiLevelController extends Controller
             notify()->error(__('Level already taken.'));
             return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
         }
+        // $multiLevel->ibGroups()->sync($data['ib_group_id']);
 //        dd($request->validated());
         $this->swapBasedAccountService->update($swapBasedAccount, $request->validated(),$id);
         notify()->success(__('Multi Level Account updated successfully.'));

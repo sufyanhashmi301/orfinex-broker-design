@@ -44,6 +44,160 @@ class IpnController extends Controller
         }
     }
 
+    public function bridgerpayIpn(Request $request)
+    {
+        // Get all the input data from the request
+        $input = $request->all();
+
+        // Extract the order ID and webhook type from the request
+        $orderId = $input['data']['order_id'] ?? null;
+        $webhookType = $input['webhook']['type'] ?? null;
+        $txnInfo = Transaction::tnx($orderId);
+        $txnInfo->update([
+            'approval_cause' => __('received'),
+        ]);
+        // Check if order_id is present
+        if (!$orderId) {
+            $txnInfo = Transaction::tnx($orderId);
+            $txnInfo->update([
+                'approval_cause' =>  __('invalid order ID'),
+            ]);
+            return redirect()
+                ->route('user.deposit.now')
+                ->with('error', __('Invalid order ID.'));
+        }
+
+        // Handle different webhook types (approved, declined)
+        switch ($webhookType) {
+            case 'approved':
+                // Call the payment success method
+                self::paymentSuccess($orderId);
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('success', __('Payment approved and processed successfully.'));
+
+            case 'declined':
+
+                $txnInfo = Transaction::tnx($orderId);
+                $txnInfo->update([
+                'status' => TxnStatus::Failed,
+                    'approval_cause' =>  __('invalid declined'),
+
+                ]);
+                // Log or handle the declined payment
+                $declineReason = $input['data']['charge']['attributes']['decline_reason'] ?? __('Unknown reason');
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', __("Payment declined. Reason: $declineReason."));
+
+            default:
+                $txnInfo = Transaction::tnx($orderId);
+                $txnInfo->update([
+                    'status' => TxnStatus::Failed,
+                    'approval_cause' => __('default declined'),
+
+                ]);
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', __('Unknown error.'));
+                }
+    }
+    public function match2payIpn(Request $request)
+    {
+        // Get all the input data from the request
+        $input = $request->all();
+
+        // Extract the payment ID from the Match2Pay request
+        $paymentId = $input['paymentId'] ?? null;
+        $cryptoTransactionInfo = $input['cryptoTransactionInfo'][0] ?? null; // Get the first transaction info
+
+        // Find the transaction in the database using the payment ID
+        $txnInfo = Transaction::tnx($paymentId);
+
+        // Check if the paymentId exists in the request
+        if (!$paymentId || !$txnInfo) {
+            // If not, update the transaction with an invalid status and redirect with an error
+            $txnInfo->update([
+                'status' => TxnStatus::Failed,
+                'approval_cause' => __('Invalid payment ID'),
+            ]);
+
+            return redirect()
+                ->route('user.deposit.now')
+                ->with('error', __('Invalid payment ID.'));
+            }
+
+        // Extract relevant fields from the cryptoTransactionInfo
+        $status = $input['status'] ?? null;
+        $confirmations = $cryptoTransactionInfo['confirmations'] ?? null;
+        $txid = $cryptoTransactionInfo['txid'] ?? null;
+
+        // Handle different transaction statuses (PENDING, DONE, FAILED)
+        switch ($status) {
+            case 'PENDING':
+                // Handle pending payments
+                $txnInfo->update([
+                    'status' => TxnStatus::Pending,
+//                    'txid' => $txid,
+                    'manual_field_data' => $input,
+                    'approval_cause' => __('Transaction is pending'),
+                ]);
+
+//                return redirect()
+//                    ->route('user.deposit.now')
+//                    ->with('info', 'Payment is pending. Please wait for confirmation.');
+
+            case 'DONE':
+                $txnInfo->update([
+//                    'txid' => $txid,
+                    'amount' => $input['finalAmount'],
+//                    'charge' => $input['processingFee'],
+                    'final_amount' => $input['finalAmount'],
+                    'pay_amount' => $input['netAmount'],
+                    'pay_currency' => $input['transactionCurrency'],
+                    'manual_field_data' => $input,
+                    'approval_cause' => __('Transaction is Completed'),
+                ]);
+                // Call the payment success method
+                self::paymentSuccess($paymentId);
+
+//                $txnInfo->update([
+//                    'status' => TxnStatus::Completed,
+//                    'txid' => $txid,
+//                    'confirmations' => $confirmations,
+//                    'approval_cause' => 'Transaction completed successfully',
+//                ]);
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('success', __('Payment approved and processed successfully.'));
+
+            case 'DECLINED':
+                // Handle declined payments
+                $declineReason = $cryptoTransactionInfo['decline_reason'] ?? __('Unknown reason');
+                $txnInfo->update([
+                    'status' => TxnStatus::Failed,
+                    'approval_cause' => __("Transaction declined: $declineReason"),
+                ]);
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', __("Payment declined. Reason: $declineReason."));
+
+            default:
+                // Handle unknown or invalid statuses
+                $txnInfo->update([
+                    'status' => TxnStatus::Failed,
+                    'approval_cause' => __('Unknown status received'),
+                ]);
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', __('Unknown error occurred during payment processing.'));
+                }
+    }
+
     public function cryptomusIpn(Request $request)
     {
         $data = $request->all();
@@ -81,7 +235,7 @@ class IpnController extends Controller
 
         return redirect()
             ->route('user.deposit.now')
-            ->with('error', $response['message'] ?? 'Something went wrong.');
+            ->with('error', $response['message'] ?? __('Something went wrong.'));
 
     }
 
@@ -166,7 +320,7 @@ class IpnController extends Controller
         if ($request->status == 'paid') {
             self::paymentSuccess($request->order_id);
         } else {
-            Txn::update($request->order_id, 'failed');
+            Txn::update($request->order_id, __('failed'));
         }
     }
 
@@ -195,10 +349,10 @@ class IpnController extends Controller
                 //Payment has been verified!
 
             }
-            Txn::update($ref, 'failed');
+            Txn::update($ref, __('failed'));
 
         } else {
-            Txn::update($ref, 'failed');
+            Txn::update($ref, __('failed'));
         }
     }
 
@@ -242,7 +396,7 @@ class IpnController extends Controller
         // Validate the webhook request.
         if (!$webhookClient->isIncomingWebhookRequestValid($raw_post_data, $sig, $webhookSecret)) {
             throw new \RuntimeException(
-                'Invalid BTCPayServer payment notification message received - signature did not match.'
+                __('Invalid BTCPayServer payment notification message received - signature did not match.')
             );
         }
         $data = $request->all();

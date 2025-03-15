@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\ForgetPasswordController;
@@ -18,10 +19,16 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
+    Route::get('web-register', [RegisteredUserController::class, 'iframeRegister'])
+        ->name('webRegister');
+
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+
+    Route::get('web-login', [AuthenticatedSessionController::class, 'iframeLogin'])
+        ->name('webLogin');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
     Route::post('device-token/store', [RegisteredUserController::class, 'deviceToken'])->name('deviceToken');
@@ -37,11 +44,14 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.update');
-    Route::get('password-request', [PasswordResetLinkController::class, 'showPasswordRequestForm'])
-        ->name('password.request.form');
 
-    Route::post('password-request', [PasswordResetLinkController::class, 'submitPasswordRequestForm'])
-        ->name('password.request.submit');
+
+    Route::get('{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
+    Route::get('{provider}/callback', [SocialiteController::class, 'callback'])->name('social.callback');
+
+    Route::get('get-password', [PasswordResetLinkController::class, 'getPassword'])->name('password.get');
+    Route::post('get-password', [PasswordResetLinkController::class, 'sendPassword'])->name('password.send');
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -60,14 +70,13 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-
 });
 
 //================================ Admin Auth Section ================================
 
-Route::group(['prefix' => 'clinic', 'as' => 'admin.'], function () {
-    Route::get('door', [AuthController::class, 'loginView'])->name('login-view');
-    Route::post('door', [AuthController::class, 'authenticate'])->name('login');
+Route::group(['prefix' => 'backoffice', 'as' => 'admin.'], function () {
+    Route::get('login', [AuthController::class, 'loginView'])->name('login-view');
+    Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
     // Forget Password
     Route::get('forget-password', [ForgetPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.now');

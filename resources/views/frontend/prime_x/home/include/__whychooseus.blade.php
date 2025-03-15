@@ -15,8 +15,8 @@
             <div class="col-xl-6">
                 <div class="why-choose-us-content">
                     <div class="section-title">
-                        <h4 data-aos="fade-down" data-aos-duration="1500">{{ $data['title_small'] }}</h4>
-                        <h2 data-aos="fade-down" data-aos-duration="1000">{{ $data['title_big'] }}</h2>
+                        <h4 data-aos="fade-down" data-aos-duration="1500">{{ __(''.$data['title_small'].'') }}</h4>
+                        <h2 data-aos="fade-down" data-aos-duration="1000">{{ __(''.$data['title_big'].'') }}</h2>
                     </div>
 
                     @foreach($landingContent as $content)
@@ -27,9 +27,9 @@
                                 </div>
                             </div>
                             <div class="content">
-                                <h4>{{ $content->title }}</h4>
+                                <h4>{{ __(''.$content->title.'') }}</h4>
                                 <p>
-                                    {{ $content->description }}
+                                    {{ __(''.$content->description.'') }}
                                 </p>
                             </div>
                         </div>

@@ -1,15 +1,15 @@
-@extends('backend.setting.index')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('Roles & Permissions') }}
 @endsection
-@section('setting-content')
+@section('user-management-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Roles & Permissions') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('role-create')
-                <a href="{{route('admin.roles.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{route('admin.roles.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New Role') }}
                 </a>
@@ -29,32 +29,34 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                             @foreach($roles as  $role)
                                 <tr>
                                     <td class="table-td">{{ ++$loop->index }}</td>
                                     <td class="table-td"><strong>{{ str_replace('-',' ',$role->name) }}</strong></td>
                                     <td class="table-td">
-                                        @if($role->name == 'Super-Admin')
-                                            <button class="btn btn-danger btn-sm inline-flex items-center justify-center">
-                                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:alert-triangle"></iconify-icon>
-                                                {{ __('Not Editable') }}
-                                            </button>
-                                        @else
-                                            @can('role-edit')
-                                                <a href="{{route('admin.roles.edit',$role->id)}}"
-                                                class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:edit-3"></iconify-icon>
-                                                    {{ __('Edit Permission') }}
-                                                </a>
-                                            @endcan
-                                            @can('role-delete')
-                                                <button type="button" class="btn btn-dark btn-sm inline-flex items-center justify-center delete-schema-btn table-btn" data-id="{{ $role->id }}">
-                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:trash"></iconify-icon>
-                                                    {{ __('Delete Role') }}
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @if($role->name == 'Super-Admin')
+                                                <button class="btn btn-danger btn-sm inline-flex items-center justify-center">
+                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:alert-triangle"></iconify-icon>
+                                                    {{ __('Not Editable') }}
                                                 </button>
-                                            @endcan
-                                        @endif
+                                            @else
+                                                @can('role-edit')
+                                                    <a href="{{route('admin.roles.edit',$role->id)}}"
+                                                    class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:edit-3"></iconify-icon>
+                                                        <span class="text-nowrap">{{ __('Edit Permission') }}</span>
+                                                    </a>
+                                                @endcan
+                                                @can('role-delete')
+                                                    <button type="button" class="btn btn-dark btn-sm inline-flex items-center justify-center delete-schema-btn table-btn" data-id="{{ $role->id }}">
+                                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:trash"></iconify-icon>
+                                                        <span class="text-nowrap">{{ __('Delete Role') }}</span>
+                                                    </button>
+                                                @endcan
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -91,7 +93,7 @@
 
 
 @endsection
-@section('setting-script')
+@section('user-management-script')
     <script>
         $(document).ready(function () {
             let deleteSchemaId = null;

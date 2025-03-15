@@ -33,9 +33,10 @@
                             <label class="form-label pt-0">
                                 {{ __($field['label']) }}
                             </label>
-                            <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
-                                {{oldSetting($field['name'],$section)}}
+                            <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif">
+                                {{ br2nl(oldSetting($field['name'],$section)) }}
                             </textarea>
+                            <input type="hidden" name="{{ $field['name'] }}" value="{{ str_replace(['<', '>'], ['{', '}'], oldSetting($field['name'], $section)) }}">
                         </div>
 
                     @else
@@ -47,13 +48,15 @@
                                    class="form-control @if($errors->has($field['name'])) has-error @endif"
                                    placeholder="Label"
                                    value="{{oldSetting($field['name'],$section)}}"
-                                   required=""
+
                             >
                         </div>
                     @endif
                 @endforeach
             </div>
+            @can('misc-edit')
             @include('backend.setting.site_setting.include.form.__close_action')
+            @endcan
         </div>
     </div>
 @endsection

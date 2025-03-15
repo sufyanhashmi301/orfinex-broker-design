@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('country_id');
             $table->string('name');
             $table->string('country_code');
+            $table->unsignedBigInteger('dial_code');
+            $table->string('currency_code');
             $table->string('ISO_3166_2');
             $table->string('ISO_3166_3');
-            $table->string('currency_code');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

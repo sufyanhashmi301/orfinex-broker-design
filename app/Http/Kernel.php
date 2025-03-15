@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\IBMiddleware;
+use App\Http\Middleware\PaymentAccessMiddleware;
 use App\Http\Middleware\SecureHeaders1Middleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -24,6 +25,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\SecureHeaders::class,
+
     ];
 
     /**
@@ -45,6 +47,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \App\Http\Middleware\AcceptHeaderMiddleware::class,
              \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
 //            'throttle:api',
 //            \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -82,6 +85,9 @@ class Kernel extends HttpKernel
         'IB' => IBMiddleware::class,
         'set.session.lifetime' => \App\Http\Middleware\SetSessionLifetime::class,
         'secure_header' => SecureHeaders1Middleware::class,
+        'payment_access' => PaymentAccessMiddleware::class,
+
+
 
 
     ];

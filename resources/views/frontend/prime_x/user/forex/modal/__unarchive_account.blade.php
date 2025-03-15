@@ -11,10 +11,10 @@
                     <p>{{ __("If you unarchive this account you can update info/use") }}</p>
                     <div class="action-btns mt-5">
                         <input type="hidden" class="update-archive-login" name="login">
-                        <button type="button" class="btn btn-dark mr-2 reactivate-account">
-                            {{ __('unarchive Account') }}
+                        <button type="button" class="btn btn-primary mr-2 reactivate-account">
+                            {{ __('Unarchive Account') }}
                         </button>
-                        <a href="#" class="btn btn-danger inline-flex" data-bs-dismiss="modal" aria-label="Close">
+                        <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
                             {{ __('Close') }}
                         </a>
                     </div>

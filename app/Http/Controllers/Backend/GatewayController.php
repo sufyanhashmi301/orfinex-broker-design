@@ -15,13 +15,12 @@ class GatewayController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:automatic-gateway-manage', ['only' => ['update']]);
-        $this->middleware('permission:automatic-gateway-manage', ['only' => ['automatic']]);
+        $this->middleware('permission:automatic-gateway-manage|payment-gateways-list', ['only' => ['automatic']]);
     }
 
     public function automatic(Request $request)
     {
-        $gateways = Gateway::paginate(12);
+        $gateways = Gateway::all();
         return view('backend.automatic_gateway.index', compact('gateways'));
     }
 
@@ -75,12 +74,18 @@ class GatewayController extends Controller
 
     public function gatewayCurrency($gateway_id)
     {
-
         $gateway = Gateway::find($gateway_id);
         $supportedCurrencies = $gateway->supported_currencies;
 
+        // Check if $supportedCurrencies is a string before decoding
+        if (is_string($supportedCurrencies)) {
+            $supportedCurrencies = json_decode($supportedCurrencies, true);
+        }
+
+        $mappedCurrencies = match2pay_currencies();
+
         return [
-            'view' => view('backend.automatic_gateway.include.__supported_currency', compact('supportedCurrencies'))->render(),
+            'view' => view('backend.automatic_gateway.include.__supported_currency', compact('supportedCurrencies', 'gateway', 'mappedCurrencies'))->render(),
             'pay_currency' => is_custom_rate($gateway->gateway_code),
         ];
     }

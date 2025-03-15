@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.website.index')
 @section('title')
     {{ __('Site Settings') }}
 @endsection
-@section('setting-content')
+@section('website-content')
     <div class="space-y-5">
         @foreach(config('setting') as $section => $fields)
 
@@ -11,7 +11,7 @@
         @endforeach
     </div>
 @endsection
-@push('single-script')
+@push('website-script')
     <script>
     (function($) {
         'use strict';

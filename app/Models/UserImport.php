@@ -39,6 +39,8 @@ class UserImport extends Model
 		'group',
 		'country',
 		'email',
+		'phone',
+		'kyc',
 		'leverage',
 		'agent',
 		'register_time'

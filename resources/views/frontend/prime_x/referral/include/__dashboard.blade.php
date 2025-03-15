@@ -12,7 +12,7 @@
                         {{ __('IB Balance') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        ${{get_mt5_account_equity($user->ib_login)}}
+                        ${{ get_mt5_account_equity($user->ib_login) }}
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
         <div class="card-body pt-4 pb-3 px-4">
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning">
                         <iconify-icon icon="iconoir:hand-cash"></iconify-icon>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                         {{ __('IB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        {{$user->ib_login}}
+                        {{ $user->ib_login }}
                     </div>
                 </div>
             </div>
@@ -49,10 +49,10 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('MIB Account') }}
+                        {{ __('IB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        {{$user->multi_ib_login}}
+                        {{ $user->ib_login }}
                     </div>
                 </div>
             </div>
@@ -63,12 +63,12 @@
 <div class="grid grid-cols-12 gap-5">
     <div class="lg:col-span-8 col-span-12">
         <div class="space-y-5">
-            <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-primary-500 bg-opacity-[14%] text-white" role="alert">
+            <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-primary bg-opacity-[14%] text-white" role="alert">
                 <div class="flex items-center space-x-3 rtl:space-x-reverse">
-                    <p class="flex-1 text-primary-500 font-Inter">
-                        Your commission for the day is paid out on the next day before 23:59 (GMT-2).
+                    <p class="flex-1 text-primary font-Inter">
+                        {{ __('Your commission for the day is paid out on the next day before 23:59 (GMT-2).') }}
                     </p>
-                    <div class="flex-0 text-xl cursor-pointer text-primary-500">
+                    <div class="flex-0 text-xl cursor-pointer text-primary">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <iconify-icon icon="line-md:close"></iconify-icon>
                         </button>
@@ -120,32 +120,32 @@
             <div class="card">
                 <div class="card-body p-6">
                     <div class="text-center mb-3">
-                        <h5 class="text-center text-success-600">${{get_mt5_account_equity($user->multi_ib_login)}}</h5>
-                        <p class="text-center">MIB Balance</p>
+                        <h5 class="text-center text-success-600">${{ get_mt5_account_equity($user->ib_login) }}</h5>
+                        <p class="text-center">{{ __('Balance') }}</p>
                     </div>
                     <form action="" class="space-y-2">
                         <div class="input-area relative">
                             <label for="largeInput" class="form-label !flex items-center">
-                                <span>Amount</span>
-                                <span class="toolTip onTop leading-[0]" data-tippy-content="minimum Payout will be 50$" data-tippy-theme="dark">
+                                <span>{{ __('Amount') }}</span>
+                                <span class="toolTip onTop leading-[0]" data-tippy-content="{{ __('minimum Payout will be 50$') }}" data-tippy-theme="dark">
                                     <iconify-icon class="text-base ml-1" icon="material-symbols:info"></iconify-icon>
                                 </span>
                             </label>
                             <input type="text" class="form-control">
                         </div>
                         <div class="input-area relative">
-                            <label for="largeInput" class="form-label">Payout Methods</label>
+                            <label for="largeInput" class="form-label">{{ __('Payout Methods') }}</label>
                             <select name="" class="select2 form-control w-full mt-2 py-2">
-                                <option value="bank">Bank</option>
+                                <option value="bank">{{ __('Bank') }}</option>
                             </select>
                         </div>
                         <div class="input-area relative">
-                            <label for="largeInput" class="form-label">Note</label>
+                            <label for="largeInput" class="form-label">{{ __('Note') }}</label>
                             <textarea name="" rows="3" class="form-control"></textarea>
                         </div>
                         <div class="text-right">
                             <button type="submit" class="btn inline-flex justify-center btn-dark">
-                                <span>Request Payout</span>
+                                <span>{{ __('Request Payout') }}</span>
                             </button>
                         </div>
                     </form>
@@ -156,18 +156,18 @@
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-200 dark:bg-slate-900 dark:text-white">
                         <iconify-icon icon="bi:gift"></iconify-icon>
                     </div>
-                    <h5 class="card-title my-2">Attach to level a partner</h5>
-                    <p class="text-sm dark:text-white mb-4">Join casecade and get guidance and support you need to grow!</p>
-                    <a href="" class="btn btn-dark block-btn">Attach</a>
+                    <h5 class="card-title my-2">{{ __('Attach to level a partner') }}</h5>
+                    <p class="text-sm dark:text-white mb-4">{{ __('Join casecade and get guidance and support you need to grow!') }}</p>
+                    <a href="" class="btn btn-dark block-btn">{{ __('Attach') }}</a>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body p-6">
                     <div class="text-center">
                         <img src="" class="rounded-full" alt="...">
-                        <h5 class="card-title my-2">Rebate</h5>
-                        <p class="text-sm dark:text-white mb-4">Boost your income by increasing client retention and attracting new clients.</p>
-                        <a href="" class="btn btn-dark block-btn">More details</a>
+                        <h5 class="card-title my-2">{{ __('Rebate') }}</h5>
+                        <p class="text-sm dark:text-white mb-4">{{ __('Boost your income by increasing client retention and attracting new clients.') }}</p>
+                        <a href="" class="btn btn-dark block-btn">{{ __('More details') }}</a>
                     </div>
                 </div>
             </div>

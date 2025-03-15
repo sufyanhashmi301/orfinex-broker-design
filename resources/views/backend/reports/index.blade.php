@@ -58,7 +58,7 @@
                                     <th scope="col" class="table-th">Date</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 <tr>
                                     <td class="table-td">
                                         <span class="fw-bold">NaeemAli9338</span>
@@ -67,7 +67,7 @@
                                     <td class="table-td">TRXUG0ZGH1XUR</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">
@@ -83,7 +83,7 @@
                                     <td class="table-td">TRXD8LJHRWUWM</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -97,7 +97,7 @@
                                     <td class="table-td">TRXFCWBHCYYJE</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -111,7 +111,7 @@
                                     <td class="table-td">TRXUG0ZGH1XUR</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">
@@ -127,7 +127,7 @@
                                     <td class="table-td">TRXD8LJHRWUWM</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -141,7 +141,7 @@
                                     <td class="table-td">TRXFCWBHCYYJE</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -155,7 +155,7 @@
                                     <td class="table-td">TRXUG0ZGH1XUR</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">
@@ -171,7 +171,7 @@
                                     <td class="table-td">TRXD8LJHRWUWM</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -185,7 +185,7 @@
                                     <td class="table-td">TRXFCWBHCYYJE</td>
                                     <td class="table-td">Signup Bonus</td>
                                     <td class="table-td">
-                                        <strong class="text-success-500">+8 USD</strong>
+                                        <strong class="text-success">+8 USD</strong>
                                     </td>
                                     <td class="table-td">System</td>
                                     <td class="table-td">Success</td>
@@ -200,5 +200,5 @@
     </div>
 
     @include('backend.reports.__configure_modal')
-    
+
 @endsection

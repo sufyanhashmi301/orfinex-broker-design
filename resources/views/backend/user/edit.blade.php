@@ -3,6 +3,38 @@
     {{ __('Customer Details') }}
 @endsection
 @section('content')
+    @php
+        // Initialize the array to store statuses to exclude
+        $excludedStatuses = [];
+
+        // Mapping KYC Level IDs to corresponding KYCStatus values with their dynamic labels
+        $statusLabels = [
+            1 => ['statuses' => [\App\Enums\KYCStatus::Level1->value]],
+            2 => [
+                'statuses' => [
+                    \App\Enums\KYCStatus::Level2->value,
+                    \App\Enums\KYCStatus::Pending->value,
+                    \App\Enums\KYCStatus::Rejected->value
+                ],
+                'additionalLabels' => [
+                    \App\Enums\KYCStatus::Pending->value => 'pending',
+                    \App\Enums\KYCStatus::Rejected->value => 'reject'
+                ]
+            ],
+            3 => [
+                'statuses' => [
+                    \App\Enums\KYCStatus::Level3->value,
+                    \App\Enums\KYCStatus::PendingLevel3->value,
+                    \App\Enums\KYCStatus::RejectLevel3->value
+                ],
+                'additionalLabels' => [
+                    \App\Enums\KYCStatus::PendingLevel3->value => 'pending',
+                    \App\Enums\KYCStatus::RejectLevel3->value => 'reject'
+                ]
+            ]
+        ];
+    @endphp
+
     <div class="space-y-5 profile-page">
         <div class="grid grid-cols-12 gap-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -13,17 +45,19 @@
             <!-- User Status Update End-->
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+
                 <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-                    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
+                    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Tag') }}
                     </a>
+
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                        <a href="{{ url()->previous() }}" class="btn btn-white inline-flex items-center justify-center">
+                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
                         </a>
-                        <button type="button" class="btn btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
-                            <iconify-icon class="text-xl" icon="lucide:refresh-cw"></iconify-icon>
+                        <button type="button" class="btn btKYC Leveln-sm btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
+                            <iconify-icon class="text-base" icon="lucide:refresh-cw"></iconify-icon>
                         </button>
                     </div>
                 </div>
@@ -31,54 +65,37 @@
                     <div class="card overflow-hidden mb-5">
                         <div class="card-body py-1">
                             <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-                                <div class="bg-white dark:bg-slate-800 p-4">
+                                <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Deposit') }}
+                                            {{ __('Current Forex Balance') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
-                                <div class="bg-white dark:bg-slate-800 p-4">
-                                    <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Withdraw') }}
-                                        </p>
-                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                        </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="bg-white dark:bg-slate-800 p-4">
+                                <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                             {{ __('Net Deposits') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . $user->totalDeposit() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
+                                <div class="bg-white dark:bg-secondary p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Net Withdraw') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalWithdraw() }}
+                                        </h6>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -88,16 +105,16 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Used Margin') }}
+                                            {{ __('Current Used Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') .mt5_total_used_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -107,16 +124,16 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Free Margin') }}
+                                            {{ __('Current Free Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_free_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +143,7 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>
@@ -135,7 +152,8 @@
                                             {{ __('Wallet Balance') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            $0
+                                            {{ setting('currency_symbol','global') . $user->totalWalletBalance() }}
+
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +167,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
                                         id="pills-informations-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-informations"
@@ -162,11 +180,11 @@
                                     </a>
                                 </li>
                             @endcanany
-                            @can('investment-list')
+                            @can('accounts-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-transfer-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-transfer"
@@ -179,12 +197,31 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('investment-list')
+                                @can('kyc-status-update')
+
+                                <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-kyc-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-kyc"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-kyc"
+                                    aria-selected="true"
+                                >
+                                    {{ __('KYC') }}
+                                </a>
+                            </li>
+                                @endcan
+
+                            @can('ib-partner-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-transfer-tab"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-transfer-tab1"
                                         data-bs-toggle="pill"
                                         data-bs-target="#ib-info"
                                         type="button"
@@ -201,7 +238,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-transactions-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-transactions"
@@ -214,12 +251,26 @@
                                     </a>
                                 </li>
                             @endcan
-
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-bonus-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-bonus"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-bonus"
+                                    aria-selected="true"
+                                >
+                                    {{ __('IB Bonus') }}
+                                </a>
+                            </li>
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-direct-referral-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-direct-referral"
@@ -236,7 +287,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-tree"
@@ -255,7 +306,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-ticket"
@@ -270,7 +321,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-note"
@@ -285,7 +336,7 @@
                                     <li class="nav-item" role="presentation">
                                         <a
                                             href=""
-                                            class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                            class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                             id="pills-security-tab"
                                             data-bs-toggle="pill"
                                             data-bs-target="#pills-security"
@@ -308,18 +359,26 @@
                 @endcanany
 
                 <!-- investments -->
-                @can('investment-list')
-                    @include('backend.user.include.__accounts')
+                @can('accounts-list')
+                     @include('backend.user.include.__accounts')
+                @endcan
+                @include('backend.user.include.__ib_bonus')
+                @can('kyc-status-update')
+                <!-- KYC Tab -->
+                @include('backend.user.include.__kycTab')
                 @endcan
 
                 <!-- IB -->
-                @can('IB-List')
+{{--                @can('IB-List')--}}
+
+                @can('ib-partner-list')
                     @include('backend.user.include.__ib_info')
-                    @include('backend.user.include.__ib_add')
-                    @include('backend.user.include.__ib_update')
-                    @include('backend.user.include.__mib_add')
-                    @include('backend.user.include.__mib_update')
                 @endcan
+                @can('approve-ib-member')
+                    @include('backend.user.include.__ib_approve')
+                @endcan
+
+                {{--                @endcan--}}
 
                 <!-- earnings -->
                 @can('profit-list')
@@ -347,7 +406,7 @@
                     @include('backend.user.include.__ticket')
                 @endcan
 
-                @include('backend.user.include.__note')
+                @include('backend.user.notes.index')
 
                 @include('backend.user.include.__security')
 
@@ -364,6 +423,10 @@
 
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')
+    @include('backend.user.include.__forex_account_mapping')
+
+    {{-- Modal for Add or Subtract Bonus --}}
+    @include('backend.user.include.__bonus')
 
     <!-- Modal for Add or Subtract Balance -->
     @can('customer-balance-add-or-subtract')
@@ -389,8 +452,17 @@
 @endsection
 @section('script')
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
-
     <script>
+        $(document).ready(function() {
+            $("select.select2").select2({
+                tags: true
+            })
+        });
+
+        $('#bonus-form').on('submit', function(){
+            $('.bonus-apply-now').prop('disabled', true)
+        })
+
         function confirmDelete(tagId,tagName) {
             $('#risk_profile_tag_id').val(tagId)
             $('#risk_profile_tag_name').text(tagName)
@@ -434,11 +506,18 @@
                 });
             });
 
-            //account type selection
-            $('#tradingAccount').on('change', function () {
+            //account type selection for Balance Module
+            $('#tradingAccount_balance').on('change', function () {
                 var selectedOption = $(this).find('option:selected');
                 var selectedAccountType = selectedOption.data('type');
-                $('#selectedAccountType').val(selectedAccountType);
+                $('#selectedAccountType_balance').val(selectedAccountType);
+            });
+
+            //account type selection for Bonus Module
+            $('#tradingAccount_bonus').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var selectedAccountType = selectedOption.data('type');
+                $('#selectedAccountType_bonus').val(selectedAccountType);
             });
 
             //send mail modal form open
@@ -459,121 +538,74 @@
     </script>
     <script>
         $(document).ready(function () {
-            function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
+            // Function to update the Islamic checkbox state
+            function updateIslamicCheckboxState(modalId, accountType, isRealIslamic, isDemoIslamic) {
                 var isIslamic = false;
                 if (accountType === 'real') {
                     isIslamic = isRealIslamic == 1;
                 } else if (accountType === 'demo') {
                     isIslamic = isDemoIslamic == 1;
                 }
-                $('#islamic-checkbox').prop('disabled', !isIslamic);
+                $(`#${modalId} #islamic-checkbox`).prop('disabled', !isIslamic);
             }
-
-            function updateLeverageAndDeposit(result) {
-                $('#display-commission').text(result.commission);
-                $('#display-spread').text(result.spread);
-                $('#select-leverage').html(result.leverage);
-                $('#display-leverage').text(result.display_leverage);
-                $('#initial-deposit').text(result.first_min_deposit);
+    
+            // Function to update leverage options
+            function updateLeverageAndDeposit(modalId, result) {
+                $(`#${modalId} #select-leverage`).html(result.leverage); // Update leverage options
             }
-
-            $('#account-type-tabs .nav-link').on('click', function () {
-                $('#account-type-tabs .nav-link').removeClass('active');
-                $(this).addClass('active');
-                var accountType = $(this).data('type');
-                $('#account-type').val(accountType);
-
-                $('#islamic-checkbox').prop('checked', false);
-
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
-            });
-
-            $("#islamic-checkbox").on('change', function () {
-                var isIslamic = $(this).is(':checked');
-                var accountType = $('#account-type').val();
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
-            });
-
-            $("#select-schema").on('change', function (e) {
-                "use strict";
+    
+            // Handle schema selection changes
+            $('.modal').on('change', '#select-schema', function (e) {
                 e.preventDefault();
+                var modalId = $(this).closest('.modal').attr('id'); // Get the modal ID
                 var id = $(this).val();
                 var url = '{{ route("user.schema.select", ":id") }}';
                 url = url.replace(':id', id);
-
+    
+                // Fetch schema details via AJAX
                 $.ajax({
                     url: url,
                     success: function (result) {
-                        $('#first-min-amount').text(result.first_min_deposit);
-                        updateLeverageAndDeposit(result);
-
-                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
-                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
-
-                        $('#islamic-checkbox').prop('checked', false);
-                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+                        if (result) {
+                            updateLeverageAndDeposit(modalId, result);
+                            $(`#${modalId} #select-schema`).data('is-real-islamic', result.is_real_islamic);
+                            $(`#${modalId} #select-schema`).data('is-demo-islamic', result.is_demo_islamic);
+                            $(`#${modalId} #islamic-checkbox`).prop('checked', false);
+                            updateIslamicCheckboxState(modalId, $(`#${modalId} #account-type`).val(), result.is_real_islamic, result.is_demo_islamic);
+                        } else {
+                            console.error('Invalid response from server');
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('AJAX request failed:', xhr.responseText);
                     }
                 });
             });
-
-            var initialAccountType = $('#account-type').val();
-            var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-            var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-            updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
-
-            $("#select-leverage").on('change', function () {
-                var selectedLeverage = $(this).val();
-                $('#display-leverage').text(selectedLeverage); // Update the display-leverage with the selected value
-            });
-
-            $("#selectWallet").on('change', function (e) {
-                "use strict";
-                $('.gatewaySelect').empty();
-                $('.manual-row').empty();
-                var wallet = $(this).val();
-                if (wallet === 'gateway') {
-                    $.get('{{ route('gateway.list') }}', function (data) {
-                        $('.gatewaySelect').append(data);
-                        $('select').niceSelect();
-                    });
+    
+            // Password validation
+            function checkPassword(password, type, submitButtonId) {
+                var lengthCheck = password.length >= 8 && password.length <= 15;
+                var lettersCheck = /[a-z]/.test(password) && /[A-Z]/.test(password);
+                var numberCheck = /\d/.test(password);
+                var specialCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+                $(`#${type}-length-check`).toggleClass('text-danger', !lengthCheck).toggleClass('text-success', lengthCheck);
+                $(`#${type}-letters-check`).toggleClass('text-danger', !lettersCheck).toggleClass('text-success', lettersCheck);
+                $(`#${type}-number-check`).toggleClass('text-danger', !numberCheck).toggleClass('text-success', numberCheck);
+                $(`#${type}-special-check`).toggleClass('text-danger', !specialCheck).toggleClass('text-success', specialCheck);
+    
+                if (lengthCheck && lettersCheck && numberCheck && specialCheck) {
+                    $(submitButtonId).prop('disabled', false);
+                } else {
+                    $(submitButtonId).prop('disabled', true);
                 }
-            });
-
-            $('body').on('change', '#gatewaySelect', function (e) {
-                "use strict";
-                e.preventDefault();
-                $('.manual-row').empty();
-                var code = $(this).val();
-                var url = '{{ route("user.deposit.gateway", ":code") }}';
-                url = url.replace(':code', code);
-                $.get(url, function (data) {
-                    if (data.credentials !== undefined) {
-                        console.log(data.credentials);
-                        $('.manual-row').append(data.credentials);
-                        imagePreview();
-                    }
-                });
-
-                $('#amount').on('keyup', function (e) {
-                    "use strict";
-                    var amount = $(this).val();
-                    $('.amount').text(Number(amount));
-                    $('.currency').text(currency);
-                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge;
-                    $('.charge2').text(charge + ' ' + currency);
-                    $('.total').text(Number(amount) + Number(charge) + ' ' + currency);
-                });
-            });
-
-            $('#enter-main-password').on('input', function () {
+            }
+    
+            $('.modal').on('input', '#enter-main-password', function () {
+                var modalId = $(this).closest('.modal').attr('id');
                 var password = $(this).val();
-                checkPassword(password, 'main', 'create-forex-account');
+                checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
         });
-
     </script>
 @endsection

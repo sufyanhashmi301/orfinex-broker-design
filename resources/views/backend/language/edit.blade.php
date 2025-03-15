@@ -1,14 +1,14 @@
-@extends('backend.setting.index')
+@extends('backend.setting.misc.index')
 @section('title')
     {{ __('Edit language') }}
 @endsection
-@section('setting-content')
+@section('misc-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Edit  language') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.language.index') }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.language.index') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -37,24 +37,13 @@
                 <div class="input-area grid grid-cols-12 gap-5">
                     <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Default Language:') }}</label>
                     <div class="md:col-span-9 col-span-12">
-                        <div class="site-input-groups max-w-xs">
-                            <div class="switch-field flex overflow-hidden mb-0">
-                                <input
-                                    type="radio"
-                                    id="language-default"
-                                    name="is_default"
-                                    value="1"
-                                    @if($language->is_default) checked @endif
-                                />
-                                <label for="language-default">{{ __('Yes') }}</label>
-                                <input
-                                    type="radio"
-                                    id="language-default-no"
-                                    name="is_default"
-                                    value="0"
-                                    @if(!$language->is_default) checked @endif
-                                />
-                                <label for="language-default-no">{{ __('No') }}</label>
+                        <div class="input-area">
+                            <div class="form-switch ps-0">
+                                <input type="hidden" value="0" name="is_default">
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <input type="checkbox" name="is_default" value="1" class="sr-only peer" @if($language->is_default) checked @endif>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -62,25 +51,13 @@
                 <div class="input-area grid grid-cols-12 gap-5">
                     <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Status:') }}</label>
                     <div class="md:col-span-9 col-span-12">
-                        <div class="site-input-groups max-w-xs">
-                            <div class="switch-field flex overflow-hidden mb-0">
-                                <input
-                                    type="radio"
-                                    id="language-status"
-                                    name="status"
-                                    value="1"
-                                    @if($language->status) checked @endif
-                                />
-                                <label for="language-status">{{ __('Active') }}</label>
-                                <input
-                                    type="radio"
-                                    id="language-status-no"
-                                    name="status"
-                                    value="0"
-                                    @if(!$language->status) checked @endif
-
-                                />
-                                <label for="language-status-no">{{ __('DeActive') }}</label>
+                        <div class="input-area">
+                            <div class="form-switch ps-0">
+                                <input type="hidden" value="0" name="status">
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <input type="checkbox" name="status" value="1" class="sr-only peer" @if($language->status) checked @endif>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
                             </div>
                         </div>
                     </div>

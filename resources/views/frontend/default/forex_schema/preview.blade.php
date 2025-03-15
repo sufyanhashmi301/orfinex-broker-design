@@ -78,16 +78,16 @@
                     <div class="md:w-2/3">
                         <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Main Password" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
                         <ul>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
                                 Use from 8 to 15 characters
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
                                 Use both uppercase and lowercase letters
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-main">
                                 At least one number
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-main">
                                 At least one special character(!@#$%^&*(),-.?":{}|<>)
                             </li>
                         </ul>

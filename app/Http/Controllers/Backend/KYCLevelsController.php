@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
-use App\Models\Kyclevel;
+use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
 use App\Models\KycSubLevel;
 use App\Models\Plugin;
@@ -36,9 +36,8 @@ class KYCLevelsController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:risk-profile-tag-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
-//        $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
-//        $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
+       $this->middleware('permission:kyc-levels-list', ['only' => ['index']]);
+       $this->middleware('permission:kyc-levels-edit', ['only' => ['edit', 'update']]);
 
     }
 
@@ -49,7 +48,8 @@ class KYCLevelsController extends Controller
      */
     public function index(Request $request)
     {
-        $kycLevels = Kyclevel::paginate(10);
+        $kycLevels = KycLevel::with('kyc_sub_levels')->get();
+
         return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 
@@ -109,14 +109,17 @@ class KYCLevelsController extends Controller
      */
     public function edit($id)
     {
-        $kycLevel = Kyclevel::find($id);
+        $kycLevel = KycLevel::find($id);
         $kycSubLevels = KycSubLevel::with('kycs')
             ->where('kyc_level_id', $id)
 //            ->where('status', true)
             ->get();
 //        if($kycLevel=='level-2' && $kycSubLevels['name'] == 'Automatic')
         $level2Show = true;
-        $manulKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+//        dd($level2Show);
+        $level2ManualKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+        $level3ManualKycs = Kyc::where('kyc_sub_level_id', 5)->get();
+//        dd($level3ManualKycs);
         $sumsub = Plugin::findOrFail(8);
         return view('backend.kyc_levels.edit', get_defined_vars());
 
@@ -153,13 +156,16 @@ class KYCLevelsController extends Controller
         $kycLevel->update();
 
 //        dd($request->all());
-        if($request->level2_setting==\App\Enums\KycType::MANUAL){
+        if($request->level2_setting== \App\Enums\KycType::MANUAL){
             KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>1]);
             KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>0]);  }
-        if($request->level2_setting==\App\Enums\KycType::AUTOMATIC){
+        if($request->level2_setting == \App\Enums\KycType::AUTOMATIC){
+//            dd($request->level2_setting);
             KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>0]);
+//            dd(KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->first());
             KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>1]);
         }
+//        dd('ss');
         notify()->success(__('KYC level settings updated Successfully'));
         return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }

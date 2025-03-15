@@ -14,6 +14,10 @@ class TicketStatusController extends Controller
 
     public function __construct(TicketStatusService $ticketStatusService)
     {
+        $this->middleware('permission:ticket-status-list', ['only' => ['index']]);
+        $this->middleware('permission:ticket-status-create', ['only' => ['store']]);
+        $this->middleware('permission:ticket-status-edit', ['only' => ['update']]);
+        $this->middleware('permission:ticket-status-delete', ['only' => ['destroy']]);
         $this->ticketStatusService = $ticketStatusService;
     }
 

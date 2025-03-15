@@ -23,7 +23,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -56,7 +56,7 @@
                 autoWidth: false,
                 ajax: "{{ route('admin.ticket.index',$user->id) }}",
                 columns: [
-                    {data: 'name', name: 'name'},
+                    {data: 'title', name: 'title'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},

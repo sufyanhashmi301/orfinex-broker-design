@@ -3,13 +3,17 @@
     {{ __('All Rebate Rules') }}
 @endsection
 @section('title-btns')
-    <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
+@can('symbols-list')
+    <a href="{{route('admin.symbols.index')}}" class="btn btn-sm btn-white inline-flex items-center justify-center">
         {{ __('View All Symbols') }}
     </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center addRebateGroup" type="button" >
+@endcan
+@can('rebate-rules-create')
+    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center addRebateGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Rebate Rules') }}
     </a>
+@endcan
 @endsection
 @section('symbol-groups-content')
     <div class="card">
@@ -25,16 +29,16 @@
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Rebate Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol Groups') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Types') }}</th>
+                                    <th scope="col" class="table-th">{{ __('IB Groups') }}</th>
                                     <th scope="col" class="table-th">{{ __('Total Rebate') }}</th>
                                     <!-- <th scope="col" class="table-th">{{ __('Accounts') }}</th> -->
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                             </tbody>
-
                         </table>
                     </div>
                 </div>
@@ -45,12 +49,18 @@
             </div>
         </div>
     </div>
+    @can('rebate-rules-create')
     @include('backend.rebate_rules.modal.__create')
+    @endcan
+    @can('rebate-rules-edit')
     @include('backend.rebate_rules.modal.__edit')
+    @endcan
+    @can('rebate-rules-delete')
     @include('backend.rebate_rules.modal.__delete')
+    @endcan
 @endsection
-@section('script')
 
+@section('script')
     <script>
 
          $(document).ready(function () {
@@ -118,6 +128,8 @@
                     {data: 'id', name: 'ID',orderable : false},
                     {data: 'title', name: 'Rebate Name',orderable : false},
                     {data: 'symbolGroups', name: 'Symbol Groups',orderable : false},
+                    { data: 'forexSchemas', name: 'Forex Schemas', orderable: false },
+                    { data: 'ibGroups', name: 'IB Groups', orderable: false },
                     {data: 'rebate_amount', name: 'Total Rebate',orderable : false},
                     {data: 'status', name: 'Status',orderable : false},
                     {data: 'action', name: 'action',orderable : false},

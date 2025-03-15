@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Dashboard') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -31,7 +31,7 @@
                     Basic KYC
                 </h4>
                 <div class="space-x-4 relative flex items-center mb-5 rtl:space-x-reverse text-slate-900 dark:text-slate-300  ">
-                    <span class="text-xs bg-warning-100 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
+                    <span class="text-xs bg-warning-100 text-warning font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
                         Semi Instant
                     </span>
                 </div>
@@ -64,7 +64,7 @@
                     Advance KYC
                 </h4>
                 <div class="space-x-4 relative flex items-center mb-5 rtl:space-x-reverse  text-slate-100  ">
-                    <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
+                    <span class="text-xs bg-warning-50 text-warning font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
                         Instant
                     </span>
                 </div>

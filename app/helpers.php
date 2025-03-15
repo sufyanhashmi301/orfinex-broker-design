@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
+use App\Models\KycLevel;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\RiskProfileTag;
@@ -85,6 +86,145 @@ if (!function_exists('get_user_account')) {
         return $account;
     }
 }
+if (!function_exists('w2n_by_wallet_id')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function w2n_by_wallet_id($walletId, $userId=null)
+    {
+        // Attempt to retrieve the account.
+        $account = Account::where('wallet_id', $walletId);
+        if($userId)
+            $account->where('user_id', $userId);
+
+        $account = $account->first();
+        $nameMap = [
+            AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
+            AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
+        ];
+        if($account) {
+            return Arr::get($nameMap, $account->balance);
+        }
+        return sys_settings('account_main', 'Main Wallet');
+    }
+}
+if (!function_exists('get_user_account_by_wallet_id')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_user_account_by_wallet_id($walletId, $userId=null)
+    {
+        // Attempt to retrieve the account.
+        $account = Account::where('wallet_id', $walletId);
+        if($userId)
+            $account->where('user_id', $userId);
+
+        $account = $account->first();
+        return $account;
+    }
+}
+if (!function_exists('get_all_wallets')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_all_wallets($userId,$balance = null)
+    {
+        // Attempt to retrieve the account.
+        $accounts = Account::where('user_id', $userId);
+        if($balance){
+            $accounts->where('balance',$balance);
+        }
+        if($count = $accounts->count() ==  0){
+            get_user_account($userId);
+            $accounts = Account::where('user_id', $userId);
+            if($balance){
+                $accounts->where('balance',$balance);
+            }
+        }
+        $accounts = $accounts->get();
+
+        return $accounts;
+    }
+}
+if (!function_exists('transaction_method_name')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function transaction_method_name($transaction)
+    {
+        if ($transaction->type == TxnType::Deposit ||
+            $transaction->type == TxnType::ManualDeposit ||
+            $transaction->type == TxnType::DemoDeposit) {
+
+            // Check if depositMethod exists, if not return the method
+            return $transaction->depositMethod ? $transaction->depositMethod->name : $transaction->method;
+
+        } elseif ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto) {
+
+            return $transaction->method;
+
+        } else {
+            return $transaction->method;
+        }
+    }
+
+}
+if (!function_exists('transaction_method_image')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function transaction_method_image($transaction)
+    {
+        // Check for deposit-related transaction types
+        if (in_array($transaction->type, [TxnType::Deposit, TxnType::ManualDeposit, TxnType::DemoDeposit])) {
+            // Check if depositMethod and depositMethod->icon are set, otherwise use the default image
+            return !empty($transaction->depositMethod) && !empty($transaction->depositMethod->icon)
+                ? $transaction->depositMethod->icon
+                : \setting('default_transaction_method', 'theme');
+        }
+        // Check for withdrawal-related transaction types
+        elseif (in_array($transaction->type, [TxnType::Withdraw, TxnType::WithdrawAuto])) {
+            // Use the method for withdrawal type
+            return !empty($transaction->withdrawMethod) && !empty($transaction->withdrawMethod->icon)
+                ? $transaction->withdrawMethod->icon
+                : \setting('default_transaction_method', 'theme');        }
+        // For any other transaction types, apply default image
+        else {
+            return \setting('default_transaction_method', 'theme');
+        }
+    }
+
+}
 
 /**
  * Generates a unique 10-character alphanumeric ID.
@@ -94,12 +234,98 @@ if (!function_exists('generateUniqueWalletId')) {
     function generateUniqueWalletId()
     {
         do {
-            $id = substr(bin2hex(random_bytes(6)), 0, 10); // Generates a random, 10-character hexadecimal string.
+            // Generate a random 10-digit integer.
+            $id = mt_rand(1000000000, 9999999999);
         } while (Account::where('wallet_id', $id)->exists()); // Ensure uniqueness in the database.
 
         return $id;
     }
 }
+if (!function_exists('user_balance')) {
+    /**
+     * @param $balance
+     * @param $userId | auth->user
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function user_balance($balance = null, $userId = null)
+    {
+        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
+        $userid = !empty($userId) ? $userId : auth()->user()->id;
+        $account = Account::where('user_id', $userid)->where('balance', $balance)->first();
+
+        if (!blank($account)) {
+            $amount = data_get($account, 'amount', 0.00);
+            return ($amount) ? $amount : 0.00;
+        }
+
+        return 0;
+    }
+}
+//if (!function_exists('account_balance')) {
+//    /**
+//     * @param $account
+//     * @param $userId | auth->user
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//
+//    function account_balance($account = null, $type = 'base')
+//    {
+//        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
+//        $userid = auth()->user()->id;
+//        $account = Account::where('user_id', $userid)->where('balance', $account)->first();
+//        $amount = (!blank($account)) ? data_get($account, 'amount', 0.00) : 0.00;
+//
+//        if ($type == 'alter' || $type == 'secondary') {
+//            return to_amount(base_to_secondary($amount), secondary_currency());
+//        }
+//
+//        return to_amount($amount, base_currency());
+//    }
+//}
+//
+if (!function_exists('base_currency')) {
+    /**
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function base_currency()
+    {
+        return sys_settings('base_currency', 'USD');
+    }
+}
+//
+//if (!function_exists('secondary_currency')) {
+//    /**
+//     * @return mixed
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//    function secondary_currency()
+//    {
+//        return sys_settings('alter_currency', 'USD');
+//    }
+//}
+//if (!function_exists('base_to_secondary')) {
+//
+//    /**
+//     * @param $amount
+//     * @return float|int
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//    function base_to_secondary($amount)
+//    {
+//        if ($amount == 0) {
+//            return 0.00;
+//        }
+//        $secondaryCurrency = secondary_currency();
+//        $exchangeRate = get_exchange_rates(actived_exchange(), $secondaryCurrency);
+//        return ($amount * $exchangeRate);
+//    }
+//}
+
 if (!function_exists('w2n')) {
     /**
      * @param $account
@@ -112,14 +338,8 @@ if (!function_exists('w2n')) {
         $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
         $nameMap = [
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
-            AccountBalanceType::PRICING_INVEST => __(sys_settings('account_invest', 'Funded Account')),
-            AccountBalanceType::REFERRAL => __(sys_settings('account_referral', 'Referral Account')),
-            AccountBalanceType::FOREX_TRADING => __(sys_settings('forex_trading', 'Forex Trading')),
-            AccountBalanceType::AFFILIATE_WALLET => __(sys_settings('affiliate_wallet', 'Affiliate')),
-            AccountBalanceType::MASTER_AFFILIATE => __(sys_settings('master_affiliate', 'Master Affiliate')),
-            AccountBalanceType::STRIPE => __(sys_settings('stripe', 'Stripe')),
-        ];
-
+              AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
+           ];
         return Arr::get($nameMap, $account);
     }
 }
@@ -393,11 +613,11 @@ if (!function_exists('getLocation')) {
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
         });
-//dd($location,$currentCountry);
+//dd($location,$currentCountry,getCountries());
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
-            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
+            'dial_code' => $currentCountry['dial_code'] ?? '+971',
             'ip' => $location['query'] ?? [],
         ];
 //dd( new \Illuminate\Support\Fluent($location));
@@ -613,6 +833,7 @@ if (!function_exists('first_min_deposit')) {
         $forexAccount->update(['first_min_deposit_paid' => 1]);
     }
 }
+
 if (!function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {
@@ -629,9 +850,10 @@ if (!function_exists('txn_type')) {
                 $result = ['green-color', '+'];
                 break;
             case TxnType::SendMoney->value:
-            case TxnType::Investment->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
+            case TxnType::BonusSubtract->value:
+            case TxnType::BonusRefund->value:
                 $result = ['red-color', '-'];
                 break;
         }
@@ -648,6 +870,35 @@ if (!function_exists('is_custom_rate')) {
             return 'USD';
         }
         return null;
+    }
+}
+if (!function_exists('match2pay_currencies')) {
+    function match2pay_currencies()
+    {
+        // Define the mapping of payment currencies to their gateway names
+        return [
+            'BTC' => 'BTC',
+            'ETH' => 'ETH',
+            'UST' => 'USDT ERC20',
+            'UCC' => 'USDC ERC20',
+            'TRX' => 'TRX',
+            'USX' => 'USDT TRC20',
+            'UCX' => 'USDC TRC20',
+            'BNB' => 'BNB',
+            'USB' => 'USDT BEP20',
+            'MAT' => 'MATIC',
+            'USP' => 'USDT POLYGON',
+            'UCP' => 'USDC POLYGON',
+            'XRP' => 'XRP',
+            'DOG' => 'DOGECOIN',
+            'LTC' => 'LTC',
+            'SOL' => 'SOL',
+            'USS' => 'USDT SOL',
+            'UCS' => 'USDC SOL',
+            'TON' => 'TON',
+            'UTT' => 'USDT TON',
+        ];
+
     }
 }
 
@@ -675,6 +926,59 @@ if (!function_exists('generate_date_range_array')) {
         return $dates->toArray();
     }
 }
+if (!function_exists('kyc_required_completed_level')) {
+    function kyc_required_completed_level()
+    {
+        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
+        $totalActiveLevels = $kycLevels->count();
+        $kycCompletedLevel = 0;
+        if($totalActiveLevels == 1){
+            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
+            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
+            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+            }
+        }elseif($totalActiveLevels == 2){
+            // Assume you have the highest level like this:
+            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
+            $enumLevelName = 'Level' . $highestLevel->id;
+            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
+
+        }elseif($totalActiveLevels == 3){
+            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+        }
+        return $kycCompletedLevel;
+    }
+}
+if (!function_exists('kyc_first_level_check')) {
+    function kyc_first_level_check()
+    {
+        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
+        $totalActiveLevels = $kycLevels->count();
+        $kycCompletedLevel = 0;
+        if($totalActiveLevels == 1){
+            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
+            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
+            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+            }
+        }elseif($totalActiveLevels == 2){
+            // Assume you have the highest level like this:
+            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
+            $enumLevelName = 'Level' . $highestLevel->id;
+            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
+
+        }elseif($totalActiveLevels == 3){
+            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+        }
+        return $kycCompletedLevel;
+    }
+}
+
 if (!function_exists('calPercentage')) {
     function calPercentage($num, $percentage)
     {
@@ -881,168 +1185,373 @@ if (!function_exists('update_total_balance')) {
             ->where('account_type', 'real')
             ->get();
 //        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
-        }
+                $data = [
+                    'login' => $forexAccount->login,
+                    'agent' => 0,
+                    ];
 
+                $forexApiService->updateAgentAccount($data);
+            }
     }
 }
 if (!function_exists('get_mt5_account')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the MT5 account details for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return object|null The MT5 account object, or null if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account($login)
     {
-        return DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-
+        if(isset($login) && $login > 0) {
+            try {
+                return DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+                return null;
+            }
+        }
+        return null;
     }
 }
 if (!function_exists('get_mt5_account_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the balance of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The balance of the MT5 account, or 0.0 if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account_balance($login)
     {
-        $balance = 0.0;
-        $mt5Account = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-        if ($mt5Account) {
-            $balance = $mt5Account->Balance;
+        if(isset($login) && $login > 0) {
+        try {
+            $mt5Account = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->first();
+            return $mt5Account ? $mt5Account->Balance : 0.0;
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
+            return 0.0;
         }
-        return $balance;
-
+    }
+        return 0.0;
     }
 }
+
 if (!function_exists('get_mt5_account_equity')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the equity of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The equity of the MT5 account, or 0.0 if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account_equity($login)
     {
-        $equity = 0.0;
-        $mt5Account = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-        if ($mt5Account) {
-            $equity = $mt5Account->Equity;
+        if(isset($login) && $login > 0) {
+            try {
+                $mt5Account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+                return $mt5Account ? $mt5Account->Equity : 0.0;
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
+                return 0.0;
+            }
         }
-        return $equity;
-
+        return 0.0;
     }
 }
+
+
+
 if (!function_exists('mt5_total_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total balance for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total balance, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
+
+
     function mt5_total_balance($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-        $totalBalance = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Balance');
+        // Define a cache key for the database connection status
+        $cacheKey = 'mt5_db_connection_status';
 
-        return $totalBalance;
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
+//        dd($user_id);
+//         Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+//            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
+            return 0;
+        }
 
+        // Proceed with your query since the connection is established
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+//            dd($forexAccounts);
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+//dd($forexAccounts);
+          //   Calculate the total balance using the mt5_db connection
+            $totalBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Balance');
+//            dd($totalBalance);
+
+            return $totalBalance;
+        } catch (\Exception $e) {
+            // Handle other exceptions if necessary
+            \Log::error('An error occurred: ' . $e->getMessage());
+            return 0;
+        }
     }
 }
+
 if (!function_exists('mt5_total_equity')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total equity for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total equity, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_total_equity($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        $cacheKey = 'mt5_db_connection_status';
 
-        $totalEquity = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Equity');
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
 
-        return $totalEquity;
+        // Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(10)); // Adjust the duration as needed
+            return 0;
+        }
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
 
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total equity using the mt5_db connection
+            $totalEquity = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Equity');
+
+            return $totalEquity;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
     }
 }
+
 if (!function_exists('mt5_total_credit')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_total_credit($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-        $totalEquity = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Credit');
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
 
-        return $totalEquity;
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
 
+            // Calculate the total credit using the mt5_db connection
+            $totalCredit = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Credit');
+
+            return $totalCredit;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
     }
 }
+if (!function_exists('mt5_total_used_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_used_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Margin');
+
+            return $totalMargin;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
+if (!function_exists('mt5_total_free_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_free_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('MarginFree');
+
+            return $totalMargin;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
+
 if (!function_exists('mt5_update_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Updates the balance and equity for a specific forex account login.
+     *
+     * @param int $login The login ID of the forex account.
+     * @param float $balance The new balance to be set.
+     * @return bool True if update was successful, False if it failed.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_update_balance($login, $balance)
     {
-//        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-//            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
-        DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->update(['Balance' => $balance, 'Equity' => $balance]);
+        try {
+            // Update the balance and equity for the given login
+            $updated = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->update(['Balance' => $balance, 'Equity' => $balance]);
 
+            // Return true if update was successful
+            return $updated > 0;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed during balance update: ' . $e->getMessage());
+
+            // Return false in case of failure
+            return false;
+        }
     }
 }
+
 if (!function_exists('the_hash')) {
     /**
      * @param $data
@@ -1092,7 +1601,7 @@ if (!function_exists('hexToRgb')) {
         $g = hexdec(substr($hexColor, 2, 2));
         $b = hexdec(substr($hexColor, 4, 2));
 
-        return [$r, $g, $b];
+        return ['r' => $r, 'g' => $g, 'b' => $b];
     }
 }
 
@@ -1105,3 +1614,36 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('isDarkColor')) {
+    function isDarkColor($hex)
+    {
+        $rgb = hexToRgb($hex);
+        $luminance = 0.2126 * $rgb['r'] + 0.7152 * $rgb['g'] + 0.0722 * $rgb['b'];
+
+        return $luminance < 128;
+    }
+}
+
+if (!function_exists('document_link_by_slug')) {
+    function document_link_by_slug($slug)
+    {
+        return App\Models\DocumentLink::where('slug', $slug)->where('status', 1)->first();
+    }
+}
+
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return App\Models\SocialLink::where('status', 1)->get();
+    }
+}
+
+if (! function_exists('getFilteredPath')) {
+    function getFilteredPath($path = null, $fallback = 'global/materials/default.png')
+    {
+        // Check if the provided path is a full URL
+        return filter_var($path, FILTER_VALIDATE_URL)
+            ? $path
+            : asset($path ?? $fallback);
+    }
+}

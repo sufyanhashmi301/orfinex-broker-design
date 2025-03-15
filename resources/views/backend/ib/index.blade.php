@@ -8,7 +8,7 @@
             {{ __('IB Forms') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.ib-form.create') }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.ib-form.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
@@ -31,40 +31,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($questions as $question)
-                                <tr>
-                                    <td class="table-td">
-                                        <strong>{{ $question->name }}</strong>
-                                    </td>
-                                    <td class="table-td">
-                                        @if( $question->status)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                                {{ __('Active') }}
+                                @foreach ($questions as $question)
+                                    <tr>
+                                        <td class="table-td">
+                                            <strong>{{ $question->name }}</strong>
+                                        </td>
+                                        <td class="table-td">
+                                            @if ($question->status)
+                                                <div class="badge badge-success capitalize">
+                                                    {{ __('Active') }}
+                                                </div>
+                                            @else
+                                                <div class="badge badge-warning capitalize">
+                                                    {{ __('Disabled') }}
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="table-td">
+                                            <div class="flex space-x-3 rtl:space-x-reverse">
+                                                <a href="{{ route('admin.ib-form.edit', $question->id) }}"
+                                                    class="action-btn">
+                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                </a>
+                                                <button type="button" data-id="{{ $question->id }}"
+                                                    data-name="{{ $question->name }}" class="action-btn deleteKyc">
+                                                    <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                                </button>
                                             </div>
-                                        @else
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
-                                                {{ __('Disabled') }}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="flex space-x-3 rtl:space-x-reverse">
-                                            <a href="{{ route('admin.ib-form.edit',$question->id) }}"
-                                                class="action-btn">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </a>
-                                            <button type="button" data-id="{{ $question->id }}"
-                                                    data-name="{{ $question->name }}"
-                                                    class="action-btn deleteKyc">
-                                                <iconify-icon icon="lucide:trash-2"></iconify-icon>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
+                        <div
+                            class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
                             <div>
                                 @php
                                     $from = $questions->firstItem(); // The starting item number on the current page
@@ -92,15 +92,13 @@
 
     <!-- Modal for Delete deleteKycType -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-        id="deleteKyc"
-        tabindex="-1"
-        aria-labelledby="deleteKyc"
-        aria-hidden="true"
-    >
+        id="deleteKyc" tabindex="-1" aria-labelledby="deleteKyc" aria-hidden="true">
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div
+                class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body p-6 py-8 text-center space-y-5">
-                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                    <div
+                        class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                         <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                     </div>
                     <div class="title">
@@ -121,9 +119,7 @@
                                 {{ __(' Confirm') }}
                             </button>
                             <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close">
+                                class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                                 {{ __('Cancel') }}
                             </a>
@@ -137,13 +133,13 @@
 @endsection
 @section('script')
     <script>
-        $('.deleteKyc').on('click', function (e) {
+        $('.deleteKyc').on('click', function(e) {
             "use strict";
             e.preventDefault();
             var id = $(this).data('id');
             var name = $(this).data('name');
 
-            var url = '{{ route("admin.ib-form.destroy", ":id") }}';
+            var url = '{{ route('admin.ib-form.destroy', ':id') }}';
             url = url.replace(':id', id);
             $('#kycEditForm').attr('action', url)
 

@@ -9,28 +9,28 @@
                 <a href="#tabs-realAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary active"
                     id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
-                    aria-controls="tabs-realAccounts" aria-selected="true">Real</a>
+                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Real') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-demoAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary"
                     id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
-                    aria-controls="tabs-demoAccounts" aria-selected="false">Demo</a>
+                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Demo') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-archivedAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary"
                     id="tabs-archivedAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-archivedAccounts" role="tab"
-                    aria-controls="tabs-archivedAccounts" aria-selected="false">Archived</a>
+                    aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Archived') }}</a>
             </li>
         </ul>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <div class="flex justify-between sm:space-x-4 space-x-2">
                 <div class="input-area relative" style="padding-left: 3rem;">
-                    <label for="" class="inline-inputLabel">Sort:</label>
+                    <label for="" class="inline-inputLabel">{{ __('Sort:') }}</label>
                     <select class="form-control">
-                        <option selected>Choose...</option>
-                        <option>...</option>
+                        <option selected>{{ __('Choose...') }}</option>
+                        <option>{{ __('...') }}</option>
                     </select>
                 </div>
                 <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
@@ -42,7 +42,7 @@
                     </button>
                 </div>
             </div>
-            <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-primary btn-sm">
+            <a href="{{route('user.schema')}}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
                     <span>{{ __('Open New Account') }}</span>
@@ -66,6 +66,57 @@
         </div>
     </div>
 
+    <h4 class="font-medium text-xl capitalize text-slate-900 my-5">
+        {{ __('Download Platform') }}
+    </h4>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        @foreach($platformLinks as $platformLink)
+            <div class="card p-4">
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    <div class="flex-1 flex items-center space-x-2 rtl:space-x-reverse">
+                        <div class="flex-none">
+                            @switch($platformLink->os)
+                                @case('window')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
+                                @break
+                                @case('mac')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
+                                @break
+                                @case('android')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
+                                @break
+                                @case('ios')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
+                                @break
+                                @case('android_apk')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
+                                @break
+                                @case('web')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="mdi:web"></iconify-icon>
+                                @break
+                                @default()
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="lucide:app-window"></iconify-icon>
+                            @endswitch
+                        </div>
+                        <div class="flex-1">
+                        <span class="block text-slate-600 text-sm font-semibold dark:text-slate-300">
+                            {{ $platformLink->title }}
+                        </span>
+                            <span class="block font-normal text-xs text-slate-500">
+                            {{ __('for') . ' ' . $platformLink->os }}
+                        </span>
+                        </div>
+                    </div>
+                    <div class="flex-none">
+                        <a href="{{ $platformLink->link }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__trade')
 
@@ -81,14 +132,11 @@
     <!-- Modal for Account rename -->
     @include('frontend::.user.forex.modal.__account_rename')
 
-
     <!-- Modal for Account password -->
     @include('frontend::.user.forex.modal.__change_account_password')
 
-
     <!-- Modal for Account invest password -->
     @include('frontend::.user.forex.modal.__change_investor_password')
-
 
     <!-- Modal for Account archive -->
     @include('frontend::.user.forex.modal.__archive_account')

@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
-use App\Models\Language;
 use App\Models\Theme;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Blade;
+use App\Models\Language;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
 
         if(is_force_https()){
             URL::forceScheme('https');
@@ -59,6 +62,17 @@ class AppServiceProvider extends ServiceProvider
 
             return "<?php \$isHidden = $isHidden; \$img_field = '$img_field'; ?>
             <div data-des=\"<?php echo \$img_field; ?>\" <?php if(!\$isHidden) echo 'hidden'; ?> class=\"close remove-img <?php echo \$img_field; ?>\"><i icon-name=\"x\"></i></div>";
+        });
+
+
+        // setting session expiry dynamically
+        view()->composer('*', function ($view) {
+            if (Auth::check()) {
+                $user = Auth::user();
+                if ($user->session_expiry) {
+                    config(['session.lifetime' => $user->session_expiry]);
+                }
+            }
         });
 
     }

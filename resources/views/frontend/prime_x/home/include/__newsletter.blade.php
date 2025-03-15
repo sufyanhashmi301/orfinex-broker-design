@@ -5,7 +5,7 @@
                 <div class="newslatter" data-aos="fade-down" data-aos-duration="1500">
                     <form action="{{ route('subscriber') }}" method="post">
                         @csrf
-                        <input type="email" name="email" placeholder="Email Address" required/>
+                        <input type="email" name="email" placeholder="{{ __('Email Address') }}" required/>
                         <button type="submit">{{ __('Subscribe') }}</button>
                     </form>
                 </div>

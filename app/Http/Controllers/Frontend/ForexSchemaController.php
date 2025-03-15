@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schema;
 use App\Models\User;
+use App\Models\PlatformLink;
 use App\Traits\ForexApiTrait;
 
 class ForexSchemaController extends Controller
@@ -19,13 +20,16 @@ class ForexSchemaController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+        $schemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
         ->orderBy('priority', 'asc')
             ->get();
 //        dd($schemas);
 
-        return view('frontend::forex_schema.index', compact('schemas'));
+        $activePlatform = setting('active_trader_type', 'features');
+        $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
+
+        return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     }
 
     public function schemaPreview($id)
@@ -64,7 +68,7 @@ class ForexSchemaController extends Controller
             'display_leverage' => explode(',', $schema->leverage)[0],
             'first_min_deposit' => !empty($schema->first_min_deposit) ? $schema->first_min_deposit : 0,
             'spread' => !empty($schema->spread) ? $schema->spread : 0,
-            'commission' => $schema->commission == 0 ? 'No Commission' : $schema->commission,
+            'commission' => $schema->commission == 0 ? __('No Commission') : $schema->commission,
             'is_real_islamic' => $schema->is_real_islamic,
             'is_demo_islamic' => $schema->is_demo_islamic,
         ];

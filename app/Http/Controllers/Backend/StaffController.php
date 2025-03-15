@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\User;
+use App\Models\IbGroup;
+use App\Models\ForexSchema;
+use App\Models\ForexAccount;
+use App\Traits\ImageUpload;
 use Arr;
 use DB;
 use Hash;
@@ -14,6 +19,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -22,6 +28,8 @@ use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
 {
+    use ImageUpload;
+
     /**
      * Display a listing of the resource.
      *
@@ -39,19 +47,49 @@ class StaffController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $staffs = Admin::paginate(10);
-
-        return view('backend.staff.index', compact('staffs'));
-    }
-
-    public function create()
-    {
+        $staff = Auth::user();
+        $staffs = Admin::all();
+        $superAdmin = Admin::find(1);
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.create', compact('roles','departments','designations'));
+
+        // Count active and inactive staff
+        $activeStaffCount = Admin::where('status', true)->count();
+        $inactiveStaffCount = Admin::where('status', false)->count();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+        if ($request->ajax()) {
+            $status = $request->status; // active or inactive
+            if ($status == 'active') {
+                $staffs = Admin::where('status', true)->get();
+            } elseif ($status == 'inactive') {
+                $staffs = Admin::where('status', false)->get();
+            }
+
+            return response()->json([
+                'staffs' => view('backend.staff.include.__staff_list', ['staff' => $staffs])->render(),
+            ]);
+        }
+
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
+
+    }
+
+    public function create(Request $request)
+    {
+        if ($request->ajax()) {
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+            $view = view('backend.staff.create', compact('roles', 'departments', 'designations'))->render();
+
+            // Send back the view HTML as a response
+            return response()->json(['html' => $view]);
+        }
     }
 
     /**
@@ -61,103 +99,226 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-
+        // Validate the input
         $validator = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
             'password' => 'required|same:confirm-password',
             'role' => ['required', Rule::notIn('Super-Admin')],
             'status' => 'boolean',
+            'department_id' => 'nullable|integer',
+            'designation_id' => 'nullable|integer',
+            'date_of_joining' => 'nullable|date',
+            'work_phone' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'key' => 'nullable|string',
         ]);
 
+        // If validation fails, return error
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
+        // Get the validated input
         $input = $request->all();
 
-        $input['password'] = Hash::make($input['password']);
+//        dd($input);
 
+        // Convert empty fields to null if necessary
+        $input['password'] = Hash::make($input['password']);
+        $input['employee_id'] = $input['employee_id'] ?: null;
+        $input['department_id'] = $input['department_id'] ?: null;
+        $input['designation_id'] = $input['designation_id'] ?: null;
+        $input['date_of_joining'] = $input['date_of_joining'] ?: null;
+        $input['work_phone'] = $input['work_phone'] ?: null;
+        $input['phone'] = $input['phone'] ?: null;
+
+        // Create the new admin record
         $admin = Admin::create($input);
         $admin->assignRole($request->input('role'));
+
+        // Notify success
         notify()->success('Staff created successfully');
 
+        // Redirect to the staff index page
         return redirect()->route('admin.staff.index');
     }
+
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return string
      */
     public function edit($id)
     {
-
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
-        $staff->getRoleNames()->first();
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.edit', compact('staff', 'roles','departments','designations'))->render();
+        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
+        $ibGroups = IbGroup::all(); // Fetch all IB groups
+        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
     }
+
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:admins,email,' . $id,
-            'password' => 'same:confirm-password',
-            'role' => ['required', Rule::notIn('Super-Admin')],
-            'status' => 'boolean',
-            'department' => 'nullable|exists:departments,id',
-            'designation' => 'nullable|exists:designations,id',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
-        }
-
-        $input = $request->all();
-
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, ['password']);
-        }
-
         $staff = Admin::find($id);
 
-        if ($staff->getRoleNames()->first() === 'Super-Admin') {
-            notify()->warning('Super admin not changeable');
-            return redirect()->back();
+        if (!$staff) {
+            return response()->json(['success' => false, 'message' => 'Staff not found.'], 404);
         }
 
-        // Invalidate the user's session
-        $this->invalidateUserSession($staff);
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|unique:admins,email,' . $id,
+                'password' => 'nullable|same:confirm-password',
+                'role' => ['nullable', Rule::notIn('Super-Admin')],
+                'status' => 'boolean',
+                'department' => 'nullable|exists:departments,id',
+                'designation' => 'nullable|exists:designations,id',
+                'ib_groups' => 'nullable|array',
+                'account_types' => 'nullable|array',
+            ]);
 
-        $staff->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+            }
 
-        $staff->assignRole($request->input('role'));
-        if($request->input('department')){
-            $staff->departments()->sync([$request->input('department')]);
+            $input = $request->all();
+            $input['employee_id'] = $request->input('employee_id') ?: null;
+            $input['department_id'] = $request->input('department_id') ?: null;
+            $input['designation_id'] = $request->input('designation_id') ?: null;
+            unset($input['department'], $input['designation']);
+
+            if (!empty($input['password'])) {
+                $input['password'] = Hash::make($input['password']);
+            } else {
+                $input = Arr::except($input, ['password']);
+            }
+
+            if ($request->hasFile('avatar')) {
+                $logo = self::imageUploadTrait($request->file('avatar'), $staff->avatar);
+                $input['avatar'] = $logo;
+            }
+            // Save IB Groups
+
+            $staff->update($input);
+
+            if ($request->filled('role')) {
+                DB::table('model_has_roles')->where('model_id', $id)->delete();
+                $staff->assignRole($request->input('role'));
+            }
+
+            if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
+
+                $userIds = $request->input('user_ids', []);
+
+                // Get all users belonging to the given IB groups
+                if (in_array('all', $request->input('ib_groups', []))) {
+                    $ibUsers = User::pluck('id')->toArray();
+                } else {
+                    $ibUsers = User::whereIn('ib_group_id', $request->input('ib_groups', []))->pluck('id')->toArray();
+                }
+
+                if (in_array('all', $request->input('account_types', []))) {
+                    $accountTypeUsers = ForexAccount::with('user')->get()->pluck('user.id')->toArray();
+                } else {
+                    $accountTypeUsers = ForexAccount::whereIn('forex_schema_id', $request->input('account_types', []))->with('user')->get()->pluck('user.id')->toArray();
+                }
+
+                // Get the complete referral network (including IB users)
+                $networkUsers = $this->getReferralNetwork($ibUsers);
+
+                // Merge IB group users with their referral network
+                $allUsers = array_unique(array_merge($ibUsers, $networkUsers, $accountTypeUsers, $userIds));
+
+                // Sync users with the staff member
+                $staff->users()->sync($allUsers);
+
+                $input['ib_groups'] = $request->input('ib_groups', []);
+                $input['account_types'] = $request->input('account_types', []);
+                $staff->update($input);
+            }
+
+
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+            $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
+            $ibGroups = IbGroup::all();
+            $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
+            $attachedUsers = $staff->users; // Fetch attached users
+
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Staff updated successfully!',
+                'updatedHtml' => $updatedStaff
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
-        if($request->input('designation')){
-            $staff->designations()->sync([$request->input('designation')]);
+    }
+
+    /**
+     * Recursive function to fetch referral network.
+     */
+    private function getReferralNetwork(array $parentIds)
+    {
+        $allUsers = [];
+//dd($parentIds);
+        while (!empty($parentIds)) {
+            // Get all users who have these parent IDs as ref_id
+            $users = User::whereIn('ref_id', $parentIds)->pluck('id')->toArray();
+            $allUsers = array_merge($allUsers, $users);
+            $parentIds = $users; // Continue recursion with new found users
         }
 
-        notify()->success('Staff updated successfully');
-        return redirect()->route('admin.staff.index');
+        return $allUsers;
+    }
+
+    public function detachUser(Request $request, $staffId)
+    {
+
+        $staff = Admin::findOrFail($staffId);
+        $userId = $request->input('user_id');
+
+        // Detach the user from the staff
+        $staff->users()->detach($userId);
+
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
+        $ibGroups = IbGroup::all();
+        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User detach successfully!',
+            'updatedHtml' => $updatedStaff
+        ]);
     }
 
 
@@ -182,23 +343,30 @@ class StaffController extends Controller
     }
 
 
-    public function security()
+    public function security($id)
     {
-        return view('backend.staff.security.index');
+
+        $user = Admin::find($id);
+        if (null == $user->google2fa_secret) {
+            $google2fa = app('pragmarx.google2fa');
+            $secret = $google2fa->generateSecretKey();
+            //dd($user,$google2fa,$secret);
+            $user->update([
+                'google2fa_secret' => $secret,
+            ]);
+        }
+
+        return view('backend.staff.security.index', compact('user'));
     }
+
     public function twoFaPin()
     {
         return view('backend.auth.two_fa_pin');
     }
+
     public function twoFa()
     {
-        $user = \Auth::user();
-        $google2fa = app('pragmarx.google2fa');
-        $secret = $google2fa->generateSecretKey();
-//dd($user,$google2fa,$secret);
-        $user->update([
-            'google2fa_secret' => $secret,
-        ]);
+
         notify()->success(__('QR Code And Secret Key Generate successfully'));
 
         return redirect()->back();
@@ -261,6 +429,44 @@ class StaffController extends Controller
 
         notify()->success('staff deleted successfully');
 
+        return redirect()->back();
+    }
+
+    public function staffLogin($id)
+    {
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->getRoleNames()->contains('Super-Admin')) {
+
+            session(['super_admin_id' => Auth::guard('admin')->user()->id]);
+
+            Auth::guard('admin')->loginUsingId($id);
+
+            session(['impersonated_id' => $id]);
+
+            notify()->success('Logged in as staff successfully');
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
+        return redirect()->back();
+    }
+
+    public function stopImpersonation()
+    {
+        if (Auth::guard('admin')->check() && session('impersonated_id')) {
+
+            $superAdminId = session('super_admin_id');
+
+            Auth::guard('admin')->logout();
+
+            Auth::guard('admin')->loginUsingId($superAdminId);
+
+            session()->forget('impersonated_id');
+            session()->forget('super_admin_id');
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
         return redirect()->back();
     }
 

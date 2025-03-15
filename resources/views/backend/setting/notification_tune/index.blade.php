@@ -1,15 +1,15 @@
-@extends('backend.setting.index')
+@extends('backend.setting.communication.index')
 @section('title')
     {{ __('Notification Settings') }}
 @endsection
 
-@section('setting-content')
+@section('communication-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Notification Tune Settings') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a  href="{{ route('admin.settings.plugin','notification') }}" class="btn btn-primary inline-flex items-center justify-center new-referral" type="button" data-type="investment">
+            <a  href="{{ route('admin.settings.plugin','notification') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center new-referral" type="button" data-type="investment">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body p-6 space-y-4">
                 @foreach($set_tunes as $set_tune)
-                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                <div class="single-gateway flex flex-wrap items-center justify-between border rounded dark:border-slate-700 gap-3 py-3 px-4">
                     <div class="gateway-name flex items-center gap-2">
                         <div class="gateway-icon mr-4">
                             <img class="h-7" src="{{ asset($set_tune->icon) }}" alt=""/>
@@ -60,7 +60,7 @@
     </div>
 
 @endsection
-@section('setting-script')
+@section('communication-script')
 <script>
     (function ($) {
         'use strict';

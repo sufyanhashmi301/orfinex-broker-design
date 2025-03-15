@@ -45,6 +45,12 @@ class RebateRule extends Model
 		'per_lot',
 		'status'
 	];
+// App\Models\RebateRule.php
+
+    public function forexSchemas()
+    {
+        return $this->belongsToMany(ForexSchema::class, 'forex_schema_rebate_rule', 'rebate_rule_id', 'forex_schema_id')->withTimestamps();
+    }
 
 	public function multiLevels()
 	{
@@ -58,4 +64,11 @@ class RebateRule extends Model
 					->withPivot('id')
 					->withTimestamps();
 	}
+    public function ibGroups()
+    {
+        // Ensure this matches the pivot table's structure
+        return $this->belongsToMany(IbGroup::class, 'ib_group_rebate_rule', 'rebate_rule_id', 'ib_group_id');
+    }
+
+
 }

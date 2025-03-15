@@ -36,12 +36,56 @@
 
 @yield('script')
 @stack('script')
+<script>
+    $(document).ready(function () {
+        // Show loader when any sidebar menu item is clicked
+        $('.loaderBtn').on('click', function (e) {
+            $('#page-loader').show();  // Show the loader
+        });
+
+        // Hide loader when the page has fully loaded
+        $(window).on('load', function () {
+            $('#page-loader').hide();  // Hide the loader
+        });
+    });
+
+    $(document).ready(function () {
+        function calculateHeights() {
+            // Store heights in variables, checking if elements exist
+            var headerHeight = $('#app_header').length ? $('#app_header').outerHeight() : 0;
+            var footerHeight = $('#footer').length ? $('#footer').outerHeight() : 0;
+            var titleHeight = $('.pageTitle').length ? $('.pageTitle').outerHeight() + 24 : 0;
+            var tabsHeight = $('.innerMenu').length ? $('.innerMenu').outerHeight() + 20 : 0;
+
+            // Calculate the available height for content
+            var totalHeight = headerHeight + footerHeight + titleHeight + tabsHeight + 73;
+            var minHeight = 'calc(100vh - ' + totalHeight + 'px)';
+
+            $('.dataTables_wrapper, .basicTable_wrapper').css('min-height', minHeight);
+        }
+
+        // Run the function on page load and window resize
+        calculateHeights();
+        // $(window).resize(calculateHeights);
+    });
+
+    var animation = lottie.loadAnimation({
+        container: document.getElementById('secure-data'), // ID of the div where the animation will render
+        renderer: 'svg',  // Render the animation in SVG format
+        loop: true,       // Loop the animation
+        autoplay: true,   // Autoplay the animation
+        path: '{{ asset('global/json/secure.json') }}' // Path to your JSON file
+    });
+
+</script>
 
 @php
     $googleAnalytics = plugin_active('Google Analytics');
     $tawkChat = plugin_active('Tawk Chat');
     $fb = plugin_active('Facebook Messenger');
     $customChat = plugin_active('Custom Chat');
+    $zohoSalesIQ = plugin_active('Zoho SalesIQ');
+    $zohoPageSense = plugin_active('Zoho PageSense');
 @endphp
 
 @if($googleAnalytics)
@@ -56,5 +100,9 @@
 @if($customChat)
     @include('frontend::plugin.custom_chat',['data' => json_decode($customChat->data, true)])
 @endif
-
-
+@if($zohoSalesIQ)
+     @include('frontend::plugin.zoho_salesiq',['data' => json_decode($zohoSalesIQ->data, true)])
+@endif
+@if($zohoPageSense)
+     @include('frontend::plugin.zoho_pagesense',['data' => json_decode($zohoPageSense->data, true)])
+@endif

@@ -73,8 +73,15 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
+
+//sample Data for updateUserGroup
+//        {
+//            "login": 9997820,
+//             "group": "real\\Classic\\Islamic1a"
+//        }
     public function updateUserGroup($data)
     {
+
         $endpoint = 'user/updateMT5Group';
         return $this->post($endpoint, $data);
     }
@@ -107,12 +114,23 @@ class ForexApiService
     public function getUserByEmail($data)
     {
         $endpoint = 'user/userbyemail';
-        return $this->get($endpoint, $data);
+        return $this->getByBody($endpoint, $data);
     }
 
     public function getBalance($data)
     {
         $endpoint = 'useraccount/balance';
+        return $this->get($endpoint, $data);
+    }
+    public function fastDeals($reportFlag=0,$timeInSeconds,$from,$to)
+    {
+        $endpoint = 'reports/fastdeals';
+        $data = [
+            'reportFlag' => $reportFlag,//(0 for all, 1 for buy, 2 for sell)
+            'timeInSeconds' => $timeInSeconds,
+            'fromDateTime' => $from,
+            'toDateTime' => $to,
+        ];
         return $this->get($endpoint, $data);
     }
 
@@ -125,13 +143,22 @@ class ForexApiService
     public function getOrders($data)
     {
         $endpoint = 'order/list/user';
-        return $this->get($endpoint, $data);
+        return $this->getByBody($endpoint, $data);
     }
 
     public function getBalanceReport($data)
     {
         $endpoint = 'useraccount/getBalanceReport';
-        return $this->get($endpoint, $data);
+        return $this->getByBody($endpoint, $data);
+    }
+
+    public function getClientsByGroup($group)
+    {
+        $data = [
+            'group' => $group
+        ];
+        $endpoint = 'user/userbygroup';
+        return $this->getByBody($endpoint, $data);
     }
 
     public function balanceOperation($data)
@@ -172,6 +199,15 @@ class ForexApiService
         return BigDecimal::of(0);
     }
 
+    // To check the current Credit
+        public function getCurrentCredit($data){
+        $response = $this->getBalance($data);
+        if ($response['success'] === true) {
+            return BigDecimal::of($response['result']['credit']);
+        }
+        return BigDecimal::of(0);
+    }
+
 
     // Risk Score APIs
     public function getTotalRiskScore($data)
@@ -199,7 +235,8 @@ class ForexApiService
         $params = ['group' => $group];
         return $this->get($endpoint, $params);
     }
-// Summary of Positions by Client API
+
+    // Summary of Positions by Client API
     public function getClientPositionSummary($login)
     {
         $endpoint = 'Position/summary';
@@ -207,7 +244,7 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
-// Summary of Positions by Group API
+    // Summary of Positions by Group API
     public function getGroupPositionSummary($group)
     {
         $endpoint = 'Position/summarygroup';
@@ -240,16 +277,17 @@ class ForexApiService
 
     protected function get($endpoint, $params = [])
     {
-        try {
+//        try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
+            //dd($URL,$params,$this->getCommonHeadersReal());
             $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->get($URL, $params);
 
             return $this->handleResponse($response);
-        } catch (RequestException $e) {
-            return $this->handleException($e);
-        }
+//        } catch (RequestException $e) {
+//            return $this->handleException($e);
+//        }
     }
 
     protected function post($endpoint, $params = [])

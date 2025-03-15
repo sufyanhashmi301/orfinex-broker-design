@@ -21,8 +21,34 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        //$this->call(AdminSeeder::class);
+//        $this->call(AdminSeeder::class);
         $this->call(PermissionSeeder::class);
-        //$this->call(GatewaySeeder::class);
+//        $this->call(GatewaySeeder::class);
+
+        $this->call(BannerSeeder::class);
+        $this->call(CountriesTableSeeder::class);
+        $this->call(KYCLevelSeeder::class);
+        $this->call(KycSubLevelsTableSeeder::class);
+        $this->call(KycsTableSeeder::class);
+        $this->call(UpdateGatewayLogoSeeder::class);
+        $this->call(EmploymentSeeder::class);
+        $this->call(RiskBookSeeder::class);
+        $this->call(Match2PayGatewaySeeder::class);
+        $this->call(NewGatewaysSeeder::class);
+        $this->call(EmailTemplatesSeeder::class);
+//        $this->call(DefaultIbGroupSeeder::class);
+        $this->call(PluginSeeder::class);
+        $this->call(TicketPrioritySeeder::class);
+        $this->call(TicketStatusSeeder::class);
+        $this->call(DocumentLinkSeeder::class);
+        $this->call(RateSeeder::class);
+        $this->call(SocialLinkSeeder::class);
+        $this->call(SocialLoginSeeder::class);
+        $this->call(UpdatePluginsData::class);
+        $this->call(LeadStagesSeeder::class);
+        $this->call(LeadSourcesSeeder::class);
+        $this->call(LeadPipelineSeeder::class);
+
+
     }
 }

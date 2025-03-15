@@ -1,15 +1,15 @@
-@extends('backend.setting.index')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('Manage Rankings') }}
 @endsection
-@section('setting-content')
+@section('user-management-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('User Rankings') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('ranking-create')
-                <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNewRanking">
+                <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNewRanking">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
                 </a>
@@ -34,7 +34,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                             @foreach($rankings as $ranking)
                                 <tr>
                                     <td class="table-td">
@@ -53,15 +53,15 @@
                                         {{ $ranking->bonus.' '.$currency }}
                                     </td>
                                     <td class="table-td">
-                                        {{ $ranking->description }}
+                                        {!! $ranking->description !!}
                                     </td>
                                     <td class="table-td">
                                         @if($ranking->status)
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
+                                            <div class="badge badge-warning capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                            <div class="badge badge-danger capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif
@@ -117,7 +117,7 @@
 
 
 @endsection
-@section('setting-script')
+@section('user-management-script')
     <script>
         $('.editRanking').on('click',function (e) {
             "use strict";

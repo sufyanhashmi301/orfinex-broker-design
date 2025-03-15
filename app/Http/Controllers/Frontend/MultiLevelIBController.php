@@ -7,9 +7,16 @@ use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexSchema;
+use App\Models\IbQuestion;
+use App\Models\LevelReferral;
+use App\Models\MetaDeal;
 use App\Models\MultiLevel;
+use App\Models\RebateRule;
+use App\Models\UserIbRule;
+use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MultiLevelIBController extends Controller
 {
@@ -21,13 +28,23 @@ class MultiLevelIBController extends Controller
     public function index()
     {
         $user = auth()->user();
+//        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ref_id)){
+//            return redirect()->route('user.referral');
+//
+//        }else
+
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id)) {
+
+            return redirect()->route('user.ib.request');
+        }
+
         $user_id = $user->id;
         $totalMonthlyReferrals = $user->getReferral->monthlyRelationships()->count();
-        $sourceFrom = AccountBalanceType::AFFILIATE_WALLET;
+        $sourceFrom = AccountBalanceType::IB_WALLET;
         $account = get_user_account($user_id,$sourceFrom);
         $accountFromID = $account->id;
         $accountFromName = w2n($sourceFrom);
-        $affiliateBalance = $this->getAccountBalance($sourceFrom, true);
+        $affiliateBalance = $account->amount;
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
@@ -40,34 +57,126 @@ class MultiLevelIBController extends Controller
             ->groupBy('forex_scheme_id','type')
             ->orderByDesc('count')
             ->first();
-        $maxLevelOrder = $maxLevelOrder->count;
+
+        $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->count : 0;
         $getReferral = $user->getReferrals()->first();
         $levelOrder = 0;
         $dataCount = [
-            'total_deposit' => $user->totalDeposit(30),
-            'net_deposit' => $user->totalDeposit(),
-            'total_rebate' => $user->totalRebateMeta(),
-            'total_volume' => $user->totalVolumeMeta(),
-//            'total_investment' => $user->totalInvestment(),
-//            'total_profit' => $user->totalProfit(),
-//            'profit_last_7_days' => $user->totalProfit(7),
-            'total_withdraw' => $user->totalWithdraw(30),
-//            'total_transfer' => $user->totalTransfer(),
-//            'total_referral_profit' => $user->totalReferralProfit(),
-            'total_referral' => $user->getReferral->monthlyRelationships()->count(),
-
-//            'total_forex_balance' => mt5_total_balance($user->id),
-//            'total_forex_equity' => mt5_total_equity($user->id),
+            'monthly_referrals' => $user->getReferral->monthlyRelationships()->count(),
+            'total_rebate' => $this->getReferralsNetRebate($user,30),
+            'total_referrals_balance' =>  $this->getReferralsTotalBalance($user),
+            'total_volume' => $this->getReferralsNetVolume($user,30),
+            'total_referrals' => $user->referrals()->count(),
+            'total_deposit' => $user->totalReferralsDeposit(),
+            'total_withdraw' => $user->totalReferralsWithdraw(),
+            'net_referrals_rebate' =>  $this->getReferralsNetRebate($user),
+            'net_referrals_volume' =>  $this->getReferralsNetVolume($user),
         ];
+
         return view('frontend::partner.dashboard', get_defined_vars());
 
     }
+    public function getReferralsTotalBalance($user)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->get();
+
+        // Initialize total balance
+        $totalBalance = 0;
+
+        // Iterate through each referral and calculate their balance
+        foreach ($referrals as $referral) {
+            $totalBalance += mt5_total_balance($referral->id);
+        }
+
+        return $totalBalance;
+    }
+    public function getReferralsNetRebate($user,$days=null)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->pluck('id');
+        $netRebate = MetaDeal::whereIn('user_id',$referrals);
+             if (null != $days) {
+                 $netRebate->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+             }
+            $netRebate = $netRebate->sum('lot_share');
+        return $netRebate;
+    }
+    public function getReferralsNetVolume($user,$days=null)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->pluck('id');
+        $netVolume = MetaDeal::whereIn('user_id',$referrals);
+        if (null != $days) {
+            $netVolume->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $netVolume = $netVolume->sum('volume');
+
+        return  round($netVolume/10000, 2);
+    }
+
+// Ensure this function is part of a class where `mt5_total_balance` is defined.
+
+    public function rules()
+    {
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED){
+            return redirect()->route('user.multi-level.ib.dashboard');
+        }
+        $user = auth()->user(); // Get the authenticated user
+
+        // Fetch UserIbRules with related schemas and rebate rules
+        $userIbRules = UserIbRule::with([
+            'rebateRule',
+            'rebateRule.ibGroups.forexSchemas',
+            'rebateRule.symbolGroups.symbols'
+        ])
+            ->where('user_id', $user->id)
+            ->get();
+
+        // Return the data to the view
+        return view('frontend::partner.rules',  [
+            'userIbRules' => $userIbRules,
+        ]);
+    }
+
+    public function getSchemeRules(Request $request)
+    {
+        $user = auth()->user();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        $levelOrder = $request->input('level_order', 1); // Default to level 1 if not provided
+
+        // Fetch data based on selected level
+        $swapMultiLevels = MultiLevel::active()
+            ->whereHas('forexSchema', function ($query) use ($user, $tagNames) {
+                $query->relevantForUser($user->country, $tagNames)
+                    ->where('status', true);
+            })
+            ->where('type', MultiLevelType::SWAP)
+            ->where('level_order', $levelOrder)
+            ->get();
+
+        $swapFreeMultiLevels = MultiLevel::active()
+            ->whereHas('forexSchema', function ($query) use ($user, $tagNames) {
+                $query->relevantForUser($user->country, $tagNames)
+                    ->where('status', true);
+            })
+            ->where('type', MultiLevelType::SWAP_FREE)
+            ->where('level_order', $levelOrder)
+            ->get();
+
+        // Render the partial view with the fetched data
+        $html = view('frontend.prime_x.partner.include.__scheme_rules', compact('swapMultiLevels', 'swapFreeMultiLevels', 'levelOrder'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
     public function getAccountBalance($name = null, $echo = false)
     {
         $name = (empty($name)) ? AccType('main') : $name;
         $userID = auth()->user()->id;
         return Account::getBalance($name, $userID, $echo);
     }
+
     public function getSchemes(Request $request)
     {
         $levelOrder = $request->input('level_order');
@@ -110,7 +219,6 @@ class MultiLevelIBController extends Controller
         // Return the rendered view as JSON
         return response()->json(['html' => $html]);
     }
-
 
     /**
      * Show the form for creating a new resource.

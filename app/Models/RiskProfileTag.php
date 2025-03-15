@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class RiskProfileTag
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $desc
@@ -34,4 +34,13 @@ class RiskProfileTag extends Model
 		'desc',
 		'status'
 	];
+    public function riskProfileTags()
+    {
+        return $this->belongsToMany(User::class, 'risk_profile_tag_user');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'risk_profile_tag_user');
+    }
 }

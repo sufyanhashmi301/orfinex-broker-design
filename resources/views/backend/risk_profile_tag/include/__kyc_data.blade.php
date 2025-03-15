@@ -16,14 +16,14 @@
     @endforeach
 </ul>
 
-@if($kycStatus !== \App\Enums\KYCStatus::Verified->value)
+@if($kycStatus !== \App\Enums\KYCStatus::Level1->value)
     <form action="{{ route('admin.kyc.action.now') }}" method="post">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
 
 
         <div class="site-input-groups">
-            <label for="" class="box-input-label">{{ __('Details Message(Optional)') }}</label>
+            <label for="" class="box-input-label">{{ __('Detail Message') }}</label>
             <textarea name="message" class="form-textarea mb-0" placeholder="Details Message"></textarea>
         </div>
 
@@ -32,7 +32,7 @@
                 <i icon-name="check"></i>
                 {{ __('Approve') }}
             </button>
-            @if($kycStatus !== \App\Enums\KYCStatus::Failed->value)
+            @if($kycStatus !== \App\Enums\KYCStatus::Rejected->value)
                 <button type="submit" name="status" value="3" class="site-btn-sm red-btn">
                     <i icon-name="x"></i>
                     {{ __('Reject') }}

@@ -6,7 +6,7 @@
     <a href="" class="btn btn-white inline-flex items-center justify-center">
         {{ __('View All Symbol') }}
     </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#symbolGroupModal">
+    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#symbolGroupModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Symbol Group') }}
     </a>
@@ -37,28 +37,28 @@
                                     </td>
                                     <td class="table-td">
                                         <ul class="flex flex-wrap items-center gap-3">
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURUSD') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('GBPUSD') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('USDJPY') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURCAD') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('AUDCAD') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURGBP') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('AUDEUR') }}
                                             </li>
-                                            <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('USDINR') }}
                                             </li>
                                         </ul>

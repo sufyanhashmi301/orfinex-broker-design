@@ -15,11 +15,18 @@
                     @csrf
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Subject:') }}</label>
-                        <input type="text" name="subject" class="form-control mb-0" required=""/>
+                        <input type="text" name="subject" class="form-control mb-0" />
+                        @error('subject')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Email Details') }}</label>
-                        <textarea name="message" class="form-control" rows="6"></textarea>
+                        <textarea class="form-control summernote" rows="6"></textarea>
+                        <input type="hidden" name="message">
+                        @error('message')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="action-btns text-right">

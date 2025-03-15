@@ -1,5 +1,5 @@
 @php
-    $schemas = \App\Models\Schema::where('status',1)->with('schedule')->get(['id','name','type','min_amount','max_amount','fixed_amount']);
+    $schemas = \App\Models\Schema::where('status', 1)->with('schedule')->get(['id', 'name', 'type', 'min_amount', 'max_amount', 'fixed_amount']);
 @endphp
 
 <section class="section-style light-blue-bg">
@@ -7,9 +7,9 @@
         <div class="row justify-content-center">
             <div class="col-xl-7 col-lg-12">
                 <div class="section-title text-center">
-                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ $data['calculation_title_small'] }}</h4>
+                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ __('calculation_title_small') }}</h4>
                     <h2 data-aos="fade-down" data-aos-duration="1500">
-                        {{ $data['calculation_title_big'] }}
+                        {{ __('calculation_title_big') }}
                     </h2>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                             </select>
                         </div>
                         <div class="single-box">
-                            <label for="">{{ __('Enter Amount:') }} </label>
+                            <label for="">{{ __('Enter Amount:') }}</label>
                             <div class="input-group">
                                 <input type="text" id="enter-amount" class="form-control" aria-label="Amount"
                                        aria-describedby="basic-addon1">
@@ -70,7 +70,7 @@
 </section>
 @push('script')
     <script>
-        $('#selectPlan').on('change',function (e) {
+        $('#selectPlan').on('change', function (e) {
             e.preventDefault();
             "use strict"
 
@@ -87,7 +87,7 @@
 
                 $.ajax({
                     url: url, success: function (result) {
-                        $('#amount-level').html('Capital Back:' + result.capital_back);
+                        $('#amount-level').html('{{ __('Capital Back:') }}' + result.capital_back);
                         $('#profit-label').html(result.return_interest + ' - ' + result.number_period);
 
                         if (result.invest_amount > 0) {
@@ -95,8 +95,8 @@
                             invest_amount.attr('readonly', true);
                         }
 
-                        if (result.number_period === 'Unlimited Times') {
-                            $('#profit').val('Unlimited');
+                        if (result.number_period === '{{ __('Unlimited Times') }}') {
+                            $('#profit').val('{{ __('Unlimited') }}');
                         } else {
 
                             if (result.interest_type === 'percentage') {
@@ -113,7 +113,7 @@
 
         })
 
-        $('#enter-amount').on('keyup',function (e) {
+        $('#enter-amount').on('keyup', function (e) {
             e.preventDefault();
             "use strict"
             var id = $('#selectPlan').val();
@@ -125,8 +125,8 @@
                 $.ajax({
                     url: url, success: function (result) {
 
-                        if (result.number_period === 'Unlimited Times') {
-                            $('#profit').val('Unlimited');
+                        if (result.number_period === '{{ __('Unlimited Times') }}') {
+                            $('#profit').val('{{ __('Unlimited') }}');
                         } else {
 
                             if (result.interest_type === 'percentage') {
@@ -143,7 +143,6 @@
             }
 
         })
-
 
     </script>
 @endpush

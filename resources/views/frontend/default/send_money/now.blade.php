@@ -34,7 +34,7 @@
                         <input type="text" name="receiver_account" required class="form-control !text-lg userAccountCheck"
                                placeholder="Receiver Account">
                     </div>
-                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max notifyUser"></div>
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block min-max notifyUser"></div>
                 </div>
                 <div class="input-area relative">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('Enter Amount') }}</label>
@@ -46,7 +46,7 @@
                             {{ $currency }}
                         </span>
                     </div>
-                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max">
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
                         {{ 'Minimum '. setting('min_send','fee').' '.$currency.' and Maximum '. setting('max_send','fee').' '.$currency }}
                     </div>
                 </div>

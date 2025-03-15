@@ -62,7 +62,7 @@ class AdvertisementMaterialController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
+
 
         $validator = Validator::make($request->all(), [
             'img' => 'required',
@@ -71,9 +71,7 @@ class AdvertisementMaterialController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $input = $request->all();
@@ -124,20 +122,17 @@ class AdvertisementMaterialController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $advertisement = AdvertisementMaterial::find($id);
         $input = $request->all();
-//dd($input);
         $finalData = [
             'language' => $input['language'],
             'type' => $input['type'],
             'status' => $input['status'],
 
-            'icon' => $request->hasFile('img') ? self::imageUploadTrait($input['img']) : $advertisement->img,
+            'img' => $request->hasFile('image') ? self::imageUploadTrait($input['image']) : $advertisement->img,
         ];
 //        dd($finalData);
 

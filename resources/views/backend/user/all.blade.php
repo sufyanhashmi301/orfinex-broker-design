@@ -6,10 +6,10 @@
     $riskProfileTags = getRiskProfileTag();
 @endphp
 @section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.user.export',['type' => 'all']) }}">
+    <form id="filter-form" method="GET" action="{{ route('admin.user.index') }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
@@ -51,12 +51,14 @@
                         {{ __('Filter') }}
                     </button>
                 </div>
+                @can('customer-export')
                 <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="button" id="exportButton" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
                 </div>
+                @endcan
                 <div class="input-area relative">
                     <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
                         <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
@@ -77,7 +79,6 @@
                         <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
@@ -90,7 +91,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -110,6 +111,7 @@
     <!-- Modal for Send Email-->
 
     @include('backend.user.include.__configure_modal')
+    @include('backend.user.include.__reset_password')
 @endsection
 
 @section('customers-script')
@@ -151,7 +153,6 @@
                     }
                 },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
@@ -164,6 +165,37 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+
+            // Function to generate a random password
+            function generateRandomPassword(length = 12) {
+                const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    password += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return password;
+            }
+
+            // When the reset password button is clicked
+            $('body').on('click', '.reset-password-btn', function () {
+                const userId = $(this).data('id');
+                const userEmail = $(this).data('email');
+                const userName = $(this).data('name');
+                const newPassword = generateRandomPassword();
+
+                $('#resetUserId').val(userId);
+                $('#resetUserEmail').val(userEmail);
+                $('#generatedPassword').val(newPassword);
+
+                $('#resetPasswordModal').modal('show');
+            });
+
+
+            $('#filter-form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                table.draw(); // Redraw the table with new parameters
+            });
+
             $('#country').select2({
                 placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
 
@@ -171,9 +203,6 @@
             $('#tag').select2({
                 placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
 
-            });
-            $('#filter').click(function () {
-                table.draw();
             });
 
             $('#global_search').keyup(function() {
@@ -187,6 +216,33 @@
                 $('#name').html(name);
                 $('#userId').val(id);
                 $('#sendEmail').modal('toggle')
+            });
+
+            $('#exportButton').click(function() {
+                const formData = $('#filter-form').serialize();
+                const exportType = 'all'; // Specify your export type if needed
+
+                $.ajax({
+                    url: "{{ route('admin.user.export', ':type') }}".replace(':type', exportType),
+                    type: 'POST',
+                    data: formData,
+                    xhrFields: {
+                        responseType: 'blob' // Important for handling file downloads
+                    },
+                    success: function(data, status, xhr) {
+                        const filename = xhr.getResponseHeader('Content-Disposition').match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1].replace(/['"]/g, '');
+                        const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Export failed:', error);
+                    }
+                });
             });
 
         })(jQuery);

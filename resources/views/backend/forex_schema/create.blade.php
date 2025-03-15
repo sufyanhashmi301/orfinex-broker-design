@@ -8,13 +8,13 @@
             {{ __('Add New Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" class="space-y-5">
+    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" class="account_form space-y-5">
         @csrf
         <div class="grid grid-cols-12 gap-5">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -86,14 +86,30 @@
             <div class="card-body p-6 pt-0">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="input-area">
+                        <label class="form-label">{{ __('Active Trader Type') }}</label>
+                        <input
+                            type="text"
+                            name="trader_type"
+                            class="form-control"
+                            placeholder="Platform Group"
+                            value="{{setting('active_trader_type', 'features')}}"
+                            readonly
+                        />
+                        @error('trader_type')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="input-area">
                         <label class="form-label" for="">{{ __('Title:') }}</label>
                         <input
                             type="text"
                             name="title"
                             class="form-control"
                             placeholder="Account Title"
-                            required
                         />
+                        @error('title')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
@@ -102,7 +118,6 @@
                             class="form-control"
                             placeholder="Account Type Badge"
                             name="badge"
-                            required
                         />
                     </div>
                     <div class="input-area">
@@ -113,8 +128,10 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Priority e.g 1,2,3.."
-                            required
                         />
+                        @error('priority')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
@@ -126,9 +143,12 @@
                             placeholder="Account Limit"
 
                         />
+                        @error('account_limit')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
+                        <label class="form-label" for="">{{ __('Range Start(Min 5 digits):') }}</label>
                         <input
                             type="text"
                             name="start_range"
@@ -137,9 +157,12 @@
                             placeholder="Start Range"
 
                         />
+                        @error('start_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
+                        <label class="form-label" for="">{{ __('Range End(Min 5 digits):') }}</label>
                         <input
                             type="text"
                             name="end_range"
@@ -148,6 +171,9 @@
                             placeholder="End Range"
 
                         />
+                        @error('end_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -162,11 +188,13 @@
                         <label class="form-label" for="">{{ __('Account Type Spread:') }}</label>
                         <input
                             type="text"
-                            class="form-control"
+                            class="form-control keyFeatureInput"
                             placeholder="Account Type Spread"
                             name="spread"
-                            required
                         />
+                        @error('spread')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
@@ -175,8 +203,10 @@
                             class="form-control"
                             placeholder="Account Type Commission"
                             name="commission"
-                            required
                         />
+                        @error('commission')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Leverage:') }}</label>
@@ -185,18 +215,35 @@
                             name="leverage"
                             class="form-control"
                             placeholder="leverage e.g 10,20,50"
-                            required
                         />
+                        @error('leverage')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
                         <input
                             type="text"
                             name="first_min_deposit"
+                            oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Min deposit"
 
                         />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
+
+                        />
+                        @error('min_amount')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -209,16 +256,47 @@
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="real_swap_free"
-                                class="form-control"
-                                placeholder="Platform Group"
-                                required
-                            />
-                        </div>
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}">{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                                @error('real_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area">
+                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <select name="real_swap_free" class="select2 form-control w-full">
+                                    <option
+                                        value="" >
+                                        {{ __('Select Group')}}
+                                    </option>
+                                    @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                        <option
+                                            value="{{$group->id}}" >
+                                            {{ $group->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('real_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
+{{--                        <div class="input-area">--}}
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="real_swap_free"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
+{{--                        </div>--}}
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
@@ -238,22 +316,64 @@
                             </div>
                         </div>
                         <div id="live-islamic-group" class="hidden">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="real_islamic"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
-                            </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="real_islamic"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
+{{--                            </div>--}}
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                    <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                        <option value="">{{ __('Select Group')}}</option>
+                                        @foreach(\App\Models\PlatformGroup::all() as $group)
+                                            <option value="{{$group->group}}">{{ $group->group}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('real_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area">
+                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <select name="real_islamic" class="select2 form-control w-full">
+                                        <option
+                                            value="" >
+                                            {{ __('Select Group')}}
+                                        </option>
+                                        @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                            <option
+                                                value="{{$group->id}}" >
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('real_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Trading Server (Demo) ') }}
-                            </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('live_server','platform_api') }}" readonly>
-                        </div>
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('Trading Server') }}
+                                    </label>
+                                    <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('live_server','platform_api') }}" readonly>
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('Trading Server') }}
+                                    </label>
+                                    <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('x9_name','x9_api') }}" readonly>
+                                </div>
+                            @endif
                     </div>
                 </div>
             </div>
@@ -263,16 +383,56 @@
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="demo_swap_free"
-                                class="form-control"
-                                placeholder="Platform Group"
-                                required
-                            />
-                        </div>
+{{--                        <div class="input-area">--}}
+{{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
+{{--                            <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">--}}
+{{--                                <option value="">{{ __('Select Group')}}</option>--}}
+
+{{--                                @foreach(\App\Models\PlatformGroup::all() as $group)--}}
+{{--                                    <option value="{{$group->group}}">{{ $group->group}}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="demo_swap_free"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
+{{--                        </div>--}}
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}">{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                                @error('demo_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area">
+                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <select name="demo_swap_free" class="select2 form-control w-full">
+                                    <option
+                                        value="" >
+                                        {{ __('Select Group')}}
+                                    </option>
+                                    @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                        <option
+                                            value="{{$group->id}}" >
+                                            {{ $group->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('demo_swap_free')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
@@ -292,23 +452,66 @@
                             </div>
                         </div>
                         <div id="demo-islamic-group" class="hidden">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="demo_islamic"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
-                            </div>
-                        </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="demo_islamic"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
+{{--                            </div>--}}
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                    <select name="demo_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                        <option value="">{{ __('Select Group')}}</option>
 
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Trading Server (Demo) ') }}
-                            </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
+                                        @foreach(\App\Models\PlatformGroup::all() as $group)
+                                            <option value="{{$group->group}}">{{ $group->group}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('demo_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area">
+                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <select name="demo_islamic" class="select2 form-control w-full">
+                                        <option
+                                            value="" >
+                                            {{ __('Select Group')}}
+                                        </option>
+                                        @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                            <option
+                                                value="{{$group->id}}" >
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('demo_islamic')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    {{ __('Trading Server (Demo) ') }}
+                                </label>
+                                <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    {{ __('Trading Server (Demo) ') }}
+                                </label>
+                                <input type="text" class="form-control" name="x9_name" placeholder="Trading Server Demo" value="{{ setting('x9_name','x9_api') }}" readonly>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -322,8 +525,9 @@
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="summernote" name="desc"></textarea>
+                        <textarea class="summernote"></textarea>
                     </div>
+                    <input type="hidden" name="desc">
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -421,13 +625,54 @@
         </div>
     </form>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/css/bootstrap-tagsinput.css') }}">
+    <style>
+        .bootstrap-tagsinput {
+            width: 100%;
+            border-radius: 0.25rem;
+            border-width: 1px;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        .bootstrap-tagsinput .tag.label-info{
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-family: Inter, sans-serif;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 400;
+            border-radius: 4px;
+        }
+    </style>
+@endsection
 @section('script')
+    <script src="{{ asset('global/js/bootstrap-tagsinput.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            var elt = $('.keyFeatureInput');
+            elt.tagsinput({
+                maxTags: 5
+            });
+
             $('.toggle-checkbox').change(function() {
                 var target = $(this).data('target');
                 $(target).toggleClass('hidden');
             });
+
+            $('.account_form').on('keypress', function(event) {
+                if (event.which === 13) { // 13 is the keycode for Enter
+                    event.preventDefault();
+                }
+            });
+
         });
     </script>
 @endsection

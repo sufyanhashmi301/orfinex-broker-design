@@ -12,7 +12,7 @@
                 {{ __('Edit IB Account Type') }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                     {{ __('Back') }}
                 </a>
@@ -33,8 +33,10 @@
                                     value="{{$schema->title}}"
                                     class="form-control"
                                     placeholder="Account Title"
-                                    required
                                 />
+                                @error('title')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 schema-badge">
@@ -47,15 +49,21 @@
                                     name="badge"
                                     value="{{$schema->badge}}"
                                 />
+                                @error('badge')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 ">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select IB Type:') }}</label>
-                                <select name="type" id="" class="form-control w-100" required>
+                                <select name="type" id="" class="form-control w-100">
                                     <option value="ib" @if($schema->type == 'ib') selected @endif>{{__("IB")}}</option>
                                     <option value="multi_ib" @if($schema->type == 'multi_ib') selected @endif>{{__("Multi IB")}}</option>
                                 </select>
+                                @error('type')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
                         </div>
@@ -68,8 +76,10 @@
                                     value="{{$schema->group}}"
                                     class="form-control"
                                     placeholder="MT5 Group"
-                                    required
                                 />
+                                @error('group')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
 
@@ -77,31 +87,24 @@
                             <div class="input-area fw-normal">
                                 <label for="" class="form-label">{{ __('Detail:') }}</label>
                                 <div class="site-editor">
-                                <textarea class="summernote" name="desc">{{$schema->desc}}</textarea>
+                                    <textarea class="summernote">{{$schema->desc}}</textarea>
                                 </div>
+                                <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex overflow-hidden same-type">
-                                    <input
-                                        type="radio"
-                                        id="status-active"
-                                        name="status"
-                                        checked=""
-                                        value="1"
-                                        @checked($schema->status)
-                                    />
-                                    <label for="status-active">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="status-deactivate"
-                                        name="status"
-                                        value="0"
-                                        @checked(!$schema->status)
-                                    />
-                                    <label for="status-deactivate">{{ __('Deactivate') }}</label>
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <label class="form-label !w-auto">
+                                        {{ __('Status:') }}
+                                    </label>
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="status">
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($schema->status)>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,10 +121,7 @@
     </div>
 @endsection
 @section('script')
-
-     <script src="{{ asset('backend/js/choices.min.js') }}"></script>
-     <script>
-
+    <script>
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
             removeItemButton: true,
             // maxItemCount:7,

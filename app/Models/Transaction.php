@@ -73,7 +73,10 @@ class Transaction extends Model
     {
         return $this->hasMany(Referral::class, 'referral_target_id', 'target_id')->where('type', '=', $this->target_type);
     }
-
+    public function forexTarget()
+    {
+        return $this->belongsTo(ForexAccount::class, 'target_id','login');
+    }
     public function target()
     {
         return $this->belongsTo(ReferralTarget::class, 'target_id');
@@ -88,6 +91,19 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class)->withDefault();
     }
+    public function staff()
+    {
+        return $this->belongsTo(Admin::class,'action_by','id');
+    }
+    public function depositMethod()
+    {
+        return $this->belongsTo(DepositMethod::class,'method','gateway_code');
+    }
+    public function withdrawMethod()
+    {
+        return $this->belongsTo(WithdrawMethod::class,'method','name');
+    }
+
 
     public function invest()
     {
@@ -113,7 +129,13 @@ class Transaction extends Model
     public function totalInvestment()
     {
         return $this->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Investment);
+            $query->where('type', TxnType::Deposit);
+        });
+    }
+    public function totalIbBonus()
+    {
+        return $this->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::IbBonus);
         });
     }
 

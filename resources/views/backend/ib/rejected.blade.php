@@ -2,6 +2,73 @@
 @section('title')
     {{ __('All Customers') }}
 @endsection
+@php
+    $riskProfileTags = getRiskProfileTag();
+@endphp
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.ib.export',['type' => 'rejected']) }}">
+        @csrf
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
+                        <option value="" selected>
+                            {{ __('country') }}
+                        </option>
+                        @foreach( getCountries() as $country)
+                            <option value="{{ $country['name'] }}">
+                                {{ $country['name']  }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full" data-placeholder="{{ __('Select a tag') }}">
+                        <option value="" selected>
+                            {{ __('tags') }}
+                        </option>
+                        @foreach($riskProfileTags as $tag)
+                            <option value="{{ $tag->name }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
+                <div class="input-area relative">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                @can('ib-export')
+                <div class="input-area relative">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                @endcan
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+@endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -21,15 +88,14 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('Username') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
-                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -88,15 +154,39 @@
                 },
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.ib.rejected.list') }}",
+                ajax: {
+                    url: "{{ route('admin.ib.rejected.list') }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                        d.phone = $('#phone').val();
+                        d.country = $('#country').val();
+                        d.status = $('#status').val();
+                        d.created_at = $('#created_at').val();
+                        d.tag = $('#tag').val();
+                    }
+                },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
-                    {data: 'kyc', name: 'kyc'},
+                    // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
+            });
+            $('#country').select2({
+                placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#tag').select2({
+                placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#filter').click(function () {
+                table.draw();
+            });
+
+            $('#global_search').keyup(function() {
+                table.draw();
             });
 
             $('#dataTable').on('click', '.detail-btn', function () {
@@ -119,18 +209,6 @@
                     }
                 });
             });
-            //confirm IB
-            $('#dataTable').on('click', '.approve-btn', function() {
-                // Open the confirmation modal
-                $('#confirmModal').modal('show');
-                var rowData = table.row($(this).closest('tr')).data()
-                // Handle the "Confirm" button click inside the modal
-                $('#confirmBtn').on('click', function() {
-                    // var rowData = table.row($(this).closest('tr')).data();
-                    approveUser(rowData.id);
-
-                });
-            });
 
             //reject IB
             $('#dataTable').on('click', '.reject-btn', function() {
@@ -146,57 +224,65 @@
                     rejectUser(rowData.id);
                 });
             });
+            $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
 
-            // Function to user
-            function approveUser(userId) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("admin.ib.approve") }}',
-                    data: {user_id: userId},
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(res) {
-                        if(res.success){
-                            tNotify('success', res.success);
-                            $('#confirmModal').modal('hide');
-                            if(res.reload) {
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
+
+            (function ($) {
+                "use strict";
+                // Edit Button Click Event
+                $('#dataTable').on('click', '.edit-btn', function() {
+                    let userId = $(this).data('user-id');
+                    let fullName = $(this).data('full-name');
+                    let ibGroupId = $(this).data('ib-group-id');
+
+                    // Populate Modal Fields
+                    $('#modalUserName').text(fullName);
+                    $('#modalUserId').val(userId);
+                    $('#ibGroupIDSelect').val(ibGroupId).change();
+
+                    // Show the Modal
+                    $('#addIBModal').modal('show');
+                });
+
+                // Handle Form Submission
+                $('#addIBModalForm').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = $(this);
+                    var actionUrl = form.attr('action');
+                    var formData = form.serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: actionUrl,
+                        data: formData,
+                        success: function(res) {
+                            if(res.success){
+                                tNotify('success', res.success);
+                                $('#addIBModal').modal('hide');
                                 setTimeout(function(){ location.reload(); }, 900);
                             }
-                            if(res.redirect) {
-                                setTimeout(function(){ window.location.replace(res.redirect); }, 900);
+                            else if(res.error){
+                                tNotify('warning', res.error);
                             }
-                            if (res.modal) {
-                                $('#'+modalId).modal('toggle');
-                                // NioApp.Form.errors(res, true);
-                                // btn.prop('disabled', false);
-                            }
+                        },
+                        error: function(error) {
+                            tNotify('warning', error.responseJSON.message);
                         }
-                        else if(res.append){
-                            $('#'+appendId).html(res.append);
-                            // NioApp.Toast(res.error, 'warning');
-                            // setTimeout(function(){ location.reload(); }, 900);
-                        }
-                        else if(res.error){
-                            // NioApp.Toast(res.error, 'warning');
-                            // tNotify('warning', res.message);
-                            tNotify('warning', res.error);
-                            // setTimeout(function(){ location.reload(); }, 900);
-                        }
-                        else if (res.errors) {
-                            NioApp.Form.errors(res, true);
-                            tNotify('warning', res.message);
-                            btn.prop('disabled', false);
-                        }
-                        table.ajax.reload();
-                    },
-                    error: function(error) {
-                        // console.log(data.responseJSON.message,'data.message')
-                        tNotify('warning', error.responseJSON.message);
-                        // console.error(error);
-                    }
+                    });
                 });
-            }
+            })(jQuery);
+
             function rejectUser(userId) {
                 $.ajax({
                     type: 'POST',

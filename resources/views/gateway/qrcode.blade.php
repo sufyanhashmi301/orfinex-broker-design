@@ -35,7 +35,7 @@
             var qrModal = new bootstrap.Modal($('#staticBackdrop2')[0]);
             qrModal.show();
             $('.btn-close').click(function(){
-                window.location.href = '{{ route('user.deposit.amount') }}'
+                window.location.href = '{{ route('user.deposit.methods') }}'
             })
 
         });

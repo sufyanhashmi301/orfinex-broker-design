@@ -8,6 +8,8 @@ use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
+use App\Models\User;
+use App\Models\UserLanguage;
 
 class SettingController extends Controller
 {
@@ -43,7 +45,7 @@ class SettingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -63,7 +65,7 @@ class SettingController extends Controller
 
         $user->update($data);
 
-        notify()->success('Your Profile Updated successfully');
+        notify()->success(__('Your Profile Updated successfully'));
 
         return redirect()->back();
     }
@@ -79,7 +81,7 @@ class SettingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -97,7 +99,7 @@ class SettingController extends Controller
 
         $user->update($data);
 
-        notify()->success('Your Profile Updated successfully');
+        notify()->success(__('Your Profile Updated successfully'));
 
         return redirect()->route('user.setting.show');
 
@@ -160,5 +162,54 @@ class SettingController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function preference()
+    {
+        $user = \Auth::user();
+        $selectedLanguage = UserLanguage::where('user_id', $user->id)->value('language') ?? 'english';
+
+        // Fetch the user's theme preference
+        $activeTheme = User::where('id', $user->id)->value('user_theme') ?? 'light';
+
+        return view('frontend::user.setting.communication.index', compact('selectedLanguage', 'activeTheme'));
+    }
+
+    public function updateLanguage(Request $request)
+    {
+        $request->validate([
+            'language' => 'required',
+        ]);
+
+        $user = \Auth::user();
+        $userLanguage = UserLanguage::where('user_id', $user->id)->first();
+
+        if ($userLanguage) {
+            $userLanguage->language = $request->language;
+            $userLanguage->save();
+        } else {
+            UserLanguage::create([
+                'user_id' => $user->id,
+                'language' => $request->language,
+            ]);
+        }
+
+        notify()->success(__('Language Selected successfully'));
+        return redirect()->back();
+    }
+
+    public function updateUserTheme(Request $request)
+    {
+        $request->validate([
+            'user_theme' => 'required|in:light,dark',
+        ]);
+
+        $user = \Auth::user();
+        $user->update([
+            'user_theme' => $request['user_theme'],
+        ]);
+
+        notify()->success(__('Your theme has been updated successfully.'));
+        return redirect()->back();
     }
 }

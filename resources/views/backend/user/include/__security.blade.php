@@ -1,6 +1,6 @@
 <div class="tab-pane fade space-y-5" id="pills-security" role="tabpanel" aria-labelledby="pills-security-tab">
     @can('customer-change-password')
-        <div class="card">
+        <div class="card basicTable_wrapper">
             <div class="card-header">
                 <h3 class="card-title">{{ __('Change Password') }}</h3>
             </div>

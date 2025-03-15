@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.website.index')
 @section('title')
     {{ __('Currency Settings') }}
 @endsection
-@section('setting-content')
+@section('website-content')
     <?php
         $section = 'gdpr';
         $fields = config('setting.gdpr');
@@ -28,11 +28,11 @@
                                     <div class="form-switch ps-0">
                                         <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="{{$field['name']}}" 
-                                                value="1" 
-                                                @if(oldSetting($field['name'],$section)) checked @endif 
+                                            <input
+                                                type="checkbox"
+                                                name="{{$field['name']}}"
+                                                value="1"
+                                                @if(oldSetting($field['name'],$section)) checked @endif
                                                 class="sr-only peer"
                                             >
                                             <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
@@ -45,9 +45,10 @@
                                 <label class="form-label pt-0">
                                     {{ __($field['label']) }}
                                 </label>
-                                <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
+                                <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif" rows="6">
                                     {{oldSetting($field['name'],$section)}}
                                 </textarea>
+                                <input type="hidden" name="{{ $field['name'] }}" value="{{ str_replace(['<', '>'], ['{', '}'], oldSetting($field['name'], $section)) }}">
                             </div>
                         @else
                             <div class="input-area">

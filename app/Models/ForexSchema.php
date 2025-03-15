@@ -51,6 +51,8 @@ class ForexSchema extends Model
 	];
 
 	protected $fillable = [
+		'trader_type',
+		'bonus_id',
 		'icon',
 		'title',
 		'desc',
@@ -58,7 +60,8 @@ class ForexSchema extends Model
 		'badge',
 		'leverage',
 		'first_min_deposit',
-        'account_limit',
+		'min_amount',
+		'account_limit',
 		'real_swap_free',
 		'is_real_islamic',
 		'real_islamic',
@@ -67,6 +70,7 @@ class ForexSchema extends Model
 		'demo_islamic',
 		'is_withdraw',
 		'is_ib_partner',
+		'ib_group_id',
 		'is_internal_transfer',
 		'is_external_transfer',
 		'is_bonus',
@@ -82,30 +86,50 @@ class ForexSchema extends Model
 		'live_server',
 	];
 
-	public function forexAccounts()
+    // App\Models\ForexSchema.php
+
+    public function rebateRules()
+    {
+        return $this->belongsToMany(RebateRule::class, 'forex_schema_rebate_rule', 'forex_schema_id', 'rebate_rule_id')->withTimestamps();
+    }
+
+    public function forexAccounts()
 	{
 		return $this->hasMany(ForexAccount::class);
 	}
-
-    public function multiLevels()
+    public function ibGroup()
     {
-        return $this->hasMany(MultiLevel::class,'forex_scheme_id');
+        return $this->belongsTo(IbGroup::class, 'ib_group_id', 'id');
     }
 
-    public function scopeActive(Builder $query)
+	public function bonuses(){
+			return $this->belongsToMany(Bonus::class);
+	}
+
+
+    public function scopeTraderType(Builder $query)
     {
-        return $query->where('status', true);
+        return $query->where('trader_type', setting('active_trader_type', 'features'));
     }
-    public function scopeRelevantForUser(Builder $query, $country, array $tags)
-    {
-        return $query->where(function($q) use ($country, $tags) {
-            $q->whereJsonContains('country', $country)
-                ->orWhereJsonContains('country', 'All')
-                ->orWhere(function($subQuery) use ($tags) {
-                    foreach ($tags as $tag) {
-                        $subQuery->orWhereJsonContains('tags', $tag);
-                    }
-                });
-        });
-    }
+	public function multiLevels()
+	{
+		return $this->hasMany(MultiLevel::class, 'forex_scheme_id');
+	}
+
+	public function scopeActive(Builder $query)
+	{
+		return $query->where('status', true);
+	}
+	public function scopeRelevantForUser(Builder $query, $country, array $tags)
+	{
+		return $query->where(function ($q) use ($country, $tags) {
+			$q->whereJsonContains('country', $country)
+				->orWhereJsonContains('country', 'All')
+				->orWhere(function ($subQuery) use ($tags) {
+					foreach ($tags as $tag) {
+						$subQuery->orWhereJsonContains('tags', $tag);
+					}
+				});
+		});
+	}
 }

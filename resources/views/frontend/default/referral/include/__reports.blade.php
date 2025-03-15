@@ -80,7 +80,7 @@
                                                 <span class="block text-left">
                                                     <span class="inline-block text-center mx-auto py-1">
                                                         <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                            <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                            <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                             <span>{{ $raw->status }}</span>
                                                         </span>
                                                     </span>
@@ -116,11 +116,11 @@
                                         <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
 
                                         @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                            <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                            <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                                         @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                            <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                            <div class="transaction-status text-success">{{ __('Success') }}</div>
                                         @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                            <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                            <div class="transaction-status text-danger">{{ __('canceled') }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -191,7 +191,7 @@
                                                     <span class="block text-left">
                                                         <span class="inline-block text-center mx-auto py-1">
                                                             <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                 <span>{{ $raw->status }}</span>
                                                             </span>
                                                         </span>
@@ -225,11 +225,11 @@
                                             <div class="transaction-gateway mb-1 dark:text-white"> {{  $raw->target_type }}</div>
 
                                             @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                                <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                                <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                                             @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                                <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                                <div class="transaction-status text-success">{{ __('Success') }}</div>
                                             @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                                <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                                <div class="transaction-status text-danger">{{ __('canceled') }}</div>
                                             @endif
                                         </div>
                                     </div>

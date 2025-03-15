@@ -9,6 +9,44 @@
         </h4>
     </div>
 @endsection
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.deposit.export') }}">
+        @csrf
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
+                </div>
+
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                </div>
+
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
+                <div class="input-area relative">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Apply Filter') }}
+                    </button>
+                </div>
+                @can('deposit-export')
+                <div class="input-area relative">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                @endcan
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
 @section('deposit_content')
     <div class="card">
         <div class="card-body relative px-6 pt-3">
@@ -22,16 +60,18 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -48,9 +88,9 @@
     @can('deposit-action')
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deposit-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text deposit-action">
 
                         </div>
                     </div>
@@ -88,20 +128,33 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.deposit.manual.pending') }}",
+                ajax: {
+                    url: "{{ route('admin.deposit.manual.pending') }}",
+                    data: function (d) {
+                        d.email = $('#email').val();
+                        d.status = $('#status').val();
+                        d.status = $('#status').val();
+                        d.created_at = $('#created_at').val();
+
+                    }
+                },
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},
                     {data: 'charge', name: 'charge'},
                     {data: 'method', name: 'method'},
+                    {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]
             });
-
+            $('#filter').click(function () {
+                table.draw();
+            });
 
             //send mail modal form open
             $('body').on('click', '#deposit-action', function () {
@@ -119,5 +172,19 @@
 
 
         })(jQuery);
+
+        $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
     </script>
 @endsection

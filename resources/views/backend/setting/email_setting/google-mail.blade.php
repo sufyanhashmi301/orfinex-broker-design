@@ -4,60 +4,83 @@
 @endsection
 @section('email-content')
     <div class="card">
-        <div class="card-header">
+        <div class="card-header noborder">
             <div class="flex-1">
-                <div class="flex items-center space-x-3 mb-3">
-                    <img src="{{ asset('backend/images/gmail-icon.png') }}" class="h-6" alt="">
-                    <span class="text-2xl font-medium">{{ __('Gmail') }}</span>
-                </div>
+                <h4 class="font-medium text-xl capitalize dark:text-white inline-block mb-1">{{ __('Gmail Configuration') }}</h4>
                 <p class="card-text">
-                    {{ __('Set up the Google Mail server for email and send automated notifications to your customers about transactions, payments, and reminders.') }}
+                    {{ __('Set up Gmail for basic email notifications') }}
                 </p>
             </div>
-            <span class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
-                {{ __('Deactivated') }}
+            <span class="badge badge-danger text-danger bg-opacity-30 capitalize">
+                {{ __('Limited Support') }}
             </span>
         </div>
-        <div class="card-body p-6">
+        <div class="card-body p-6 pt-3">
             <div class="space-y-5">
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900 mb-3">
-                        {{ __('Benefits:') }}
-                    </h6>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 py-1">
-                            {{ __('Notify customers instantly about transactions, payments and reminders via SMS.') }}
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 py-1">
-                            {{ __('Configure SMS notifications at customer and contact person level.') }}
-                        </li>
-                    </ul>
+                <div class="font-normal text-sm text-warning rounded-md border border-warning bg-warning bg-opacity-[14%] p-4">
+                    <div class="flex space-x-3 rtl:space-x-reverse">
+                        <iconify-icon class="text-xl flex-0 mr-1" icon="lucide:triangle-alert"></iconify-icon>
+                        <p class="flex-1 text-sm">
+                            {{ __('Gmail has strict sending limits and security restrictions that may affect delivery reliability. For business use, we recommend using a professional SMTP provider instead.') }}
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900">
-                        {{ __('Before you can connect Twilio with zojo invoice, you must') }}
-                    </h6>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 py-1">
-                            {{ __('Create a Twilio account. ') }}
-                            <a href="" class="text-success-500">Sign up Now</a>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 py-1">
-                            {{ __('Go to console in Twilio and get your account SID and Auth Token.') }}
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 py-1">
-                            {{ __('Have an active phone number that works with Twilio. ') }}
-                            <a href="" class="text-success-500">Read More</a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="space-y-5">
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ 1 }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Enable IMAP Access') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-1">
+                                    {{ __('Go to Gmail settings and enable IMAP to allow third-party access') }}
+                                </p>
+                                <a href="https://workspace.google.com/intl/en-US/gmail/" class="inline-flex items-center text-sm font-medium dark:text-white" target="_blank">
+                                    {{ __('View Gmail Settings') }}
+                                    <iconify-icon class="ml-1" icon="lucide:external-link"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('2') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Create App Password') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-0">
+                                    {{ __('Generate a secure app-specific password for this integration') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('3') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Configure Authentication') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-0">
+                                    {{ __('Enter your Gmail address and the generated app password') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                <ul>
             </div>
-            <div class="flex items-center justify-between gap-5 mt-10">
+            <div class="flex items-center justify-end gap-3 mt-10">
                 <a href="javascript:;" class="btn btn-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailSettings">
+                    <iconify-icon class="text-lg mr-2" icon="mdi:connection"></iconify-icon>
                     {{ __('Connect') }}
-                </a>
-                <a href="javascript:;" class="btn btn-outline-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailConnection">
-                    {{ __('Connection Check') }}
                 </a>
             </div>
         </div>

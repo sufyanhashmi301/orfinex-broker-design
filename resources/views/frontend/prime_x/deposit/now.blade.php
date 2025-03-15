@@ -3,11 +3,13 @@
     <div class="progress-steps-form mb-6">
         <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="gateway_code" value="{{ $gatewayCode }}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details.') }}
                     </h4>
+
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="input-area relative">
@@ -16,22 +18,13 @@
                                     <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                                         <option selected disabled>--{{ __('Select Account') }}--</option>
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
+                                            <option value="{{the_hash($forexAccount->login) }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
+                                        {{--mail wallet--}}
+                                        @include('frontend::wallet.include.__specific-wallet-dropdown', ['target_id_name' => 'target_id', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
+
                                     </select>
                                 </div>
-                            </div>
-                            <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Payment Method:') }}</label>
-                                <div class="input-group select2-lg">
-                                    <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                        <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
-                                        @foreach($gateways as $gateway)
-                                            <option value="{{ $gateway->gateway_code }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $gateway->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -39,9 +32,9 @@
                                     <input type="text" name="amount" class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
                                         aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
                             <div class="input-area relative conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -49,9 +42,9 @@
                                     <input type="text"  class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
                                         aria-describedby="basic-addon2">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
                             <div class="manual-row"></div>
                         </div>
@@ -109,7 +102,7 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
                                     {{ __('Proceed to Payment') }}
                                 </button>
                             </div>
@@ -119,7 +112,7 @@
             </div>
         </form>
     </div>
-    
+
     <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
         <div class="accordion-item">
             <h2 class="accordion-header text-lg" id="flush-headingStaySafeOnline">
@@ -140,21 +133,27 @@
 @endsection
 @section('script')
     <script>
+        let assetPath = '{{ asset('') }}/';
 
+        // Capture the account type (forex or wallet) when the user selects an account
+        $('#tradingAccount').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedAccountType = selectedOption.data('type');
+            $('#selectedAccountType').val(selectedAccountType);  // Set the selected account type
+        });
         var globalData;
         var currency = @json($currency)
 
-        $("#gatewaySelect").on('change', function (e) {
+        $(document).ready(function() {
             "use strict"
-            e.preventDefault();
             $('.manual-row').empty();
-            var code = $(this).val()
+            var code = $("input[name='gateway_code']").val();
             var url = '{{ route("user.deposit.gateway",":code") }}';
             url = url.replace(':code', code);
             $.get(url, function (data) {
 
                 globalData = data;
-
+                console.log(data,'data')
                 if (data.currency === currency){
                     $('.conversion').addClass('hidden');
                 }else {
@@ -168,7 +167,7 @@
 
 
                 $('.min-max').text('Minimum ' + data.minimum_deposit + ' ' + currency + ' and ' + 'Maximum ' + data.maximum_deposit + ' ' + currency)
-                $('#logo').html(`<img class="payment-method h-12" src='${data.gateway_logo}'>`);
+                $('#logo').html(`<img class="payment-method h-12" src='${assetPath + data.logo}'>`);
                 var amount = $('#amount').val()
 
                 if (Number(amount) > 0) {
@@ -179,6 +178,7 @@
                 }
 
                 if (data.credentials !== undefined) {
+                    console.log(data.credentials,'data.credentials')
                     $('.manual-row').append(data.credentials)
                     imagePreview()
                 }
@@ -219,9 +219,7 @@
 
                 $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
 
-
             })
-
 
         });
     </script>

@@ -30,10 +30,10 @@ class RiskProfileTagController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:risk-profile-tag-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
-//        $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
-//        $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
-
+        $this->middleware('permission:risk-profile-list|risk-profile-create|risk-profile-edit', ['only' => ['index', 'store']]);
+        $this->middleware('permission:risk-profile-create', ['only' => ['store']]);
+        $this->middleware('permission:risk-profile-edit', ['only' => ['update']]);
+        $this->middleware('permission:risk-profile-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -137,7 +137,7 @@ class RiskProfileTagController extends Controller
         $validator = Validator::make($input, [
             'risk_profile_tag_id' => [
                 'required',
-                Rule::unique('risk_profile_tags_users')
+                Rule::unique('risk_profile_tag_user')
                     ->where('user_id', $id)
                     ->where('risk_profile_tag_id', $request->input('risk_profile_tag_id')),
             ],

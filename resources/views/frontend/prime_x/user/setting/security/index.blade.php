@@ -33,8 +33,8 @@
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                     <a href="javascript:;" type="button"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#emailEditModal" class="text-sm text-success-500">
-                                        Change
+                                    data-bs-target="#emailEditModal" class="text-sm text-success">
+                                        {{ __('Change') }}
                                     </a>
                                 </span>
                             </div>
@@ -45,18 +45,18 @@
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                     <a href="javascript:;" type="button"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#changePasswordModal" class="text-sm text-success-500">
-                                        Change
+                                    data-bs-target="#changePasswordModal" class="text-sm text-success">
+                                        {{ __('Change') }}
                                     </a>
                                 </span>
                             </div>
                         </div>
                         <div class="mt-auto w-full">
-                            <a href="" class="btn btn-dark block-btn mt-5">Update</a>
+                            <a href="" class="btn btn-primary block-btn mt-5">{{ __('Update') }}</a>
                         </div>
                     </div>
                 </div>
-        
+
                 <div class="card border dark:border-slate-700 h-full">
                     <div class="card-body h-full flex flex-col items-start p-6 gap-3">
                         <div>
@@ -78,14 +78,14 @@
                             <div class="relative">
                                 <input type="text" class="form-control form-control-lg !pr-32" value="{{ $user->email }}">
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="" class="text-sm text-success-500">
-                                        Change
+                                    <a href="" class="text-sm text-success">
+                                        {{ __('Change') }}
                                     </a>
                                 </span>
                             </div>
                         </div>
                         <div class="mt-auto w-full">
-                            <a href="{{ route('user.change.password') }}" class="btn btn-dark block-btn inline-flex items-center">
+                            <a href="{{ route('user.change.password') }}" class="btn btn-primary block-btn inline-flex items-center">
                                 {{ __('Update') }}
                             </a>
                         </div>
@@ -97,7 +97,7 @@
 
     <!-- Modal for Edit Email -->
     @include('frontend::user.setting.security.modal.__edit_email')
-    
+
     <!-- Modal for Change Password -->
     @include('frontend::user.setting.security.modal.__change_password')
 

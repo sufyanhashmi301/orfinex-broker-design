@@ -2,6 +2,73 @@
 @section('title')
     {{ __('Approved IB Members') }}
 @endsection
+@php
+    $riskProfileTags = getRiskProfileTag();
+@endphp
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.ib.export',['type' => 'approved']) }}">
+        @csrf
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
+                        <option value="" selected>
+                            {{ __('country') }}
+                        </option>
+                        @foreach( getCountries() as $country)
+                            <option value="{{ $country['name'] }}">
+                                {{ $country['name']  }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full" data-placeholder="{{ __('Select a tag') }}">
+                        <option value="" selected>
+                            {{ __('tags') }}
+                        </option>
+                        @foreach($riskProfileTags as $tag)
+                            <option value="{{ $tag->name }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
+                <div class="input-area relative">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    @can('ib-export')
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                    @endcan
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+@endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -21,16 +88,15 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('Username') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
-                                    <th scope="col" class="table-th">{{ __('IB') }}</th>
-                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('IB') }}</th>--}}
+{{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('IB Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -43,6 +109,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal for confirm IB -->
     {{--@can('customer-mail-send')--}}
     @include('backend.ib.modal.__ib_confirm')
@@ -88,16 +155,41 @@
                 },
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.ib.approved.list') }}",
+
+                ajax: {
+                    url: "{{ route('admin.ib.approved.list') }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                        d.phone = $('#phone').val();
+                        d.country = $('#country').val();
+                        d.status = $('#status').val();
+                        d.created_at = $('#created_at').val();
+                        d.tag = $('#tag').val();
+                    }
+                },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
-                    {data: 'ib_login', name: 'ib_login'},
-                    {data: 'kyc', name: 'kyc'},
+                    // {data: 'ib_login', name: 'ib_login'},
+                    // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
+            });
+            $('#country').select2({
+                placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#tag').select2({
+                placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#filter').click(function () {
+                table.draw();
+            });
+
+            $('#global_search').keyup(function() {
+                table.draw();
             });
 
             $('#dataTable').on('click', '.detail-btn', function () {
@@ -305,5 +397,18 @@
                 $('#sendEmail').modal('toggle')
             })
         })(jQuery);
+        $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
     </script>
 @endsection

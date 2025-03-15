@@ -1,5 +1,5 @@
 <div class="flex space-x-3 rtl:space-x-reverse">
-    @canany(['customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status'])
+    @canany(['customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status','customer-edit'])
         <a href="{{route('admin.user.edit',$id)}}" class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Edit User">
             <iconify-icon icon="lucide:edit-3"></iconify-icon>
         </a>
@@ -15,6 +15,21 @@
             </button>
         </span>
     @endcan
+        <div class="flex space-x-3 rtl:space-x-reverse">
+            @can('customer-change-password')
+                <button
+                    type="button"
+                    class="toolTip onTop action-btn reset-password-btn"
+                    data-id="{{ $id }}"
+                    data-name="{{ $first_name.' '.$last_name }}"
+                    data-email="{{ $email }}"
+                    data-tippy-theme="dark"
+                    data-tippy-content="Reset Password">
+                    <iconify-icon icon="lucide:lock"></iconify-icon>
+                </button>
+            @endcan
+        </div>
+
 </div>
 
 <script>

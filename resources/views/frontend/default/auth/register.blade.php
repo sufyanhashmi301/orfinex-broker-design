@@ -96,7 +96,7 @@
                             <div class="relative ">
                               <select name="country" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
                                 @foreach( getCountries() as $country)
-                                    <option @if( $location->country_code == $country['code']) selected
+                                    <option @if( $location->country_code == $country['country_code']) selected
                                             @endif value="{{ $country['name'].':'.$country['dial_code'] }}"
                                             class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
                                         {{ $country['name']  }}

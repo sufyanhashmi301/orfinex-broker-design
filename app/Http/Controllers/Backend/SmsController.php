@@ -10,12 +10,20 @@ use Illuminate\Support\Facades\Validator;
 
 class SmsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:admin-sms-template', ['only' => ['template']]);
+         $this->middleware('permission:user-sms-template', ['only' => ['userTemplate']]);
+         $this->middleware('permission:sms-template-action', ['only' => ['edit_template']]);
+    }
+
     public function template(Request $request)
     {
 
         if ($request->ajax()) {
 
-            $data = SmsTemplate::query()->latest();
+            $data = SmsTemplate::query()->where('for', 'Admin')->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -26,7 +34,26 @@ class SmsController extends Controller
                 ->make(true);
         }
 
-        return view('backend.sms.template');
+        return view('backend.sms.admin_template');
+    }
+
+    public function userTemplate(Request $request)
+    {
+
+        if ($request->ajax()) {
+
+            $data = SmsTemplate::query()->where('for', 'User')->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', 'backend.sms.include.__name')
+                ->addColumn('status', 'backend.sms.include.__status')
+                ->addColumn('action', 'backend.sms.include.__action')
+                ->rawColumns(['name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.sms.user_template');
     }
 
     public function edit_template($id)
@@ -50,8 +77,10 @@ class SmsController extends Controller
         }
 
         $input = $request->all();
+        $input['message_body'] = str_replace(['{', '}'], ['<', '>'], $request->message_body);
+
         $data = [
-            'message_body' => nl2br($input['message_body']),
+            'message_body' => htmlspecialchars_decode($input['message_body']),
             'status' => $input['status'],
         ];
 

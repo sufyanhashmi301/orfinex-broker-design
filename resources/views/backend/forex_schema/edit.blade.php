@@ -8,13 +8,13 @@
             {{ __('Edit Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.update',$schema->id)}}" method="post" enctype="multipart/form-data" class="space-y-5">
+    <form action="{{route('admin.accountType.update',$schema->id)}}" method="post" enctype="multipart/form-data" class="account_form space-y-5">
         @method('PUT')
         @csrf
         <div class="grid grid-cols-12 gap-5">
@@ -92,8 +92,10 @@
                             value="{{$schema->title}}"
                             class="form-control"
                             placeholder="Forex Account Title"
-                            required
                         />
+                        @error('title')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
@@ -103,8 +105,10 @@
                             name="badge"
                             value="{{$schema->badge}}"
                             placeholder="Account Type Badge"
-                            required
                         />
+                        @error('badge')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Priority:') }}</label>
@@ -115,8 +119,10 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Priority e.g 1,2,3.."
-                            required
                         />
+                        @error('priority')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
@@ -129,9 +135,12 @@
                             placeholder="Account Limit"
 
                         />
+                        @error('account_limit')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
+                        <label class="form-label" for="">{{ __('Range Start(Min 5 digits):') }}</label>
                         <input
                             type="text"
                             name="start_range"
@@ -141,9 +150,12 @@
                             placeholder="Start Range"
 
                         />
+                        @error('start_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
+                        <label class="form-label" for="">{{ __('Range End(Min 5 digits):') }}</label>
                         <input
                             type="text"
                             name="end_range"
@@ -153,6 +165,9 @@
                             placeholder="End Range"
 
                         />
+                        @error('end_range')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -167,12 +182,14 @@
                         <label class="form-label" for="">{{ __('Account Type Spread:') }}</label>
                         <input
                             type="text"
-                            class="form-control"
+                            class="form-control keyFeatureInput"
                             placeholder="Account Type Spread"
                             name="spread"
                             value="{{$schema->spread}}"
-                            required
                         />
+                        @error('spread')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
@@ -182,8 +199,10 @@
                             placeholder="Account Type Commission"
                             name="commission"
                             value="{{$schema->commission}}"
-                            required
                         />
+                        @error('commission')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Leverage:') }}</label>
@@ -193,8 +212,10 @@
                             class="form-control"
                             placeholder="leverage e.g 10,20,50"
                             value="{{$schema->leverage}}"
-                            required
                         />
+                        @error('leverage')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
@@ -207,6 +228,21 @@
                             placeholder="Min deposit"
 
                         />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            value="{{$schema->min_amount}}"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
+
+                        />
+                        @error('min_amount')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -221,14 +257,25 @@
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="real_swap_free"
-                                value="{{$schema->real_swap_free}}"
-                                class="form-control"
-                                placeholder="Platform Group"
-                                required
-                            />
+                            <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                <option value="">{{ __('Select Group')}}</option>
+
+                                @foreach(\App\Models\PlatformGroup::all() as $group)
+                                    <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
+                                @endforeach
+                            </select>
+                            @error('real_swap_free')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+{{--                        <div class="input-area">--}}
+{{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="real_swap_free"--}}
+{{--                                value="{{$schema->real_swap_free}}"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
                         </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
@@ -250,15 +297,26 @@
                             </div>
                         </div>
                         <div id="live-islamic-group" class="@if(!$schema->is_real_islamic) hidden @endif">
+
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="real_islamic"
-                                    value="{{$schema->real_islamic}}"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
+                                <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}" @if($group->group == $schema->real_islamic) selected @endif>{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                                @error('real_islamic')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="real_islamic"--}}
+{{--                                    value="{{$schema->real_islamic}}"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
                             </div>
                         </div>
 
@@ -280,14 +338,23 @@
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="demo_swap_free"
-                                value="{{$schema->demo_swap_free}}"
-                                class="form-control"
-                                placeholder="Platform Group"
-                                required
-                            />
+                            <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                <option value="">{{ __('Select Group')}}</option>
+
+                                @foreach(\App\Models\PlatformGroup::all() as $group)
+                                    <option value="{{$group->group}}" @if($group->group == $schema->demo_swap_free) selected @endif>{{ $group->group}}</option>
+                                @endforeach
+                            </select>
+                            @error('demo_swap_free')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="demo_swap_free"--}}
+{{--                                value="{{$schema->demo_swap_free}}"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
                         </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
@@ -311,13 +378,23 @@
                         <div id="demo-islamic-group" class="@if(!$schema->is_demo_islamic) hidden @endif">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="demo_islamic"
-                                    value="{{$schema->demo_islamic}}"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
+                                <select name="demo_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}" @if($group->group == $schema->demo_islamic) selected @endif>{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                                @error('demo_islamic')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="demo_islamic"--}}
+{{--                                    value="{{$schema->demo_islamic}}"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
                             </div>
                         </div>
                         <div class="input-area relative">
@@ -340,10 +417,11 @@
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="summernote" name="desc">
-                            {{$schema->desc}}
+                        <textarea class="summernote">
+                            {{ $schema->desc }}
                         </textarea>
                     </div>
+                    <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -443,12 +521,52 @@
         </div>
     </form>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/css/bootstrap-tagsinput.css') }}">
+    <style>
+        .bootstrap-tagsinput {
+            width: 100%;
+            border-radius: 0.25rem;
+            border-width: 1px;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        .bootstrap-tagsinput .tag.label-info{
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-family: Inter, sans-serif;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 400;
+            border-radius: 4px;
+        }
+    </style>
+@endsection
 @section('script')
+    <script src="{{ asset('global/js/bootstrap-tagsinput.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            var elt = $('.keyFeatureInput');
+            elt.tagsinput({
+                maxTags: 5
+            });
+
             $('.toggle-checkbox').change(function() {
                 var target = $(this).data('target');
                 $(target).toggleClass('hidden');
+            });
+
+            $('.account_form').on('keypress', function(event) {
+                if (event.which === 13) { // 13 is the keycode for Enter
+                    event.preventDefault();
+                }
             });
         });
     </script>

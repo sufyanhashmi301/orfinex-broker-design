@@ -4,39 +4,48 @@
 @endsection
 @section('content')
 
-    @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)
-            @include('frontend::referral.include.__dashboard')
-            @include('frontend::referral.modal.__qr_code')
-        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
-            <div class="card">
+{{--    @if(request()->routeIs('user.referral'))--}}
+{{--        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)--}}
+{{--            @include('frontend::referral.include.__dashboard')--}}
+{{--            @include('frontend::referral.modal.__qr_code')--}}
+{{--        @else--}}
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING )
+
+            <div class="card basicTable_wrapper items-center justify-center">
                 <div class="card-body p-6">
-                    <div class="progress-steps-form">
-                        <div class="transaction-status text-center px-7 py-12">
-                            <div
-                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                    <div class="max-w-2xl progress-steps-form">
+                        <div class="transaction-status text-center">
+                            <div class="icon h-20 w-20 bg-warning text-warning bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
-                            <h2 class="text-3xl dark:text-white my-5">Partner Request Pending</h2>
+                            <h2 class="text-3xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>
                             <p class="text-sm mb-3 dark:text-white">
-                                Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
+                                {{ __("Your partnership request is under review and we'll confirm with you shortly. Stay tuned!") }}
                             </p>
-                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
-                                <span>Read Partner Agreement</span>
-                            </a>
-                            <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
-                                <span>Read Our Reviews on Trustpilot</span>
-                            </a>
+                            <div class="flex flex-wrap items-center justify-center gap-3">
+                                <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
+                                    <span>{{ __('Read Partner Agreement') }}</span>
+                                </a>
+                                <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
+                                    <span>{{ __('Read Our Reviews on Trustpilot') }}</span>
+                                </a>
+                            </div>
                             <div class="mt-5">
-                                <p class="text-sm dark:text-slate-300">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
+                                <p class="text-sm dark:text-slate-300">
+                                    {{ __('If you face any issue, please visit our') }}
+                                    <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">{{ __('Customer Support') }}</a>
+                                    {{ __('or Email us at') }}
+                                    <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        @else
+       @elseif((auth()->user()->ib_status == \App\Enums\IBStatus::UNPROCESSED) && !isset(auth()->user()->ref_id))
+
             <div class="card">
                 <div class="p-6">
                     <h4 class="card-title mb-2">
@@ -53,7 +62,6 @@
 
                         @foreach($ibQuestions as $qIndex=>$ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
-{{--                                {{dd($field)}}--}}
                                 <div class="input-area">
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-12">
@@ -138,20 +146,23 @@
                                                  class="h-[10px] w-[10px] block m-auto opacity-0"></span>
                                     <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                         {{ __('I have read and agree with the ') }}
-                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
+                                        <a href="javascript:;" class="btn-link">{{ __('IB Agreement') }}</a>
                                     </span>
                                 </label>
                             </div>
                         </div>
                         <div class="md:col-span-2">
                             <div class="text-right">
-                                <button type="button" class="btn btn-dark save-btn">Register</button>
+                                <button type="button" class="btn btn-dark save-btn">{{ __('Register') }}</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         @endif
+{{--    @endif--}}
+    @if(request()->routeIs('user.referral.members'))
+        @include('frontend::referral.include.__members')
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend::referral.include.__advertisement_material')
@@ -162,7 +173,6 @@
     @if(request()->routeIs('user.referral.reports'))
         @include('frontend::referral.include.__reports')
     @endif
-    {{--    @if(!isset(auth()->user()->ib_status))--}}
     {{-- IB account modal --}}
     @include('frontend::referral.modal.__ib_form')
     {{--    @endif--}}
@@ -170,6 +180,27 @@
 @endsection
 @section('script')
     <script>
+        (function ($) {
+            "use strict";
+            $('.data-table').DataTable().destroy();
+
+            $(".data-table").DataTable({
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
+                },
+            });
+        })(jQuery);
+
         $('body').on('change', '#language', function () {
             var selectedLanguage = $(this).val();
             $.ajax({
@@ -190,6 +221,7 @@
                 }
             });
         });
+
         $('body').on('click', '.save-btn', function () {
             if ($('#agreement-check').is(':checked')) {
                 var btn = $(this);
@@ -201,7 +233,7 @@
                 var url = $('#ib-from-create').attr('action');
                 submit_form(formData, btn, url, '', 'ibForm');
             } else {
-                tNotify('error','Kindly check the agreement before proceed!')
+                tNotify('error','{{ __('Kindly check the agreement before proceeding!') }}')
             }
 
         });

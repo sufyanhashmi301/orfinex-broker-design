@@ -3,7 +3,7 @@
         <div class="card-header noborder">
             <h3 class="card-title">{{ __('Latest Registered User') }}</h3>
         </div>
-        <div class="card-body px-6 pb-6">
+        <div class="card-body px-6 pb-3">
             <div class="flex justify-between flex-wrap items-center mb-6 mt-3">
                 <div class="inline-flex ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                     <div class="input-area">
@@ -135,7 +135,6 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
@@ -145,23 +144,27 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach($data['latest_user'] as $user)
                                 <tr>
                                     <td class="table-td">
-                                        <div class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
-                                            @if(null != $user->avatar)
-                                                <img src="{{ asset($user->avatar)}}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                                            @else
-                                                {{ $user->first_name[0] }}{{ $user->last_name[0] }}
-                                            @endif
+                                        <div class="flex items-center">
+                                            <div class="flex-none">
+                                                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                    <img src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{ safe($user->full_name) }}
+                                                </h4>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        {{ safe($user->username) }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ safe($user->email) }}
+                                        <span class="lowercase">
+                                            {{ safe($user->email) }}
+                                        </span>
                                     </td>
                                     <td class="table-td">
                                         <strong>{{ $currencySymbol . $user->balance }}</strong>
@@ -171,9 +174,9 @@
                                     </td>
                                     <td class="table-td">
                                         @if($user->kyc == 1)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Verified') }}</div>
+                                            <div class="badge badge-success text-success bg-opacity-30 capitalize">{{ __('Verified') }}</div>
                                         @else
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">{{ __('Unverified') }}</div>
+                                            <div class="badge badge-warning bg-opacity-30 capitalize">{{ __('Unverified') }}</div>
                                         @endif
                                     </td>
                                     <td class="table-td">
@@ -181,7 +184,7 @@
                                         <span class="block text-left">
                                             <span class="inline-block text-center mx-auto py-1">
                                                 <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                    <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                    <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                         <span>{{ __('Active') }}</span>
                                                     </span>
                                                 </span>
@@ -190,7 +193,7 @@
                                         <span class="block text-left">
                                             <span class="inline-block text-center mx-auto py-1">
                                                 <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                    <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                    <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                     <span>{{ __('DeActivated') }}</span>
                                                 </span>
                                                 </span>
@@ -211,13 +214,13 @@
                                     </td>
                                 </tr>
                                 @endforeach
-                                <tr class="centered">
-                                    <td class="table-td" colspan="7">
-                                        @if($data['latest_user']->isEmpty())
+                                @if($data['latest_user']->isEmpty())
+                                    <tr class="centered">
+                                        <td class="table-td" colspan="7">
                                             {{ __('No Data Found') }}
-                                        @endif
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -284,7 +287,7 @@
 {{--                                </td>--}}
 {{--                                <td>--}}
 {{--                                    <div--}}
-{{--                                        class="site-badge {{ $invest->capital_back ? 'success' : 'pending' }}">{{ $invest->capital_back ? 'Yes' : 'No' }}</div>--}}
+{{--                                        class="badge {{ $invest->capital_back ? 'badge-success' : 'badge-warning' }}">{{ $invest->capital_back ? 'Yes' : 'No' }}</div>--}}
 {{--                                </td>--}}
 {{--                                <td>--}}
 
@@ -295,7 +298,7 @@
 {{--                                                    id="hours{{ $invest->id }}"></span>H : <span--}}
 {{--                                                    id="minutes{{ $invest->id }}"></span>M : <span--}}
 {{--                                                    id="seconds{{ $invest->id }}"></span>S</strong>--}}
-{{--                                            <span class="site-badge primary-bg ms-2"--}}
+{{--                                            <span class="badge badge-primary ms-2"--}}
 {{--                                                  id="percentage{{ $invest->id }}"></span>--}}
 {{--                                        </div>--}}
 {{--                                        <div class="progress investment-timeline">--}}
@@ -345,7 +348,7 @@
 {{--                                        @endpush--}}
 
 {{--                                    @elseif($invest->status == App\Enums\InvestStatus::Completed)--}}
-{{--                                        <div class="site-badge success">{{ __('Completed') }}</div>--}}
+{{--                                        <div class="badge badge-success">{{ __('Completed') }}</div>--}}
 {{--                                        <div class="progress investment-timeline">--}}
 {{--                                            <div--}}
 {{--                                                class="progress-bar progress-bar-striped progress-bar-animated"--}}
@@ -353,9 +356,9 @@
 {{--                                                aria-valuemax="100" style="width: 100%"></div>--}}
 {{--                                        </div>--}}
 {{--                                    @elseif($invest->status == App\Enums\InvestStatus::Pending)--}}
-{{--                                        <div class="site-badge pending">{{ __('Pending') }}</div>--}}
+{{--                                        <div class="badge badge-warning">{{ __('Pending') }}</div>--}}
 {{--                                    @else--}}
-{{--                                        <div class="site-badge pending">{{ __('Canceled') }}</div>--}}
+{{--                                        <div class="badge badge-danger">{{ __('Canceled') }}</div>--}}
 {{--                                    @endif--}}
 {{--                                </td>--}}
 {{--                            </tr>--}}

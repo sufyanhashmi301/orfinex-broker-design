@@ -10,9 +10,9 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('referral-create')
-                    <button class="btn btn-primary inline-flex justify-center new-referral" type="button">
+                    <button class="btn btn-sm btn-primary inline-flex justify-center new-referral" type="button">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Add New') }}</span>
                     </button>
                 @endcan
@@ -20,9 +20,9 @@
         </div>
         <div class="grid grid-cols-3 gap-5">
             <div class="lg:col-span-1 col-span-3">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Deposit Bounty') }}
                         </h3>
@@ -53,14 +53,14 @@
                     </div>
                     <div class="px-2 py-4 h-full space-y-4 rounded-bl rounded-br">
                         <!-- BEGIN: Cards -->
-                        <div class="card rounded-md bg-white dark:bg-slate-800 shadow-base custom-class card-body p-6">
+                        <div class="card rounded-md shadow-base custom-class card-body p-6">
                             <p class="paragraph text-slate-600 dark:text-slate-400 text-sm py-4">
                                 {{ __('You can') }}
                                 <strong>{{ __('Add').','. __('Edit').' '. __('or').' '. __('Delete') }}</strong> {{ __('any of the') }}
                                 <strong>{{ __('Level Referred User Deposit Bounty') }}</strong>
                             </p>
                             @foreach($deposits as $raw)
-                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                            <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                                 <div class="gateway-name flex items-center">
                                     <div class="gateway-title">
                                         <h4 class="text-sm">{{  __('Level '). $raw->the_order }}</h4>
@@ -68,13 +68,13 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
                                     <div class="gateway-edit flex space-x-3 rtl:space-x-reverse">
                                         @can('referral-edit')
-                                            <a href="" type="button" class="action-btn edit-referral"
+                                            <a href="" type="button" class="action-btn edit-referral dark:text-slate-300"
                                                data-id="{{$raw->id}}"
                                                data-editfor="{{ 'Update ' . $raw->type . ' level '. $raw->the_order }}"
                                                data-bounty="{{ $raw->bounty }}"
@@ -83,7 +83,7 @@
                                             </a>
                                         @endcan
                                         @can('referral-delete')
-                                            <a href="" class="action-btn delete-referral" type="button"
+                                            <a href="" class="action-btn delete-referral dark:text-slate-300" type="button"
                                                data-id="{{$raw->id}}"
                                                data-type="{{$raw->type}}"
                                                data-target="{{  $raw->type . ' level '. $raw->the_order }}"
@@ -101,9 +101,9 @@
                 </div>
             </div>
             <div class="lg:col-span-1 col-span-3">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Multi IB Bounty') }}
                         </h3>
@@ -134,14 +134,14 @@
                     </div>
                     <div class="px-2 py-4 h-full space-y-4 rounded-bl rounded-br">
                         <!-- BEGIN: Cards -->
-                        <div class="card rounded-md bg-white dark:bg-slate-800 shadow-base custom-class card-body p-6">
+                        <div class="card rounded-md shadow-base custom-class card-body p-6">
                             <p class="paragraph text-slate-600 dark:text-slate-400 text-sm py-4">
                                 {{ __('You can') }}
                                 <strong>{{ __('Add').','. __('Edit').' '. __('or').' '. __('Delete') }}</strong> {{ __('any of the') }}
                                 <strong>{{ __('Level Referred User Multi IB Bounty') }}</strong>
                             </p>
                             @foreach($multiIBs as $raw)
-                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                            <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                                 <div class="gateway-name flex items-center">
                                     <div class="gateway-title">
                                         <h4 class="text-sm">{{  __('Level '). $raw->the_order }}</h4>
@@ -149,20 +149,20 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
                                     <div class="gateway-edit flex space-x-3 rtl:space-x-reverse">
                                         @can('referral-edit')
-                                            <a href="" type="button" class="action-btn edit-referral"
+                                            <a href="" type="button" class="action-btn edit-referral dark:text-slate-300"
                                                 data-id="{{$raw->id}}"
                                                 data-editfor="{{ 'Update ' . $raw->type . ' level '. $raw->the_order }}"
                                                 data-bounty="{{ $raw->bounty }}"
                                             ><iconify-icon icon="lucide:edit-3"></iconify-icon></a>
                                         @endcan
                                         @can('referral-delete')
-                                            <a href="" class="action-btn delete-referral" type="button"
+                                            <a href="" class="action-btn delete-referral dark:text-slate-300" type="button"
                                                 data-id="{{$raw->id}}"
                                                 data-type="{{$raw->type}}"
                                                 data-target="{{  $raw->type . ' level '. $raw->the_order }}"
@@ -178,9 +178,9 @@
                 </div>
             </div>
             <div class="lg:col-span-1 col-span-3">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Profit Bounty') }}
                         </h3>
@@ -211,14 +211,14 @@
                     </div>
                     <div class="px-2 py-4 h-full space-y-4 rounded-bl rounded-br">
                         <!-- BEGIN: Cards -->
-                        <div class="card rounded-md bg-white dark:bg-slate-800 shadow-base custom-class card-body p-6">
+                        <div class="card rounded-md shadow-base custom-class card-body p-6">
                             <p class="paragraph text-slate-600 dark:text-slate-400 text-sm py-4">
                                 {{ __('You can') }}
                                 <strong>{{ __('Add').','. __('Edit').' '. __('or').' '. __('Delete') }}</strong> {{ __('any of the') }}
                                 <strong>{{ __('Level Referred User Profit Bounty') }}</strong>
                             </p>
                             @foreach($profits as $raw)
-                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                            <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                                 <div class="gateway-name flex items-center">
                                     <div class="gateway-title">
                                         <h4 class="text-sm">{{  __('Level '). $raw->the_order }}</h4>
@@ -226,20 +226,20 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
                                     <div class="gateway-edit flex space-x-3 rtl:space-x-reverse">
                                         @can('referral-edit')
-                                            <a href="" type="button" class="action-btn edit-referral"
+                                            <a href="" type="button" class="action-btn edit-referral dark:text-slate-300"
                                                 data-id="{{$raw->id}}"
                                                 data-editfor="{{ 'Update ' . $raw->type . ' level '. $raw->the_order }}"
                                                 data-bounty="{{ $raw->bounty }}"
                                             ><iconify-icon icon="lucide:edit-3"></iconify-icon></a>
                                         @endcan
                                         @can('referral-delete')
-                                            <a href="" class="action-btn delete-referral" type="button"
+                                            <a href="" class="action-btn delete-referral dark:text-slate-300" type="button"
                                                 data-id="{{$raw->id}}"
                                                 data-type="{{$raw->type}}"
                                                 data-target="{{  $raw->type . ' level '. $raw->the_order }}"

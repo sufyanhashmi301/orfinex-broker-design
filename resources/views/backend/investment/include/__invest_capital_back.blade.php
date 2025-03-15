@@ -1,2 +1,2 @@
-<div class="site-badge {{ $capital_back ? 'success' : 'pending' }}">{{ $capital_back ? 'Yes' : 'No' }}</div>
+<div class="badge {{ $capital_back ? 'badge-success' : 'badge-warning' }}">{{ $capital_back ? 'Yes' : 'No' }}</div>
 

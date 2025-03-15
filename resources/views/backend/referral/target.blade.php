@@ -22,13 +22,13 @@
                 </div>
                 <div class="card-body p-6">
                     <p class="paragraph text-slate-600 dark:text-slate-400 text-sm mb-4">
-                        <iconify-icon class="text-base text-warning-500 mr-1" icon="lucide:alert-triangle"></iconify-icon>
+                        <iconify-icon class="text-base text-warning mr-1" icon="lucide:alert-triangle"></iconify-icon>
                         {{ __('You can') }}
                         <strong>{{ __('Add or Edit') }}</strong> {{ __('any of the') }}
                         <strong>{{ __('Targets') }}</strong>
                     </p>
                     @foreach($targets as $target)
-                        <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                        <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                             <div class="gateway-name flex items-center">
                                 <div class="gateway-title">
                                     <h4 class="text-sm">{{ $target->name }}</h4>
@@ -36,7 +36,7 @@
                             </div>
                             <div class="gateway-right flex items-center">
                                 <div class="gateway-edit">
-                                    <a href="#" type="button" class="action-btn edit-target" data-id="{{ $target->id }}" data-name="{{ $target->name }}">
+                                    <a href="#" type="button" class="action-btn edit-target dark:text-slate-300" data-id="{{ $target->id }}" data-name="{{ $target->name }}">
                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                     </a>
                                 </div>

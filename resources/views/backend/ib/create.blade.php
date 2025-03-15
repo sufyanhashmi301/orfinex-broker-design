@@ -9,7 +9,7 @@
                 {{ __('Add New Question Form') }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('admin.ib-form.index') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{ route('admin.ib-form.index') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                     {{ __('Back') }}
                 </a>
@@ -22,7 +22,10 @@
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Name:') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control"
-                            placeholder="Question Type Name" required/>
+                            placeholder="Question Type Name"/>
+                        @error('name')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center mb-3">
@@ -34,23 +37,17 @@
                     </div>
                     <div class="max-w-xs">
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Status:') }}</label>
-                            <div class="switch-field flex mb-3 overflow-hidden">
-                                <input
-                                    type="radio"
-                                    id="active-status"
-                                    name="status"
-                                    checked=""
-                                    value="1"
-                                />
-                                <label for="active-status">{{ __('Active') }}</label>
-                                <input
-                                    type="radio"
-                                    id="deactivate-status"
-                                    name="status"
-                                    value="0"
-                                />
-                                <label for="deactivate-status">{{ __('Deactivate') }}</label>
+                            <div class="flex items-center space-x-7 flex-wrap">
+                                <label class="form-label !w-auto">
+                                    {{ __('Status:') }}
+                                </label>
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="status">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="status" value="1" class="sr-only peer">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -107,12 +104,17 @@
                         </div>
                     </div>
 
-                    <div class="xl:col-span-3 lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <select name="fields[${i}][validation]" class="form-control w-100">
-                                <option value="required">Required</option>
-                                <option value="nullable">Optional</option>
-                            </select>
+                    <div class="xl:col-span-4 lg:col-span-6 col-span-12">
+                        <div class="flex justify-between items-end space-x-5">
+                            <div class="input-area w-full">
+                                <select name="fields[${i}][validation]" class="form-control">
+                                    <option value="required">Required</option>
+                                    <option value="nullable">Optional</option>
+                                </select>
+                            </div>
+                            <button type="button" class="delete_field inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                            </button>
                         </div>
                     </div>
                 </div>`;
@@ -141,16 +143,16 @@
             $(document).on('click', '.add-option', function () {
                 var optionsContainer = $(this).closest('.options');
                 var optionRow = optionsContainer.find('.option-row:first').clone();
-                optionRow.find('.box-input').val('');
+                optionRow.find('.form-control').val('');
                 optionsContainer.append(optionRow);
             });
 
-            $(document).on('focus', '.box-input', function () {
+            $(document).on('focus', '.form-control', function () {
                 $(this).closest('.option-remove-row').find('.delete-option').prop('disabled', false);
             });
 
-            $(document).on('click', '.delete_desc', function () {
-                $(this).closest('.option-remove-row').parent().remove();
+            $(document).on('click', '.delete_field', function () {
+                $(this).closest('.option-remove-row').remove();
             });
         });
     </script>

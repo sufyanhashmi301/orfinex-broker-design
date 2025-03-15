@@ -21,12 +21,15 @@ use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\UserIbRuleController;
+use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 
@@ -54,7 +57,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web', 'KYC'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -72,7 +75,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 
     //kyc apply
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-//        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+        //        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
         Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
         Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
         Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
@@ -80,7 +83,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
-    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 
@@ -96,27 +98,47 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 
         Route::get('log', [ForexAccountController::class, 'depositLog'])->name('log');
         Route::get('stats', [ForexAccountController::class, 'accountStats'])->name('stats');
+
+        Route::get('ordersHistory', [PositionController::class, 'index'])->name('ordersHistory');
+        Route::get('orders', [PositionController::class, 'getOrders'])->name('getOrders');
     });
+
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
-    Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
-    Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
+
+    //History
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
+        Route::get('trading-accounts', [TransactionController::class, 'forexTransactions'])->name('tradingAccounts');
+        Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
+
+    });
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
         Route::get('', [DepositController::class, 'deposit'])->name('amount');
+        Route::get('methods', [DepositController::class, 'depositMethods'])->name('methods');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
+        Route::post('log/export', [DepositController::class, 'export'])->name('log.export');
+
     });
 
     // Multi Level
-    Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
+    Route::group(['middleware' => 'IB','prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
         Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+        Route::get('rules', [MultiLevelIBController::class, 'rules'])->name('rules');
         Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
+        Route::post('/get-scheme-rules', [MultiLevelIBController::class, 'getSchemeRules'])->name('get.scheme.rules');
+    });
+    Route::group(['middleware' => 'IB','prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
+        Route::post('/store', [UserIbRuleController::class, 'store'])->name('store');
+        Route::get('//{id}/levels', [UserIbRuleController::class, 'showLevels'])->name('levels');
+        Route::post('/level/update', [UserIbRuleController::class, 'updateLevels'])->name('level.update');
 
     });
 
@@ -127,7 +149,12 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
         Route::post('internal-now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
+
     });
+
+    //User Wallet Management
+    Route::resource('wallet', WalletController::class);
 
     //wallet exchange
     Route::get('wallet-exchange', [UserController::class, 'walletExchange'])->name('wallet-exchange');
@@ -143,6 +170,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -150,7 +178,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     //support ticket
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
         Route::get('index', 'index')->name('index');
-        Route::get('new', 'new')->name('new');
+        Route::get('new', 'newTicket')->name('new');
         Route::post('new-store', 'store')->name('new-store');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
@@ -159,6 +187,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 
     Route::group(['middleware' => 'KYC'], function () {
         Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('ib-request', [ReferralController::class, 'ibRequest'])->name('ib.request');
+        Route::get('referral/members', [ReferralController::class, 'referralMembers'])->name('referral.members');
         Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
         Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
 
@@ -181,15 +211,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('info-update', 'infoUpdate')->name('info-update');
 
         Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
-//            dd($request->all());
-//            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
+            //            dd($request->all());
+            //            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 
-        Route::get('/communication', function () {
-            return view('frontend::user.setting.communication.index');
-        })->name('communication');
-
+        Route::get('/preference', 'preference')->name('preference');
+        Route::post('/preference-language', 'updateLanguage')->name('preference.language');
+        Route::post('/preference-theme', 'updateUserTheme')->name('preference.theme');
     });
 });
 
@@ -211,6 +240,8 @@ Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as
 Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::class], function () {
     Route::post('coinpayments', 'coinpaymentsIpn')->name('coinpayments');
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
+    Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
+    Route::post('match2pay', 'match2payIpn')->name('match2pay');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');
@@ -263,7 +294,8 @@ Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers
 
 
 Route::get('user/agreements', function () {
-    return view('frontend::user.setting.agreements.index');
+    $documentLinks = App\Models\DocumentLink::where('status', 1)->get();
+    return view('frontend::user.setting.agreements.index', compact('documentLinks'));
 })->name('user.agreements');
 
 Route::get('user/margin-account', function () {
@@ -276,10 +308,6 @@ Route::get('get/account/{login}', function ($login) {
 
 
 });
-
-Route::get('user/deposit-methods', function () {
-    return view('frontend.default.deposit.deposit-methods');
-})->name('user.deposit-methods');
 
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');
@@ -320,7 +348,7 @@ Route::get('user/follower_access', function () {
 })->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {
-    return view('frontend.prime_x.copy_trading.ratings');
+    return view('frontend::copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
@@ -338,10 +366,25 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
-Route::get('user/wallets', function () {
-    return view('frontend::wallets.index');
+Route::get('user/notify/success', function () {
+    return view('frontend::common.success');
+});
+
+Route::get('user/notify/canceled', function () {
+    return view('frontend::common.canceled');
+});
+
+Route::get('user/notify/failed', function () {
+    return view('frontend::common.error');
 });
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
+
+Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+
+Route::view('login-2', 'frontend::auth.login-2');
+Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
+Route::view('verify-email-2', 'frontend::auth.verify-email-2');
+Route::view('register-2', 'frontend::auth.register-2');

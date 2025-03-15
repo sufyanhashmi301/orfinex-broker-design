@@ -13,12 +13,20 @@
 
 
     @can('ib-action')
-        @if($user->ib_status !=='approved')
-            <button class="toolTip onTop action-btn approve-btn" data-tippy-theme="dark" data-tippy-content="Edit" title="Edit">
-                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-            </button>
-
-
+{{--        @if($user->ib_status !=='approved')--}}
+        <!-- Edit Button -->
+        <button type="button" class="toolTip onTop action-btn edit-btn"
+            data-tippy-theme="dark"
+            data-tippy-content="Edit"
+            title="Edit"
+            data-user-id="{{ $user->id }}"
+            data-full-name="{{ $user->full_name }}"
+            data-ib-group-id="{{ $user->ib_group_id }}"
+            data-bs-toggle="modal"
+            data-bs-target="#addIBModal">
+            <iconify-icon icon="lucide:edit-3"></iconify-icon>
+        </button>
+        @if($user->ib_status !== 'rejected')
             <button type="button" class="toolTip onTop action-btn reject-btn" data-tippy-theme="dark" data-tippy-content="Reject" title="Reject">
                 <iconify-icon icon="mdi:multiply"></iconify-icon>
             </button>

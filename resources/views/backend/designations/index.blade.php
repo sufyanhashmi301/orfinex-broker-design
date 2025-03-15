@@ -3,10 +3,12 @@
     {{ __('Designations') }}
 @endsection
 @section('title-btn')
-    <a href="#" class="btn btn-primary inline-flex items-center justify-center addDesignation">
+@can('designation-create')
+    <a href="#" class="btn btn-sm btn-primary inline-flex items-center justify-center addDesignation">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+@endcan
 @endsection
 @section('company-content')
 
@@ -21,11 +23,12 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Parent Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -39,12 +42,18 @@
         </div>
     </div>
     <!-- Modal for Delete deleteDepartment -->
+    @can('designation-create')
     @include('backend.designations.include.__create')
+    @endcan
+    @can('designation-edit')
     @include('backend.designations.include.__edit')
+    @endcan
+    @can('designation-delete')
     @include('backend.designations.include.__delete')
+    @endcan
     <!-- Modal for Delete deleteDepartment-->
 @endsection
-@section('setting-script')
+@section('organization-script')
     <script>
         (function ($) {
             "use strict";
@@ -71,6 +80,7 @@
                 ajax: "{{ route('admin.designations.index') }}",
                 columns: [
                     {data: 'name', name: 'name',orderable : false},
+                    {data: 'parent_category', name: 'parent_category',orderable : false},
                     {data: 'status', name: 'status',orderable : false},
                     {data: 'action', name: 'action',orderable : false},
                 ]

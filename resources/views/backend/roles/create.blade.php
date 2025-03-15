@@ -1,14 +1,14 @@
-@extends('backend.setting.index')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('Create Role') }}
 @endsection
-@section('setting-content')
+@section('user-management-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Add New Role') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -22,7 +22,7 @@
                     <label for="" class="form-label">{{ __('Role Name') }}</label>
                     <input type="text" class="form-control" required="" name="name"/>
                 </div>
-                <div class="card border">
+                <div class="card border dark:border-slate-700">
                     <div class="card-header noborder">
                         <h3 class="card-title mb-0">{{ __('All Permissions') }}</h3>
                     </div>
@@ -31,8 +31,8 @@
                             <div class="accordion">
                                 @foreach($permissions as $category => $permission)
                                     <div class="accordion-item">
-                                        <h2 class="accordion-header text-lg" id="headingOne">
-                                            <button class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-x-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                                        <h2 class="accordion-header text-sm md:text-lg" id="headingOne">
+                                            <button class="flex items-center justify-between w-full p-3 md:p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-x-0 border-gray-200 dark:border-slate-700 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
                                                 type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#{{ str_replace(' ','',$category) }}"
@@ -50,14 +50,14 @@
                                             </button>
                                         </h2>
                                         <div id="{{str_replace(' ','',$category)}}"
-                                            class="accordion-collapse collapse p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900"
+                                            class="accordion-collapse collapse p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-slate-700 dark:bg-body"
                                             aria-labelledby="headingOne">
                                             <div class="accordion-body">
-                                                <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+                                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                                     @foreach($permission as $raw)
                                                     <div class="flex items-center justify-between p-5 border border-slate-100 dark:border-slate-700">
                                                         <label
-                                                            class="switch-label text-sm"
+                                                            class="switch-label text-sm dark:text-slate-300"
                                                             for="{{$raw->name}}">{{ ucwords(str_replace('-', ' ', $raw->name)) }}
                                                         </label>
                                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">

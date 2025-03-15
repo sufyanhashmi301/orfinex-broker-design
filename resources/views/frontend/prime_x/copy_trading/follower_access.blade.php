@@ -1,16 +1,9 @@
-@extends('frontend::layouts.user')
+@extends('frontend::copy_trading.index')
 @section('title')
     {{ __('Become Subscriber') }}
 @endsection
-@section('style')
-    <style>
-        .page-content {
-            padding: 0 !important;
-        }
-    </style>
-@endsection
-@section('content')
+@section('copy-trading-content')
 {{--    @if(setting('copy_trading_follower_access_show','platform_links',false))--}}
-    <iframe src="{{setting('copy_trading_follower_access','platform_links','javascript:void(0);')}}" class="w-full h-screen" frameborder="0"></iframe>
+    <iframe src="{{ setting('copy_trading_follower_access','platform_links','javascript:void(0);') }}" class="w-full h-screen" frameborder="0"></iframe>
 {{--@endif--}}
 @endsection

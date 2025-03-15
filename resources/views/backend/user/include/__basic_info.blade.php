@@ -1,3 +1,5 @@
+
+
 <div
     class="tab-pane space-y-5 fade show active"
     id="pills-informations"
@@ -22,14 +24,15 @@
                                name="last_name">
                     </div>
                     <div class="input-area relative">
+
                         <label for="" class="form-label">{{ __('Country:') }}</label>
-                        {{-- <input type="text" class="form-control" value="{{$user->country}}" disabled> --}}
                         <select class="select2 form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach
                         </select>
                     </div>
+
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Phone:') }}</label>
                         <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
@@ -62,11 +65,11 @@
 {{--                    </div>--}}
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Date of Birth') }}</label>
-                        <input type="date" name="date_of_birth" class="form-control flatpickr flatpickr-input active" value="{{ $user->date_of_birth }}" placeholder="Date of Birth"/>
+                        <input type="date" name="date_of_birth" class="form-control " value="{{safe($user->date_of_birth) }}">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('City:') }}</label>
-                        <input type="text" name="city" class="form-control" value="{{$user->city}}">
+                        <input type="text" name="city" class="form-control" value="{{safe($user->city)}}">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Zip Code:') }}</label>
@@ -82,18 +85,12 @@
                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                required="" disabled>
                     </div>
-                    <div class="input-area relative lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Comment:') }}</label>
-                        <textarea type="text"  name="comment" class="form-control"
-                        > {{ $user->comment }}</textarea>
-                    </div>
                     @if($user->notes)
-                    <div class="input-area relative lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Notes:') }}</label>
-                        <textarea type="text"  name="notes" class="form-control"
-                        > {{ $user->notes }}</textarea>
-                    </div>
-
+                        <div class="input-area relative lg:col-span-3">
+                            <label for="" class="form-label">{{ __('Notes:') }}</label>
+                            <textarea type="text"  name="notes" class="form-control"
+                            > {{ $user->notes }}</textarea>
+                        </div>
                     @endif
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Assign Group:') }}</label>
@@ -105,6 +102,33 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="input-area relative">
+                        <label for="risk_profile_tags" class="form-label">{{ __('Risk Profile Tags:') }}</label>
+                        <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple="multiple" data-placeholder="Select Tags" id="riskProfileTagsSelect">
+                            @foreach($riskProfileTags as $tag)
+                                <option value="{{ $tag->id }}"
+                                    @if($user->riskProfileTags->pluck('id')->contains($tag->id))
+                                        selected
+                                    @endif>
+                                    {{ $tag->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area relative">
+                        <label for="" class="form-label">{{ __('Lead Campaign:') }}</label>
+                        <input type="text" class="form-control" name="lead_campaign" value="">
+                    </div>
+
+                    <div class="input-area relative">
+                        <label for="" class="form-label">{{ __('Lead Source:') }}</label>
+                        <input type="text" class="form-control" name="lead_source" value="">
+                    </div>
+
+                    <div class="input-area relative lg:col-span-3">
+                        <label for="" class="form-label">{{ __('Comment:') }}</label>
+                        <textarea type="text"  name="comment" class="form-control basicTinymce" rows="5"> {{ $user->comment }}</textarea>
                     </div>
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

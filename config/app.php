@@ -214,6 +214,7 @@ return [
         App\Providers\PluginServiceProvider::class,
         App\Providers\ThemeServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
+        App\Providers\DatabaseConfigServiceProvider::class,
 
     ],
 

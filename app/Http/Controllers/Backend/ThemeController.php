@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -13,12 +14,18 @@ class ThemeController extends Controller
 {
 
 
+    public function __construct()
+    {
+        $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
+        $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
+    }
 
     public function siteTheme()
     {
         $themes = Theme::where('type', 'site')->get();
+        $banners = Banner::all();
 
-        return view('backend.theme.template', compact('themes'));
+        return view('backend.theme.template', compact('themes', 'banners'));
     }
 
     public function globalSetting()
@@ -26,9 +33,22 @@ class ThemeController extends Controller
         return view('backend.theme.global');
     }
 
-    public function colorsSetting()
+    public function popup()
     {
-        return view('backend.theme.colors');
+        return view('backend.setting.banner.popup');
+    }
+
+    public function colorsSetting(Request $request)
+    {
+        // Retrieve the 'type' query parameter from the request
+        $type = $request->query('type');
+        // Pass the 'type' variable to the view
+        return view('backend.theme.colors', compact('type'));
+    }
+
+    public function fontSetting()
+    {
+        return view('backend.theme.fonts');
     }
 
     public function dynamicLanding()

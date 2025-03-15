@@ -5,22 +5,32 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Enums\KYCStatus;
 use App\Exports\ActiveUsersExport;
 use App\Exports\DisabledUsersExport;
+use App\Exports\RefferalUsersExport;
+use App\Exports\TransactionsUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\Bonus;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
+use App\Models\IbGroup;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Admin;
+use App\Models\KycLevel;
+use App\Models\Lead;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
+use App\Models\Kyc;
+use Carbon\Carbon;
 use DataTables;
 use Exception;
 use Hash;
@@ -31,10 +41,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Txn;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+use App\Models\Ranking;
+use App\Rules\Recaptcha;
 
 class UserController extends Controller
 {
@@ -47,14 +62,15 @@ class UserController extends Controller
      */
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['edit']]);
+        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
+        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage', ['only' => ['update']]);
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
         $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
         $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
+        $this->middleware('permission:customer-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
     }
 
@@ -65,14 +81,27 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+
         if ($request->ajax()) {
-          $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::applyFilters($filters);
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::applyFilters($filters);
+            } else {
+                // Get the attached users if the user is not a Super-Admin
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show only attached users
+                    $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
+                } else {
+                    // If no users are attached, show all users
+                    $data = User::applyFilters($filters);
+                }
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
-
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
@@ -81,25 +110,43 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username','email','kyc', 'balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.all');
     }
 
+
     public function export(Request $request, $type)
     {
+        $userId = $request->user_id; // Get the selected user's ID from the request
+
+        if (!$userId) {
+            return back()->with('error', 'User not found.');
+        }
+        $user = User::find($userId);
+
+        if (!$user) {
+            return back()->with('error', 'User not found.');
+        }
+
+        $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
+        $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
         switch ($type) {
             case 'active':
                 return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
             case 'disabled':
                 return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+            case 'refferal':
+                return Excel::download(new RefferalUsersExport($userId), $fileName);
+            case 'transaction':
+                return Excel::download(new TransactionsUsersExport($userId), $fileName2);
             default:
                 return Excel::download(new UsersExport($request), 'users.xlsx');
         }
     }
-   
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -107,14 +154,35 @@ class UserController extends Controller
      */
     public function activeUser(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 1)->latest();
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all active users
+                $data = User::where('status', 1)->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch active users for attached user IDs
+                    $data = User::where('status', 1)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('username', 'backend.user.include.__user')
                 ->editColumn('email', 'backend.user.include.__email')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
@@ -123,12 +191,13 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'balance','equity','credit','status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.active_user');
     }
+
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -137,13 +206,29 @@ class UserController extends Controller
      */
     public function disabled(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 0)->latest();
-            $data->applyFilters( $filters);
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::where('status', 0)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::where('status', 0)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
+            $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
@@ -152,26 +237,42 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc','balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.disabled_user');
     }
+
     public function withBalance(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', '>',0)
-            ->pluck('Login');
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '>', 0)
+                ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-            $data = User::whereIn('id', $userIds)->latest();
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::whereIn('id', $userIds)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
@@ -180,27 +281,42 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.with_balance');
     }
+
     public function withOutBalance(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', '<=',0)
-            ->pluck('Login');
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '<=', 0)
+                ->pluck('Login');
+            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-        $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-        $data = User::whereIn('id', $userIds)->latest();
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::whereIn('id', $userIds)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
@@ -209,12 +325,13 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.without_balance');
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -223,30 +340,50 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $loggedInUser = auth()->user();
+
+        // Check if the logged-in user is a Super-Admin
+        if (!$loggedInUser->hasRole('Super-Admin')) {
+            // Validate if the `id` exists in attached users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+            if (!$attachedUserIds->contains($id)) {
+                // Redirect back with an error message if the user is not attached
+                return redirect()->back()->with('error', 'Unauthorized access to user details.');
+            }
+        }
 
         $user = User::find($id);
+
+        // If user not found, redirect back with an error message
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance', 'desc')
             ->get();
-        $tags = RiskProfileTag::where('status', true)
-            ->get();
-        $customerGroups = CustomerGroup::where('status',1)->get();
-        $users = User::where(function ($query) use ($id,$user) {
-            $query->where(function ($subquery) use ($id,$user) {
-                $subquery->whereNull('ref_id')
+        $tags = RiskProfileTag::where('status', true)->get();
+        $countries = getCountries();
+        $customerGroups = CustomerGroup::where('status', 1)->get();
+        $riskProfileTags = RiskProfileTag::all();
+        $kycLevels = KycLevel::where('status', 1)->get();
+        $ibGroups = IbGroup::where('status', 1)->get();
+        $kycStatus = KYCStatus::cases();
+        $users = User::where('id', '<>', $id)
+            ->where(function ($query) use ($id, $user) {
+                $query->whereNull('ref_id')
                     ->orWhere('ref_id', '<>', $id);
             })
-                ->where('id', '<>', $id)
-                ->where('id', '<>', $user->ref_id);
-        })
+            ->where('id', '<>', $user->ref_id)
             ->get();
+
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
-            ->where(function($query) use ($tagNames) {
+            ->where(function ($query) use ($tagNames) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All')
-                    ->orWhere(function($subQuery) use ($tagNames) {
+                    ->orWhere(function ($subQuery) use ($tagNames) {
                         foreach ($tagNames as $tagName) {
                             $subQuery->orWhereJsonContains('tags', $tagName);
                         }
@@ -254,15 +391,53 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
+        $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
+        return view('backend.user.edit', compact(
+            'users',
+            'user',
+            'level',
+            'realForexAccounts',
+            'tags',
+            'customerGroups',
+            'schemas',
+            'riskProfileTags',
+            'countries',
+            'kycLevels',
+            'kycStatus',
+            'bonuses',
+            'ibGroups'
+        ));
     }
 
-    public function destroy($id)
+
+    public function destroy(Request $request, $id)
     {
-        User::find($id)->delete();
-        return response()->json(['success' => 'Successfully deleted!']);
+        // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
+        $superAdmin = Admin::where('name', 'Super Admin')->first();
+
+        // Check if the Super-Admin key exists in the database and the input matches
+        if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
+            // If the key doesn't match, notify error
+            notify()->error('Invalid Super-Admin key. Deletion denied.');
+            return redirect()->back();  // Redirect back to the previous page
+        }
+
+        // Proceed with deleting the user if the key matches
+        $user = User::find($id);
+
+        // Ensure the user exists before attempting to delete
+        if ($user) {
+            $user->delete();
+            notify()->success('User deleted successfully');
+        } else {
+            notify()->error('User not found.');
+        }
+
+        // Redirect to the user listing page after the operation
+        return redirect()->route('admin.user.index');
     }
+
 
     /**
      * @return RedirectResponse
@@ -275,7 +450,7 @@ class UserController extends Controller
             'status' => 'required',
             'is_multi_ib' => 'required',
             'email_verified' => 'required',
-            'kyc' => 'required',
+//            'kyc' => 'required',
             'two_fa' => 'required',
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
@@ -294,7 +469,7 @@ class UserController extends Controller
         $data = [
             'status' => $input['status'],
             'is_multi_ib' => $input['is_multi_ib'],
-            'kyc' => $input['kyc'],
+//            'kyc' => $input['kyc'],
             'two_fa' => $input['two_fa'],
             'deposit_status' => $input['deposit_status'],
             'withdraw_status' => $input['withdraw_status'],
@@ -322,7 +497,6 @@ class UserController extends Controller
         notify()->success('Status Updated Successfully', 'success');
 
         return redirect()->back();
-
     }
 
     /**
@@ -330,41 +504,142 @@ class UserController extends Controller
      */
     public function update($id, Request $request)
     {
+        // Fetch the user
+        $user = User::findOrFail($id);
 
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'first_name' => 'required',
-            'last_name' => 'required',
-//            'phone' => 'required',
-            'username' => 'required|unique:users,username,' . $id,
-            'email' => 'required|string|max:255|email|unique:users,email,' . $id,
-            'date_of_birth' => 'nullable|date_format:Y-m-d',
-            'group_id' => 'nullable|exists:customer_groups,id'
+        // Get setting-based flags
+        $isUsername = (bool) getPageSetting('username_show');
+        $isCountry = (bool) getPageSetting('country_show');
+        $isPhone = (bool) getPageSetting('phone_show');
+
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
+            'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users,username,' . $id],
+            'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
+            'email_verified_at' => 'nullable|date',
+            'gender' => 'in:male,female,other|nullable',
+            'city' => 'string|max:255|nullable',
+            'zip_code' => 'string|max:10|nullable',
+            'address' => 'string|max:255|nullable',
+            'risk_profile_tags' => 'sometimes|array',
+            'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
+            'comment' => 'nullable|string|max:500',
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'date_of_birth' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back()->withInput();
+        }
 
-            return redirect()->back();
+        // Collect input data
+        $input = $request->only([
+            'first_name',
+            'last_name',
+            'country',
+            'username',
+            'phone',
+            'email',
+            'gender',
+            'date_of_birth',
+            'city',
+            'zip_code',
+            'address',
+            'risk_profile_tags',
+            'comment',
+            'password',
+        ]);
+        $data = [
+            'first_name' => $input['first_name'],
+            'last_name' => $input['last_name'],
+            'country' => $input['country'] ?? $user->country,
+            'username' => $input['username'],
+            'phone' => $input['phone'] ?? $user->phone,
+            'email' => $input['email'],
+            'gender' => $input['gender'] ?? $user->gender,
+            'city' => $input['city'] ?? $user->city,
+            'zip_code' => $input['zip_code'] ?? $user->zip_code,
+            'address' => $input['address'] ?? $user->address,
+            'comment' => $input['comment'] ?? $user->comment,
+            'date_of_birth' => $input['date_of_birth'] ?: null, // Set to null if empty
+            'email_verified_at' => $request->has('is_email_verified') ? now() : $user->email_verified_at,
+        ];
+        // Update basic user details
+        $user->update($data);
+
+        // Update password if provided
+        if (!empty($input['password'])) {
+            $user->password = Hash::make($input['password']);
+            $user->save();
         }
-        if (empty($input['date_of_birth'])) {
-            $input['date_of_birth'] = null;
+
+        // Sync risk profile tags using pivot table
+        if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
+            $user->riskProfileTags()->sync($input['risk_profile_tags']);
         }
-        User::find($id)->update($input);
-        $user = User::find($id);
-        if (isset($input['group_id'])) {
-            $user->customerGroups()->sync($input['group_id']);
-        } else {
-            $user->customerGroups()->sync([]);
-        }
+
+        // Redirect with success message
         notify()->success('User Info Updated Successfully', 'success');
-
         return redirect()->back();
     }
+    public function kyc(Request $request, $id)
+    {
+        //        dd($request->all());
+        // Fetch the user
+        $user = User::findOrFail($id);
+
+        $kyc = $request->kyc;
+
+        if (empty($kyc)) {
+            $kyc = 0;
+            $data['email_verified_at'] = null;
+        }
+        if ($kyc >= KYCStatus::Level1->value) {
+            $data['email_verified_at'] = Carbon::now();
+        }
+        $data['kyc'] = $kyc;
+        // Update basic user details
+        $user->update($data);
+
+        // Redirect with success message
+        notify()->success('User Kyc Updated Successfully', 'success');
+        return redirect()->back();
+    }
+
 
     /**
      * @return RedirectResponse
      */
+    public function resetPassword(Request $request)
+    {
+//        dd($request->all());
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Send an email notification
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[password]]' => $request->password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+        $this->mailNotify($user->email, 'reset_user_password_by_admin', $shortcodes);
+
+        notify()->success('Password has been successfully reset and emailed to the user', 'success');
+        return redirect()->back();
+    }
     public function passwordUpdate($id, Request $request)
     {
         $input = $request->all();
@@ -380,10 +655,13 @@ class UserController extends Controller
         }
 
         $password = $validator->validated();
-
-        User::find($id)->update([
+        $user = User::find($id);
+        $user->update([
             'password' => Hash::make($password['new_password']),
         ]);
+//        dd($user);
+
+
         notify()->success('User Password Updated Successfully', 'success');
 
         return redirect()->back();
@@ -403,13 +681,14 @@ class UserController extends Controller
         ]);
         $targetId = $request->input('target_id');
         $targetType = $request->input('target_type');
+        // dd($targetType);
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
 
         try {
-//dd($request->all());
+            //dd($request->all());
             $amount = $request->amount;
             $type = $request->type;
             $comment = $request->comment;
@@ -422,22 +701,22 @@ class UserController extends Controller
                     $data = [
                         'login' => $targetId,
                         'Amount' => $amount,
-                        'type' => 1,//deposit
+                        'type' => 1, //deposit
                         'TransactionComments' => $comment
                     ];
-                     $this->forexApiService->balanceOperation($data);
+                    $this->forexApiService->balanceOperation($data);
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
                 $status = 'success';
                 $message = __('Account Balance Update');
-
             } elseif ($type == 'subtract') {
                 if ($targetType == 'forex') {
                     $balance = $this->forexApiService->getValidatedBalance([
                         'login' => $targetId
                     ]);
-//                    $balance = $this->getForexAccountBalance($targetId);
+                    //                    $balance = $this->getForexAccountBalance($targetId);
+
                     if (BigDecimal::of($amount)->compareTo($balance) > 0) {
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
@@ -445,12 +724,12 @@ class UserController extends Controller
                     $data = [
                         'login' => $targetId,
                         'Amount' => $amount,
-                        'type' => 2,//withdraw
+                        'type' => 2, //withdraw
                         'TransactionComments' => $comment
                     ];
                     $withdrawResponse = $this->forexApiService->balanceOperation($data);
-//                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if(!$withdrawResponse['success']){
+                    //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+                    if (!$withdrawResponse['success']) {
                         return redirect()->back();
                     }
                 }
@@ -462,13 +741,11 @@ class UserController extends Controller
             notify()->success($message, $status);
 
             return redirect()->back();
-
         } catch (Exception $e) {
             $status = 'warning';
             $message = __('something is wrong');
             $code = 503;
         }
-
     }
 
     /**
@@ -484,6 +761,7 @@ class UserController extends Controller
      */
     public function mailSend(Request $request)
     {
+        $message = $request->input('message');
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
@@ -500,7 +778,7 @@ class UserController extends Controller
 
             $input = [
                 'subject' => $request->subject,
-                'message' => $request->message,
+                'message' => str_replace(['{', '}'], ['<', '>'], $message),
             ];
 
             $shortcodes = [
@@ -516,7 +794,6 @@ class UserController extends Controller
                 $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
 
                 $this->mailNotify($user->email, 'user_mail', $shortcodes);
-
             } else {
                 $users = User::where('status', 1)->get();
 
@@ -525,11 +802,9 @@ class UserController extends Controller
 
                     $this->mailNotify($user->email, 'user_mail', $shortcodes);
                 }
-
             }
             $status = 'success';
             $message = __('Mail Send Successfully');
-
         } catch (Exception $e) {
 
             $status = 'warning';
@@ -548,22 +823,51 @@ class UserController extends Controller
      */
     public function transaction($id, Request $request)
     {
-
         if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)->latest();
+            $data = Transaction::where('user_id', $id)
+                ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->rawColumns(['status', 'type', 'final_amount'])
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->rawColumns(['status', 'type','action_by', 'final_amount'])
+                ->make(true);
+        }
+    }
+
+    public function ibBonus($id, Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Transaction::where('user_id', $id)
+                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
+                ->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('status', 'backend.user.include.__txn_status')
+                ->editColumn('type', 'backend.user.include.__txn_type')
+                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->addColumn('action', function ($row) {
+                    // Replicate the same structure and styling
+                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </span>';
+                })
+                ->rawColumns(['status', 'type', 'final_amount', 'action'])
                 ->make(true);
         }
     }
     public function ibInfo($id, Request $request)
     {
-//dd($id);
+        //dd($id);
         if ($request->ajax()) {
             $data = User::where('id', $id)->latest();
 
@@ -571,7 +875,7 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->editColumn('ib_status', 'backend.user.include.__ib_status')
                 ->addColumn('action', 'backend.user.include.__ib_action')
-                ->rawColumns(['ib_status','action'])
+                ->rawColumns(['ib_status', 'action'])
                 ->make(true);
         }
     }
@@ -589,15 +893,309 @@ class UserController extends Controller
 
     public function createCustomer()
     {
-        return view('backend.user.create');
+        // Get the location (e.g., from a user's profile or a service like IP-based location)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+
+        // Assuming this function returns an array of countries
+        $countries = getCountries();
+        $kycLevels = KycLevel::where('status', 1)->get();
+        $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
+        // dd($kycLevels);
+        // Get all risk profile tags
+        $riskProfileTags = RiskProfileTag::all();
+        $kycStatus = KYCStatus::cases();
+        // dd($kycstatus);
+
+        return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs'));
     }
-     public function createNote(Request $request,$id)
-     {
-         $user = User::find($id);
-         $user->update(['notes' => $request->notes]);
-         notify()->success('Note added successfully');
 
-         return redirect()->back();
-     }
+    public function store(Request $request)
+    {
+        // Get setting-based flags
+        $isUsername = (bool) getPageSetting('username_show');
+        $isCountry = (bool) getPageSetting('country_show');
+        $isPhone = (bool) getPageSetting('phone_show');
 
+
+        // Validate the request data
+        try {
+            $validatedData = $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
+                'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
+                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'email_verified_at' => 'nullable|date',
+                'gender' => 'in:male,female,other|nullable',
+                'city' => 'string|max:255|nullable',
+                'zip_code' => 'string|max:10|nullable',
+                'address' => 'string|max:255|nullable',
+                'risk_profile_tags' => 'array|nullable',
+                'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
+                'comment' => 'nullable|string|max:500',
+                'kyc' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        // Handle KYC Levels or KYC Status enum values
+                        if (Str::startsWith($value, 'kyc_')) {
+                            $statusValue = str_replace('kyc_', '', $value);
+                            if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
+                                $fail('The selected KYC status is invalid.');
+                            }
+                        } elseif (!KycLevel::where('id', $value)->exists()) {
+                            $fail('The selected KYC level is invalid.');
+                        }
+                    },
+                ],
+                'password' => ['required', 'string', 'min:8'],
+                'date_of_birth' => 'nullable|date',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+
+        // Collect input data
+        $input = $request->only([
+            'first_name',
+            'last_name',
+            'country',
+            'username',
+            'phone',
+            'email',
+            'gender',
+            'date_of_birth',
+            'city',
+            'zip_code',
+            'address',
+            'kyc',
+            'risk_profile_tags',
+            'comment',
+            'password',
+        ]);
+
+        // Ensure date_of_birth is null if not provided
+        $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
+
+        // Get location details (e.g., from user's profile or a service)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+
+        // Set country and phone depending on settings and input
+        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
+        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+
+        // Generate a username if it’s not provided
+        $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
+
+        // Get the ranking
+        $rank = Ranking::find(1);
+
+        // Handle the status value
+        $kyc = $input['kyc'];
+        if (Str::startsWith($kyc, 'kyc_')) {
+            $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
+        } else {
+            $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
+        }
+
+        // Create the user with exception handling
+        try {
+            $user = User::create([
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'country' => $country,
+                'username' => $username,
+                'phone' => $phone,
+                'email' => $input['email'],
+                'gender' => $input['gender'],
+                'city' => $input['city'],
+                'zip_code' => $input['zip_code'],
+                'address' => $input['address'],
+                'comment' => $input['comment'],
+                'password' => Hash::make($input['password']),
+                'date_of_birth' => $input['date_of_birth'],
+                'email_verified_at' => $request->has('is_email_verified') ? now() : null,
+                'kyc' => $kyc,
+            ]);
+
+            // Handle risk profile tags
+            if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
+                $user->riskProfileTags()->attach($input['risk_profile_tags']);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
+        }
+        notify()->success('Customer created successfully', 'success');
+        // Redirect to the user index with success message
+        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
+    }
+
+
+    public function createNote(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->update(['notes' => $request->notes]);
+        notify()->success('Note added successfully');
+
+        return redirect()->back();
+    }
+
+    public function updateLeadStatus($leadId)
+    {
+        $lead = Lead::findOrFail($leadId);
+        $lead->stage_id = 6;
+        $lead->save();
+    }
+
+    public function leadAsClient(Request $request)
+    {
+        // Get setting-based flags
+        $isUsername = (bool) getPageSetting('username_show');
+        $isCountry = (bool) getPageSetting('country_show');
+        $isPhone = (bool) getPageSetting('phone_show');
+
+
+        // Validate the request data
+        try {
+            $validatedData = $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
+                'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
+                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'email_verified_at' => 'nullable|date',
+                'gender' => 'in:male,female,other|nullable',
+                'city' => 'string|max:255|nullable',
+                'zip_code' => 'string|max:10|nullable',
+                'address' => 'string|max:255|nullable',
+                'risk_profile_tags' => 'array|nullable',
+                'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
+                'comment' => 'nullable|string|max:500',
+                'kyc' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        // Handle KYC Levels or KYC Status enum values
+                        if (Str::startsWith($value, 'kyc_')) {
+                            $statusValue = str_replace('kyc_', '', $value);
+                            if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
+                                $fail('The selected KYC status is invalid.');
+                            }
+                        } elseif (!KycLevel::where('id', $value)->exists()) {
+                            $fail('The selected KYC level is invalid.');
+                        }
+                    },
+                ],
+                'password' => ['required', 'string', 'min:8'],
+                'date_of_birth' => 'nullable|date',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+
+        // Collect input data
+        $input = $request->only([
+            'first_name',
+            'last_name',
+            'country',
+            'username',
+            'phone',
+            'email',
+            'gender',
+            'date_of_birth',
+            'city',
+            'zip_code',
+            'address',
+            'kyc',
+            'risk_profile_tags',
+            'comment',
+            'password',
+            'lead_id',
+        ]);
+
+        // Ensure date_of_birth is null if not provided
+        $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
+
+        // Get location details (e.g., from user's profile or a service)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+
+        // Set country and phone depending on settings and input
+        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
+        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+
+        // Generate a username if it’s not provided
+        $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
+
+        // Get the ranking
+        $rank = Ranking::find(1);
+
+        // Handle the status value
+        $kyc = $input['kyc'];
+        if (Str::startsWith($kyc, 'kyc_')) {
+            $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
+        } else {
+            $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
+        }
+
+        DB::beginTransaction();
+        // Create the user with exception handling
+        try {
+
+            $existingUser = User::where('email', $input['email'])->first();
+
+            if ($existingUser) {
+                $lead = Lead::findOrFail($input['lead_id']);
+                $lead->stage_id = 6;
+                $lead->save();
+                DB::rollback();
+
+                // Notify that the user already exists
+                notify()->info('User already exists.', 'info');
+                return redirect()->route('admin.user.index')->with('message', 'User already exists.');
+            }
+
+            $user = User::create([
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'country' => $country,
+                'username' => $username,
+                'phone' => $phone,
+                'email' => $input['email'],
+                'gender' => $input['gender'],
+                'city' => $input['city'],
+                'zip_code' => $input['zip_code'],
+                'address' => $input['address'],
+                'comment' => $input['comment'],
+                'password' => Hash::make($input['password']),
+                'date_of_birth' => $input['date_of_birth'],
+                'email_verified_at' => $request->has('is_email_verified') ? now() : null,
+                'kyc' => $kyc,
+            ]);
+
+            // Handle risk profile tags
+            if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
+                $user->riskProfileTags()->attach($input['risk_profile_tags']);
+            }
+
+            $lead = Lead::findOrFail($input['lead_id']);
+            $lead->stage_id = 6;
+            $lead->save();
+
+            // Commit the transaction
+            DB::commit();
+
+        } catch (\Exception $e) {
+            // Rollback transaction if something goes wrong
+            DB::rollback();
+
+            return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
+        }
+        notify()->success('Customer created successfully', 'success');
+        // Redirect to the user index with success message
+        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
+    }
 }

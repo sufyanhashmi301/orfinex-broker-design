@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use App\Models\Setting;
-use App\Traits\ImageUpload;
+use Cache;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Setting;
+use App\Models\Country;
+use App\Traits\ImageUpload;
+use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\Foundation\Application;
 
 class SettingController extends Controller
 {
-    use ImageUpload;
+    use ImageUpload , NotifyTrait;
 
     /**
      * Display a listing of the resource.
@@ -25,9 +31,33 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('permission:site-setting|email-setting', ['only' => ['update']]);
-        $this->middleware('permission:site-setting', ['only' => ['siteSetting']]);
+        $this->middleware('permission:site-setting|site-settings', ['only' => ['siteSetting']]);
+        $this->middleware('permission:maintainance-settings', ['only' => ['siteMaintenance']]);
         $this->middleware('permission:email-setting', ['only' => ['mailSetting']]);
+        $this->middleware('permission:company-setting', ['only' => ['companySetting']]);
+        $this->middleware('permission:misc-setting', ['only' => ['miscSetting']]);
+        $this->middleware('permission:company-permissions-setting', ['only' => ['companyPermissions']]);
+        $this->middleware('permission:internal-transfer-display|external-transfer-display', ['only' => ['transfers']]);
+        $this->middleware('permission:meta-trader-display', ['only' => ['platformApiSetting']]);
+        $this->middleware('permission:mt5-webterminal-display', ['only' => ['mt5WebterminalSetting']]);
+        $this->middleware('permission:x9-webterminal-display', ['only' => ['x9WebterminalSetting']]);
+        $this->middleware('permission:copy-trading-setting', ['only' => ['copyTradingSetting']]);
+        $this->middleware('permission:data-encryption-settings', ['only' => ['endToEndEncryption']]);
+        $this->middleware('permission:clear-cache-settings', ['only' => ['clearCache']]);
+        $this->middleware('permission:dev-mode-settings', ['only' => ['devMode']]);
+        $this->middleware('permission:gdpr-compliance-settings', ['only' => ['grpdCompliance']]);
+        $this->middleware('permission:api-access-setting', ['only' => ['apiAccess']]);
+        $this->middleware('permission:web-hooks-setting', ['only' => ['webHook']]);
+        $this->middleware('permission:currency-setting', ['only' => ['currencySetting']]);
+        $this->middleware('permission:collab-tools-setting', ['only' => ['slackSetting']]);
 
+
+
+    }
+
+    public static function index()
+    {
+        return view('backend.setting.index');
     }
 
     /**
@@ -51,6 +81,16 @@ class SettingController extends Controller
         return view('backend.setting.email_setting.google-mail');
     }
 
+    public static function sendGridSetting()
+    {
+        return view('backend.setting.email_setting.sendgrid');
+    }
+
+    public static function sesSetting()
+    {
+        return view('backend.setting.email_setting.ses');
+    }
+
     public static function forexApiSetting()
     {
         return view('backend.setting.forex-api');
@@ -61,8 +101,20 @@ class SettingController extends Controller
         return view('backend.setting.platform_api.metatrader');
     }
 
-    public static function mailConnectionTest(Request $request)
+    public function mailConnectionTest(Request $request)
     {
+//        dd($request->all());
+        $shortcodes = [
+            '[[full_name]]' => 'test',
+            '[[txn]]' =>'test',
+            '[[gateway_name]]' => 'test',
+            '[[deposit_amount]]' => 'test',
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[message]]' => 'test',
+            '[[status]]' =>  'Pending',
+        ];
+        $this->mailNotify($request->email, 'user_manual_deposit_request', $shortcodes);
 
         try {
             Mail::raw('Testing SMTP connection successful', function ($message) use ($request) {
@@ -92,11 +144,19 @@ class SettingController extends Controller
         $rules = Setting::getValidationRules($section);
 //        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
+//        dd($data);
+
+        // update session expiry
+        $user = Auth::user();
+        auth()->user()->update([
+            'session_expiry' => $request->session_expiry
+        ]);
 
         try {
             $validSettings = array_keys($rules);
+//            dd($validSettings);
             foreach ($data as $key => $val) {
-                // dd($data, $key, $val, $validSettings);
+//                 dd($data, $key, $val, $validSettings);
 
                 if (in_array($key, $validSettings)) {
 
@@ -106,11 +166,19 @@ class SettingController extends Controller
                         $val = self::imageUploadTrait($val, $oldImage);
                     }
 
+                    if (is_string($val)) {
+                        // Replace `{` and `}` with `<` and `>`
+                        $val = str_replace(['{', '}'], ['<', '>'], $val);
+                    }
+
                     Setting::add($key, $val, Setting::getDataType($key, $section));
                 }
             }
-            notify()->success(__('Settings has been saved'));
 
+            if($section == 'mt5_db_credentials'){
+                Cache::forget('mt5_db_credentials');
+            }
+            notify()->success(__('Settings has been saved'));
             return redirect()->back();
 
         } catch (Exception $e) {
@@ -153,7 +221,8 @@ class SettingController extends Controller
 
     public static function currencySetting()
     {
-        return view('backend.setting.site_setting.currency');
+        $countries = Country::with('rate')->paginate(15);
+        return view('backend.setting.site_setting.currency', compact('countries'));
     }
 
     public static function siteMaintenance()
@@ -172,6 +241,36 @@ class SettingController extends Controller
         return view('backend.setting.site_setting.gdpr');
     }
 
+    public static function devMode()
+    {
+        return view('backend.system.dev_mode');
+    }
+
+    public static function endToEndEncryption()
+    {
+        return view('backend.setting.data_management.end_to_end_encryption');
+    }
+
+    public static function clearCache()
+    {
+        return view('backend.system.cache_clear');
+    }
+
+    public static function apiAccess()
+    {
+        return view('backend.setting.integrations.api_access');
+    }
+
+    public static function webHook()
+    {
+        return view('backend.setting.integrations.web_hook');
+    }
+
+    public static function documentation()
+    {
+        return view('backend.setting.documentation');
+    }
+
     public static function slackSetting()
     {
         return view('backend.setting.collab_tools.slack');
@@ -181,8 +280,64 @@ class SettingController extends Controller
         return view('backend.setting.copy_trading.brokeree');
     }
 
-    public function  webterminalSetting(){
-        return view('backend.setting.platform_api.webterminal');
+    public function  mt5WebterminalSetting(){
+        return view('backend.setting.platform_api.mt5-webterminal');
+    }
+
+    public function  x9WebterminalSetting(){
+        return view('backend.setting.platform_api.x9-webterminal');
+    }
+
+    public function  grpdCompliance(){
+        return view('backend.setting.site_setting.gdpr_compliance');
+    }
+
+    public function testDatabaseConnection(Request $request)
+    {
+        $credentials = [
+            'driver'    => 'mysql',
+            'host'      => $request->input('database_host'),
+            'port'      => $request->input('database_port'),
+            'database'  => $request->input('database_name'),
+            'username'  => $request->input('database_username'),
+            'password'  => $request->input('database_password'),
+        ];
+
+        try {
+            // Attempt to connect to the database
+            DB::connection()->setPdo(new \PDO(
+                "mysql:host={$credentials['host']};port={$credentials['port']};dbname={$credentials['database']}",
+                $credentials['username'],
+                $credentials['password'],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
+            ));
+
+            return response()->json(['status' => 'success', 'message' => 'Connection successful']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function changelog()
+    {
+        $url = 'https://cdn.brokeret.com/crm-assets/json/changelog.json';
+
+        //$response = Http::get($url);
+        $response = Http::withoutVerifying()->get($url);
+
+        if ($response->successful()) {
+
+            $data = $response->json();
+            return view('backend.system.changelog', compact('data'));
+
+        } else {
+            return response()->json(['error' => 'Failed to fetch data from CDN'], 500);
+        }
+    }
+
+    public function featureLocked()
+    {
+        return view('global.__feature_locked');
     }
 
 }

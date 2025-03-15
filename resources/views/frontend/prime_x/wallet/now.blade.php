@@ -8,18 +8,18 @@
                     <label for="exampleFormControlInput1" class="form-label">{{ __('From Wallet:') }}</label>
                     <div class="input-group select2-lg">
                         <select name="from_wallet" class="select2 form-control !text-lg w-full mt-2 py-2">
-                            <option value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet').' ('. $user->balance.' '.$currency .')' }}</option>
-                            <option selected value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
+                            <option value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet') . ' (' . $user->balance . ' ' . $currency . ')' }}</option>
+                            <option selected value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet') . ' (' . $user->profit_balance . ' ' . $currency . ')' }}</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="input-area relative">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('To Wallet:') }}</label>
                     <div class="input-group select2-lg">
                         <select name="to_wallet" class="select2 form-control !text-lg w-full mt-2 py-2">
-                            <option selected value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet').' ('. $user->balance.' '.$currency .')' }}</option>
-                            <option value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
+                            <option selected value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet') . ' (' . $user->balance . ' ' . $currency . ')' }}</option>
+                            <option value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet') . ' (' . $user->profit_balance . ' ' . $currency . ')' }}</option>
                         </select>
                     </div>
                 </div>
@@ -28,11 +28,11 @@
                     <label for="exampleFormControlInput1" class="form-label">{{ __('Enter Amount:') }}</label>
                     <div class="relative">
                         <input type="text" name="amount" class="form-control !text-lg"
-                               oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
+                               oninput="this.value = validateDouble(this.value)" aria-label="{{ __('Amount') }}" id="amount"
                                aria-describedby="basic-addon1">
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                     </div>
-                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block charge"></div>
                 </div>
             </div>
 
@@ -80,10 +80,10 @@
 
         var currency = @json($currency);
 
-        var charge_type = @json( setting('wallet_exchange_charge_type','fee') );
-        var charge = @json( setting('wallet_exchange_charge','fee') );
+        var charge_type = @json(setting('wallet_exchange_charge_type', 'fee'));
+        var charge = @json(setting('wallet_exchange_charge', 'fee'));
 
-        $('#amount').on('keyup',function (e) {
+        $('#amount').on('keyup', function (e) {
 
             var amount = $(this).val()
 
@@ -93,16 +93,11 @@
 
             var finalCharge = charge_type === 'percentage' ? calPercentage(amount, charge) : charge
 
-
             $('.charge2').text(finalCharge + ' ' + currency)
 
             $('.total').text((Number(amount) + Number(finalCharge)) + ' ' + currency)
-
 
             $('.charge').text('Charge ' + charge + ' ' + (charge_type === 'percentage' ? ' % ' : currency))
         })
     </script>
 @endsection
-
-
-

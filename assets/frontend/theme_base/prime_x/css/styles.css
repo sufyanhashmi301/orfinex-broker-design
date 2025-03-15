@@ -3,22 +3,36 @@
 }
 .navItem.active, .dark .navItem.active {
   color: #121212;
-  background-color: rgba(254, 208, 0, 0.35);
+  --tw-border-opacity: 1;
+  background-color: rgb(254 208 0 / var(--tw-border-opacity));
   border-left-color: #FED000;
 }
-
+.app-header, .logo-segment {
+    height: 48px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+.stickySetting_menu {
+    height: 48px;
+}
 .sidebar-menu > li.active > a {
     color: #121212;
     background-color: rgba(254, 208, 0, 0.35);
-    border-left-color: #FED000; 
+    border-left-color: #FED000;
+}
+.sidebar-menu > li.active > a {
+    --tw-border-opacity: 1;
+    background-color: rgb(254 208 0 / var(--tw-border-opacity));
 }
 
 .bg-primary {
-    background-color: #FED000;
+    --tw-bg-opacity: 1;
+    background-color: rgb(254 208 0 / var(--tw-bg-opacity));
 }
 
 .text-primary {
-    color: #FED000;
+    --tw-text-opacity: 1;
+    color: rgb(254 208 0 / var(--tw-text-opacity));
 }
 
 .border-primary {
@@ -121,14 +135,52 @@
     background-color: #FED000;
 }
 
+.select2-container .select2-selection--multiple {
+    min-height: 38px;
+}
+
 .dark .select2-container--default .select2-selection--single {
     --tw-border-opacity: 1;
     border-color: rgb(51 65 85 / var(--tw-border-opacity));
 }
 
 .dark .select2-selection {
-    --tw-bg-opacity: 1;
-    background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+    /*--tw-bg-opacity: 1;*/
+    /*background-color: rgb(15 23 42 / var(--tw-bg-opacity));*/
     --tw-text-opacity: 1;
     color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+.dashcode-data-table .dataTables_empty {
+    text-align: center;
+}
+.dark .dataTables_empty{
+    color: #cbd5e1;
+}
+
+.dataTables_wrapper, .basicTable_wrapper {
+    display: flex;
+    flex-direction: column;
+}
+.dataTable td {
+    --tw-border-opacity: 1;
+    border-color: rgb(241 245 249 / var(--tw-border-opacity));
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+    text-transform: capitalize;
+    --tw-text-opacity: 1;
+    color: rgb(71 85 105 / var(--tw-text-opacity));
+}
+.dataTables_info {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+#processingIndicator {
+    position: absolute;
+    top: calc(50% - 54px);
+    left: calc(50% - 54px);
 }

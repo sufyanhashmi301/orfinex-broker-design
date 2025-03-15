@@ -5,6 +5,18 @@
     aria-labelledby="pills-transactions-tab"
 >
     <div class="card">
+        <div class="card-header">
+
+            <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
+                @csrf
+                <div class="input-area relative">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+            </form>
+        </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
@@ -15,14 +27,17 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -56,11 +71,15 @@
                 ajax: "{{ route('admin.user.transaction',$user->id) }}",
                 columns: [
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
+                    {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
                     {data: 'status', name: 'status'},
+                    {data: 'action_by', name: 'action_by'},
+
                 ]
             });
         })(jQuery);

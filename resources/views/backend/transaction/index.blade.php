@@ -12,8 +12,8 @@
     <div class="innerMenu card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.transactions.export') }}">
             @csrf
-            <div class="flex justify-between flex-wrap items-center">
-                <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area relative">
                         <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                     </div>
@@ -28,25 +28,11 @@
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control h-full" id="type">
                             <option value="">Transaction Type</option>
-                            <option value="deposit">Deposit</option>
-                            <option value="forex_deposit">Demo Deposit</option>
-                            <option value="subtract">Subtract</option>
-                            <option value="manual_deposit">Manual Deposit</option>
-                            <option value="send_money">Send Money </option>
-                            <option value="send_money_internal">Send Money Internal</option>
-                            <option value="exchange">Exchange</option>
-                            <option value="referral">Referral</option>
-                            <option value="bonus">Signup Bonus</option>
-
-                            <option value="withdraw">Withdraw</option>
-                            <option value="withdraw_auto">Withdraw Auto</option>
-                            <option value="receive_money">Receive Money</option>
-                            <option value="investment">Investment</option>
-                            <option value="interest">Interest</option>
-                            <option value="refund">Refund</option>
-                            <option value="multi_ib">Multi IB</option>
-                            <option value="ib">IB</option>
+                            @foreach (\App\Enums\TxnType::cases() as $txnType)
+                                <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                            @endforeach
                         </select>
+
                     </div>
 
                     <div class="flex-1 input-area relative">
@@ -54,19 +40,21 @@
                     </div>
 
                 </div>
-                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
                     <div class="input-area relative">
                         <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                             {{ __('Apply Filter') }}
                         </button>
                     </div>
+                    {{-- @can('transaction-export') --}}
                     <div class="input-area relative">
                         <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                             {{ __('Export') }}
                         </button>
                     </div>
+                    {{-- @endcan --}}
                     <div class="input-area relative">
                         <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
                             <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
@@ -88,16 +76,18 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -113,9 +103,9 @@
     @can('transaction-action')
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text deposit-action">
 
                         </div>
                     </div>
@@ -163,11 +153,13 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
+                    {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]
@@ -184,8 +176,8 @@
                     url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
                     method: 'GET',
                     success: function(response) {
-                        $('.deposit-action').append(response)
-                        imagePreview()
+                        $('.deposit-action').append(response);
+                        imagePreview();
                         $('#transaction-action-modal').modal('show');
 
                     }

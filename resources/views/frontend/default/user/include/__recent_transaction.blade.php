@@ -5,12 +5,12 @@
         </header>
         <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
-            @if(count($recentTransactions) == 0)    
+            @if(count($recentTransactions) == 0)
                 <div class="flex items-center justify-center flex-col">
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                         You don't have any transaction yet.
                     </p>
-                    <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
+                    <a href="{{ route('user.deposit.methods') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                         Deposit Now
                     </a>
                 </div>
@@ -74,7 +74,7 @@
                                             {{ $transaction->tnx }}
                                         </td>
                                         <td class="table-td">
-                                            <div class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl">
+                                            <div class="badge bg-primary text-primary bg-opacity-30 capitalize rounded-3xl">
                                                 {{ ucfirst(str_replace('_',' ',$transaction->type->value )) }}
                                             </div>
                                         </td>
@@ -88,13 +88,13 @@
                                                 <span class="inline-block text-center mx-auto py-1">
                                                     <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                         @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
-                                                        <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                        <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                         <span>{{ __('Pending') }}</span>
                                                         @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
-                                                        <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                        <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                         <span>{{ __('Success') }}</span>
                                                         @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
-                                                        <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                        <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                         <span>{{ __('canceled') }}</span>
                                                         @endif
                                                     </span>

@@ -22,6 +22,9 @@ class AppController extends Controller
     {
         $this->middleware('permission:subscriber-list|subscriber-mail-send', ['only' => ['subscribers']]);
         $this->middleware('permission:subscriber-mail-send', ['only' => ['mailSendSubscriber', 'mailSendSubscriberNow']]);
+        $this->middleware('permission:application-details-settings', ['only' => ['applicationInfo']]);
+        $this->middleware('permission:changelog-settings', ['only' => ['changeLog']]);
+        $this->middleware('permission:report-issue-settings', ['only' => ['reportIssue']]);
     }
 
     public function subscribers(Request $request)
@@ -50,9 +53,7 @@ class AppController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         try {
@@ -60,6 +61,8 @@ class AppController extends Controller
                 'subject' => $request->subject,
                 'message' => $request->message,
             ];
+
+            $input['message'] = str_replace(['{', '}'], ['<', '>'], $request->message);
 
             $shortcodes = [
                 '[[subject]]' => $input['subject'],
@@ -91,10 +94,12 @@ class AppController extends Controller
 
     public function profileUpdate(Request $request)
     {
+        // dd($request->all());
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:admins,email,'.$user->id,
+
         ]);
 
         if ($validator->fails()) {
@@ -104,8 +109,6 @@ class AppController extends Controller
         }
         auth()->user()->update([
             'avatar' => $request->hasFile('avatar') ? self::imageUploadTrait($request->avatar, $user->avatar) : $user->avatar,
-            'name' => $request->name,
-            'email' => $request->email,
             'phone' => $request->phone,
         ]);
         notify()->success('Profile Update Successfully');
@@ -159,6 +162,16 @@ class AppController extends Controller
         \Artisan::call('optimize:clear');
 
         return redirect()->back();
+    }
+
+    public function changeLog()
+    {
+        return view('backend.system.changelog');
+    }
+
+    public function reportIssue()
+    {
+        return view('backend.system.report_issues');
     }
 
 }

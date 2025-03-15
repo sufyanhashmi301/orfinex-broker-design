@@ -11,8 +11,45 @@ use Spatie\Permission\Traits\HasRoles;
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
-
-    protected $fillable = ['avatar', 'name', 'email', 'phone', 'password', 'device_token', 'is_admin', 'status','google2fa_secret','two_fa'];
+    protected $casts = [
+        'ib_groups' => 'array',
+        'account_types' => 'array',
+    ];
+    protected $fillable = [
+        'employee_id',
+        'department_id',
+        'designation_id',
+        'role',
+        'avatar',
+        'first_name',
+        'last_name',
+        'name',
+        'email',
+        'phone',
+        'work_phone',
+        'password',
+        'device_token',
+        'is_admin',
+        'status',
+        'employment_type',
+        'employment_status',
+        'source_of_hire',
+        'location',
+        'date_of_joining',
+        'date_of_birth',
+        'gender',
+        'marital_status',
+        'google2fa_secret',
+        'two_fa',
+        'session_expiry',
+        'ib_groups',
+        'account_types',
+        'key',
+    ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'staff_user', 'staff_id', 'user_id');
+    }
 
 
     public function getCreatedAtAttribute(): string
@@ -20,13 +57,32 @@ class Admin extends Authenticatable
         return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
     }
 
-    public function departments()
+    public function department()
     {
-        return $this->belongsToMany(Department::class, 'department_has_staff', 'staff_id', 'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function designations()
+    public function designation()
     {
-        return $this->belongsToMany(Designation::class, 'designation_has_staff', 'staff_id', 'designation_id');
+        return $this->belongsTo(Designation::class, 'designation_id');
     }
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'admin_id');
+    }
+    public function getRememberToken()
+    {
+        return null;
+    }
+
+    public function setRememberToken($value)
+    {
+        // No action needed
+    }
+
+    public function getRememberTokenName()
+    {
+        return null;
+    }
+
 }

@@ -1,10 +1,17 @@
 <div class="tab-pane space-y-5 fade" id="pills-transfer" role="tabpanel" aria-labelledby="pills-transfer-tab">
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Account') }}</h4>
-            <a href="javascript:;" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
-                {{ __('Add New') }}
-            </a>
+        <div class="card-header flex items-center justify-between">
+            <h4 class="card-title text-lg font-semibold">{{ __('Account') }}</h4>
+            <div class="flex space-x-2">
+                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                    type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
+                    <i class="fa fa-plus"></i> {{ __('Add New Account') }}
+                </a>
+                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                    type="button" data-bs-toggle="modal" data-bs-target="#addmt5Account">
+                    <i class="fa fa-user-plus"></i> {{ __('Account Mapping') }}
+                </a>
+            </div>
         </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -25,7 +32,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>
@@ -45,7 +52,8 @@
                         {{ __('Positions / Active Trades') }}
                     </h3>
                     <p class="text-slate-600 dark:text-slate-200">
-                        {{ __('Here are the current positions / active trades for Account Number 876960') }}
+                        {{ __('Here are the current positions / active trades for Account Number ') }}
+                        <span id="account-number">876960</span>
                     </p>
                 </div>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
@@ -62,8 +70,38 @@
     </div>
 </div>
 
+<!-- Modal for Account details -->
+@include('backend.investment.modal.__account_details')
+
+<!-- Modal for Change Account Type -->
+@include('backend.investment.modal.__change_type')
+
+<!-- Modal for Change Account schema -->
+@include('backend.investment.modal.__change_schema')
+
+<!-- Modal for Account leverage -->
+@include('backend.investment.modal.__change_leverage')
+
+<!-- Modal for Demo deposit -->
+@include('backend.investment.modal.__deposit_demo_account')
+
+<!-- Modal for Account rename -->
+@include('backend.investment.modal.__account_rename')
+
+<!-- Modal for Account password -->
+@include('backend.investment.modal.__change_account_password')
+
+<!-- Modal for Account invest password -->
+@include('backend.investment.modal.__change_investor_password')
+
+<!-- Modal for Account archive -->
+@include('backend.investment.modal.__archive_account')
+
+<!-- Modal for Account unarchive -->
+@include('backend.investment.modal.__unarchive_account')
 
 @push('single-script')
+    @include('backend.investment.fx-js')
     <script>
         (function ($) {
             "use strict";
@@ -105,7 +143,7 @@
 
             // Get the account login ID
             var login = $(this).data('login');
-            // alert(login);
+            $('#account-number').text(login);
 
             var url = '{{ route("admin.getDeals", ":login") }}';
             url = url.replace(':login', login);

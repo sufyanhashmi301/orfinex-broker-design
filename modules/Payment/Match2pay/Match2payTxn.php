@@ -1,0 +1,148 @@
+<?php
+namespace Payment\Match2pay;
+
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Payment\Transaction\BaseTxn;
+use Txn;
+
+class Match2payTxn extends BaseTxn
+{
+    public function __construct($txnInfo)
+    {
+        parent::__construct($txnInfo);
+        $credentials = gateway_info('match2pay');
+
+        // Set the base URL for staging environment
+        $this->baseUrl = 'https://wallet2.fe-prime.com';
+        $this->client = new Client([
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'accept' => 'application/json',
+            ],
+        ]);
+
+        // Define required credentials
+        $this->txnInfo = $txnInfo;
+        $this->amount = $txnInfo->final_amount;
+        $this->payCurrency = $this->getPaymentCurrency($txnInfo->pay_currency);;
+        $this->apiToken = $credentials->api_token;
+        $this->apiSecretKey = $credentials->secret_key;
+        $this->callbackUrl = url('/').'/ipn/match2pay'; // Your callback URL
+
+        // Set the gateway based on the currency
+        $this->gatewayName =  $this->getPaymentGateway($txnInfo->pay_currency);
+    }
+
+    /**
+     * Handle the deposit request for Match2Pay crypto_agent
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deposit()
+    {
+//        dd();
+        // Generate timestamp in seconds
+        $timestamp = Carbon::now()->timestamp;
+// $formattedAmount = floor($this->amount * 100) / 100;
+        // Prepare the payload according to Match2Pay staging deposit request
+        $payload = [
+            'amount' => number_format((float)$this->amount, 2, '.', ''),                 // Amount to deposit
+//            'currency' => 'USD',                       // Final currency (USD)
+            'currency' => base_currency(),                       // Final currency (USD)
+            'paymentGatewayName' => $this->gatewayName, // Payment gateway used for crypto deposits
+            'paymentCurrency' => $this->payCurrency,   // Payment currency (e.g., USX)
+            'callbackUrl' => $this->callbackUrl,       // Callback URL for handling the response
+            'apiToken' => $this->apiToken,             // API token for authorization
+            'timestamp' => $timestamp,                 // Current timestamp
+            'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
+        ];
+// dd($payload);
+        // Generate signature using payload and secret key
+        $payload['signature'] = $this->generateSignature($payload);
+//        dd(json_encode($payload));
+
+        // Send the deposit request to Match2Pay API
+        $response = $this->client->request('POST', $this->baseUrl . '/api/v2/deposit/crypto_agent', [
+            'body' => json_encode($payload),
+        ]);
+//        dd($payload,$response->getBody());
+
+        // Parse the response
+        $data = json_decode($response->getBody()->getContents(), true);
+        $transaction =  $this->txnInfo;
+        $transaction->tnx = $data['paymentId'];
+        $transaction->manual_field_data = $data;
+        $transaction->save();
+        // Handle response (get the checkout URL and other details)
+        if (isset($data['checkoutUrl'])) {
+            $checkoutUrl = $data['checkoutUrl'];
+            return redirect($checkoutUrl);
+        }
+
+        // Handle errors or missing fields if necessary
+        throw new \Exception('Unable to generate checkout URL: ' . json_encode($data));
+    }
+
+    /**
+     * Generate a signature using the payload and secret key
+     *
+     * @param array $payload
+     * @return string Signature
+     */
+    private function generateSignature(array $payload)
+    {
+        // Sort payload by keys in A-Z order
+        ksort($payload);
+
+        // Concatenate payload values according to sorted keys, excluding 'signature'
+        $payloadString = '';
+        foreach ($payload as $key => $value) {
+            if ($key === 'amount') {
+                // Force amount to always have two decimal places
+                $value = number_format((float)$value, 2, '.', '');
+            }
+            if ($key !== 'signature') { // Exclude the signature field from the string
+                $payloadString .= $value;
+            }
+        }
+
+        // Append the API secret key to the concatenated string
+        $payloadString .= $this->apiSecretKey;
+
+        // Generate the SHA-384 hash of the concatenated string
+        return hash('sha384', $payloadString);
+    }
+
+
+
+    /**
+     * Map the pay_currency to the corresponding payment gateway name
+     *
+     * @param string $currency
+     * @return string
+     */
+    private function getPaymentCurrency($currency)
+    {
+//        return $currency;
+        // Define the mapping of payment currencies to their gateway names
+        $currencyGatewayMap = match2pay_currencies();
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+//        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
+//dd($currencyGatewayMap[$currency]);
+        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
+    }
+    private function getPaymentGateway($currency)
+    {
+return $currency;
+//         Define the mapping of payment currencies to their gateway names
+        $currencyGatewayMap = match2pay_currencies();
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+
+
+        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USDT TRC20';
+    }
+}
+

@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.website.index')
 @section('title')
     {{ __('Currency Settings') }}
 @endsection
-@section('setting-content')
+@section('website-content')
     <?php
         $section = 'site_maintenance';
         $fields = config('setting.site_maintenance');
@@ -45,9 +45,10 @@
                             <label class="form-label pt-0">
                                 {{ __($field['label']) }}
                             </label>
-                            <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
+                            <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif" rows="6">
                                 {{oldSetting($field['name'],$section)}}
                             </textarea>
+                            <input type="hidden" name="{{ $field['name'] }}" value="{{ str_replace(['<', '>'], ['{', '}'], oldSetting($field['name'], $section)) }}">
                         </div>
 
                     @else
@@ -61,8 +62,8 @@
                             </div>
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
                                 class="form-control @if($errors->has($field['name'])) has-error @endif"
-                                placeholder="Label" 
-                                value="{{oldSetting($field['name'],$section)}}" 
+                                placeholder="Label"
+                                value="{{oldSetting($field['name'],$section)}}"
                                 required=""
                             >
                         </div>

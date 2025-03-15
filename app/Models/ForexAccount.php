@@ -8,6 +8,7 @@ namespace App\Models;
 
 use App\Enums\ForexAccountStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -58,6 +59,7 @@ class ForexAccount extends Model
 	];
 
 	protected $fillable = [
+		'trader_type',
 		'user_id',
 		'forex_schema_id',
 		'account_name',
@@ -93,6 +95,49 @@ class ForexAccount extends Model
     {
         return date('M d, Y H:i', strtotime($value));
     }
+    public function scopeApplyFilters(Builder $query, $filters)
+    {
+        if (!empty($filters['global_search'])) {
+            $search = $filters['global_search'];
+            $query->where(function($query) use ($search) {
+                $query->where('account_name', 'like', "%{$search}%")
+                    ->orWhere('login', 'like', "%{$search}%")
+                    ->orWhere('group', 'like', "%{$search}%")
+                    ->orWhere('trading_platform', 'like', "%{$search}%")
+                    ->orWhereHas('user', function($query) use ($search) {
+                        $query->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
+                            //->orWhere('username', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if (!empty($filters['login'])) {
+            $query->where('login', 'like', "%" . $filters['login'] . "%");
+        }
+
+        if (!empty($filters['country'])) {
+            $query->whereHas('user', function($query) use ($filters) {
+                $query->where('country', 'like', "%" . $filters['country'] . "%");
+            });
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['created_at'])) {
+            $query->whereDate('created_at', $filters['created_at']);
+        }
+
+//        if (!empty($filters['tag'])) {
+//            $query->where('meta', 'like', "%" . $filters['tag'] . "%");
+//        }
+
+        return $query;
+    }
     public function scopeRealActiveAccount($query,$userID=null)
     {
         if(!isset($userID))
@@ -101,6 +146,10 @@ class ForexAccount extends Model
         return $query->where('user_id', $userID)
             ->where('account_type','real')
             ->where('status', ForexAccountStatus::Ongoing);
+    }
+    public function scopeTraderType(Builder $query)
+    {
+        return $query->where('trader_type', setting('active_trader_type', 'features'));
     }
     public function scopeDemoActiveAccount($query,$userID=null)
     {
@@ -119,4 +168,11 @@ class ForexAccount extends Model
         return $query->where('user_id', $userID)
             ->where('status', ForexAccountStatus::Archive);
     }
+
+
+    public function leverageUpdates()
+    {
+        return $this->hasMany(LeverageUpdate::class, 'forex_account_id');
+    }
+
 }

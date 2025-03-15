@@ -6,13 +6,13 @@
      aria-hidden="true"
 >
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize" id="addForexAccountLabel">
                     {{ __('Add New Account') }}
                 </h3>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <svg aria-hidden="true" class="w-5 h-5 dark:fill-white" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                     </svg>
                     <span class="sr-only">Close modal</span>
@@ -25,7 +25,7 @@
                     <input type="hidden" name="account_type" id="account-type" value="real">
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Select Account Type:') }}</label>
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
+                        <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-schema" name="schema_id" required>
                             <option value="">
                                 {{__('Select')}}
                             </option>
@@ -67,16 +67,16 @@
                         <label class="form-label" for="">{{ __('Main Password:') }}</label>
                         <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Main Password') }}" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
                         <ul>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
                                 {{ __('Use from 8 to 15 characters') }}
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
                                 {{ __('Use both uppercase and lowercase letters') }}
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-main">
                                 {{ __('At least one number') }}
                             </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
+                            <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-main">
                                 {{ __('At least one special character(!@#$%^&*(),-.?":{}|<>') }}
                             </li>
                         </ul>
@@ -90,8 +90,6 @@
                         </button>
                     </div>
                 </form>
-
-
             </div>
         </div>
     </div>

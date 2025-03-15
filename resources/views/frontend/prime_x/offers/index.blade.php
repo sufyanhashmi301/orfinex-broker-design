@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Dashboard') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -22,18 +22,18 @@
     </div>
     <div class="card">
         <div class="card-header noborder">
-            <h4 class="card-title">Offers</h4>
+            <h4 class="card-title">{{ __('Offers') }}</h4>
         </div>
         <div class="card-body px-6 pb-6">
             <div class="md:flex mb-6 md:space-y-0 space-y-4">
                 <div class="flex-1 flex items-center space-x-3 rtl:space-x-reverse">
                     <div class="input-area relative pl-[60px]">
-                        <label for="select" class="inline-inputLabel">Show:</label>
+                        <label for="select" class="inline-inputLabel">{{ __('Show:') }}</label>
                         <select name="" id="" class="select2 w-[150px]">
-                            <option value="0">-- Select Option --</option>
-                            <option value="bonus">Bonus</option>
-                            <option value="gift">Gift</option>
-                            <option value="cash back">Cash Back</option>
+                            <option value="0">{{ __('-- Select Option --') }}</option>
+                            <option value="bonus">{{ __('Bonus') }}</option>
+                            <option value="gift">{{ __('Gift') }}</option>
+                            <option value="cash back">{{ __('Cash Back') }}</option>
                         </select>
                     </div>
                 </div>
@@ -70,17 +70,17 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">bonus</p>
+                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
                                     <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
-                                        <iconify-icon class="text-warning-500" icon="heroicons:star-16-solid"></iconify-icon>
+                                        <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
                                 <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
-                                    <a href="/products/1">50% Margin Bonus</a>
+                                    <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
-                                    Increase Your Trading Capacity
+                                    {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
                                     <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
@@ -91,7 +91,7 @@
                                         <span class="ltr:mr-2 rtl:ml-2 text-sm leading-none">
                                             <iconify-icon icon="heroicons:shopping-bag"></iconify-icon>
                                         </span>
-                                        <span>Apply Bonus</span>
+                                        <span>{{ __('Apply Bonus') }}</span>
                                     </span>
                                 </button>
                             </div>
@@ -119,17 +119,17 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">bonus</p>
+                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
                                     <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
-                                        <iconify-icon class="text-warning-500" icon="heroicons:star-16-solid"></iconify-icon>
+                                        <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
                                 <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
-                                    <a href="/products/1">50% Margin Bonus</a>
+                                    <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
-                                    Increase Your Trading Capacity
+                                    {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
                                     <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
@@ -140,7 +140,7 @@
                                         <span class="ltr:mr-2 rtl:ml-2 text-sm leading-none">
                                             <iconify-icon icon="heroicons:shopping-bag"></iconify-icon>
                                         </span>
-                                        <span>Apply Bonus</span>
+                                        <span>{{ __('Apply Bonus') }}</span>
                                     </span>
                                 </button>
                             </div>
@@ -168,17 +168,17 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">bonus</p>
+                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
                                     <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
-                                        <iconify-icon class="text-warning-500" icon="heroicons:star-16-solid"></iconify-icon>
+                                        <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
                                 <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
-                                    <a href="/products/1">50% Margin Bonus</a>
+                                    <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
-                                    Increase Your Trading Capacity
+                                    {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
                                     <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
@@ -189,7 +189,7 @@
                                         <span class="ltr:mr-2 rtl:ml-2 text-sm leading-none">
                                             <iconify-icon icon="heroicons:shopping-bag"></iconify-icon>
                                         </span>
-                                        <span>Apply Bonus</span>
+                                        <span>{{ __('Apply Bonus') }}</span>
                                     </span>
                                 </button>
                             </div>
@@ -204,8 +204,8 @@
 
         </div>
     </div>
-
 @endsection
+
 @section('script')
     <script>
         // grid or list view

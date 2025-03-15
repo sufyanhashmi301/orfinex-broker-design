@@ -1,6 +1,6 @@
 @if(count($realForexAccounts) == 0)
     <div class="flex items-center justify-center flex-col gap-3">
-        <iconify-icon icon="fa6-solid:box-open" class="text-5xl text-warning-500"></iconify-icon>
+        <iconify-icon icon="fa6-solid:box-open" class="text-5xl text-warning"></iconify-icon>
         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
             You don't have any Real account.
         </p>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="list-view-layout">
                     <div class="flex items-center">
-                        <span class="badge bg-primary-500 text-primary-900 bg-opacity-30 capitalize">
+                        <span class="badge bg-primary text-primary-900 bg-opacity-30 capitalize">
                             {{ucfirst(data_get($account,'account_type'))}}
                         </span>
                         <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">MT5</span>
@@ -90,7 +90,7 @@
                             <span>{{$account->currency}}</span>
                         </p>
                         <div class="action-btns flex items-center gap-3">
-                            <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark mt-0">
+                            <a href="{{route('user.deposit.methods')}}" class="btn btn-sm btn-outline-dark mt-0">
                                 <span class="flex items-center">
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>
                                     <span>{{ __('Deposit') }}</span>

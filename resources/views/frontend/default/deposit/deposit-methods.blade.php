@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Deposit') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -39,7 +39,7 @@
                             </span>
                         </div>
                         <div>
-                            <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize rounded-3xl">
+                            <span class="badge bg-success text-success bg-opacity-30 capitalize rounded-3xl">
                                 Recommended
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                             </span>
                         </div>
                         <div>
-                            <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize rounded-3xl">
+                            <span class="badge bg-success text-success bg-opacity-30 capitalize rounded-3xl">
                                 Recommended
                             </span>
                         </div>

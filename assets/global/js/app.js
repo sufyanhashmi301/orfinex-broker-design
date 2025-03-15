@@ -791,9 +791,6 @@
     grabCursor: true
   });
 
-  // Dragula for Kanban
-  dragula([document.getElementById("todo"), document.getElementById("progress"), document.getElementById("done")]);
-
   // Step From
   $("#example-basic").steps({
     headerTag: "h3",
@@ -843,4 +840,68 @@
       next: '<iconify-icon icon="heroicons-outline:chevron-right"></iconify-icon>'
     }
   });
+
+  $('.summernote').summernote({
+    height: 150,
+    minHeight: null,
+    maxHeight: null,
+    focus: true,
+    dialogsInBody: true,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'insertImageURL']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+    ],
+    callbacks: {
+        onChange: function(contents, $editable) {
+
+            var markupStr = contents;
+            markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
+
+            var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
+
+            html_container.val(markupStr);
+        },
+        onImageLinkInsert: function(url) {
+            var $img = $('<img>').attr({ src: url });
+
+            $img.css({
+                width: '100%',
+                height: 'auto'
+            });
+
+            $(this).summernote('insertNode', $img[0]);
+        }
+    }
+  });
+
+  $('[data-toggle="fullscreen"]').on("click", function(e) {
+    e.preventDefault();
+
+    $('body').toggleClass('fullscreen-enable');
+
+    if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+    } else {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+    }
+  });
+
 })(jQuery);

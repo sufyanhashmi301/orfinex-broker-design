@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Symbol;
 use App\Services\SymbolService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use DataTables;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SymbolController extends Controller
 {
@@ -17,125 +18,95 @@ class SymbolController extends Controller
     {
         $this->symbolService = $symbolService;
     }
-
     public function index(Request $request)
     {
+        $mt5Query = DB::connection('mt5_db')
+            ->table('mt5_symbols')
+            ->select('Symbol_ID', 'Symbol', 'Path', 'Description', 'ContractSize');
+
+        if ($request->filled('global_search')) {
+            $searchTerm = '%' . $request->global_search . '%';
+            $mt5Query->where(function ($query) use ($searchTerm) {
+                $query->where('Symbol', 'LIKE', $searchTerm)
+                    ->orWhere('Description', 'LIKE', $searchTerm)
+                    ->orWhere('Path', 'LIKE', $searchTerm);
+            });
+        }
+
+        if ($request->filled('contact_size')) {
+            $mt5Query->where('ContractSize', 'LIKE', '%' . $request->contact_size . '%');
+        }
+
+        if ($request->filled('path')) {
+            $mt5Query->where('Path', 'LIKE', '%' . $request->path . '%');
+        }
+
+        // Paginate while keeping filters
+        $mt5Symbols = $mt5Query->paginate(50)->appends($request->query());
+
+        // Fetch local symbols with status
+        $localSymbols = DB::table('symbols')
+            ->select('symbol', 'status')
+            ->whereIn('symbol', $mt5Symbols->pluck('Symbol')->toArray())
+            ->get()
+            ->keyBy('symbol');
+
+        // Merge status dynamically
+        foreach ($mt5Symbols as $symbol) {
+            $symbol->status = isset($localSymbols[$symbol->Symbol]) && $localSymbols[$symbol->Symbol]->status == 1
+                ? 'Enabled'
+                : 'Disabled';
+        }
+
+        // Apply Status Filter (After Merging)
+        if ($request->filled('status')) {
+            $statusFilter = $request->status == "1" ? 'Enabled' : 'Disabled';
+            $filteredSymbols = $mt5Symbols->filter(function ($symbol) use ($statusFilter) {
+                return $symbol->status === $statusFilter;
+            });
+
+            // Convert filtered results back to paginated format
+            $mt5Symbols = $this->paginateCollection($filteredSymbols, 50, $request);
+        }
+
         if ($request->ajax()) {
-
-            // Step 1: Query mt5_symbols from mt5_db connection
-            $mt5Query = DB::connection('mt5_db')
-                ->table('mt5_symbols')
-                ->select('Symbol_ID', 'Symbol', 'Path', 'Description', 'ContractSize');
-
-            // Apply Filters for mt5_symbols
-            if ($request->filled('global_search')) {
-                $mt5Query->where(function ($query) use ($request) {
-                    $query->where('Symbol', 'LIKE', '%' . $request->global_search . '%')
-                        ->orWhere('Description', 'LIKE', '%' . $request->global_search . '%')
-                        ->orWhere('Path', 'LIKE', '%' . $request->global_search . '%');
-                });
-            }
-
-            if ($request->filled('contact_size')) {
-                $mt5Query->where('ContractSize', 'LIKE', '%' . $request->contact_size . '%');
-            }
-
-            if ($request->filled('path')) {
-                $mt5Query->where('Path', 'LIKE', '%' . $request->path . '%');
-            }
-
-            // Fetch all mt5_symbols
-            $mt5Symbols = $mt5Query->get();
-
-
-            $combined = $mt5Symbols;
-            $localSymbols = DB::table('symbols')
-                ->select('symbol', 'status')
-                ->get()
-                ->keyBy('symbol');
-            // Step 4: Apply Status Filter After Combining
-            if ($request->filled('status')) {
-                // Step 2: Query symbols from default connection
-
-                // Step 3: Combine the results
-                $combined = $mt5Symbols->map(function ($item) use ($localSymbols) {
-                    // Check if the symbol exists in the local symbols table
-                    if (isset($localSymbols[$item->Symbol])) {
-                        $item->status = ($localSymbols[$item->Symbol]->status == 1) ? 'Enabled' : 'Disabled';
-                    } else {
-                        $item->status = 'Disabled'; // If not found, it's considered Disabled
-                    }
-                    return $item;
-                });
-
-                if ($request->status == 1) {
-                    $combined = $combined->filter(function ($item) {
-                        return $item->status == 'Enabled';
-                    });
-                } elseif ($request->status == 0) {
-                    $combined = $combined->filter(function ($item) {
-                        return $item->status == 'Disabled';
-                    });
-                }
-            }
-
-            // Step 5: Get Existing Symbols and Pass Them to View
-            $existingSymbols = $localSymbols->keys()->toArray();
-
-            // Step 6: Return DataTables Response
-            return Datatables::of(collect($combined))
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) use ($existingSymbols) {
-                    return view('backend.symbols.include.__action', [
-                        'Symbol_ID' => $row->Symbol_ID,
-                        'Symbol' => $row->Symbol,
-                        'existingSymbols' => $existingSymbols // Pass the variable here
-                    ])->render();
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+            return response()->json([
+                'table' => view('backend.symbols.include.__symbols_table', compact('mt5Symbols'))->render(),
+                'pagination' => view('backend.symbols.include.__pagination', compact('mt5Symbols'))->render()
+            ]);
         }
 
-        return view('backend.symbols.all');
+        return view('backend.symbols.all', compact('mt5Symbols'));
+    }
+
+    /**
+     * Convert a Laravel Collection to Pagination (Fixes filter pagination issue)
+     */
+    private function paginateCollection($items, $perPage, $request)
+    {
+        $currentPage = Paginator::resolveCurrentPage() ?: 1;
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        $currentPageItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        return new LengthAwarePaginator($currentPageItems, $items->count(), $perPage, $currentPage, [
+            'path' => $request->url(),
+            'query' => $request->query(),
+        ]);
     }
 
 
 
 
-    public function store(Request $request)
+    public function updateStatus(Request $request)
     {
-
-        $symbolId = $request->id;
-
-        $result = $this->symbolService->createSymbolFromMt5($symbolId);
-
-        if ($result['success']) {
-            return response()->json(['success' => true]);
-        } else {
-            return response()->json(['success' => false]);
-        }
-
+        $result = $this->symbolService->createSymbolFromMt5($request->id);
+        return response()->json(['success' => $result['success'], 'message' =>$result['message'] ]);
     }
 
-    public function storeAllSymbols(Request $request)
+    public function enableAll()
     {
-        // Call the method to store all symbols
         $result = $this->symbolService->storeAllSymbolsFromMt5();
-
-        if ($result['success']) {
-            return response()->json([
-                'success' => true,
-                'message' => __('Successfully stored all symbols.'),
-                'success_count' => $result['success_count'],
-                'failure_count' => $result['failure_count']
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => __('Failed to store some symbols.'),
-                'success_count' => $result['success_count'],
-                'failure_count' => $result['failure_count']
-            ]);
-        }
+        return response()->json(['success' => $result['success'], 'message' =>$result['message'] ]);
     }
 }
+

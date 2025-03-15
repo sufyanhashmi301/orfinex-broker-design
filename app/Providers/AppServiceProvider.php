@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Theme;
 use App\Models\Language;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
 
         if(is_force_https()){
             URL::forceScheme('https');

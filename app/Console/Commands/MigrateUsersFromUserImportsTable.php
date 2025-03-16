@@ -17,10 +17,10 @@ use Carbon\Carbon;
 use Hash;
 use Txn;
 
-class PrimexMigrateSystem extends Command
+class MigrateUsersFromUserImportsTable extends Command
 {
-    protected $signature = 'migrate:primex-system';
-    protected $description = 'Merges users from the primex_users backup table to the current users table, and updates wallet balances';
+    protected $signature = 'migrate:old-users';
+    protected $description = 'Merges users from the old crm backup table to the current users table, and updates wallet balances';
 
     public function handle()
     {
@@ -94,16 +94,16 @@ class PrimexMigrateSystem extends Command
                     $duplicateCount++;
                 } else {
 //                    // Handle splitting the name into first_name and last_name
-//                    $nameParts = explode(' ', $backupUser->f_name);
-//                    $firstName = array_shift($nameParts); // Take the first part as the first name
-//                    $lastName = implode(' ', $nameParts); // Combine the remaining parts as the last name
-//
-//                    // If lastName is empty, set it to firstName
-//                    if (empty($lastName)) {
-//                        $lastName = $firstName;
-//                    }
-                    $firstName = $backupUser->f_name ?? 'user';
-                    $lastName = $backupUser->l_name ?? $firstName;
+                    $nameParts = explode(' ', $backupUser->f_name);
+                    $firstName = array_shift($nameParts); // Take the first part as the first name
+                    $lastName = implode(' ', $nameParts); // Combine the remaining parts as the last name
+
+                    // If lastName is empty, set it to firstName
+                    if (empty($lastName)) {
+                        $lastName = $firstName;
+                    }
+//                    $firstName = $backupUser->f_name ?? 'user';
+//                    $lastName = $backupUser->l_name ?? $firstName;
                     // Generate a unique username
                     $usernameBase = $firstName;
                     $username = $usernameBase . rand(1000, 9999);
@@ -111,7 +111,7 @@ class PrimexMigrateSystem extends Command
                         $username = $usernameBase . rand(1000, 9999);
                     }
 
-                    $kyc=0;
+                    $kyc=4;
                     if($backupUser->kyc == 1){
                         $kyc = 4;
                     }
@@ -160,6 +160,7 @@ class PrimexMigrateSystem extends Command
 
                     // Save the user
                     $user->save();
+                    dd('ss');
                     // Increment the created users counter
                     $createdUsersCount++;
                 }

@@ -160,7 +160,7 @@ class MigrateUsersFromUserImportsTable extends Command
 
                     // Save the user
                     $user->save();
-                    dd('ss');
+//                    dd('ss');
                     // Increment the created users counter
                     $createdUsersCount++;
                 }

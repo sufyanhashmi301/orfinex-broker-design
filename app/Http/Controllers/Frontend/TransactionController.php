@@ -32,37 +32,40 @@ class TransactionController extends Controller
             ->orderBy('balance', 'desc')
             ->get();
 
-        $transactions = Transaction::search(request('query'))
-            ->query(function ($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->when(request('transaction_date'), function ($query) {
-                        $filter = request('transaction_date');
+        $query = Transaction::where('user_id', auth()->user()->id);
 
-                        if (in_array($filter, ['3_days', '5_days', '15_days'])) {
-                            $daysAgo = substr($filter, 0, strpos($filter, '_'));
-                            $query->where('created_at', '>=', Carbon::now()->subDays($daysAgo)->startOfDay());
-                        } elseif ($filter == '1_month') {
-                            $query->where('created_at', '>=', Carbon::now()->subMonth()->startOfDay());
-                        } elseif ($filter == '3_months') {
-                            $query->where('created_at', '>=', Carbon::now()->subMonths(3)->startOfDay());
-                        }
-                    })
-                    ->when(request('transaction_status'), function ($query) {
-                        $query->where('status', request('transaction_status'));
-                    })
-                    ->when(request('transaction_type'), function ($query) {
-                        $query->where('type', request('transaction_type'));
-                    })
-                    ->when(request('forex_account'), function ($query) {
-                        $query->where('target_id', request('forex_account'));
-                    });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->withQueryString();
+        if (request('transaction_date')) {
+            $filter = request('transaction_date');
+            if (in_array($filter, ['3_days', '5_days', '15_days'])) {
+                $daysAgo = substr($filter, 0, strpos($filter, '_'));
+                $query->where('created_at', '>=', Carbon::now()->subDays($daysAgo)->startOfDay());
+            } elseif ($filter == '1_month') {
+                $query->where('created_at', '>=', Carbon::now()->subMonth()->startOfDay());
+            } elseif ($filter == '3_months') {
+                $query->where('created_at', '>=', Carbon::now()->subMonths(3)->startOfDay());
+            }
+        }
+
+        if (request('transaction_status')) {
+            $query->where('status', request('transaction_status'));
+        }
+
+        if (request('transaction_type')) {
+            $query->where('type', request('transaction_type'));
+        }
+
+        if (request('forex_account')) {
+            $query->where('target_id', request('forex_account'));
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(10)->appends(request()->query());
 
         if (request()->ajax()) {
-            return view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render();
+            return response()->json([
+                'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
+                'pagination' => (string) $transactions->links(),
+                'total' => $transactions->total(),
+            ]);
         }
 
         return view('frontend::user.transaction.index', compact('transactions', 'realForexAccounts'));
@@ -70,8 +73,37 @@ class TransactionController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new AllTransactionsExport($request), 'All-History.xlsx');
+        $query = Transaction::where('user_id', auth()->user()->id);
+
+        if ($request->date) {
+            $filter = $request->date;
+            if (in_array($filter, ['3_days', '5_days', '15_days'])) {
+                $daysAgo = substr($filter, 0, strpos($filter, '_'));
+                $query->where('created_at', '>=', Carbon::now()->subDays($daysAgo)->startOfDay());
+            } elseif ($filter == '1_month') {
+                $query->where('created_at', '>=', Carbon::now()->subMonth()->startOfDay());
+            } elseif ($filter == '3_months') {
+                $query->where('created_at', '>=', Carbon::now()->subMonths(3)->startOfDay());
+            }
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->type) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->forex_account) {
+            $query->where('target_id', $request->forex_account);
+        }
+
+        $transactions = $query->get();
+
+        return Excel::download(new AllTransactionsExport($transactions), 'Filtered-Transactions.xlsx');
     }
+
 
     public function forexTransactions()
     {

@@ -66,7 +66,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('internal_send_charge','global') }}" name="internal_send_charge">
+                                <input type="text" class="form-control !pr-12" value="{{ oldSetting('internal_send_charge','global') }}" name="internal_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="internal_send_charge_type" class="w-full h-full outline-none" id="">
                                         @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
@@ -120,7 +120,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
+                                <input type="text" class="form-control !pr-12" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="external_send_charge_type" class="w-full h-full outline-none" id="">
                                         @foreach(['fixed' => setting('currency_symbol','transfer_external') , 'percentage' => '%'] as $key => $value)
@@ -193,7 +193,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Wallet Exchange Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('wallet_exchange_charge','global') }}" name="wallet_exchange_charge">
+                                <input type="text" class="form-control !pr-12" value="{{ oldSetting('wallet_exchange_charge','global') }}" name="wallet_exchange_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="wallet_exchange_charge_type" class="w-full h-full outline-none" id="">
                                         @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
@@ -223,7 +223,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Wallet Exchange Daily Limit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="wallet_exchange_day_limit" value="{{ oldSetting('wallet_exchange_day_limit','fee') }}">
+                                <input type="text" class="form-control !pr-12" name="wallet_exchange_day_limit" value="{{ oldSetting('wallet_exchange_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
                             </div>
                         </div>
@@ -232,7 +232,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Send Money Daily Limit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="send_money_day_limit" value="{{ oldSetting('send_money_day_limit','fee') }}">
+                                <input type="text" class="form-control !pr-12" name="send_money_day_limit" value="{{ oldSetting('send_money_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
                             </div>
                         </div>
@@ -241,7 +241,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Withdraw Daily Limit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="withdraw_day_limit" value="{{ oldSetting('withdraw_day_limit','fee') }}">
+                                <input type="text" class="form-control !pr-12" name="withdraw_day_limit" value="{{ oldSetting('withdraw_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
                             </div>
                         </div>
@@ -250,7 +250,7 @@
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Investment Cancellation Daily Limit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="investment_cancellation_daily_limit" value="{{ oldSetting('investment_cancellation_daily_limit','fee') }}">
+                                <input type="text" class="form-control !pr-12" name="investment_cancellation_daily_limit" value="{{ oldSetting('investment_cancellation_daily_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
                             </div>
                         </div>

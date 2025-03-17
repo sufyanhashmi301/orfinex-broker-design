@@ -266,9 +266,6 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->where('status', 'pending');
                         })->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
                 }
             }
 
@@ -321,10 +318,7 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->orWhere('type', TxnType::WithdrawAuto);
                         })->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
-                }
+                } 
             }
 
             // Apply additional filters if any

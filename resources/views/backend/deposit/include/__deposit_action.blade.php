@@ -23,7 +23,7 @@
         <div class="input-area">
             <label class="form-label" for="">{{ __('Deposited Amount:') }}</label>
             <div class="joint-input relative">
-                <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+                <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="currency">
                     {{$currency}}
                 </span>
@@ -33,7 +33,7 @@
             <div class="input-area">
                 <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
                 <div class="joint-input relative">
-                    <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+                    <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="converted-currency">
                         {{$data->pay_currency}}
                     </span>

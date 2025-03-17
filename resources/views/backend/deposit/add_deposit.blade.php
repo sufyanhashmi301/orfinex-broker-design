@@ -100,7 +100,7 @@
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="amount" class="form-control" oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount" aria-describedby="basic-addon1">
+                                    <input type="text" name="amount" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount" aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
                                 @error('amount')
@@ -111,7 +111,7 @@
                             <div class="input-area conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text"  class="form-control"
+                                    <input type="text" class="form-control !pr-12"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
                                            aria-describedby="basic-addon2">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
@@ -230,7 +230,7 @@
                     ajax: {
                         url: "{{ route('admin.deposit.history') }}",
                         data: function (d) {
-                            d.user_id = $('select[name="user_id"]').val(); 
+                            d.user_id = $('select[name="user_id"]').val();
                             d.email = $('#email').val();
                             d.status = $('#status').val();
                             d.created_at = $('#created_at').val();

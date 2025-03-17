@@ -318,7 +318,7 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->orWhere('type', TxnType::WithdrawAuto);
                         })->latest();
-                } 
+                }
             }
 
             // Apply additional filters if any

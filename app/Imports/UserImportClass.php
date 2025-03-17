@@ -12,16 +12,16 @@ class UserImportClass implements ToModel
 {
     public function model(array $row)
     {
-        if(!UserImport::where('email',$row[2])->exists()) {
+        if(!UserImport::where('email',$row[4])->exists()) {
             return new UserImport([
 //                'login'                => $row[0] ?? null, // Assuming 'id' is in the first column
-                'f_name'              => $row[0] ?? null, // Name is in the second column
-                'l_name'              => $row[1] ?? null, // Name is in the second column
-                'email'              => $row[2] ?? null, // Name is in the second column
-                'phone'             => $row[3] ?? null,
-                'country'             => $row[4] ?? null,
-                'kyc'             => $row[5] ?? null,
-                'register_time'             => $row[6] ?? null
+                'f_name'              => $row[1] ?? null, // Name is in the second column
+                'l_name'              => $row[2] ?? null, // Name is in the second column
+                'email'              => $row[4] ?? null, // Name is in the second column
+                'phone'             => $row[5] ?? null,
+                'country'             => $row[7] ?? null,
+//                'kyc'             => $row[5] ?? null,
+//                'register_time'             => $row[6] ?? null
 //                'balance'           => $row[6] ?? null,
 //                'equity'              => $row[7] ?? null,
 //                'profit'=> $row[8] ?? null,

@@ -11,7 +11,7 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-        $codesToDelete = ['kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
+        $codesToDelete = ['user_password_change','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
 
         // Delete the existing templates that match the codes
         EmailTemplate::whereIn('code', $codesToDelete)->delete();
@@ -112,7 +112,7 @@ class EmailTemplatesSeeder extends Seeder
                 'bottom_status' => 1,
                 'bottom_title' => 'More About [[site_title]]',
                 'bottom_body' => url('/'),
-                'short_codes' => '["[[token]]","[[site_title]]","[[site_url]]"]',
+                'short_codes' => '["[[full_name]]","[[token]]","[[site_title]]","[[site_url]]"]',
                 'note' => '',
                 'support_link' => '',
                 'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high risk investments, due to their complexity.',

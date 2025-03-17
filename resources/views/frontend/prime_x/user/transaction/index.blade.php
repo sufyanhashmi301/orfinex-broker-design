@@ -25,6 +25,7 @@
                     <option value="deposit">{{ __('Deposit') }}</option>
                     <option value="withdraw">{{ __('Withdraw') }}</option>
                     <option value="send_money">{{ __('Transfer') }}</option>
+                    <option value="ib_bonus">{{ __('IB Bonus') }}</option>
                 </select>
             </div>
             <div class="input-area relative">

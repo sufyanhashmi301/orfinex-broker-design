@@ -270,7 +270,7 @@ class WithdrawController extends Controller
             }
 
             // Apply additional filters if any
-            $data->applyFilters($filters);
+            $data = $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -322,7 +322,7 @@ class WithdrawController extends Controller
             }
 
             // Apply additional filters if any
-            $data->applyFilters($filters);
+            $data = $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

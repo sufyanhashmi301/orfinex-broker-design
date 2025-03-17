@@ -298,4 +298,9 @@
     .fill-primary {
         fill: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
+
+    #tabs-tab .nav-link.active {
+        border-bottom-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
+        color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
+    }
 </style>

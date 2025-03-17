@@ -38,24 +38,24 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasRole('Super-Admin') ? true : null;
         });
 
-        VerifyEmail::toMailUsing(function ($notifiable) {
-            $verifyUrl = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-                [
-                    'id' => $notifiable->getKey(),
-                    'hash' => sha1($notifiable->getEmailForVerification()),
-                ]
-            );
-            $shortcodes = [
-                '[[token]]' => $verifyUrl,
-                '[[full_name]]' => $notifiable->full_name,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-            ];
-
-            return $this->mailNotify($notifiable->email, 'email_verification', $shortcodes);
-        });
+//        VerifyEmail::toMailUsing(function ($notifiable) {
+//            $verifyUrl = URL::temporarySignedRoute(
+//                'verification.verify',
+//                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+//                [
+//                    'id' => $notifiable->getKey(),
+//                    'hash' => sha1($notifiable->getEmailForVerification()),
+//                ]
+//            );
+//            $shortcodes = [
+//                '[[token]]' => $verifyUrl,
+//                '[[full_name]]' => $notifiable->full_name,
+//                '[[site_title]]' => setting('site_title', 'global'),
+//                '[[site_url]]' => route('home'),
+//            ];
+//
+//            return $this->mailNotify($notifiable->email, 'email_verification', $shortcodes);
+//        });
 
     }
 }

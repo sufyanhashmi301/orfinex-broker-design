@@ -266,6 +266,8 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->where('status', 'pending');
                         })->latest();
+                }else {
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -318,6 +320,8 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->orWhere('type', TxnType::WithdrawAuto);
                         })->latest();
+                }else {
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 

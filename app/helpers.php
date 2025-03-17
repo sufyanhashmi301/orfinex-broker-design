@@ -32,6 +32,7 @@ if (!function_exists('is_force_https')) {
         return false;
     }
 }
+
 if (!function_exists('AccType')) {
     /**
      * @param $name |string
@@ -51,6 +52,28 @@ if (!function_exists('AccType')) {
         if (empty($name)) return $acType;
 
         return isset($acType->$name) ? $acType->$name : false;
+    }
+}
+
+if (!function_exists('getFilteredTxnTypes')) {
+    /**
+     * Get filtered transaction types excluding specific ones
+     *
+     * @return array
+     */
+    function getFilteredTxnTypes(): array
+    {
+        // Define excluded transaction types
+        $excludedTypes = [
+            'multi_ib',
+            'ib',
+            'interest',
+            'exchange'
+        ];
+
+        return array_filter(TxnType::cases(), function ($txnType) use ($excludedTypes) {
+            return !in_array($txnType->value, $excludedTypes, true);
+        });
     }
 }
 if (!function_exists('get_user_account')) {

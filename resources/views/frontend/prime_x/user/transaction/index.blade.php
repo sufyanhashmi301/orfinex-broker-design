@@ -22,10 +22,13 @@
             <div class="input-area relative">
                 <select id="transaction-type" class="form-control">
                     <option value="">{{ __('All transaction types') }}</option>
-                    <option value="deposit">{{ __('Deposit') }}</option>
-                    <option value="withdraw">{{ __('Withdraw') }}</option>
-                    <option value="send_money">{{ __('Transfer') }}</option>
-                    <option value="ib_bonus">{{ __('IB Bonus') }}</option>
+                    @foreach (getFilteredTxnTypes() as $txnType)
+                        <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                    @endforeach
+{{--                    <option value="deposit">{{ __('Deposit') }}</option>--}}
+{{--                    <option value="withdraw">{{ __('Withdraw') }}</option>--}}
+{{--                    <option value="send_money">{{ __('Transfer') }}</option>--}}
+{{--                    <option value="ib_bonus">{{ __('IB Bonus') }}</option>--}}
                 </select>
             </div>
             <div class="input-area relative">
@@ -100,17 +103,20 @@
                                             $total = $transactions->total(); // The total number of items
                                         @endphp
 
-                                        <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
+                                        <p class="text-sm text-gray-700 dark:text-slate-300 px-3" id="total-records">
                                             {{ __('Showing') }}
-                                            <span class="font-medium">{{ $from }}</span>
+                                            <span class="font-medium">{{ $transactions->firstItem() }}</span>
                                             {{ __('to') }}
-                                            <span class="font-medium">{{ $to }}</span>
+                                            <span class="font-medium">{{ $transactions->lastItem() }}</span>
                                             {{ __('of') }}
-                                            <span class="font-medium">{{ $total }}</span>
+                                            <span class="font-medium">{{ $transactions->total() }}</span>
                                             {{ __('results') }}
                                         </p>
+
                                     </div>
-                                    {{ $transactions->links() }}
+                                    <div class="pagination-container">
+                                        {{ $transactions->appends(request()->query())->links() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -181,27 +187,127 @@
 @endsection
 @section('script')
     <script !src="">
+        $(document).ready(function () {
+            function fetchTransactions(url = '{{ route("user.history.transactions") }}') {
+                let status = $('#transaction-status').val();
+                let type = $('#transaction-type').val();
+                let date = $('#transaction-date').val();
+                let account = $('#forex-account').val();
 
-        $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function() {
-            const status = $('#transaction-status').val();
-            const type = $('#transaction-type').val();
-            const date = $('#transaction-date').val();
-            const account = $('#forex-account').val();
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        transaction_status: status,
+                        transaction_type: type,
+                        transaction_date: date,
+                        forex_account: account,
+                    },
+                    beforeSend: function () {
+                        $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
+                    },
+                    success: function (response) {
+                        if (response.html.trim() === "") {
+                            $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">No transactions found</td></tr>');
+                        } else {
+                            $('#transaction-table-body').html(response.html);
+                        }
+                        $('.pagination-container').html(response.pagination);
+                        $('#total-records').html(`
+                    {{ __('Showing') }}
+                        <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
+                    {{ __('to') }}
+                        <span class="font-medium">${response.total}</span>
+                    {{ __('of') }}
+                        <span class="font-medium">${response.total}</span>
+                    {{ __('results') }}
+                        `);
 
-            $.ajax({
-                url: '{{ route("user.history.transactions") }}',
-                type: 'GET',
-                data: {
-                    transaction_status: status,
-                    transaction_type: type,
-                    transaction_date: date,
-                    forex_account: account,
-                },
-                success: function (response) {
-                    $('#transaction-table-body').html(response); // Update the table body
+                        // Store selections in localStorage
+                        localStorage.setItem('transaction_status', status);
+                        localStorage.setItem('transaction_type', type);
+                        localStorage.setItem('transaction_date', date);
+                        localStorage.setItem('forex_account', account);
+
+                        // Reattach event handlers
+                        attachPaginationEvents();
+                    },
+                    error: function () {
+                        alert('Error loading transactions.');
+                    }
+                });
+            }
+
+            function attachPaginationEvents() {
+                $('.pagination a').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    let url = $(this).attr('href');
+                    if (url) {
+                        fetchTransactions(url);
+                    }
+                });
+            }
+
+            function resetFiltersIfNavigatedBack() {
+                let isNavigatedBack = performance.navigation.type === 2 || sessionStorage.getItem('navigatedBack') === 'true';
+
+                if (isNavigatedBack) {
+                    console.log("Navigated back - resetting filters");
+
+                    // Clear stored filters
+                    localStorage.removeItem('transaction_status');
+                    localStorage.removeItem('transaction_type');
+                    localStorage.removeItem('transaction_date');
+                    localStorage.removeItem('forex_account');
+
+                    // Reset dropdown values
+                    $('#transaction-status').val('');
+                    $('#transaction-type').val('');
+                    $('#transaction-date').val('');
+                    $('#forex-account').val('');
+
+                    sessionStorage.removeItem('navigatedBack'); // Reset flag
                 }
-            })
+            }
+
+            function restoreSelections() {
+                if (localStorage.getItem('transaction_status')) {
+                    $('#transaction-status').val(localStorage.getItem('transaction_status'));
+                }
+                if (localStorage.getItem('transaction_type')) {
+                    $('#transaction-type').val(localStorage.getItem('transaction_type'));
+                }
+                if (localStorage.getItem('transaction_date')) {
+                    $('#transaction-date').val(localStorage.getItem('transaction_date'));
+                }
+                if (localStorage.getItem('forex_account')) {
+                    $('#forex-account').val(localStorage.getItem('forex_account'));
+                }
+            }
+
+            // Detect if user navigated back
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                    sessionStorage.setItem('navigatedBack', 'true');
+                }
+            });
+
+            // Reset filters if user navigated back
+            resetFiltersIfNavigatedBack();
+
+            // Restore previous selections if they exist
+            restoreSelections();
+
+            // Attach event handlers to filters
+            $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function () {
+                fetchTransactions();
+            });
+
+            // Attach pagination event initially
+            attachPaginationEvents();
         });
+
+
 
     </script>
 @endsection

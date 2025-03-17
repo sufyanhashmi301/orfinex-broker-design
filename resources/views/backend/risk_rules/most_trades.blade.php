@@ -93,7 +93,7 @@
                                     <th scope="col" class="table-th">{{ __('Risk Grade') }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                               @forelse ($data as $item)
                                 <tr class="item-row" data-total-trades="{{ $item['totalTrades'] }}">
                                   @php

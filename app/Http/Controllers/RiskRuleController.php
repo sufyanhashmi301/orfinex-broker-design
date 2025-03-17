@@ -73,7 +73,8 @@ class RiskRuleController extends Controller
         if($risk_rule_slug == 'trade_age' || $risk_rule_slug == 'open_positions') {
             $login_key = 'login';
         }
-        $data = $this->filterApiData($data, $login_key);
+        // $data = $this->filterApiData($data, $login_key);
+        
 
         // All Accounts
         $accounts = AccountTypeInvestment::all();

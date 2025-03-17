@@ -56,7 +56,7 @@
                                     <th scope="col" class="table-th">{{ __('Trade Created at') }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                               @forelse ($data as $item)
                                 <tr class="item-row" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
                                   @php

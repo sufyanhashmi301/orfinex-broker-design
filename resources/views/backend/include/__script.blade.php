@@ -21,6 +21,12 @@
 @yield('script')
 @stack('single-script')
 <script>
+
+    $(document).on('submit', 'form', function() {
+        $('button[type="submit"]').addClass('disabled')
+        $('input[type="submit"]').addClass('disabled')
+    })
+
     $(document).ready(function () {
         function calculateHeights() {
             // Store heights in variables, checking if elements exist

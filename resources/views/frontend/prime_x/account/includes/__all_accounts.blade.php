@@ -60,6 +60,13 @@
                                                     
                                                 </span>
                                             @endif
+
+                                            <span><b> | 
+                                                @if ($investment->getPhaseSnapshotData()['phase_step'] == 1 && $transactions->where('target_id', $investment->id)->count() == 0 && $investment->is_trial == 0)
+                                                    No Txn ({{ $investment->id }})
+                                                @endif
+                                            </b></span>
+
                                         </td>
                                         <td class="table-td">{{ $investment->login ?? 'N/A'}}</td>
                                         <td class="table-td">{{ number_format($ruleData['allotted_funds'] ?? 0.00, 0) }} {{ $currency }}</td>

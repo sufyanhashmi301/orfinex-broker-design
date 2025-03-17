@@ -21,6 +21,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Services\AccountTypeInvestmentPaymentService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Models\Transaction;
 
 class AccountTypeInvestmentController extends Controller
 {
@@ -50,7 +51,7 @@ class AccountTypeInvestmentController extends Controller
 
             if (in_array($request->status, (new \ReflectionClass(InvestmentStatus::class))->getConstants())) {
                 // Handle the logic here if the status is valid
-                $accounts = AccountTypeInvestment::where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
+                $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
                 $title = ucfirst($request->status) . ' Accounts';
                 $accounts_filter = true;
             }
@@ -59,7 +60,7 @@ class AccountTypeInvestmentController extends Controller
 
         // If search
         if(isset($request->search)) {
-            $accounts = AccountTypeInvestment::where('login', 'LIKE', '%' . $request->search . '%')
+            $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->where('login', 'LIKE', '%' . $request->search . '%')
                                             ->orWhereHas('user', function ($query) use ($request) {
                                                 $query->where('first_name', 'LIKE', '%' . $request->search . '%')
                                                     ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
@@ -73,7 +74,7 @@ class AccountTypeInvestmentController extends Controller
 
         // if status is unknown then show all accounts
         if(!$accounts_filter) {
-            $accounts = AccountTypeInvestment::orderBy('id', 'desc')->paginate(15);
+            $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->orderBy('id', 'desc')->paginate(15);
             $title = 'All Accounts';
             if($request->status != 'all') {
                 return redirect()->route('admin.accounts.index', ['status' => 'all']);
@@ -100,7 +101,22 @@ class AccountTypeInvestmentController extends Controller
             $investments = AccountTypeInvestment::traderType()->where('user_id', $user->id)->where('status', $request->status)->orderBy('id', 'desc')->get();
         }
 
-        return view('frontend::account.index', compact('investments'));
+        $transactions = Transaction::whereIn('target_id', $investments->pluck('id'))->get();
+
+        // Delete the Phase 1 accounts that have no transaction records
+        $accounts_with_no_transactions = false;
+        foreach($investments as $investment) {
+            if($investment->getPhaseSnapshotData()['phase_step'] == 1 && $transactions->where('target_id', $investment->id)->count() == 0 && $investment->is_trial == 0) {
+                $investment->delete();
+                $accounts_with_no_transactions = true;
+            }
+        }
+
+        if($accounts_with_no_transactions) {
+            return redirect()->route('user.investments.index');
+        }
+
+        return view('frontend::account.index', get_defined_vars());
     }
 
     /**

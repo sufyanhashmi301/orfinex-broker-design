@@ -29,13 +29,13 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('IP Address Count') }}</th>
+                                    <th scope="col" class="table-th">{{ __('IP Addresses Tracked') }}</th>
                                     <th scope="col" class="table-th">{{ __('IP Address(es)') }}</th>
                                     <th scope="col" class="table-th">{{ __('Registration Time') }}</th>
                                     <th scope="col" class="table-th">{{ __('Last Access Time') }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                               @forelse ($data as $item)
                                 <tr class="item-row">
                                   @php
@@ -46,14 +46,17 @@
                                       {{ $user ? ($user->first_name . ' ' . $user->last_name) : 'N/A' }}
                                   </td>
                                   <td class="table-td">{{ $item['loginID'] }}</td>
-                                  <td class="table-td">{{ count($item['ip_addresses']) }}</td>
+                                  <td class="table-td"><b>{{ count($item['ip_addresses']) }}</b></td>
                                   <td class="table-td">
-                                    @foreach ($item['ip_addresses'] as $ip)
-                                      <span class="badge badge-primary mr-2">{{ $ip }}</span>
+                                    @foreach ($item['ip_addresses'] as $index => $ip)
+                                        <span class="badge badge-primary mr-2 mt-2">{{ $ip }}</span>
+                                        @if (($index + 1) % 4 == 0)
+                                            <br>
+                                        @endif
                                     @endforeach
                                   </td>
-                                  <td class="table-td">{{ $item['registrationTime'] }}</td>
-                                  <td class="table-td">{{ $item['lastAccessTime'] }}</td>
+                                  <td class="table-td">{{ \Carbon\Carbon::parse($item['registrationTime'])->format('g:i:s A, d M Y') }}</td>
+                                  <td class="table-td">{{ \Carbon\Carbon::parse($item['lastAccessTime'])->format('g:i:s A, d M Y') }}</td>
                                   
                                 </tr>
                               @empty

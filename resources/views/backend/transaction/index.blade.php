@@ -28,7 +28,7 @@
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control h-full" id="type">
                             <option value="">Transaction Type</option>
-                            @foreach (\App\Enums\TxnType::cases() as $txnType)
+                            @foreach (getFilteredTxnTypes() as $txnType)
                                 <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
                             @endforeach
                         </select>
@@ -49,10 +49,19 @@
                     </div>
                     {{-- @can('transaction-export') --}}
                     <div class="input-area relative">
-                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                            {{ __('Export') }}
-                        </button>
+                        <form method="POST" action="{{ route('user.history.transactions.export') }}">
+                            @csrf
+                            <input type="hidden" name="query" value="{{ request('query') }}">
+                            <input type="hidden" name="date" value="{{ request('transaction_date') }}">
+                            <input type="hidden" name="status" value="{{ request('transaction_status') }}">
+                            <input type="hidden" name="type" value="{{ request('transaction_type') }}">
+                            <input type="hidden" name="forex_account" value="{{ request('forex_account') }}">
+                            <button type="submit" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                {{ __('Export') }}
+                            </button>
+                        </form>
+
                     </div>
                     {{-- @endcan --}}
                     <div class="input-area relative">

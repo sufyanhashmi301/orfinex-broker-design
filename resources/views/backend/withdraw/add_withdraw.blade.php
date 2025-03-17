@@ -65,7 +65,7 @@
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount"
                                         oninput="this.value = validateDouble(this.value)"
-                                        class="form-control withdrawAmount"
+                                        class="form-control !pr-12 withdrawAmount"
                                         placeholder="{{ __('Enter Amount') }}"
                                         value="{{ old('amount') }}"
                                         aria-describedby="basic-addon1"

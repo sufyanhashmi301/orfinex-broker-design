@@ -67,8 +67,9 @@ class TransactionController extends Controller
                     }
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
+
             }
 
             // Apply additional filters if any

@@ -63,13 +63,14 @@ class MultiLevelIBController extends Controller
         $levelOrder = 0;
         $dataCount = [
             'monthly_referrals' => $user->getReferral->monthlyRelationships()->count(),
-            'total_rebate' => $this->getReferralsNetRebate($user,30),
+//            'total_rebate' => $this->getReferralsNetRebate($user,30),
             'total_referrals_balance' =>  $this->getReferralsTotalBalance($user),
             'total_volume' => $this->getReferralsNetVolume($user,30),
             'total_referrals' => $user->referrals()->count(),
             'total_deposit' => $user->totalReferralsDeposit(),
             'total_withdraw' => $user->totalReferralsWithdraw(),
-            'net_referrals_rebate' =>  $this->getReferralsNetRebate($user),
+            'monthly_rebate' =>  $user->totalRebate(30),
+            'net_rebate' =>  $user->totalRebate(),
             'net_referrals_volume' =>  $this->getReferralsNetVolume($user),
         ];
 

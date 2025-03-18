@@ -354,7 +354,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     }
     public function totalRebate($days = null)
     {
-        $query = $this->transaction()->where('status', TxnStatus::Success)
+        $query = Transaction::query()
+            ->where('status', TxnStatus::Success)
             ->where(function ($query) {
                 $query->where('type', TxnType::IbBonus);
             });

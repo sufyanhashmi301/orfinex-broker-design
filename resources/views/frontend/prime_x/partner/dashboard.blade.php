@@ -60,18 +60,18 @@
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative rebate') }}
+                            {{ __('Cumulative Volume') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['net_referrals_rebate'] }} {{$currency}}
+                                {{ $dataCount['total_volume_life_time'] }} {{$currency}}
                             </h6>
 {{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
 {{--                                {{ __('-52%') }}--}}
 {{--                            </span>--}}
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Lifetime Total') }}
                         </p>
                     </div>
                 </div>

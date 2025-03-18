@@ -232,7 +232,8 @@ class KycController extends Controller
                         ->latest('updated_at');
             } else {
                     // If no users are attached, return an empty collection
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
+
                 }
             }
 
@@ -278,7 +279,7 @@ class KycController extends Controller
                         ->latest('updated_at');
             } else {
                     // If no users are attached, return an empty collection
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -331,7 +332,7 @@ class KycController extends Controller
                         ->latest();
             } else {
                     // If no users are attached, return an empty collection
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 

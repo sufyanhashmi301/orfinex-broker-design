@@ -66,6 +66,7 @@ class MultiLevelIBController extends Controller
             'total_rebate' => $this->getReferralsNetRebate($user,30),
             'total_referrals_balance' =>  $this->getReferralsTotalBalance($user),
             'total_volume' => $this->getReferralsNetVolume($user,30),
+            'total_volume_life_time' => $this->getReferralsNetVolume($user),
             'total_referrals' => $user->referrals()->count(),
             'total_deposit' => $user->totalReferralsDeposit(),
             'total_withdraw' => $user->totalReferralsWithdraw(),

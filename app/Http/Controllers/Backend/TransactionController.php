@@ -67,8 +67,7 @@ class TransactionController extends Controller
                     }
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
-                }
+                    Ticket                }
             }
 
             // Apply additional filters if any

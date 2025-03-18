@@ -352,6 +352,20 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($query->sum('amount'), 2);
     }
+    public function totalRebate($days = null)
+    {
+        $query = Transaction::query()
+            ->where('user_id', $this->id) // Add this line to filter by the current user
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::IbBonus);
+            });
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
 
 
 

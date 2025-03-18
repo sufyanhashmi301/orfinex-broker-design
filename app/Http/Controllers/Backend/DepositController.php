@@ -245,7 +245,7 @@ class DepositController extends Controller
                         })->latest()->applyFilters($filters);
                 } else {
                     // If no users are attached, show no transactions
-                    $data = collect(); // Empty collection
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -292,7 +292,7 @@ class DepositController extends Controller
                         })->latest();
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 

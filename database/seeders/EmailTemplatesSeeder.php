@@ -2,6 +2,7 @@
 namespace Database\Seeders;
 
 use App\Models\EmailTemplate;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,7 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-        $codesToDelete = ['user_password_change','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
+        $codesToDelete = ['email_verification','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
 
         // Delete the existing templates that match the codes
         EmailTemplate::whereIn('code', $codesToDelete)->delete();
@@ -74,26 +75,26 @@ class EmailTemplatesSeeder extends Seeder
                 'name' => 'Email Verification',
                 'code' => 'email_verification',
                 'for' => 'User',
-                'banner' => 'global/images/eCnEGZZvHeN5Is7dk0VU.jpg',
-                'title' => 'Verify Email Address',
-                'subject' => 'Verify Email Address',
+                'banner' => 'global/images/email_verification.jpg',
+                'title' => 'Verify Your Email Address',
+                'subject' => 'Confirm Your Email Address',
                 'salutation' => 'Dear [[full_name]],',
-                'message_body' => 'Hello!<br />Please click the button below to verify your email address.',
-                'button_level' => 'Verify Email Address',
-                'button_link' => '[[token]]',
-                'footer_status' => 0,
-                'footer_body' => 'Regards,<br />[[site_title]]',
+                'message_body' => 'Hello!<br />Your One-Time Password (OTP) for email verification is:<br /><strong>[[code]]</strong><br />Please enter this code on the verification page to confirm your email.',
+                'button_level' => 'Verify Now',
+                'button_link' => '[[site_url]]/verify-email',
+                'footer_status' => 1,
+                'footer_body' => 'Best Regards,<br />[[site_title]] Team',
                 'bottom_status' => 1,
-                'bottom_title' => 'Verify Email Address',
-                'bottom_body' => 'If you\'re having trouble clicking the "Verify Email Address" button, copy and paste the URL below into your web browser:[[token]]',
-                'short_codes' => '["[[token]]","[[full_name]]","[[site_title]]","[[site_url]]"]',
-                'note' => '',
-                'support_link' => '',
-                'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high risk investments, due to their complexity.',
-                'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
+                'bottom_title' => 'Email Verification Code',
+                'bottom_body' => 'This OTP is valid for 30 minutes. Do not share it with anyone for security reasons.',
+                'short_codes' => json_encode(["[[code]]", "[[full_name]]", "[[site_title]]", "[[site_url]]"]),
+                'note' => 'If you did not request this, please ignore this email.',
+                'support_link' => '[[site_url]]/support',
+                'warning_content' => 'Security Notice: Never share your verification code with anyone. [[site_title]] will never ask for your OTP.',
+                'company_info' => setting('site_title', 'global') . ' GLOBAL LIMITED. Registered under company number 2023-00532.',
                 'status' => 1,
-                'created_at' => '2024-03-11 10:11:49',
-                'updated_at' => '2024-03-11 10:11:49',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
 

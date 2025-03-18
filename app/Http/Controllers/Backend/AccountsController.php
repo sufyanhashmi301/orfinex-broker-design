@@ -72,7 +72,7 @@ class   AccountsController extends Controller
             if ($attachedUserIds->isNotEmpty()) {
                 $data->whereIn('user_id', $attachedUserIds);
             } else {
-                $data = collect(); // Empty collection if no attached users
+                $data = ForexAccount::query()->where('id', 0); // Return an empty query
             }
         }
         if ($id) {
@@ -734,7 +734,7 @@ class   AccountsController extends Controller
         if ($request->account_type) {
             return $this->updateAccountType($request);
         }
- 
+
         if ($request->main_password) {
             return $this->resetMainPassword($request);
         }

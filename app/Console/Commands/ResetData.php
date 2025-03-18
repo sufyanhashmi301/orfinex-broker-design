@@ -38,6 +38,7 @@ class ResetData extends Command
      */
     public function handle()
     {
+//        dd(hash::make('Bestofluck@321'));
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('admins')->truncate();
         DB::table('users')->truncate();

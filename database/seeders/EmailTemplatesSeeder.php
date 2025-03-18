@@ -11,7 +11,7 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-        $codesToDelete = ['user_password_change','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
+        $codesToDelete = ['email_verification','user_password_change','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
 
         // Delete the existing templates that match the codes
         EmailTemplate::whereIn('code', $codesToDelete)->delete();
@@ -78,15 +78,15 @@ class EmailTemplatesSeeder extends Seeder
                 'title' => 'Verify Email Address',
                 'subject' => 'Verify Email Address',
                 'salutation' => 'Dear [[full_name]],',
-                'message_body' => 'Hello!<br />Please click the button below to verify your email address.',
-                'button_level' => 'Verify Email Address',
-                'button_link' => '[[token]]',
+                'message_body' => 'Hello!<br />Here is the code to verify your email address.<br /><strong>Code: [[code]]</strong>',
+                'button_level' => 'Login',
+                'button_link' => '[[site_url]]',
                 'footer_status' => 0,
                 'footer_body' => 'Regards,<br />[[site_title]]',
                 'bottom_status' => 1,
                 'bottom_title' => 'Verify Email Address',
-                'bottom_body' => 'If you\'re having trouble clicking the "Verify Email Address" button, copy and paste the URL below into your web browser:[[token]]',
-                'short_codes' => '["[[token]]","[[full_name]]","[[site_title]]","[[site_url]]"]',
+                'bottom_body' => 'The code will expire in 30 minutes!',
+                'short_codes' => '["[[code]]","[[full_name]]","[[site_title]]","[[site_url]]"]',
                 'note' => '',
                 'support_link' => '',
                 'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high risk investments, due to their complexity.',

@@ -18,7 +18,27 @@
                             {{ __('To start using your account, we need to verify your email address. Please check your inbox for the verification email we just sent.') }}
                         </p>
                     </div>
-                    @if (session('status') == 'verification-link-sent')
+                    <div class="text-center space-y-3 mb-5">
+                    @if (session('status') == 'invalid-code')
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            {{ __('kindly provide a valid 4 digits code! Maybe it\'s invalid or expired.') }}
+                        </div>
+                    @endif
+                    <form method="POST" action="{{ route('verification.verify.code') }}" class="space-y-4">
+                        @csrf
+                        <div class="fromGroup">
+                            <label class="block capitalize form-label">{{ __('Code') }}</label>
+                            <div class="relative ">
+                                <input type="text" name="verification_code" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter 4 digits code!') }}" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary block w-full text-center">
+                            {{ __('Verify Code') }}
+                        </button>
+                    </form>
+                    </div>
+
+                @if (session('status') == 'verification-link-sent')
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ __('A new verification link has been sent to the email address you provided during registration.') }}
                         </div>
@@ -28,7 +48,7 @@
                             {{ __("Didn't receive the email?") }}
                         </p>
                         <p class="text-slate-500 dark:text-slate-400 text-sm">
-                            {{ __("Click the button below to resend the verification link.") }}
+                            {{ __("Click the button below to resend the verification code.") }}
                         </p>
                         <form method="POST" action="{{ route('verification.send') }}">
                             @csrf

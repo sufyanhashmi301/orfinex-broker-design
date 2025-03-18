@@ -70,6 +70,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'provider_name',
         'provider_id',
         'user_theme',
+        'verification_code',
+        'verification_code_expires_at',
 
     ];
 

@@ -85,7 +85,7 @@
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
                                     <th scope="col" class="table-th">{{ __('Country') }}</th>
-                                    {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
+                                    <th scope="col" class="table-th">{{ __('Staff') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -158,7 +158,7 @@
                     {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},
                     {data: 'country', name: 'country'},
-                    // {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
+                    {data: 'staff_name', name: 'staff_name'},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},

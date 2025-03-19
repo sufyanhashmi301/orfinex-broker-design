@@ -7,12 +7,10 @@
             </label>
             <select name="user_id" id="client_input" class="form-control">
                 <option value="">{{ __('Select Client') }}</option>
-                @foreach($users as $user)
-                    <option class="py-1" value="{{ $user->id }}" data-email="{{ $user->email }}" data-avatar="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}">
-                        {{ $user->first_name.' '.$user->last_name }}
-                    </option>
-                @endforeach
             </select>
+            @error('user_id')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
 
         <!-- Ticket Title -->
@@ -26,8 +24,10 @@
                 name="title"
                 id="title"
                 placeholder="Ticket Title"
-                required
             >
+            @error('title')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
 
         <!-- Ticket Type -->
@@ -35,12 +35,15 @@
             <label for="" class="form-label">
                 {{ __('Ticket Type') }}
             </label>
-            <select name="label" class="select2 form-control" required>
+            <select name="label" class="select2 form-control">
                 <option value="">{{ __('Select Type') }}</option>
                 @foreach($labels as $id => $name)
                     <option value="{{ $id }}">{{ $name }}</option>
                 @endforeach
             </select>
+            @error('label')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
 
         <!-- Ticket Priority -->
@@ -48,7 +51,7 @@
             <label for="" class="form-label">
                 {{ __('Ticket Priority') }}
             </label>
-            <select name="priority" class="select2 form-control" required>
+            <select name="priority" class="select2 form-control">
                 <option value="">{{ __('Select Priority') }}</option>
                 @foreach(\Coderflex\LaravelTicket\Enums\Priority::cases() as $priority)
                     <option value="{{ $priority->value }}">
@@ -56,6 +59,9 @@
                     </option>
                 @endforeach
             </select>
+            @error('priority')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="input-area">
@@ -71,6 +77,9 @@
                     </option>
                 @endforeach
             </select>
+            @error('assigned_to')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="input-area">
@@ -100,8 +109,10 @@
                 rows="5"
                 name="message"
                 id="message"
-                required
             ></textarea>
+            @error('message')
+                <span class="error">{{ $message }}</span>
+            @enderror
         </div>
     </div>
 

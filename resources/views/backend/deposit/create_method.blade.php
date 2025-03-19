@@ -133,7 +133,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" name="minimum_deposit" class="form-control !pr-12"/>
+                                <input type="text" name="minimum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{$currency}}
                                 </span>
@@ -143,7 +143,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" name="maximum_deposit" class="form-control !pr-12"/>
+                                <input type="text" name="maximum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{$currency}}
                                 </span>

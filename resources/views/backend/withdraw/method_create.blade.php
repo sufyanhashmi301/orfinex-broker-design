@@ -116,7 +116,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control !pr-12" name="min_withdraw"/>
+                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="min_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{$currency}}
                                 </span>
@@ -125,7 +125,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Maximum Withdraw:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control !pr-12" name="max_withdraw"/>
+                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="max_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{ $currency}}
                                 </span>

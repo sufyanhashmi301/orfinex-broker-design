@@ -1198,4 +1198,29 @@ class UserController extends Controller
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
+
+    public function searchUsers(Request $request)
+    {
+        $search = $request->get('q');
+
+        // Fetch users based on the search query, ordered by first name
+        $users = User::where('first_name', 'LIKE', "%{$search}%")
+            ->orWhere('last_name', 'LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->limit(10)
+            ->get();
+
+        // Format the response for Select2
+        return response()->json([
+            'results' => $users->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'text' => $user->first_name . ' ' . $user->last_name,
+                    'avatar' => getFilteredPath($user->avatar, 'global/materials/user.png'),
+                    'email' => $user->email
+                ];
+            })
+        ]);
+    }
+
 }

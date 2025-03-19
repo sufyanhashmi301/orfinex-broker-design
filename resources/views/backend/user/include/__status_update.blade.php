@@ -158,6 +158,12 @@
                     @endif
                 </span>
             </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('Staff:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @include('backend.user.include.__staff',['staff'=> $user->staff])
+                </span>
+            </li>
 
         </ul>
         <div

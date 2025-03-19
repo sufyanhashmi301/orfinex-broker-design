@@ -18,6 +18,7 @@ class AttachUsersToAdmins extends Command
         // Get all user_imports where staff_name is not null and not 'Unassigned'
         $userImports = UserImport::whereNotNull('staff_name')
             ->where('staff_name', '!=', 'Unassigned')
+            ->where('id', 44)
             ->get();
 
         foreach ($userImports as $import) {
@@ -25,14 +26,23 @@ class AttachUsersToAdmins extends Command
             $user = User::where('email', $import->email)->first();
 
             if (!$user) {
-                $this->info("No user found for email: {$import->email}");
+//                $this->info("No user found for email: {$import->email}");
                 continue;
             }
 
             // Find the admin using LIKE on first_name or last_name
-            $admin = Admin::where('first_name', 'LIKE', "%{$import->staff_name}%")
-                ->orWhere('last_name', 'LIKE', "%{$import->staff_name}%")
-                ->first();
+            $staffParts = explode(" ", trim($import->staff_name)); // Split into first and last names
+
+            $query = Admin::query();
+
+            foreach ($staffParts as $part) {
+                $query->orWhereRaw("LOWER(first_name) LIKE LOWER(?)", ["%{$part}%"])
+                    ->orWhereRaw("LOWER(last_name) LIKE LOWER(?)", ["%{$part}%"]);
+            }
+
+            $admin = $query->first();
+
+//            dd($admin);
 
             if (!$admin) {
                 $this->info("No admin found for staff_name: {$import->staff_name}");

@@ -442,6 +442,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
+    Route::get('email-template/setting', [EmailTemplateController::class, 'templateSetting'])->name('email-template.setting');
 
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {

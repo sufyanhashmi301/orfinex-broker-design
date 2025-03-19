@@ -18,7 +18,7 @@ class AttachUsersToAdmins extends Command
         // Get all user_imports where staff_name is not null and not 'Unassigned'
         $userImports = UserImport::whereNotNull('staff_name')
             ->where('staff_name', '!=', 'Unassigned')
-            ->where('id', 44)
+//            ->where('id', 44)
             ->get();
 
         foreach ($userImports as $import) {

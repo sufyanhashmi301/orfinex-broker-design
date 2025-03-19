@@ -50,7 +50,14 @@ class Admin extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'staff_user', 'staff_id', 'user_id');
     }
+    public function getFullNameAttribute(): string
+    {
+        $firstName = $this->attributes['first_name'] ?? '';
+        $lastName = $this->attributes['last_name'] ?? '';
 
+        return ucwords("{$firstName} {$lastName}");
+//        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
+    }
 
     public function getCreatedAtAttribute(): string
     {

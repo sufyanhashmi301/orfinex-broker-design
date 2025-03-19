@@ -71,7 +71,7 @@
                             <span class="text-xs text-danger">*</span>
                         </label>
                         <div class="joint-input relative">
-                            <input type="text" class="form-control !pr-12" name="value" value="0">
+                            <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="value" value="0">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-2">
                                 {{ setting('site_currency', 'global') }}
                             </span>

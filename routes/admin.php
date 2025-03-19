@@ -120,6 +120,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');
+
+        Route::get('search', 'searchUsers')->name('search');
     });
 
     Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {

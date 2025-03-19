@@ -42,6 +42,10 @@ class UserImport extends Model
 		'phone',
 		'kyc',
 		'leverage',
-		'register_time'
+		'register_time',
+		'staff_name',
+		'staff_email',
+		'ib_name',
+		'ib_email',
 	];
 }

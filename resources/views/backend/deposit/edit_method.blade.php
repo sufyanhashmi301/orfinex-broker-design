@@ -119,7 +119,7 @@
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
                                 </span>
-                                <input type="text" name="rate" class="form-control !pl-16.5 !pr-12" value="{{$method->rate}}"/>
+                                <input type="text" name="rate" class="form-control !pl-16.5 !pr-12" oninput="this.value = validateDouble(this.value)" value="{{$method->rate}}"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
                                     {{  is_custom_rate($method->gateway?->gateway_code) ?? $method->currency }}
                                 </span>
@@ -144,7 +144,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" name="minimum_deposit" class="form-control !pr-12" value="{{ $method->minimum_deposit }}"/>
+                                <input type="text" name="minimum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" value="{{ $method->minimum_deposit }}"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
                                     {{ setting('site_currency', 'global') }}
                                 </span>
@@ -154,7 +154,7 @@
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" name="maximum_deposit" class="form-control !pr-12" value="{{ $method->maximum_deposit }}"/>
+                                <input type="text" name="maximum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" value="{{ $method->maximum_deposit }}"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
                                     {{setting('site_currency', 'global')}}
                                 </span>

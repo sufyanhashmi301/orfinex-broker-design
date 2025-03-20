@@ -178,7 +178,7 @@ class UserController extends Controller
                         ->latest();
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::where('status', 1)->latest();
                 }
             }
 
@@ -228,7 +228,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::where('status', 0)->latest();
                 }
             }
 
@@ -277,7 +277,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::whereIn('id', $userIds)->latest();
                 }
             }
 
@@ -324,7 +324,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::whereIn('id', $userIds)->latest();
                 }
             }
 

@@ -60,6 +60,7 @@ class MultiLevelIBController extends Controller
 
         $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->count : 0;
         $getReferral = $user->getReferrals()->first();
+//        dd($getReferral,$getReferral->link);
         $levelOrder = 0;
         $dataCount = [
             'monthly_referrals' => $user->getReferral->monthlyRelationships()->count(),

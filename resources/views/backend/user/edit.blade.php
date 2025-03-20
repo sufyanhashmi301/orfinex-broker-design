@@ -361,6 +361,13 @@
                 <!-- investments -->
                 @can('accounts-list')
                      @include('backend.user.include.__accounts')
+                     {{-- Modal for add Forex Account --}}
+                     @can('accounts-list')
+                         @include('backend.user.include.__forex_account')
+                     @endcan
+                     @can('accounts-list')
+                         @include('backend.user.include.__forex_account_mapping')
+                    @endcan
                 @endcan
                 @include('backend.user.include.__ib_bonus')
                 @can('kyc-status-update')
@@ -421,9 +428,7 @@
     @endcan
     <!-- Modal for Send Email-->
 
-    {{-- Modal for add Forex Account --}}
-    @include('backend.user.include.__forex_account')
-    @include('backend.user.include.__forex_account_mapping')
+
 
     {{-- Modal for Add or Subtract Bonus --}}
     @include('backend.user.include.__bonus')
@@ -548,12 +553,12 @@
                 }
                 $(`#${modalId} #islamic-checkbox`).prop('disabled', !isIslamic);
             }
-    
+
             // Function to update leverage options
             function updateLeverageAndDeposit(modalId, result) {
                 $(`#${modalId} #select-leverage`).html(result.leverage); // Update leverage options
             }
-    
+
             // Handle schema selection changes
             $('.modal').on('change', '#select-schema', function (e) {
                 e.preventDefault();
@@ -561,7 +566,7 @@
                 var id = $(this).val();
                 var url = '{{ route("user.schema.select", ":id") }}';
                 url = url.replace(':id', id);
-    
+
                 // Fetch schema details via AJAX
                 $.ajax({
                     url: url,
@@ -581,26 +586,26 @@
                     }
                 });
             });
-    
+
             // Password validation
             function checkPassword(password, type, submitButtonId) {
                 var lengthCheck = password.length >= 8 && password.length <= 15;
                 var lettersCheck = /[a-z]/.test(password) && /[A-Z]/.test(password);
                 var numberCheck = /\d/.test(password);
                 var specialCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
+
                 $(`#${type}-length-check`).toggleClass('text-danger', !lengthCheck).toggleClass('text-success', lengthCheck);
                 $(`#${type}-letters-check`).toggleClass('text-danger', !lettersCheck).toggleClass('text-success', lettersCheck);
                 $(`#${type}-number-check`).toggleClass('text-danger', !numberCheck).toggleClass('text-success', numberCheck);
                 $(`#${type}-special-check`).toggleClass('text-danger', !specialCheck).toggleClass('text-success', specialCheck);
-    
+
                 if (lengthCheck && lettersCheck && numberCheck && specialCheck) {
                     $(submitButtonId).prop('disabled', false);
                 } else {
                     $(submitButtonId).prop('disabled', true);
                 }
             }
-    
+
             $('.modal').on('input', '#enter-main-password', function () {
                 var modalId = $(this).closest('.modal').attr('id');
                 var password = $(this).val();

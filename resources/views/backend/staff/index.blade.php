@@ -150,22 +150,6 @@
                     maxDate: "15.12.2017"
                 });
 
-                $('.data-table').DataTable().destroy();
-                $(".data-table").DataTable({
-                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                    lengthChange: false,
-                    info: true,
-                    language: {
-                        lengthMenu: "Show _MENU_ entries",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        paginate: {
-                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                        },
-                        search: "Search:"
-                    },
-                });
-
             });
         });
 
@@ -174,6 +158,7 @@
 
             var form = $('#update-staff__form')[0];
             var data = new FormData(form);
+            var activeTab = window.location.hash;
 
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var staffId = $('#staff-id').val();
@@ -200,22 +185,6 @@
                             dateFormat: "d.m.Y",
                             maxDate: "15.12.2017"
                         });
-
-                        $('.data-table').DataTable().destroy();
-                        $(".data-table").DataTable({
-                            dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                            lengthChange: false,
-                            info: true,
-                            language: {
-                                lengthMenu: "Show _MENU_ entries",
-                                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                                paginate: {
-                                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                                },
-                                search: "Search:"
-                            },
-                        });
                     } else {
                         tNotify('error', response.message);
                     }
@@ -229,12 +198,12 @@
 
 
         $(document).ready(function () {
-            let deleteSchemaId = null;
+            let deleteStaffId = null;
 
             // Event listener for delete buttons
-            $('.delete-schema-btn').on('click', function (e) {
+            $('body').on('click', '.delete-staff-btn', function (e) {
                 e.preventDefault();
-                deleteSchemaId = $(this).data('id');
+                deleteStaffId = $(this).data('id');
                 $('#deleteConfirmationModal').modal('show');
             });
 
@@ -245,7 +214,7 @@
                     // Create a form and submit it
                     const form = $('<form>', {
                         'method': 'POST',
-                        'action': '{{ route('admin.staff.delete', ':id') }}'.replace(':id', deleteSchemaId)
+                        'action': '{{ route('admin.staff.delete', ':id') }}'.replace(':id', deleteStaffId)
                     });
 
                     // Add the CSRF token and method fields
@@ -306,22 +275,6 @@
                         dateFormat: "d.m.Y",
                         maxDate: "15.12.2017"
                     });
-
-                    $('.data-table').DataTable().destroy();
-                    $(".data-table").DataTable({
-                        dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                        lengthChange: false,
-                        info: true,
-                        language: {
-                            lengthMenu: "Show _MENU_ entries",
-                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                            paginate: {
-                                previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                                next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                            },
-                            search: "Search:"
-                        },
-                    });
                 },
                 error: function (xhr, status, error) {
                     // Handle errors (if any)
@@ -342,12 +295,12 @@
             var $button = $(this);
             var originalText = $button.text();
             $button.text('{{ __('Copied') }}');
-            $button.addClass('copy-button');
+            $button.removeClass('copy-button');
 
             // Revert the button text and style after 2 seconds
             setTimeout(function () {
                 $button.text(originalText);
-                $button.removeClass('copy-button');
+                $button.addClass('copy-button');
             }, 2000);
 
         });

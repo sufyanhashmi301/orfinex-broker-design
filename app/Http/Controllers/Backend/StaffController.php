@@ -136,6 +136,11 @@ class StaffController extends Controller
         $input['work_phone'] = $input['work_phone'] ?: null;
         $input['phone'] = $input['phone'] ?: null;
 
+        if ($request->hasFile('avatar')) {
+            $logo = self::imageUploadTrait($request->file('avatar'));
+            $input['avatar'] = $logo;
+        }
+
         // Create the new admin record
         $admin = Admin::create($input);
         $admin->assignRole($request->input('role'));
@@ -160,12 +165,8 @@ class StaffController extends Controller
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
-        $ibGroups = IbGroup::all(); // Fetch all IB groups
-        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
-        $attachedUsers = $staff->users; // Fetch attached users
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
     }
 
 
@@ -192,8 +193,6 @@ class StaffController extends Controller
                 'status' => 'boolean',
                 'department' => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
-                'ib_groups' => 'nullable|array',
-                'account_types' => 'nullable|array',
             ]);
 
             if ($validator->fails()) {
@@ -216,7 +215,13 @@ class StaffController extends Controller
                 $logo = self::imageUploadTrait($request->file('avatar'), $staff->avatar);
                 $input['avatar'] = $logo;
             }
-            // Save IB Groups
+
+            if ($staff->getRoleNames()->first() === 'Super-Admin') {
+                return response()->json([
+                    'warning' => true,
+                    'message' => 'Super admin not changeable!',
+                ]);
+            }
 
             $staff->update($input);
 
@@ -225,47 +230,12 @@ class StaffController extends Controller
                 $staff->assignRole($request->input('role'));
             }
 
-            if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
-
-                $userIds = $request->input('user_ids', []);
-
-                // Get all users belonging to the given IB groups
-                if (in_array('all', $request->input('ib_groups', []))) {
-                    $ibUsers = User::pluck('id')->toArray();
-                } else {
-                    $ibUsers = User::whereIn('ib_group_id', $request->input('ib_groups', []))->pluck('id')->toArray();
-                }
-
-                if (in_array('all', $request->input('account_types', []))) {
-                    $accountTypeUsers = ForexAccount::with('user')->get()->pluck('user.id')->toArray();
-                } else {
-                    $accountTypeUsers = ForexAccount::whereIn('forex_schema_id', $request->input('account_types', []))->with('user')->get()->pluck('user.id')->toArray();
-                }
-
-                // Get the complete referral network (including IB users)
-                $networkUsers = $this->getReferralNetwork($ibUsers);
-
-                // Merge IB group users with their referral network
-                $allUsers = array_unique(array_merge($ibUsers, $networkUsers, $accountTypeUsers, $userIds));
-
-                // Sync users with the staff member
-                $staff->users()->sync($allUsers);
-
-                $input['ib_groups'] = $request->input('ib_groups', []);
-                $input['account_types'] = $request->input('account_types', []);
-                $staff->update($input);
-            }
-
-
             $roles = Role::whereNot('name', 'Super-Admin')->get();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
-            $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
-            $ibGroups = IbGroup::all();
-            $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
-            $attachedUsers = $staff->users; // Fetch attached users
 
-            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+            notify()->success('Staff updated successfully!');
 
             return response()->json([
                 'success' => true,
@@ -281,45 +251,6 @@ class StaffController extends Controller
     /**
      * Recursive function to fetch referral network.
      */
-    private function getReferralNetwork(array $parentIds)
-    {
-        $allUsers = [];
-//dd($parentIds);
-        while (!empty($parentIds)) {
-            // Get all users who have these parent IDs as ref_id
-            $users = User::whereIn('ref_id', $parentIds)->pluck('id')->toArray();
-            $allUsers = array_merge($allUsers, $users);
-            $parentIds = $users; // Continue recursion with new found users
-        }
-
-        return $allUsers;
-    }
-
-    public function detachUser(Request $request, $staffId)
-    {
-
-        $staff = Admin::findOrFail($staffId);
-        $userId = $request->input('user_id');
-
-        // Detach the user from the staff
-        $staff->users()->detach($userId);
-
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
-        $departments = Department::with('children')->whereNull('parent_id')->get();
-        $designations = Designation::with('children')->whereNull('parent_id')->get();
-        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
-        $ibGroups = IbGroup::all();
-        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
-        $attachedUsers = $staff->users; // Fetch attached users
-
-        $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'ibGroups', 'schemas', 'attachedUsers'))->render();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User detach successfully!',
-            'updatedHtml' => $updatedStaff
-        ]);
-    }
 
     protected function invalidateUserSession($user)
     {
@@ -339,6 +270,7 @@ class StaffController extends Controller
             }
         }
     }
+
 
     public function security($id)
     {
@@ -417,16 +349,32 @@ class StaffController extends Controller
 
     public function destroy($id)
     {
-        $staff = Admin::find($id);
-        if ($staff->getRoleNames()->first() === 'Super-Admin') {
-            notify()->warning('Super admin not deleteble');
+        DB::beginTransaction();
+
+        try {
+            $staff = Admin::find($id);
+            if ($staff->getRoleNames()->first() === 'Super-Admin') {
+                notify()->warning('Super admin not deleteble');
+                return redirect()->back();
+            }
+            if ($staff->users()->exists()) {
+                $staff->users()->detach();
+            }
+
+            $staff->delete();
+
+            DB::commit();
+
+            notify()->success('staff deleted successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            \Log::error('Error deleting staff: ' . $e->getMessage());
+
+            notify()->error('An error occurred while deleting the staff. Please try again.', 'Error');
             return redirect()->back();
         }
-        $staff->delete();
-
-        notify()->success('staff deleted successfully');
-
-        return redirect()->back();
     }
 
     public function staffLogin($id)

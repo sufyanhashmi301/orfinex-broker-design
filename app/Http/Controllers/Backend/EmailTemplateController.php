@@ -125,4 +125,8 @@ class EmailTemplateController extends Controller
 
         return redirect()->route('admin.email-template');
     }
+
+    public function templateSetting(){
+        return view('backend.email.settings');
+    }
 }

@@ -309,20 +309,6 @@
             });
         });
 
-        @if(count($errors) > 0)
-            $(document).ready(function() {
-                var url = '{{ route("admin.ticket.create") }}';
-
-                $.get(url , function (data) {
-                    $('#newTicketModal').modal('show');
-                    $('#new-ticket-body').append(data);
-                    $('.select2').select2({
-                        dropdownParent: $('#newTicketModal')
-                    });
-                });
-            });
-        @endif
-
         $('body').on('click', '#assignTicket', function (event) {
             "use strict";
             event.preventDefault();

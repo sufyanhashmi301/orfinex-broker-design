@@ -114,6 +114,8 @@
                                 <label for="" class="form-label">{{ __('Comments') }}</label>
                                 <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
+                            @can('withdraw-auto-approve')
+
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
@@ -128,6 +130,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endcan
                         </div>
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

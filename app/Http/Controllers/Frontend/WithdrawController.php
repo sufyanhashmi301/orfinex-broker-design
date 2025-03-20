@@ -268,6 +268,17 @@ class WithdrawController extends Controller
         if (in_array($today, $withdrawOffDays)) {
             abort('403', __('Today is the off day for withdraw'));
         }
+            // Check daily send limit for successful transactions only
+            $dailyLimit = setting('withdraw_day_limit', 'fee');
+            $todayTransfers = Transaction::where('user_id', \Auth::user()->id)
+                ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
+                ->whereDate('created_at', today())
+                ->count();
+
+            if ($todayTransfers >= $dailyLimit) {
+                notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
+                return redirect()->back();
+            }
 
         $input = $request->all();
 

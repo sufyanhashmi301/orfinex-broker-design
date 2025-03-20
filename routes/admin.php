@@ -77,6 +77,7 @@ use App\Http\Controllers\Backend\LeadStageController;
 use App\Http\Controllers\Backend\LeadPipelineController;
 use App\Http\Controllers\Backend\DealController;
 use App\Http\Controllers\Backend\DealNoteController;
+use App\Http\Controllers\Backend\UserAttachmentController;
 
 
 /*
@@ -206,7 +207,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::get('login/{id}', [StaffController::class, 'staffLogin'])->name('staff.login');
     Route::post('stop-impersonation', [StaffController::class, 'stopImpersonation'])->name('stop.impersonation');
-    Route::post('staff/{staffId}/detach-user', [StaffController::class, 'detachUser'])->name('staff.detachUser');
+
+    // Route to display the attach user page (with staff id)
+    Route::get('staff/{staffId}/attach-user', [UserAttachmentController::class, 'index'])->name('staff.attachUser.index');
+    Route::post('staff/{staffId}/attach-user', [UserAttachmentController::class, 'attachUser'])->name('staff.attachUser');
+    Route::post('staff/{staffId}/detach-user', [UserAttachmentController::class, 'detachUser'])->name('staff.detachUser');
+
 
 
     //===============================  Plans Management ==================================

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 class Admin extends Authenticatable
@@ -45,6 +46,7 @@ class Admin extends Authenticatable
         'ib_groups',
         'account_types',
         'key',
+        'referral_code',
     ];
     public function users()
     {
@@ -91,5 +93,28 @@ class Admin extends Authenticatable
     {
         return null;
     }
+    public function getLinkAttribute()
+    {
+        return  url('/register?invite=' .$this->getOrCreateReferralCode());
+    }
+    public function getOrCreateReferralCode()
+    {
+        if (!$this->referral_code) {
+            $this->generateCode();
+            $this->save();
+        }
+        return $this->referral_code;
+    }
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($admin) {
+            $this->generateCode();
+        });
+    }
+    private function generateCode()
+    {
+        $this->referral_code = Str::random(setting('referral_code_limit', 'global'));
+    }
 }

@@ -5,16 +5,17 @@ use App\Models\EmailTemplate;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class EmailTemplatesSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('email_templates')->truncate();
+//        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
 //        $codesToDelete = ['email_verification','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
-
-        // Delete the existing templates that match the codes
+//
+//        // Delete the existing templates that match the codes
 //        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
@@ -45,6 +46,38 @@ class EmailTemplatesSeeder extends Seeder
                 'updated_at' => '2024-01-17 17:46:20',
             ],
             [
+                'name' => 'New User Under Staff',
+                'code' => 'new_user_under_staff',
+                'for' => 'Admin',
+                'banner' => 'global/images/staff_notification.png',
+                'title' => 'A New User Has Been Assigned Under You',
+                'subject' => 'New User Assigned',
+                'salutation' => 'Dear [[admin_name]],',
+                'message_body' => 'A new user has registered using your referral link and has been assigned under your supervision.<br><br>
+
+            <strong>New User Details:</strong><br>
+            <strong>Full Name:</strong> [[child_full_name]]<br>
+            <strong>Email:</strong> [[child_email]]<br><br>
+
+            You can manage this user from your dashboard.<br><br>',
+
+                'button_level' => 'View User Details',
+                'button_link' => URL::to('/admin'),
+                'footer_status' => 1,
+                'footer_body' => 'Regards,<br />[[site_title]]',
+                'bottom_status' => 1,
+                'bottom_title' => 'More About [[site_title]]',
+                'bottom_body' => '[[site_url]]',
+                'short_codes' => '["[[admin_name]]","[[child_full_name]]","[[child_email]]","[[site_title]]","[[site_url]]"]',
+                'note' => '',
+                'support_link' => '',
+                'warning_content' => 'Important: Please ensure the user complies with company policies.',
+                'company_info' => setting('site_title', 'global') . ' GLOBAL LIMITED. All rights reserved.',
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
 
                 'name' => 'Subscriber Mail Send',
                 'code' => 'subscriber_mail',
@@ -55,7 +88,7 @@ class EmailTemplatesSeeder extends Seeder
                 'salutation' => 'Hi [[full_name]],',
                 'message_body' => 'Thanks for joining our platform!<br />[[message]]<br />Find out more at - [[site_url]]',
                 'button_level' => 'Login Your Account',
-                'button_link' => 'https://hyiorio.com/login',
+                'button_link' => url('/').'/login',
                 'footer_status' => 1,
                 'footer_body' => 'Thanks for joining our platform!<br />[[site_title]]<br />[[message]]',
                 'bottom_status' => 1,
@@ -259,7 +292,7 @@ class EmailTemplatesSeeder extends Seeder
                 'salutation' => 'Hi [[full_name]],',
                 'message_body' => 'Thanks for joining our platform!<br />[[message]]<br />[[full_name]]<br />[[email]]',
                 'button_level' => 'Login Your Account',
-                'button_link' => 'https://hyiorio.com/login',
+                'button_link' => url('/').'/login',
                 'footer_status' => 1,
                 'footer_body' => 'Thanks for joining our platform!<br />[[site_title]]<br />[[message]]',
                 'bottom_status' => 1,

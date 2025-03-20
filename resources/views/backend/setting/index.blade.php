@@ -144,7 +144,7 @@
                     @endcan
                     @canany(['internal-transfer-display','external-transfer-display'])
                     <li>
-                        <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Transfers')}}
                         </a>
                     </li>

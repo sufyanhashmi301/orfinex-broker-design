@@ -30,7 +30,7 @@
         @endcan
         @canany(['internal-transfer-display','external-transfer-display'])
         <li>
-            <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="navItem {{ isActive('admin.settings.transfers*') }}">
+            <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="navItem {{ isActive('admin.settings.transfers*') }}">
                 {{ __('Transfers')}}
             </a>
         </li>

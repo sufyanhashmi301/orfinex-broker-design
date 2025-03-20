@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Validator;
 
 class SettingController extends Controller
 {
@@ -137,57 +138,92 @@ class SettingController extends Controller
     /**
      * @return RedirectResponse
      */
-    public function update(Request $request)
-    {
-//         dd($request->all());
-        $section = $request->section;
-        $rules = Setting::getValidationRules($section);
-//        dd($request->all(),$rules, $section);
-        $data = $this->validate($request, $rules);
-//        dd($data);
 
-        // update session expiry
-        $user = Auth::user();
-        auth()->user()->update([
-            'session_expiry' => $request->session_expiry
-        ]);
+public function update(Request $request)
+{
+    $section = $request->section;
+    $rules = Setting::getValidationRules($section);
 
-        try {
-            $validSettings = array_keys($rules);
-//            dd($validSettings);
-            foreach ($data as $key => $val) {
-//                 dd($data, $key, $val, $validSettings);
+    // Dynamically add validation rules based on the type
+    if ($section == 'transfer_internal') {
+        $rules['internal_min_send'] = 'required|numeric|min:1|max:10000';
+        $rules['internal_max_send'] = 'required|numeric|min:1|max:10000000|gte';
+        $rules['internal_send_charge'] = 'required|numeric|min:0';
+        $rules['internal_send_charge_type'] = 'required|in:fixed,percentage';
+        $rules['internal_send_daily_limit'] = 'required|numeric|min:1';
+        $rules['is_internal_transfer'] = 'nullable|boolean';
+    } elseif ($section == 'transfer_external') {
+        $rules['external_min_send'] = 'required|numeric|min:1|max:10000';
+        $rules['external_max_send'] = 'required|numeric|min:1|max:10000000';
+        $rules['external_send_charge'] = 'required|numeric|min:0';
+        $rules['external_send_charge_type'] = 'required|in:fixed,percentage';
+        $rules['external_send_daily_limit'] = 'required|numeric|min:1';
+        $rules['is_external_transfer'] = 'nullable|boolean';
+        $rules['is_external_transfer_auto_approve'] = 'nullable|boolean';
+        $rules['is_external_transfer_purpose'] = 'nullable|boolean';
+    } elseif ($section == 'transfer_misc') {
+        $rules['wallet_exchange_charge'] = 'required|numeric|min:0';
+        $rules['wallet_exchange_charge_type'] = 'required|in:fixed,percentage';
+        $rules['referral_bonus'] = 'required|numeric|min:0';
+        $rules['signup_bonus'] = 'required|numeric|min:0';
+        $rules['wallet_exchange_day_limit'] = 'required|numeric|min:1';
+        $rules['send_money_day_limit'] = 'required|numeric|min:1';
+        $rules['withdraw_day_limit'] = 'required|numeric|min:1';
+        $rules['investment_cancellation_daily_limit'] = 'required|numeric|min:1';
+    }
 
-                if (in_array($key, $validSettings)) {
+    // Validate the request
+    $validator = Validator::make($request->all(), $rules);
 
-                    if ($request->hasFile($key)) {
-                        $oldImage = Setting::get($key, $section);
+    // If validation fails, display errors using notify
+    if ($validator->fails()) {
+        foreach ($validator->errors()->all() as $error) {
+            notify()->error($error); // Display each validation error using notify
+        }
+        return redirect()->back()->withInput(); // Retain the old input values
+    }
 
-                        $val = self::imageUploadTrait($val, $oldImage);
-                    }
+    // If validation passes, proceed with the update logic
+    $data = $validator->validated();
 
-                    if (is_string($val)) {
-                        // Replace `{` and `}` with `<` and `>`
-                        $val = str_replace(['{', '}'], ['<', '>'], $val);
-                    }
+    // Update session expiry
+    $user = Auth::user();
+    auth()->user()->update([
+        'session_expiry' => $request->session_expiry
+    ]);
 
-                    Setting::add($key, $val, Setting::getDataType($key, $section));
+    try {
+        $validSettings = array_keys($rules);
+
+        foreach ($data as $key => $val) {
+            if (in_array($key, $validSettings)) {
+
+                if ($request->hasFile($key)) {
+                    $oldImage = Setting::get($key, $section);
+                    $val = self::imageUploadTrait($val, $oldImage);
                 }
+
+                if (is_string($val)) {
+                    // Replace `{` and `}` with `<` and `>`
+                    $val = str_replace(['{', '}'], ['<', '>'], $val);
+                }
+
+                Setting::add($key, $val, Setting::getDataType($key, $section));
             }
-
-            if($section == 'mt5_db_credentials'){
-                Cache::forget('mt5_db_credentials');
-            }
-            notify()->success(__('Settings has been saved'));
-            return redirect()->back();
-
-        } catch (Exception $e) {
-            notify()->error('Something went wrong, Please check error log', 'Error Log');
-
-            return redirect()->back();
         }
 
+        if ($section == 'mt5_db_credentials') {
+            Cache::forget('mt5_db_credentials');
+        }
+
+        notify()->success(__('Settings have been saved')); // Success message
+        return redirect()->back();
+
+    } catch (Exception $e) {
+        notify()->error('Something went wrong. Please check the error log.', 'Error Log'); // Error message
+        return redirect()->back();
     }
+}
 
     public static function userPermissions()
     {

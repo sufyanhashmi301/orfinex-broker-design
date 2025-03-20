@@ -33,10 +33,10 @@ class IBController extends Controller
 
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:ib-list|ib-action|ib-form-manage|advertisement-material-edit', ['only' => ['index', 'update','IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
-         $this->middleware('permission:ib-list', ['only' => ['IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
-         $this->middleware('permission:ib-form-manage', ['only' => ['saveForm']]);
-         $this->middleware('permission:ib-export', ['only' => ['export']]);
+        $this->middleware('permission:ib-list|ib-action|ib-form-manage|advertisement-material-edit', ['only' => ['index', 'update', 'IbPendingList', 'IbApprovedList', 'IbRejectedList', 'IbAllList']]);
+        $this->middleware('permission:ib-list', ['only' => ['IbPendingList', 'IbApprovedList', 'IbRejectedList', 'IbAllList']]);
+        $this->middleware('permission:ib-form-manage', ['only' => ['saveForm']]);
+        $this->middleware('permission:ib-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
     }
 
@@ -98,7 +98,6 @@ class IBController extends Controller
     }
 
 
-
     public function export(Request $request, $type)
     {
         switch ($type) {
@@ -119,10 +118,24 @@ class IBController extends Controller
         if ($request->ajax()) {
 
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('ib_status', IBStatus::PENDING)->latest();
-            $data->applyFilters($filters);
-//            dd($data);
+            $loggedInUser = auth()->user();
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all users with rejected KYC
+                $data = User::where('ib_status', IBStatus::PENDING)->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
 
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch rejected KYC users for attached user IDs only
+                    $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = User::where('ib_status', IBStatus::PENDING)->applyFilters($filters);
+                }
+            }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
@@ -136,17 +149,31 @@ class IBController extends Controller
         }
         $ibGroups = IbGroup::where('status', 1)->get();
 
-        return view('backend.ib.pending',compact('ibGroups'));
+        return view('backend.ib.pending', compact('ibGroups'));
     }
 
     public function IbApprovedList(Request $request)
     {
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('ib_status', IBStatus::APPROVED)->latest();
-            $data->applyFilters($filters);
+            $loggedInUser = auth()->user();
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all users with rejected KYC
+                $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
 
-//            dd($data);
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch rejected KYC users for attached user IDs only
+                    $data = User::where('ib_status', IBStatus::APPROVED)->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = User::where('ib_status', IBStatus::APPROVED)->applyFilters($filters);
+                }
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -160,7 +187,7 @@ class IBController extends Controller
                 ->make(true);
         }
         $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.approved',compact('ibGroups'));
+        return view('backend.ib.approved', compact('ibGroups'));
     }
 
     public function IbRejectedList(Request $request)
@@ -190,18 +217,31 @@ class IBController extends Controller
                 ->make(true);
         }
         $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.rejected',compact('ibGroups'));
+        return view('backend.ib.rejected', compact('ibGroups'));
     }
 
     public function IbAllList(Request $request)
     {
         if ($request->ajax()) {
-             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-             $data = User::latest();
-             $data->applyFilters($filters);
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+            $loggedInUser = auth()->user();
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all users with rejected KYC
+                $data = User::latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
 
-            // $data = User::latest();
-//            dd($data);
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch rejected KYC users for attached user IDs only
+                    $data = User::whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = User::applyFilters($filters);
+                }
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -218,11 +258,11 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['username','email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.all',compact('ibGroups'));
+        return view('backend.ib.all', compact('ibGroups'));
     }
 
     public function answerView(User $user)
@@ -286,6 +326,7 @@ class IBController extends Controller
 
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
     }
+
     protected function manageUserRebateRules($user, $ibGroup)
     {
         // Remove existing rebate rules for the user
@@ -576,7 +617,7 @@ class IBController extends Controller
             $resResult = $response['result'];
             $mt5Login = $resResult['login'];
             if ($mt5Login && $resResult['responseCode'] == 0) {
-                $rightData =  [
+                $rightData = [
                     "login" => $mt5Login,
                     "rights" => 'USER_RIGHT_ENABLED',
 

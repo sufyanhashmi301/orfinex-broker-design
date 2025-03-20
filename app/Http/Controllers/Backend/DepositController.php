@@ -245,8 +245,10 @@ class DepositController extends Controller
                         })->latest()->applyFilters($filters);
                 } else {
                     // If no users are attached, show no transactions
-                    $data = Transaction::query()->where('id', 0); // Return an empty query
-                }
+                    $data = Transaction::where('status', 'pending')
+                        ->where(function ($query) {
+                            return $query->where('type', TxnType::ManualDeposit);
+                        })->latest()->applyFilters($filters);                }
             }
 
             return Datatables::of($data)
@@ -291,9 +293,10 @@ class DepositController extends Controller
                                 ->orWhere('type', TxnType::Deposit);
                         })->latest();
                 } else {
-                    // If no users are attached, return an empty collection
-                    $data = Transaction::query()->where('id', 0); // Return an empty query
-                }
+                    $data = Transaction::where(function ($query) {
+                        $query->where('type', TxnType::ManualDeposit)
+                            ->orWhere('type', TxnType::Deposit);
+                    })->latest();          }
             }
 
             // Apply additional filters if any

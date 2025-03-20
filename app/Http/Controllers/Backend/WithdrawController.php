@@ -267,8 +267,10 @@ class WithdrawController extends Controller
                                 ->where('status', 'pending');
                         })->latest();
                 }else {
-                    $data = Transaction::query()->where('id', 0); // Return an empty query
-                }
+                    $data = Transaction::where(function ($query) {
+                        $query->where('type', TxnType::Withdraw)
+                            ->where('status', 'pending');
+                    })->latest();                }
             }
 
             // Apply additional filters if any
@@ -321,8 +323,10 @@ class WithdrawController extends Controller
                                 ->orWhere('type', TxnType::WithdrawAuto);
                         })->latest();
                 }else {
-                    $data = Transaction::query()->where('id', 0); // Return an empty query
-                }
+                    $data = Transaction::where(function ($query) {
+                        $query->where('type', TxnType::Withdraw)
+                            ->orWhere('type', TxnType::WithdrawAuto);
+                    })->latest();                }
             }
 
             // Apply additional filters if any

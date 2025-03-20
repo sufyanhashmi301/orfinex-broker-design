@@ -81,7 +81,7 @@
                             <span class="text-xs text-danger">*</span>
                         </label>
                         <div class="joint-input relative">
-                            <input type="text" class="form-control" name="value" value="{{ $deal->value }}">
+                            <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="value" value="{{ $deal->value }}">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-2">
                                 {{ setting('site_currency', 'global') }}
                             </span>

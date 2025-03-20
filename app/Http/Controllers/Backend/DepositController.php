@@ -86,11 +86,11 @@ class DepositController extends Controller
             'method_code' => 'unique:deposit_methods,gateway_code|required_if:type,==,manual',
             'currency' => 'required',
             'currency_symbol' => 'required',
-            'charge' => 'required',
+            'charge' => 'required|numeric|gte:0',
             'charge_type' => 'required',
-            'rate' => 'required',
-            'minimum_deposit' => 'required',
-            'maximum_deposit' => 'required',
+            'rate' => 'required|numeric|gte:0',
+            'minimum_deposit' => 'required|numeric|gte:0',
+            'maximum_deposit' => 'required|numeric|gte:0',
             'processing_time' => 'required',
             'status' => 'required',
             'field_options' => 'required_if:type,==,manual',
@@ -152,11 +152,11 @@ class DepositController extends Controller
             'gateway_id' => 'required_if:type,==,auto',
             'currency' => 'required',
             'currency_symbol' => 'required',
-            'charge' => 'required',
+            'charge' => 'required|numeric|gte:0',
             'charge_type' => 'required',
-            'rate' => 'required',
-            'minimum_deposit' => 'required',
-            'maximum_deposit' => 'required',
+            'rate' => 'required|numeric|gte:0',
+            'minimum_deposit' => 'required|numeric|gte:0',
+            'maximum_deposit' => 'required|numeric|gte:0',
             'processing_time' => 'required',
             'status' => 'required',
             'field_options' => 'required_if:type,==,manual',
@@ -245,7 +245,7 @@ class DepositController extends Controller
                         })->latest()->applyFilters($filters);
                 } else {
                     // If no users are attached, show no transactions
-                    $data = collect(); // Empty collection
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -292,7 +292,7 @@ class DepositController extends Controller
                         })->latest();
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -449,7 +449,7 @@ class DepositController extends Controller
     {
         $gateways = DepositMethod::where('status', 1)->get();
         $loggedInUser = auth()->user();
-    
+
         // Fetch users based on the logged-in user's role
         if ($loggedInUser->hasRole('Super-Admin')) {
             // If Super-Admin, show all users
@@ -458,13 +458,13 @@ class DepositController extends Controller
             // If not Super-Admin, show only assigned users
             $users = $loggedInUser->users()->where('status', 1)->get();
         }
-    
+
         $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
-    
+
         return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
     }
     public function getUserAccounts($userId)

@@ -109,8 +109,12 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
+
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -174,7 +178,7 @@ class UserController extends Controller
                         ->latest();
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -188,10 +192,13 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -221,7 +228,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -236,8 +243,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -267,7 +277,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -280,8 +290,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity','staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -311,7 +324,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::query()->where('id', 0); // Return an empty query
                 }
             }
 
@@ -324,8 +337,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity',  'staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -1198,4 +1214,29 @@ class UserController extends Controller
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
+
+    public function searchUsers(Request $request)
+    {
+        $search = $request->get('q');
+
+        // Fetch users based on the search query, ordered by first name
+        $users = User::where('first_name', 'LIKE', "%{$search}%")
+            ->orWhere('last_name', 'LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->limit(10)
+            ->get();
+
+        // Format the response for Select2
+        return response()->json([
+            'results' => $users->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'text' => $user->first_name . ' ' . $user->last_name,
+                    'avatar' => getFilteredPath($user->avatar, 'global/materials/user.png'),
+                    'email' => $user->email
+                ];
+            })
+        ]);
+    }
+
 }

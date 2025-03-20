@@ -108,11 +108,11 @@ class WithdrawController extends Controller
             'currency' => 'required',
             'required_time' => 'required_if:type,==,manual',
             'required_time_format' => 'required_if:type,==,manual',
-            'charge' => 'required',
+            'charge' => 'required|numeric|gte:0',
             'charge_type' => 'required',
-            'rate' => 'required',
-            'min_withdraw' => 'required',
-            'max_withdraw' => 'required',
+            'rate' => 'required|numeric|gte:0',
+            'min_withdraw' => 'required|numeric|gte:0',
+            'max_withdraw' => 'required|numeric|gte:0',
             'status' => 'required',
             'fields' => 'required_if:type,==,manual',
         ]);
@@ -195,11 +195,11 @@ class WithdrawController extends Controller
             'currency' => 'required',
             'required_time' => 'required_if:type,==,manual',
             'required_time_format' => 'required_if:type,==,manual',
-            'charge' => 'required',
+            'charge' => 'required|numeric|gte:0',
             'charge_type' => 'required',
-            'rate' => 'required',
-            'min_withdraw' => 'required',
-            'max_withdraw' => 'required',
+            'rate' => 'required|numeric|gte:0',
+            'min_withdraw' => 'required|numeric|gte:0',
+            'max_withdraw' => 'required|numeric|gte:0',
             'status' => 'required',
             'fields' => 'required_if:type,==,manual',
         ]);
@@ -266,14 +266,13 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->where('status', 'pending');
                         })->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                }else {
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
             // Apply additional filters if any
-            $data->applyFilters($filters);
+            $data = $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -321,14 +320,13 @@ class WithdrawController extends Controller
                             $query->where('type', TxnType::Withdraw)
                                 ->orWhere('type', TxnType::WithdrawAuto);
                         })->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                }else {
+                    $data = Transaction::query()->where('id', 0); // Return an empty query
                 }
             }
 
             // Apply additional filters if any
-            $data->applyFilters($filters);
+            $data = $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

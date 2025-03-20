@@ -51,9 +51,9 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'forex-account-create'],
 
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
-            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
             ['category' => 'Deposit Management', 'name' => 'deposit-action'],
             ['category' => 'Deposit Management', 'name' => 'deposit-auto-approve'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],

@@ -66,8 +66,14 @@ class TransactionController extends Controller
                         $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
                     }
                 } else {
-                    // If no users are attached, return an empty collection
-                    $data = Transaction::query()->where('id', 0); // Return an empty query
+                    // If no users are attached, return all users
+                    if ($id) {
+                        // Fetch transactions for a specific user (if ID is provided)
+                        $data = Transaction::where('user_id', $id)->latest();
+                    } else {
+                        // Fetch all transactions
+                        $data = Transaction::query()->latest();
+                    }
                 }
 
             }

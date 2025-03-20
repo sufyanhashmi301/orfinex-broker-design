@@ -68,7 +68,7 @@ class TicketController extends Controller
                     $data = $ticketQuery->where('assigned_to', auth()->user()->id);
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = Ticket::query()->where('id', 0); // Return an empty query
+                    $data = $ticketQuery->get();
                 }
             }
 

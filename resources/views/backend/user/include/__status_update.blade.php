@@ -188,7 +188,7 @@
                 </div>
             </div>
         </div>
-        @can('customer-bonus')
+        @can('customer-profile-toggles')
             <form action="{{route('admin.user.status-update',$user->id)}}" method="post" class="space-y-5">
                 @csrf
                 <div class="input-area flex items-center justify-between">

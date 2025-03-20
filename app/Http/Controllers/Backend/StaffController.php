@@ -321,8 +321,6 @@ class StaffController extends Controller
         ]);
     }
 
-
-
     protected function invalidateUserSession($user)
     {
         // Path to the session files
@@ -341,7 +339,6 @@ class StaffController extends Controller
             }
         }
     }
-
 
     public function security($id)
     {

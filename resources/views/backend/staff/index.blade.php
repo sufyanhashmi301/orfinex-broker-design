@@ -4,8 +4,8 @@
 @endsection
 @section('style')
     <style>
-        @keyframes pulse{
-            50%{
+        @keyframes pulse {
+            50% {
                 opacity: .5;
             }
         }
@@ -25,7 +25,8 @@
             <div class="medium:col-span-4 col-span-12">
                 <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
                 <div class="h-full border-r dark:border-slate-700" id="staff-list__container">
-                    <a href="javascript:;" class="staffList-close-btn btn-primary absolute items-center justify-center p-2">
+                    <a href="javascript:;"
+                       class="staffList-close-btn btn-primary absolute items-center justify-center p-2">
                         <iconify-icon class="text-lg font-medium" icon="material-symbols:close-rounded"></iconify-icon>
                     </a>
                     <div class="card-header gap-2 pl-0" style="padding-bottom: 11px;">
@@ -37,7 +38,9 @@
                         </div>
                         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                             @can('staff-create')
-                                <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" id="create-staff">
+                                <a href="javascript:;"
+                                   class="btn btn-sm btn-primary inline-flex items-center justify-center"
+                                   id="create-staff">
                                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                                     <span class="text-nowrap">{{ __('Add New Staff') }}</span>
                                 </a>
@@ -83,11 +86,11 @@
 
 @section('script')
     <script>
-        $('.staffList-open-btn').click(function(){
+        $('.staffList-open-btn').click(function () {
             $('#staff-list__container, .mobile-close-overlay').addClass('in');
         });
 
-        $('.staffList-close-btn').click(function(){
+        $('.staffList-close-btn').click(function () {
             $('#staff-list__container, .mobile-close-overlay').removeClass('in');
         });
 
@@ -113,18 +116,18 @@
 
         });
 
-        $('#staffStatusFilter').change(function() {
+        $('#staffStatusFilter').change(function () {
             var status = $(this).val();
 
             $.ajax({
                 url: "{{ route('admin.staff.index') }}",
                 type: 'GET',
-                data: { status: status },
-                success: function(response) {
+                data: {status: status},
+                success: function (response) {
                     // Update the staff list
                     $('#staff-list').html(response.staffs);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error fetching staff:', error);
                 }
             });
@@ -293,7 +296,7 @@
                 url: $(this).attr('action'),
                 type: 'POST',
                 data: formData,
-                success: function(response) {
+                success: function (response) {
                     // Handle the response on success
                     tNotify('success', response.message);
                     $('#edit-staff-body').html(response.updatedHtml);
@@ -320,12 +323,33 @@
                         },
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     // Handle errors (if any)
                     tNotify('error', 'An error occurred while detaching the user.');
                     console.error(xhr.responseText);
                 }
             });
+        });
+        $('body').on('click', '.copy-button', function (e) {
+
+            var targetSelector = $(this).data('target');
+            var $input = $(targetSelector);
+
+            $input.select();
+            document.execCommand('copy');
+
+            // Change the button text and style
+            var $button = $(this);
+            var originalText = $button.text();
+            $button.text('{{ __('Copied') }}');
+            $button.addClass('copy-button');
+
+            // Revert the button text and style after 2 seconds
+            setTimeout(function () {
+                $button.text(originalText);
+                $button.removeClass('copy-button');
+            }, 2000);
+
         });
 
 

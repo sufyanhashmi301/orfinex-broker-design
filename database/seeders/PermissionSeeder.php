@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Role Management', 'name' => 'role-delete'],
 
             ['category' => 'Customer Management', 'name' => 'customer-list'],
+            ['category' => 'Customer Management', 'name' => 'customer-profile-toggles'],
             ['category' => 'Customer Management', 'name' => 'customer-create'],
             ['category' => 'Customer Management', 'name' => 'customer-edit'],
             ['category' => 'Customer Management', 'name' => 'customer-export'],
@@ -46,13 +47,17 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'approve-ib-member'],
             ['category' => 'Customer Management', 'name' => 'customer-bonus'],
             ['category' => 'Customer Management', 'name' => 'customer-funds'],
+            ['category' => 'Customer Management', 'name' => 'forex-account-mapping'],
+            ['category' => 'Customer Management', 'name' => 'forex-account-create'],
 
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
-            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
             ['category' => 'Deposit Management', 'name' => 'deposit-action'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-auto-approve'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-auto-approve'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],

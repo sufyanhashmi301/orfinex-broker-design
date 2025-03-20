@@ -52,7 +52,7 @@
                                 </span>
                                 </div>
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
-                                    {{ __('Minimum') . ' ' . setting('min_send','fee') . ' ' . $currency . ' ' . __('and Maximum') . ' ' . setting('max_send','fee') . ' ' . $currency }}
+                                    {{ __('Minimum') . ' ' . setting('external_min_send','fee') . ' ' . $currency . ' ' . __('and Maximum') . ' ' . setting('external_max_send','fee') . ' ' . $currency }}
                                 </div>
                             </div>
 
@@ -142,8 +142,8 @@
             "use strict";
             var amount = $(this).val();
             $('.previewAmount').text(amount);
-            var charge = @json(setting('send_charge','fee'));
-            var chargeType = @json(setting('send_charge_type','fee'));
+            var charge = @json(setting('external_send_charge','fee'));
+            var chargeType = @json(setting('external_send_charge_type','fee'));
             var finalCharge;
 
             if (chargeType === 'percentage') {

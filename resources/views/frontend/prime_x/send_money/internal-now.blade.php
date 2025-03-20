@@ -91,10 +91,16 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
-                                                    <strong>{{ __('User Account') }}</strong>
+                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal px-6 py-4">
+                                                    <strong>{{ __('Account From') }}</strong>
                                                 </td>
-                                                <td class="dark:text-slate-300 userAccount"></td>
+                                                <td class="dark:text-slate-300 accountFrom"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal px-6 py-4">
+                                                    <strong>{{ __('Account To') }}</strong>
+                                                </td>
+                                                <td class="dark:text-slate-300 accountTo"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -122,14 +128,19 @@
         $('#tradingAccount').on('change', function () {
             var selectedOption = $(this).find('option:selected');
             var selectedAccountType = selectedOption.data('type');
-            $('#selectedAccountType').val(selectedAccountType);  // Set the selected account type
+            $('#selectedAccountType').val(selectedAccountType);
+            var selectedLogin = $(this).find('option:selected').text().split(" - ")[0].trim(); // Extract login number
+             $('.accountFrom').text(selectedLogin);  // Set the selected account type
         });
 
         $('#receiverTradingAccount').on('change', function () {
             var selectedOption = $(this).find('option:selected');
             var selectedReceiverAccountType = selectedOption.data('type');
             $('#selectedReceiverAccountType').val(selectedReceiverAccountType);  // Set the selected receiver account type
+            var selectedLogin = $(this).find('option:selected').text().split(" - ")[0].trim(); // Extract login number
+            $('.accountTo').text(selectedLogin);
         });
+
 
 
         $('.userAccountCheck').on('change',function (e) {

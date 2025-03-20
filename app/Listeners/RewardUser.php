@@ -54,20 +54,26 @@ class RewardUser
 
             if ($staffMembers->isNotEmpty()) {
                 foreach ($staffMembers as $staff) {
-                    // Attach the new user under each staff member
-                    $staff->users()->attach($event->user->id);
+                    // Check if the user is already attached to this staff member
+                    $alreadyAttached = $staff->users()->wherePivot('user_id', $event->user->id)->exists();
 
-                    // Prepare shortcodes for the email
-                    $shortcodes = [
-                        '[[admin_name]]' => $staff->name, // Each admin (staff member) gets their name
-                        '[[child_full_name]]' => $event->user->first_name . ' ' . $event->user->last_name,
-                        '[[child_email]]' => $event->user->email,
-                    ];
+                    if (!$alreadyAttached) {
+                        // Attach the new user under each staff member
+                        $staff->users()->attach($event->user->id);
 
-                    // Send notification email to the staff member
-                    $this->mailNotify($staff->email, 'new_user_under_staff', $shortcodes);
+                        // Prepare shortcodes for the email
+                        $shortcodes = [
+                            '[[admin_name]]' => $staff->name, // Each admin (staff member) gets their name
+                            '[[child_full_name]]' => $event->user->first_name . ' ' . $event->user->last_name,
+                            '[[child_email]]' => $event->user->email,
+                        ];
+
+                        // Send notification email to the staff member
+                        $this->mailNotify($staff->email, 'new_user_under_staff', $shortcodes);
+                    }
                 }
             }
+
 
             // Fetch the referring user
             $referralUser = User::find($referral->user_id);

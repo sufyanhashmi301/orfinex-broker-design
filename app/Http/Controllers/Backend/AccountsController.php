@@ -542,8 +542,9 @@ class   AccountsController extends Controller
                     ->get();
             } else {
                 // If no users are attached, return an empty collection
-                $leverageUpdates = collect(); // Empty collection
-            }
+                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                    ->where('status', 0)
+                    ->get();            }
         }
 
         return view('backend.investment.leverage.pending', compact('leverageUpdates'));
@@ -631,8 +632,8 @@ class   AccountsController extends Controller
                     ->whereIn('user_id', $attachedUserIds)
                     ->get();
             } else {
-                // If no users are attached, return an empty collection
-                $leverageUpdates = collect(); // Empty collection
+                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                    ->get();
             }
         }
 

@@ -71,8 +71,6 @@ class   AccountsController extends Controller
             // Apply attached user filter for non-Super-Admin
             if ($attachedUserIds->isNotEmpty()) {
                 $data->whereIn('user_id', $attachedUserIds);
-            } else {
-                $data = ForexAccount::query()->where('id', 0); // Return an empty query
             }
         }
         if ($id) {
@@ -889,21 +887,22 @@ class   AccountsController extends Controller
         // Send mail notification
         $this->mailNotify($user->email, $mailType, $shortcodes);
     }
+
     public function updateAccountType(Request $request)
-{
-    $request->validate([
-        'login' => ['required', 'integer'],
-        'account_type' => ['required', 'in:real,demo'],
-    ]);
+    {
+        $request->validate([
+            'login' => ['required', 'integer'],
+            'account_type' => ['required', 'in:real,demo'],
+        ]);
 
-    $updated = ForexAccount::where('login', $request->login)
-        ->update(['account_type' => $request->account_type]);
+        $updated = ForexAccount::where('login', $request->login)
+            ->update(['account_type' => $request->account_type]);
 
-    if ($updated) {
-        return response()->json(['success' => __('Successfully updated your account type.'), 'reload' => true]);
-    } else {
-        return response()->json(['error' => __('Failed to update account type. Please try again.')], 400);
+        if ($updated) {
+            return response()->json(['success' => __('Successfully updated your account type.'), 'reload' => true]);
+        } else {
+            return response()->json(['error' => __('Failed to update account type. Please try again.')], 400);
+        }
     }
-}
 
 }

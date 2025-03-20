@@ -7,7 +7,8 @@
         <div class="card-header flex flex-col sm:flex-row">
             <div class="flex-none">
                 <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                    <img src="{{ getFilteredPath($staff->avatar, 'frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ getFilteredPath($staff->avatar, 'frontend/images/avatar/av-4.svg') }}" alt=""
+                         class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">
@@ -27,25 +28,31 @@
                 <div class="flex flex-wrap items-center gap-2 sm:gap-5">
                     @if($staff->email)
                         <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light"
+                                          icon="heroicons-outline:mail"></iconify-icon>
                             {{ $staff->email }}
                         </div>
                     @endif
                     @if($staff->phone)
                         <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:phone"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light"
+                                          icon="heroicons-outline:phone"></iconify-icon>
                             {{ $staff->phone }}
                         </div>
                     @endif
                     @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin') && $staff->getRoleNames()->first() != 'Super-Admin')
-                        <a href="{{ route('admin.staff.login', $staff->id) }}" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-add-outline"></iconify-icon>
+                        <a href="{{ route('admin.staff.login', $staff->id) }}"
+                           class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light"
+                                          icon="mdi:user-add-outline"></iconify-icon>
                             {{ __('Login As Staff') }}
                         </a>
                     @endif
                     @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
-                        <a href="{{ route('admin.staff.attachUser.index', $staff->id) }}" class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
-                            <iconify-icon class="ltr:mr-2 rtl:ml-2 font-light" icon="icomoon-free:attachment"></iconify-icon>
+                        <a href="{{ route('admin.staff.attachUser.index', $staff->id) }}"
+                           class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
+                            <iconify-icon class="ltr:mr-2 rtl:ml-2 font-light"
+                                          icon="icomoon-free:attachment"></iconify-icon>
                             {{ __('Attached Users') }}
                         </a>
                     @endif
@@ -161,11 +168,13 @@
                         <select name="department_id" class="select2 form-control w-100" id="department">
                             <option value="">Select</option>
                             @foreach($departments as $department)
-                                <option value="{{ $department->id }}" @if($staff->department && $staff->department->id == $department->id) selected @endif>
+                                <option value="{{ $department->id }}"
+                                        @if($staff->department && $staff->department->id == $department->id) selected @endif>
                                     {{ $department->name }}
                                 </option>
                                 @foreach($department->children as $child)
-                                    <option value="{{ $child->id }}" @if($staff->department && $staff->department->id == $child->id) selected @endif>
+                                    <option value="{{ $child->id }}"
+                                            @if($staff->department && $staff->department->id == $child->id) selected @endif>
                                         -- {{ $child->name }}
                                     </option>
                                 @endforeach
@@ -178,11 +187,13 @@
                         <select name="designation_id" class="select2 form-control w-100" id="designation">
                             <option value="">Select</option>
                             @foreach($designations as $designation)
-                                <option value="{{ $designation->id }}" @if($staff->designation && $staff->designation->id == $designation->id) selected @endif>
+                                <option value="{{ $designation->id }}"
+                                        @if($staff->designation && $staff->designation->id == $designation->id) selected @endif>
                                     {{ $designation->name }}
                                 </option>
                                 @foreach($designation->children as $child)
-                                    <option value="{{ $child->id }}" @if($staff->designation && $staff->designation->id == $child->id) selected @endif>
+                                    <option value="{{ $child->id }}"
+                                            @if($staff->designation && $staff->designation->id == $child->id) selected @endif>
                                         -- {{ $child->name }}
                                     </option>
                                 @endforeach
@@ -209,10 +220,14 @@
                             {{ __('Employment Type:') }}
                         </label>
                         <select name="employment_type" class="select2 form-control w-100">
-                            <option value="permanent" @selected($staff->employment_type === 'permanent')>{{ __('Permanent') }}</option>
-                            <option value="on contract" @selected($staff->employment_type === 'on contract')>{{ __('On Contract') }}</option>
-                            <option value="temporary" @selected($staff->employment_type === 'temporary')>{{ __('Temporary') }}</option>
-                            <option value="trainee" @selected($staff->employment_type === 'trainee')>{{ __('Trainee') }}</option>
+                            <option value="permanent" @selected($staff->employment_type ===
+                                'permanent')>{{ __('Permanent') }}</option>
+                            <option value="on contract" @selected($staff->employment_type === 'on
+                                contract')>{{ __('On Contract') }}</option>
+                            <option value="temporary" @selected($staff->employment_type ===
+                                'temporary')>{{ __('Temporary') }}</option>
+                            <option value="trainee" @selected($staff->employment_type ===
+                                'trainee')>{{ __('Trainee') }}</option>
                         </select>
                     </div>
 
@@ -221,12 +236,18 @@
                             {{ __('Employment Status:') }}
                         </label>
                         <select name="employment_status" class="select2 form-control w-100">
-                            <option value="active" @selected($staff->employment_status === 'active')>{{ __('Active') }}</option>
-                            <option value="terminated" @selected($staff->employment_status === 'terminated')>{{ __('Terminated') }}</option>
-                            <option value="deceased" @selected($staff->employment_status === 'deceased')>{{ __('Deceased') }}</option>
-                            <option value="resigned" @selected($staff->employment_status === 'resigned')>{{ __('Resigned') }}</option>
-                            <option value="probation" @selected($staff->employment_status === 'probation')>{{ __('Probation') }}</option>
-                            <option value="notice period" @selected($staff->employment_status === 'notice period')>{{ __('Notice Period') }}</option>
+                            <option value="active" @selected($staff->employment_status ===
+                                'active')>{{ __('Active') }}</option>
+                            <option value="terminated" @selected($staff->employment_status ===
+                                'terminated')>{{ __('Terminated') }}</option>
+                            <option value="deceased" @selected($staff->employment_status ===
+                                'deceased')>{{ __('Deceased') }}</option>
+                            <option value="resigned" @selected($staff->employment_status ===
+                                'resigned')>{{ __('Resigned') }}</option>
+                            <option value="probation" @selected($staff->employment_status ===
+                                'probation')>{{ __('Probation') }}</option>
+                            <option value="notice period" @selected($staff->employment_status === 'notice
+                                period')>{{ __('Notice Period') }}</option>
                         </select>
                     </div>
 
@@ -235,10 +256,13 @@
                             {{ __('Source Of Hire:') }}
                         </label>
                         <select name="source_of_hire" class="select2 form-control w-100">
-                            <option value="direct" @selected($staff->source_of_hire === 'direct')>{{ __('Direct') }}</option>
-                            <option value="referral" @selected($staff->source_of_hire === 'referral')>{{ __('Referral') }}</option>
+                            <option value="direct" @selected($staff->source_of_hire ===
+                                'direct')>{{ __('Direct') }}</option>
+                            <option value="referral" @selected($staff->source_of_hire ===
+                                'referral')>{{ __('Referral') }}</option>
                             <option value="web" @selected($staff->source_of_hire === 'web')>{{ __('Web') }}</option>
-                            <option value="newspaper" @selected($staff->source_of_hire === 'newspaper')>{{ __('Newspaper') }}</option>
+                            <option value="newspaper" @selected($staff->source_of_hire ===
+                                'newspaper')>{{ __('Newspaper') }}</option>
                         </select>
                     </div>
 
@@ -295,15 +319,19 @@
                     <div class="flex items-center space-x-7 flex-wrap pt-2">
                         <div class="basicRadio">
                             <label class="flex items-center cursor-pointer">
-                                <input type="radio" class="hidden" name="marital_status" value="single" @if($staff->marital_status === 'single') checked @endif>
-                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                <input type="radio" class="hidden" name="marital_status" value="single"
+                                       @if($staff->marital_status === 'single') checked @endif>
+                                <span
+                                    class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                 <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Single') }}</span>
                             </label>
                         </div>
                         <div class="basicRadio">
                             <label class="flex items-center cursor-pointer">
-                                <input type="radio" class="hidden" name="marital_status" value="married" @if($staff->marital_status === 'married') checked @endif>
-                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                <input type="radio" class="hidden" name="marital_status" value="married"
+                                       @if($staff->marital_status === 'married') checked @endif>
+                                <span
+                                    class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                 <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Married') }}</span>
                             </label>
                         </div>
@@ -381,40 +409,48 @@
                         </label>
                         <div class="form-switch ps-0">
                             <input type="hidden" value="0" name="status">
-                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                            <label
+                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                 <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($staff->status)>
-                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                <span
+                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Invite') }}</h4>
-        </div>
-        <div class="card-body p-6">
-            <div class="input-area">
-                <div class="relative">
-                    <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $staff->link }}" readonly>
-                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+        @if(!$staff->hasRole('Super-Admin'))
+
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Invite') }}</h4>
+            </div>
+            <div class="card-body p-6">
+                <div class="input-area">
+                    <div class="relative">
+                        <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $staff->link }}"
+                               readonly>
+                        <span
+                            class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                         <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">
                             {{ __('Copy Link') }}
                         </a>
                     </span>
+                    </div>
+                    {{--                    <p class="referral-joined text-sm dark:text-white mb-4 sm:mb-0">--}}
+                    {{--                        {{ $getReferral->relationships()->count() }} {{ __('peoples are joined by using this URL') }}--}}
+                    {{--                    </p>--}}
                 </div>
-                {{--                    <p class="referral-joined text-sm dark:text-white mb-4 sm:mb-0">--}}
-                {{--                        {{ $getReferral->relationships()->count() }} {{ __('peoples are joined by using this URL') }}--}}
-                {{--                    </p>--}}
             </div>
-        </div>
+        @endif
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center p-6">
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                 {{ __('Save Changes') }}
             </button>
             @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
-                <button type="button" class="btn btn-danger inline-flex items-center justify-center delete-staff-btn" data-id="{{ $staff->id }}">
+                <button type="button" class="btn btn-danger inline-flex items-center justify-center delete-staff-btn"
+                        data-id="{{ $staff->id }}">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="heroicons:trash"></iconify-icon>
                     {{ __('Delete') }}
                 </button>

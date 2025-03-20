@@ -232,7 +232,7 @@ class KycController extends Controller
                         ->latest('updated_at');
             } else {
                     // If no users are attached, return an empty collection
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::where('kyc', KYCStatus::Pending->value)->applyFilters($filters);
 
                 }
             }
@@ -279,8 +279,9 @@ class KycController extends Controller
                         ->latest('updated_at');
             } else {
                     // If no users are attached, return an empty collection
-                    $data = User::query()->where('id', 0); // Return an empty query
-                }
+                    $data = User::where('kyc_level3_credential', '!=', null)
+                        ->where('kyc', KYCStatus::PendingLevel3->value)
+                ->latest('updated_at');                }
             }
 
             // Apply additional filters if any
@@ -332,7 +333,7 @@ class KycController extends Controller
                         ->latest();
             } else {
                     // If no users are attached, return an empty collection
-                    $data = User::query()->where('id', 0); // Return an empty query
+                    $data = User::where('kyc', KYCStatus::Rejected->value)->applyFilters($filters);
                 }
             }
 
@@ -560,12 +561,27 @@ public function actionLevel3Now(Request $request)
      */
     public function kycAll(Request $request)
     {
-
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'status',  'created_at']);
-            $data = User::whereNotNull('kyc_credential')->latest();
-            $data->applyFilters($filters);
-            return Datatables::of($data)
+
+                $loggedInUser = auth()->user();
+
+                // Check if the logged-in user is a Super-Admin
+                if ($loggedInUser->hasRole('Super-Admin')) {
+                    $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
+                } else {
+                    // Get the attached users if the user is not a Super-Admin
+                    $attachedUserIds = $loggedInUser->users->pluck('id');
+                    if ($attachedUserIds->isNotEmpty()) {
+                        // Show only attached users
+                        $data = User::whereIn('id', $attachedUserIds)->whereNotNull('kyc_credential')->applyFilters($filters);
+                    } else {
+                        // If no users are attached, show all users
+                        $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
+                    }
+                }
+
+                return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')
                 ->addColumn('user', 'backend.kyc.include.__user')

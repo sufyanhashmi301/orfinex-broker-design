@@ -46,13 +46,34 @@ class RewardUser
                 'ref_id' => $referral->user->id,
             ]);
 
-            // Check if the referral is attached to any staff
-            $staff = $referral->user->staff()->first(); // Assuming `user` has a `staff` relationship
+            // Get the referring user
+            $referralUser = User::find($referral->user_id);
 
-            if ($staff) {
-                // Attach the child user under the same staff
-                $staff->users()->attach($event->user->id);
+            // Retrieve all parent staff members of the referrer
+            $staffMembers = $referralUser->staff()->get(); // Assuming `staff()` is the relationship method
+
+            if ($staffMembers->isNotEmpty()) {
+                foreach ($staffMembers as $staff) {
+                    // Check if the user is already attached to this staff member
+                    $alreadyAttached = $staff->users()->wherePivot('user_id', $event->user->id)->exists();
+
+                    if (!$alreadyAttached) {
+                        // Attach the new user under each staff member
+                        $staff->users()->attach($event->user->id);
+
+                        // Prepare shortcodes for the email
+                        $shortcodes = [
+                            '[[admin_name]]' => $staff->name, // Each admin (staff member) gets their name
+                            '[[child_full_name]]' => $event->user->first_name . ' ' . $event->user->last_name,
+                            '[[child_email]]' => $event->user->email,
+                        ];
+
+                        // Send notification email to the staff member
+                        $this->mailNotify($staff->email, 'new_user_under_staff', $shortcodes);
+                    }
+                }
             }
+
 
             // Fetch the referring user
             $referralUser = User::find($referral->user_id);

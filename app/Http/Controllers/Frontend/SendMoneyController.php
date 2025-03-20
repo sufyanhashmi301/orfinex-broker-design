@@ -108,7 +108,7 @@ class SendMoneyController extends Controller
 
         // Check if external transfers are enabled
         if (!setting('is_external_transfer', 'transfer_external')) {
-            throw new \Exception(__('External transfers are currently disabled.'));
+            abort(403, __('External transfers are currently disabled.'));
         }
 
         // Check if automatic approval is enabled
@@ -203,16 +203,15 @@ class SendMoneyController extends Controller
             Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, __('Transfer Successful'));
         }
 
-        // Mark first minimum deposit as paid for the receiver's account
-        if (isset($toUserForexAccount->schema->first_min_deposit) && $toUserForexAccount->schema->first_min_deposit > 0) {
-            if (!$toUserForexAccount->first_min_deposit_paid && $amount >= $toUserForexAccount->schema->first_min_deposit) {
-                $toUserForexAccount->first_min_deposit_paid = 1;
-                $toUserForexAccount->save();
-            }
-        }
-
         // Update MT5 balances for Forex accounts
         if ($targetType == 'forex') {
+            // Mark first minimum deposit as paid for the receiver's account
+            if (isset($toUserForexAccount->schema->first_min_deposit) && $toUserForexAccount->schema->first_min_deposit > 0) {
+                if (!$toUserForexAccount->first_min_deposit_paid && $amount >= $toUserForexAccount->schema->first_min_deposit) {
+                    $toUserForexAccount->first_min_deposit_paid = 1;
+                    $toUserForexAccount->save();
+                }
+            }
             mt5_update_balance($targetId, $this->forexApiService->getValidatedBalance(['login' => $targetId]));
         }
         mt5_update_balance($receiverAccount, $this->forexApiService->getValidatedBalance(['login' => $receiverAccount]));
@@ -610,16 +609,17 @@ class SendMoneyController extends Controller
     Txn::update($txnInfoSender->tnx, TxnStatus::Success, $fromUser->id, __('Transfer Successful'));
     Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, __('Transfer Successful'));
 
-    // Mark first minimum deposit as paid for the receiver's account
-    if ($receiverType == 'forex' && isset($toUserForexAccount->schema->first_min_deposit) && $toUserForexAccount->schema->first_min_deposit > 0) {
-        if (!$toUserForexAccount->first_min_deposit_paid && $amount >= $toUserForexAccount->schema->first_min_deposit) {
-            $toUserForexAccount->first_min_deposit_paid = 1;
-            $toUserForexAccount->save();
-        }
-    }
+
 
     // Update MT5 balances for Forex accounts (if applicable)
     if ($targetType == 'forex') {
+        // Mark first minimum deposit as paid for the receiver's account
+//        if ($receiverType == 'forex' && isset($toUserForexAccount->schema->first_min_deposit) && $toUserForexAccount->schema->first_min_deposit > 0) {
+//            if (!$toUserForexAccount->first_min_deposit_paid && $amount >= $toUserForexAccount->schema->first_min_deposit) {
+//                $toUserForexAccount->first_min_deposit_paid = 1;
+//                $toUserForexAccount->save();
+//            }
+//        }
         mt5_update_balance($targetId, $this->forexApiService->getValidatedBalance(['login' => $targetId]));
     }
     if ($receiverType == 'forex') {

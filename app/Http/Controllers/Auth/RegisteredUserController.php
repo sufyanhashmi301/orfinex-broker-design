@@ -6,6 +6,7 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Events\UserReferred;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\LoginActivities;
 use App\Models\MultiLevel;
 use App\Models\Page;
@@ -199,11 +200,37 @@ class RegisteredUserController extends Controller
             $this->smsNotify('new_user', $shortcodes, $user->phone);
         }
     }
-    private function handleReferral($referralCode, User $user, $schemaID=null)
+    private function handleReferral($referralCode, User $user, $schemaID = null)
     {
+        if (!$referralCode) {
+            return;
+        }
+
+        // Check if the referral code belongs to an Admin (Staff)
+        $admin = Admin::where('referral_code', $referralCode)->first();
+        if ($admin) {
+            // Attach the new user under the referring staff (admin)
+            $admin->users()->attach($user->id);
+
+            // Send notification to Admin (Optional)
+            $shortcodes = [
+                '[[admin_name]]' => $admin->name,
+                '[[child_full_name]]' => $user->first_name . ' ' . $user->last_name,
+                '[[child_email]]' => $user->email,
+            ];
+            $this->mailNotify($admin->email, 'new_user_under_staff', $shortcodes);
+
+            \Cookie::queue(\Cookie::forget('invite'));
+            return;
+        }
+
+        // If referral code is from a regular user
         event(new UserReferred($referralCode, $user, $schemaID));
-        \Cookie::forget('invite');
+
+        // Clear the referral cookie
+        \Cookie::queue(\Cookie::forget('invite'));
     }
+
     private function formatPhone(array $input, $location)
     {
         $isPhone = (bool) getPageSetting('phone_show');

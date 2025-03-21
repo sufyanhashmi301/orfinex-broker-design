@@ -210,6 +210,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     // Route to display the attach user page (with staff id)
     Route::get('staff/{staffId}/attach-user', [UserAttachmentController::class, 'index'])->name('staff.attachUser.index');
+    Route::get('staff/{staffId}/attached-users', [UserAttachmentController::class, 'getAttachedUsers'])->name('staff.attachedUsers');
     Route::post('staff/{staffId}/attach-user', [UserAttachmentController::class, 'attachUser'])->name('staff.attachUser');
     Route::post('staff/{staffId}/detach-user', [UserAttachmentController::class, 'detachUser'])->name('staff.detachUser');
 

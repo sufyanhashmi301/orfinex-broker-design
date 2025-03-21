@@ -105,14 +105,7 @@ class Admin extends Authenticatable
         }
         return $this->referral_code;
     }
-    protected static function boot()
-    {
-        parent::boot();
 
-        static::creating(function ($admin) {
-            $this->generateCode();
-        });
-    }
     private function generateCode()
     {
         $this->referral_code = Str::random(setting('referral_code_limit', 'global'));

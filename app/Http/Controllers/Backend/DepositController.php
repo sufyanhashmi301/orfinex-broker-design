@@ -6,6 +6,7 @@ use App\Enums\ForexAccountStatus;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Txn;
 use Purifier;
 use DataTables;

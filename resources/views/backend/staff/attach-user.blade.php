@@ -63,13 +63,13 @@
         </div>
         <div class="lg:col-span-7 col-span-12">
             <div class="card h-full">
-                <div class="card-body px-6">
+                <div class="card-body relative px-6">
                     <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                        <span class=" col-span-8  hidden"></span>
-                        <span class="  col-span-4 hidden"></span>
+                        <span class="col-span-8 hidden"></span>
+                        <span class="col-span-4 hidden"></span>
                         <div class="inline-block min-w-full align-middle">
                             <div class="overflow-hidden ">
-                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
+                                <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="attachedUsers">
                                     <thead class="bg-slate-200 dark:bg-slate-700">
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('User') }}</th>
@@ -78,25 +78,15 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                    @foreach($attachedUsers as $user)
-                                        <tr>
-                                            <td class="table-td">
-                                                <strong>{{ $user->full_name }}</strong>
-                                            </td>
-                                            <td class="table-td">
-                                                <strong class="lowercase">{{$user->email }}</strong>
-                                            </td>
-                                            <td class="table-td">
-                                                <button class="action-btn userDetachBtn" data-user-id="{{ $user->id }}" data-staff-id="{{ $staff->id }}" data-name="{{ $user->full_name }}" type="button">
-                                                    <iconify-icon icon="heroicons:trash"></iconify-icon>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                    <div id="processingIndicator" class="text-center">
+                        {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                        <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
                     </div>
                 </div>
             </div>
@@ -109,22 +99,49 @@
 @endsection
 @section('script')
     <script>
-        $('.data-table').DataTable().destroy();
-        $(".data-table").DataTable({
-            dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-            lengthChange: false,
-            info: true,
-            searching: true,
-            language: {
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+        (function ($) {
+            "use strict";
+
+            var table = $('#attachedUsers')
+            .on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
+                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'ip>",
+                paging: true,
+                ordering: true,
+                info: true,
+                searching: true,
+                lengthChange: true,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
                 },
-                search: "Search:"
-            },
-        });
+                serverSide: true,
+                autoWidth: false,
+                ajax: {
+                    url: "{{ route('admin.staff.attachedUsers', $staff->id) }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                    }
+                },
+                columns: [
+                    { data: 'full_name', name: 'full_name' },
+                    { data: 'email', name: 'email' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                ]
+            });
+
+            $('#global_search').keyup(function() {
+                table.draw();
+            });
+
+        })(jQuery);
 
         $('#users_input').select2({
             ajax: {

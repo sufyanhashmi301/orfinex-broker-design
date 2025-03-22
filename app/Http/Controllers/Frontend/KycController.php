@@ -115,7 +115,7 @@ class KycController extends Controller
 //        dd($input);
         $validator = Validator::make($input, [
             'kyc_id' => 'required',
-            'kyc_credential' => 'required',
+//            'kyc_credential' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -135,22 +135,37 @@ class KycController extends Controller
                 return redirect()->back();
             }
         }
+
+        //validate the valid type of file or text
+        foreach ($input['kyc_credential'] as $key => $value) {
+            if ($value instanceof \Illuminate\Http\UploadedFile) {
+                if (!$value->isValid()) {
+                    notify()->error(__('The file in "' . $key . '" is not valid.'), __('Error'));
+                    return redirect()->back();
+                }
+            }
+        }
+
+
+
         if ($user->kyc_credential) {
             foreach (json_decode($user->kyc_credential, true) as $key => $value) {
                 self::delete($value);
             }
         }
         foreach ($kycCredential as $key => $value) {
-            if (is_file($value)) {
+            if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid()) {
                 $path = self::kycImageUploadTrait($value);
-                if (isset($path) && !empty($path)) {
+                if (!empty($path)) {
                     $kycCredential[$key] = $path;
                 } else {
-                    notify()->error(__('kindly Set the ') . $key, __('Error'));
+                    notify()->error(__('Failed to upload ') . $key, __('Error'));
                     return redirect()->back();
                 }
             }
         }
+
+
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),

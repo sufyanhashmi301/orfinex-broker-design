@@ -251,7 +251,21 @@
                                     </a>
                                 </li>
                             @endcan
-
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-bonus-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-bonus"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-bonus"
+                                    aria-selected="true"
+                                >
+                                    {{ __('IB Bonus') }}
+                                </a>
+                            </li>
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -347,8 +361,15 @@
                 <!-- investments -->
                 @can('accounts-list')
                      @include('backend.user.include.__accounts')
+                     {{-- Modal for add Forex Account --}}
+                     @can('accounts-list')
+                         @include('backend.user.include.__forex_account')
+                     @endcan
+                     @can('accounts-list')
+                         @include('backend.user.include.__forex_account_mapping')
+                    @endcan
                 @endcan
-
+                @include('backend.user.include.__ib_bonus')
                 @can('kyc-status-update')
                 <!-- KYC Tab -->
                 @include('backend.user.include.__kycTab')
@@ -407,8 +428,7 @@
     @endcan
     <!-- Modal for Send Email-->
 
-    {{-- Modal for add Forex Account --}}
-    @include('backend.user.include.__forex_account')
+
 
     {{-- Modal for Add or Subtract Bonus --}}
     @include('backend.user.include.__bonus')
@@ -523,121 +543,74 @@
     </script>
     <script>
         $(document).ready(function () {
-            function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
+            // Function to update the Islamic checkbox state
+            function updateIslamicCheckboxState(modalId, accountType, isRealIslamic, isDemoIslamic) {
                 var isIslamic = false;
                 if (accountType === 'real') {
                     isIslamic = isRealIslamic == 1;
                 } else if (accountType === 'demo') {
                     isIslamic = isDemoIslamic == 1;
                 }
-                $('#islamic-checkbox').prop('disabled', !isIslamic);
+                $(`#${modalId} #islamic-checkbox`).prop('disabled', !isIslamic);
             }
 
-            function updateLeverageAndDeposit(result) {
-                $('#display-commission').text(result.commission);
-                $('#display-spread').text(result.spread);
-                $('#select-leverage').html(result.leverage);
-                $('#display-leverage').text(result.display_leverage);
-                $('#initial-deposit').text(result.first_min_deposit);
+            // Function to update leverage options
+            function updateLeverageAndDeposit(modalId, result) {
+                $(`#${modalId} #select-leverage`).html(result.leverage); // Update leverage options
             }
 
-            $('#account-type-tabs .nav-link').on('click', function () {
-                $('#account-type-tabs .nav-link').removeClass('active');
-                $(this).addClass('active');
-                var accountType = $(this).data('type');
-                $('#account-type').val(accountType);
-
-                $('#islamic-checkbox').prop('checked', false);
-
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
-            });
-
-            $("#islamic-checkbox").on('change', function () {
-                var isIslamic = $(this).is(':checked');
-                var accountType = $('#account-type').val();
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
-            });
-
-            $("#select-schema").on('change', function (e) {
-                "use strict";
+            // Handle schema selection changes
+            $('.modal').on('change', '#select-schema', function (e) {
                 e.preventDefault();
+                var modalId = $(this).closest('.modal').attr('id'); // Get the modal ID
                 var id = $(this).val();
                 var url = '{{ route("user.schema.select", ":id") }}';
                 url = url.replace(':id', id);
 
+                // Fetch schema details via AJAX
                 $.ajax({
                     url: url,
                     success: function (result) {
-                        $('#first-min-amount').text(result.first_min_deposit);
-                        updateLeverageAndDeposit(result);
-
-                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
-                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
-
-                        $('#islamic-checkbox').prop('checked', false);
-                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+                        if (result) {
+                            updateLeverageAndDeposit(modalId, result);
+                            $(`#${modalId} #select-schema`).data('is-real-islamic', result.is_real_islamic);
+                            $(`#${modalId} #select-schema`).data('is-demo-islamic', result.is_demo_islamic);
+                            $(`#${modalId} #islamic-checkbox`).prop('checked', false);
+                            updateIslamicCheckboxState(modalId, $(`#${modalId} #account-type`).val(), result.is_real_islamic, result.is_demo_islamic);
+                        } else {
+                            console.error('Invalid response from server');
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('AJAX request failed:', xhr.responseText);
                     }
                 });
             });
 
-            var initialAccountType = $('#account-type').val();
-            var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-            var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-            updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
+            // Password validation
+            function checkPassword(password, type, submitButtonId) {
+                var lengthCheck = password.length >= 8 && password.length <= 15;
+                var lettersCheck = /[a-z]/.test(password) && /[A-Z]/.test(password);
+                var numberCheck = /\d/.test(password);
+                var specialCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-            $("#select-leverage").on('change', function () {
-                var selectedLeverage = $(this).val();
-                $('#display-leverage').text(selectedLeverage); // Update the display-leverage with the selected value
-            });
+                $(`#${type}-length-check`).toggleClass('text-danger', !lengthCheck).toggleClass('text-success', lengthCheck);
+                $(`#${type}-letters-check`).toggleClass('text-danger', !lettersCheck).toggleClass('text-success', lettersCheck);
+                $(`#${type}-number-check`).toggleClass('text-danger', !numberCheck).toggleClass('text-success', numberCheck);
+                $(`#${type}-special-check`).toggleClass('text-danger', !specialCheck).toggleClass('text-success', specialCheck);
 
-            $("#selectWallet").on('change', function (e) {
-                "use strict";
-                $('.gatewaySelect').empty();
-                $('.manual-row').empty();
-                var wallet = $(this).val();
-                if (wallet === 'gateway') {
-                    $.get('{{ route('gateway.list') }}', function (data) {
-                        $('.gatewaySelect').append(data);
-                        $('select').niceSelect();
-                    });
+                if (lengthCheck && lettersCheck && numberCheck && specialCheck) {
+                    $(submitButtonId).prop('disabled', false);
+                } else {
+                    $(submitButtonId).prop('disabled', true);
                 }
-            });
+            }
 
-            $('body').on('change', '#gatewaySelect', function (e) {
-                "use strict";
-                e.preventDefault();
-                $('.manual-row').empty();
-                var code = $(this).val();
-                var url = '{{ route("user.deposit.gateway", ":code") }}';
-                url = url.replace(':code', code);
-                $.get(url, function (data) {
-                    if (data.credentials !== undefined) {
-                        console.log(data.credentials);
-                        $('.manual-row').append(data.credentials);
-                        imagePreview();
-                    }
-                });
-
-                $('#amount').on('keyup', function (e) {
-                    "use strict";
-                    var amount = $(this).val();
-                    $('.amount').text(Number(amount));
-                    $('.currency').text(currency);
-                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge;
-                    $('.charge2').text(charge + ' ' + currency);
-                    $('.total').text(Number(amount) + Number(charge) + ' ' + currency);
-                });
-            });
-
-            $('#enter-main-password').on('input', function () {
+            $('.modal').on('input', '#enter-main-password', function () {
+                var modalId = $(this).closest('.modal').attr('id');
                 var password = $(this).val();
-                checkPassword(password, 'main', 'create-forex-account');
+                checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
         });
-
     </script>
 @endsection

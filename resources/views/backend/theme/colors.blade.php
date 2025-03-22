@@ -193,6 +193,13 @@
             const $section = '{{ $section }}';
 
             $('#defaultColorsBtn').click(function() {
+
+                const loader = document.querySelector('.page-loader');
+                if (loader) {
+                    loader.style.display = 'flex';
+                    loader.classList.remove('loader-hidden');
+                }
+
                 let data = {
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     section: $section
@@ -204,7 +211,11 @@
                         ...data,
                         body_bg_color: '#f1f5f9',
                         base_color: '#ffffff',
-                        active_menu_bg: '#0f172a',
+                        header_bg: '#ffffff',
+                        header_color: '#0f172a',
+                        sidebar_bg: '#ffffff',
+                        sidebar_color: '#334155',
+                        active_menu_bg: '#1e293b',
                         active_menu_color: '#ffffff',
                         secondary_btn_bg: '#f3f4f6',
                         secondary_btn_color: '#0f172a',
@@ -216,6 +227,10 @@
                         ...data,
                         body_bg_color_dark: '#11171f',
                         base_color_dark: '#181e26',
+                        header_bg_dark: '#181e26',
+                        header_color_dark: '#ffffff',
+                        sidebar_bg_dark: '#181e26',
+                        sidebar_color_dark: '#cbd5e1',
                         primary_color_dark: '#0f172a',
                         active_menu_bg_dark: '#0f172a',
                         active_menu_color_dark: '#ffffff',
@@ -239,7 +254,27 @@
                     method: 'POST',
                     data: data,
                     success: function(response) {
-                        location.reload();
+                        new Notify({
+                            status: 'success',
+                            title: 'Success',
+                            text: 'Settings has been saved',
+                            effect: 'slide',
+                            speed: 300,
+                            showIcon: true,
+                            showCloseButton: true,
+                            autoclose: true,
+                            autotimeout: 9000,
+                            gap: 20,
+                            distance: 20,
+                            type: 1,
+                            position: 'right bottom',
+                        });
+
+                        if (loader) {
+                            loader.style.display = 'none';
+                            loader.classList.add('loader-hidden');
+                        }
+
                     },
                     error: function() {
                         alert('There was an error processing your request');

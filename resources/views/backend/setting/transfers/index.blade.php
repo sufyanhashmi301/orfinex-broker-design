@@ -23,7 +23,7 @@
         <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 md:pb-0 gap-4 menu-open">
             @can('internal-transfer-display')
             <li class="nav-item">
-                <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ $type == 'internal' ? 'active' : '' }}">
+                <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ $type == 'transfer_internal' ? 'active' : '' }}">
                     {{ __('Internal Transfers') }}
                 </a>
             </li>
@@ -59,14 +59,14 @@
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Max Amount:') }}</label>
-                            <input type="text" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','transfer_internal') }}">
+                            <input type="number" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('internal_send_charge','global') }}" name="internal_send_charge">
+                                <input type="number" class="form-control" value="{{ oldSetting('internal_send_charge','global') }}" name="internal_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="internal_send_charge_type" class="w-full h-full outline-none" id="">
                                         @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
@@ -81,8 +81,8 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Transfers per Day') }}</label>
-                            <input type="text" class="form-control" name="internal_send_daily_limit" value="{{ oldSetting('internal_send_daily_limit','transfer_internal') }}">
+                            <label for="" class="form-label">{{ __('Internal transactions daily limit') }}</label>
+                            <input type="number" class="form-control" name="internal_send_daily_limit" value="{{ oldSetting('internal_send_daily_limit','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-4 col-span-12">
@@ -107,24 +107,24 @@
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Min Amount:') }}</label>
-                            <input type="text" class="form-control" name="external_min_send" value="{{ oldSetting('external_min_send','transfer_external') }}">
+                            <input type="number" class="form-control" name="external_min_send" value="{{ oldSetting('external_min_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Max Amount:') }}</label>
-                            <input type="text" class="form-control" name="external_max_send" value="{{ oldSetting('external_max_send','transfer_external') }}">
+                            <input type="number" class="form-control" name="external_max_send" value="{{ oldSetting('external_max_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
+                                <input type="number" class="form-control" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="external_send_charge_type" class="w-full h-full outline-none" id="">
-                                        @foreach(['fixed' => setting('currency_symbol','transfer_external') , 'percentage' => '%'] as $key => $value)
-                                            <option @if( oldSetting('send_charge_type','transfer_external') == $key) selected @endif value="{{ $key }}">
+                                        @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
+                                            <option @if( oldSetting('external_send_charge_type','global') == $key) selected @endif value="{{ $key }}">
                                                 {{ $value }}
                                             </option>
                                         @endforeach
@@ -135,8 +135,8 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Transfers per Day') }}</label>
-                            <input type="text" class="form-control" name="external_send_daily_limit" value="{{ oldSetting('external_send_daily_limit','transfer_external') }}">
+                            <label for="" class="form-label">{{ __('External transactions daily limit') }}</label>
+                            <input type="number" class="form-control" name="external_send_daily_limit" value="{{ oldSetting('external_send_daily_limit','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-4 col-span-12">
@@ -255,12 +255,15 @@
                             </div>
                         </div>
                     </div>
+                    
                 @endif
             </div>
             @can('transfers-action')
             @include('backend.setting.site_setting.include.form.__close_action')
             @endcan
+            
         </div>
     </div>
 @endsection
+
 

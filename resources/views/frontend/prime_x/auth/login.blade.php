@@ -70,18 +70,23 @@
                             @endif
                         @endif
 
-                        <div class="flex justify-between">
+                        <div class="flex flex-wrap justify-between gap-3">
                             <label class="flex items-center cursor-pointer">
                                 <input class="hiddens mr-2" type="checkbox" name="remember" />
                                 <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
                                     {{ __('Keep me signed in') }}
                                 </span>
                             </label>
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium">
-                                    {{ __('Forget Password') }}
+                            <div class="space-x-2">
+                                @if (Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium hover:underline">
+                                        {{ __('Forget Password') }}
+                                    </a>
+                                @endif
+                                <a href="{{ route('password.get') }}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium hover:underline">
+                                    {{ __('Get Password') }}
                                 </a>
-                            @endif
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary block w-full text-center">
                             {{ __('Account Login') }}

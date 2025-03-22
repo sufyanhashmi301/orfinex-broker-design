@@ -18,7 +18,9 @@ use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use App\Exports\DepositsHistoryExport;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -71,7 +73,8 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
-
+        try {
+            DB::beginTransaction();
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', __('Deposit Disabled Now'));
         }
@@ -170,6 +173,8 @@ class DepositController extends GatewayController
         $manualData ?? [], 'none', $targetId, $targetType
     );
 
+        DB::commit();
+
     if ($gatewayInfo->type == 'manual') {
         $shortcodes = [
             '[[full_name]]' => $txnInfo->user->full_name,
@@ -187,6 +192,11 @@ class DepositController extends GatewayController
 
     }
     return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
+     } catch (Exception $e) {
+            DB::rollBack();
+            notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
+            return redirect()->back()->withInput();
+        }
 }
 
 

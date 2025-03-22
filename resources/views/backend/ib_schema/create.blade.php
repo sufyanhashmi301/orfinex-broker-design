@@ -31,8 +31,10 @@
                                     name="title"
                                     class="form-control"
                                     placeholder="Account Title"
-                                    required
                                 />
+                                @error('title')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 schema-badge">
@@ -43,17 +45,22 @@
                                     class="form-control"
                                     placeholder="Account Type Badge"
                                     name="badge"
-                                    required
                                 />
+                                @error('badge')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 ">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select IB Type:') }}</label>
-                                <select name="type" id="" class="form-control w-100" required>
+                                <select name="type" id="" class="form-control w-100">
                                     <option value="ib">{{__("IB")}}</option>
                                     <option value="multi_ib">{{__("Multi IB")}}</option>
                                 </select>
+                                @error('type')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
                         </div>
@@ -65,16 +72,19 @@
                                     name="group"
                                     class="form-control"
                                     placeholder="MT5 Group"
-                                    required
                                 />
+                                @error('group')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-span-2">
                             <div class="input-area fw-normal">
                                 <label for="" class="form-label">{{ __('Detail:') }}</label>
                                 <div class="site-editor">
-                                    <textarea class="basicTinymce" name="desc"></textarea>
+                                    <textarea class="summernote"></textarea>
                                 </div>
+                                <input type="hidden" name="desc">
                             </div>
                         </div>
 

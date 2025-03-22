@@ -77,6 +77,7 @@ use App\Http\Controllers\Backend\LeadStageController;
 use App\Http\Controllers\Backend\LeadPipelineController;
 use App\Http\Controllers\Backend\DealController;
 use App\Http\Controllers\Backend\DealNoteController;
+use App\Http\Controllers\Backend\UserAttachmentController;
 
 
 /*
@@ -91,6 +92,7 @@ use App\Http\Controllers\Backend\DealNoteController;
 */
 //Route::group(['middleware' => [ '2fa']], function () {
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
+
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
@@ -111,6 +113,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
         Route::post('mail-send', 'mailSend')->name('mail-send');
         Route::get('transaction/{id}', 'transaction')->name('transaction');
+        Route::get('ib-bonus/{id}', 'ibBonus')->name('ib_bonus');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
@@ -118,6 +121,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');
+
+        Route::get('search', 'searchUsers')->name('search');
     });
 
     Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {
@@ -126,9 +131,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::put('edit/{id}', 'update')->name('edit');
         Route::delete('delete/{id}', 'destroy')->name('delete');
     });
-
-
-
 
     Route::resource('kyc-form', KycController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
@@ -155,8 +157,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 //    Route::get('multi-ib-level/{id}/edit', [MultiIbLevelController::class, 'edit'])->name('multi-ib-level.edit');
 //    Route::put('multi-ib-level/{id}', [MultiIbLevelController::class, 'update'])->name('multi-ib-level.update');
 //    Route::delete('multi-ib-level/{multi_ib_level}', [MultiIbLevelController::class, 'destroy'])->name('multi-ib-level.destroy');
-
-
 
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
@@ -204,6 +204,18 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         //            dd(route('admin.dashboard'));
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
+
+    Route::get('login/{id}', [StaffController::class, 'staffLogin'])->name('staff.login');
+    Route::post('stop-impersonation', [StaffController::class, 'stopImpersonation'])->name('stop.impersonation');
+
+    // Route to display the attach user page (with staff id)
+    Route::get('staff/{staffId}/attach-user', [UserAttachmentController::class, 'index'])->name('staff.attachUser.index');
+    Route::get('staff/{staffId}/attached-users', [UserAttachmentController::class, 'getAttachedUsers'])->name('staff.attachedUsers');
+    Route::post('staff/{staffId}/attach-user', [UserAttachmentController::class, 'attachUser'])->name('staff.attachUser');
+    Route::post('staff/{staffId}/detach-user', [UserAttachmentController::class, 'detachUser'])->name('staff.detachUser');
+
+
+
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
@@ -216,6 +228,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
     });
 
@@ -233,6 +246,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
 
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::post('forex-account-map', [AccountsController::class, 'forexAccountMap'])->name('forex-account-map');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
     Route::get('pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');
@@ -246,6 +260,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
         Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
     });
+
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
         //=============================== deposit Method ================================
         Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
@@ -269,6 +284,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('now', 'depositNow')->name('now');
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
     });
+
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================
 
@@ -292,7 +308,13 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('action-now', 'actionNow')->name('action.now');
 
         Route::get('add', 'addWithdraw')->name('add');
+        Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
+        Route::get('details/{accountId}/{amount?}', 'details')->name('details');
+        Route::post('now', 'withdrawNow')->name('now');
+        Route::get('method/{id}', 'withdrawAccount')->name('account');
+        Route::post('account/store', 'accountStore')->name('account.store');
     });
+
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
         Route::get('index', 'index')->name('index');
         Route::post('store', 'store')->name('store');
@@ -310,6 +332,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
         Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
     });
+
     //===============================  Advertisement Material ==================================
     Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 
@@ -389,6 +412,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
+        Route::get('customer/kycpermissions', 'kycPermissions')->name('customer.kycpermissions');
 
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
@@ -425,6 +449,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
+    Route::get('email-template/setting', [EmailTemplateController::class, 'templateSetting'])->name('email-template.setting');
 
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
@@ -554,8 +579,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::resource('swap-multi-level', MultiLevelController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbol-groups', SymbolGroupController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
-    Route::post('symbols/store', [SymbolController::class, 'store']);
-    Route::post('all-symbols/store', [SymbolController::class, 'storeAllSymbols']);
+    Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
+    Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
+    Route::get('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 

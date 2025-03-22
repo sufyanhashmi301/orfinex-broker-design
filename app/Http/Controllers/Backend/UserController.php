@@ -91,7 +91,6 @@ class UserController extends Controller
             } else {
                 // Get the attached users if the user is not a Super-Admin
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
                 if ($attachedUserIds->isNotEmpty()) {
                     // Show only attached users
                     $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
@@ -110,8 +109,12 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
+
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -131,7 +134,7 @@ class UserController extends Controller
         if (!$user) {
             return back()->with('error', 'User not found.');
         }
-    
+
         $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
         $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
         switch ($type) {
@@ -175,7 +178,7 @@ class UserController extends Controller
                         ->latest();
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = User::where('status', 1)->latest();
                 }
             }
 
@@ -189,10 +192,13 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -222,7 +228,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::where('status', 0)->latest();
                 }
             }
 
@@ -237,8 +243,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -268,7 +277,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::whereIn('id', $userIds)->latest();
                 }
             }
 
@@ -281,8 +290,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity','staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -312,7 +324,7 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = collect();
+                    $data = User::whereIn('id', $userIds)->latest();
                 }
             }
 
@@ -325,8 +337,11 @@ class UserController extends Controller
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity',  'staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -762,6 +777,7 @@ class UserController extends Controller
      */
     public function mailSend(Request $request)
     {
+        $message = $request->input('message');
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
@@ -778,7 +794,7 @@ class UserController extends Controller
 
             $input = [
                 'subject' => $request->subject,
-                'message' => $request->message,
+                'message' => str_replace(['{', '}'], ['<', '>'], $message),
             ];
 
             $shortcodes = [
@@ -823,16 +839,45 @@ class UserController extends Controller
      */
     public function transaction($id, Request $request)
     {
-
         if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)->latest();
+            $data = Transaction::where('user_id', $id)
+                ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->rawColumns(['status', 'type', 'final_amount'])
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->rawColumns(['status', 'type','action_by', 'final_amount'])
+                ->make(true);
+        }
+    }
+
+    public function ibBonus($id, Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Transaction::where('user_id', $id)
+                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
+                ->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('status', 'backend.user.include.__txn_status')
+                ->editColumn('type', 'backend.user.include.__txn_type')
+                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->addColumn('action', function ($row) {
+                    // Replicate the same structure and styling
+                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </span>';
+                })
+                ->rawColumns(['status', 'type', 'final_amount', 'action'])
                 ->make(true);
         }
     }
@@ -1169,4 +1214,29 @@ class UserController extends Controller
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
+
+    public function searchUsers(Request $request)
+    {
+        $search = $request->get('q');
+
+        // Fetch users based on the search query, ordered by first name
+        $users = User::where('first_name', 'LIKE', "%{$search}%")
+            ->orWhere('last_name', 'LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->limit(10)
+            ->get();
+
+        // Format the response for Select2
+        return response()->json([
+            'results' => $users->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'text' => $user->first_name . ' ' . $user->last_name,
+                    'avatar' => getFilteredPath($user->avatar, 'global/materials/user.png'),
+                    'email' => $user->email
+                ];
+            })
+        ]);
+    }
+
 }

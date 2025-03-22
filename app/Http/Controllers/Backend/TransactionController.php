@@ -66,9 +66,16 @@ class TransactionController extends Controller
                         $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
                     }
                 } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    // If no users are attached, return all users
+                    if ($id) {
+                        // Fetch transactions for a specific user (if ID is provided)
+                        $data = Transaction::where('user_id', $id)->latest();
+                    } else {
+                        // Fetch all transactions
+                        $data = Transaction::query()->latest();
+                    }
                 }
+
             }
 
             // Apply additional filters if any
@@ -79,6 +86,10 @@ class TransactionController extends Controller
                 ->addColumn('created_at', function ($row) {
                     return '<span class="text-nowrap">' . $row->created_at . '</span>';
                 })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
@@ -87,7 +98,7 @@ class TransactionController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username', 'action'])
+                ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 

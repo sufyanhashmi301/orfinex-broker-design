@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,6 +48,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UpdatePluginsData::class);
         $this->call(LeadStagesSeeder::class);
         $this->call(LeadSourcesSeeder::class);
+        $this->call(LeadPipelineSeeder::class);
 
 
     }

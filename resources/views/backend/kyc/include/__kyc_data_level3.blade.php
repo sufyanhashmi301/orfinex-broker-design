@@ -31,16 +31,16 @@
             <label for="" class="form-label">{{ __('Detail Message') }}</label>
             <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
         </div>
-
+    
         <div class="action-btns text-right">
             @if($kycStatus !== \App\Enums\KYCStatus::Level3->value)
-            <button type="submit" name="status" value="{{\App\Enums\KYCStatus::Level3->value}}" class="btn btn-dark inline-flex items-center justify-center mr-2">
+            <button type="submit" name="approve" value="1" class="btn btn-dark inline-flex items-center justify-center mr-2">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                 {{ __('Approve') }}
             </button>
             @endif
             @if($kycStatus !== \App\Enums\KYCStatus::RejectLevel3->value)
-                <button type="submit" name="status" value="{{\App\Enums\KYCStatus::RejectLevel3->value}}" class="btn btn-danger inline-flex items-center justify-center">
+                <button type="submit" name="reject" value="1" class="btn btn-danger inline-flex items-center justify-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                     {{ __('Reject') }}
                 </button>

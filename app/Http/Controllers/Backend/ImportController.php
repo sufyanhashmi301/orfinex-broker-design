@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Imports\BanexUsersImport;
 use App\Imports\PrimexUsersImport;
 use App\Imports\UserImportClass;
+use App\Models\WalletBalance;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
@@ -25,6 +26,7 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xls,xlsx,csv',
         ]);
 
+//        Excel::import(new WalletBalance, request()->file('file'));
         Excel::import(new UserImportClass, request()->file('file'));
 
         return back()->with('success', 'Users imported successfully.');

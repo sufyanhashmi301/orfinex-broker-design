@@ -17,7 +17,7 @@
                       method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
-                    <div class="grid gird-cols-12 items-center gap-5">
+                    <div class="grid grid-cols-12 items-center gap-5">
                         <div class="col-span-12">
                             <div class="input-area max-w-xs">
                                 <label class="form-label" for="">{{ __('Upload Icon:') }}</label>
@@ -88,7 +88,7 @@
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                             {{'1 '.' '. setting('site_currency','global') . ' ='}}
                                         </span>
-                                        <input type="text" name="rate" class="form-control"
+                                        <input type="text" name="rate" class="form-control !pl-16.5 !pr-12" oninput="this.value = validateDouble(this.value)"
                                             value="{{ $withdrawMethod->rate }}"/>
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected">
                                             {{ $withdrawMethod->currency }}
@@ -101,7 +101,7 @@
                             <div class="input-area position-relative">
                                 <label class="form-label" for="">{{ __('Charges:') }}</label>
                                 <div class="relative">
-                                    <input type="text" class="form-control"
+                                    <input type="text" class="form-control !pr-12"
                                         oninput="this.value = validateDouble(this.value)" name="charge"
                                         value="{{ $withdrawMethod->charge }}"/>
                                     <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -119,7 +119,7 @@
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
                                 <div class="joint-input relative">
-                                    <input type="text" name="min_withdraw" class="form-control" value="{{ $withdrawMethod->min_withdraw }}"/>
+                                    <input type="text" name="min_withdraw" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" value="{{ $withdrawMethod->min_withdraw }}"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected">
                                         {{ setting('site_currency','global') }}
                                     </span>
@@ -134,7 +134,8 @@
                                     <input
                                         type="text"
                                         name="max_withdraw"
-                                        class="form-control"
+                                        class="form-control !pr-12"
+                                        oninput="this.value = validateDouble(this.value)"
                                         value="{{ $withdrawMethod->max_withdraw  }}"
                                     />
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected">
@@ -291,17 +292,6 @@
 @endsection
 
 @section('payment-script')
-    <script>
-
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
-
-    </script>
     <script>
         $("#currency").on('change', function () {
             $('#currency-selected').text(this.value);

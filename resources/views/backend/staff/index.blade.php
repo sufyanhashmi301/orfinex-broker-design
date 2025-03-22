@@ -4,8 +4,8 @@
 @endsection
 @section('style')
     <style>
-        @keyframes pulse{
-            50%{
+        @keyframes pulse {
+            50% {
                 opacity: .5;
             }
         }
@@ -25,7 +25,8 @@
             <div class="medium:col-span-4 col-span-12">
                 <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
                 <div class="h-full border-r dark:border-slate-700" id="staff-list__container">
-                    <a href="javascript:;" class="staffList-close-btn btn-primary absolute items-center justify-center p-2">
+                    <a href="javascript:;"
+                       class="staffList-close-btn btn-primary absolute items-center justify-center p-2">
                         <iconify-icon class="text-lg font-medium" icon="material-symbols:close-rounded"></iconify-icon>
                     </a>
                     <div class="card-header gap-2 pl-0" style="padding-bottom: 11px;">
@@ -37,7 +38,9 @@
                         </div>
                         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                             @can('staff-create')
-                                <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" id="create-staff">
+                                <a href="javascript:;"
+                                   class="btn btn-sm btn-primary inline-flex items-center justify-center"
+                                   id="create-staff">
                                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                                     <span class="text-nowrap">{{ __('Add New Staff') }}</span>
                                 </a>
@@ -64,24 +67,32 @@
     @can('staff-edit')
         @include('backend.staff.modal.__edit_staff')
     @endcan
-    <!-- Modal for Edit Staff-->
 
     <!-- Delete Confirmation Modal -->
     @include('backend.staff.include.__delete')
 
+    {{-- Detach User Modal--}}
+    @include('backend.staff.modal.__detach_user')
 
+@endsection
 
+@section('style')
+    <style>
+        .dataTables_wrapper {
+            min-height: unset !important;
+        }
+    </style>
 @endsection
 
 @section('script')
     <script>
-        $('.staffList-open-btn').click(function(){
+        $('.staffList-open-btn').click(function () {
             $('#staff-list__container, .mobile-close-overlay').addClass('in');
         });
 
-        $('.staffList-close-btn').click(function(){
+        $('.staffList-close-btn').click(function () {
             $('#staff-list__container, .mobile-close-overlay').removeClass('in');
-        })
+        });
 
         $('body').on('click', '#create-staff', function (event) {
             "use strict";
@@ -91,24 +102,32 @@
             $('#loader_placeholder').removeClass('hidden');
 
             $.get(createStaffRoute, function (data) {
-                $('#edit-staff-body').append(data);
+                $('#edit-staff-body').append(data.html);
                 $('#loader_placeholder').addClass('hidden');
+
+                $('.select2').select2();
+                $('.flatpickr').flatpickr();
+                $(".dateOfBirth").flatpickr({
+                    dateFormat: "d.m.Y",
+                    maxDate: "15.12.2017"
+                });
+
             });
 
         });
 
-        $('#staffStatusFilter').change(function() {
+        $('#staffStatusFilter').change(function () {
             var status = $(this).val();
 
             $.ajax({
                 url: "{{ route('admin.staff.index') }}",
                 type: 'GET',
-                data: { status: status },
-                success: function(response) {
+                data: {status: status},
+                success: function (response) {
                     // Update the staff list
                     $('#staff-list').html(response.staffs);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error fetching staff:', error);
                 }
             });
@@ -125,6 +144,12 @@
                 $('#edit-staff-body').append(data);
                 $('#loader_placeholder').addClass('hidden');
                 $('.select2').select2();
+                $('.flatpickr').flatpickr();
+                $(".dateOfBirth").flatpickr({
+                    dateFormat: "d.m.Y",
+                    maxDate: "15.12.2017"
+                });
+
             });
         });
 
@@ -133,6 +158,7 @@
 
             var form = $('#update-staff__form')[0];
             var data = new FormData(form);
+            var activeTab = window.location.hash;
 
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var staffId = $('#staff-id').val();
@@ -152,6 +178,13 @@
                 success: function (response) {
                     if (response.success) {
                         tNotify('success', response.message);
+                        $('#edit-staff-body').html(response.updatedHtml);
+                        $('.select2').select2();
+                        $('.flatpickr').flatpickr();
+                        $(".dateOfBirth").flatpickr({
+                            dateFormat: "d.m.Y",
+                            maxDate: "15.12.2017"
+                        });
                     } else {
                         tNotify('error', response.message);
                     }
@@ -165,12 +198,12 @@
 
 
         $(document).ready(function () {
-            let deleteSchemaId = null;
+            let deleteStaffId = null;
 
             // Event listener for delete buttons
-            $('.delete-schema-btn').on('click', function (e) {
+            $('body').on('click', '.delete-staff-btn', function (e) {
                 e.preventDefault();
-                deleteSchemaId = $(this).data('id');
+                deleteStaffId = $(this).data('id');
                 $('#deleteConfirmationModal').modal('show');
             });
 
@@ -181,7 +214,7 @@
                     // Create a form and submit it
                     const form = $('<form>', {
                         'method': 'POST',
-                        'action': '{{ route('admin.staff.delete', ':id') }}'.replace(':id', deleteSchemaId)
+                        'action': '{{ route('admin.staff.delete', ':id') }}'.replace(':id', deleteStaffId)
                     });
 
                     // Add the CSRF token and method fields
@@ -205,10 +238,73 @@
             });
         });
 
-        $(".dateOfBirth").flatpickr({
-            dateFormat: "d.m.Y",
-            maxDate: "15.12.2017"
+        $('body').on('click', '.userDetachBtn', function (e) {
+            e.preventDefault();
+            let userId = $(this).data('user-id');
+            let staffId = $(this).data('staff-id');
+            var name = $(this).data('name');
+
+            var url = '{{ route("admin.staff.detachUser", ":staffId") }}';
+            url = url.replace(':staffId', staffId);
+            $('#detachUserForm').attr('action', url);
+
+            $('#userIdInput').val(userId);
+            $('.name').html(name);
+            $('#detachUserModal').modal('show');
         });
+
+        // Handle the form submission using AJAX
+        $('#detachUserForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#detachUserModal').modal('hide');
+
+            var formData = $(this).serialize();
+
+            // Perform the AJAX request
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle the response on success
+                    tNotify('success', response.message);
+                    $('#edit-staff-body').html(response.updatedHtml);
+                    $('.select2').select2();
+                    $('.flatpickr').flatpickr();
+                    $(".dateOfBirth").flatpickr({
+                        dateFormat: "d.m.Y",
+                        maxDate: "15.12.2017"
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors (if any)
+                    tNotify('error', 'An error occurred while detaching the user.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+        $('body').on('click', '.copy-button', function (e) {
+
+            var targetSelector = $(this).data('target');
+            var $input = $(targetSelector);
+
+            $input.select();
+            document.execCommand('copy');
+
+            // Change the button text and style
+            var $button = $(this);
+            var originalText = $button.text();
+            $button.text('{{ __('Copied') }}');
+            $button.removeClass('copy-button');
+
+            // Revert the button text and style after 2 seconds
+            setTimeout(function () {
+                $button.text(originalText);
+                $button.addClass('copy-button');
+            }, 2000);
+
+        });
+
 
     </script>
 @endsection

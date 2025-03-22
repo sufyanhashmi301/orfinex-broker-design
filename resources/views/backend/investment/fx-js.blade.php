@@ -238,5 +238,100 @@
         setTimeout(function() {
             $button.removeClass('text-success');
         }, 2000);
-    })
+    });
+
+    // Change Account Type
+// When clicking "Update Account Type" button, populate modal with user data
+function view_forex_schema_modal(formData, btn, url) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            console.log('Server Response:', res); // Debug the response
+            if (res) {
+                btn.prop('disabled', false);
+                $('#view_forex_schema_form').html(res);
+            } else if (res.error) {
+                // Ensure res.error is a string
+                const errorMessage = Array.isArray(res.error) ? res.error.join(', ') : res.error;
+                tNotify('warning', errorMessage);
+                btn.prop('disabled', false);
+                setTimeout(function () {
+                    location.reload();
+                }, 900);
+            } else if (res.errors) {
+                btn.prop('disabled', false);
+                NioApp.Form.errors(res, true);
+            }
+        },
+        error: function (xhr) {
+            console.error('AJAX Error:', xhr.responseText);
+            tNotify('warning', 'An error occurred. Please try again.');
+            btn.prop('disabled', false);
+        }
+    });
+}
+
+$('body').on('click', '.dropdown-update-type', function () {
+    var btn = $(this);
+    btn.prop('disabled', true);
+    
+    // Set the login value into your modal's element.
+    $('#update-forex-schema-modal-login').text($(this).data('login'));
+    
+    // Toggle the modal to show.
+    $('#changeForexSchema').modal('toggle');
+    
+    // Prepare FormData with necessary values.
+    let formData = new FormData();
+    formData.append('login', $(this).data('login'));
+    // Optionally, if you pass an id or other data, include it:
+    formData.append('id', $(this).data('id'));
+    
+    // Get the URL for AJAX from data attribute.
+    var url = $(this).data('action');
+    console.log(url);
+    view_forex_schema_modal(formData, btn, url);
+});
+
+$('body').on('click', '#submit-forex-schema', function () {
+    var forexSchemaId = $('#forex-schema-id').val();
+    if (forexSchemaId) {
+        var btn = $(this);
+        btn.prop('disabled', true);
+        let formData = new FormData();
+        formData.append('login', $('#update-forex-schema-modal-login-id').val());
+        formData.append('forex_schema_id', forexSchemaId);
+        update_user_info(formData, btn);
+    }
+});
+
+$('body').on('click', '.dropdown-update-account-type', function () {
+        // Set the login value in the modal
+        $('#update-account-type-modal-login').text($(this).data('login'));
+        $('#update-account-type-modal-login').val($(this).data('login'));
+
+        // Set the selected value in the dropdown
+        $('#account-type').val($(this).data('account_type'));
+    });
+
+$('body').on('click', '#submit-account-type', function () {
+    var accountType = $('#account-type').val();
+    if (accountType) {
+        var btn = $(this);
+        btn.prop('disabled', true);
+        let formData = new FormData();
+        formData.append('login', $('#update-account-type-modal-login').val());
+        formData.append('account_type', accountType);  // Updated field
+        update_user_info(formData, btn);
+    }
+});
 </script>

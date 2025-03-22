@@ -34,21 +34,18 @@ class LeadController extends Controller
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $leads = Lead::with('owner');
             } else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $leads = Lead::whereIn('lead_owner', $attachedUserIds)->with('owner');;
-                } else {
-                    $leads = Lead::where('lead_owner', $loggedInUser->id)->with('owner');;
-                }
+                $leads = Lead::whereIn('lead_owner', [$loggedInUser->id])->with('owner');
             }
 
             return Datatables::of($leads)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.lead.include.__user')
+                ->editColumn('client_email', function($lead) {
+                    return '<span class="lowercase">' . $lead->client_email . '</span>';
+                })
                 ->editColumn('owner', 'backend.lead.include.__owner')
                 ->addColumn('action', 'backend.lead.include.__action')
-                ->rawColumns(['username', 'owner', 'action'])
+                ->rawColumns(['username', 'client_email', 'owner', 'action'])
                 ->make(true);
 
         }
@@ -77,7 +74,7 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $leadValidator = Validator::make($request->all(), [
             'salutation' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -95,21 +92,36 @@ class LeadController extends Controller
             'address' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), __('Error'));
-            return redirect()->back();
+        if ($leadValidator->fails()) {
+            return redirect()->back()->withErrors($leadValidator)->withInput();
         }
 
-        $data = $validator->validated();
+        $dealData = null;
+        if ($request->has('create_deal') && $request->create_deal == 'on') {
+            $dealValidator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'lead_pipeline_id' => 'required|exists:lead_pipelines,id',
+                'pipeline_stage_id' => 'required|exists:pipeline_stages,id',
+                'close_date' => 'required|date',
+                'value' => 'required|numeric',
+            ]);
+
+            if ($dealValidator->fails()) {
+                return redirect()->back()->withErrors($dealValidator)->withInput();
+            }
+
+            $dealData = $dealValidator->validated();
+        }
 
         DB::beginTransaction();
 
         try {
+            $lead = Lead::create($leadValidator->validated());
 
-            $lead = Lead::create($data);
-
-            if ($request->has('create_deal') && $request->create_deal == 'on') {
-                $this->storeDeal($request, $lead);
+            if ($dealData) {
+                $dealData['added_by'] = auth()->id();
+                $dealData['lead_id'] = $lead->id;
+                Deal::create($dealData);
             }
 
             DB::commit();
@@ -168,7 +180,7 @@ class LeadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
+        $validator = $request->validate([
             'salutation' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -188,7 +200,7 @@ class LeadController extends Controller
 
         $lead = Lead::findOrFail($id);
 
-        $lead->update($data);
+        $lead->update($validator);
         notify()->success(__('Lead updated successfully.'));
         return redirect()->route('admin.lead.index');
     }
@@ -219,8 +231,7 @@ class LeadController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), __('Error'));
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $data = $validator->validated();

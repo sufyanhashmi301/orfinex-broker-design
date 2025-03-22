@@ -25,7 +25,7 @@
                         </div>
                         <div class="web-form-field full-field">
                             <label class="form-label">Issue Description</label>
-                            <textarea id="description" class="form-control basicTinymce" name="desc" rows="4" style="height: 80px"></textarea>
+                            <textarea id="description" class="form-control" name="desc" rows="4" style="height: 80px"></textarea>
                         </div>
                         <div class="web-form-field full-field">
                             <label class="form-label">Attach File</label>
@@ -218,253 +218,257 @@
 @endsection
 @section('system-script')
     <script type="text/javascript">
-            let _wbf = (function () {
-                var code;
-                const captchaNeeded = false;
-                window.onload = function () {
-                    generateCaptcha();
-                    multiSelectWithoutCtrl();
-                    const numberFields = document.querySelectorAll('[type^="number"]');
-                    numberFields.forEach(function (element) {
-                        element.addEventListener("keydown", (e) => {
-                            const key = e.which || e.keyCode || 0;
-                            if (
-                                e.target.hasAttribute("maxLength") &&
-                                e.target.value?.length >= e.target.getAttribute("maxLength") &&
-                                key >= 48 &&
-                                key <= 57
-                            ) {
-                                event.preventDefault();
-                            }
-                        });
-                    });
-                };
-                const multiSelectWithoutCtrl = () => {
-                    let options = document.querySelectorAll('[name^="UDF_NMULTI"] option');
-                    options.forEach(function (element) {
-                        element.addEventListener(
-                            "mousedown",
-                            function (e) {
-                                e.preventDefault();
-                                element.parentElement.focus();
-                                this.selected = !this.selected;
-                                return false;
-                            },
-                            false
-                        );
-                    });
-                    let multiFields = document.querySelectorAll('[name^="UDF_NMULTI"]');
-                    multiFields.forEach(function (element) {
-                        element.addEventListener("focus", (event) => {
-                            element.blur();
-                        });
-                    });
-                };
-                function generateCaptcha() {
-                    if (captchaNeeded) {
-                        document.getElementById("captcha").innerHTML = "";
-                        var charsArray =
-                            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!#$%";
-                        var lengthOtp = 6;
-                        var captcha = [];
-                        for (var i = 0; i < lengthOtp; i++) {
-                            var index = Math.floor(Math.random() * charsArray.length + 1);
-                            if (captcha.indexOf(charsArray[index]) == -1)
-                                captcha.push(charsArray[index]);
-                            else i--;
+        $('#description').summernote({
+            height: 150,
+        });
+
+        let _wbf = (function () {
+            var code;
+            const captchaNeeded = false;
+            window.onload = function () {
+                generateCaptcha();
+                multiSelectWithoutCtrl();
+                const numberFields = document.querySelectorAll('[type^="number"]');
+                numberFields.forEach(function (element) {
+                    element.addEventListener("keydown", (e) => {
+                        const key = e.which || e.keyCode || 0;
+                        if (
+                            e.target.hasAttribute("maxLength") &&
+                            e.target.value?.length >= e.target.getAttribute("maxLength") &&
+                            key >= 48 &&
+                            key <= 57
+                        ) {
+                            event.preventDefault();
                         }
-                        var canv = document.createElement("canvas");
-                        canv.id = "captcha";
-                        canv.width = 100;
-                        canv.height = 50;
-                        var ctx = canv.getContext("2d");
-                        ctx.font = "25px Georgia";
-                        ctx.strokeText(captcha.join(""), 0, 30);
-                        code = captcha.join("");
-                        document.getElementById("captcha").appendChild(canv);
-                    }
-                }
-                function addAttachment() {
-                    var fileInput = document.getElementById("uploadfile");
-                    var filename = fileInput.files[0].name;
-                    document.getElementById("filename").innerHTML = filename;
-                    document.getElementById("filename").style.display = "block";
-                }
-                function removeAttachement() {
-                    document.getElementById("uploadfile").value = "";
-                    document.getElementById("filename").value = "";
-                    document.getElementById("filename").style.display = "none";
-                }
-                function validateForm() {
-                    if (document.getElementById("uploadfile").value != "") {
-                        var fsize =
-                            document.getElementById("uploadfile").files[0].size / 1024 / 1024;
-                        if (fsize > 125) {
-                            alert("File size exceeds 125 MB");
+                    });
+                });
+            };
+            const multiSelectWithoutCtrl = () => {
+                let options = document.querySelectorAll('[name^="UDF_NMULTI"] option');
+                options.forEach(function (element) {
+                    element.addEventListener(
+                        "mousedown",
+                        function (e) {
+                            e.preventDefault();
+                            element.parentElement.focus();
+                            this.selected = !this.selected;
                             return false;
-                        }
+                        },
+                        false
+                    );
+                });
+                let multiFields = document.querySelectorAll('[name^="UDF_NMULTI"]');
+                multiFields.forEach(function (element) {
+                    element.addEventListener("focus", (event) => {
+                        element.blur();
+                    });
+                });
+            };
+            function generateCaptcha() {
+                if (captchaNeeded) {
+                    document.getElementById("captcha").innerHTML = "";
+                    var charsArray =
+                        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!#$%";
+                    var lengthOtp = 6;
+                    var captcha = [];
+                    for (var i = 0; i < lengthOtp; i++) {
+                        var index = Math.floor(Math.random() * charsArray.length + 1);
+                        if (captcha.indexOf(charsArray[index]) == -1)
+                            captcha.push(charsArray[index]);
+                        else i--;
                     }
-                    var formName = document.fileabugform.subject.value;
-                    var eMail = document.fileabugform.email.value.trim();
-                    document.fileabugform.email.value = eMail;
-                    if (formName == null || formName == "") {
-                        alert("Please enter Issue name");
+                    var canv = document.createElement("canvas");
+                    canv.id = "captcha";
+                    canv.width = 100;
+                    canv.height = 50;
+                    var ctx = canv.getContext("2d");
+                    ctx.font = "25px Georgia";
+                    ctx.strokeText(captcha.join(""), 0, 30);
+                    code = captcha.join("");
+                    document.getElementById("captcha").appendChild(canv);
+                }
+            }
+            function addAttachment() {
+                var fileInput = document.getElementById("uploadfile");
+                var filename = fileInput.files[0].name;
+                document.getElementById("filename").innerHTML = filename;
+                document.getElementById("filename").style.display = "block";
+            }
+            function removeAttachement() {
+                document.getElementById("uploadfile").value = "";
+                document.getElementById("filename").value = "";
+                document.getElementById("filename").style.display = "none";
+            }
+            function validateForm() {
+                if (document.getElementById("uploadfile").value != "") {
+                    var fsize =
+                        document.getElementById("uploadfile").files[0].size / 1024 / 1024;
+                    if (fsize > 125) {
+                        alert("File size exceeds 125 MB");
                         return false;
                     }
-                    if (eMail == null || eMail == "") {
-                        alert("Please enter a valid email address");
+                }
+                var formName = document.fileabugform.subject.value;
+                var eMail = document.fileabugform.email.value.trim();
+                document.fileabugform.email.value = eMail;
+                if (formName == null || formName == "") {
+                    alert("Please enter Issue name");
+                    return false;
+                }
+                if (eMail == null || eMail == "") {
+                    alert("Please enter a valid email address");
+                    return false;
+                }
+                var atpos = eMail.indexOf("@");
+                var dotpos = eMail.lastIndexOf(".");
+                if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= eMail.length) {
+                    alert("Please enter a valid email address");
+                    return false;
+                }
+                if (captchaNeeded) {
+                    if (document.getElementById("input_captcha") == null) {
+                        alert("Invalid Captcha");
                         return false;
                     }
-                    var atpos = eMail.indexOf("@");
-                    var dotpos = eMail.lastIndexOf(".");
-                    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= eMail.length) {
-                        alert("Please enter a valid email address");
+                    if (code != document.getElementById("input_captcha").value) {
+                        generateCaptcha();
+                        alert("Invalid Captcha");
+                        document.getElementById("input_captcha").value = "";
                         return false;
                     }
-                    if (captchaNeeded) {
-                        if (document.getElementById("input_captcha") == null) {
-                            alert("Invalid Captcha");
-                            return false;
-                        }
-                        if (code != document.getElementById("input_captcha").value) {
-                            generateCaptcha();
-                            alert("Invalid Captcha");
-                            document.getElementById("input_captcha").value = "";
-                            return false;
-                        }
+                }
+                const maxSelectable = 20;
+                const mandatoryFields = document.querySelectorAll('[data-mand="true"]');
+                for (var idx = 0; idx < mandatoryFields.length; idx++) {
+                    var currDiv = mandatoryFields[idx];
+                    if (currDiv.value == undefined || currDiv.value.trim() == "") {
+                        alert("The mandatory fields cannot be empty");
+                        return false;
                     }
-                    const maxSelectable = 20;
-                    const mandatoryFields = document.querySelectorAll('[data-mand="true"]');
-                    for (var idx = 0; idx < mandatoryFields.length; idx++) {
-                        var currDiv = mandatoryFields[idx];
-                        if (currDiv.value == undefined || currDiv.value.trim() == "") {
-                            alert("The mandatory fields cannot be empty");
-                            return false;
-                        }
-                    }
-                    var customfields = document.getElementsByClassName("customFields");
-                    const maxFieldMaxLengths = { multiline: 1000, singleline: 150 };
-                    for (i = 0; i < customfields.length; i++) {
-                        var name = customfields[i].getAttribute("name");
-                        var fieldType = customfields[i].getAttribute("fieldType");
-                        var label = customfields[i].getAttribute("data-lable-name");
+                }
+                var customfields = document.getElementsByClassName("customFields");
+                const maxFieldMaxLengths = { multiline: 1000, singleline: 150 };
+                for (i = 0; i < customfields.length; i++) {
+                    var name = customfields[i].getAttribute("name");
+                    var fieldType = customfields[i].getAttribute("fieldType");
+                    var label = customfields[i].getAttribute("data-lable-name");
+                    if (
+                        fieldType === "Date" &&
+                        customfields[i].value != null &&
+                        customfields[i].value != ""
+                    ) {
                         if (
-                            fieldType === "Date" &&
-                            customfields[i].value != null &&
-                            customfields[i].value != ""
-                        ) {
-                            if (
-                                !customfields[i].value.match(
-                                    /^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2})$/
-                                )
-                            ) {
-                                alert("Please enter a valid date");
-                                return false;
-                            }
-                        }
-                        if (
-                            fieldType === "dateandtime" &&
-                            customfields[i].value != null &&
-                            customfields[i].value != ""
-                        ) {
-                            if (
-                                !customfields[i].value.match(
-                                    /^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2}) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$/
-                                )
-                            ) {
-                                alert("Please enter a valid date");
-                                return false;
-                            }
-                        }
-                        if (
-                            name.startsWith("UDF_NLONG") &&
-                            customfields[i].value != null &&
-                            customfields[i].value != ""
-                        ) {
-                            if (!customfields[i].value.match(/^[0-9]\d*$/)) {
-                                alert("Please enter numeric value for " + label + "");
-                                return false;
-                            }
-                        }
-                        if (
-                            (fieldType == "multiuserpicklist" || fieldType == "multipicklist") &&
-                            customfields[i].selectedOptions.length > maxSelectable
-                        ) {
-                            alert("{0} cannot exceed 20 values".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            fieldType == "phone" &&
-                            customfields[i].value != "" &&
-                            (!customfields[i].value.match(/^[0-9-( )+]+$/) ||
-                                customfields[i].value.length > 15)
-                        ) {
-                            alert("Enter a valid phone number in {0} ".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            fieldType == "email" &&
-                            customfields[i].value != "" &&
                             !customfields[i].value.match(
-                                /^[\w](['A-Za-z0-9._%\-+]*@[A-Za-z0-9-]+(\.[a-zA-Z0-9-]{1,22}){0,9}\.[a-zA-Z]{2,22})$/
-                            )
-                        ) {
-                            alert("Enter a valid email ID in {0} ".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            fieldType == "url" &&
-                            customfields[i].value != "" &&
-                            !customfields[i].value.match(
-                                "^(?:(ftp|http|https)://|www.)?[a-zA-Z0-9]+([-\\.][a-zA-Z0-9]+){1,}(\\.[a-zA-Z0-9]{2,5})?(:[0-9]{1,5})?(/.*)?$ "
-                            )
-                        ) {
-                            alert("Enter a valid URL in {0} ".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            (fieldType == "decimal" || fieldType == "currency") &&
-                            customfields[i].value != "" &&
-                            !/^-{0,1}\d*\.{0,1}\d+$/.test(customfields[i].value)
-                        ) {
-                            alert("Please enter a valid value in {0} ".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            fieldType == "percentage" &&
-                            customfields[i].value != "" &&
-                            !/^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/.test(customfields[i].value)
-                        ) {
-                            alert("Please enter a valid value in {0}".replace("{0}", label));
-                            return false;
-                        }
-                        if (
-                            (fieldType == "multiline" || fieldType == "singleline") &&
-                            customfields[i].value != "" &&
-                            customfields[i].value.length > maxFieldMaxLengths[fieldType]
-                        ) {
-                            alert(
-                                "{0} cannot exceed {1} characters"
-                                    .replace("{0}", label)
-                                    .replace("{1}", maxFieldMaxLengths[fieldType])
-                            );
-                            return false;
-                        }
-                    }
-                    var dueDate = document.getElementById("dueDate")?.value;
-                    if (dueDate != null && dueDate != "") {
-                        if (
-                            !dueDate.match(
-                                /^((0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])-((19|20)\d\d))$/
+                                /^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2})$/
                             )
                         ) {
                             alert("Please enter a valid date");
                             return false;
                         }
                     }
-                    return true;
+                    if (
+                        fieldType === "dateandtime" &&
+                        customfields[i].value != null &&
+                        customfields[i].value != ""
+                    ) {
+                        if (
+                            !customfields[i].value.match(
+                                /^(?:(0[1-9]|1[012])[\- \/.](0[1-9]|[12][0-9]|3[01])[\- \/.](19|20)[0-9]{2}) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$/
+                            )
+                        ) {
+                            alert("Please enter a valid date");
+                            return false;
+                        }
+                    }
+                    if (
+                        name.startsWith("UDF_NLONG") &&
+                        customfields[i].value != null &&
+                        customfields[i].value != ""
+                    ) {
+                        if (!customfields[i].value.match(/^[0-9]\d*$/)) {
+                            alert("Please enter numeric value for " + label + "");
+                            return false;
+                        }
+                    }
+                    if (
+                        (fieldType == "multiuserpicklist" || fieldType == "multipicklist") &&
+                        customfields[i].selectedOptions.length > maxSelectable
+                    ) {
+                        alert("{0} cannot exceed 20 values".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        fieldType == "phone" &&
+                        customfields[i].value != "" &&
+                        (!customfields[i].value.match(/^[0-9-( )+]+$/) ||
+                            customfields[i].value.length > 15)
+                    ) {
+                        alert("Enter a valid phone number in {0} ".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        fieldType == "email" &&
+                        customfields[i].value != "" &&
+                        !customfields[i].value.match(
+                            /^[\w](['A-Za-z0-9._%\-+]*@[A-Za-z0-9-]+(\.[a-zA-Z0-9-]{1,22}){0,9}\.[a-zA-Z]{2,22})$/
+                        )
+                    ) {
+                        alert("Enter a valid email ID in {0} ".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        fieldType == "url" &&
+                        customfields[i].value != "" &&
+                        !customfields[i].value.match(
+                            "^(?:(ftp|http|https)://|www.)?[a-zA-Z0-9]+([-\\.][a-zA-Z0-9]+){1,}(\\.[a-zA-Z0-9]{2,5})?(:[0-9]{1,5})?(/.*)?$ "
+                        )
+                    ) {
+                        alert("Enter a valid URL in {0} ".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        (fieldType == "decimal" || fieldType == "currency") &&
+                        customfields[i].value != "" &&
+                        !/^-{0,1}\d*\.{0,1}\d+$/.test(customfields[i].value)
+                    ) {
+                        alert("Please enter a valid value in {0} ".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        fieldType == "percentage" &&
+                        customfields[i].value != "" &&
+                        !/^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/.test(customfields[i].value)
+                    ) {
+                        alert("Please enter a valid value in {0}".replace("{0}", label));
+                        return false;
+                    }
+                    if (
+                        (fieldType == "multiline" || fieldType == "singleline") &&
+                        customfields[i].value != "" &&
+                        customfields[i].value.length > maxFieldMaxLengths[fieldType]
+                    ) {
+                        alert(
+                            "{0} cannot exceed {1} characters"
+                                .replace("{0}", label)
+                                .replace("{1}", maxFieldMaxLengths[fieldType])
+                        );
+                        return false;
+                    }
                 }
-                return { validateForm: validateForm, generateCaptcha: generateCaptcha };
-            })();
+                var dueDate = document.getElementById("dueDate")?.value;
+                if (dueDate != null && dueDate != "") {
+                    if (
+                        !dueDate.match(
+                            /^((0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])-((19|20)\d\d))$/
+                        )
+                    ) {
+                        alert("Please enter a valid date");
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return { validateForm: validateForm, generateCaptcha: generateCaptcha };
+        })();
     </script>
 @endsection

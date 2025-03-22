@@ -4,11 +4,13 @@
 @endsection
 @section('content')
 
-    @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)
-            @include('frontend::referral.include.__dashboard')
-            @include('frontend::referral.modal.__qr_code')
-        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+{{--    @if(request()->routeIs('user.referral'))--}}
+{{--        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)--}}
+{{--            @include('frontend::referral.include.__dashboard')--}}
+{{--            @include('frontend::referral.modal.__qr_code')--}}
+{{--        @else--}}
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING )
+
             <div class="card basicTable_wrapper items-center justify-center">
                 <div class="card-body p-6">
                     <div class="max-w-2xl progress-steps-form">
@@ -42,7 +44,8 @@
                     </div>
                 </div>
             </div>
-        @else
+       @elseif((auth()->user()->ib_status == \App\Enums\IBStatus::UNPROCESSED) && !isset(auth()->user()->ref_id))
+
             <div class="card">
                 <div class="p-6">
                     <h4 class="card-title mb-2">
@@ -157,9 +160,9 @@
                 </div>
             </div>
         @endif
-    @endif
+{{--    @endif--}}
     @if(request()->routeIs('user.referral.members'))
-            @include('frontend::referral.include.__members')
+        @include('frontend::referral.include.__members')
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend::referral.include.__advertisement_material')
@@ -177,6 +180,27 @@
 @endsection
 @section('script')
     <script>
+        (function ($) {
+            "use strict";
+            $('.data-table').DataTable().destroy();
+
+            $(".data-table").DataTable({
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
+                },
+            });
+        })(jQuery);
+
         $('body').on('change', '#language', function () {
             var selectedLanguage = $(this).val();
             $.ajax({
@@ -197,6 +221,7 @@
                 }
             });
         });
+
         $('body').on('click', '.save-btn', function () {
             if ($('#agreement-check').is(':checked')) {
                 var btn = $(this);

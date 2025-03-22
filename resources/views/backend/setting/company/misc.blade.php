@@ -60,29 +60,3 @@
         </div>
     </div>
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('global/summernote/summernote-lite.min.css') }}">
-@endsection
-@section('script')
-    <script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
-    <script>
-        $('.summernote').summernote({
-            height: 150,
-            minHeight: null,
-            maxHeight: null,
-            focus: true,
-            callbacks: {
-                onChange: function(contents, $editable) {
-
-                    var markupStr = contents;
-                    markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
-
-                    var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
-
-                    html_container.val(markupStr);
-                }
-            }
-        });
-
-    </script>
-@endsection

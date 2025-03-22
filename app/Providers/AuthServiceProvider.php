@@ -39,16 +39,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         VerifyEmail::toMailUsing(function ($notifiable) {
-            $verifyUrl = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-                [
-                    'id' => $notifiable->getKey(),
-                    'hash' => sha1($notifiable->getEmailForVerification()),
-                ]
-            );
+
+
             $shortcodes = [
-                '[[token]]' => $verifyUrl,
+                '[[code]]' => $notifiable->verification_code,
                 '[[full_name]]' => $notifiable->full_name,
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),

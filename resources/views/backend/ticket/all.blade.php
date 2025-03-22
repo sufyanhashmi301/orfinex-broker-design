@@ -258,19 +258,28 @@
                 });
                 $('#client_input').select2({
                     dropdownParent: $('#newTicketModal'),
+                    ajax: {
+                        url: '{{ route("admin.user.search") }}',
+                        dataType: 'json',
+                        delay: 250,
+                        processResults: function (data) {
+                            return {
+                                results: data.results
+                            };
+                        },
+                        cache: true
+                    },
                     templateResult: function(data) {
                         if (!data.id) {
                             return data.text;
                         }
 
-                        // Create a custom option template
-                        var avatar = $(data.element).data('avatar');
-                        var email = $(data.element).data('email');
+                        var avatar = data.avatar;
+                        var email = data.email;
                         var text = data.text;
 
-                        // Return custom HTML for each option
-                        var $container = $(
-                            `<div class="flex items-center">
+                        var $container = $(`
+                            <div class="flex items-center">
                                 <div class="flex-none">
                                     <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
                                         <img src="${avatar}" alt="" class="w-full h-full rounded-[100%] object-cover">
@@ -284,10 +293,13 @@
                                         ${email}
                                     </div>
                                 </div>
-                            </div>`
-                        );
+                            </div>
+                        `);
                         return $container;
                     },
+                    templateSelection: function(data) {
+                        return data.text;
+                    }
                 });
                 $('#assigned_to').select2({
                     dropdownParent: $('#newTicketModal'),
@@ -295,7 +307,7 @@
                     templateSelection: formatUser,
                 });
             });
-        })
+        });
 
         $('body').on('click', '#assignTicket', function (event) {
             "use strict";

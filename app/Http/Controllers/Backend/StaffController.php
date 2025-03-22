@@ -7,6 +7,9 @@ use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
+use App\Models\IbGroup;
+use App\Models\ForexSchema;
+use App\Models\ForexAccount;
 use App\Traits\ImageUpload;
 use Arr;
 use DB;
@@ -26,6 +29,7 @@ use Spatie\Permission\Models\Role;
 class StaffController extends Controller
 {
     use ImageUpload;
+
     /**
      * Display a listing of the resource.
      *
@@ -74,12 +78,18 @@ class StaffController extends Controller
 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
-        $departments = Department::with('children')->whereNull('parent_id')->get();
-        $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.create', compact('roles','departments','designations'))->render();
+        if ($request->ajax()) {
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+            $view = view('backend.staff.create', compact('roles', 'departments', 'designations'))->render();
+
+            // Send back the view HTML as a response
+            return response()->json(['html' => $view]);
+        }
     }
 
     /**
@@ -103,7 +113,7 @@ class StaffController extends Controller
             'date_of_joining' => 'nullable|date',
             'work_phone' => 'nullable|string',
             'phone' => 'nullable|string',
-             'key' => 'nullable|string',
+            'key' => 'nullable|string',
         ]);
 
         // If validation fails, return error
@@ -126,6 +136,11 @@ class StaffController extends Controller
         $input['work_phone'] = $input['work_phone'] ?: null;
         $input['phone'] = $input['phone'] ?: null;
 
+        if ($request->hasFile('avatar')) {
+            $logo = self::imageUploadTrait($request->file('avatar'));
+            $input['avatar'] = $logo;
+        }
+
         // Create the new admin record
         $admin = Admin::create($input);
         $admin->assignRole($request->input('role'));
@@ -141,7 +156,7 @@ class StaffController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return string
      */
     public function edit($id)
@@ -150,17 +165,15 @@ class StaffController extends Controller
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        $users = User::all(); // Fetch all users
-        $attachedUsers = $staff->users; // Fetch attached users
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function update(Request $request, $id)
@@ -172,27 +185,13 @@ class StaffController extends Controller
         }
 
         try {
-//            if (auth()->user()->hasRole('Super-Admin')) {
-//                $validator = Validator::make($request->all(), [
-//                    'key' => 'required|string',
-//                ]);
-//
-//                if ($validator->fails()) {
-//                    return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
-//                }
-//
-//                $staff->update(['key' => $request->input('key')]);
-//
-//                return response()->json(['success' => true, 'message' => 'Key updated successfully.']);
-//            }
-
             $validator = Validator::make($request->all(), [
-                'name'        => 'required',
-                'email'       => 'required|email|unique:admins,email,' . $id,
-                'password'    => 'nullable|same:confirm-password',
-                'role'        => ['nullable', Rule::notIn('Super-Admin')],
-                'status'      => 'boolean',
-                'department'  => 'nullable|exists:departments,id',
+                'name' => 'required',
+                'email' => 'required|email|unique:admins,email,' . $id,
+                'password' => 'nullable|same:confirm-password',
+                'role' => ['nullable', Rule::notIn('Super-Admin')],
+                'status' => 'boolean',
+                'department' => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
             ]);
 
@@ -201,7 +200,6 @@ class StaffController extends Controller
             }
 
             $input = $request->all();
-//            dd($input);
             $input['employee_id'] = $request->input('employee_id') ?: null;
             $input['department_id'] = $request->input('department_id') ?: null;
             $input['designation_id'] = $request->input('designation_id') ?: null;
@@ -218,6 +216,13 @@ class StaffController extends Controller
                 $input['avatar'] = $logo;
             }
 
+            if ($staff->getRoleNames()->first() === 'Super-Admin') {
+                return response()->json([
+                    'warning' => true,
+                    'message' => 'Super admin not changeable!',
+                ]);
+            }
+
             $staff->update($input);
 
             if ($request->filled('role')) {
@@ -225,15 +230,27 @@ class StaffController extends Controller
                 $staff->assignRole($request->input('role'));
             }
 
-            if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
-                $staff->users()->sync($request->input('user_ids', []));
-            }
+            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $departments = Department::with('children')->whereNull('parent_id')->get();
+            $designations = Designation::with('children')->whereNull('parent_id')->get();
 
-            return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+            notify()->success('Staff updated successfully!');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Staff updated successfully!',
+                'updatedHtml' => $updatedStaff
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Recursive function to fetch referral network.
+     */
 
     protected function invalidateUserSession($user)
     {
@@ -259,7 +276,7 @@ class StaffController extends Controller
     {
 
         $user = Admin::find($id);
-        if (null == $user->google2fa_secret){
+        if (null == $user->google2fa_secret) {
             $google2fa = app('pragmarx.google2fa');
             $secret = $google2fa->generateSecretKey();
             //dd($user,$google2fa,$secret);
@@ -270,10 +287,12 @@ class StaffController extends Controller
 
         return view('backend.staff.security.index', compact('user'));
     }
+
     public function twoFaPin()
     {
         return view('backend.auth.two_fa_pin');
     }
+
     public function twoFa()
     {
 
@@ -330,15 +349,69 @@ class StaffController extends Controller
 
     public function destroy($id)
     {
-        $staff = Admin::find($id);
-        if ($staff->getRoleNames()->first() === 'Super-Admin') {
-            notify()->warning('Super admin not deleteble');
+        DB::beginTransaction();
+
+        try {
+            $staff = Admin::find($id);
+            if ($staff->getRoleNames()->first() === 'Super-Admin') {
+                notify()->warning('Super admin not deleteble');
+                return redirect()->back();
+            }
+            if ($staff->users()->exists()) {
+                $staff->users()->detach();
+            }
+
+            $staff->delete();
+
+            DB::commit();
+
+            notify()->success('staff deleted successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            \Log::error('Error deleting staff: ' . $e->getMessage());
+
+            notify()->error('An error occurred while deleting the staff. Please try again.', 'Error');
             return redirect()->back();
         }
-        $staff->delete();
+    }
 
-        notify()->success('staff deleted successfully');
+    public function staffLogin($id)
+    {
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->getRoleNames()->contains('Super-Admin')) {
 
+            session(['super_admin_id' => Auth::guard('admin')->user()->id]);
+
+            Auth::guard('admin')->loginUsingId($id);
+
+            session(['impersonated_id' => $id]);
+
+            notify()->success('Logged in as staff successfully');
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
+        return redirect()->back();
+    }
+
+    public function stopImpersonation()
+    {
+        if (Auth::guard('admin')->check() && session('impersonated_id')) {
+
+            $superAdminId = session('super_admin_id');
+
+            Auth::guard('admin')->logout();
+
+            Auth::guard('admin')->loginUsingId($superAdminId);
+
+            session()->forget('impersonated_id');
+            session()->forget('super_admin_id');
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        notify()->error('Unauthorized action.');
         return redirect()->back();
     }
 

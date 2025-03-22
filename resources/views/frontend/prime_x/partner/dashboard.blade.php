@@ -60,11 +60,11 @@
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative rebate') }}
+                            {{ __('Total Rebate') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['net_referrals_rebate'] }} {{$currency}}
+                                {{ $dataCount['monthly_rebate'] }} {{$currency}}
                             </h6>
 {{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
 {{--                                {{ __('-52%') }}--}}
@@ -168,7 +168,7 @@
                     {{ __('Net Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_rebate'] }} {{$currency}}
+                    {{ $dataCount['net_rebate'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -269,7 +269,11 @@
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                             <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
                         </span>
+
                     </div>
+{{--                    <p class="referral-joined text-sm dark:text-white mb-4 sm:mb-0">--}}
+{{--                        {{ $getReferral->relationships()->count() }} {{ __('peoples are joined by using this URL') }}--}}
+{{--                    </p>--}}
                 </div>
             </div>
             {{--            {{dd($maxLevelOrder)}}--}}

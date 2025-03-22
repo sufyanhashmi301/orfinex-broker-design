@@ -33,8 +33,10 @@
                                     value="{{$schema->title}}"
                                     class="form-control"
                                     placeholder="Account Title"
-                                    required
                                 />
+                                @error('title')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 schema-badge">
@@ -47,15 +49,21 @@
                                     name="badge"
                                     value="{{$schema->badge}}"
                                 />
+                                @error('badge')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2 ">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select IB Type:') }}</label>
-                                <select name="type" id="" class="form-control w-100" required>
+                                <select name="type" id="" class="form-control w-100">
                                     <option value="ib" @if($schema->type == 'ib') selected @endif>{{__("IB")}}</option>
                                     <option value="multi_ib" @if($schema->type == 'multi_ib') selected @endif>{{__("Multi IB")}}</option>
                                 </select>
+                                @error('type')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
 
                         </div>
@@ -68,8 +76,10 @@
                                     value="{{$schema->group}}"
                                     class="form-control"
                                     placeholder="MT5 Group"
-                                    required
                                 />
+                                @error('group')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
 
@@ -77,8 +87,9 @@
                             <div class="input-area fw-normal">
                                 <label for="" class="form-label">{{ __('Detail:') }}</label>
                                 <div class="site-editor">
-                                <textarea class="basicTinymce" name="desc">{{$schema->desc}}</textarea>
+                                    <textarea class="summernote">{{$schema->desc}}</textarea>
                                 </div>
+                                <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                             </div>
                         </div>
                         <div class="lg:col-span-1 col-span-2">

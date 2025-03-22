@@ -63,7 +63,7 @@
                             </label>
                             <div class="relative">
                                 <input type="{{$field['type']}}" name="{{ $field['name'] }}"
-                                   class="form-control @if($errors->has($field['name'])) has-error @endif"
+                                   class="form-control !pr-12 @if($errors->has($field['name'])) has-error @endif"
                                    value="{{oldSetting($field['name'],$section)}}"
                                    required="">
                                 @if($field['name'] == 'webterminal_width' || $field['name'] == 'webterminal_height')

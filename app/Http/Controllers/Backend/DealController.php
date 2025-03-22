@@ -19,6 +19,7 @@ class DealController extends Controller
      */
     public function index(Request $request)
     {
+        $loggedInUser = auth()->user();
         $pipelinesbox = LeadPipeline::get();
 
         $selectedPipelineId = $request->get('pipeline_id');
@@ -31,6 +32,14 @@ class DealController extends Controller
             $pipeline = LeadPipeline::with(['stages.deals.lead'])
                 ->where('default', true)
                 ->first();
+        }
+
+        if (!$loggedInUser->hasRole('Super-Admin')){
+            $pipeline->stages->each(function($stage) use ($loggedInUser) {
+                $stage->deals = $stage->deals->filter(function($deal) use ($loggedInUser) {
+                    return $deal->lead->lead_owner == $loggedInUser->id;
+                });
+            });
         }
 
         if ($request->ajax()) {
@@ -72,6 +81,7 @@ class DealController extends Controller
             'close_date' => 'required|date',
             'value' => 'required|numeric',
         ]);
+
         $data['added_by'] = auth()->id();
 
         $deal = Deal::create($data);

@@ -20,11 +20,11 @@
     .dark .app-header, .dark .logo-segment {
         background-color: rgba({{ implode(' ', getColorFromSettings('header_bg_dark')) }} / var(--tw-bg-opacity));
     }
-    .app-header .header-text-color {
+    .app-header .header-text-color, .mobileUserInfo .header-text-color {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('header_color')) }} / var(--tw-text-opacity));
     }
-    .dark .app-header .header-text-color {
+    .dark .app-header .header-text-color, .dark .mobileUserInfo .header-text-color {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('header_color_dark')) }} / var(--tw-text-opacity));
     }
@@ -172,19 +172,11 @@
     #page-loader .dot {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
-    .bg-primary, .btn-primary{
+    .bg-primary {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
-    .btn-primary {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-ring-opacity));
-    }
-    .bg-secondary, .btn-secondary{
+    .bg-secondary {
         background-color: rgba({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-bg-opacity));
-    }
-    .btn-secondary {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-ring-opacity));
     }
     .bg-success, .btn-success, .switch-field input:checked + label {
         background-color: rgba({{ implode(' ', getColorFromSettings('success_color')) }} / var(--tw-bg-opacity));
@@ -223,7 +215,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('warning_color')) }} / var(--tw-text-opacity));
     }
-    .text-danger{
+    .text-danger, .error{
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('danger_color')) }} / var(--tw-text-opacity));
     }
@@ -237,6 +229,9 @@
         border-color:  rgba({{ implode(' ', getColorFromSettings('warning_color')) }});
     }
     .border-danger {
+        border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
+    }
+    .\!border-danger {
         border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
     }
     .badge-primary, .tag.label-info{
@@ -302,5 +297,10 @@
     }
     .fill-primary {
         fill: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+    }
+
+    #tabs-tab .nav-link.active {
+        border-bottom-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
+        color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
     }
 </style>

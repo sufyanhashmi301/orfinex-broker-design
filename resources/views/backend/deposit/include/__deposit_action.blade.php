@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between mb-5">
+<div class="flex items-center justify-between p-5">
     <h3 class="text-xl font-medium dark:text-white capitalize">
         {{ __('Deposit Approval Action') }}
     </h3>
@@ -9,7 +9,7 @@
         <span class="sr-only">Close modal</span>
     </button>
 </div>
-<div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+<div class="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
     <form action="{{ route('admin.deposit.action.now') }}" method="post" class="space-y-5">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
@@ -23,7 +23,7 @@
         <div class="input-area">
             <label class="form-label" for="">{{ __('Deposited Amount:') }}</label>
             <div class="joint-input relative">
-                <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+                <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="currency">
                     {{$currency}}
                 </span>
@@ -33,7 +33,7 @@
             <div class="input-area">
                 <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
                 <div class="joint-input relative">
-                    <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+                    <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="converted-currency">
                         {{$data->pay_currency}}
                     </span>
@@ -92,6 +92,7 @@
 
             $('#converted-amount').val(parseFloat((amount * globalData.rate).toFixed(4)).toString())
         })
+
         $('#converted-amount').on('keyup', function (e) {
             "use strict"
             var converted_amount = $(this).val();

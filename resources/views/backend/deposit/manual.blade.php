@@ -60,11 +60,13 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -88,7 +90,7 @@
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text deposit-action">
 
                         </div>
                     </div>
@@ -139,11 +141,13 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},
                     {data: 'charge', name: 'charge'},
                     {data: 'method', name: 'method'},
+                    {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]

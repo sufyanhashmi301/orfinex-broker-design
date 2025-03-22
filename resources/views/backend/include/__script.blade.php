@@ -11,7 +11,7 @@
 <script src="{{ asset('backend/js/main.js?var=5') }}"></script>
 <script src="{{ asset('global/js/pusher.min.js') }}"></script>
 <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
-<script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
 <script src="{{ asset('global/js/app.js') }}"></script>
 <script src="{{ asset('global/js/custom.js?var=6') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
@@ -22,9 +22,9 @@
 @stack('single-script')
 <script>
 
-    function removeLoader(loader) {
+    function hideLoader(loader) {
         if (loader) {
-            loader.parentElement.removeChild(loader);
+            loader.style.display = 'none';
         }
     }
 
@@ -46,16 +46,17 @@
 
             const transitionEndHandler = () => {
                 loader.removeEventListener('transitionend', transitionEndHandler);
-                removeLoader(loader);
+                hideLoader(loader);
             };
 
             loader.addEventListener('transitionend', transitionEndHandler);
 
             setTimeout(() => {
-                removeLoader(loader);
+                hideLoader(loader);
             }, removalTimeout);
         }
     });
+
 
     $(document).ready(function () {
         function calculateHeights() {

@@ -53,9 +53,7 @@ class AppController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         try {
@@ -63,6 +61,8 @@ class AppController extends Controller
                 'subject' => $request->subject,
                 'message' => $request->message,
             ];
+
+            $input['message'] = str_replace(['{', '}'], ['<', '>'], $request->message);
 
             $shortcodes = [
                 '[[subject]]' => $input['subject'],

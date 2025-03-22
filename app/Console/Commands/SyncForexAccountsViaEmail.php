@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 use App\Enums\ForexAccountStatus;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\ForexApiService;
 use Illuminate\Console\Command;
@@ -23,27 +24,27 @@ class SyncForexAccountsViaEmail extends Command
 
     public function handle()
     {
-        // Get the last created ForexAccount
-        $lastForexAccount = ForexAccount::orderBy('id', 'desc')->first();
 
-        if ($lastForexAccount) {
-            $startingUserId = $lastForexAccount->user_id;
+
+        // Get the last created ForexAccount
+//        $lastForexAccount = ForexAccount::orderBy('id', 'desc')->first();
+
+        $startingUserId = setting('last_user_id_sync_via_email_command', $section = null, $default = 1);
             $this->info("Starting from user with ID {$startingUserId}.");
-        } else {
-            $startingUserId = 1;
-            $this->info("No previous forex account found. Starting from the first user.");
-        }
+
 
         // Process users in chunks
-        User::where('id', '>=', $startingUserId)
-            ->orderBy('id')
-            ->chunk(100, function ($users) {
+        $users = User::where('id', '>=', ++$startingUserId)
+            ->orderBy('id')->take(35)->get();
+//            ->chunk(50, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
                     $response = $this->forexApiService->getUserByEmail(['email' => $email]);
 
                     if ($response['success'] && isset($response['result']) && is_array($response['result'])) {
+                        $this->info("Api Response of ID:  {$user->id} for user {$user->email} get successfully.");
+                        Setting::set('last_user_id_sync_via_email_command', $user->id);
                         foreach ($response['result'] as $accountData) {
 
                             // Check if the account with the same login already exists
@@ -53,6 +54,12 @@ class SyncForexAccountsViaEmail extends Command
                                 continue;
                             }
 
+
+                            if (strpos($accountData['group'], 'demo') !== false) {
+                                $accountType = 'demo';
+                            } else {
+                                $accountType = 'real';
+                            }
                             // Determine the ForexSchema and account type based on group
                             $schema = ForexSchema::where('real_swap_free', $accountData['group'])
                                 ->orWhere('real_islamic', $accountData['group'])
@@ -70,12 +77,17 @@ class SyncForexAccountsViaEmail extends Command
                                     $this->error("No valid account type could be determined for group {$accountData['group']}.");
                                     continue;
                                 }
+                            }else{
+                                $schema = ForexSchema::find(1);
+                            }
+
+                            if ($schema) {
 
                                 // Prepare the account data to be saved
                                 $forexAccountData = [
                                     'forex_schema_id' => $schema->id,
                                     'login' => $accountData['login'],
-                                    'account_name' => $accountData['name'],
+                                    'account_name' => 'account-'.$accountData['login'],
                                     'account_type' => $accountType,
                                     'user_id' => $user->id,
                                     'currency' => setting('site_currency', 'global'),
@@ -86,7 +98,7 @@ class SyncForexAccountsViaEmail extends Command
                                     'credit' => $accountData['credit'], // Credit from API response
                                     'status' => ForexAccountStatus::Ongoing,
                                     'created_by' => $user->id,
-                                    'first_min_deposit_paid' => 0,
+                                    'first_min_deposit_paid' => 1,
                                     'trading_platform' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
                                     'server' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
                                     'agent' => $accountData['agent'], // Agent from API response
@@ -95,7 +107,7 @@ class SyncForexAccountsViaEmail extends Command
                                 // Save the account to the database
                                 ForexAccount::create($forexAccountData);
 
-//                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
+                                $this->info("Forex account with login {$accountData['login']} for user {$user->email} synced successfully.");
                             } else {
                                 // Log the missing group and login
                                 $this->error("No matching ForexSchema found for group {$accountData['group']} with login {$accountData['login']}.");
@@ -105,7 +117,7 @@ class SyncForexAccountsViaEmail extends Command
                         $this->error("Failed to fetch account data for user {$user->email}.");
                     }
                 }
-            });
+//            });
 
         $this->info("Forex accounts synchronization completed.");
     }

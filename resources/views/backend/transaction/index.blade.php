@@ -28,7 +28,7 @@
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control h-full" id="type">
                             <option value="">Transaction Type</option>
-                            @foreach (\App\Enums\TxnType::cases() as $txnType)
+                            @foreach (getFilteredTxnTypes() as $txnType)
                                 <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
                             @endforeach
                         </select>
@@ -49,10 +49,19 @@
                     </div>
                     {{-- @can('transaction-export') --}}
                     <div class="input-area relative">
-                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                            {{ __('Export') }}
-                        </button>
+                        <form method="POST" action="{{ route('user.history.transactions.export') }}">
+                            @csrf
+                            <input type="hidden" name="query" value="{{ request('query') }}">
+                            <input type="hidden" name="date" value="{{ request('transaction_date') }}">
+                            <input type="hidden" name="status" value="{{ request('transaction_status') }}">
+                            <input type="hidden" name="type" value="{{ request('transaction_type') }}">
+                            <input type="hidden" name="forex_account" value="{{ request('forex_account') }}">
+                            <button type="submit" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                {{ __('Export') }}
+                            </button>
+                        </form>
+
                     </div>
                     {{-- @endcan --}}
                     <div class="input-area relative">
@@ -76,11 +85,13 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action By') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -103,7 +114,7 @@
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action p-6">
+                        <div class="popup-body-text deposit-action">
 
                         </div>
                     </div>
@@ -151,11 +162,13 @@
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
+                    {data: 'description', name: 'description'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
                     {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
+                    {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]

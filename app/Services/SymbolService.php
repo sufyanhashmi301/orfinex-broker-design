@@ -26,29 +26,26 @@ class SymbolService
         if ($existingSymbol) {
             if($existingSymbol->status==1){
                 if($existingSymbol->symbolGroups()->count() > 0) {
-                    notify()->error(__('Sorry,Cannot disable this symbol because it is still associated with symbol groups. Please detach first'));
-                    return ['success'=>false];
+                    return ['success' => false, 'message' => 'Sorry,Cannot disable this symbol because it is still associated with symbol groups. Please detach first'];
                 }
                 $existingSymbol->status = 0;
             }else{
                 $existingSymbol->status =1;
             }
             $existingSymbol->update();
+            return ['success' => true, 'message' => 'Status Changed successfully'];
+        }else {
 
-            notify()->success(__('Status Changed successfully'));
-            return ['success'=>false];
+            $symbol = new Symbol();
+            $symbol->symbol_id = $data->Symbol_ID;
+            $symbol->symbol = $data->Symbol;
+            $symbol->path = $data->Path;
+            $symbol->description = $data->Description;
+            $symbol->contract_size = $data->ContractSize;
+            $symbol->status = 1;
+            $symbol->save();
         }
-
-        $symbol = new Symbol();
-        $symbol->symbol_id = $data->Symbol_ID;
-        $symbol->symbol = $data->Symbol;
-        $symbol->path = $data->Path;
-        $symbol->description = $data->Description;
-        $symbol->contract_size = $data->ContractSize;
-        $symbol->status = 1;
-        $symbol->save();
-        notify()->success(__('Symbol enabled successfully'));
-        return ['success' => true];
+        return ['success' => true, 'message' => 'Symbol enabled successfully'];
     }
 
     public function storeAllSymbolsFromMt5()
@@ -73,8 +70,7 @@ class SymbolService
                     $existingSymbol->status = 1;
                 }
 
-                $existingSymbol->update();
-                notify()->success(__('Status Changed successfully'));
+                $existingSymbol->save();
 
             } else {
                 $symbolModel = new Symbol();
@@ -85,7 +81,6 @@ class SymbolService
                 $symbolModel->contract_size = $symbol->ContractSize;
                 $symbolModel->status = 1;
                 $symbolModel->save();
-                notify()->success(__('Symbol enabled successfully'));
             }
 
             $successCount++;
@@ -94,6 +89,7 @@ class SymbolService
         // Return the results
         return [
             'success' => $successCount > 0,
+            'message' => 'Symbol enabled successfully',
             'success_count' => $successCount,
             'failure_count' => $failureCount
         ];

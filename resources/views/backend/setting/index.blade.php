@@ -144,7 +144,7 @@
                     @endcan
                     @canany(['internal-transfer-display','external-transfer-display'])
                     <li>
-                        <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Transfers')}}
                         </a>
                     </li>
@@ -380,14 +380,22 @@
                                 </span>
                             </a>
                         </li>
-                        @endcanany
-                        @canany(['admin-sms-template', 'user-sms-template'])
+                    @endcanany
+                    @canany(['admin-sms-template', 'user-sms-template'])
                         <li>
                             <a href="{{ route('admin.template.sms.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('SMS Templates') }}
                             </a>
                         </li>
-                        @endcanany
+                    @endcanany
+                    <li>
+                        <a href="{{ route('admin.template.notification.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Notification Templates') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

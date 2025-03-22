@@ -133,25 +133,49 @@ class ForexAccountController extends GatewayController
             $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)
                 ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
                 ->first();
-            // Check if an account exists
+
             if ($forexAccount) {
-                // Validate if the login is within the range
-                if ($forexAccount->login < $schema->start_range || $forexAccount->login >= $schema->end_range) {
-                    // Reset to start_range if the login is out of range
+                // Get the highest login from the database (even if it's outside the range)
+                $highestLogin = (int) $forexAccount->login;
+
+                if ($highestLogin < $schema->start_range || $highestLogin >= $schema->end_range) {
+                    // If highest login is out of range, reset to start_range
+                    $withinRangeForexAccount = ForexAccount::where('forex_schema_id', $schema->id)
+                        ->whereBetween('login', [$schema->start_range, $schema->end_range - 1])
+                        ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
+                        ->first();
+                    if($withinRangeForexAccount){
+                        $login = (int) $withinRangeForexAccount->login  + 1;
+                    }else{
                     $login = $schema->start_range;
+                    }
                 } else {
-                    // Increment login if within range
-                    $login = ++$forexAccount->login;
+                    // Otherwise, increment login
+                    $login = $highestLogin + 1;
+                }
+
+                // Validate if login exceeds end_range
+                if ($login > $schema->end_range) {
+                    $message = __('Account limit reached! Please ask the admin to increase the range.');
+                    notify()->error($message, 'Error');
+                    return redirect()->back();
                 }
             } else {
-                // Start from start_range if no accounts exist
+                // No accounts exist, so start from start_range
                 $login = $schema->start_range;
             }
+
         }
 
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
+        if($user->phone){
+            $phone = $user->phone;
+        }else{
+            $phone = '+91';
+
+        }
 //        dd($traderType,$group,$server);
 
         if ($traderType == TraderType::MT5) {
@@ -168,7 +192,7 @@ class ForexAccountController extends GatewayController
                 "state" => "",
                 "zipCode" => $user->zip_code,
                 "address" => $user->address,
-                "phone" => $user->phone,
+                "phone" => $phone,
                 "email" => $user->email,
                 "agent" => 0,
                 "account" => "",
@@ -552,6 +576,7 @@ class ForexAccountController extends GatewayController
         if ($request->invest_password) {
 //            $updateUserApiResponse = $this->updateInvestorPassword($request->login, $request->invest_password);
 //        dd($updateUserApiResponse->object());
+
             $data = [
                 'login' => $request->login,
                 'password' => $request->invest_password,

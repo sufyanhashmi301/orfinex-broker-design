@@ -104,7 +104,7 @@
                         <div class="input-area relative position-relative">
                             <label class="form-label" for="">{{ __('Charges:') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" oninput="this.value = validateDouble(this.value)" name="charge"/>
+                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="charge"/>
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                     <select name="charge_type" class="w-full h-full outline-none">
                                         <option value="percentage">{{ __('%') }}</option>
@@ -116,7 +116,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="min_withdraw"/>
+                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="min_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{$currency}}
                                 </span>
@@ -125,7 +125,7 @@
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Maximum Withdraw:') }}</label>
                             <div class="joint-input relative">
-                                <input type="text" class="form-control" name="max_withdraw"/>
+                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="max_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{ $currency}}
                                 </span>
@@ -219,7 +219,7 @@
     <script>
 
         let get_rate = (code) => {
-            
+
             $.ajax({
                 url:  '{{ route("admin.settings.currency.get-rate", ":code") }}'.replace(':code', code),
                 type: 'GET',
@@ -248,14 +248,6 @@
         $('#currency').on('change', function(){
             get_rate($(this).val())
         })
-
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
 
     </script>
     <script>

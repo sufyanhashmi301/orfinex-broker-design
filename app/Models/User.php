@@ -70,6 +70,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'provider_name',
         'provider_id',
         'user_theme',
+        'verification_code',
+        'verification_code_expires_at',
 
     ];
 
@@ -102,8 +104,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     public function staff()
     {
-        return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id');
+        return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id')
+            ->select('admins.id', 'admins.first_name', 'admins.last_name');
     }
+
 
     public function riskProfileTags()
     {
@@ -344,6 +348,20 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             })
             ->whereIn('user_id', $this->referrals()->pluck('id'));
 
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
+    public function totalRebate($days = null)
+    {
+        $query = Transaction::query()
+            ->where('user_id', $this->id) // Add this line to filter by the current user
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::IbBonus);
+            });
         if ($days !== null) {
             $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
         }

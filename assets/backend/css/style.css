@@ -40,7 +40,7 @@
 }
 .admin-notifications > button iconify-icon {
     --tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity));
+    color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
 }
 .admin-notifications > button:hover {
     border-radius: 0.5rem;
@@ -148,7 +148,9 @@
     --tw-text-opacity: 1;
     color: rgb(71 85 105 / var(--tw-text-opacity));
 }
-
+.dataTable td.dataTables_empty {
+    text-align: center;
+}
 .dataTables_wrapper, .basicTable_wrapper {
     display: flex;
     flex-direction: column;
@@ -166,4 +168,11 @@
 .dark .dropdown-menu{
     --tw-bg-opacity: 1;
     background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
+.note-group-select-from-files {
+    display: none;
+}
+.note-modal-footer {
+    height: 70px;
 }

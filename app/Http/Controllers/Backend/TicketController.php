@@ -68,7 +68,7 @@ class TicketController extends Controller
                     $data = $ticketQuery->where('assigned_to', auth()->user()->id);
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
+                    $data = $ticketQuery->get();
                 }
             }
 
@@ -169,6 +169,7 @@ class TicketController extends Controller
             $ticket->assignTo($request->input('assigned_to'));
             $agent = Admin::find($request->input('assigned_to'));
             $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
+//            $this->pushNotify('support_ticket_assignment', $shortcodes, route('admin.ticket.show', $ticket->uuid), $agent->id);
         }
 
         $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);

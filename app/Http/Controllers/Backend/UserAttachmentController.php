@@ -13,6 +13,7 @@ use App\Models\ForexAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
+use DataTables;
 
 class UserAttachmentController extends Controller
 {
@@ -23,10 +24,29 @@ class UserAttachmentController extends Controller
         $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
         $ibGroups = IbGroup::all();
         $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
-        $attachedUsers = $staff->users;
 
-        return view('backend.staff.attach-user', compact('staff', 'roles', 'users', 'ibGroups', 'schemas', 'attachedUsers'));
+        return view('backend.staff.attach-user', compact('staff', 'roles', 'users', 'ibGroups', 'schemas'));
 
+    }
+
+    public function getAttachedUsers(Request $request, $staffId)
+    {
+        if ($request->ajax()) {
+
+            $staff = Admin::find($staffId);
+            $attachedUsers = $staff->users;
+
+            return DataTables::of($attachedUsers)
+                ->addIndexColumn()
+                ->addColumn('email', function ($user) {
+                    return '<span class="lowercase">'.$user->email.'</span>';
+                })
+                ->addColumn('action', function ($user) use ($staff) {
+                    return view('backend.staff.include.__detach_btn', compact('user', 'staff'));
+                })
+                ->rawColumns(['email', 'action'])
+                ->make(true);
+        }
     }
 
     public function attachUser(Request $request, $staffId)
@@ -94,9 +114,6 @@ class UserAttachmentController extends Controller
             $input['ib_groups'] = $newIbGroups;
             $input['account_types'] = $newAccountTypes;
             $staff->update($input);
-
-            // Optionally log or notify about the changes
-            notify()->info('Previous IB Groups: ' . implode(', ', $previousIbGroups) . ' | Previous Account Types: ' . implode(', ', $previousAccountTypes), 'Previous Values');
 
             notify()->success('User attached successfully!');
             return redirect()->back();

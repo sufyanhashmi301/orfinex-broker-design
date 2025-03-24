@@ -105,7 +105,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function staff()
     {
         return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id')
-            ->select('admins.id', 'admins.first_name', 'admins.last_name');
+            ->select('admins.id', 'admins.first_name', 'admins.last_name', 'admins.email');
     }
 
 

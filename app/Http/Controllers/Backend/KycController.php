@@ -772,7 +772,7 @@ public function actionLevel3Now(Request $request)
         }
 
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
-        notify()->success(__(' KYC Updated'));
+        notify()->success(__('User Kyc Updated Successfully'));
         return redirect()->back();
     }
 }

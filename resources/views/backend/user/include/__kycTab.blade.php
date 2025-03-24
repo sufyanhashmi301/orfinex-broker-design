@@ -10,7 +10,7 @@
         </div>
         <div class="card-body p-6">
             <div class="max-w-2xl w-full mx-auto">
-                <form action="{{route('admin.kyc.submit',['id'=>$user->id])}}" method="post">
+                <form action="{{route('admin.kyc.submit',['id'=>$user->id])}}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="space-y-5">
                         <div class="input-area relative">

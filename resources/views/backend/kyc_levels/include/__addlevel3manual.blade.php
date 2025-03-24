@@ -1,6 +1,6 @@
 <!-- Modal Structure -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addKycLevel3Formmodal" tabindex="-1" aria-labelledby="editLevel2" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between gap-3 p-5">
@@ -14,49 +14,59 @@
                 </div>
                 <div class="popup-body-text p-6 pt-5 edit-plugin-section">
 
-                    <form action="{{ route('admin.kyc.storeLevel3') }}" method="post" class="space-y-4">
+                    <form action="{{ route('admin.kyc.storeLevel3') }}" method="post">
                         @csrf
                         <input type="hidden" name="kyc_sub_level_id" value="{{the_hash(5)}}">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Name:') }}</label>
-                            <input type="text" name="name" value="{{ old('name') }}" class="form-control"
-                                   placeholder="KYC Type Name" required/>
-                        </div>
-
-                        <div>
-                            <a href="javascript:void(0)" class="generateCreate btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
-                                {{ __('Add Field option') }}
-                            </a>
-                        </div>
-                        <div class="addOptions">
-
-                        </div>
-                        <div class="max-w-xs">
+                            <div class="space-y-5">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex mb-3 overflow-hidden">
-                                    <input
-                                        type="radio"
-                                        id="active-status-3"
-                                        name="status"
-                                        checked=""
-                                        value="1"
-                                    />
-                                    <label for="active-status-3">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="deactivate-status-3"
-                                        name="status"
-                                        value="0"
-                                    />
-                                    <label for="deactivate-status-3">{{ __('Deactivate') }}</label>
+                                <label class="form-label" for="">{{ __('Name:') }}</label>
+                                <input type="text" name="name" value="{{ old('name') }}" class="form-control"
+                                       placeholder="KYC Type Name" required/>
+                            </div>
+
+                            <div>
+                                <a href="javascript:void(0)" class="generateCreate btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
+                                    {{ __('Add Field option') }}
+                                </a>
+                            </div>
+                            <div class="addOptions">
+
+                            </div>
+                            <div class="max-w-xs">
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Status:') }}</label>
+                                    <div class="switch-field flex mb-3 overflow-hidden">
+                                        <input
+                                            type="radio"
+                                            id="active-status-3"
+                                            name="status"
+                                            checked=""
+                                            value="1"
+                                        />
+                                        <label for="active-status-3">{{ __('Active') }}</label>
+                                        <input
+                                            type="radio"
+                                            id="deactivate-status-3"
+                                            name="status"
+                                            value="0"
+                                        />
+                                        <label for="deactivate-status-3">{{ __('Deactivate') }}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <div class="input-area text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Save Changes') }}
                             </button>
+                            <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
+                               class="btn-close"
+                               data-bs-dismiss="modal"
+                               aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
                         </div>
                     </form>
                 </div>

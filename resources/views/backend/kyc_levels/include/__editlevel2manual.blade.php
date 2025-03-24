@@ -1,6 +1,6 @@
 <!-- Modal Structure -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editLevel2" tabindex="-1" aria-labelledby="editLevel2" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between gap-3 p-5">
@@ -37,11 +37,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submitBtn">
-                            <span class="btn-text"> {{ __('Save Changes') }}</span>
+                        <div class="input-area text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2" id="submitBtn">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                <span class="btn-text"> {{ __('Save Changes') }}</span>
                                 <span class="btn-loader" style="display: none;">Loading...</span>
                             </button>
+                            <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
+                               class="btn-close"
+                               data-bs-dismiss="modal"
+                               aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
                         </div>
                     </form>
                 </div>

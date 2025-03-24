@@ -544,6 +544,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     // Bonus Module
     Route::resource('bonus', BonusController::class);
     Route::post('bonus-add/{user}', [BonusController::class, 'addBonusByAdmin'])->name('bonus.add');
+    Route::get('/bonus-settings', [BonusController::class, 'bonusSettings'])->name('bonus.setting');
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');

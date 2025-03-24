@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @foreach( json_decode($fields, true) as $key => $field)
-    
+
         @if($field['type'] == 'file')
             <div class="input-area">
                 <label for="" class="form-label">{{ __('' . $field['name']) }}</label>
@@ -26,17 +26,15 @@
                 </p>
             </div>
         @elseif($field['type'] == 'textarea')
-    
+
             <div class="input-area md:col-span-2">
                 <div class="progress-steps-form">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('' . $field['name']) }}</label>
-                    <div class="input-group">
-                        <textarea class="form-control" @if($field['validation'] == 'required') required
-                                  @endif placeholder="{{ __('Send Money Note') }}" name="kyc_credential[{{$field['name']}}]"></textarea>
-                    </div>
+                    <textarea class="form-control" @if($field['validation'] == 'required') required
+                              @endif placeholder="{{ __('Send Money Note') }}" name="kyc_credential[{{$field['name']}}]" rows="3"></textarea>
                 </div>
             </div>
-    
+
         @else
             <div class="input-area md:col-span-2">
                 <div class="progress-steps-form">
@@ -47,7 +45,6 @@
                 </div>
             </div>
         @endif
-    
+
     @endforeach
     </div>
-    

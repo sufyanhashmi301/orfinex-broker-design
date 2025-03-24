@@ -268,6 +268,23 @@ class WithdrawController extends Controller
         if (in_array($today, $withdrawOffDays)) {
             abort('403', __('Today is the off day for withdraw'));
         }
+
+            // Check daily send limit for successful transactions only
+            $pendingLimit = setting('pending_withdraw_limit', 'withdraw_settings');
+            $pendingWithdraws = Transaction::where('user_id', \Auth::user()->id)
+                ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
+                ->where('status', TxnStatus::Pending)
+                ->count();
+
+            if ($pendingWithdraws >= $pendingLimit) {
+                notify()->error(
+                    __("You already have a pending withdrawal request. Please contact our support team at :email for assistance.", [
+                        'email' => setting('support_email', 'global')
+                    ]),
+                    __('Error')
+                );
+                return redirect()->back();
+            }
             // Check daily send limit for successful transactions only
             $dailyLimit = setting('withdraw_day_limit', 'fee');
             $todayTransfers = Transaction::where('user_id', \Auth::user()->id)

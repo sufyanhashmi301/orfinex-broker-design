@@ -25,36 +25,36 @@
                     <div class="overflow-hidden basicTable_wrapper">
                         <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
                             <thead>
-                                <tr>
-                                    <th class="table-th">{{ __('Title') }}</th>
-                                    <th class="table-th">{{ __('Level Order') }}</th>
-                                    <th class="table-th">{{ __('Action') }}</th>
-                                </tr>
+                            <tr>
+                                <th class="table-th">{{ __('Title') }}</th>
+                                <th class="table-th">{{ __('Level Order') }}</th>
+                                <th class="table-th">{{ __('Action') }}</th>
+                            </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                @foreach($levels as $level)
-                                    <tr>
-                                        <td class="table-td">
-                                            <strong>{{ $level->title }}</strong>
-                                        </td>
-                                        <td class="table-td">
-                                            {{ $level->level_order }}
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <button type="button" class="action-btn edit-level" data-bs-toggle="modal" data-bs-target="#editLevelModal" data-id="{{ $level->id }}">
-                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                                </button>
+                            @foreach($levels as $level)
+                                <tr>
+                                    <td class="table-td">
+                                        <strong>{{ $level->title }}</strong>
+                                    </td>
+                                    <td class="table-td">
+                                        {{ $level->level_order }}
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <button type="button" class="action-btn edit-level" data-bs-toggle="modal" data-bs-target="#editLevelModal" data-id="{{ $level->id }}">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </button>
 
 
-                                                <button type="button" class="action-btn delete-level" data-bs-toggle="modal" data-bs-target="#deleteLevelModal" data-id="{{ $level->id }}" data-title="{{ $level->title }}">
-                                                    <iconify-icon icon="lucide:trash-2"></iconify-icon>
-                                                </button>
+                                            <button type="button" class="action-btn delete-level" data-bs-toggle="modal" data-bs-target="#deleteLevelModal" data-id="{{ $level->id }}" data-title="{{ $level->title }}">
+                                                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                            </button>
 
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                         <div class="flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5 mt-auto">
@@ -70,37 +70,37 @@
     </div>
 
     <!-- Modals -->
-@include('backend.multi_ib_level.modal.__create_level')
+    @include('backend.multi_ib_level.modal.__create_level')
 
 
 
-@include('backend.multi_ib_level.modal.__edit_level')
+    @include('backend.multi_ib_level.modal.__edit_level')
 
 
 
-@include('backend.multi_ib_level.modal.__delete_level')
+    @include('backend.multi_ib_level.modal.__delete_level')
 
 
 @endsection
 
-@section('scripts')
+@section('script')
     <script>
-   $('body').on('click', '.edit-level', function (event) { // Use the class selector here
-    event.preventDefault();
-    $('#edit-level-body').empty();
-    var id = $(this).data('id'); // Get the ID from the clicked button
+        $('body').on('click', '.edit-level', function (event) { // Use the class selector here
+            event.preventDefault();
+            $('#edit-level-body').empty();
+            var id = $(this).data('id'); // Get the ID from the clicked button
 
-    var url = '{{ route("admin.multi-ib-level.edit", ":id") }}'; // Use the correct route name
-    url = url.replace(':id', id);
+            var url = '{{ route("admin.multi-ib-level.edit", ":id") }}'; // Use the correct route name
+            url = url.replace(':id', id);
 
-    $.get(url, function (data) {
-        $('#edit-level-body').append(data);
-        $('#editLevelModal').modal('show'); // Correct modal ID
-    }).fail(function () {
-        alert('Error loading the edit form.'); // Error handling
-    });
-});
-            $('.delete-level').on('click', function (e) {
+            $.get(url, function (data) {
+                $('#edit-level-body').append(data);
+                $('#editLevelModal').modal('show'); // Correct modal ID
+            }).fail(function () {
+                alert('Error loading the edit form.'); // Error handling
+            });
+        });
+        $('.delete-level').on('click', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
             var name = $(this).data('name');

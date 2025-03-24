@@ -1368,23 +1368,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
-
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'referral_bonus', // unique name for field
-                'label' => 'Referral Bonus', // you know what label it is
-                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
-                'value' => 20, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'signup_bonus', // unique name for field
-                'label' => 'Sign Up Bonus', // you know what label it is
-                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
-                'value' => 20, // default value if you want
-            ],
             [
                 'type' => 'text', // input fields type
                 'data' => 'int', // data type, string, int, boolean
@@ -2048,6 +2031,27 @@ return [
                 'value' => '', // default value if you want
             ],
 
+        ],
+    ],
+    'bonus_settings' => [
+        'title' => 'Bonus Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'referral_bonus', // unique name for field
+                'label' => 'Referral Bonus', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 20, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'signup_bonus', // unique name for field
+                'label' => 'Sign Up Bonus', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 20, // default value if you want
+            ],
         ],
     ],
 

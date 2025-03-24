@@ -16,6 +16,9 @@
         </div>
         @endcan
     </div>
+
+    @include('backend.bonus.include.__menu')
+
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

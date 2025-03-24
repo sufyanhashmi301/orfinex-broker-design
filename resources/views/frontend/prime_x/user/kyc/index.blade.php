@@ -73,12 +73,12 @@
                                             <circle cx="14" cy="13.5" r="9" stroke="{{ setting('primary_color', 'global') }}"/>
                                             <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="{{ setting('primary_color', 'global') }}" stroke-width="4"/>
                                             <circle cx="14" cy="13.5" r="3.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                    @endif
                                         </svg>
-                                    </div>
+                                    @endif
                                 </div>
-                            </li>
-                        @endif
+                            </div>
+                        </li>
+                    @endif
                 </ul>
             </div>
             @endif

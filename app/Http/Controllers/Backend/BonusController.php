@@ -140,4 +140,9 @@ class BonusController extends Controller
         notify()->success(__('Bonus deleted successfully.'));
         return redirect()->back();
     }
+
+    public function bonusSettings()
+    {
+        return view('backend.bonus.setting');
+    }
 }

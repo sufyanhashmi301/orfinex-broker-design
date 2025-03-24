@@ -143,18 +143,17 @@ public function update(Request $request)
 {
     $section = $request->section;
     $rules = Setting::getValidationRules($section);
-
     // Dynamically add validation rules based on the type
     if ($section == 'transfer_internal') {
         $rules['internal_min_send'] = 'required|numeric|min:1|max:10000';
-        $rules['internal_max_send'] = 'required|numeric|min:1|max:10000000|gte';
+        $rules['internal_max_send'] = 'required|numeric|min:1|max:10000000|gte:internal_min_send';
         $rules['internal_send_charge'] = 'required|numeric|min:0';
         $rules['internal_send_charge_type'] = 'required|in:fixed,percentage';
         $rules['internal_send_daily_limit'] = 'required|numeric|min:1';
         $rules['is_internal_transfer'] = 'nullable|boolean';
     } elseif ($section == 'transfer_external') {
         $rules['external_min_send'] = 'required|numeric|min:1|max:10000';
-        $rules['external_max_send'] = 'required|numeric|min:1|max:10000000';
+        $rules['external_max_send'] = 'required|numeric|min:1|max:10000000|gte:external_min_send';
         $rules['external_send_charge'] = 'required|numeric|min:0';
         $rules['external_send_charge_type'] = 'required|in:fixed,percentage';
         $rules['external_send_daily_limit'] = 'required|numeric|min:1';
@@ -171,9 +170,11 @@ public function update(Request $request)
         $rules['withdraw_day_limit'] = 'required|numeric|min:1';
         $rules['investment_cancellation_daily_limit'] = 'required|numeric|min:1';
     }
+//    dd($request->all(),$rules);
 
     // Validate the request
     $validator = Validator::make($request->all(), $rules);
+//    dd($validator->fails());
 
     // If validation fails, display errors using notify
     if ($validator->fails()) {
@@ -182,7 +183,6 @@ public function update(Request $request)
         }
         return redirect()->back()->withInput(); // Retain the old input values
     }
-
     // If validation passes, proceed with the update logic
     $data = $validator->validated();
 

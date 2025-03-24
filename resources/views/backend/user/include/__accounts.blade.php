@@ -2,20 +2,19 @@
     <div class="card">
         <div class="card-header flex items-center justify-between">
             <h4 class="card-title text-lg font-semibold">{{ __('Account') }}</h4>
-            @can('forex-account-create')
-
             <div class="flex space-x-2">
-                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
-                    type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
-                    <i class="fa fa-plus"></i> {{ __('Add New Account') }}
-                </a>
+                @can('forex-account-create')
+                    <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                        type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
+                        <i class="fa fa-plus"></i> {{ __('Add New Account') }}
+                    </a>
                 @endcan
 
-            @can('forex-account-mapping')
-                <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
-                    type="button" data-bs-toggle="modal" data-bs-target="#addmt5Account">
-                    <i class="fa fa-user-plus"></i> {{ __('Account Mapping') }}
-                </a>
+                @can('forex-account-mapping')
+                    <a href="javascript:;" class="btn btn-dark btn-sm flex items-center gap-1 px-3 py-2 rounded-md shadow-sm"
+                        type="button" data-bs-toggle="modal" data-bs-target="#addmt5Account">
+                        <i class="fa fa-user-plus"></i> {{ __('Account Mapping') }}
+                    </a>
                 @endcan
             </div>
         </div>

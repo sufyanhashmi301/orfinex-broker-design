@@ -354,68 +354,67 @@
                 </div>
                 <div class="tab-content" id="pills-tabContent">
                     <!-- basic Info -->
-                @canany(['customer-basic-manage','customer-change-password'])
-                    @include('backend.user.include.__basic_info')
-                @endcanany
+                    @canany(['customer-basic-manage','customer-change-password'])
+                        @include('backend.user.include.__basic_info')
+                    @endcanany
 
-                <!-- investments -->
-                @can('accounts-list')
-                     @include('backend.user.include.__accounts')
-                     {{-- Modal for add Forex Account --}}
-                     @can('accounts-list')
+                    <!-- investments -->
+                    @can('accounts-list')
+                         @include('backend.user.include.__accounts')
+                         {{-- Modal for add Forex Account --}}
                          @include('backend.user.include.__forex_account')
-                     @endcan
-                     @can('accounts-list')
                          @include('backend.user.include.__forex_account_mapping')
                     @endcan
-                @endcan
-                @include('backend.user.include.__ib_bonus')
-                @can('kyc-status-update')
-                <!-- KYC Tab -->
-                @include('backend.user.include.__kycTab')
-                @endcan
 
-                <!-- IB -->
-{{--                @can('IB-List')--}}
+                    @include('backend.user.include.__ib_bonus')
 
-                @can('ib-partner-list')
-                    @include('backend.user.include.__ib_info')
-                @endcan
-                @can('approve-ib-member')
-                    @include('backend.user.include.__ib_approve')
-                @endcan
+                    @can('kyc-status-update')
+                        <!-- KYC Tab -->
+                        @include('backend.user.include.__kycTab')
+                    @endcan
 
-                {{--                @endcan--}}
+                    <!-- IB -->
+    {{--                @can('IB-List')--}}
 
-                <!-- earnings -->
-                @can('profit-list')
-                    @include('backend.user.include.__earnings')
-                @endcan
+                    @can('ib-partner-list')
+                        @include('backend.user.include.__ib_info')
+                    @endcan
 
-                <!-- transaction -->
-                @can('transaction-list')
-                    @include('backend.user.include.__transactions')
-                @endcan
+                    @can('approve-ib-member')
+                        @include('backend.user.include.__ib_approve')
+                    @endcan
 
-                <!-- Referral Tree -->
-                @if(setting('site_referral','global') == 'level')
-                    @include('backend.user.include.__referral_direct')
-                    @include('backend.user.include.__referral_add')
+                    {{--                @endcan--}}
 
-                @endif
-                <!-- Referral Tree -->
-                @if(setting('site_referral','global') == 'level')
-                    @include('backend.user.include.__referral_tree')
-                @endif
+                    <!-- earnings -->
+                    @can('profit-list')
+                        @include('backend.user.include.__earnings')
+                    @endcan
 
-                <!-- ticket -->
-                @canany(['support-ticket-list','support-ticket-action'])
-                    @include('backend.user.include.__ticket')
-                @endcan
+                    <!-- transaction -->
+                    @can('transaction-list')
+                        @include('backend.user.include.__transactions')
+                    @endcan
 
-                @include('backend.user.notes.index')
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_direct')
+                        @include('backend.user.include.__referral_add')
 
-                @include('backend.user.include.__security')
+                    @endif
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_tree')
+                    @endif
+
+                    <!-- ticket -->
+                    @canany(['support-ticket-list','support-ticket-action'])
+                        @include('backend.user.include.__ticket')
+                    @endcan
+
+                    @include('backend.user.notes.index')
+
+                    @include('backend.user.include.__security')
 
                 </div>
             </div>
@@ -612,5 +611,42 @@
                 checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
         });
+
+        $('body').on('change', '#kycLevelSelect', function() {
+            var level = $(this).val();
+            $('.kycData').empty();
+
+            $.ajax({
+                url: '{{ route("admin.kyc.kycMethods") }}',
+                type: "GET",
+                data: { kyc_level: level },
+                success: function (data) {
+                    $('#kycTypeSelect').empty();
+                    $('#kycTypeSelect').append('<option value="">Select Level</option>');
+
+                    // Append new options based on the KYC records
+                    $.each(data.kycs, function(index, kyc) {
+                        $('#kycTypeSelect').append('<option value="' + kyc.id + '">' + kyc.name + '</option>');
+                    });
+                }
+            })
+        });
+
+        $('body').on('change', '#kycTypeSelect', function(e) {
+            "use strict";
+            e.preventDefault();
+
+            $('.kycData').empty();
+            var id = $(this).val();
+            var url = '{{ route("admin.kyc.data", ":id") }}';
+            url = url.replace(':id', id);
+
+            $.get(url, function(data) {
+                console.log(data);
+                $('.kycData').append(data);
+                imagePreview();
+            });
+        });
+
     </script>
 @endsection

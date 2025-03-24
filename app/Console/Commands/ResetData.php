@@ -130,9 +130,11 @@ class ResetData extends Command
         DB::table('user_ib_rule_level_shares')->truncate();
         DB::table('category_ticket')->truncate();
         DB::table('label_ticket')->truncate();
+
         DB::table('email_templates')->truncate();
-        DB::table('deposit_methods')->truncate();
-        DB::table('withdraw_methods')->truncate();
+
+//        DB::table('deposit_methods')->truncate();
+//        DB::table('withdraw_methods')->truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 

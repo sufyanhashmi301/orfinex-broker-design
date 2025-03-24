@@ -1,5 +1,3 @@
-
-
 <div
     class="tab-pane space-y-5 fade show active"
     id="pills-informations"
@@ -48,7 +46,7 @@
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Gender:') }}</label>
-                        <select name="gender" id="kycTypeSelect" class="select2 form-control w-full" required>
+                        <select name="gender" class="select2 form-control w-full" required>
                             @foreach(['male','female','other'] as $gender)
                                 <option @if($user->gender == $gender) selected @endif value="{{$gender}}">{{$gender}}</option>
                             @endforeach

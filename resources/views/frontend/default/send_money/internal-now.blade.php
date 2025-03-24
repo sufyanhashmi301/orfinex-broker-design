@@ -52,7 +52,7 @@
                         </span>
                     </div>
                     <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
-                        {{ 'Minimum '. setting('internal_min_send','fee').' '.$currency.' and Maximum '. setting('internal_max_send','fee').' '.$currency }}
+                        {{ 'Minimum '. setting('internal_min_send','transfer_internal').' '.$currency.' and Maximum '. setting('internal_max_send','transfer_internal').' '.$currency }}
                     </div>
                 </div>
             </div>

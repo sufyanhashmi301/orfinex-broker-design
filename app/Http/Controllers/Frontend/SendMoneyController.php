@@ -150,8 +150,8 @@ class SendMoneyController extends Controller
         }
 
         // Validate amount range
-        $min = setting('external_min_send', 'fee');
-        $max = setting('external_max_send', 'fee');
+        $min = setting('external_min_send', 'transfer_external');
+        $max = setting('external_max_send', 'transfer_external');
         if ($amount < $min || $amount > $max) {
             throw new \Exception(__('Please send an amount within the range ') . setting('currency_symbol', 'global') . $min . ' - ' . $max);
         }
@@ -441,8 +441,8 @@ class SendMoneyController extends Controller
     $targetType = $input['target_type']; // 'forex' or 'wallet'
     $receiverType = $input['receiver_type']; // 'forex' or 'wallet'
     // Min & max range validation
-    $min = setting('internal_min_send', 'fee');
-    $max = setting('internal_max_send', 'fee');
+    $min = setting('internal_min_send', 'transfer_internal');
+    $max = setting('internal_max_send', 'transfer_internal');
     if ($amount < $min || $amount > $max) {
         $currencySymbol = setting('currency_symbol', 'global');
         $message = __('Please Send the Amount within the range ') . $currencySymbol . $min . __(' to ') . $currencySymbol . $max;
@@ -451,7 +451,7 @@ class SendMoneyController extends Controller
     }
 
     // Check daily send limit for successful transactions only
-    $dailyLimit = setting('internal_send_daily_limit', 'fee');
+    $dailyLimit = setting('internal_send_daily_limit', 'transfer_internal');
     $todayTransfers = Transaction::where('user_id', $fromUser->id)
         ->where('type', TxnType::SendMoneyInternal)
         ->where('status', TxnStatus::Success) // Only count successful transactions
@@ -527,14 +527,14 @@ class SendMoneyController extends Controller
     }
 
     // Create transactions with TxnStatus::None before managing the ledger
-    $sendDescription = __('Transfer Money To ') . $toUser->username . '-' . $targetId . '(' . $targetType . ')';
+    $sendDescription = __('Transfer Money To ') . $fromUser->username . '-' . $receiverAccount . '(' . $receiverType . ')';
     $txnInfoSender = Txn::new(
         $amount, $this->calculateCharge($amount), $totalAmount, 'system', $sendDescription,
         TxnType::SendMoneyInternal, TxnStatus::None, null, null, $fromUser->id, $toUser->id, 'User', [],
         $input['note'], $targetId, $targetType
     );
 
-    $receiveDescription = __('Transfer Money From ') . $fromUser->username . '-' . $receiverAccount . '(' . $receiverType . ')';
+    $receiveDescription = __('Receive Money From ') . $toUser->username . '-' . $targetId . '(' . $targetType . ')';
     $txnInfoReceiver = Txn::new(
         $amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoneyInternal, TxnStatus::None,
         null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, $receiverType
@@ -657,8 +657,8 @@ class SendMoneyController extends Controller
 }
     private function calculateCharge($amount)
     {
-        $chargeType = setting('internal_send_charge_type', 'fee');
-        $charge = setting('internal_send_charge', 'fee');
+        $chargeType = setting('internal_send_charge_type', 'transfer_internal');
+        $charge = setting('internal_send_charge', 'transfer_internal');
         return $chargeType === 'percentage' ? ($amount * ($charge / 100)) : $charge;
     }
 

@@ -77,11 +77,10 @@
                         <div class="space-y-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('User') }}</label>
-                                <select name="user_id" class="select2 form-control w-full"
-                                        data-placeholder="Select Option">
+                                <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User">
+                                    <option value="">{{ __('Select User') }}</option>
                                     @foreach($users as $user)
-                                        <option value="{{ the_hash($user->id) }}"
-                                                class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                        <option value="{{ the_hash($user->id) }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
                                             {{ $user->full_name }} ({{ $user->email }})
                                         </option>
                                     @endforeach
@@ -92,8 +91,7 @@
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
-                                <select name="target_id" class="select2 form-control w-full"
-                                        data-placeholder="Select Account"></select>
+                                <select name="target_id" class="select2 form-control w-full" data-placeholder="Select Account"></select>
                                 @error('target_id')
                                 <span class="error">{{ $message }}</span>
                                 @enderror

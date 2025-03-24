@@ -440,7 +440,6 @@ class SendMoneyController extends Controller
     $receiverAccount = get_hash($input['receiver_account']);
     $targetType = $input['target_type']; // 'forex' or 'wallet'
     $receiverType = $input['receiver_type']; // 'forex' or 'wallet'
-
     // Min & max range validation
     $min = setting('internal_min_send', 'fee');
     $max = setting('internal_max_send', 'fee');
@@ -463,6 +462,7 @@ class SendMoneyController extends Controller
         notify()->error(__('You have reached the daily transfer limit.'), __('Error'));
         return redirect()->back();
     }
+//    dd('s');
 
     // Validate ownership for sender account
     if ($targetType == 'forex') {

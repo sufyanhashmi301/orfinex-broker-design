@@ -147,6 +147,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
         Route::get('all', 'kycAll')->name('all');
         Route::post('export/{type?}', 'export')->name('export');
+
+        Route::get('/get-kyc-methods', 'getKycMethods')->name('kycMethods');
+        Route::get('/{id}', 'kycData')->name('data');
+        Route::post('submit/{id}', 'kycSubmit')->name('submit');
+
     });
 //===============================  System Tag ==================================
     Route::resource('system-tag', SystemTagController::class);

@@ -1,7 +1,7 @@
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" 
-     id="editLevelModal" 
-     tabindex="-1" 
-     aria-labelledby="editLevelModal" 
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+     id="editLevelModal"
+     tabindex="-1"
+     aria-labelledby="editLevelModal"
      aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
@@ -9,7 +9,7 @@
             <div class="modal-body popup-body">
                 <div class="flex items-center justify-between p-5">
                     <h3 class="text-xl font-medium dark:text-white capitalize">
-                        {{ __('Edit System Tag') }}
+                        {{ __('Edit Levels') }}
                     </h3>
                     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                         <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

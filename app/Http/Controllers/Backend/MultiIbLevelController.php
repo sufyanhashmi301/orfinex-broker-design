@@ -82,18 +82,36 @@ public function update(Request $request, $id)
 }
 
     public function destroy(Request $request, $id)
-{
-    $level = Level::find($id);
-    
-    if (!$level) {
-        return response()->json(['error' => __('Level not found')], 404);
+    {
+        $level = Level::find($id);
+
+        if (!$level) {
+            return response()->json(['error' => __('Level not found')], 404);
+        }
+
+        // Delete the level
+        $level->delete();
+
+        // Reorder remaining levels by ID ascending
+        $levels = Level::orderBy('id')->get();
+        $order = 1;
+
+        foreach ($levels as $l) {
+            $l->update(['level_order' => $order++]);
+        }
+
+        notify()->success(__('Level deleted successfully and levels reordered.'));
+
+        // For AJAX, return JSON
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        // For form submit fallback
+        return redirect()->route('admin.multi-ib-level.index');
     }
 
-    $level->delete();
 
-    notify()->success(__('Level deleted successfully.'));
-    return redirect()->route('admin.multi-ib-level.index');
-}
 
-    
+
 }

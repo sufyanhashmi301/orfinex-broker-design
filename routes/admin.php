@@ -154,10 +154,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  System Tag ==================================
     Route::resource('multi-ib-level', MultiIbLevelController::class);
 
-//    Route::get('multi-ib-level/{id}/edit', [MultiIbLevelController::class, 'edit'])->name('multi-ib-level.edit');
-//    Route::put('multi-ib-level/{id}', [MultiIbLevelController::class, 'update'])->name('multi-ib-level.update');
-//    Route::delete('multi-ib-level/{multi_ib_level}', [MultiIbLevelController::class, 'destroy'])->name('multi-ib-level.destroy');
-
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
 
@@ -548,6 +544,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     // Bonus Module
     Route::resource('bonus', BonusController::class);
     Route::post('bonus-add/{user}', [BonusController::class, 'addBonusByAdmin'])->name('bonus.add');
+    Route::get('/bonus-settings', [BonusController::class, 'bonusSettings'])->name('bonus.setting');
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');

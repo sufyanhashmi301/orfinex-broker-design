@@ -165,7 +165,7 @@ public function update(Request $request)
         $rules['wallet_exchange_charge'] = 'required|numeric|min:0';
         $rules['wallet_exchange_charge_type'] = 'required|in:fixed,percentage';
         $rules['referral_bonus'] = 'required|numeric|min:0';
-        $rules['signup_bonus'] = 'required|numeric|min:0';
+//        $rules['signup_bonus'] = 'required|numeric|min:0';
         $rules['wallet_exchange_day_limit'] = 'required|numeric|min:1';
         $rules['send_money_day_limit'] = 'required|numeric|min:1';
         $rules['withdraw_day_limit'] = 'required|numeric|min:1';

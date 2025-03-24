@@ -51,6 +51,7 @@ class RewardUser
 
             // Retrieve all parent staff members of the referrer
             $staffMembers = $referralUser->staff()->get(); // Assuming `staff()` is the relationship method
+//            dd($staffMembers);
 
             if ($staffMembers->isNotEmpty()) {
                 foreach ($staffMembers as $staff) {

@@ -30,7 +30,7 @@
                 <p class="text-sm text-success mb-2">
                     {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->country, true)) }}
                 </p>
-                <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
+                <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{!! $schema->desc !!}</p>
             </div>
             <div class="h-full space-y-3 bg-slate-50 dark:bg-dark rounded p-3 mb-5">
                 <div class="flex items-center">

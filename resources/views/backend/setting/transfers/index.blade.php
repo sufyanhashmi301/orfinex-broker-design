@@ -206,19 +206,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <label for="" class="form-label">{{ __('User Referral Bonus:') }}</label>
-                            <input type="text" class="form-control" name="referral_bonus" value="{{ oldSetting('referral_bonus','fee') }}">
-                        </div>
-                    </div>
-                    <div class="lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <label for="" class="form-label">{{ __('User Signup Bonus:') }}</label>
-                            <input type="text" class="form-control" name="signup_bonus" value="{{ oldSetting('signup_bonus','fee') }}">
-                        </div>
-                    </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Wallet Exchange Daily Limit:') }}</label>
@@ -255,13 +242,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 @endif
             </div>
             @can('transfers-action')
             @include('backend.setting.site_setting.include.form.__close_action')
             @endcan
-            
+
         </div>
     </div>
 @endsection

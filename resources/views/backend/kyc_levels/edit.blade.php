@@ -331,36 +331,34 @@
             $(".generateCreate").on('click', function () {
                 ++i1;
                 var form = `<div class="option-remove-row grid grid-cols-12 gap-5">
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<input name="fields[` + i1 + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
-</div>
-</div>
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<select name="fields[` + i1 + `][type]" class="form-control w-full mb-3">
-<option value="text">Input Text</option>
-<option value="textarea">Textarea</option>
-<option value="file">File upload</option>
-</select>
-</div>
-</div>
-<div class="xl:col-span-3 col-span-12">
-<div class="input-area">
-<select name="fields[` + i1 + `][validation]" class="form-control w-full mb-3">
-<option value="required">Required</option>
-<option value="nullable">Optional</option>
-</select>
-</div>
-</div>
-<div class="col-span-1">
-<button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-<path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-</svg>
-</button>
-</div>
-</div>`;
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="input-area">
+                            <input name="fields[` + i1 + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
+                        </div>
+                    </div>
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="input-area">
+                            <select name="fields[` + i1 + `][type]" class="form-control w-full mb-3">
+                                <option value="text">Input Text</option>
+                                <option value="textarea">Textarea</option>
+                                <option value="file">File upload</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="flex justify-between space-x-5">
+                            <div class="input-area w-full">
+                                <select name="fields[` + i1 + `][validation]" class="form-control w-full mb-3">
+                                    <option value="required">Required</option>
+                                    <option value="nullable">Optional</option>
+                                </select>
+                            </div>
+                            <button type="button" class="delete-option-row delete_desc inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
                 $('.addOptions').append(form);
             });
             $('.samsub-settings').addClass('hidden');
@@ -428,36 +426,34 @@
             $("#generate").on('click', function () {
                 ++i;
                 var form = `<div class="option-remove-row grid grid-cols-12 gap-5">
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
-</div>
-</div>
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<select name="fields[` + i + `][type]" class="form-control w-full mb-3">
-<option value="text">Input Text</option>
-<option value="textarea">Textarea</option>
-<option value="file">File upload</option>
-</select>
-</div>
-</div>
-<div class="xl:col-span-3 col-span-12">
-<div class="input-area">
-<select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
-<option value="required">Required</option>
-<option value="nullable">Optional</option>
-</select>
-</div>
-</div>
-<div class="col-span-1">
-<button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-<path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-</svg>
-</button>
-</div>
-</div>`;
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="input-area">
+                            <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
+                        </div>
+                    </div>
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="input-area">
+                            <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
+                                <option value="text">Input Text</option>
+                                <option value="textarea">Textarea</option>
+                                <option value="file">File upload</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="xl:col-span-4 col-span-12">
+                        <div class="flex justify-between space-x-5">
+                            <div class="input-area w-full">
+                                <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
+                                    <option value="required">Required</option>
+                                    <option value="nullable">Optional</option>
+                                </select>
+                            </div>
+                            <button type="button" class="delete-option-row inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
                 $('.addOptions').append(form);
             });
 
@@ -503,38 +499,35 @@
 // Parse the fields and add them to the form
                                 const fields = JSON.parse(response.kyc.fields);
                                 $.each(fields, function (key, value) {
-                                    const form = `
-<div class="option-remove-row grid grid-cols-12 gap-5">
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<input name="fields[${key}][name]" class="form-control" type="text" value="${value.name}" required placeholder="Field Name">
-</div>
-</div>
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<select name="fields[${key}][type]" class="form-control w-full mb-3">
-   <option value="text" ${value.type == 'text' ? 'selected' : ''}>Input Text</option>
-   <option value="textarea" ${value.type == 'textarea' ? 'selected' : ''}>Textarea</option>
-   <option value="file" ${value.type == 'file' ? 'selected' : ''}>File upload</option>
-</select>
-</div>
-</div>
-<div class="xl:col-span-3 col-span-12">
-<div class="input-area">
-<select name="fields[${key}][validation]" class="form-control w-full mb-3">
-   <option value="required" ${value.validation == 'required' ? 'selected' : ''}>Required</option>
-   <option value="nullable" ${value.validation == 'nullable' ? 'selected' : ''}>Optional</option>
-</select>
-</div>
-</div>
-<div class="col-span-1">
-<button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-   <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-</svg>
-</button>
-</div>
-</div>`;
+                                    const form = `<div class="option-remove-row grid grid-cols-12 gap-5">
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="input-area">
+                                                <input name="fields[${key}][name]" class="form-control" type="text" value="${value.name}" required placeholder="Field Name">
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="input-area">
+                                                <select name="fields[${key}][type]" class="form-control w-full mb-3">
+                                                   <option value="text" ${value.type == 'text' ? 'selected' : ''}>Input Text</option>
+                                                   <option value="textarea" ${value.type == 'textarea' ? 'selected' : ''}>Textarea</option>
+                                                   <option value="file" ${value.type == 'file' ? 'selected' : ''}>File upload</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="flex justify-between space-x-5">
+                                                <div class="input-area w-full">
+                                                    <select name="fields[${key}][validation]" class="form-control w-full mb-3">
+                                                       <option value="required" ${value.validation == 'required' ? 'selected' : ''}>Required</option>
+                                                       <option value="nullable" ${value.validation == 'nullable' ? 'selected' : ''}>Optional</option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="delete-option-row inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                                    <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`;
                                     $('.addOptions').append(form);
                                 });
 
@@ -550,38 +543,35 @@
                                 $('#generate').off('click').on('click', function () {
                                     ++i;
 
-                                    const newForm = `
-<div class="option-remove-row grid grid-cols-12 gap-5">
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
-</div>
-</div>
-<div class="xl:col-span-4 col-span-12">
-<div class="input-area">
-<select name="fields[` + i + `][type]" class="form-control w-full mb-3">
-   <option value="text">Input Text</option>
-   <option value="textarea">Textarea</option>
-   <option value="file">File upload</option>
-</select>
-</div>
-</div>
-<div class="xl:col-span-3 col-span-12">
-<div class="input-area">
-<select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
-   <option value="required">Required</option>
-   <option value="nullable">Optional</option>
-</select>
-</div>
-</div>
-<div class="col-span-1">
-<button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-   <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-</svg>
-</button>
-</div>
-</div>`;
+                                    const newForm = `<div class="option-remove-row grid grid-cols-12 gap-5">
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="input-area">
+                                                <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="input-area">
+                                                <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
+                                                   <option value="text">Input Text</option>
+                                                   <option value="textarea">Textarea</option>
+                                                   <option value="file">File upload</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-4 col-span-12">
+                                            <div class="flex justify-between space-x-5">
+                                                <div class="input-area w-full">
+                                                    <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
+                                                       <option value="required">Required</option>
+                                                       <option value="nullable">Optional</option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="delete-option-row inline-flex items-center justify-center h-9 w-10 bg-danger-500 text-lg border rounded border-danger-500 text-white rb-zeplin-focused">
+                                                    <iconify-icon icon="fluent:delete-20-regular"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`;
                                     $('.addOptions').append(newForm);
                                 });
 

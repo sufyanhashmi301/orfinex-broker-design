@@ -10,6 +10,8 @@ use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
 
+use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
@@ -23,10 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('sync:forex-accounts-via-email')->everyThreeMinutes();
+        $schedule->command('rebate:distribution')->everyFiveMinutes();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
-//        $schedule->command('rebate:distribution')->everyFiveMinutes();
+//        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
 
     }
 

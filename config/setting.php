@@ -699,14 +699,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'transfer_status', // unique name for field
-                'label' => 'Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
         ]
     ],
     'staff_permission' => [

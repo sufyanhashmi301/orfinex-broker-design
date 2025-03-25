@@ -58,7 +58,7 @@ class SendMoneyController extends Controller
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
-        if (! setting('transfer_status', 'permission') or ! \Auth::user()->transfer_status) {
+        if (! setting('is_external_transfer', 'transfer_external') or ! \Auth::user()->transfer_status) {
             abort('403', __('Send Money Disable Now'));
         }
 
@@ -70,7 +70,7 @@ class SendMoneyController extends Controller
     public function sendMoneyNow(Request $request)
 {
     // Check if the user has the permission to transfer
-    if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
+    if (!setting('is_external_transfer', 'transfer_external') || !\Auth::user()->transfer_status) {
         abort(403, __('Send Money Disabled Now'));
     }
 
@@ -394,7 +394,7 @@ class SendMoneyController extends Controller
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
-        if (! setting('transfer_status', 'permission') or ! \Auth::user()->transfer_status) {
+        if (! setting('is_internal_transfer', 'transfer_internal') or ! \Auth::user()->transfer_status) {
             abort('403', __('Send Money Disable Now'));
         }
 
@@ -408,7 +408,7 @@ class SendMoneyController extends Controller
    public function sendMoneyInternalNow(Request $request)
 {
     // Check if transfers are enabled
-    if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
+    if (!setting('is_internal_transfer', 'transfer_internal') || !\Auth::user()->transfer_status) {
         abort(403, __('Send Money Disabled Now'));
     }
 

@@ -159,7 +159,7 @@ class DepositController extends GatewayController
         $manualData = $input['manual_data'];
 
         foreach ($manualData as $key => $value) {
-            if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid()) {
+            if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid() && is_file($value)) {
                 $manualData[$key] = self::depositImageUploadTrait($value);
             }
         }

@@ -36,6 +36,7 @@ class MultiLevelRebateDistribution extends Command
 
     public function handle()
     {
+//        dd(Carbon::now()->subDay()->startOfDay());
         DB::beginTransaction();
         try {
             $ReferralRelationships = ReferralRelationship::with('referralLink')
@@ -290,7 +291,7 @@ class MultiLevelRebateDistribution extends Command
                 return MetaDeal::where('login', $login)
             ->where('user_id', $childUserId)
             ->latest('time')
-            ->value('time') ?: Carbon::now()->startOfDay();
+            ->value('time') ?: Carbon::now()->subDay()->startOfDay();
     }
 
     protected function getMT5Deals($login, $lastDealTime, $sysmbols)

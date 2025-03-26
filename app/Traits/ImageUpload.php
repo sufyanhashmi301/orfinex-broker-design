@@ -8,7 +8,7 @@ use Str;
 
 trait ImageUpload
 {
-    public function imageUploadTrait($file, $old = null, $path = '', $force_use_filesystem = false): string // Taking input image as parameter
+    public function imageUploadTrait($file, $old = null, $path = '', $force_use_filesystem = false) // Taking input image as parameter
     {
         // Validations
         $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg', 'webp'];

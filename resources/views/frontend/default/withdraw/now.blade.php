@@ -40,7 +40,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                                 <div class="input-area relative mb-5">
                                     <label for="exampleFormControlInput1"
-                                           class="form-label">{{ __('Account to withdraw:') }}</label>
+                                           class="form-label">{{ __('Account to withdraw') }}</label>
                                     <div class="input-group select2-lg">
                                         <select id="tradingAccount" name="target_id"
                                                 class="select2 form-control !text-lg w-full mt-2 py-2">

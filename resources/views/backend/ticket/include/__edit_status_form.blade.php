@@ -2,11 +2,11 @@
     @method('put')
     @csrf
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Status Name:') }}</label>
+        <label class="form-label" for="">{{ __('Status Name') }}</label>
         <input type="text" name="name" value="{{ old('name', $status->name) }}" class="form-control" required/>
     </div>
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Status type:') }}</label>
+        <label class="form-label" for="">{{ __('Status type') }}</label>
         <select name="status_type" class="form-control">
             <option value="open" {{ $status->status_type == 'open' ? 'selected' : '' }}>{{ __('Open') }}</option>
             <option value="closed" {{ $status->status_type == 'closed' ? 'selected' : '' }}>{{ __('Closed') }}</option>

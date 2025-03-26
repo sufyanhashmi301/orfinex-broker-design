@@ -17,6 +17,7 @@ use App\Models\DepositMethod;
 use App\Traits\ForexApiTrait;
 use Illuminate\Validation\Rule;
 use App\Enums\ForexAccountStatus;
+use App\Enums\InvestmentStatus;
 use App\Services\ForexApiService;
 use App\Models\ForexSchemaPhaseRule;
 use Illuminate\Support\Facades\Auth;
@@ -116,6 +117,11 @@ class DepositController extends GatewayController
         //        $targetId = '1063794';
         //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Payment With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+
+        // Update the status of the account to pending when paid
+        AccountTypeInvestment::where('id', $targetId)->update([
+            'status' => InvestmentStatus::PENDING
+        ]);
 
         // Update Invoice
         $invoice = Invoice::where('account_type_investment_id', $targetId)->first();

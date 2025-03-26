@@ -2,11 +2,11 @@
                 @method('put')    
                 @csrf
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Name:') }}</label>
+                        <label class="form-label" for="">{{ __('Name') }}</label>
                         <input type="text" name="name" value="{{ old('name', $designation->name) }}" class="form-control" placeholder="Department Name" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Parent:') }}</label>
+                        <label class="form-label" for="">{{ __('Parent') }}</label>
                         <select name="parent_id" class="form-control">
                             <option value="">This is Parent</option>
                             @foreach($designations as $dept)

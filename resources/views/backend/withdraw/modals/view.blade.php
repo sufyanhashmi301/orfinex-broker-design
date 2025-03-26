@@ -17,7 +17,7 @@
 {{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
 
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Payout Amount:') }}</label>
+        <label class="form-label" for="">{{ __('Payout Amount') }}</label>
         <div class="joint-input relative">
             <input type="text" name="final_amount" id="amount"  value="{{$data->final_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
             <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency">
@@ -27,7 +27,7 @@
     </div>
     @if($data->pay_currency != $currency)
         <div class="input-area">
-            <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
+            <label class="form-label" for="">{{ __('Conversion Amount') }}</label>
             <div class="joint-input relative">
                 <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="converted-currency">

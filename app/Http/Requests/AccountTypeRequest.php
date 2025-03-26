@@ -49,9 +49,14 @@ class AccountTypeRequest extends FormRequest
                 setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
                 ['integer']
             ),
-            // 'trading_days' => 'required|integer', // 
             'profit_share' => 'required|min:1|max:100|integer',
             'platform_group' => 'required',
+            'offer_uuid' => [
+                Rule::requiredIf(request('trader_type') === 'match_trader'),
+            ],
+            'system_uuid' => [
+                Rule::requiredIf(request('trader_type') === 'match_trader'),
+            ],
             'type' => 'required',
             'phases' => ['required', 'array', new RequiredPhaseTypes()],
             'phases.*.type' => [

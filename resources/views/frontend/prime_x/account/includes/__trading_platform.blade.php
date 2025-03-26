@@ -5,11 +5,11 @@
             <div class="flex items-start justify-between gap-3 p-5">
                 <div>
                     <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
-                        {{ __('Platform: MT5') }}
+                        {{ __('Platform: ') }}{{ str_replace('_', ' ', setting('active_trader_type', 'features')) }}
                     </h3>
-                    <p class="text-sm dark:text-white">
+                    {{-- <p class="text-sm dark:text-white">
                         {{ __('Download out platform on any OS') }}
-                    </p>
+                    </p> --}}
                 </div>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                     <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -136,17 +136,17 @@
                 </div>
 
                 <div class="action-btns text-right mt-10">
-                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                    {{-- <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Save') }}
-                    </button>
+                    </button> --}}
                     <a
                         href="#"
-                        class="btn btn-outline-dark inline-flex items-center justify-center"
+                        class="btn btn-dark inline-flex items-center justify-center"
                         data-bs-dismiss="modal"
                         aria-label="Close">
-                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                        {{ __('Cancel') }}
+                        {{-- <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon> --}}
+                        {{ __('Close') }}
                     </a>
                 </div>
             </div>

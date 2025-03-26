@@ -8,7 +8,7 @@
                             {{ __('Change Investor Password') }}
                         </h3>
                         <p class="dark:text-white">
-                            {{ __('Account:') }}
+                            {{ __('Account') }}
                             <span class="fw-bold update-password-modal-login"></span>
                         </p>
                     </div>
@@ -25,7 +25,7 @@
                         <input type="hidden" name="login" id="update-investor-password-modal-login"
                                class="form-control update-password-modal-login">
 
-                        <label class="form-label" for="">{{ __('Investor Password:') }}</label>
+                        <label class="form-label" for="">{{ __('Investor Password') }}</label>
                         <div class="input-form-group">
                             <input type="password" class="form-control" name="investorPass" id="update-invest-password" placeholder="Enter your password">
                             <ul>

@@ -192,7 +192,7 @@ var Search = {
     }
     var highlightstring = '?highlight=' + $.urlencode(hlterms.join(" "));
 
-    // console.debug('SEARCH: searching for:');
+    // console.debug('SEARCH: searching for');
     // console.info('required: ', searchterms);
     // console.info('excluded: ', excluded);
 

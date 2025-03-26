@@ -75,7 +75,7 @@
                     <div class="input-area">
                         <div class="flex items-center gap-3">
                             <span class="flex items-center text-slate-400 dark:text-slate-400">
-                                {{ __('Updated:') }}
+                                {{ __('Updated') }}
                                 <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Displays the date and time when the server settings were last modified or updated."></iconify-icon>
                             </span>
                             <span class="text-slate-900 dark:text-white">

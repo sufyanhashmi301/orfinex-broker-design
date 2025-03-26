@@ -23,7 +23,7 @@
                         @csrf
                         @method('PUT')
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Schedule Name:') }}</label>
+                            <label for="" class="form-label">{{ __('Schedule Name') }}</label>
                             <input
                                 type="text"
                                 class="form-control mb-0"
@@ -33,7 +33,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Schedule In Hours:') }}</label>
+                            <label for="" class="form-label">{{ __('Schedule In Hours') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control" name="time" id="time"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-2" id="time-level">

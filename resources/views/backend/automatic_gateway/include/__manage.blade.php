@@ -22,7 +22,7 @@
                     <div class="grid grid-col-2 gap-5">
                         <div class="col-span-2">
                             <div class="input-area max-w-xs">
-                                <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
+                                <label class="form-label" for="">{{ __('Upload Logo') }}</label>
                                 <div class="wrap-custom-file">
                                     <input type="file" name="logo" id="schema-icon{{$id}}" accept=".gif, .jpg, .png, .svg"/>
                                     <label for="schema-icon{{$id}}" class="file-ok" style="background-image: url('{{ asset($gateway->logo) }}')">
@@ -34,13 +34,13 @@
                         </div>
                         <div class="md:col-span-1 col-span-2">
                             <div class="input-area mb-0">
-                                <label class="form-label" for="">{{ __('Name:') }}</label>
+                                <label class="form-label" for="">{{ __('Name') }}</label>
                                 <input type="text" class="form-control" name="name" value="{{ $gateway->name }}"/>
                             </div>
                         </div>
                         <div class="md:col-span-1 col-span-2">
                             <div class="input-area mb-0">
-                                <label class="form-label" for="">{{ __('Code Name:') }}</label>
+                                <label class="form-label" for="">{{ __('Code Name') }}</label>
                                 <input type="text" class="form-control" disabled value="{{$gateway->gateway_code}}"/>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                 <label class="form-label" for=""></label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto">
-                                        {{ __('Status:') }}
+                                        {{ __('Status') }}
                                     </label>
                                     <div class="form-switch ps-0">
                                         <input type="hidden" value="0" name="status">

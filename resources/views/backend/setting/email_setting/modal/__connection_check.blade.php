@@ -18,7 +18,7 @@
                 <form action="{{ route('admin.settings.mail.connection.test') }}" method="post" class="space-y-4">
                     @csrf
                     <div class="input-area !mt-0">
-                        <label for="" class="form-label">{{ __('Your Email:') }}</label>
+                        <label for="" class="form-label">{{ __('Your Email') }}</label>
                         <input
                             type="email"
                             name="email"

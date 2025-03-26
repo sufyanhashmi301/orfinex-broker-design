@@ -15,7 +15,7 @@
                     <div class="table-filter flex justify-between flex-wrap items-center">
                         <div class="filter inline-flex ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                             <div class="search input-area flex items-center">
-                                <label for="" class="text-sm mr-2">{{ __('Search:') }}</label>
+                                <label for="" class="text-sm mr-2">{{ __('Search') }}</label>
                                 <input type="text" name="filter" class="form-control" value="{{ Request::get('filter') }}">
                             </div>
                         </div>

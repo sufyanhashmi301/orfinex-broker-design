@@ -145,6 +145,7 @@
             });
 
             $('body').on('click', '#withdraw-action', function () {
+                
                 $('.withdraw-action').empty();
 
                 var id = $(this).data('id');

@@ -7,9 +7,6 @@
                     <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
                         {{ __('Login Credentials') }}
                     </h3>
-                    <p class="text-sm dark:text-white">
-                        {{ __('Edit details for your Login Credentials') }}
-                    </p>
                 </div>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                     <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -30,15 +27,24 @@
                         </div>
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Master Password') }}</label>
+                        <label class="form-label" for="">{{ __('Account Email') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" value="{{ data_get($investment, 'main_password') }}" id="copyModalPassword" readonly>
-                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyModalPassword">
+                            <input class="form-control !pr-9" value="{{ Auth::user()->email }}" id="copyServerModal" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServerModal">
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>
                         </div>
                     </div>
                     <div class="input-area">
+                        <label class="form-label" for="">{{ __('Master Password') }}</label>
+                        <div class="relative">
+                            <input class="form-control !pr-9" value="{{ Auth::user()->plaformAccountCredentials->where('platform', $investment->trader_type)->first()->password }}" id="copyModalPassword" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyModalPassword">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    {{-- <div class="input-area">
                         <label class="form-label" for="">{{ __('Read-only Password') }}</label>
                         <div class="relative">
                             <input class="form-control !pr-9" type="text" id="masterPassModal" value="" readonly>
@@ -46,29 +52,29 @@
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Server') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" type="text" value="{{ $investment->getPhaseSnapshotData()['server'] }}" id="copyServerModal" readonly>
-                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServerModal">
+                            <input class="form-control !pr-9" type="text" value="{{ $investment->getPhaseSnapshotData()['server'] }}" id="" readonly>
+                            {{-- <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServerModal">
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                 </div>
                 <div class="action-btns text-right mt-10">
-                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                    {{-- <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Save') }}
-                    </button>
+                    </button> --}}
                     <a
                         href="#"
-                        class="btn btn-outline-dark inline-flex items-center justify-center"
+                        class="btn btn-dark inline-flex items-center justify-center"
                         data-bs-dismiss="modal"
                         aria-label="Close">
-                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                        {{ __('Cancel') }}
+                        {{-- <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon> --}}
+                        {{ __('Close') }}
                     </a>
                 </div>
             </div>

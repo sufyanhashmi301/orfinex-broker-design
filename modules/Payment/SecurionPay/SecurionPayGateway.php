@@ -695,7 +695,7 @@ class SecurionPayGateway
     private function buildHeaders()
     {
         return [
-            'Authorization' => 'Basic '.base64_encode($this->privateKey.':'),
+            'Authorization' => 'Basic '.base64_encode($this->privateKey.''),
             'Content-Type' => 'application/json',
             'User-Agent' => ($this->userAgent ? $this->userAgent.' ' : '').'SecurionPay-PHP/'.self::VERSION.' (PHP/'.phpversion().')',
         ];

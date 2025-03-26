@@ -16,17 +16,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="col-span-2">
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Old Password:') }}</label>
+                                <label for="" class="form-label">{{ __('Old Password') }}</label>
                                 <input type="password" name="current_password" class="form-control"
                                     required="">
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('New Password:') }}</label>
+                            <label for="" class="form-label">{{ __('New Password') }}</label>
                             <input type="password" name="new_password" class="form-control" required="">
                         </div>
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('Confirm Password:') }}</label>
+                            <label for="" class="form-label">{{ __('Confirm Password') }}</label>
                             <input type="password" name="new_confirm_password" class="form-control"
                                 required="">
                         </div>

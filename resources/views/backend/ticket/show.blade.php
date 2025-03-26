@@ -125,7 +125,7 @@
             <div class="profiel-wrap h-full p-6 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
                 <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg">
                     <p class="text-sm space-x-3 p-3">
-                        <span class="font-medium text-slate-900">{{ __('Ticket ID:') }}</span>
+                        <span class="font-medium text-slate-900">{{ __('Ticket ID') }}</span>
                         <span class="text-slate-600">{{ $ticket->uuid }}</span>
                     </p>
                 </div>
@@ -141,7 +141,7 @@
                             {{ $ticket->user->rankAchieved() }}
                         </div>
                         <div class="text-sm font-light text-slate-600 dark:text-slate-400 my-5">
-                            <span class="font-medium">{{ __('Member since:') }} </span>
+                            <span class="font-medium">{{ __('Member since') }} </span>
                             {{ $ticket->user->created_at }}
                         </div>
                     </div>

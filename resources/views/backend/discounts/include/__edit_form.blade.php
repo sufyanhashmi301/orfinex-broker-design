@@ -6,7 +6,7 @@
         <div class="space-y-5">
             <!-- Code Name -->
             <div class="input-area !mt-0">
-                <label for="code_name" class="form-label">{{ __('Code Name:') }}</label>
+                <label for="code_name" class="form-label">{{ __('Code Name') }}</label>
                 <input
                     type="text"
                     name="code_name"
@@ -18,7 +18,7 @@
                 />
             </div>
             <div class="input-area">
-                <label for="code_name" class="form-label">{{ __('Code:') }}</label>
+                <label for="code_name" class="form-label">{{ __('Code') }}</label>
                 <input
                     type="text"
                     name="code"
@@ -32,7 +32,7 @@
 
             <!-- Type Selection -->
             <div class="input-area">
-                <label for="discount_type" class="form-label">{{ __('Type:') }}</label>
+                <label for="discount_type" class="form-label">{{ __('Type') }}</label>
                 <select id="edit_discount_type" name="type" class="form-control w-100">
                     <option value="fixed" {{ $discount->type === 'fixed' ? 'selected' : '' }}>{{ __('Fixed') }}</option>
                     <option value="percentage" {{ $discount->type === 'percentage' ? 'selected' : '' }}>{{ __('Percentage') }}</option>
@@ -42,7 +42,7 @@
             <!-- Fixed Amount or Percentage Fields -->
             <div class="input-area">
                 <div id="fixed_amount_field" class="discount-type {{ $discount->type === 'fixed' ? '' : 'hidden' }}">
-                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount:') }}</label>
+                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount') }}</label>
                     <input type="text" name="fixed_amount" id="edit_fixed_amount" class="form-control mb-0" value="{{ $discount->fixed_amount }}" placeholder="Fixed Amount" />
                 </div>
 
@@ -55,7 +55,7 @@
 
     {{--        <!-- Applies To -->--}}
     {{--        <div class="input-area">--}}
-    {{--            <label for="edit_applies_to" class="form-label">{{ __('Applies To:') }}</label>--}}
+    {{--            <label for="edit_applies_to" class="form-label">{{ __('Applies To') }}</label>--}}
     {{--            <select name="applied_to" id="edit_applies_to" class="form-control w-100">--}}
     {{--                <option value="all account type" {{ $discount->applied_to === 'all account type' ? 'selected' : '' }}>{{ __('All Account Type') }}</option>--}}
     {{--                <option value="challenge accounts only" {{ $discount->applied_to === 'challenge accounts only' ? 'selected' : '' }}>{{ __('Challenge Accounts Only') }}</option>--}}
@@ -65,7 +65,7 @@
 
             <!-- Usage Limit -->
             <div class="input-area">
-                <label class="form-label" for="edit_usage_limit">{{ __('Usage Limit:') }}</label>
+                <label class="form-label" for="edit_usage_limit">{{ __('Usage Limit') }}</label>
                 <select name="usage_limit" id="edit_usage_limit" class="form-control w-100">
                     <option value="1" {{ $discount->usage_limit === 'unlimited' ? 'selected' : '' }}>{{ __('Unlimited') }}</option>
                     <option value="100" {{ $discount->usage_limit == '100' ? 'selected' : '' }}>{{ __('100 Uses') }}</option>
@@ -75,7 +75,7 @@
 
             <!-- Expires On -->
             <div class="input-area">
-                <label class="form-label" for="edit_expire_at">{{ __('Expires On:') }}</label>
+                <label class="form-label" for="edit_expire_at">{{ __('Expires On') }}</label>
                 <input
                     type="text"
                     name="expire_at"
@@ -88,7 +88,7 @@
 
             <!-- Status -->
             <div class="flex items-center space-x-7 flex-wrap">
-                <label class="form-label !w-auto mb-0">{{ __('Status:') }}</label>
+                <label class="form-label !w-auto mb-0">{{ __('Status') }}</label>
                 <div class="form-switch ps-0" style="line-height: 0">
                     <input type="hidden" value="0" name="status">
                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">

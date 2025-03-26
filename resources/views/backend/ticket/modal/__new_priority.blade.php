@@ -19,7 +19,7 @@
                     <form action="{{ route('admin.ticket.priorities.store') }}" method="post" class="space-y-4">
                         @csrf
                         <div class="input-area !mt-0">
-                            <label for="" class="form-label">{{ __('Priority Title:') }}</label>
+                            <label for="" class="form-label">{{ __('Priority Title') }}</label>
                             <input
                                 type="text"
                                 name="name"

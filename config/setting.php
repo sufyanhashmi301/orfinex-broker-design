@@ -1306,6 +1306,7 @@ return [
                 'rules' => 'required', // Include options
                 'value' => \App\Enums\TraderType::MT5, // Default value
                 'options' => [
+                    'match_trader' => \App\Enums\TraderType::MT,
                     'mt5' => \App\Enums\TraderType::MT5,
                     'x9' => \App\Enums\TraderType::X9,
                     'c_trader' => \App\Enums\TraderType::CTRADER,
@@ -1387,9 +1388,57 @@ return [
             ],
         ],
     ],
+
+    'match_trader_platform_api' => [
+        'title' => 'Meta Trader Platform API Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt_live_server_real', // unique name for field
+                'label' => 'Live Server Name', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'Match Trader Server', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt_network_address_real', // unique name for field
+                'label' => 'Network Address', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'https://broker-api-demo.match-trader.com', // default value if you want
+            ],
+            [
+                'type' => 'select', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt_api_version_real', // unique name for field
+                'label' => 'API Version', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'v1', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt_api_key_real', // unique name for field
+                'label' => 'API Key', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'select', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt_server_enabled', // unique name for field
+                'label' => 'Meta Trader Enabled', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'enabled', // default value if you want
+            ],
+        ]
+    ],
+
     'platform_api' => [
         'title' => 'Platform API Settings',
         'elements' => [
+           
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean

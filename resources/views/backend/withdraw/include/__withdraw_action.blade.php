@@ -25,7 +25,7 @@
     @foreach( json_decode($data->manual_field_data,true) as $name => $data)
         <li class="list-group-item block py-2 px-3">
             {{ $name }}: 
-            @if( $data['type'] == 'file' || str_contains($value, 'amazonaws.com'))
+            @if( $data['type'] == 'file' || str_contains($data['value'], 'amazonaws.com'))
                 <img src="{{ asset($data['value']) }}" alt=""/>
             @else
                 <strong>{{ $data['value'] }}</strong>

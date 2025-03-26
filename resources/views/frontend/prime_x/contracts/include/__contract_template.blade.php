@@ -27,7 +27,7 @@
         </h2>
         <div class="text-sm dark:text-slate-300 space-y-2">
             <p>
-                {{ __('The Client agrees to:') }}
+                {{ __('The Client agrees to') }}
             </p>
             <p>
                 {{ __('- Comply with all applicable trading rules, strategies, and guidelines provided by the Firm.') }}
@@ -114,11 +114,11 @@
     </div>
     <div class="space-y-2 pt-10">
         <h2 class="text-lg font-semibold dark:text-white">
-            {{ __('Signed by:') }}
+            {{ __('Signed by') }}
         </h2>
         <p class="text-sm dark:text-slate-300">
             <span class="font-medium mr-2">
-                {{ __('For:') }}
+                {{ __('For') }}
             </span>
             {{ setting('site_title', 'global') }}
         </p>
@@ -126,14 +126,14 @@
         <div class="space-y-2 text-sm dark:text-slate-300">
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Client Name:') }}
+                    {{ __('Client Name') }}
                 </span>
                 <span class="capitalize">
                     {{ $contract->user->first_name . ' ' . $contract->user->last_name }}
                 </span>
             </div>
             <div>
-                <p class="text-sm font-medium dark:text-slate-300 mb-1">{{ __('Client Signature:') }}</p>
+                <p class="text-sm font-medium dark:text-slate-300 mb-1">{{ __('Client Signature') }}</p>
                 <div class="max-w-xl">
                     <img src="{{ $signature }}" height="75" alt="">
                     <div id="sig" class="h-[200px] rounded border dark:border-slate-700"></div>
@@ -149,13 +149,13 @@
             </div>
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Date of Contract:') }}
+                    {{ __('Date of Contract') }}
                 </span>
                 {{ date('F d, Y', strtotime($contract->created_at)) }}
             </div>
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Contract Expiry:') }}
+                    {{ __('Contract Expiry') }}
                 </span>
                 {{ date('F d, Y', strtotime($contract->expiry_at)) }}
             </div>

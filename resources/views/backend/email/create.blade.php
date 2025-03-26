@@ -29,7 +29,7 @@
                 </div>
                 <div class="card-body space-y-5 p-6">
                     <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Full Name:') }}</label>
+                        <label for="" class="form-label inline-inputLabel">{{ __('Full Name') }}</label>
                         <div class="relative">
                             <input type="text" class="form-control !pr-12" id="fullname-input" value="[[full_name]]" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#fullname-input">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Site title:') }}</label>
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site title') }}</label>
                         <div class="relative">
                             <input type="text" class="form-control !pr-12" id="sitetitle-input" value="[[site_title]]" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#sitetitle-input">
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Site URL:') }}</label>
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site URL') }}</label>
                         <div class="relative">
                             <input type="text" class="form-control !pr-12" id="siteurl-input" value="[[site_url]]" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#siteurl-input">
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Token:') }}</label>
+                        <label for="" class="form-label inline-inputLabel">{{ __('Token') }}</label>
                         <div class="relative">
                             <input type="text" class="form-control !pr-12" id="token-input" value="[[token]]" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#token-input">

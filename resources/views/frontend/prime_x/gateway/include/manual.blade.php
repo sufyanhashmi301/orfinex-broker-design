@@ -1,7 +1,7 @@
 <div class="col-span-12">
     <div class="frontend-editor-data space-y-4 text-lg">
         <h6 class="text-slate-900 dark:text-white">
-            {{ __('Account Details:') }}
+            {{ __('Account Details') }}
         </h6>
         {!! $paymentDetails !!}
     </div>

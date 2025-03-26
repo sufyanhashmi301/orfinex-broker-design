@@ -20,6 +20,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\KycNoticeInvokeEnums;
 use App\Enums\KycStatusEnums;
+use App\Enums\TraderType;
 use App\Models\User;
 
 class AccountTypeInvestmentService
@@ -29,14 +30,16 @@ class AccountTypeInvestmentService
 
   private $investment_payment;
   protected $forexApiService;
+  protected $matchTraderApiService;
   protected $payout;
   protected $invoice;
 
-  public function __construct( AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice) {
-      $this->investment_payment = $investment_payment;
-      $this->forexApiService = $forexApiService;
-      $this->payout = $payout;
-      $this->invoice = $invoice;
+  public function __construct( AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice, MatchTraderApiService $matchTraderApiService) {
+    $this->forexApiService = $forexApiService;
+    $this->matchTraderApiService = $matchTraderApiService;
+    $this->investment_payment = $investment_payment;
+    $this->payout = $payout;
+    $this->invoice = $invoice;
   }
 
   /**
@@ -127,7 +130,7 @@ class AccountTypeInvestmentService
           'trader_type' => $rule->accountTypePhase->accountType->trader_type,
           'platform_group' => $rule->accountTypePhase->accountType->platform_group,
           'total' => $total_amount - $rule->discount,
-          'status' => $added_manually ? InvestmentStatus::ACTIVE : InvestmentStatus::PENDING,
+          'status' => $added_manually ? InvestmentStatus::ACTIVE : InvestmentStatus::PENDING_NOT_PAID,
           'is_trial' => $is_trial ? 1 : 0
       ];
     }
@@ -151,14 +154,10 @@ class AccountTypeInvestmentService
     return $new_investment;
   }
 
-  
-
-
   /**
    * Trading Objectives Evaluation
    */
   private function tradingObjectives($investment, $first_record_after_midnight) {
-
 
     $trading_objectives = [];
 
@@ -414,8 +413,6 @@ class AccountTypeInvestmentService
         $next_phase['phase_approval_method'] == 'admin_approval' ? AccountActivityStatusEnums::ADMIN_APPROVE : AccountActivityStatusEnums::AUTO_APPROVE,
         $next_phase['phase_approval_method'] == 'admin_approval' ? 0 : 1
       );
-      
-
 
       if($next_phase['phase_approval_method'] == 'auto_approval'){
         // Auto approve the next phase 
@@ -464,16 +461,28 @@ class AccountTypeInvestmentService
       return true;
     }
  
+    // Violate wrt Platform/TraderType
+    if($violate_investment->trader_type == TraderType::MT5) {
+      // Empty the balance from account
+      $data = [
+        'login' => $violate_investment->login,
+        'Amount' => $violate_investment->accountTypeInvestmentStat->balance,
+        'type' => 0,
+        'TransactionComments' => 'Account Violated'
+      ];
 
-    // Empty the balance from account
-    $data = [
-      'login' => $violate_investment->login,
-      'Amount' => $violate_investment->accountTypeInvestmentStat->balance,
-      'type' => 0, //deposit
-      'TransactionComments' => 'Account Violated'
-    ];
-
-    $response = $this->forexApiService->balanceOperation($data);
+      $response = $this->forexApiService->balanceOperation($data);
+    } elseif($violate_investment->trader_type == TraderType::MT) {
+      $deduct_balance_data = [
+        "systemUuid" => $violate_investment->getAccountTypeSnapshotData()['system_uuid'],
+        "login" => $violate_investment->login,
+        "amount" => $violate_investment->accountTypeInvestmentStat->balance,
+        "comment" => "Account Violated"
+      ];
+  
+      $deduct_balance_response = $this->matchTraderApiService->deductBalance($deduct_balance_data);
+    }
+    
 
     // Update account
     $violate_investment->update(
@@ -481,6 +490,7 @@ class AccountTypeInvestmentService
         'status' => InvestmentStatus::VIOLATED,
         'violation_reason' => $reason,
         'violation_data' => $violation_data,
+        'phase_ended_at' => Carbon::now(),
         'mail_sent' => 0
       ]
     );
@@ -488,10 +498,8 @@ class AccountTypeInvestmentService
     // Update account stats
     $violate_investment->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
 
-
     // Add the record in investment phase approvals table
     AccountActivityService::log($violate_investment, AccountActivityStatusEnums::VIOLATED);
-
 
   }
 

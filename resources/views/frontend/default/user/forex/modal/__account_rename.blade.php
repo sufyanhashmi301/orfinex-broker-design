@@ -8,7 +8,7 @@
                             {{ __('Rename Your Account') }}
                         </h3>
                         <p class="dark:text-white">
-                            {{ __('Account:') }}
+                            {{ __('Account') }}
                             <span class="fw-bold update-name-modal-login"></span>
                         </p>
                     </div>
@@ -23,7 +23,7 @@
                     <input type="hidden" name="login" id="update-name-modal-login"  class="form-control update-name-modal-login"  >
                     <form action="" method="post">
                         @csrf
-                        <label class="form-label" for="">{{ __('New nickname:') }}</label>
+                        <label class="form-label" for="">{{ __('New nickname') }}</label>
                         <div class="input-form-group">
                             <input type="text" class="form-control" name="nickname" id="update-name-modal-name" >
                             <small class="mt-1">The name you want to update to remember.</small>

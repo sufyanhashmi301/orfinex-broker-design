@@ -36,11 +36,11 @@
         <div class="card-header noborder">
             <div>
                 <h4 class="card-title mb-1">{{ $account_type->title }}</h4>
-                <p class="card-text" style="text-transform: capitalize">{{ $account_type->type }}</p>
+                <p class="card-text" style="text-transform: capitalize">{{ $account_type->type }} Account</p>
             </div>
-            <button type="button" class="btn btn-primary cursor-default inline-flex items-center justify-center">
-                Evaluation Step
-            </button>
+            {{-- <button type="button" class="btn btn-primary cursor-default inline-flex items-center justify-center" style="pointer-events: none">
+                {{ count($account_type->accountTypePhases) > 1 ? 'Challenge' : 'Funded'  }} Account
+            </button> --}}
         </div>
     </div>
 
@@ -49,35 +49,35 @@
     @endphp
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-8 col-span-12">
-            <div class="card">
+            <div class="card" style="height: 100%">
                 <div class="card-body p-6">
                     <form action="{{ $is_trial ? route('user.account.free_trial', ['id' => $account_type->id]) : route('user.investment.store') }}" method="post" enctype="multipart/form-data"
                         id="payment-form" class="space-y-6">
                         @csrf
-                        <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->forexSchemaPhase1->type) }}">
+                        <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->phaseOne->type) }}">
                         <input type="hidden" id="discount-id" name="discount_id" >
                         <input type="hidden" id="addon-ids" name="addons" value="">
                         <input type="hidden" name="free_trial" value="{{ $is_trial ? true : false }}" >
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
-                                {{ __('Allocated Funds') }}
+                                {{ __('Allotted Funds') }}
                             </p>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                @foreach ($account_type->forexSchemaPhase1->accountTypePhaseRules as $index => $rule)
+                                @foreach ($account_type->phaseOne->accountTypePhaseRules as $index => $rule)
                                     <div class="success-radio">
                                         <label
                                             class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                             <input type="radio" class="hidden priceInput" name="rule_id"
                                                 value="{{ $rule->id }}" data-price="{{ $rule->amount }}"
                                                 data-discount="{{ $rule->discount }}"
-                                                data-daily-dd="{{ $rule->daily_drawdown_limit }}"
-                                                data-max-dd="{{ $rule->max_drawdown_limit }}"
-                                                data-profit-target="{{ $rule->profit_target }}"
+                                                data-daily-dd="{{ number_format($rule->daily_drawdown_limit, 0) }}"
+                                                data-max-dd="{{ number_format($rule->max_drawdown_limit, 0) }}"
+                                                data-profit-target="{{ number_format($rule->profit_target, 0) }}"
                                                 data-total="{{ $rule->amount - $rule->discount }}"
                                                 {{ $index == 0 ? 'checked' : '' }}>
                                             <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
 
-                                            <span class="dark:text-white">${{ $rule->allotted_funds ?? '' }}</span>
+                                            <span class="dark:text-white">${{ number_format($rule->allotted_funds, 0) ?? '' }}</span>
                                         </label>
                                     </div>
                                 @endforeach
@@ -140,28 +140,33 @@
                         {{-- Your Static Code for Platform --}}
                         <div class="input-area relative">
                             <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
+                                <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                     {{ __('Platform') }}</p>
-                                <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    {{ __('Please select your trading platform.') }}</p>
+                                {{-- <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
+                                    {{ __('Please select your trading platform.') }}</p> --}}
                             </div>
                             <div class="success-radio">
-                                <label
-                                    class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
-                                    {{-- <input type="radio" class="hidden priceInput" name="platform" value="" checked> --}}
-                                    <span
-                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                    <span class="flex-1 inline-flex items-center">
-                                        <img src="{{ asset('frontend/images/mt-5-logo.png') }}" class="h-5"
-                                            alt="">
-                                        <span
-                                            class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-2">{{ __('Best for Web Trading') }}</span>
-                                    </span>
+                                <label class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
+                                    <input type="radio" class="hidden priceInput" name="" value="" checked>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+
+                                    @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                        <span class="flex-1 inline-flex items-center">
+                                            <img src="{{ asset('frontend/images/mt-5-logo.png') }}" class="h-5" alt="">
+                                            <span class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-2">{{ __('Meta Trader 5') }}</span>
+                                        </span>    
+                                    @elseif(setting('active_trader_type', 'features') == \App\Enums\TraderType::MT)
+                                        <span class="flex-1 inline-flex items-center">
+                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1WG1orpfjNRTprMby0hUp5QJmtYurNqplww&s" class="" style="height: 30px" alt="">
+                                            <span class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-3">{{ __('Match Trader Platform') }}</span>
+                                        </span>    
+                                    @endif
+                                    
                                 </label>
                             </div>
                         </div>
 
-                        @if (!$is_trial)
+                        @if (!$is_trial && count($addons) != 0)
                             {{--  Addons --}}
                             <div class="input-area relative">
                                 <div class="mb-3">
@@ -266,7 +271,7 @@
 
                 <div class="order__discount-code space-y-4 mb-10">
                     <p class="text-sm font-medium dark:text-slate-100 mb-1">
-                        {{ __('Please review the following policies before proceeding:') }}
+                        {{ __('Please review the following policies before proceeding') }}
                     </p>
                     <ul class="space-y-3 mb-5">
 
@@ -465,9 +470,9 @@
                     discountAmount.toFixed(2));
                 $('.addons-display').text('$' + addon.toFixed(2));
                 $('.total-display').text('$' + total.toFixed(2));
-                $('.daily-dd').text(dailyDD);
-                $('.max-dd').text(maxDD);
-                $('.profit-target').text(profitTarget);
+                $('.daily-dd').text('$' + dailyDD);
+                $('.max-dd').text('$' + maxDD);
+                $('.profit-target').text('$' + profitTarget);
             }
 
         });

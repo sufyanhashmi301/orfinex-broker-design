@@ -68,6 +68,11 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' 
 
     // ======== Optimizations ========
 
+    // Account Buy
+    Route::get('account/buy', [AccountBuyController::class, 'index'])->name('account.buy');
+    Route::get('account/buy/{id}', [AccountBuyController::class, 'show'])->name('account.show');
+    Route::post('account/trial/{id}', [AccountTrialController::class, 'freeTrial'])->name('account.free_trial');
+
     // Accounts
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Account Create
     Route::get('accounts/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Account Shown
@@ -89,10 +94,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' 
     Route::get('contract/{id}', [ContractController::class, 'show'])->name('contract.show');
     Route::post('contract/store', [ContractController::class, 'storeContract'])->name('contract.store');
 
-    // Account Buy
-    Route::get('account/buy', [AccountBuyController::class, 'index'])->name('account.buy');
-    Route::get('account/buy/{id}', [AccountBuyController::class, 'show'])->name('account.show');
-    Route::post('account/trial/{id}', [AccountTrialController::class, 'freeTrial'])->name('account.free_trial');
+    
 
     // Contract Agreement
     Route::get('agreements', function () {

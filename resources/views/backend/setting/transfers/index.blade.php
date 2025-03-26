@@ -44,13 +44,13 @@
                 @if($section == 'internal')
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Min Amount:') }}</label>
+                            <label for="" class="form-label">{{ __('Min Amount') }}</label>
                             <input type="text" class="form-control" name="internal_min_send" value="{{ oldSetting('internal_min_send','fee') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Max Amount:') }}</label>
+                            <label for="" class="form-label">{{ __('Max Amount') }}</label>
                             <input type="text" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','fee') }}">
                         </div>
                     </div>
@@ -98,13 +98,13 @@
 
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Min Amount:') }}</label>
+                            <label for="" class="form-label">{{ __('Min Amount') }}</label>
                             <input type="text" class="form-control" name="min_send" value="{{ oldSetting('min_send','fee') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Max Amount:') }}</label>
+                            <label for="" class="form-label">{{ __('Max Amount') }}</label>
                             <input type="text" class="form-control" name="max_send" value="{{ oldSetting('max_send','fee') }}">
                         </div>
                     </div>
@@ -201,19 +201,19 @@
 
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('User Referral Bonus:') }}</label>
+                            <label for="" class="form-label">{{ __('User Referral Bonus') }}</label>
                             <input type="text" class="form-control" name="referral_bonus" value="{{ oldSetting('referral_bonus','fee') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('User Signup Bonus:') }}</label>
+                            <label for="" class="form-label">{{ __('User Signup Bonus') }}</label>
                             <input type="text" class="form-control" name="signup_bonus" value="{{ oldSetting('signup_bonus','fee') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Wallet Exchange Daily Limit:') }}</label>
+                            <label for="" class="form-label">{{ __('Wallet Exchange Daily Limit') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control" name="wallet_exchange_day_limit" value="{{ oldSetting('wallet_exchange_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
@@ -222,7 +222,7 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Send Money Daily Limit:') }}</label>
+                            <label for="" class="form-label">{{ __('Send Money Daily Limit') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control" name="send_money_day_limit" value="{{ oldSetting('send_money_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
@@ -231,7 +231,7 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Withdraw Daily Limit:') }}</label>
+                            <label for="" class="form-label">{{ __('Withdraw Daily Limit') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control" name="withdraw_day_limit" value="{{ oldSetting('withdraw_day_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>
@@ -240,7 +240,7 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Investment Cancellation Daily Limit:') }}</label>
+                            <label for="" class="form-label">{{ __('Investment Cancellation Daily Limit') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control" name="investment_cancellation_daily_limit" value="{{ oldSetting('investment_cancellation_daily_limit','fee') }}">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">{{ __('Times') }}</span>

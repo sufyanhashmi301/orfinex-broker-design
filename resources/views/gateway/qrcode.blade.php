@@ -22,7 +22,7 @@
 
                     </div>
                     <p class="mb-0">You can send {{ $data['amount'] . ' ' . $data['currency'] }} to the above address</p>
-                    <p class="mb-0"><i class="anticon anticon-bank"></i>{{ __('Pay Amount:') . ' '. $data['amount'] . ' ' . $data['currency'] }}</p>
+                    <p class="mb-0"><i class="anticon anticon-bank"></i>{{ __('Pay Amount') . ' '. $data['amount'] . ' ' . $data['currency'] }}</p>
                 </div>
             </div>
         </div>

@@ -12,7 +12,7 @@
                 <form action="{{ route('admin.user.mail-send') }}" method="post" class="space-y-5">
                     @csrf
                     <div class="input-area">
-                        <label for="" class="form-label">{{ __('Subject:') }}</label>
+                        <label for="" class="form-label">{{ __('Subject') }}</label>
                         <input type="text" name="subject" class="form-control mb-0" required=""/>
                     </div>
                     <div class="input-area">

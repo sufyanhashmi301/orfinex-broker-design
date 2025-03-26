@@ -161,25 +161,32 @@ class UserController extends Controller
      * @param int $id
      * @return Application|Factory|View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
 
         $user = User::find($id);
         $all_account_types = AccountType::where('status', 1)->get();
-        $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10);
         $all_accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $wallets_balance = Wallet::where('user_id', $id)->sum('available_balance');
         $total_approved_withdraws = Transaction::where('user_id', $id)->where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
         $payout_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::PAYOUT)->first()->available_balance ?? 0.00;
         $affiliate_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::AFFILIATE)->first()->available_balance ?? 0.00;
-        $payments = Transaction::where(function ($query) {
-            $query->where('type', TxnType::ManualDeposit)
-                ->orWhere('type', TxnType::Deposit);
-        })->latest()->paginate(10);
-        $withdraws = Transaction::where(function ($query) {
-            $query->where('type', TxnType::Withdraw);
-        })->paginate(10);
 
+        // Pagination Behaviour
+        $tab = $request->tab ?? null;
+        $page = $request->page ?? 1;
+        
+        // Fetch accounts
+        $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10, ['*'], 'page', ($tab === 'accounts' && isset($request->page)) ? $request->page : 1);
+        
+        // Fetch payments
+        $payments = Transaction::where(function ($query) {
+                $query->where('type', TxnType::ManualDeposit)
+                      ->orWhere('type', TxnType::Deposit);
+            })->latest()->paginate(10, ['*'], 'page', ($tab === 'payments' && isset($request->page)) ? $request->page : 1);
+        
+        // Fetch withdraws
+        $withdraws = Transaction::where('type', TxnType::Withdraw)->paginate(10, ['*'], 'page', ($tab === 'withdraws' && isset($request->page)) ? $request->page : 1);
 
         return view('backend.user.edit', compact('user', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types', 'payments', 'withdraws'));
     }

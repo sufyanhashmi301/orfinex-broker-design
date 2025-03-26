@@ -48,7 +48,7 @@ final class Ssl {
 			$altnames = explode(',', $cert['extensions']['subjectAltName']);
 			foreach ($altnames as $altname) {
 				$altname = trim($altname);
-				if (strpos($altname, 'DNS:') !== 0) {
+				if (strpos($altname, 'DNS') !== 0) {
 					continue;
 				}
 

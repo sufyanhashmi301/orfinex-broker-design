@@ -23,7 +23,7 @@
                         @csrf
                         <input type="hidden" name="id" value="{{ $id ?? 0}}" id="userId">
                         <div class="site-input-area relative">
-                            <label for="" class="form-label">{{ __('Subject:') }}</label>
+                            <label for="" class="form-label">{{ __('Subject') }}</label>
                             <input
                                 type="text"
                                 name="subject"

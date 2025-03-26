@@ -10,7 +10,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Account Type:') }}
+                            {{ __('Select Account Type') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">
@@ -25,7 +25,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Group:') }}
+                            {{ __('Select Group') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">
@@ -48,7 +48,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Leverage:') }}
+                            {{ __('Select Leverage') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">
@@ -62,7 +62,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Account Nickname:') }}
+                            {{ __('Account Nickname') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">
@@ -72,7 +72,7 @@
                 <div class="md:flex">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0 md:mt-3" for="">
-                            {{ __('Main Password:') }}
+                            {{ __('Main Password') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">

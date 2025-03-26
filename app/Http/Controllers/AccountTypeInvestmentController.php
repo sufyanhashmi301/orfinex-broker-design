@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AccountType;
 use Carbon\Carbon;
 use App\Enums\TraderType;
 use Brick\Math\BigDecimal;
@@ -15,13 +16,13 @@ use App\Models\AccountOpenPosition;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
-use App\Enums\InvestmentPhaseApproval;
 use App\Services\UserAffiliateService;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Services\AccountTypeInvestmentPaymentService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Models\Transaction;
+use App\Services\MatchTraderApiService;
 
 class AccountTypeInvestmentController extends Controller
 {
@@ -30,14 +31,16 @@ class AccountTypeInvestmentController extends Controller
     public $affiliate;
     public $investment_payment;
     protected $forexApiService;
+    protected $matchTraderApiService;
 
-    public function __construct(ForexApiService $forexApiService, AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate, AccountTypeInvestmentPaymentService $investment_payment) {
+    public function __construct(ForexApiService $forexApiService, MatchTraderApiService $matchTraderApiService, AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate, AccountTypeInvestmentPaymentService $investment_payment) {
         $this->middleware('permission:account-list', ['only' => ['adminIndex']]);
 
         $this->investment = $investment;
         $this->affiliate = $userAffiliate;
         $this->investment_payment = $investment_payment;
         $this->forexApiService = $forexApiService;
+        $this->matchTraderApiService = $matchTraderApiService;
     }
 
     /**
@@ -51,7 +54,7 @@ class AccountTypeInvestmentController extends Controller
 
             if (in_array($request->status, (new \ReflectionClass(InvestmentStatus::class))->getConstants())) {
                 // Handle the logic here if the status is valid
-                $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
+                $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
                 $title = ucfirst($request->status) . ' Accounts';
                 $accounts_filter = true;
             }
@@ -60,7 +63,7 @@ class AccountTypeInvestmentController extends Controller
 
         // If search
         if(isset($request->search)) {
-            $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->where('login', 'LIKE', '%' . $request->search . '%')
+            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('login', 'LIKE', '%' . $request->search . '%')
                                             ->orWhereHas('user', function ($query) use ($request) {
                                                 $query->where('first_name', 'LIKE', '%' . $request->search . '%')
                                                     ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
@@ -74,7 +77,7 @@ class AccountTypeInvestmentController extends Controller
 
         // if status is unknown then show all accounts
         if(!$accounts_filter) {
-            $accounts = AccountTypeInvestment::whereIn('id', Transaction::select('target_id'))->orderBy('id', 'desc')->paginate(15);
+            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->orderBy('id', 'desc')->paginate(15);
             $title = 'All Accounts';
             if($request->status != 'all') {
                 return redirect()->route('admin.accounts.index', ['status' => 'all']);
@@ -92,6 +95,9 @@ class AccountTypeInvestmentController extends Controller
     public function index()
     {
 
+        // Delete the accounts that are not paid
+        AccountTypeInvestment::where('user_id', Auth::id())->where('status', InvestmentStatus::PENDING_NOT_PAID)->delete();
+
         $user = auth()->user();
 
         if(!isset($request->status)){
@@ -102,19 +108,6 @@ class AccountTypeInvestmentController extends Controller
         }
 
         $transactions = Transaction::whereIn('target_id', $investments->pluck('id'))->get();
-
-        // Delete the Phase 1 accounts that have no transaction records
-        $accounts_with_no_transactions = false;
-        foreach($investments as $investment) {
-            if($investment->getPhaseSnapshotData()['phase_step'] == 1 && $transactions->where('target_id', $investment->id)->count() == 0 && $investment->is_trial == 0) {
-                $investment->delete();
-                $accounts_with_no_transactions = true;
-            }
-        }
-
-        if($accounts_with_no_transactions) {
-            return redirect()->route('user.investments.index');
-        }
 
         return view('frontend::account.index', get_defined_vars());
     }
@@ -149,6 +142,10 @@ class AccountTypeInvestmentController extends Controller
 
         $account = $this->investment->createInvestment($request, 0, false, true, $request->user_id);
         $active_account = $this->investment_payment->investmentActive($account->id);
+
+        if(!$active_account) {
+            return redirect()->back();
+        }
 
         if($active_account->status == InvestmentStatus::ACTIVE) {
             notify()->success('Account created successfully!');
@@ -188,28 +185,45 @@ class AccountTypeInvestmentController extends Controller
             }
         }
 
-        // Balance Operation
-        $balance_data = [
-            'login' => $account->login,
-            'Amount' => $balance,
-            'type' => 1, //deposit
-            'TransactionComments' => 'Account Manually Restored'
-        ];
-      
-        $response = $this->forexApiService->balanceOperation($balance_data);
+        if($account->trader_type == TraderType::MT5) {
+            // Balance Operation
+            $balance_data = [
+                'login' => $account->login,
+                'Amount' => $balance,
+                'type' => 1, //deposit
+                'TransactionComments' => 'Account Manually Restored'
+            ];
+            
+            $response = $this->forexApiService->balanceOperation($balance_data);
 
-        if ($response['success'] && $response['result']['responseCode'] == 10009) {
-            $account->update([
-                'status' => InvestmentStatus::ACTIVE,
-                'violation_reason' => null,
-                'violation_data' => null,
-                'mail_sent' => 0,
+            if (!$response['success'] || $response['result']['responseCode'] != 10009) {
+                notify()->error('Unknown error occured. Please try again.');
+            }
 
-            ]);
-            notify()->success('Balance is added to account and the Account is active.');
-        } else {
-            notify()->error('Unknown error occured. Please try again.');
+        } elseif($account->trader_type == TraderType::MT) {
+            $deposit_balance_data = [
+                "systemUuid" => $account->getAccountTypeSnapshotData()['system_uuid'],
+                "login" => $account->login,
+                "amount" => $balance,
+                "comment" => "Account Manually Restored"
+            ];
+          
+            $deposit_balance_response = $this->matchTraderApiService->depositBalance($deposit_balance_data);
+
+            if(!$deposit_balance_response) {
+                notify()->error('Unknown error occured. Please try again.');
+            }
         }
+  
+        $account->update([
+            'status' => InvestmentStatus::ACTIVE,
+            'violation_reason' => null,
+            'violation_data' => null,
+            'mail_sent' => 0,
+
+        ]);
+        notify()->success('Balance is added to account and the Account is active.');
+       
         return redirect()->back();
 
         

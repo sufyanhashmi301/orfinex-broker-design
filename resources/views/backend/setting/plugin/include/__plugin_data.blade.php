@@ -20,7 +20,7 @@
 
     <div class="input-area">
         <div class="input-area relative flex items-center space-x-7">
-            <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
+            <label class="form-label !w-auto" for="">{{ __('Status') }}</label>
             <div class="form-switch ps-0">
                 <input type="hidden" value="0" name="status">
                 <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">

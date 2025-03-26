@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <p class="text-sm dark:text-white mt-7 mb-3">
-                        {{ __('The document you are providing must be valid for at least 30 days and contain all of the following details:') }}
+                        {{ __('The document you are providing must be valid for at least 30 days and contain all of the following details') }}
                     </p>
                     <figure class="figure d-block">
                         <svg alt="{{ __('verification example') }}" viewBox="0 0 320 178" class="img-fluid">

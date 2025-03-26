@@ -18,7 +18,7 @@
                                     <th scope="col" class="table-th">{{ __('Phase Action') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Investment Status') }}</th> --}}
 
-                                    <th scope="col" class="table-th">{{ __('Detail') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                     <th scope="col" class="table-th">{{ __('Activity Timestamp') }}</th>
                                 </tr>
                             </thead>
@@ -60,8 +60,8 @@
 
                                                 @can('account-activity-approval')
                                                     <div class="btn-group">
-                                                        <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
-                                                        <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
+                                                        <a onclick="document.querySelectorAll('.approve-btn').forEach(btn => btn.classList.add('disabled'));" href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1 approve-btn">Approve</a>
+                                                        {{-- <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a> --}}
                                                     </div>
                                                 @endcan
                                                 

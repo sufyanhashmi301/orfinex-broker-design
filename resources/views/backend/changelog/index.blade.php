@@ -30,7 +30,7 @@
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
-                                            <span>{{ __('New Tools and Modules:') }}</span>
+                                            <span>{{ __('New Tools and Modules') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
@@ -42,7 +42,7 @@
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
-                                            <span>{{ __('Risk Management & Security Enhancements:') }}</span>
+                                            <span>{{ __('Risk Management & Security Enhancements') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
@@ -83,7 +83,7 @@
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
-                                            <span>{{ __('New Functionalities Introduced:') }}</span>
+                                            <span>{{ __('New Functionalities Introduced') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
                                             <span class="h-2 w-2 bg-primary-500 rounded-full"></span>

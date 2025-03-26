@@ -20,11 +20,11 @@
                 <form action="{{ route('admin.designations.store') }}" method="post" class="space-y-4">
                     @csrf
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Name:') }}</label>
+                        <label class="form-label" for="">{{ __('Name') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control" placeholder="Designation Name" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Parent:') }}</label>
+                        <label class="form-label" for="">{{ __('Parent') }}</label>
                         <select name="parent_id" class="form-control">
                             <option value="">This is Parent</option>
                             @foreach($designations as $designation)

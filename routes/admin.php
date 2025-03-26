@@ -489,6 +489,10 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
+    Route::get('settings/platform-api/match-trader', function () {
+        return view('backend.setting.platform_api.match_trader');
+    })->name('platform_api.match_trader');
+
     Route::get('settings/platform-api/cTrader', function () {
         return view('backend.setting.platform_api.ctrader');
     })->name('platform_api.ctrader');

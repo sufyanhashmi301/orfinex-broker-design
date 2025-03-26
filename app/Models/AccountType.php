@@ -14,6 +14,8 @@ class AccountType extends Model
 		'trader_type',
 		'icon',
 		'title',
+		'offer_uuid',
+		'system_uuid',
 		'platform_group',
 		'type',
 		'description',
@@ -41,33 +43,29 @@ class AccountType extends Model
 	public function accountTypePhases(){
 			return $this->hasMany(AccountTypePhase::class);
 	}
+
+	public function phaseOne()
+	{
+			return $this->hasOne(AccountTypePhase::class)->where('phase_step', 1);
+	}
 	
 	public function scopeActive(Builder $query)
 	{
 			return $query->where('status', true);
 	}
-
 	// will be deleted soon
-	public function forexSchemaPhase1()
-	{
-			return $this->hasOne(AccountTypePhase::class)->where('phase_step', 1);
-	}
+	
 
 	public function scopeTraderType(Builder $query)
 	{
 		return $query->where('trader_type', setting('active_trader_type', 'features'));
 	}
 
-	public function scopeRelevantForUser(Builder $query, $country, array $tags)
+	public function scopeRelevantForUser(Builder $query, $country)
 	{
-			return $query->where(function($q) use ($country, $tags) {
+			return $query->where(function($q) use ($country) {
 					$q->whereJsonContains('countries', $country)
-							->orWhereJsonContains('countries', 'All')
-							->orWhere(function($subQuery) use ($tags) {
-									foreach ($tags as $tag) {
-											$subQuery->orWhereJsonContains('tags', $tag);
-									}
-							});
+						->orWhereJsonContains('countries', 'All');
 			});
 	}
 

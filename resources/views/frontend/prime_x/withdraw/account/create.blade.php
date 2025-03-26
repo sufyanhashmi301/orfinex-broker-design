@@ -20,7 +20,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 selectMethodRow">
                                 <div class="input-area relative selectMethodCol">
                                     <label for="exampleFormControlInput1" class="form-label">
-                                        {{ __('Choice Method:') }}
+                                        {{ __('Choice Method') }}
                                     </label>
                                     <div class="input-group select2-lg">
                                         <select name="withdraw_method_id" id="selectMethod" class="select2 form-control !text-lg w-full mt-2 py-2">

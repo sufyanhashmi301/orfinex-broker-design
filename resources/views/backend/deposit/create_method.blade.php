@@ -19,7 +19,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
                         <div class="md:col-span-2">
                             <div class="input-area relative max-w-xs">
-                                <label class="form-label" for="">{{ __('Add Method Logo:') }}</label>
+                                <label class="form-label" for="">{{ __('Add Method Logo') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -40,7 +40,7 @@
                         </div>
                         @if($type == 'auto')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
+                                <label class="form-label" for="">{{ __('Automatic Gateway') }}</label>
                                 <select name="gateway_id"
                                         class="form-control w-100"
                                         id="gateway-select">
@@ -54,7 +54,7 @@
                             </div>
                             <div class="input-area relative">
                                 <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
+                                        for="">{{ __('Gateway Supported Currency') }}</label>
                                 <select name="currency" class="form-control w-100" id="currency">
 
                                 </select>
@@ -62,7 +62,7 @@
                         @endif
 
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Name:') }}</label>
+                            <label class="form-label" for="">{{ __('Name') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -71,7 +71,7 @@
                         </div>
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Code Name:') }}</label>
+                                <label class="form-label" for="">{{ __('Code Name') }}</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -82,7 +82,7 @@
 
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Currency:') }}</label>
+                                <label class="form-label" for="">{{ __('Currency') }}</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -92,7 +92,7 @@
                             </div>
                         @endif
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Currency Symbol:') }}</label>
+                            <label class="form-label" for="">{{ __('Currency Symbol') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -101,7 +101,7 @@
                             />
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
+                            <label class="form-label" for="">{{ __('Conversion Rate') }}</label>
                             <div class="joint-input relative">
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{'1 '.' '.$currency. ' ='}}
@@ -111,7 +111,7 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Charges:') }}</label>
+                            <label class="form-label" for="">{{ __('Charges') }}</label>
                             <div class="relative">
                                 <input type="text" class="form-control" oninput="this.value = validateDouble(this.value)" name="charge"/>
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Minimum Payment:') }}</label>
+                            <label class="form-label" for="">{{ __('Minimum Payment') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="minimum_deposit" class="form-control"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -133,7 +133,7 @@
 
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Maximum Payment:') }}</label>
+                            <label class="form-label" for="">{{ __('Maximum Payment') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="maximum_deposit" class="form-control"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <div class="md:col-span-2 input-area relative">
-                            <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
+                            <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world)') }}</label>
                             <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                 @foreach( getCountries() as $country)
                                     <option  value="{{ $country['name'] }}">
@@ -164,7 +164,7 @@
                             </div>
                             <div class="md:col-span-2">
                                 <div class="input-area relative fw-normal">
-                                    <label for="" class="form-label">{{ __('Payment Details:') }}</label>
+                                    <label for="" class="form-label">{{ __('Payment Details') }}</label>
                                     <div class="site-editor">
                                         <textarea class="summernote" name="payment_details"></textarea>
                                     </div>
@@ -175,7 +175,7 @@
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Status:') }}
+                                    {{ __('Status') }}
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="status">

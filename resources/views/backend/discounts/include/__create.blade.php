@@ -21,7 +21,7 @@
                         @csrf
                         <!-- Code Name -->
                             <div class="input-area !mt-0">
-                                <label for="code_name" class="form-label">{{ __('Code Name:') }}</label>
+                                <label for="code_name" class="form-label">{{ __('Code Name') }}</label>
                                 <input
                                     type="text"
                                     name="code_name"
@@ -33,7 +33,7 @@
 
                             <!-- Discount Code -->
                             <div class="input-area">
-                                <label for="code" class="form-label">{{ __('Code:') }}</label>
+                                <label for="code" class="form-label">{{ __('Code') }}</label>
                                 <input
                                     type="text"
                                     name="code"
@@ -45,7 +45,7 @@
 
                             <!-- Type -->
                             <div class="input-area">
-                                <label for="type" class="form-label">{{ __('Type:') }}</label>
+                                <label for="type" class="form-label">{{ __('Type') }}</label>
                                 <select id="discounttype" name="type" class="form-control w-100" required>
                                     <option value="" disabled selected>{{ __('Select Type') }}</option>
                                     <option value="fixed">{{ __('Fixed') }}</option>
@@ -56,7 +56,7 @@
                             <!-- Value based on type (Fixed or Percentage) -->
                             <div class="input-area">
                                 <div class="discount-type hidden" data-div="fixed">
-                                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount:') }}</label>
+                                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount') }}</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -66,7 +66,7 @@
                                     />
                                 </div>
                                 <div class="discount-type hidden" data-div="percentage">
-                                    <label for="percentage" class="form-label">{{ __('Percentage:') }}</label>
+                                    <label for="percentage" class="form-label">{{ __('Percentage') }}</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -79,7 +79,7 @@
 
                             <!-- Applied To -->
     {{--                        <div class="input-area">--}}
-    {{--                            <label for="applied_to" class="form-label">{{ __('Applies To:') }}</label>--}}
+    {{--                            <label for="applied_to" class="form-label">{{ __('Applies To') }}</label>--}}
     {{--                            <input--}}
     {{--                                type="text"--}}
     {{--                                name="applied_to"--}}
@@ -90,7 +90,7 @@
 
                             <!-- Usage Limit -->
                             <div class="input-area">
-                                <label for="usage_limit" class="form-label">{{ __('Usage Limit:') }}</label>
+                                <label for="usage_limit" class="form-label">{{ __('Usage Limit') }}</label>
                                 <input
                                     type="number"
                                     name="usage_limit"
@@ -103,7 +103,7 @@
 
                             <!-- Expiry Date -->
                             <div class="input-area">
-                                <label for="expire_at" class="form-label">{{ __('Expires On:') }}</label>
+                                <label for="expire_at" class="form-label">{{ __('Expires On') }}</label>
                                 <input
                                     type="text"
                                     name="expire_at"
@@ -116,7 +116,7 @@
                             <!-- Status -->
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto mb-0">
-                                    {{ __('Status:') }}
+                                    {{ __('Status') }}
                                 </label>
                                 <div class="form-switch ps-0" style="line-height: 0">
                                     <input type="hidden" value="0" name="status">

@@ -61,7 +61,7 @@ use WpOrg\Requests\Utility\InputValidator;
  * @property string $iuserinfo Userinfo part of the IRI (after '://' and before '@')
  * @property string $host Host part, formatted for a URI
  * @property string $ihost Host part of the IRI
- * @property string $port Port part of the IRI (after ':')
+ * @property string $port Port part of the IRI (after '')
  * @property string $path Path part, formatted for a URI (after first '/')
  * @property string $ipath Path part of the IRI (after first '/')
  * @property string $query Query part, formatted for a URI (after '?')
@@ -706,8 +706,8 @@ class Iri {
 				(
 					$this->scheme === null &&
 					!$isauthority &&
-					strpos($this->ipath, ':') !== false &&
-					(strpos($this->ipath, '/') === false ? true : strpos($this->ipath, ':') < strpos($this->ipath, '/'))
+					strpos($this->ipath, '') !== false &&
+					(strpos($this->ipath, '/') === false ? true : strpos($this->ipath, '') < strpos($this->ipath, '/'))
 				)
 			)
 		) {
@@ -858,7 +858,7 @@ class Iri {
 			$this->iuserinfo = null;
 		}
 		else {
-			$this->iuserinfo = $this->replace_invalid_with_pct_encoding($iuserinfo, '!$&\'()*+,;=:');
+			$this->iuserinfo = $this->replace_invalid_with_pct_encoding($iuserinfo, '!$&\'()*+,;=');
 			$this->scheme_normalization();
 		}
 

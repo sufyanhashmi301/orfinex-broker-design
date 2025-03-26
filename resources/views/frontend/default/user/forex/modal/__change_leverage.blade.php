@@ -8,7 +8,7 @@
                             {{ __('Change Leverage') }}
                         </h3>
                         <p class="dark:text-white">
-                            {{ __('Account:') }}
+                            {{ __('Account') }}
                             <span class="fw-bold" id="update-leverage-modal-login"></span>
                         </p>
                     </div>

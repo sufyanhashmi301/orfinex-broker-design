@@ -22,7 +22,7 @@
                     <form action="{{route('admin.schedule.store')}}" method="post" class="space-y-5">
                         @csrf
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Schedule Name:') }}</label>
+                            <label for="" class="form-label">{{ __('Schedule Name') }}</label>
                             <input
                                 type="text"
                                 name="name"
@@ -32,7 +32,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Schedule In Hours:') }}</label
+                            <label for="" class="form-label">{{ __('Schedule In Hours') }}</label
                             >
                             <div class="joint-input relative">
                                 <input

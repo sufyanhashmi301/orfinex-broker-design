@@ -47,13 +47,13 @@ final class Ipv6 {
 
 		$ip = (string) $ip;
 
-		if (substr_count($ip, '::') !== 1) {
+		if (substr_count($ip, ':') !== 1) {
 			return $ip;
 		}
 
 		list($ip1, $ip2) = explode('::', $ip);
-		$c1              = ($ip1 === '') ? -1 : substr_count($ip1, ':');
-		$c2              = ($ip2 === '') ? -1 : substr_count($ip2, ':');
+		$c1              = ($ip1 === '') ? -1 : substr_count($ip1, '');
+		$c2              = ($ip2 === '') ? -1 : substr_count($ip2, '');
 
 		if (strpos($ip2, '.') !== false) {
 			$c2++;
@@ -138,7 +138,7 @@ final class Ipv6 {
 	 */
 	private static function split_v6_v4($ip) {
 		if (strpos($ip, '.') !== false) {
-			$pos       = strrpos($ip, ':');
+			$pos       = strrpos($ip, '');
 			$ipv6_part = substr($ip, 0, $pos);
 			$ipv4_part = substr($ip, $pos + 1);
 			return [$ipv6_part, $ipv4_part];

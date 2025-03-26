@@ -3,20 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Wallet;
+use App\Enums\TraderType;
 use Illuminate\Http\Request;
+use App\Models\FundedBalance;
 use App\Models\PayoutRequest;
 use App\Services\ForexApiService;
 use App\Enums\PayoutRequestStatus;
+use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentStat;
-use App\Models\FundedBalance;
+use App\Services\MatchTraderApiService;
 
 class PayoutRequestController extends Controller
 {
     protected $forexApiService;
+    protected $matchTraderApiService;
 
-    public function __construct(ForexApiService $forexApiService)
+    public function __construct(ForexApiService $forexApiService, MatchTraderApiService $matchTraderApiService)
     {
         $this->forexApiService = $forexApiService;
+        $this->matchTraderApiService = $matchTraderApiService;
     }
 
     /**
@@ -44,11 +49,9 @@ class PayoutRequestController extends Controller
     }
 
     public function action(Request $request, $payout_request_id) {
-        // dd($request->operation, $payout_request_id);
-
         
-
         $payout_request = PayoutRequest::find($payout_request_id);
+        
 
         // do security measures...
         if($payout_request->status != PayoutRequestStatus::PENDING) {
@@ -61,17 +64,35 @@ class PayoutRequestController extends Controller
 
             // Deduct from API, Funded balances, and Stats
             foreach($payout_request->detail as $single) {
-                $total_profit = $single['total_profit'];
+                $account = AccountTypeInvestment::where('login', $single['login'])->firstOrFail();
                 
-                // Removal from API
-                $reset_balance_data = [
-                    'login' => $single['login'],
-                    'Amount' => $total_profit,
-                    'type' => 0, //deposit
-                    'TransactionComments' => 'Payout Successful'
-                ];
-            
-                $response = $this->forexApiService->balanceOperation($reset_balance_data);
+                $total_profit = $single['total_profit'];
+
+                // Balance Removal via API wrt Trader Type
+                if($account->trader_type == TraderType::MT5) {
+                    // Removal from API
+                    $reset_balance_data = [
+                        'login' => $single['login'],
+                        'Amount' => $total_profit,
+                        'type' => 0,
+                        'TransactionComments' => 'Payout Successful'
+                    ];
+                
+                    $response = $this->forexApiService->balanceOperation($reset_balance_data);
+                } elseif($account->trader_type == TraderType::MT) {
+                    $deduct_balance_data = [
+                        "systemUuid" => $account->getAccountTypeSnapshotData()['system_uuid'],
+                        "login" => $account->login,
+                        "amount" => $total_profit,
+                        "comment" => "Payout Successful"
+                    ];
+                
+                    $deduct_balance_response = $this->matchTraderApiService->deductBalance($deduct_balance_data);
+
+                    if(!$deduct_balance_response) {
+                        return redirect()->back();
+                    }
+                }
 
                 // removal from Stats
                 $acocunt_stats = AccountTypeInvestmentStat::where('account_type_investment_id', $single['account_id'])->first();

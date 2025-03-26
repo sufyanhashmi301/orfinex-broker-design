@@ -1,5 +1,5 @@
 <div class="input-area relative">
-    <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name:') }}</label>
+    <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name') }}</label>
     <input type="text" name="method_name" class="form-control !text-lg" placeholder="eg. Withdraw Method - USD"
                value="{{ $withdrawMethod->name .'-'. $withdrawMethod->currency}}">
 </div>

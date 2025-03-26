@@ -5,7 +5,7 @@
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative mb-5">
-                    <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>
+                    <label for="" class="form-label">{{ __('Account to Deposit') }}</label>
                     <div class="input-group select2-lg">
                         <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected disabled>--{{ __('Select Account') }}--</option>
@@ -17,7 +17,7 @@
                 </div>
                 
                 <div class="input-area relative">
-                    <label for="" class="form-label">{{ __('Payment Method:') }}</label>
+                    <label for="" class="form-label">{{ __('Payment Method') }}</label>
                     <div class="input-group select2-lg">
                         <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
@@ -32,7 +32,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
 
                 <div class="input-area relative">
-                    <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                    <label for="" class="form-label">{{ __('Enter Amount') }}</label>
                     <div class="relative">
                         <input type="text" name="amount" class="form-control !text-lg"
                                oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
@@ -42,7 +42,7 @@
                     <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
                 </div>
                 <div class="input-area relative conversion hidden">
-                    <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                    <label for="" class="form-label">{{ __('Enter Amount') }}</label>
                     <div class="relative">
                         <input type="text"  class="form-control !text-lg"
                                oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
@@ -60,7 +60,7 @@
 
             <div class="transaction-list mt-5">
                 <div class="user-panel-title">
-                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Review Details:') }}</h3>
+                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Review Details') }}</h3>
                 </div>
                 <div class="max-w-[1005px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
                     <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">

@@ -25,7 +25,7 @@
                 <div class="earnings-calculator" data-aos="fade-left" data-aos-duration="2000">
                     <form action="#">
                         <div class="single-box">
-                            <label for="">{{ __('Investment Plans:') }}</label>
+                            <label for="">{{ __('Investment Plans') }}</label>
                             <select name="selectCalculationPlan" id="selectPlan"
                                     class="site-nice-select plan-selects mb-2">
                                 <option value="0">{{ __('---Select Plan---') }}</option>
@@ -39,7 +39,7 @@
                             </select>
                         </div>
                         <div class="single-box">
-                            <label for="">{{ __('Enter Amount:') }} </label>
+                            <label for="">{{ __('Enter Amount') }} </label>
                             <div class="input-group">
                                 <input type="text" id="enter-amount" class="form-control" aria-label="Amount"
                                        aria-describedby="basic-addon1">
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="single-box">
-                            <label for="">{{ __('Profit:') }} <span id="profit-label"></span></label>
+                            <label for="">{{ __('Profit') }} <span id="profit-label"></span></label>
                             <div class="input-group mb-0">
                                 <input type="text" class="form-control" id="profit" disabled>
                                 <span class="input-group-text" id="basic-addon1">{{ $currency }}</span>

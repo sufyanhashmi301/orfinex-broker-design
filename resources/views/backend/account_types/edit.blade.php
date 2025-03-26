@@ -107,18 +107,18 @@
                     </div>
 
                     <div class="input-area">
-                        <label class="form-label">{{ __('plan Trader Type') }}</label>
-                        <input type="text" name="trader_type" class="form-control" placeholder="Platform Group"
-                            value="{{ $account_type->trader_type }}" readonly />
+                        <label class="form-label">{{ __('Active Trader Type') }}</label>
+                        <input type="hidden" name="trader_type" value="{{ $account_type->trader_type }}">
+                        <input type="text" name="" class="form-control capitalize" placeholder="Trader Type" value="{{ str_replace('_', ' ', $account_type->trader_type) }}" readonly/>
                     </div>
 
-                    @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                    @if ($account_type->trader_type == \App\Enums\TraderType::MT5)
                         <div class="input-area">
                             <label class="form-label">{{ __('Platform Group') }}</label>
                             <input type="text" name="platform_group" class="form-control" placeholder="Platform Group"
                                 required value="{{ old('platform_group', $account_type->platform_group) }}" />
                         </div>
-                    @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                    @elseif ($account_type->trader_type == \App\Enums\TraderType::X9)
                         <div class="input-area">
                             <label class="form-label">{{ __('Platform Group') }}</label>
                             <select name="group" class="select2 form-control w-full">
@@ -131,6 +131,26 @@
                                     </option>
                                 @endforeach
                             </select>
+                        </div>
+                    @endif
+
+                    {{-- MetaTrader --}}
+                    @if ($account_type->trader_type == \App\Enums\TraderType::MT)
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Offer') }}</label>
+                            <input type="hidden" name="system_uuid" id="mt-system-uuid" value="{{$account_type->system_uuid}}">
+                            <select name="offer_uuid" class="select2 form-control w-full mt_offer" required>
+                                <option value="">Select Offer</option>
+                                @foreach($allOffers as $offer)
+                                    <option value="{{$offer->uuid}}" {{ $account_type->offer_uuid == $offer->uuid ? 'selected' : '' }} data-group="{{ $offer->groupName }}" data-leverage="{{ $offer->leverage }}" data-system-uuid="{{ $offer->system->uuid }}">
+                                        {{ $offer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Platform Group') }}</label>
+                            <input type="text" name="platform_group" class="form-control" id="mt-group" readonly placeholder="Platform Group" required value="{{$account_type->platform_group}}" />
                         </div>
                     @endif
 
@@ -199,7 +219,7 @@
                     <div class="input-area">
                         <label class="form-label">{{ __('Leverage') }}</label>
                         <input type="number" name="leverage" class="form-control" placeholder="leverage e.g 100"
-                            value="{{ $account_type->leverage }}" required />
+                            value="{{ $account_type->leverage }}" {{ $account_type->trader_type == \App\Enums\TraderType::MT ? 'readonly' : '' }} required />
                     </div>
                     {{-- <div class="input-area">
                         <label class="form-label">{{ __('Spread') }}</label>
@@ -383,6 +403,16 @@
                 notification.remove();
             }, 5000); // 5 seconds
         }
+
+        $(document).on('change', '.mt_offer', function() {
+            var selectedOption = $(this).find('option:selected');
+            var groupName = selectedOption.data('group');
+            var leverage = selectedOption.data('leverage');
+            var systemUuid = selectedOption.data('system-uuid');
+            $('#mt-group').val(groupName)
+            $('#mt-system-uuid').val(systemUuid)
+            $('#leverage').val(leverage)
+        });
         
 
     </script>

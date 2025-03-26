@@ -33,7 +33,7 @@
                         <li class="text-sm block py-[8px]">
                             <div class="flex justify-between space-x-2 rtl:space-x-reverse">
                                 <span class="text-left text-slate-700">
-                                    {{ __('Initial Balance:') }}
+                                    {{ __('Initial Balance') }}
                                 </span>
                                 <span class="text-right text-slate-900">
                                     {{ amount_z($invest->total, base_currency()) }}
@@ -43,7 +43,7 @@
                         <li class="text-sm block py-[8px]">
                             <div class="flex justify-between space-x-2 rtl:space-x-reverse">
                                 <span class="text-left text-slate-700">
-                                    {{ __('Plan Type:') }}
+                                    {{ __('Plan Type') }}
                                 </span>
                                 <span class="text-right text-slate-900">
                                     {{ fst2n(data_get($invest->pricing_scheme,'type')) }}
@@ -53,7 +53,7 @@
                         <li class="text-sm block py-[8px]">
                             <div class="flex justify-between space-x-2 rtl:space-x-reverse">
                                 <span class="text-left text-slate-700">
-                                    {{ __('Account Type:') }}
+                                    {{ __('Account Type') }}
                                 </span>
                                 <span class="text-right text-slate-900">
                                     {{ fsst2n(data_get($invest->pricing_scheme,'sub_type')) }}
@@ -91,11 +91,11 @@
                             </div>
                             <div class="flex-1 text-start">
                                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3 mb-1">
-                                    <span class="text-slate-900">{{ __('Start Date:') }}</span>
+                                    <span class="text-slate-900">{{ __('Start Date') }}</span>
                                     <span class="">{{ \Carbon\Carbon::parse($invest->term_start)->format('d M, Y H:i')}}</span>
                                 </div>
                                 {{--                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3">--}}
-                                {{--                                    <span class="text-slate-900">{{ __('End Date:') }}</span>--}}
+                                {{--                                    <span class="text-slate-900">{{ __('End Date') }}</span>--}}
                                 {{--                                    <span class="">{{ show_date($invest->term_end, true) }}</span>--}}
                                 {{--                                </div>--}}
                             </div>

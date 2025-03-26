@@ -75,10 +75,15 @@
         <div class="input-area">
           <label class="form-label" for="">{{ __('Server') }}</label>
           <select name="phases[0][server]" class="cursor-pointer phase-server form-control w-full">
-            <option
-              value="{{ setting('live_server', 'platform_api') }}" {{ old('phases.0.server') == setting('live_server', 'platform_api') ? 'selected' : '' }}>
-              {{ setting('live_server', 'platform_api') }}
-            </option>
+            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+              <option value="{{ setting('live_server', 'platform_api') }}" {{ old('phases.0.server') == setting('live_server', 'platform_api') ? 'selected' : '' }}>
+                {{ setting('live_server', 'platform_api') }}
+              </option>
+            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT)
+              <option value="{{ setting('mt_live_server_real', 'match_trader_platform_api') }}" {{ old('phases.0.server') == setting('mt_live_server_real', 'match_trader_platform_api') ? 'selected' : '' }}>
+                {{ setting('mt_live_server_real', 'match_trader_platform_api') }}
+              </option>
+            @endif
           </select>
         </div>
         
@@ -182,10 +187,17 @@
           <div class="input-area">
             <label class="form-label" for="">{{ __('Server') }}</label>
             <select name="phases[{{ $phase->phase_step - 1 }}][server]" class="cursor-pointer phase-server form-control w-full">
-              <option
-                value="{{ setting('live_server', 'platform_api') }}" {{ $phase->server == setting('live_server', 'platform_api') ? 'selected' : '' }}>
-                {{ setting('live_server', 'platform_api') }}
-              </option>
+              @if ($account_type->trader_type == \App\Enums\TraderType::MT5)
+                <option value="{{ setting('live_server', 'platform_api') }}" selected>
+                  {{ setting('live_server', 'platform_api') }}
+                </option>
+              @endif
+              @if ($account_type->trader_type == \App\Enums\TraderType::MT)
+                <option value="{{ setting('mt_live_server_real', 'match_trader_platform_api') }}" selected>
+                  {{ setting('mt_live_server_real', 'match_trader_platform_api') }}
+                </option>
+              @endif
+              
             </select>
           </div>
   

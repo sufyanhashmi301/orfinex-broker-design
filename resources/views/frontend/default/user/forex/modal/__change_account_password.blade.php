@@ -8,7 +8,7 @@
                             {{ __('Change Main Password') }}
                         </h3>
                         <p class="dark:text-white">
-                            {{ __('Account:') }}
+                            {{ __('Account') }}
                             <span class="fw-bold update-password-modal-login"></span>
                         </p>
                     </div>
@@ -24,7 +24,7 @@
                         @csrf
                         <input type="hidden" name="login" id="update-password-modal-login"
                                class="form-control update-password-modal-login">
-                        <label class="form-label" for="">{{ __('Main Password:') }}</label>
+                        <label class="form-label" for="">{{ __('Main Password') }}</label>
                         <div class="input-form-group">
                             <input type="password" class="form-control" name="nickname" id="update-main-password" placeholder="Enter your password">
                             <ul>

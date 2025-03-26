@@ -19,19 +19,19 @@
             <form action="{{ route('admin.language.store') }}" method="post" class="space-y-5">
                 @csrf
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Name:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Name') }}</label>
                     <div class="md:col-span-9 col-span-12">
                         <input type="text" class="form-control" required name="name"/>
                     </div>
                 </div>
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Code:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Code') }}</label>
                     <div class="md:col-span-9 col-span-12">
                         <input type="text" class="form-control" name="code" placeholder="Eg: en" required/>
                     </div>
                 </div>
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Default Language:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Default Language') }}</label>
                     <div class="md:col-span-9 col-span-12">
                         <div class="form-switch ps-0">
                             <input class="form-check-input" type="hidden" value="0" name="is_default"/>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Status:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Status') }}</label>
                     <div class="md:col-span-9 col-span-12">
                         <div class="form-switch ps-0">
                             <input class="form-check-input" type="hidden" value="0" name="status"/>

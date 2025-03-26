@@ -11,7 +11,6 @@ use App\Services\AccountActivityService;
 use App\Enums\AccountActivityStatusEnums;
 use Illuminate\Support\Facades\Validator;
 use App\Services\AccountTypeInvestmentPaymentService;
-use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
 
 class AccountActivityController extends Controller
 {
@@ -134,14 +133,18 @@ class AccountActivityController extends Controller
             // Approve Logic
             $active_investment = $this->investment_payment->investmentActive($investment_id);
 
+            if(!$active_investment) {
+                return redirect()->back();
+            }
+
             // Account activity log
-            AccountActivityService::log($active_investment, InvestmentPhaseApprovalEnum::ACTIVE);
+            AccountActivityService::log($active_investment, AccountActivityStatusEnums::ACTIVE);
             
             // Update the action of the current one to 1 
             AccountActivity::where([
                 'account_type_investment_id' => $investment->id,
                 'account_type_phase_id' => $investment->getPhaseSnapshotData()['id'],
-                'status' => InvestmentPhaseApprovalEnum::ADMIN_APPROVE,
+                'status' => AccountActivityStatusEnums::ADMIN_APPROVE,
             ])->first()->update(['action' => 1]);
 
             if($active_investment->status == InvestmentStatus::ACTIVE) {
@@ -152,7 +155,7 @@ class AccountActivityController extends Controller
                 return redirect()->back();
             }
 
-        }else{
+        } else {
             // Reject Logic
         }
 

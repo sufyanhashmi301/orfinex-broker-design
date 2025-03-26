@@ -22,7 +22,7 @@
                     <div class="row">
                         <div class="col-xl-3">
                             <div class="site-input-groups">
-                                <label class="box-input-label" for="">{{ __('Upload Icon:') }}</label>
+                                <label class="box-input-label" for="">{{ __('Upload Icon') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-xl-6 schema-name">
                     <div class="site-input-groups">
-                        <label class="box-input-label" for="">{{ __('Title:') }}</label>
+                        <label class="box-input-label" for="">{{ __('Title') }}</label>
                         <input
                             type="text"
                             name="title"
@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-xl-6 schema-badge">
                     <div class="site-input-groups">
-                        <label class="box-input-label" for="">{{ __('Schema Badge:') }}</label>
+                        <label class="box-input-label" for="">{{ __('Schema Badge') }}</label>
                         <input
                             type="text"
                             class="box-input"
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-xl-6 ">
                     <div class="site-input-groups">
-                        <label class="box-input-label" for="">{{ __('Select IB Type:') }}</label>
+                        <label class="box-input-label" for="">{{ __('Select IB Type') }}</label>
                         <select name="type" id="" class="site-nice-select w-100" required>
                             <option value="ib" @if($schema->type == 'ib') selected @endif>{{__("IB")}}</option>
                         </select>
@@ -80,7 +80,7 @@
                 </div>
                 <div class="col-xl-6 ">
                     <div class="site-input-groups">
-                        <label class="box-input-label" for="">{{ __('Group:') }}</label>
+                        <label class="box-input-label" for="">{{ __('Group') }}</label>
                         <input
                             type="text"
                             name="group"
@@ -94,7 +94,7 @@
 
                 <div class="col-xl-12">
                     <div class="site-input-groups fw-normal">
-                        <label for="" class="box-input-label">{{ __('Detail:') }}</label>
+                        <label for="" class="box-input-label">{{ __('Detail') }}</label>
                         <div class="site-editor">
                         <textarea class="summernote"
                                     name="desc">{{$schema->desc}}</textarea>
@@ -103,7 +103,7 @@
                 </div>
                 <div class="col-xl-6">
                     <div class="site-input-groups">
-                        <label class="box-input-label" for="">{{ __('Status:') }}</label>
+                        <label class="box-input-label" for="">{{ __('Status') }}</label>
                         <div class="switch-field same-type">
                             <input
                                 type="radio"

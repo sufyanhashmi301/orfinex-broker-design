@@ -5,7 +5,7 @@
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative">
-                    <label for="exampleFormControlInput1" class="form-label">{{ __('From Wallet:') }}</label>
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('From Wallet') }}</label>
                     <div class="input-group select2-lg">
                         <select name="from_wallet" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet').' ('. $user->balance.' '.$currency .')' }}</option>
@@ -15,7 +15,7 @@
                 </div>
                 
                 <div class="input-area relative">
-                    <label for="exampleFormControlInput1" class="form-label">{{ __('To Wallet:') }}</label>
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('To Wallet') }}</label>
                     <div class="input-group select2-lg">
                         <select name="to_wallet" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected value="1" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Main Wallet').' ('. $user->balance.' '.$currency .')' }}</option>
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="input-area relative">
-                    <label for="exampleFormControlInput1" class="form-label">{{ __('Enter Amount:') }}</label>
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('Enter Amount') }}</label>
                     <div class="relative">
                         <input type="text" name="amount" class="form-control !text-lg"
                                oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
@@ -38,7 +38,7 @@
 
             <div class="transaction-list mt-5">
                 <div class="user-panel-title">
-                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Transfer Details:') }}</h3>
+                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Transfer Details') }}</h3>
                 </div>
                 <div class="max-w-[1005px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
                     <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">

@@ -20,7 +20,7 @@
                     <form action="{{ route('admin.staff.store') }}" method="post" id="modalForm" class="space-y-4">
                         @csrf
                         <div class="input-area !mt-0">
-                            <label for="" class="form-label">{{ __('Name:') }}</label>
+                            <label for="" class="form-label">{{ __('Name') }}</label>
                             <input
                                 type="text"
                                 name="name"
@@ -30,7 +30,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Email:') }}</label>
+                            <label for="" class="form-label">{{ __('Email') }}</label>
                             <input
                                 type="email"
                                 name="email"
@@ -40,7 +40,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Password:') }}</label>
+                            <label for="" class="form-label">{{ __('Password') }}</label>
                             <input
                                 type="password"
                                 name="password"
@@ -50,7 +50,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Confirm Password:') }}</label>
+                            <label for="" class="form-label">{{ __('Confirm Password') }}</label>
                             <input
                                 type="password"
                                 name="confirm-password"
@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Select Role:') }}</label>
+                            <label class="form-label" for="">{{ __('Select Role') }}</label>
                             <select name="role" class="form-control w-100">
                                 @foreach($roles as $role)
                                     <option value="{{$role->name}}">{{ str_replace('-', ' ', $role->name) }}</option>

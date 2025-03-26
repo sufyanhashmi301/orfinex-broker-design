@@ -38,8 +38,8 @@ class AccountBuyController extends Controller
     {
         $user = auth()->user();
 
-        $account_types = AccountType::active()->traderType()  
-                                    ->relevantForUser($user->country, [])  
+        $account_types = AccountType::active() 
+                                    ->relevantForUser($user->country)  
                                     ->orderBy('priority', 'asc')
                                     ->get();
         

@@ -100,8 +100,8 @@
                                         @endif
                                         <td class="table-td">{{ $account->login ?? 'N/A' }}</td>
                                         <td class="table-td">{{ number_format($ruleData['allotted_funds'] ?? 0.00, 0) }} {{ $currency }}</td>
-                                        <td class="table-td"><span class="badge bg-primary"
-                                                style="color: #fff"><span class="badge bg-primary" style="color: #fff">{{ $account->is_trial == 1 ? 'Trial Phase' : str_replace('_', ' ', $phaseData['type']) }}</span>
+                                        <td class="table-td">
+                                            <span class="badge bg-primary" style="color: #fff">{{ $account->is_trial == 1 ? 'Trial Phase' : str_replace('_', ' ', $phaseData['type']) }}</span>
                                         </td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase
                                                 {{ $phaseData['phase_step'] }}</span></td>

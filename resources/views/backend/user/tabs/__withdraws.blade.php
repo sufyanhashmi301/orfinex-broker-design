@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="withdraws" role="tabpanel">
+<div class="tab-pane fade" id="withdraws" role="tabpanel" data-tab="withdraws">
   <div class="card">
       <div class="card-body relative px-6 pt-3">
           <div class="overflow-x-auto -mx-6 dashcode-data-table">

@@ -20,7 +20,7 @@
                     <div class="grid gird-cols-12 items-center gap-5">
                         <div class="col-span-12">
                             <div class="input-area max-w-xs">
-                                <label class="form-label" for="">{{ __('Upload Icon:') }}</label>
+                                <label class="form-label" for="">{{ __('Upload Icon') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -41,7 +41,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Name:') }}</label>
+                                <label class="form-label" for="">{{ __('Name') }}</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -54,7 +54,7 @@
                         @if($type == 'auto')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Gateway Supported Currency:') }}</label>
+                                    <label class="form-label" for="">{{ __('Gateway Supported Currency') }}</label>
                                     <select name="currency" class="select2 form-control w-full" id="currency">
                                         @foreach(json_decode($supported_currencies) as $currency)
                                             <option
@@ -68,7 +68,7 @@
                         @if($type == 'manual')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Currency:') }}</label>
+                                    <label class="form-label" for="">{{ __('Currency') }}</label>
                                     <input
                                         type="text"
                                         class="form-control"
@@ -82,7 +82,7 @@
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area row">
                                 <div class="col-span-12">
-                                    <label class="form-label" for="">{{ __('Convention Rate:') }}</label>
+                                    <label class="form-label" for="">{{ __('Convention Rate') }}</label>
                                     <div class="joint-input relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                             {{'1 '.' '. setting('site_currency','global') . ' ='}}
@@ -98,7 +98,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area position-relative">
-                                <label class="form-label" for="">{{ __('Charges:') }}</label>
+                                <label class="form-label" for="">{{ __('Charges') }}</label>
                                 <div class="relative">
                                     <input type="text" class="form-control"
                                         oninput="this.value = validateDouble(this.value)" name="charge"
@@ -116,7 +116,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Minimum Payout:') }}</label>
+                                <label class="form-label" for="">{{ __('Minimum Payout') }}</label>
                                 <div class="joint-input relative">
                                     <input type="text" name="min_withdraw" class="form-control" value="{{ $withdrawMethod->min_withdraw }}"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected">
@@ -128,7 +128,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Maximum Payout:') }}</label>
+                                <label class="form-label" for="">{{ __('Maximum Payout') }}</label>
                                 <div class="joint-input relative">
                                     <input
                                         type="text"
@@ -145,7 +145,7 @@
                         @if($type == 'manual')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Processing Time:') }}</label>
+                                    <label class="form-label" for="">{{ __('Processing Time') }}</label>
                                     <div class="relative">
                                         <input type="text" name="required_time" value="{{ $withdrawMethod->required_time }}" class="form-control mb-0"/>
                                         <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -163,7 +163,7 @@
                         @endif
                         <div class="col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world)') }}</label>
                                 <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
                                     @foreach(getCountries() as $country)
                                         <option value="{{ $country['name'] }}"
@@ -182,7 +182,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area flex items-center space-x-7">
-                                <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
+                                <label class="form-label !w-auto" for="">{{ __('Status') }}</label>
                                 <div class="form-switch ps-0">
                                     <input
                                         class="form-check-input"

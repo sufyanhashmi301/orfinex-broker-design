@@ -20,7 +20,7 @@
                     <form action="{{ route('admin.ticket.statuses.store') }}" method="post" class="space-y-4">
                         @csrf
                         <div class="input-area !mt-0">
-                            <label for="" class="form-label">{{ __('Status Name:') }}</label>
+                            <label for="" class="form-label">{{ __('Status Name') }}</label>
                             <input
                                 type="text"
                                 name="name"

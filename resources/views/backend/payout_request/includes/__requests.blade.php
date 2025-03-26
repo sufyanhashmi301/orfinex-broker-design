@@ -32,7 +32,9 @@
                                         <td class="table-td">{{ $request->user->first_name . ' ' . $request->user->last_name }}</td>
                                         <td class="table-td">{{ number_format($total_profit, 2) . ' ' . $currency }}</td>
                                         <td class="table-td">{{ number_format($request->user_profit_share_amount, 2) . ' ' . $currency }}</td>
-                                        <td class="table-td"><a href="javascript:void(0)" class="badge" style="color: #fff; background: #333">Payout Details</a></td>
+                                        <td class="table-td">
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#payoutRequestDetails{{ $request->id }}" style="color: #fff; background: #333">Payout Details</button>
+                                        </td>
                                         
                                         <td class="table-td"> <span class="badge" style="color: #fff; background: #333">{{ $request->status }}</span> </td>
                                         <td class="table-td">{{ $request->created_at }}</td>
@@ -41,8 +43,8 @@
                                         <td class="table-td" style="width: 300px">
                                             @if ($request->status == \App\Enums\PayoutRequestStatus::PENDING)
                                                 <div class="btn-group">
-                                                  <a href="{{ route('admin.payout_request.action', ["payout_request_id" => $request->id, "operation" => 'approve']) }}" class="btn btn-sm btn-success mr-1">Approve</a>
-                                                  <a href="{{ route('admin.payout_request.action', ["payout_request_id" => $request->id, "operation" => 'decline']) }}" class="btn btn-sm btn-danger">Decline</a>
+                                                  <a href="{{ route('admin.payout_request.action', ["payout_request_id" => $request->id, "operation" => 'approve']) }}" class="btn btn-sm btn-success mr-1 submit-button">Approve</a>
+                                                  <a href="{{ route('admin.payout_request.action', ["payout_request_id" => $request->id, "operation" => 'decline']) }}" class="btn btn-sm btn-danger submit-button">Decline</a>
                                                 </div>
                                             @else
                                                 <a href="#" style="cursor: default" class="inline-flex justify-center">
@@ -64,6 +66,10 @@
             </div>
         </div>
     </div>
+
+    @foreach($payout_requests as $request)
+        @include('backend.payout_request.modals.__payout_request_details')
+    @endforeach
 @else
     <div class="card basicTable_wrapper items-center justify-center py-10 px-10">
         <div class="flex items-center justify-center flex-col gap-3">

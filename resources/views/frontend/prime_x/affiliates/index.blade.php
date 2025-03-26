@@ -116,7 +116,7 @@
                         </button>
                     </div>
                     <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
-                        {{ __('Referral ID:') }} {{ $affiliate_info->referral_link }}
+                        {{ __('Referral ID') }} {{ $affiliate_info->referral_link }}
                     </p>
                     <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
                         {{ __('Withdrawable Balance') }}

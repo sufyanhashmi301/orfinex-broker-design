@@ -122,7 +122,7 @@ class SettingController extends Controller
         
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
-//        dd($request->all(),$rules, $section);
+    //    dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
         // update session expiry
@@ -133,7 +133,7 @@ class SettingController extends Controller
 
         try {
             $validSettings = array_keys($rules);
-//            dd($validSettings);
+        //    dd($validSettings);
             foreach ($data as $key => $val) {
 //                 dd($data, $key, $val, $validSettings);
 

@@ -6,13 +6,12 @@ use App\Models\Setting;
 use App\Models\AccountType;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
-use App\Enums\InterestPeriod;
-use App\Models\AccountTypePhase;
-use App\Models\AccountTypePhaseRule;
 use App\Services\AccountTypeService;
 use App\Http\Requests\AccountTypeRequest;
 use App\Services\AccountTypePhaseService;
 use App\Enums\AccountType as AccountTypeEnum;
+use App\Enums\TraderType;
+use App\Services\MatchTraderApiService;
 
 class AccountTypeController extends Controller
 {
@@ -20,8 +19,9 @@ class AccountTypeController extends Controller
 
     protected $accountTypeService;
     protected $accountTypePhaseService;
+    protected $matchTraderApiService;
 
-    public function __construct(AccountTypeService $accountTypeService, AccountTypePhaseService $accountTypePhaseService)
+    public function __construct(AccountTypeService $accountTypeService, AccountTypePhaseService $accountTypePhaseService, MatchTraderApiService $matchTraderApiService)
     {
         $this->middleware('permission:account-type-list', ['only' => ['index', 'config']]);
         $this->middleware('permission:account-type-create', ['only' => ['create', 'store']]);
@@ -30,6 +30,7 @@ class AccountTypeController extends Controller
 
         $this->accountTypeService = $accountTypeService;
         $this->accountTypePhaseService = $accountTypePhaseService;
+        $this->matchTraderApiService = $matchTraderApiService;
     }
 
     /**
@@ -39,6 +40,7 @@ class AccountTypeController extends Controller
      */
     public function index(Request $request)
     {
+        
 
         // Expiry Paramater
         $auto_expire_expiry_days = Setting::where('name', 'auto_expire_expiry_days')->first();
@@ -87,7 +89,11 @@ class AccountTypeController extends Controller
      */
     public function create()
     {
-        return view('backend.account_types.create');
+        if(setting('active_trader_type') == TraderType::MT) {
+            $allOffers = $this->matchTraderApiService->getAllOffers()['offers'];
+        }
+
+        return view('backend.account_types.create', get_defined_vars());
     }
 
     /**
@@ -142,8 +148,10 @@ class AccountTypeController extends Controller
      */
     public function edit(AccountType $account_type)
     {
-
-        return view('backend.account_types.edit')->with('account_type', $account_type);
+        if(setting('active_trader_type') == TraderType::MT) {
+            $allOffers = $this->matchTraderApiService->getAllOffers()['offers'];
+        }
+        return view('backend.account_types.edit', get_defined_vars());
     }
 
     /**

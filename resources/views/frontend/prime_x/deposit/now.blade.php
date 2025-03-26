@@ -16,7 +16,7 @@
                                 <p>{{__('Buying :title account for amount :amount :currency',['amount' => $investment->total,'title' => $investment->accountTypePhaseRule->accountTypePhase->accountType->title, 'currency' => $currency])}}</p>
                             </div>
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Payment Method:') }}</label>
+                                <label for="" class="form-label">{{ __('Payment Method') }}</label>
                                 <div class="input-group select2-lg">
                                     <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
                                         <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
@@ -28,7 +28,7 @@
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
                             </div>
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <label for="" class="form-label">{{ __('Enter Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" name="amount" class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
@@ -38,7 +38,7 @@
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
                             </div>
                             <div class="input-area relative conversion hidden">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <label for="" class="form-label">{{ __('Enter Amount') }}</label>
                                 <div class="relative">
                                     <input type="text"  class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
@@ -53,7 +53,7 @@
                 </div>
                 <div>
                     {{-- <h4 class="text-xl text-slate-900 mb-3">
-                        {{ __('Review Details:') }}
+                        {{ __('Review Details') }}
                     </h4> --}}
                     <div class="card transaction-list">
                         <div class="card-body p-6">

@@ -136,6 +136,10 @@ class DepositController extends Controller
 
             $new_account = $this->investment_payment->investmentActive($transaction->target_id);
 
+            if(!$new_account) {
+                return redirect()->back();
+            }
+
             AccountActivityService::log($new_account, AccountActivityStatusEnums::ACTIVE);
 
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);

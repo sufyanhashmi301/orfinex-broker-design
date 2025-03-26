@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="payments" role="tabpanel">
+<div class="tab-pane fade" id="payments" data-tab="payments" role="tabpanel">
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -68,8 +68,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div
-                            class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
                             <div>
                                 @php
                                     $from = $payments->firstItem();

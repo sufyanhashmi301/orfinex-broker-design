@@ -122,8 +122,8 @@
 
                     <div class="input-area">
                         <label class="form-label">{{ __('Active Trader Type') }}</label>
-                        <input type="text" name="trader_type" class="form-control uppercase"
-                                placeholder="Trader Type" value="{{setting('active_trader_type', 'features')}}" readonly/>
+                        <input type="hidden" name="trader_type" value="{{ setting('active_trader_type', 'features') }}">
+                        <input type="text" name="" class="form-control capitalize" placeholder="Trader Type" value="{{ str_replace('_', ' ', setting('active_trader_type', 'features')) }}" readonly/>
                     </div>
 
                     @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
@@ -132,7 +132,8 @@
                             <input type="text" name="platform_group" class="form-control"
                                    placeholder="Platform Group" required value="{{ old('platform_group') }}" />
                         </div>
-                    @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                    @endif
+                    @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                         <div class="input-area">
                             <label class="form-label">{{ __('Platform Group') }}</label>
                             <select name="group" class="select2 form-control w-full">
@@ -147,6 +148,26 @@
                                     </option>
                                 @endforeach
                             </select>
+                        </div>
+                    @endif
+
+                    {{-- MetaTrader --}}
+                    @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT)
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Offer') }}</label>
+                            <input type="hidden" name="system_uuid" id="mt-system-uuid">
+                            <select name="offer_uuid" class="select2 form-control w-full mt_offer" required>
+                                <option value="">Select Offer</option>
+                                @foreach($allOffers as $offer)
+                                    <option value="{{$offer->uuid}}" data-group="{{ $offer->groupName }}" data-leverage="{{ $offer->leverage }}" data-system-uuid="{{ $offer->system->uuid }}">
+                                        {{ $offer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Platform Group') }}</label>
+                            <input type="text" name="platform_group" class="form-control" id="mt-group" readonly placeholder="Platform Group" required value="{{ old('platform_group') }}" />
                         </div>
                     @endif
 
@@ -265,6 +286,8 @@
                             placeholder="Leverage"
                             value="{{ old('leverage') }}"
                             required
+                            id="leverage"
+                            {{ setting('active_trader_type', 'features') == \App\Enums\TraderType::MT ? 'readonly' : '' }}
                         />
                     </div>
                     {{-- <div class="input-area">
@@ -486,6 +509,16 @@
             }, 5000); // 5 seconds
         }
         
+        $(document).on('change', '.mt_offer', function() {
+            var selectedOption = $(this).find('option:selected');
+            var groupName = selectedOption.data('group');
+            var leverage = selectedOption.data('leverage');
+            var systemUuid = selectedOption.data('system-uuid');
+            $('#mt-group').val(groupName)
+            $('#mt-system-uuid').val(systemUuid)
+            $('#leverage').val(leverage)
+        });
+
 
     </script>
 @endsection

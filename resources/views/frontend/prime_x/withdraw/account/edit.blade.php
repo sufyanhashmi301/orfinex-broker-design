@@ -24,7 +24,7 @@
                             <input type="hidden" name="withdraw_method_id" value="{{$withdrawAccount->withdraw_method_id}}">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 selectMethodRow">
                                 <div class="input-area relative">
-                                    <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name:') }}</label>
+                                    <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name') }}</label>
                                     <input type="text" name="method_name" class="form-control !text-lg"
                                            placeholder="eg. Withdraw Method - USD"
                                            value="{{ $withdrawAccount->method_name }}">

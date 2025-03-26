@@ -50,6 +50,10 @@ class AccountTrialController extends Controller
         // Approve Account
         $account_approved = $this->account_payment->investmentActive($account->id);
 
+        if(!$account_approved) {
+            return redirect()->back();
+        }
+
         // Notify user
         if($account_approved->status == InvestmentStatus::ACTIVE) {
             AccountActivityService::log($account_approved, 'Trial Active');

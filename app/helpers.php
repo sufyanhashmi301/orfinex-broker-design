@@ -878,4 +878,15 @@ if (!function_exists('getStorageMethod')) {
 
 // --- Storage Helper functions ---
 
+// --- Is Server Match Trader or MT5 (Temporary Fn): Confirms which server is enabled ---
+// if (!function_exists('checkCurrentServer')) {
+//     function checkCurrentServer() {
+//         if(setting('mt_server_enabled') == 'enabled') {
+//             return 'mt';
+//         }
+
+//         return 'mt5';
+//     }
+// }
+// --- Is Server Match Trader or MT5 (Temporary Fn) ---
 

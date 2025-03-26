@@ -2,11 +2,11 @@
                 @method('put')
                 @csrf
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Name:') }}</label>
+                        <label class="form-label" for="">{{ __('Name') }}</label>
                         <input type="text" name="name" value="{{ old('name', $department->name) }}" class="form-control" placeholder="Department Name" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Parent:') }}</label>
+                        <label class="form-label" for="">{{ __('Parent') }}</label>
                         <select name="parent_id" class="form-control">
                             <option value="">This is Parent</option>
                             @foreach($departments as $dept)
@@ -15,13 +15,13 @@
                         </select>
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Department Email:') }}</label>
+                        <label class="form-label" for="">{{ __('Department Email') }}</label>
                         <input type="email" name="department_email" value="{{ old('department_email', $department->department_email) }}" class="form-control" placeholder="Department Email" />
                     </div>
                     <div class="input-area">
                         <div class="flex items-center space-x-7 flex-wrap">
                             <label class="form-label !w-auto mb-0">
-                                {{ __('Hide From Client:') }}
+                                {{ __('Hide From Client') }}
                             </label>
                             <div class="form-switch ps-0" style="line-height: 0">
                                 <input type="hidden" value="0" name="hide_from_client">

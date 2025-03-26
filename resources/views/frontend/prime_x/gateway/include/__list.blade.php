@@ -1,4 +1,4 @@
-<td><strong>{{ __('Payment Method:') }}</strong></td>
+<td><strong>{{ __('Payment Method') }}</strong></td>
 <td>
     <div class="input-group mb-0">
         <select class="site-nice-select" aria-label="Default select example" name="gateway_code" id="gatewaySelect" required id="selectWallet">

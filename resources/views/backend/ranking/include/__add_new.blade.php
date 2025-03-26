@@ -21,7 +21,7 @@
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                             <div class="col-span-2">
                                 <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Ranking Icon:') }}</label>
+                                    <label class="form-label" for="">{{ __('Ranking Icon') }}</label>
                                     <div class="wrap-custom-file">
                                         <input type="file" name="icon" id="icon" accept=".gif, .jpg, .png"/>
                                         <label for="icon">
@@ -33,21 +33,21 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Ranking:') }}</label>
+                                    <label for="" class="form-label">{{ __('Ranking') }}</label>
                                     <input type="text" name="ranking" value="{{ old('ranking') }}" class="form-control mb-0"
                                         placeholder="Eg: 1, 2, 3..." required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Ranking Name:') }}</label>
+                                    <label for="" class="form-label">{{ __('Ranking Name') }}</label>
                                     <input type="text" name="ranking_name" value="{{ old('ranking_name') }}"
                                         class="form-control mb-0" placeholder="Ranking Name" required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Deposit:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Deposit') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="minimum_deposit" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -58,7 +58,7 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Invest:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Invest') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="minimum_invest" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -69,14 +69,14 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Referral') }}</label>
                                     <input type="text" name="minimum_referral" value="{{ old('minimum_referral') }}" oninput="this.value = validateDouble(this.value)"
                                         class="form-control mb-0"  required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral Deposit:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Referral Deposit') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="minimum_referral_deposit" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -87,7 +87,7 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral Invest:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Referral Invest') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="minimum_referral_invest" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -98,7 +98,7 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Earning:') }}</label>
+                                    <label for="" class="form-label">{{ __('Minimum Earning') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="minimum_earnings" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -109,7 +109,7 @@
                             </div>
                             <div class="col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Bonus:') }}</label>
+                                    <label for="" class="form-label">{{ __('Bonus') }}</label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control" name="bonus" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -120,7 +120,7 @@
                             </div>
                             <div class="col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Description:') }}</label>
+                                    <label for="" class="form-label">{{ __('Description') }}</label>
                                     <textarea name="description" class="form-control" rows="5" placeholder="Description">
                                         {{ old('description') }}
                                     </textarea>
@@ -128,7 +128,7 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area flex items-center space-x-7 flex-wrap">
-                                    <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
+                                    <label class="form-label !w-auto" for="">{{ __('Status') }}</label>
                                     <div class="form-switch ps-0">
                                         <input class="form-check-input" type="hidden" value="0" name="status"/>
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">

@@ -10,7 +10,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Username:') }}
+                            {{ __('Username') }}
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="username_show"/>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Phone Number:') }}
+                            {{ __('Phone Number') }}
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="phone_show"/>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Country:') }}
+                            {{ __('Country') }}
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="country_show"/>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Referral Code:') }}
+                            {{ __('Referral Code') }}
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="referral_code_show"/>

@@ -2,7 +2,7 @@
     @csrf
     <input type="hidden" name="login" id="update-leverage-modal-login-id"  class="form-control" value="{{$forexTrading->login}}"  >
     <div class="input-area relative">
-        <label class="form-label" for="">{{ __('Leverage:') }}</label>
+        <label class="form-label" for="">{{ __('Leverage') }}</label>
         <div class="select2-lg">
             <select name="leverage" class="select2 form-control !text-lg w-full mt-2 py-2" id="update-leverage-modal-leverage">
                 <option value="default_option">Choose Leverage</option>

@@ -2,6 +2,15 @@
 @section('title')
     {{ __('Edit User') }}
 @endsection
+@section('style')
+    <style>
+        @media (min-width: 1023px) {
+            .tab-pane .card {
+                height: 567px !important
+            }
+        }
+    </style>
+@endsection
 @section('content')
     <div class="space-y-5 profile-page">
         <div class="grid grid-cols-12 gap-6">

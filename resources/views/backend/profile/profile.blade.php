@@ -81,7 +81,7 @@
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('First Name:') }}
+                                    {{ __('First Name') }}
                                     <span class="text-xs text-danger-500">*</span>
                                 </label>
                                 <input
@@ -96,7 +96,7 @@
                             </div>
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('Last Name:') }}
+                                    {{ __('Last Name') }}
                                     <span class="text-xs text-danger-500">*</span>
                                 </label>
                                 <input
@@ -111,7 +111,7 @@
                             </div>
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('Nick Name:') }}
+                                    {{ __('Nick Name') }}
                                     <span class="text-xs text-danger-500">*</span>
                                 </label>
                                 <input
@@ -126,7 +126,7 @@
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __('Email:') }}
+                                    {{ __('Email') }}
                                     <span class="text-xs text-danger-500">*</span>
                                 </label>
                                 <input
@@ -152,7 +152,7 @@
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
                                 <label class="form-label" for="">
-                                    {{ __('Employment Type:') }}
+                                    {{ __('Employment Type') }}
                                 </label>
                                 <input
                                     type="text"
@@ -165,7 +165,7 @@
 
                             <div class="input-area">
                                 <label class="form-label" for="">
-                                    {{ __('Employment Status:') }}
+                                    {{ __('Employment Status') }}
                                 </label>
                                 <input
                                     type="text"
@@ -178,7 +178,7 @@
 
                             <div class="input-area">
                                 <label class="form-label" for="">
-                                    {{ __('Source Of Hire:') }}
+                                    {{ __('Source Of Hire') }}
                                 </label>
                                 <input
                                     type="text"
@@ -199,7 +199,7 @@
                     <div class="card-body p-6">
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
+                                <label for="" class="form-label">{{ __('Date Of Birth') }}</label>
                                 <input
                                     type="text"
                                     name="date_of_birth"
@@ -210,7 +210,7 @@
                                 >
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Gender:') }}</label>
+                                <label for="" class="form-label">{{ __('Gender') }}</label>
                                 <select name="status" class="select2 form-control w-full">
                                     <option value="male" @selected($staff->gender === 'male')>{{ __('Male') }}</option>
                                     <option value="female" @selected($staff->gender === 'female')>{{ __('Female') }}</option>
@@ -218,7 +218,7 @@
                                 </select>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Work Phone Number:') }}</label>
+                                <label for="" class="form-label">{{ __('Work Phone Number') }}</label>
                                 <input
                                     type="text"
                                     name="work_phone"
@@ -228,7 +228,7 @@
                                 >
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
+                                <label for="" class="form-label">{{ __('Personal Phone Number') }}</label>
                                 <input
                                     type="text"
                                     name="phone"
@@ -238,7 +238,7 @@
                                 >
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Marital Status:') }}</label>
+                                <label for="" class="form-label">{{ __('Marital Status') }}</label>
                                 <div class="flex items-center space-x-7 flex-wrap pt-2">
                                     <div class="basicRadio">
                                         <label class="flex items-center cursor-pointer">

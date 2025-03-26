@@ -226,17 +226,19 @@
             </li>
         @endcanany
            
+        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+            @can('risk-hub-view')
+                <li>
+                    <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:circle-alert"></iconify-icon>
+                            <span>{{ __('Risk Hub') }}</span>
+                        </span>
+                    </a>
+                </li>
+            @endcan    
+        @endif
         
-        @can('risk-hub-view')
-            <li>
-                <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:circle-alert"></iconify-icon>
-                        <span>{{ __('Risk Hub') }}</span>
-                    </span>
-                </a>
-            </li>
-        @endcan
         
 
      

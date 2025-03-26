@@ -6,7 +6,7 @@
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative mb-5">
-                    <label for="exampleFormControlInput1" class="form-label">{{ __('Account From:') }}</label>
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('Account From') }}</label>
                     <div class="input-group select2-lg">
                         <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected disabled>--{{ __('Select Account') }}--</option>
@@ -24,7 +24,7 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative">
-                    <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('Account To') }}</label>
                     <div class="relative">
                         <input type="text" name="receiver_account" required class="form-control !text-lg userAccountCheck"
                                placeholder="Receiver Account">

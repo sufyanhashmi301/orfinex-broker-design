@@ -8,7 +8,7 @@
                             {{ __('Deposit Demo Account') }}
                         </h3>
                         <p class="dark:text-white">
-                            {{ __('Account:') }}
+                            {{ __('Account') }}
                             <span class="fw-bold deposit-demo-account-login"></span>
                         </p>
                     </div>
@@ -24,7 +24,7 @@
                         @csrf
                         <input type="hidden" name="login" id="deposit-demo-account-login"
                                class="form-control deposit-demo-account-login">
-                        <label class="form-label" for="">{{ __('Amount:') }}</label>
+                        <label class="form-label" for="">{{ __('Amount') }}</label>
                         <div class="input-form-group">
                             <input type="text" class="form-control" name="amount" id="demo-amount" placeholder="Enter Amount">
                             <ul>

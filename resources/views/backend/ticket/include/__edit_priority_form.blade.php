@@ -2,7 +2,7 @@
     @method('put')
     @csrf
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Priority Title:') }}</label>
+        <label class="form-label" for="">{{ __('Priority Title') }}</label>
         <input type="text" name="name" value="{{ old('name', $priority->name) }}" class="form-control" required/>
     </div>
     <div class="input-area">

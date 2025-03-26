@@ -19,7 +19,6 @@ use App\Traits\ForexApiTrait;
 use App\Models\WithdrawMethod;
 use App\Models\WithdrawAccount;
 use App\Services\PayoutService;
-use App\Services\ForexApiService;
 use App\Enums\PayoutRequestStatus;
 use App\Enums\KycNoticeInvokeEnums;
 use App\Enums\KycStatusEnums;
@@ -35,13 +34,12 @@ use Illuminate\Contracts\Foundation\Application;
 class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
-    protected $forexApiService;
     protected $payout;
     protected $withdraw;
 
-    public function __construct(ForexApiService $forexApiService, PayoutService $payout, UserWithdrawService $withdraw)
+    public function __construct(PayoutService $payout, UserWithdrawService $withdraw)
     {
-        $this->forexApiService = $forexApiService;
+        
         $this->payout = $payout;
         $this->withdraw = $withdraw;
     }
@@ -272,16 +270,6 @@ class WithdrawController extends Controller
             return redirect()->route('user.verification.index');
         }
 
-        // $reset_balance_data = [
-        //     'login' =>'996466',
-        //     'Amount' => '24000',
-        //     'type' => 1, //deposit
-        //     'TransactionComments' => 'Balance Reset'
-        // ];
-      
-        // $response = $this->forexApiService->balanceOperation($reset_balance_data);
-        // dd('hi');
-
         // if wallets dont exist then return false
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
         $affiliate_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::AFFILIATE);
@@ -326,26 +314,6 @@ class WithdrawController extends Controller
             $fb->payout_pending = $fb->payout_pending + $net_profit;
             $fb->save();
 
-            // $reset_balance_data = [
-            //     'login' => $fb->accountTypeInvestment->login,
-            //     'Amount' => $fb->profit,
-            //     'type' => 0, //deposit
-            //     'TransactionComments' => 'Balance Reset'
-            // ];
-          
-            // $response = $this->forexApiService->balanceOperation($reset_balance_data);
-            
-            // 0 the funded balances of all accounts of Auth::id() user and Stats
-            // stats
-            // $fb->accountTypeInvestment->accountTypeInvestmentStat->balance = $fb->accountTypeInvestment->accountTypeInvestmentStat->balance - $fb->profit;
-            // $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity = $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity - $fb->profit;
-            // $fb->accountTypeInvestment->accountTypeInvestmentStat->save();
-            
-            // funded balances
-            // $funded_balance = FundedBalance::find($fb->id);
-            // $fb->profit = 0.00;
-            // $fb->last_retrieved_profit = 0.00;
-            // $fb->save();
         }
 
         // create new payout request

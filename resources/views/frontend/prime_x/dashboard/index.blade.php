@@ -155,15 +155,13 @@
                                 <div class="card-body p-4 py-6">
                                     <div class="flex items-center justify-between gap-5 mb-10">
                                         <h5 class="text-lg text-slate-900 dark:text-white font-medium">Payout Wallet</h5>
-                                        {{-- <a href="{{ route('user.investments.index') }}"
-                                            class="btn-link inline-flex items-center">
-                                            {{ __('See All') }}
-                                            <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"
-                                                icon="lucide:chevron-right"></iconify-icon>
-                                        </a> --}}
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0 {{ $currency }}</h5>
+                                        @php
+                                            $payout_wallet_balance = Auth::user()->wallets->where('slug', 'payout_wallet')->first()->available_balance;
+                                            $affiliate_wallet_balance = Auth::user()->wallets->where('slug', 'affiliate_wallet')->first()->available_balance;
+                                        @endphp
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ $payout_wallet_balance }} {{ $currency }}</h5>
                                         <a href="{{ route('user.withdraw.step1') }}"
                                             class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                             {{ __('Create Payout Request') }}
@@ -176,15 +174,9 @@
                                     <div class="flex items-center justify-between gap-5 mb-10">
                                         <h5 class="text-lg text-slate-900 dark:text-white font-medium">Affiliate Wallet
                                         </h5>
-                                        {{-- <a href="{{ route('user.investments.index') }}"
-                                            class="btn-link inline-flex items-center">
-                                            {{ __('See All') }}
-                                            <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"
-                                                icon="lucide:chevron-right"></iconify-icon>
-                                        </a> --}}
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0 {{ $currency }}</h5>
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ $affiliate_wallet_balance }} {{ $currency }}</h5>
                                         <a href="{{ route('user.affiliate-area.index') }}"
                                             class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                             {{ __('See Affiliate Area') }}

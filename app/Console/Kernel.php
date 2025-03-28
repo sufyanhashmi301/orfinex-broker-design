@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:accounts-open-positions')->hourly();
 
         // Fetch trading stats of newly active accounts
-        $schedule->command('update:recent-approved-accounts-stats')->everyThreeMinutes();
+        // $schedule->command('update:recent-approved-accounts-stats')->everyThreeMinutes();
 
         // Promotion and Violation
         $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();

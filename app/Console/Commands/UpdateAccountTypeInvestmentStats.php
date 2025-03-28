@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\InvestmentStatus;
 use App\Enums\TraderType;
 use Carbon\Carbon;
 use App\Models\AccountType;
@@ -68,7 +69,8 @@ class UpdateAccountTypeInvestmentStats extends Command
         $allResults = $this->getTradingAccountStats();
 
         // Step 2: Loop through each AccountTypeInvestment and update stats
-        foreach (AccountTypeInvestment::all() as $investment) {
+        $active_accounts = AccountTypeInvestment::where('status', InvestmentStatus::ACTIVE)->get();
+        foreach ($active_accounts as $investment) {
             $matchingResult = $allResults->firstWhere('login', $investment->login);
             
             if ($matchingResult) {

@@ -74,14 +74,14 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 
     protected function processUserDealsFromDate($childUser, $startDate)
     {
-        $referralRelationship = $childUser->referralRelationship->referralLink;
-//        dd($referralRelationship->user);
+        $referralRelationship = $childUser->referralRelationship;
+//        dd($childUser,$referralRelationship);
 
         if (!$referralRelationship) {
             return;
         }
 
-        $validParentData = $this->getValidParent($referralRelationship->user);
+        $validParentData = $this->getValidParent($referralRelationship->referralLink->user);
 //        dd($validParentData);
 
         if (!$validParentData) {

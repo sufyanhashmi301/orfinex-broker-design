@@ -87,7 +87,7 @@
                 {{ __('Total Approved Payout (User Share Only)') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
-                {{ $currencySymbol }}<span class="count">{{ $data['total_payout'] }}</span>
+                {{ $currencySymbol }}<span class="count">{{ number_format( $data['total_payout'], 2) }}</span>
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
@@ -101,7 +101,7 @@
                 {{ __('Users Accumulative Affiliate Commission') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
-                {{ $currencySymbol }}{{ $data['total_referral'] }}
+                {{ $currencySymbol }}{{ number_format($data['total_referral'], 2) }}
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">

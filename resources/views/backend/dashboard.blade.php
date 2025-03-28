@@ -94,9 +94,9 @@
                 <div class="lg:col-span-12 col-span-12">
                     <div class="card h-full">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Site Statistics') }}</h3>
+                            <h3 class="card-title">{{ __('Transaction Statistics') }}</h3>
                             <div class="card-header-links">
-                                <input class="form-control !py-1" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
+                                <input class="form-control flatpickr-input" type="text" name="daterange" id="daterange" value="{{ $data['start_date'] }} - {{ $data['end_date'] }}" />
                             </div>
                         </div>
                         <div class="card-body p-6">

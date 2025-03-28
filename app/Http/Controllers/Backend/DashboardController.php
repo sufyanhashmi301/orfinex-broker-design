@@ -65,39 +65,7 @@ class DashboardController extends Controller
         })->count();
 
 
-        // ============================= Start dashboard statistics =============================================
-
-        $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
-        $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();
-        $dateArray = array_fill_keys(generate_date_range_array($startDate, $endDate), 0);
-
-        $dateFilter = [request()->start_date ? $startDate : $startDate->subDays(1), $endDate->addDays(1)];
-
-        $depositStatistics = $totalDeposit->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
-            return $group->sum('amount');
-        })->toArray();
-
-        $depositStatistics = array_replace($dateArray, $depositStatistics);
-
-
-
-        $investStatistics = $transaction->totalInvestment()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
-            return $group->sum('amount');
-        })->toArray();
-
-        $investStatistics = array_replace($dateArray, $investStatistics);
-
-        $withdrawStatistics = $transaction->totalWithdraw()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
-            return $group->sum('amount');
-        })->toArray();
-        $withdrawStatistics = array_replace($dateArray, $withdrawStatistics);
-
-        $profitStatistics = $transaction->totalProfit()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
-            return $group->sum('amount');
-        })->toArray();
-        $profitStatistics = array_replace($dateArray, $profitStatistics);
-
-        // ============================= End dashboard statistics =============================================
+        
 
         $browser = LoginActivities::all()->groupBy('browser')->map(function ($browser) {
             return $browser->count();
@@ -113,7 +81,7 @@ class DashboardController extends Controller
             ->pluck('count', 'country')
             ->toArray();
 
-        $symbol = setting('currency_symbol','global');
+        
 
         // --- Optimizations
         $active_users = User::whereHas('accountTypeInvestment', function ($query) {
@@ -131,11 +99,30 @@ class DashboardController extends Controller
             $query->where('type', AccountType::FUNDED);
         })->count();
         $total_trial_accounts = AccountTypeInvestment::where('is_trial', 1)->count();
-        $total_approved_withdraws = Transaction::where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
+        $total_approved_withdraws = $transaction->totalWithdraw()->sum('amount');
 
         $pending_kycs = Kyc::where('status', KycStatusEnums::PENDING)->count();
         
-        // dd($challenge_accounts);
+        
+        //Dashboard Statistics
+        $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
+        $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();
+        $dateArray = array_fill_keys(generate_date_range_array($startDate, $endDate), 0);
+
+        $dateFilter = [request()->start_date ? $startDate : $startDate->subDays(1), $endDate->addDays(1)];
+
+        $depositStatistics = $totalDeposit->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+
+        $depositStatistics = array_replace($dateArray, $depositStatistics);
+
+        $withdrawStatistics = $transaction->totalWithdraw()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $withdrawStatistics = array_replace($dateArray, $withdrawStatistics);
+        //Dashboard Statistics
+
         // --- Optimizations
 
         $data = [
@@ -149,6 +136,11 @@ class DashboardController extends Controller
             'total_funded_accounts' => $total_funded_accounts,
             'total_trial_accounts' => $total_trial_accounts,
             'total_approved_withdraws' => $total_approved_withdraws,
+
+            'date_label' => $dateArray,
+            'deposit_statistics' => $depositStatistics,
+            'withdraw_statistics' => $withdrawStatistics,
+            'symbol' => setting('currency_symbol','global'),
             // optimizaitons
 
             'withdraw_count' => $withdrawCount,
@@ -161,14 +153,10 @@ class DashboardController extends Controller
 
             'total_staff' => $totalStaff,
 
-            'date_label' => $dateArray,
-            'deposit_statistics' => $depositStatistics,
-            'invest_statistics' => $investStatistics,
-            'withdraw_statistics' => $withdrawStatistics,
-            'profit_statistics' => $profitStatistics,
+            
 
-            'start_date' => isset(request()->start_date) ? $startDate : $startDate->addDays(1)->format('m/d/Y'),
-            'end_date' => isset(request()->end_date) ? $endDate : $endDate->subDays(1)->format('m/d/Y'),
+            'start_date' => isset(request()->start_date) ? $startDate : $startDate->addDays(1)->format('Y-m-d'),
+            'end_date' => isset(request()->end_date) ? $endDate : $endDate->subDays(1)->format('Y-m-d'),
 
             'deposit_bonus' => $transaction->totalDepositBonus(),
             'investment_bonus' => $transaction->totalInvestBonus(),
@@ -182,10 +170,8 @@ class DashboardController extends Controller
             $date = [
                 'date_label' => $dateArray,
                 'deposit_statistics' => $depositStatistics,
-                'invest_statistics' => $investStatistics,
                 'withdraw_statistics' => $withdrawStatistics,
-                'profit_statistics' => $profitStatistics,
-                'symbol' => $symbol,
+                'symbol' => setting('currency_symbol','global'),
             ];
             return response()->json($date);
         }

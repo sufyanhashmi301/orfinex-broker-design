@@ -65,7 +65,7 @@ class AccountTypeInvestmentPaymentService
     if($investment->trader_type == TraderType::MT5) {
         $balance_deposit = $this->mt5TradingAccount->depositBalance($trading_account_login_id, $investment);
     } elseif($investment->trader_type == TraderType::MT) {
-        $balance_deposit = $this->matchTraderTradingAccount->depositBalance($trading_account_login_id);
+        $balance_deposit = $this->matchTraderTradingAccount->depositBalance($trading_account_login_id, $investment);
     }
 
     // Throw Error

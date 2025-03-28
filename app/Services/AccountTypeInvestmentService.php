@@ -476,7 +476,8 @@ class AccountTypeInvestmentService
       $deduct_balance_data = [
         "systemUuid" => $violate_investment->getAccountTypeSnapshotData()['system_uuid'],
         "login" => $violate_investment->login,
-        "amount" => $violate_investment->accountTypeInvestmentStat->balance,
+        "amount" => $violate_investment->getRuleSnapshotData()['allotted_funds'],
+        // "amount" => $violate_investment->accountTypeInvestmentStat->balance,
         "comment" => "Account Violated"
       ];
   

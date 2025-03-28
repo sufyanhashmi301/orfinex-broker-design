@@ -23,7 +23,7 @@
         @endif
         
         @if ($banner->button_text != '')
-          <a href="{{ $banner->button_link == '' ? 'javascript:void()' : '' }}" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5">
+          <a href="{{ $banner->button_link == '' ? 'javascript:void()' : $banner->button_link }}" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5">
             {{ $banner->button_text }}
           </a>
         @endif

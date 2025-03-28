@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
-use App\Enums\TraderType;
-use App\Models\PlatformAccountCredential;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\TraderType;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AccountTypeInvestment;
+use App\Models\AccountTypeInvestmentStat;
+use App\Models\PlatformAccountCredential;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class MatchTraderTradingAccountService
 {
@@ -103,7 +107,7 @@ class MatchTraderTradingAccountService
   /**
    * Deposit Balance
    */
-  public function depositBalance($login_id) {
+  public function depositBalance($login_id, $account) {
     $deposit_balance_data = [
       "systemUuid" => $this->accountTypeData['system_uuid'],
       "login" => $login_id,
@@ -116,6 +120,28 @@ class MatchTraderTradingAccountService
     if(!$deposit_balance_response) {
       return false;
     }
+
+    // initialize stats records
+    $this->createInitialRecords($account);
+
+    return true;
+  }
+
+  /**
+   * Create the hourly stats record and singlular stats record
+   */
+  private function createInitialRecords($account) {
+
+    $initial_data = [
+      'account_type_investment_id' => $account->id,
+      'balance' => $this->ruleData['allotted_funds'],
+      'current_equity' => $this->ruleData['allotted_funds'],
+      'trading_days' => 0
+    ];
+
+    // Updatable Stats
+    AccountTypeInvestmentStat::create($initial_data + ['updated_at' => CarbonImmutable::now()]);
+    AccountTypeInvestmentHourlyStatsRecord::create($initial_data + [ 'created_at' => CarbonImmutable::now() ]);
 
     return true;
   }

@@ -158,8 +158,8 @@
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
                                         @php
-                                            $payout_wallet_balance = Auth::user()->wallets->where('slug', 'payout_wallet')->first()->available_balance;
-                                            $affiliate_wallet_balance = Auth::user()->wallets->where('slug', 'affiliate_wallet')->first()->available_balance;
+                                            $payout_wallet_balance = Auth::user()->wallets->where('slug', 'payout_wallet')->first()->available_balance ?? 0;
+                                            $affiliate_wallet_balance = Auth::user()->wallets->where('slug', 'affiliate_wallet')->first()->available_balance ?? 0;
                                         @endphp
                                         <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ $payout_wallet_balance }} {{ $currency }}</h5>
                                         <a href="{{ route('user.withdraw.step1') }}"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\AccountBalanceType;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
@@ -374,6 +375,16 @@ class WithdrawController extends Controller
         if ($totalAmount->compareTo($balance) > 0) {
             notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
             return redirect()->back()->withInput();
+        }
+        //  Enforce minimum withdrawal limit for IB Wallet
+        if ($wallet->balance === AccountBalanceType::IB_WALLET) {
+            $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
+            if ($amount < $ibMinLimit) {
+                notify()->error(__('You must withdraw at least :limit from IB Wallet.', [
+                    'limit' => setting('currency_symbol', 'global') . $ibMinLimit
+                ]), 'Error');
+                return redirect()->back()->withInput();
+            }
         }
 
         // Set the transaction target type to Wallet

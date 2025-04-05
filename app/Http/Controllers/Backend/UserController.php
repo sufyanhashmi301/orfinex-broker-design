@@ -63,7 +63,7 @@ class UserController extends Controller
     public function __construct(ForexApiService $forexApiService)
     {
         $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['edit']]);
+        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member|customer-edit', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage', ['only' => ['update']]);
@@ -362,13 +362,10 @@ class UserController extends Controller
         if (!$loggedInUser->hasRole('Super-Admin')) {
             // Validate if the `id` exists in attached users
             $attachedUserIds = $loggedInUser->users->pluck('id');
-            if ($attachedUserIds->isNotEmpty()) {
-                if (!$attachedUserIds->contains($id)) {
-                    // Redirect back with an error message if the user is not attached
-                    return redirect()->back()->with('error', 'Unauthorized access to user details.');
-                }
+            if (!$attachedUserIds->contains($id)) {
+                // Redirect back with an error message if the user is not attached
+                return redirect()->back()->with('error', 'Unauthorized access to user details.');
             }
-
         }
 
         $user = User::find($id);

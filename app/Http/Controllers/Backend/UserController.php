@@ -62,7 +62,7 @@ class UserController extends Controller
      */
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
+        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member|customer-edit', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member|customer-edit', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);

@@ -185,6 +185,7 @@
                 var url = '{{ route("user.withdraw.details",['accountId' => ':accountId', 'amount' => ':amount']) }}';
                 url = url.replace(':accountId', accountId,);
                 url = url.replace(':amount', amount);
+                url = url.replace(/\/+$/, '');
 
                 $.get(url, function (data) {
                     info = data.info;

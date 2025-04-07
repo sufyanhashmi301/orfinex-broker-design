@@ -39,7 +39,7 @@ class MultiLevelRebateDistribution extends Command
         DB::beginTransaction();
         try {
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-//                ->where('user_id',7191)
+//                ->where('user_id',3216)
                 ->get();
 
             foreach ($ReferralRelationships as $ReferralRelationship) {
@@ -58,7 +58,7 @@ class MultiLevelRebateDistribution extends Command
     protected function processReferralRelationship($ReferralRelationship)
     {
         $notedParentData = $this->getValidParent($ReferralRelationship->referralLink->user);
-//        dd($notedParentData);
+        // dd($notedParentData);
 
         if (!$notedParentData) {
             return false;
@@ -77,7 +77,6 @@ class MultiLevelRebateDistribution extends Command
 //dd($forexSchemas);
         $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
             ->whereIn('forex_schema_id', $forexSchemas) // Ensure it belongs to the IB's allowed schemas
-            ->orderBy('balance', 'desc')
             ->get();
 
         if ($realForexAccounts->isEmpty()) {
@@ -86,14 +85,14 @@ class MultiLevelRebateDistribution extends Command
 
 
         foreach ($realForexAccounts as $realForexAccount) {
-//            dd($realForexAccount);
+            // dd($realForexAccount);
             $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
-//            dd($symbols);
-
+            // dd($symbols);
+//
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-//            dd($lastDealTime);
+            // dd($lastDealTime);
             $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $symbols);
-//           dd($deals);
+            //   dd($deals);
 
             if (!$deals->isEmpty()) {
                 $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount);
@@ -131,6 +130,7 @@ class MultiLevelRebateDistribution extends Command
     protected function saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount)
     {
         foreach ($deals as $deal) {
+             if(!MetaDeal::where('login',$deal->Login)->where('deal',$deal->Deal)->where('order',$deal->Order)->exists()) {
             $data = [
                 'user_id' => $childUserId,
                 'login' => $deal->Login,
@@ -144,16 +144,17 @@ class MultiLevelRebateDistribution extends Command
                 'time' => $deal->Time
             ];
             $metaDeal = MetaDeal::create($data);
-//            $metaDeal = MetaDeal::find(81);
-//             dd($metaDeal);
+            // $metaDeal = MetaDeal::find(13125);
+            // dd($metaDeal);
             $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount);
+             }
         }
     }
 
     protected function distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount)
     {
         $shareDistribution = $this->calculateRebate($metaDeal->symbol, $notedParent, $notedLevel, $realForexAccount);
-//         dd($shareDistribution);
+        // dd($shareDistribution);
 
         if (empty($shareDistribution)) {
             return;
@@ -162,7 +163,7 @@ class MultiLevelRebateDistribution extends Command
         $currentUser = $ReferralRelationship->referralLink->user->id;
         $userHierarchy = [$currentUser];
         $currentLevel = $notedLevel; // Highest level for child, decrement for parents
-//dd($userHierarchy);
+// dd($userHierarchy);
         // Get parents in hierarchy order
         while ($currentUser && $currentLevel > 0) {
             $parentUser = User::find($currentUser)->ref_id;
@@ -172,18 +173,18 @@ class MultiLevelRebateDistribution extends Command
             }
             $currentLevel--;
         }
-//        dd($userHierarchy);
+        // dd($userHierarchy);
 
         // Reverse the order to distribute correctly
         $userHierarchy = array_reverse($userHierarchy);
         $totalLevels = count($userHierarchy);
         //user have the trade
         $childUser = User::find($childUserId);
-//        dd($userHierarchy,$totalLevels);
+        // dd($userHierarchy,$totalLevels);
 
         foreach ($userHierarchy as $index => $userId) {
-            $levelIndex = $totalLevels - $index; // Assign correct level share
-
+            $levelIndex = ++$index; // Assign correct level share
+// dd($userHierarchy,$shareDistribution,$levelIndex,$shareDistribution[$levelIndex]);
             if (isset($shareDistribution[$levelIndex])) {
                 $share = $shareDistribution[$levelIndex];
 
@@ -201,7 +202,7 @@ class MultiLevelRebateDistribution extends Command
                 );
 
                 $this->addBalance($transaction);
-            }
+                }
             }
         }
 
@@ -211,14 +212,16 @@ class MultiLevelRebateDistribution extends Command
 
     protected function calculateRebate($symbol, $notedParent, $notedLevel, $forexAccount)
     {
-//        dd($symbol);
         // Fetch the rebate rule that matches the IB Group, Forex Schema, and Symbol
-        $rebateRule = RebateRule::whereHas('ibGroups', fn($query) => $query->where('ib_group_id', $notedParent->ibGroup->id)) // Ensure it belongs to the IB Group
-        ->whereHas('forexSchemas', fn($query) => $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure schema matches
-        ->whereHas('symbolGroups.symbols', fn($query) => $query->where('symbol', $symbol)) // Ensure the rule applies to the symbol
+        $rebateRule = RebateRule::whereHas('ibGroups', fn($query) =>
+        $query->where('ib_group_id', $notedParent->ibGroup->id)) // Ensure it belongs to the IB Group
+        ->whereHas('forexSchemas', fn($query) =>
+        $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure schema matches
+        ->whereHas('symbolGroups.symbols', fn($query) =>
+        $query->where('symbol', $symbol)) // Ensure the rule applies to the symbol
         ->first();
 
-//        dd($rebateRule);
+        // dd($rebateRule);
         if (!$rebateRule) {
             return [];
         }
@@ -229,6 +232,7 @@ class MultiLevelRebateDistribution extends Command
         $ibRule = UserIbRule::where('user_id', $notedParent->id)
             ->where('rebate_rule_id', $rebateRule->id)
             ->first();
+        // dd($ibRule);
 
         if (!$ibRule) {
             return [];
@@ -242,18 +246,30 @@ class MultiLevelRebateDistribution extends Command
         // Initialize default rebate distribution
         $rebateDistribution = array_fill(1, $notedLevel, 0);
         $totalShared = 0;
+        // dd($rebateDistribution);
 
         if ($ibRuleLevel) {
             $shares = UserIbRuleLevelShare::where('user_ib_rule_level_id', $ibRuleLevel->id)->get();
+            // dd($shares);
             foreach ($shares as $share) {
                 $rebateDistribution[$share->level_id] = $share->share;
                 $totalShared += $share->share;
             }
         }
+        // dd($rebateDistribution,$totalShared,$totalRebateAmount);
 
         // Assign remaining rebate to the highest level
         if ($totalShared < $totalRebateAmount) {
-            $rebateDistribution[++$notedLevel] = $totalRebateAmount - $totalShared;
+            $remaining = $totalRebateAmount - $totalShared;
+
+            // Shift all existing levels down by 1
+            $shifted = [];
+            foreach ($rebateDistribution as $level => $share) {
+                $shifted[$level + 1] = $share;
+            }
+
+            // Put the remaining rebate at level 1
+            $rebateDistribution = [1 => $remaining] + $shifted;
         }
 
         return $rebateDistribution;
@@ -273,8 +289,10 @@ class MultiLevelRebateDistribution extends Command
     protected function getFilteredRebateRules($notedParentData, $forexAccount)
     {
 //        dd($notedParentData->ibGroup->id);
-        return RebateRule::whereHas('ibGroups', fn($query) => $query->where('ib_group_id', $notedParentData->ibGroup->id)) // Ensure the rebate rule belongs to the IB Group
-        ->whereHas('forexSchemas', fn($query) => $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure the rebate rule is attached to the Forex Schema
+        return RebateRule::whereHas('ibGroups', fn($query) =>
+        $query->where('ib_group_id', $notedParentData->ibGroup->id)) // Ensure the rebate rule belongs to the IB Group
+        ->whereHas('forexSchemas', fn($query) =>
+        $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure the rebate rule is attached to the Forex Schema
         ->with(['symbolGroups.symbols']) // Load related symbols to avoid N+1 problem
         ->get();
     }
@@ -290,21 +308,19 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getMT5Deals($login, $lastDealTime, $sysmbols)
     {
-        $table = 'mt5_deals';
+        $table = 'mt5_deals_' . Carbon::now()->year;
 //        dd($table,$login,$lastDealTime,$sysmbols);
-
 
         return DB::connection('mt5_db')
             ->table($table)
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
             ->whereIn('Symbol', $sysmbols)
-            ->where('Time', '>', $lastDealTime)
+             ->where('Time', '>', $lastDealTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')
             ->get();
     }
-
     protected function addBalance($transaction)
     {
         $userAccount = get_user_account_by_wallet_id($transaction->target_id);
@@ -313,9 +329,9 @@ class MultiLevelRebateDistribution extends Command
         $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
         $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
         if ($transaction->target_type == TxnTargetType::Wallet->value) {
-            $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
-            $userAccount->save();
-        }
+        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
+        $userAccount->save();
+    }
     }
 
 }

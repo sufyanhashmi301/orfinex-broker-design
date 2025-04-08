@@ -1372,7 +1372,6 @@ return [
     'withdraw_settings' => [
         'title' => 'Withdraw Settings',
         'elements' => [
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
@@ -1380,7 +1379,15 @@ return [
                 'label' => 'Pending Withdraw Limit', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
-            ]
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_otp', // unique name for field
+                'label' => 'Withdraw OTP', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
         ],
     ],
     'forex_account_settings' => [

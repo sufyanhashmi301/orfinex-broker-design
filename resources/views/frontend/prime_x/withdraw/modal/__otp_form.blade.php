@@ -3,18 +3,10 @@
      tabindex="-1"
      aria-labelledby="otpModal"
      aria-hidden="true"
->
+     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-            <div class="flex items-center justify-between p-5 pb-0">
-                <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
-                    <svg aria-hidden="true" class="w-5 h-5 dark:fill-white" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <div class="modal-body px-6 pb-6 text-center">
+            <div class="modal-body px-6 py-6 text-center">
                 <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-primary text-primary bg-opacity-30 mb-5" style="--tw-bg-opacity: 0.3;">
                     <iconify-icon class="text-4xl" icon="lucide:shield-check"></iconify-icon>
                 </div>
@@ -28,19 +20,23 @@
                 </p>
                 <form action="{{ route('user.withdraw.otp.verify') }}" method="post" class="mt-5">
                     @csrf
-                    <div class="input-area mb-5">
+                    <div class="input-area">
                         <input type="text" name="otp" class="form-control !text-lg" placeholder="Enter OTP">
                     </div>
-                    <div class="action-btns mb-3">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                            {{ __(' Verify OTP') }}
-                        </button>
-                    </div>
-                    <p class="dark:text-slate-300">
+                    <p class="dark:text-slate-300 my-5">
                         {{ __("Don't received code ?") }}
                         <a href="javascript:;" id="resendOtpBtn" class="btn-link hover:underline">{{ __('Resend') }}</a>
                     </p>
+                    <div class="action-btns">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __(' Verify OTP') }}
+                        </button>
+                        <a href="javascript:;" class="btn btn-danger inline-flex items-center justify-center" id="cancelOtpVerification">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Cancel') }}
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

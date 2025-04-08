@@ -160,6 +160,9 @@
     {{-- Modal for OTP--}}
     @include('frontend::withdraw.modal.__otp_form')
 
+    {{-- Modal for Cancel--}}
+    @include('frontend::withdraw.modal.__cancel_otp')
+
 @endsection
 
 @section('script')
@@ -182,7 +185,8 @@
 
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
-            $('.selectDetailsTbody').children().not(':first', ':second').remove();
+            // $('.selectDetailsTbody').children().not(':first', ':second').remove();
+            $('.selectDetailsTbody').children().not(':first').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();
 
@@ -270,5 +274,30 @@
                 }
             });
         });
+
+        $(document).ready(function () {
+            var oldAccountType = '{{ old('account_type') }}';
+            if (oldAccountType) {
+                $('input[name="account_type"]').val(oldAccountType);
+                $("#withdrawAccountId").trigger('change');
+            }
+
+            var oldAmount = '{{ old('amount') }}';
+            if (oldAmount) {
+                var amount = oldAmount;
+                $("#amount").val(amount).trigger('keyup');
+            }
+        });
+
+        $('body').on('click', '#cancelOtpVerification', function() {
+            $('#confirmCancelModal').modal('show');
+        });
+
+        $('body').on('click', '.confirmCancelBtn', function() {
+            // Close both modals
+            $('#otpModal').modal('hide');
+            $('#confirmCancelModal').modal('hide');
+        });
+
     </script>
 @endsection

@@ -6,6 +6,7 @@ use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Enums\TxnTargetType;
+use App\Enums\AccountBalanceType;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexAccount;
@@ -468,6 +469,7 @@ class WithdrawController extends Controller
             // Set the transaction target type to Forex
             $targetType = TxnTargetType::ForexWithdraw->value;
         } else {
+
             // Validate wallet ownership
             $wallet = get_user_account_by_wallet_id($targetId, $user->id);
             if (!$wallet) {
@@ -479,6 +481,16 @@ class WithdrawController extends Controller
             if ($totalAmount->compareTo($balance) > 0) {
                 notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
                 return false;
+            }
+
+            if ($wallet->balance === AccountBalanceType::IB_WALLET) {
+                $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
+                if ($amount < $ibMinLimit) {
+                    notify()->error(__('You must withdraw at least :limit from IB Wallet.', [
+                        'limit' => setting('currency_symbol', 'global') . $ibMinLimit
+                    ]), 'Error');
+                    return false;
+                }
             }
 
             // Set the transaction target type to Wallet

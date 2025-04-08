@@ -1332,7 +1332,32 @@ class EmailTemplatesSeeder extends Seeder
                 'created_at' => '2024-03-07 15:54:46',
                 'updated_at' => '2024-03-07 15:54:46',
             ],
+            [
 
+                'name' => 'Transaction OTP',
+                'code' => 'transaction_otp',
+                'for' => 'User',
+                'banner' => 'global/images/email_verification.jpg',
+                'title' => 'Verify Your Transaction OTP',
+                'subject' => 'Verify Your OTP',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'Hello!<br />To complete your transaction, please use the following One-Time Password (OTP):<br /><strong>[[code]]</strong><br />Enter this code on the verification page to proceed with your transaction.',
+                'button_level' => '',
+                'button_link' => '',
+                'footer_status' => 1,
+                'footer_body' => 'Best Regards,<br />[[site_title]] Team',
+                'bottom_status' => 1,
+                'bottom_title' => 'Your OTP',
+                'bottom_body' => 'This OTP is valid for [[otp_validity]] minutes. Do not share it with anyone for security reasons.',
+                'short_codes' => json_encode(["[[code]]", "[[full_name]]", "[[site_title]]", "[[site_url]]"]),
+                'note' => 'If you did not request this, please ignore this email.',
+                'support_link' => '[[site_url]]/support',
+                'warning_content' => 'Security Notice: Never share your verification code with anyone. [[site_title]] will never ask for your OTP.',
+                'company_info' => setting('site_title', 'global') . ' GLOBAL LIMITED. Registered under company number 2023-00532.',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
 
         ];
 

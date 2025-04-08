@@ -3,158 +3,166 @@
     {{ __('Withdraw Now') }}
 @endsection
 @section('content')
-<div class="flex justify-end flex-wrap items-center mb-5">
-    <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-        <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center">
-            {{ __('Add Withdraw Account') }}
-        </a>
+    @php
+        use Carbon\Carbon;
+    @endphp
+    <div class="flex justify-end flex-wrap items-center mb-5">
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center">
+                {{ __('Add Withdraw Account') }}
+            </a>
+        </div>
     </div>
-</div>
-<div class="card mb-6">
-    <div class="card-body hidden md:block p-3">
-        <div class="progress-steps md:flex justify-between items-center gap-5">
-            <div class="single-step current">
-                <div class="progress_bar mb-5"></div>
-                <div class="">
-                    <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
-                    <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
+    <div class="card mb-6">
+        <div class="card-body hidden md:block p-3">
+            <div class="progress-steps md:flex justify-between items-center gap-5">
+                <div class="single-step current">
+                    <div class="progress_bar mb-5"></div>
+                    <div class="">
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
+                        <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
+                    </div>
                 </div>
-            </div>
-            <div class="single-step">
-                <div class="progress_bar mb-5"></div>
-                <div class="">
-                    <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
-                    <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
+                <div class="single-step">
+                    <div class="progress_bar mb-5"></div>
+                    <div class="">
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
+                        <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="progress-steps-form">
-    <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm">
-        @csrf
-        <input type="hidden" name="account_type" value="{{ old('account_type') }}">
+    <div class="progress-steps-form">
+        <form action="{{ route("user.withdraw.now") }}" method="post" id="withdrawForm">
+            @csrf
+            <input type="hidden" name="account_type" value="{{ old('account_type') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                <div>
+                    <h4 class="text-xl text-slate-900 mb-3">
+                        {{ __('Enter your deposit details.') }}
+                    </h4>
+                    <div class="card">
+                        <div class="card-body space-y-5 p-6">
+                            <div class="input-area relative">
+                                <label for="exampleFormControlInput1" class="form-label">
+                                    {{ __('Account to withdraw:') }}
+                                </label>
+                                <div class="input-group select2-lg">
+                                    <select id="tradingAccount" name="target_id"
+                                            class="select2 form-control !text-lg w-full mt-2 py-2">
+                                        <option selected
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                                disabled>
+                                            --{{ __('Select Account') }}--
+                                        </option>
+                                        {{-- Forex Accounts --}}
+                                        @foreach($forexAccounts as $forexAccount)
+                                            <option value="{{ the_hash($forexAccount->login) }}"
+                                                    data-type="forex"
+                                                    {{ old('target_id') == the_hash($forexAccount->login) ? 'selected' : '' }}
+                                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                                ({{ get_mt5_account_equity($forexAccount->login) }} {{ $currency }})
+                                            </option>
+                                        @endforeach
+                                        {{-- Wallet Accounts --}}
+                                        @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-area relative">
+                                <label for="exampleFormControlInput1" class="form-label">
+                                    {{ __('Withdraw Account') }}
+                                </label>
+                                <div class="input-group select2-lg">
+                                    <select name="withdraw_account" id="withdrawAccountId"
+                                            class="select2 form-control !text-lg w-full mt-2 py-2">
+                                        <option selected
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                                disabled>
+                                            {{ __('Withdraw Method') }}
+                                        </option>
+                                        @foreach($accounts as $account)
+                                            <option value="{{ $account->id }}"
+                                                    {{ old('withdraw_account') == $account->id ? 'selected' : '' }}
+                                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                {{ $account->method_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block processing-time"></div>
+                            </div>
+                            <div class="input-area relative">
+                                <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
+                                <div class="relative">
+                                    <input type="text" name="amount" id="amount"
+                                           oninput="this.value = validateDouble(this.value)"
+                                           class="form-control !text-lg withdrawAmount"
+                                           placeholder="{{ __('Enter Amount') }}"
+                                           value="{{ old('amount') }}"
+                                           aria-describedby="basic-addon1">
+                                    <span
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center"
+                                        id="basic-addon1">
+                                        {{ $currency }}
+                                    </span>
+                                </div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block withdrawAmountRange"></div>
+                            </div>
+                            <div class="input-area relative conversion hidden">
+                                <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
+                                <div class="relative">
+                                    <input type="text" oninput="this.value = validateDouble(this.value)"
+                                           class="form-control !text-lg " id="converted-amount"
+                                           placeholder="{{ __('Enter Amount') }}" aria-describedby="basic-addon2">
+                                    <span
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center"
+                                        id="basic-addon2">{{ $currency }}</span>
+                                </div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl text-slate-900 mb-3">
+                        {{ __('Withdraw Details') }}
+                    </h4>
+                    <div class="card transaction-list">
+                        <div class="card-body p-6">
+                            <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
+                                <tbody class="selectDetailsTbody">
+                                <tr class="detailsCol">
+                                    <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                        <strong>{{ __('Withdraw Amount') }}</strong>
+                                    </td>
+                                    <td class="dark:text-slate-300">
+                                        <span class="withdrawAmount">{{ old('amount') }}</span>
+                                        {{ $currency }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
+                                    {{ __('Withdraw Money') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
-            <div>
-                <h4 class="text-xl text-slate-900 mb-3">
-                    {{ __('Enter your deposit details.') }}
-                </h4>
-                <div class="card">
-                    <div class="card-body p-6">
-                        <div class="input-area relative mb-5">
-                            <label for="exampleFormControlInput1" class="form-label">
-                                {{ __('Account to withdraw:') }}
-                            </label>
-                            <div class="input-group select2-lg">
-                                <select id="tradingAccount" name="target_id"
-                                        class="select2 form-control !text-lg w-full mt-2 py-2">
-                                    <option selected
-                                            class="inline-block font-Inter font-normal text-sm text-slate-600"
-                                            disabled>
-                                        --{{ __('Select Account') }}--
-                                    </option>
-                                    {{-- Forex Accounts --}}
-                                    @foreach($forexAccounts as $forexAccount)
-                                        <option value="{{ the_hash($forexAccount->login) }}"
-                                                data-type="forex"
-                                                {{ old('target_id') == the_hash($forexAccount->login) ? 'selected' : '' }}
-                                                class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                            {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                            ({{ get_mt5_account_equity($forexAccount->login) }} {{ $currency }})
-                                        </option>
-                                    @endforeach
-                                    {{-- Wallet Accounts --}}
-                                    @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
-                                </select>
-                            </div>
-                        </div>
-                        <div class="input-area relative">
-                            <label for="exampleFormControlInput1" class="form-label">
-                                {{ __('Withdraw Account') }}
-                            </label>
-                            <div class="input-group select2-lg">
-                                <select name="withdraw_account" id="withdrawAccountId"
-                                        class="select2 form-control !text-lg w-full mt-2 py-2">
-                                    <option selected
-                                            class="inline-block font-Inter font-normal text-sm text-slate-600"
-                                            disabled>
-                                        {{ __('Withdraw Method') }}
-                                    </option>
-                                    @foreach($accounts as $account)
-                                        <option value="{{ $account->id }}"
-                                                {{ old('withdraw_account') == $account->id ? 'selected' : '' }}
-                                                class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                            {{ $account->method_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="font-Inter text-xs text-danger pt-2 inline-block processing-time"></div>
-                        </div>
-                        <div class="input-area relative">
-                            <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
-                            <div class="relative">
-                                <input type="text" name="amount" id="amount"
-                                       oninput="this.value = validateDouble(this.value)"
-                                       class="form-control !text-lg withdrawAmount"
-                                       placeholder="{{ __('Enter Amount') }}"
-                                       value="{{ old('amount') }}"
-                                       aria-describedby="basic-addon1">
-                                <span
-                                    class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center"
-                                    id="basic-addon1">
-                                    {{ $currency }}
-                                </span>
-                            </div>
-                            <div
-                                class="font-Inter text-xs text-danger pt-2 inline-block withdrawAmountRange"></div>
-                        </div>
-                        <div class="input-area relative conversion hidden">
-                            <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
-                            <div class="relative">
-                                <input type="text" oninput="this.value = validateDouble(this.value)"
-                                       class="form-control !text-lg " id="converted-amount"
-                                       placeholder="{{ __('Enter Amount') }}" aria-describedby="basic-addon2">
-                                <span
-                                    class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center"
-                                    id="basic-addon2">{{ $currency }}</span>
-                            </div>
-                            <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <h4 class="text-xl text-slate-900 mb-3">
-                    {{ __('Withdraw Details') }}
-                </h4>
-                <div class="card transaction-list">
-                    <div class="card-body p-6">
-                        <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
-                            <tbody class="selectDetailsTbody">
-                            <tr class="detailsCol">
-                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
-                                    <strong>{{ __('Withdraw Amount') }}</strong>
-                                </td>
-                                <td class="dark:text-slate-300">
-                                    <span class="withdrawAmount">{{ old('amount') }}</span>
-                                    {{ $currency }}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                            <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
-                                {{ __('Withdraw Money') }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
+    {{-- Modal for OTP--}}
+    @include('frontend::withdraw.modal.__otp_form')
+
+    {{-- Modal for Cancel--}}
+    @include('frontend::withdraw.modal.__cancel_otp')
+
 @endsection
 
 @section('script')
@@ -177,7 +185,8 @@
 
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
-            $('.selectDetailsTbody').children().not(':first', ':second').remove();
+            // $('.selectDetailsTbody').children().not(':first', ':second').remove();
+            $('.selectDetailsTbody').children().not(':first').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();
 
@@ -185,6 +194,7 @@
                 var url = '{{ route("user.withdraw.details",['accountId' => ':accountId', 'amount' => ':amount']) }}';
                 url = url.replace(':accountId', accountId,);
                 url = url.replace(':amount', amount);
+                url = url.replace(/\/+$/, '');
 
                 $.get(url, function (data) {
                     info = data.info;
@@ -193,8 +203,8 @@
                     } else {
                         $('.conversion').removeClass('hidden');
                         $('#basic-addon2').text(info.pay_currency);
-                        $('#amount').trigger('keyup')
-                        $('.conversion-rate').text('1' + ' ' + currency + ' = ' + info.rate + ' ' + info.pay_currency)
+                        $('#amount').trigger('keyup');
+                        $('.conversion-rate').text('1' + ' ' + currency + ' = ' + info.rate + ' ' + info.pay_currency);
 
                     }
                     $(data.html).insertAfter(".detailsCol");
@@ -232,8 +242,62 @@
             $('.processing-time').text(info.processing_time)
             $('.withdrawAmountRange').text(info.range)
             $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
-
-
         })
+
+        @if (session('otp') && Carbon::now()->lt(session('otp_expiration')))
+            $(document).ready(function() {
+                $('#otpModal').modal('show');
+            });
+        @endif
+
+        $('body').on('click', '#resendOtpBtn', function(e) {
+            e.preventDefault();
+
+            $(this).prop('disabled', true);
+            $(this).text('Resending OTP...');
+
+            $.ajax({
+                url: '{{ route('user.withdraw.otp.resend') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while resending the OTP. Please try again.');
+                },
+                complete: function() {
+                    $('#resendOtpBtn').prop('disabled', false);
+                    $('#resendOtpBtn').text('Resend OTP');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var oldAccountType = '{{ old('account_type') }}';
+            if (oldAccountType) {
+                $('input[name="account_type"]').val(oldAccountType);
+                $("#withdrawAccountId").trigger('change');
+            }
+
+            var oldAmount = '{{ old('amount') }}';
+            if (oldAmount) {
+                var amount = oldAmount;
+                $("#amount").val(amount).trigger('keyup');
+            }
+        });
+
+        $('body').on('click', '#cancelOtpVerification', function() {
+            $('#confirmCancelModal').modal('show');
+        });
+
+        $('body').on('click', '.confirmCancelBtn', function() {
+            // Close both modals
+            $('#otpModal').modal('hide');
+            $('#confirmCancelModal').modal('hide');
+        });
+
     </script>
 @endsection

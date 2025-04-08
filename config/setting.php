@@ -699,14 +699,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'transfer_status', // unique name for field
-                'label' => 'Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
         ]
     ],
     'staff_permission' => [
@@ -1380,7 +1372,6 @@ return [
     'withdraw_settings' => [
         'title' => 'Withdraw Settings',
         'elements' => [
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
@@ -1388,6 +1379,22 @@ return [
                 'label' => 'Pending Withdraw Limit', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_ib_wallet_withdraw_limit', // unique name for field
+                'label' => 'Min IB Wallet Withdraw Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 100, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_otp', // unique name for field
+                'label' => 'Withdraw OTP', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
             ]
         ],
     ],

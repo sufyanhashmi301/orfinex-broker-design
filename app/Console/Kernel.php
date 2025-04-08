@@ -25,9 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('rebate:distribution')->everyFiveMinutes();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
-        $schedule->command('rebate:distribution')->everyFiveMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
 
     }

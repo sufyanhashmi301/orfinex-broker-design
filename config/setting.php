@@ -1381,13 +1381,21 @@ return [
                 'value' => 3, // default value if you want
             ],
             [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_ib_wallet_withdraw_limit', // unique name for field
+                'label' => 'Min IB Wallet Withdraw Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 100, // default value if you want
+            ],
+            [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'withdraw_otp', // unique name for field
                 'label' => 'Withdraw OTP', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
-            ],
+            ]
         ],
     ],
     'forex_account_settings' => [

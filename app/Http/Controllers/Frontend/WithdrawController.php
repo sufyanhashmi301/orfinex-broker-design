@@ -33,17 +33,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\WithdrawHistoryExport;
+
+use Session;
 use Txn;
 use Validator;
 
 class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
-
     protected $forexApiService, $otpService;
 
     public function __construct(ForexApiService $forexApiService, OtpService $otpService)
@@ -51,7 +51,6 @@ class WithdrawController extends Controller
         $this->forexApiService = $forexApiService;
         $this->otpService = $otpService;
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -114,7 +113,7 @@ class WithdrawController extends Controller
     public function create()
     {
         $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function ($query) {
+            ->where(function($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
@@ -131,12 +130,12 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::where(function ($query) {
+        $withdrawMethods = WithdrawMethod::where(function($query) {
             $query->whereJsonContains('country', auth()->user()->country)
                 ->orWhereJsonContains('country', 'All');
         })->get();
-        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))->where('user_id', auth()->user()->id)->first();
-        if ($withdrawAccount) {
+        $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
+        if($withdrawAccount){
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
         }
         return redirect()->back();
@@ -225,7 +224,7 @@ class WithdrawController extends Controller
         $method = $withdrawAccount->method;
         $charge = $method->charge;
         $name = $withdrawAccount->method_name;
-        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time . ' ' . $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
+        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time .' '. $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
 
         $info = [
             'name' => $name,
@@ -257,18 +256,23 @@ class WithdrawController extends Controller
         try {
             DB::beginTransaction();
 
-        $validationResult = $this->validateWithdrawal($request);
-        if (!$validationResult) {
-            return redirect()->back()->withInput();
-        }
+            $validationResult = $this->validateWithdrawal($request);
+            if (!$validationResult) {
+                return redirect()->back()->withInput();
+            }
 
-        if (setting('withdraw_otp', 'withdraw_settings')) {
-            $user = Auth::user();
+            if (setting('withdraw_otp', 'withdraw_settings')) {
+                $user = Auth::user();
 
-            $transactionType = TxnType::Withdraw->value;
+                $transactionType = TxnType::Withdraw->value;
                 $userOtp = UserOtp::where('user_id', $user->id)->where('type', $transactionType)->first();
 
-                if (!$userOtp || $userOtp->expires_at < Carbon::now() || !$userOtp->is_verified) {
+                if ($userOtp && $userOtp->verified && $userOtp->expires_at > Carbon::now()) {
+
+                    $userOtp->delete();
+                    return $this->processWithdrawal($validationResult);
+
+                } else {
                     $withdrawalData = [
                         'target_id' => $request->input('target_id'),
                         'account_type' => $request->input('account_type'),
@@ -285,10 +289,10 @@ class WithdrawController extends Controller
                     return redirect()->back()->withInput();
 
                 }
-            } else {
-            // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
-            return $this->processWithdrawal($validationResult);
-        }
+            }else{
+                // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
+                return $this->processWithdrawal($validationResult);
+            }
         } catch (Exception $e) {
             DB::rollBack();
             notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
@@ -313,16 +317,14 @@ class WithdrawController extends Controller
     {
         $user = Auth::user();
         $otpInput = $request->input('otp');
-
         $transactionType = TxnType::Withdraw->value;
 
         // Validate the OTP
-        $isValidOtp = $this->otpService->validateOtp($user, $transactionType, $otpInput);
+        $otpValidationResult = $this->otpService->validateOtp($user, $transactionType, $otpInput);
 
         // If the OTP is invalid or expired, return an error
-        if (!$isValidOtp) {
-            notify()->error(__('Invalid or expired OTP.'), 'Error');
-            return redirect()->back();
+        if (isset($otpValidationResult['status']) && $otpValidationResult['status'] === 'error') {
+            return response()->json($otpValidationResult, 400);
         }
 
         // Mark OTP as verified
@@ -330,31 +332,10 @@ class WithdrawController extends Controller
         $userOtp->verified = true;
         $userOtp->save();
 
-        try {
-            DB::beginTransaction();
-
-            $requestData = $request;
-            $withdrawalData = session('withdrawal_data');
-
-            // If session data exists, merge it with the incoming request data
-            if ($withdrawalData) {
-                // Merge session data with request data
-                $requestData->merge($withdrawalData);
-            }
-
-            $validationResult = $this->validateWithdrawal($requestData);
-            if (!$validationResult) {
-                return redirect()->back()->withInput();
-            }
-
-            // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
-            return $this->processWithdrawal($validationResult);
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
-        }
-
+        return response()->json([
+            'status' => 'success',
+            'message' => __('OTP successfully verified. Proceed with the transaction.')
+        ], 200);
     }
 
     public function validateWithdrawal(Request $request)
@@ -447,7 +428,9 @@ class WithdrawController extends Controller
         $totalAmount = BigDecimal::of($amount)->abs();
         $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate);
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
+
         $wallet = null;
+
         // Validate Forex account ownership or Wallet ownership
         if ($isForexAccount) {
             // Validate Forex account ownership
@@ -553,7 +536,7 @@ class WithdrawController extends Controller
 
                 // Simulate balance operation via Forex API
                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
+                if ($withdrawResponse['success']  && $withdrawResponse['result']['responseCode'] == 10009) {
                     $isDeducted = true; // Deduction applied
                     Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
                 } else {
@@ -638,6 +621,10 @@ class WithdrawController extends Controller
         $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
+        if(session()->has('withdrawal_data')) {
+            Session::forget('withdrawal_data');
+        }
+
         return redirect()->route('user.notify');
     }
 
@@ -692,9 +679,8 @@ class WithdrawController extends Controller
 
         return view('frontend::withdraw.log', compact('withdraws'));
     }
-
     public function export(Request $request)
     {
-        return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
+      return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
     }
 }

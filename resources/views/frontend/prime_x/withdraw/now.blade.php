@@ -146,7 +146,7 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
+                                <button type="submit" class="withdrawSubmitBtn btn w-full inline-flex justify-center btn-primary">
                                     {{ __('Withdraw Money') }}
                                 </button>
                             </div>
@@ -250,6 +250,39 @@
             });
         @endif
 
+        $('body').on('click', '.otpSubmitBtn', function (e) {
+            e.preventDefault();
+
+            var otp = $('#otpInput').val();
+
+            $.ajax({
+                url: '{{ route("user.withdraw.otp.verify") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    otp: otp,
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        $('#otpModal').modal('hide');
+                        $('.withdrawSubmitBtn').addClass('cursor-not-allowed light').attr('disabled', true);;
+                        tNotify('success', response.message);
+
+                        // Submit the form after OTP verification is successful
+                        $('#withdrawForm').submit();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var response = xhr.responseJSON;
+                    if (response.status === 'error') {
+                        tNotify('error', response.message);
+                        $('#otpInput').val('');
+                    }
+                }
+            })
+
+        })
+
         $('body').on('click', '#resendOtpBtn', function(e) {
             e.preventDefault();
 
@@ -263,10 +296,10 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
-                    alert(response.message);
+                    tNotify('success', response.message);
                 },
                 error: function(xhr, status, error) {
-                    alert('An error occurred while resending the OTP. Please try again.');
+                    tNotify('error', 'An error occurred while resending the OTP. Please try again.');
                 },
                 complete: function() {
                     $('#resendOtpBtn').prop('disabled', false);

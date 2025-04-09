@@ -16,7 +16,7 @@ class OtpService
         $otp = rand(1000, 9999);  // 4-digit OTP
         $otpExpiration = Carbon::now()->addMinutes($otpValidityMinutes);
 
-        UserOtp::updateOrCreate(
+        $otpQuery = UserOtp::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'type' => $transactionType,
@@ -27,6 +27,8 @@ class OtpService
                 'verified' => 0,
             ]
         );
+
+        $otp = $otpQuery->otp;
 
         Session::flash('otp', $otp);
         Session::flash('otp_expiration', $otpExpiration);
@@ -55,18 +57,30 @@ class OtpService
             ->first();
 
         if (!$userOtp) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('OTP not found. Please request a new one.')
+            ];
         }
 
         if ($userOtp->expires_at < Carbon::now()) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Your OTP has expired. Please request a new one.')
+            ];
         }
 
         if ($userOtp->otp != $otp) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('The OTP you entered is incorrect. Please try again.')
+            ];
         }
 
-        return true;
+        return [
+            'status' => 'success',
+            'message' => __('OTP is valid.')
+        ];
     }
 
     public function isOtpExpired()

@@ -18,17 +18,16 @@
                 <p class="dark:text-slate-300">
                     {{ __('We have sent a verification code via email') }}
                 </p>
-                <form action="{{ route('user.withdraw.otp.verify') }}" method="post" class="mt-5">
-                    @csrf
+                <form method="post" class="mt-5">
                     <div class="input-area">
-                        <input type="text" name="otp" class="form-control !text-lg" placeholder="Enter OTP">
+                        <input type="text" name="otp" id="otpInput" class="form-control !text-lg" placeholder="Enter OTP">
                     </div>
                     <p class="dark:text-slate-300 my-5">
                         {{ __("Don't received code ?") }}
                         <a href="javascript:;" id="resendOtpBtn" class="btn-link hover:underline">{{ __('Resend') }}</a>
                     </p>
                     <div class="action-btns">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                        <button type="button" class="otpSubmitBtn btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __(' Verify OTP') }}
                         </button>

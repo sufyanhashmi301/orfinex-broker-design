@@ -43,6 +43,7 @@ use Validator;
 class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
+
     protected $forexApiService, $otpService;
 
     public function __construct(ForexApiService $forexApiService, OtpService $otpService)
@@ -50,6 +51,7 @@ class WithdrawController extends Controller
         $this->forexApiService = $forexApiService;
         $this->otpService = $otpService;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -112,7 +114,7 @@ class WithdrawController extends Controller
     public function create()
     {
         $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
@@ -129,12 +131,12 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::where(function($query) {
+        $withdrawMethods = WithdrawMethod::where(function ($query) {
             $query->whereJsonContains('country', auth()->user()->country)
                 ->orWhereJsonContains('country', 'All');
         })->get();
-        $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
-        if($withdrawAccount){
+        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))->where('user_id', auth()->user()->id)->first();
+        if ($withdrawAccount) {
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
         }
         return redirect()->back();
@@ -223,7 +225,7 @@ class WithdrawController extends Controller
         $method = $withdrawAccount->method;
         $charge = $method->charge;
         $name = $withdrawAccount->method_name;
-        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time .' '. $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
+        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time . ' ' . $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
 
         $info = [
             'name' => $name,
@@ -252,21 +254,21 @@ class WithdrawController extends Controller
      */
     public function withdrawNow(Request $request)
     {
-        try {
-            DB::beginTransaction();
+//        try {
+//            DB::beginTransaction();
 
-            $validationResult = $this->validateWithdrawal($request);
-            if (!$validationResult) {
-                return redirect()->back()->withInput();
-            }
+        $validationResult = $this->validateWithdrawal($request);
+        if (!$validationResult) {
+            return redirect()->back()->withInput();
+        }
 
-            if (setting('withdraw_otp', 'withdraw_settings')) {
-                $user = Auth::user();
+        if (setting('withdraw_otp', 'withdraw_settings')) {
+            $user = Auth::user();
 
-                $transactionType = TxnType::Withdraw->value;
+            $transactionType = TxnType::Withdraw->value;
                 $userOtp = UserOtp::where('user_id', $user->id)->where('type', $transactionType)->first();
 
-                if(!$userOtp || $userOtp->expires_at < Carbon::now() || !$userOtp->is_verified){
+                if (!$userOtp || $userOtp->expires_at < Carbon::now() || !$userOtp->is_verified) {
                     $withdrawalData = [
                         'target_id' => $request->input('target_id'),
                         'account_type' => $request->input('account_type'),
@@ -283,15 +285,15 @@ class WithdrawController extends Controller
                     return redirect()->back()->withInput();
 
                 }
-            }else{
-                // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
-                return $this->processWithdrawal($validationResult);
-            }
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
+            } else {
+            // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
+            return $this->processWithdrawal($validationResult);
         }
+//        } catch (Exception $e) {
+//            DB::rollBack();
+//            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
+//            return redirect()->back()->withInput();
+//        }
     }
 
     public function resendOtp(Request $request)
@@ -445,7 +447,7 @@ class WithdrawController extends Controller
         $totalAmount = BigDecimal::of($amount)->abs();
         $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate);
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
-
+        $wallet = null;
         // Validate Forex account ownership or Wallet ownership
         if ($isForexAccount) {
             // Validate Forex account ownership
@@ -551,7 +553,7 @@ class WithdrawController extends Controller
 
                 // Simulate balance operation via Forex API
                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                if ($withdrawResponse['success']  && $withdrawResponse['result']['responseCode'] == 10009) {
+                if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
                     $isDeducted = true; // Deduction applied
                     Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
                 } else {
@@ -690,8 +692,9 @@ class WithdrawController extends Controller
 
         return view('frontend::withdraw.log', compact('withdraws'));
     }
+
     public function export(Request $request)
     {
-      return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
+        return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
     }
 }

@@ -11,7 +11,7 @@ class OtpService
 {
     use NotifyTrait;
 
-    public function sendOtp($user, $transactionType, $otpValidityMinutes = 10)
+    public function sendOtp($user, $transactionType, $otpValidityMinutes)
     {
         $otp = rand(1000, 9999);  // 4-digit OTP
         $otpExpiration = Carbon::now()->addMinutes($otpValidityMinutes);

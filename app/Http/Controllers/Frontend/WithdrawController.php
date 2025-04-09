@@ -253,8 +253,8 @@ class WithdrawController extends Controller
      */
     public function withdrawNow(Request $request)
     {
-        try {
-            DB::beginTransaction();
+//        try {
+//            DB::beginTransaction();
 
             $validationResult = $this->validateWithdrawal($request);
             if (!$validationResult) {
@@ -293,11 +293,11 @@ class WithdrawController extends Controller
                 // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
                 return $this->processWithdrawal($validationResult);
             }
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
-        }
+//        } catch (Exception $e) {
+//            DB::rollBack();
+//            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
+//            return redirect()->back()->withInput();
+//        }
     }
 
     public function resendOtp(Request $request)

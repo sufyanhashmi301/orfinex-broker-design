@@ -267,7 +267,12 @@ class WithdrawController extends Controller
                 $transactionType = TxnType::Withdraw->value;
                 $userOtp = UserOtp::where('user_id', $user->id)->where('type', $transactionType)->first();
 
-                if(!$userOtp || $userOtp->expires_at < Carbon::now() || !$userOtp->is_verified){
+                if ($userOtp && $userOtp->verified && $userOtp->expires_at > Carbon::now()) {
+
+                    $userOtp->delete();
+                    return $this->processWithdrawal($validationResult);
+
+                } else {
                     $withdrawalData = [
                         'target_id' => $request->input('target_id'),
                         'account_type' => $request->input('account_type'),
@@ -312,16 +317,14 @@ class WithdrawController extends Controller
     {
         $user = Auth::user();
         $otpInput = $request->input('otp');
-
         $transactionType = TxnType::Withdraw->value;
 
         // Validate the OTP
-        $isValidOtp = $this->otpService->validateOtp($user, $transactionType, $otpInput);
+        $otpValidationResult = $this->otpService->validateOtp($user, $transactionType, $otpInput);
 
         // If the OTP is invalid or expired, return an error
-        if (!$isValidOtp) {
-            notify()->error(__('Invalid or expired OTP.'), 'Error');
-            return redirect()->back();
+        if (isset($otpValidationResult['status']) && $otpValidationResult['status'] === 'error') {
+            return response()->json($otpValidationResult, 400);
         }
 
         // Mark OTP as verified
@@ -329,31 +332,10 @@ class WithdrawController extends Controller
         $userOtp->verified = true;
         $userOtp->save();
 
-        try {
-            DB::beginTransaction();
-
-            $requestData = $request;
-            $withdrawalData = session('withdrawal_data');
-
-            // If session data exists, merge it with the incoming request data
-            if ($withdrawalData) {
-                // Merge session data with request data
-                $requestData->merge($withdrawalData);
-            }
-
-            $validationResult = $this->validateWithdrawal($requestData);
-            if (!$validationResult) {
-                return redirect()->back()->withInput();
-            }
-
-            // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
-            return $this->processWithdrawal($validationResult);
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
-        }
-
+        return response()->json([
+            'status' => 'success',
+            'message' => __('OTP successfully verified. Proceed with the transaction.')
+        ], 200);
     }
 
     public function validateWithdrawal(Request $request)
@@ -446,6 +428,8 @@ class WithdrawController extends Controller
         $totalAmount = BigDecimal::of($amount)->abs();
         $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate);
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
+
+        $wallet = null;
 
         // Validate Forex account ownership or Wallet ownership
         if ($isForexAccount) {
@@ -636,6 +620,10 @@ class WithdrawController extends Controller
         $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
         $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+
+        if(session()->has('withdrawal_data')) {
+            Session::forget('withdrawal_data');
+        }
 
         return redirect()->route('user.notify');
     }

@@ -330,10 +330,13 @@
         $('.account-type-phases').eq(i).find('.card-title').text('Phase ' + (i + 1))
       }
 
-
+      let isFunded = false
+      if(new_phase.find('.funded-phase').length == 1) {
+        isFunded = true
+      }
 
       // Add new Rules Table
-      newPhaseRuleData((no_of_phases - 1))
+      newPhaseRuleData((no_of_phases - 1), isFunded)
     })
 
     // delete phase

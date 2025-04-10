@@ -144,7 +144,7 @@
 
 @push('single-script')
     <script>
-        let newPhaseRuleData = (phase_index) => {
+        let newPhaseRuleData = (phase_index, isFunded) => {
             let latest_rules_table = $('.rulesTable:last')
             let new_rules_table = latest_rules_table.clone()
 
@@ -170,12 +170,16 @@
             $('#phases-data').append(new_rules_table)
 
             // 
-            
+            if(isFunded) {
+                new_rules_table.find('.pt-funded-th').text('Minimum Profit')
+            }
 
             // Remove the delete column
             if(account_type_type != 'funded') {
                 new_rules_table.find('thead').find('.multiple-phase-hidden').remove()
             }
+
+            
 
         }
 

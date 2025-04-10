@@ -171,6 +171,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
         Route::post('log/export', 'export')->name('log.export');
+        Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
+        Route::post('resend-otp', 'resendOtp')->name('otp.resend');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');

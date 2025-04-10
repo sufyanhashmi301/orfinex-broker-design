@@ -53,7 +53,7 @@
                 <th scope="col" class="table-th">{{ __('Funds') }}</th>
                 <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
                 <th scope="col" class="table-th">{{ __('Max DD') }}</th>
-                <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                <th scope="col" class="table-th pt-funded-th">{{ __('Profit Target') }}</th>
                 <th scope="col" class="table-th">{{ __('Min. Trading Days') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Price') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Discount') }}</th>
@@ -78,7 +78,11 @@
                     <th scope="col" class="table-th">{{ __('Funds') }}</th>
                     <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
                     <th scope="col" class="table-th">{{ __('Max DD') }}</th>
-                    <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                    @if ($phase->type == \App\Enums\AccountTypePhase::FUNDED)
+                        <th scope="col" class="table-th">{{ __('Minimum Profit') }}</th>
+                    @else
+                        <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                    @endif
                     <th scope="col" class="table-th ">{{ __('Min. Trading Days') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Price') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Discount') }}</th>
@@ -165,10 +169,14 @@
 
             $('#phases-data').append(new_rules_table)
 
+            // 
+            
+
             // Remove the delete column
             if(account_type_type != 'funded') {
                 new_rules_table.find('thead').find('.multiple-phase-hidden').remove()
             }
+
         }
 
         // Control room button On click

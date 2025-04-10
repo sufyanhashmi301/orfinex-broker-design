@@ -46,7 +46,7 @@ class InvoiceController extends Controller
             $totalPrice = $request->total_price;
             $levelExists = null;
 
-            foreach ($discount->discount_levels as $level) {
+            foreach ($discount->discount_levels ?? [] as $level) {
                 $from = (float) $level['amount_from'];
                 $to = (float) $level['amount_to'];
 

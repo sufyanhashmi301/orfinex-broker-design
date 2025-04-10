@@ -66,7 +66,7 @@
                                             
                                         </td>
                                         <td class="table-td" style="text-transform: none">{{ $discount_code->usage_limit }} time(s)</td>
-                                        <td class="table-td" style="text-transform: none">{{ count($discount_code->discount_levels) }} levels</td>
+                                        <td class="table-td" style="text-transform: none">{{ count($discount_code->discount_levels ?? []) }} levels</td>
                                         <td class="table-td">{{ date('jS F, Y', strtotime($discount_code->expire_at)) }}</td>
                                         <td class="table-td">
                                             @switch($discount_code->status)

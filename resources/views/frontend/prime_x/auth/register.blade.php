@@ -20,7 +20,7 @@
         $inviteCode = \Cookie::get('invite');
     @endphp
 
-    <div class="shadow-xl rounded-xl border p-8">
+    <div class="max-h-[calc(100vh-150px)] overflow-y-auto shadow-xl rounded-xl border p-8">
         <h2 class="text-2xl text-center font-semibold text-gray-700 mb-5">
             {{ __('Create Your Account') }}
         </h2>
@@ -258,16 +258,19 @@
     @if($googleReCaptcha)
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     @endif
-    <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+    @if(getPageSetting('phone_show'))
+        <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+        <script>
+            const input = document.querySelector("#phone");
+            window.intlTelInput(input, {
+                initialCountry: "auto",
+                showSelectedDialCode: true,
+                utilsScript: "{{ asset('frontend/js/utils.js') }}",
+            });
+        </script>
+    @endif
 
     <script>
-
-        const input = document.querySelector("#phone");
-        window.intlTelInput(input, {
-            initialCountry: "auto",
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
-        });
 
         $('#countrySelect').on('change', function (e) {
             "use strict";

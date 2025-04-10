@@ -13,10 +13,10 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-//        $codesToDelete = ['email_verification','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
-//
-//        // Delete the existing templates that match the codes
-//        EmailTemplate::whereIn('code', $codesToDelete)->delete();
+        $codesToDelete = ['transaction_otp'];
+
+        // Delete the existing templates that match the codes
+        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
         $templates = [

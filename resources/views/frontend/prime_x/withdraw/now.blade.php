@@ -270,6 +270,7 @@
 
                         // Submit the form after OTP verification is successful
                         $('#withdrawForm').submit();
+                        $('#page-loader').show();
                     }
                 },
                 error: function(xhr, status, error) {

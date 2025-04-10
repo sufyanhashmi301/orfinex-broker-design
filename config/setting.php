@@ -1389,6 +1389,14 @@ return [
                 'value' => 100, // default value if you want
             ],
             [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'withdraw_otp_expires', // unique name for field
+                'label' => 'Withdraw OTP Expires(In Minutes)', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 5, // default value if you want
+            ],
+            [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'withdraw_otp', // unique name for field

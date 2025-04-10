@@ -117,6 +117,7 @@
                                 <input
                                     type="{{$field['type']}}"
                                     name="{{$field['name']}}"
+                                    @if($field['data'] == 'int' || $field['data'] == 'double') oninput="this.value = validateDouble(this.value)" @endif
                                     class=" form-control {{ $errors->has($field['name']) ? 'has-error' : '' }}"
                                     value="{{ oldSetting($field['name'],$section) }}"
                                 />

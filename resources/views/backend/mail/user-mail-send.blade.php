@@ -48,11 +48,12 @@
             <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">
                 {!! $details['message_body'] !!}
             </p>
-            <a href="{{ $details['button_link'] }}" class="btn-link"
-               style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: {{ setting('primary_btn_color', 'light_colors') }}; background: {{ setting('primary_btn_bg', 'light_colors') }}; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
-                {{ $details['button_level'] }}
-            </a>
-
+            @if($details['button_level'])
+                <a href="{{ $details['button_link'] }}" class="btn-link"
+                   style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: {{ setting('primary_btn_color', 'light_colors') }}; background: {{ setting('primary_btn_bg', 'light_colors') }}; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
+                    {{ $details['button_level'] }}
+                </a>
+            @endif
             @if($details['footer_status'])
                 <div class="content-footer" style="margin-top: 50px;">
                     <p style="font-size: 14px !important; line-height: 12px !important;">

@@ -283,8 +283,9 @@ class WithdrawController extends Controller
 
                     Session::put('withdrawal_data', $withdrawalData);
                     $transactionType = TxnType::Withdraw->value;
+                    $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
 
-                    $this->otpService->sendOtp($user, $transactionType);
+                    $this->otpService->sendOtp($user, $transactionType, $otpValidityMinutes);
 
                     notify()->info(__('OTP has been sent. Please verify it to proceed.'), 'OTP Sent');
                     return redirect()->back()->withInput();

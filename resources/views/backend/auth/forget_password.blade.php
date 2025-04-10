@@ -1,73 +1,93 @@
 @extends('backend.auth.index')
+
 @section('title')
     {{ __('Reset Password') }}
 @endsection
+
 @section('auth-content')
-    <div class="md:hidden text-center mb-3">
-        <a href="{{ route('home')}}" class="inline-block">
-            @php
-                $logoSrc = setting('site_logo','global')
-                    ? asset(setting('site_logo','global'))
-                    : asset('backend/images/example_logo_light.png');
-            @endphp
-            <img src="{{ $logoSrc }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
-        </a>
-    </div>
-    <div class="flex bg-white border rounded-lg shadow-lg overflow-hidden mx-auto w-full max-w-5xl">
-        <div class="hidden md:flex items-center justify-center md:w-1/2 bg-cover p-8 lg:px-16" style="background: url( {{asset( setting('login_bg','global') )}} ) no-repeat center center;">
-            <div class="2xl:mb-10 text-center space-y-3">
-                <a href="{{ route('home')}}" class="inline-flex items-center justify-center">
-                    @php
-                        $logoSrc = setting('site_logo','global')
-                            ? asset(setting('site_logo','global'))
-                            : asset('backend/images/example_logo_light.png');
-                    @endphp
-                    <img src="{{ $logoSrc }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+    <div class="max-w-sm w-full bg-white dark:bg-slate-900 shadow-xl rounded-2xl px-6 py-8 space-y-6">
+        <!-- Branding -->
+        <div class="text-center space-y-4">
+            <a href="{{ route('home') }}" class="inline-block">
+                @php
+                    $logoSrc = setting('site_logo', 'global')
+                        ? asset(setting('site_logo', 'global'))
+                        : asset('backend/images/example_logo_light.png');
+                    $siteTitle = setting('site_title', 'global') ?? 'Your Site';
+                @endphp
+                <img src="{{ $logoSrc }}" class="h-[56px] mx-auto" alt="{{ $siteTitle }}">
+            </a>
+            <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-100 tracking-tight">
+                {{ __('Reset Password') }}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-slate-400">
+                We’ll send a reset link to your email address
+            </p>
+        </div>
+
+        <!-- Reset Form -->
+        <form action="{{ route('admin.forget.password.submit') }}" method="POST" class="space-y-5">
+        @csrf
+
+        <!-- Email Input -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-600 dark:text-gray-300">
+                    {{ __('Email Address') }}
+                </label>
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    required
+                    class="w-full rounded-md px-4 py-2 text-sm border-0 ring-1 ring-slate-200 dark:ring-slate-700 bg-white dark:bg-slate-800 dark:text-slate-200"
+                />
+                @error('email')
+                <p class="text-sm text-red-500 font-medium">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- CAPTCHA -->
+            @if(!empty($cloudflareTurnstile) && !empty($siteKey))
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+                <div class="cf-turnstile mb-3" data-sitekey="{{ $siteKey }}" data-theme="light"></div>
+            @elseif(!empty($googleReCaptcha) && isset($googleReCaptcha->data))
+                @php
+                    $captchaData = json_decode($googleReCaptcha->data, true);
+                    $recaptchaKey = $captchaData['google_recaptcha_key'] ?? null;
+                @endphp
+                @if($recaptchaKey)
+                    <div class="g-recaptcha mb-3" id="feedback-recaptcha" data-sitekey="{{ $recaptchaKey }}"></div>
+            @endif
+        @endif
+
+        <!-- Submit -->
+            <button type="submit" class="btn btn-dark w-full py-2 text-center">
+                {{ __('Send Password Reset Link') }}
+            </button>
+        </form>
+
+        <!-- Back to Login -->
+        <div class="mt-4 text-center text-sm">
+            <a href="{{ route('admin.login') }}" class="text-blue-600 hover:underline dark:text-blue-400">
+                {{ __('← Back to Login') }}
+            </a>
+        </div>
+
+        <!-- Footer -->
+        @if(!setting('is_whitelabel', 'global'))
+            <div class="text-center border-t pt-6 mt-4 border-slate-200 dark:border-slate-700">
+                <p class="text-sm text-gray-400">{{ __('Powered by') }}</p>
+                <a href="https://brokeret.com/" target="_blank">
+                    <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 mt-2 mx-auto" alt="Brokeret Logo">
                 </a>
             </div>
-        </div>
-        <div class="w-full p-8 md:w-1/2 lg:px-16">
-            <h2 class="text-2xl font-semibold text-gray-700">
-                {{ __('Admin Reset Password') }}
-            </h2>
-            <div class="auth-body">
-                <form action="{{ route('admin.forget.password.submit') }}" method="post" class="space-y-4">
-                    @csrf
-                    @if ($errors->has('email'))
-                        <span class="text-danger">{{ $errors->first('email') }}</span>
-                    @endif
-
-                    <div class="fromGroup">
-                        <label class="block capitalize form-label">{{ __('Admin Email') }}</label>
-                        <div class="relative ">
-                            <input
-                                type="email"
-                                name="email"
-                                class="form-control py-2 h-[48px]"
-                                placeholder="Admin Email"
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div class="fromGroup">
-                        <button class="btn btn-dark block w-full text-center" type="submit">
-                            {{ __('Send Password Reset Link') }}
-                        </button>
-                    </div>
-                </form>
-                <!-- END: Login Form -->
-                <div class=" relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                    <div class=" absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2
-                                px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal ">
-                        {{ __('Or continue with') }}
-                    </div>
-                </div>
-                <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm text-center">
-                    <a href="{{ route('admin.login') }}" class="btn btn-light inline-flex items-center justify-center w-full">
-                        {{ __('Login') }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        @endif
     </div>
+@endsection
+
+@section('script')
+    @if(!empty($googleReCaptcha) && isset($googleReCaptcha->data))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @endif
 @endsection

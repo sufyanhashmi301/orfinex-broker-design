@@ -1402,7 +1402,7 @@ return [
                 'name' => 'withdraw_otp', // unique name for field
                 'label' => 'Withdraw OTP', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0, // default value if you want
             ]
         ],
     ],

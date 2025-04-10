@@ -1349,7 +1349,7 @@ class EmailTemplatesSeeder extends Seeder
                 'bottom_status' => 1,
                 'bottom_title' => 'Your OTP',
                 'bottom_body' => '<p style="font-size: 14px; color: #555;">This OTP is valid for [[otp_validity]] minutes. For your protection, do not share this code with anyone.</p><p><img src="https://cdn.brokeret.com/crm-assets/email/footer.png" style="width: 100%; height: auto;" alt="[[site_title]]"></p>',
-                'short_codes' => json_encode(["[[code]]", "[[full_name]]", "[[site_title]]", "[[site_url]]"]),
+                'short_codes' => json_encode(["[[code]]", "[[otp_validity]]","[[full_name]]", "[[site_title]]", "[[site_url]]"]),
                 'note' => 'If you did not request this, please ignore this email.',
                 'support_link' => '[[site_url]]/support',
                 'warning_content' => 'Security Notice: Never share your verification code with anyone. [[site_title]] will never ask for your OTP.',

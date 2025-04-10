@@ -52,6 +52,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'kyc_token',
         'kyc_created_at',
         'notes',
+        'first_trade_at'
     ];
 
     protected $appends = [

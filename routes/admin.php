@@ -33,6 +33,7 @@ use App\Http\Controllers\Backend\TicketController;
 use App\Http\Controllers\Backend\TwilioController;
 use App\Http\Controllers\WithdrawMethodController;
 use App\Http\Controllers\AccountActivityController;
+use App\Http\Controllers\AccountBalanceOperationController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\GatewayController;
@@ -60,6 +61,7 @@ use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\VoiceCallController;
+use App\Models\PayoutRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,6 +152,9 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('account/config', [AccountTypeController::class, 'config'])->name('account_type.config');
     Route::post('account/restore-violated-account/{id}', [AccountTypeInvestmentController::class, 'restoreViolatedAccount'])->name('account.restore_violated_account');
 
+    // Account Balance Operation
+    Route::post('account/balance-operation', [AccountBalanceOperationController::class, 'update'])->name('account.balance-operation.update');
+
     // Banner Settings 
     Route::get('banner/user-dashboard/', [BannerController::class, 'userDashboard'])->name('banner.user_dashboard');
     Route::post('banner/store', [BannerController::class, 'store'])->name('banner.store');
@@ -181,6 +186,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Payout Requests
     Route::get('/payout-requests', [PayoutRequestController::class, 'index'])->name('payout_requests.index');
     Route::get('/payout-request/{payout_request_id}', [PayoutRequestController::class, 'action'])->name('payout_request.action');
+    Route::post('/payout-request/setting', [PayoutRequestController::class, 'config'])->name('payout_requests.config');
 
     // Risk Rules
     Route::group(['prefix' => 'risk-rule', 'as' => 'risk-rule.', 'controller' => RiskRuleController::class], function () {
@@ -261,12 +267,14 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('toggle-method/{id}', 'toggleMethod')->name('toggle_method');
     });
 
+    // Discounts
+    Route::resource('discounts', DiscountController::class);
+    Route::post('discount/levels', [DiscountController::class, 'updateLevels'])->name('discount.levels.update');
+
     // =============================== Optimization ===============================
     
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
-
-    //===============================  Discounts Management ==================================
-    Route::resource('discounts', DiscountController::class);
+    
 
     //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');

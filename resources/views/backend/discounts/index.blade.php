@@ -24,31 +24,107 @@
                 <span class="col-span-8 hidden"></span>
                 <span class="col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden">
+                    <div class="overflow-hidden basicTable_wrapper" style="min-height: calc(-241px + 100vh);">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                             <tr>
                                 <th scope="col" class="table-th">{{ __('Code Name') }}</th>
                                 <th scope="col" class="table-th">{{ __('Code') }}</th>
-                                <th scope="col" class="table-th">{{ __('Value') }}</th> <!-- New Column -->
-                                <th scope="col" class="table-th">{{ __('Applies To') }}</th>
+                                <th scope="col" class="table-th">{{ __('Discount') }}</th> <!-- New Column -->
+                                <th scope="col" class="table-th" style="width: 500px">{{ __('Applies To') }}</th>
                                 <th scope="col" class="table-th">{{ __('Usage Limit') }}</th>
-                                <th scope="col" class="table-th">{{ __('Expires On') }}</th>
+                                <th scope="col" class="table-th">{{ __('Multiple Levels') }}</th>
+                                <th scope="col" class="table-th">{{ __('Expiry At') }}</th>
                                 <th scope="col" class="table-th">{{ __('Status') }}</th>
                                 <th scope="col" class="table-th">{{ __('Actions') }}</th>
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                            {{-- Data will be populated by DataTables --}}
+                                @foreach ($discount_codes as $discount_code)
+                                    <tr>
+                                        <td class="table-td">{{ $discount_code->code_name }}</td>
+                                        <td class="table-td">{{ $discount_code->code }}</td>
+                                        <td class="table-td">
+                                            @if($discount_code->type === 'percentage')
+                                                {{ $discount_code->percentage }}%
+                                            @elseif($discount_code->type === 'fixed')
+                                                ${{ $discount_code->fixed_amount }}
+                                            @endif
+                                        </td>
+                                        <td class="table-td">
+
+                                            @if (in_array('all', $discount_code->applied_to))
+                                                <span class="badge badge-primary mb-1 mr-2">All Plans</span>
+                                            @else
+                                                @foreach ($discount_code->applied_to as $account_type_id)
+                                                    @if (in_array($account_type_id, $account_types->pluck('id')->toArray()))
+                                                        <span class="badge badge-primary mb-1 mr-2">{{ $account_types->find($account_type_id)->title }}</span>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+
+                                            
+                                        </td>
+                                        <td class="table-td" style="text-transform: none">{{ $discount_code->usage_limit }} time(s)</td>
+                                        <td class="table-td" style="text-transform: none">{{ count($discount_code->discount_levels) }} levels</td>
+                                        <td class="table-td">{{ date('jS F, Y', strtotime($discount_code->expire_at)) }}</td>
+                                        <td class="table-td">
+                                            @switch($discount_code->status)
+                                                @case(1)
+                                                    <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Active') }}</span>
+                                                    @break
+                                                @case(0)
+                                                    <span class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">{{ __('Inactive') }}</span>
+                                                    @break
+                                            @endswitch
+                                        </td>
+                                        <td class="table-td">
+                                            <div class="flex space-x-3 rtl:space-x-reverse">
+                                                @can('discount-code-edit')
+                                                    <a href="javascript:void(0)" data-id="{{ $discount_code->id }}" onclick="editDiscount({{ $discount_code->id }})" data-bs-toggle="modal" data-bs-target="#editDiscountModal" class="action-btn">
+                                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                    </a>
+                                                @endcan
+                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#discountLevels{{ $discount_code->id }}" class="action-btn">
+                                                    <iconify-icon icon="lucide:list-plus"></iconify-icon>
+                                                </a>
+                                                @can('discount-code-delete')
+                                                    <a href="javascript:void(0)" class="action-btn delete-schema-btn" data-id="{{ $discount_code->id }}" data-name="{{ $discount_code->code_name }}" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal" onclick="deleteDiscount({{ $discount_code->id }}, '{{ $discount_code->code_name }}')">
+                                                        <iconify-icon icon="lucide:trash"></iconify-icon>
+                                                    </a>
+                                                @endcan
+                                                
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
+
+                        @foreach ($discount_codes as $discount_code)
+                            @include('backend.discounts.include.__discount_levels_modal')
+                        @endforeach
+
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
+                            <div>
+                                @php
+                                    $from = $discount_codes->firstItem();
+                                    $to = $discount_codes->lastItem();
+                                    $total = $discount_codes->total();
+                                @endphp
+                                <p class="text-sm text-gray-700 py-3">
+                                    Showing <span class="font-medium">{{ $from }}</span> to <span
+                                        class="font-medium">{{ $to }}</span> of <span
+                                        class="font-medium">{{ $total }}</span> results
+                                </p>
+                            </div>
+                            {{ $discount_codes->appends(request()->except('page'))->links() }}
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <div id="processingIndicator" class="text-center">
-                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
-                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
-            </div>
+            
         </div>
     </div>
 
@@ -65,57 +141,82 @@
         @include('backend.discounts.include.__delete')
     @endcan
 
-    {{--Modal for discount disable--}}
-    {{-- @include('backend.discounts.include.__disable') --}}
+    
+    
+
 @endsection
 @section('script')
     <script>
-        (function ($) {
-            "use strict";
-            var table = $('#dataTable').on('processing.dt', function (e, settings, processing) {
-                $('#processingIndicator').css('display', processing ? 'block' : 'none');
-            }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                processing: true,
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                    },
-                    search: "Search:",
-                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
-                },
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.discounts.index') }}",
-                columns: [
-                    {data: 'code_name', name: 'code_name'},
-                    {data: 'code', name: 'code'},
-                    {data: 'type', name: 'type'},
-                    {data: 'applied_to', name: 'applied_to'},
-                    {data: 'usage_limit', name: 'usage_limit'},
-                    {data: 'expire_at', name: 'expire_at', render: function(data, type, row) {
-                            return new Date(data).toISOString().split('T')[0]; // Format date as Y-m-d
-                        }},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ],
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                    },
-                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
-                },
-            });
-        })(jQuery);
+
+        let addDiscountLevel = (index) => {
+            return `<div class="option-remove-row grid grid-cols-12 gap-5 discount-level">
+                      <div class="xl:col-span-3 col-span-12">
+                        <div class="input-area">
+                          <input name="data[${index}][amount_from]" min="0" class="form-control" required type="number" placeholder="0">
+                        </div>
+                      </div>
+                      <div class="xl:col-span-3 col-span-12">
+                        <div class="input-area">
+                          <input name="data[${index}][amount_to]" min="0" class="form-control" required type="number" placeholder="100">
+                        </div>
+                      </div>
+                      <div class="xl:col-span-3 col-span-12">
+                        <div class="input-area">
+                          <input name="data[${index}][amount]" min="0" class="form-control" required type="number" placeholder="10">
+                        </div>
+                      </div>
+                      <div class="xl:col-span-2 col-span-12">
+                        <div class="input-area">
+                          <select name="data[${index}][type]" class="form-control w-full mb-3">
+                            <option value="fixed" selected="">$</option>
+                            <option value="percentage">%</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-span-1">
+                        <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>`
+        }
+
+        $(".generateCreate").on('click', function() {
+
+            let discount = $(this).parents('.modal-body')
+            let discount_levels = discount.find('.discount-level').length - 1
+
+            if(discount_levels == -1) {
+                discount.find('.discount-levels').html('');    
+            }
+            
+            let form = addDiscountLevel(discount_levels + 1)
+            
+            discount.find('.discount-levels').append(form);
+            
+        });
+
+        let noDiscountLevelNotice = () => {
+            for(let i=0; i < $('.discount-levels').length; i++) {
+                let discount_level = $('.discount-levels').eq(i)
+                if(discount_level.find('.discount-level').length == 0) {
+                    discount_level.html(`<center class="text-sm py-5" style="color: #888">No levels defined for this discount code. Default values will be used.</center>`)
+                }
+            }
+        }
+        noDiscountLevelNotice()
+
+        $(document).on('click', '.delete-option-row', function() {
+            $(this).closest('.option-remove-row').remove();
+            noDiscountLevelNotice()
+        });
+
+        $(document).on('click', '.discount-levels input', function() {
+            $(this).css('border-color', '#E2E8F0')
+        })
+        
         $(document).ready(function() {
             function toggleDiscountDiv() {
                 // Hide all discount type divs
@@ -132,41 +233,15 @@
 
             // Attach the change event to the dropdown
             $('#discounttype').change(toggleDiscountDiv);
-// Function to toggle between fixed and percentage fields
-            function toggleDiscountFields() {
-                var selectedType = $('#edit_discount_type').val();
-
-                if (selectedType === 'fixed') {
-                    $('#fixed_amount_field').removeClass('hidden');  // Show fixed amount
-                    $('#percentage_field').addClass('hidden');  // Hide percentage
-                } else if (selectedType === 'percentage') {
-                    $('#percentage_field').removeClass('hidden');  // Show percentage
-                    $('#fixed_amount_field').addClass('hidden');  // Hide fixed amount
-                }
-            }
-
-            // Trigger the function when the type changes
-            $('#edit_discount_type').on('change', function() {
-                toggleDiscountFields();
-            });
-
-            // Ensure correct fields are displayed when modal is opened with data
-            $('#editDiscountModal').on('show.bs.modal', function() {
-                toggleDiscountFields();  // Ensure fields are shown/hidden based on the current type
-            });
-// Ensure flatpickr is re-initialized after the form is dynamically loaded
-            $(document).on('shown.bs.modal', '#editDiscountModal', function () {
-                flatpickr('#edit_expire_at', {
-                    dateFormat: 'm/d/Y',
-                });
-            });
 
 
         });
         function editDiscount(id) {
             $.get("{{ route('admin.discounts.edit', ':id') }}".replace(':id', id), function(html) {
                 $('#editDiscountModal .modal-body').html(html);
+                $('.select2').select2()
                 $('#editDiscountModal').modal('show');
+                
             });
         }
 

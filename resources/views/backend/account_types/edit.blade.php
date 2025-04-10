@@ -221,6 +221,7 @@
                         <input type="number" name="leverage" class="form-control" placeholder="leverage e.g 100"
                             value="{{ $account_type->leverage }}" {{ $account_type->trader_type == \App\Enums\TraderType::MT ? 'readonly' : '' }} required />
                     </div>
+
                     {{-- <div class="input-area">
                         <label class="form-label">{{ __('Spread') }}</label>
                         <input type="number" name="spread" class="form-control" placeholder="Account Type Spread"

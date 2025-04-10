@@ -30,6 +30,17 @@
                 />
             </div>
 
+            <div class="input-area">
+                <label for="code" class="form-label">{{ __('Applied To') }}</label>
+                <select name="applied_to[]" required multiple id="" class="select2 form-control">
+                    
+                    <option value="all" {{ (in_array('all', $discount->applied_to) ? 'selected' : '') }}>All</option>
+                    @foreach ($account_types as $account_type)
+                        <option value="{{ $account_type->id }}" {{ in_array($account_type->id, $discount->applied_to) ? 'selected' : '' }}>{{ $account_type->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Type Selection -->
             <div class="input-area">
                 <label for="discount_type" class="form-label">{{ __('Type') }}</label>
@@ -42,46 +53,31 @@
             <!-- Fixed Amount or Percentage Fields -->
             <div class="input-area">
                 <div id="fixed_amount_field" class="discount-type {{ $discount->type === 'fixed' ? '' : 'hidden' }}">
-                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount') }}</label>
+                    <label for="fixed_amount" class="form-label">Default {{ __('Fixed Amount') }}</label>
                     <input type="text" name="fixed_amount" id="edit_fixed_amount" class="form-control mb-0" value="{{ $discount->fixed_amount }}" placeholder="Fixed Amount" />
                 </div>
 
                 <div id="percentage_field" class="discount-type {{ $discount->type === 'percentage' ? '' : 'hidden' }}">
-                    <label for="percentage" class="form-label">{{ __('Percentage') }}</label>
+                    <label for="percentage" class="form-label">Default {{ __('Percentage') }}</label>
                     <input type="text" name="percentage" id="edit_percentage" class="form-control mb-0" value="{{ $discount->percentage }}" placeholder="Percentage" />
                 </div>
             </div>
 
-
-    {{--        <!-- Applies To -->--}}
-    {{--        <div class="input-area">--}}
-    {{--            <label for="edit_applies_to" class="form-label">{{ __('Applies To') }}</label>--}}
-    {{--            <select name="applied_to" id="edit_applies_to" class="form-control w-100">--}}
-    {{--                <option value="all account type" {{ $discount->applied_to === 'all account type' ? 'selected' : '' }}>{{ __('All Account Type') }}</option>--}}
-    {{--                <option value="challenge accounts only" {{ $discount->applied_to === 'challenge accounts only' ? 'selected' : '' }}>{{ __('Challenge Accounts Only') }}</option>--}}
-    {{--                <option value="direct funded accounts only" {{ $discount->applied_to === 'direct funded accounts only' ? 'selected' : '' }}>{{ __('Direct Funded Accounts Only') }}</option>--}}
-    {{--            </select>--}}
-    {{--        </div>--}}
-
             <!-- Usage Limit -->
             <div class="input-area">
                 <label class="form-label" for="edit_usage_limit">{{ __('Usage Limit') }}</label>
-                <select name="usage_limit" id="edit_usage_limit" class="form-control w-100">
-                    <option value="1" {{ $discount->usage_limit === 'unlimited' ? 'selected' : '' }}>{{ __('Unlimited') }}</option>
-                    <option value="100" {{ $discount->usage_limit == '100' ? 'selected' : '' }}>{{ __('100 Uses') }}</option>
-                    <option value="500" {{ $discount->usage_limit == '500' ? 'selected' : '' }}>{{ __('500 Uses') }}</option>
-                </select>
+                <input type="text" name="usage_limit" class="form-control" value="{{ $discount->usage_limit }}">
             </div>
 
             <!-- Expires On -->
             <div class="input-area">
-                <label class="form-label" for="edit_expire_at">{{ __('Expires On') }}</label>
+                <label class="form-label" for="edit_expire_at">{{ __('Expiry At') }}</label>
                 <input
-                    type="text"
+                    type="date"
                     name="expire_at"
                     id="edit_expire_at"
-                    class="form-control flatpickr flatpickr-input mb-0"
-                    value="{{ \Carbon\Carbon::parse($discount->expire_at)->format('m/d/Y') }}"
+                    class="form-control mb-0"
+                    value="{{ \Carbon\Carbon::parse($discount->expire_at)->format('Y-m-d') }}"
                     required
                 />
             </div>

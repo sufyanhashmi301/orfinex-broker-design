@@ -38,7 +38,11 @@
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Master Password') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" value="{{ Auth::user()->plaformAccountCredentials->where('platform', $investment->trader_type)->first()->password }}" id="copyModalPassword" readonly>
+                            @if ($investment->trader_type == App\Enums\TraderType::MT)
+                                <input class="form-control !pr-9" value="{{ Auth::user()->plaformAccountCredentials->where('platform', $investment->trader_type)->first()->password }}" id="copyModalPassword" readonly>
+                            @elseif ($investment->trader_type == App\Enums\TraderType::MT5)
+                                <input class="form-control !pr-9" value="{{ $investment->main_password }}" id="copyModalPassword" readonly>
+                            @endif
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyModalPassword">
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>

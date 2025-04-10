@@ -160,14 +160,22 @@
                                                 @if ($account->status == \App\Enums\InvestmentStatus::PENDING && $account->is_trial == 1)
                                                     Available Soon
                                                 @elseif ($account->status == \App\Enums\InvestmentStatus::PENDING)
-                                                    <a href="{{ route('admin.deposit.manual.pending') }}"
-                                                        class="inline-flex justify-center btn-redirect">
-                                                        <span class="flex items-center">
-                                                            <span>{{ __('Payment Pending') }}</span>
-                                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
-                                                                icon="lucide:chevron-right"></iconify-icon>
-                                                        </span>
-                                                    </a>
+                                                    @if ($phaseData['phase_step'] == 1)
+                                                        <a href="{{ route('admin.deposit.manual.pending') }}" class="inline-flex justify-center btn-redirect">
+                                                            <span class="flex items-center">
+                                                                <span>{{ __('Payment Pending') }}</span>
+                                                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                            </span>
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ] ) }}" class="inline-flex justify-center btn-redirect">
+                                                            <span class="flex items-center">
+                                                                <span>{{ __('Pending Approval') }}</span>
+                                                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                            </span>
+                                                        </a>
+                                                    @endif
+                                                    
                                                 @else
                                                     <span class="flex items-center">
                                                         <span>{{ __('-') }}</span>
@@ -175,10 +183,18 @@
                                                 @endif
                                             @endif
 
+                                            @if ($account->status == \App\Enums\InvestmentStatus::ACTIVE)
+                                                <br>
+                                                <a href="javascript:void(0)" class="inline-flex justify-center adjust-balance" data-account-id="{{ $account->id }}">
+                                                    <span class="flex items-center">
+                                                        <span>{{ __('Adjust Balance') }}</span>
+                                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                    </span>
+                                                </a>
+                                            @endif
+
                                         </td>
-                                        @if ($account->status == \App\Enums\InvestmentStatus::VIOLATED)
-                                            
-                                        @endif
+                                       
                                     </tr>
                                     
                                 @endforeach
@@ -220,5 +236,10 @@
     </div>
 @endif
 @push('single-script')
-    <script></script>
+    <script>
+        $('.adjust-balance').on('click', function(){
+            $('#balanceOperation').modal('show')
+            $('#account_id_for_balance_operation').val($(this).attr('data-account-id'))
+        })
+    </script>
 @endpush

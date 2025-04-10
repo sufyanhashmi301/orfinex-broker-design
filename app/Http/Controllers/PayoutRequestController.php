@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Wallet;
+use App\Models\Setting;
 use App\Enums\TraderType;
 use Illuminate\Http\Request;
 use App\Models\FundedBalance;
@@ -10,8 +11,8 @@ use App\Models\PayoutRequest;
 use App\Services\ForexApiService;
 use App\Enums\PayoutRequestStatus;
 use App\Models\AccountTypeInvestment;
-use App\Models\AccountTypeInvestmentStat;
 use App\Services\MatchTraderApiService;
+use App\Models\AccountTypeInvestmentStat;
 
 class PayoutRequestController extends Controller
 {
@@ -22,6 +23,19 @@ class PayoutRequestController extends Controller
     {
         $this->forexApiService = $forexApiService;
         $this->matchTraderApiService = $matchTraderApiService;
+    }
+
+    /**
+     * Configure 
+     */
+    public function config(Request $request) {
+        Setting::updateOrCreate(
+            ['name' => 'payout_eligibility_period'],             
+            ['val' => $request->payout_eligibility_period]  
+        );
+
+        notify()->success('Payout Request Configured Successfully!');
+        return redirect()->back();
     }
 
     /**

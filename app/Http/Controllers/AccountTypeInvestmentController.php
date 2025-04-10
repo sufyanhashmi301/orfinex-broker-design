@@ -54,7 +54,7 @@ class AccountTypeInvestmentController extends Controller
 
             if (in_array($request->status, (new \ReflectionClass(InvestmentStatus::class))->getConstants())) {
                 // Handle the logic here if the status is valid
-                $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
+                $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', '!=', InvestmentStatus::PENDING)->where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
                 $title = ucfirst($request->status) . ' Accounts';
                 $accounts_filter = true;
             }
@@ -63,7 +63,7 @@ class AccountTypeInvestmentController extends Controller
 
         // If search
         if(isset($request->search)) {
-            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('login', 'LIKE', '%' . $request->search . '%')
+            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', '!=', InvestmentStatus::PENDING)->where('login', 'LIKE', '%' . $request->search . '%')
                                             ->orWhereHas('user', function ($query) use ($request) {
                                                 $query->where('first_name', 'LIKE', '%' . $request->search . '%')
                                                     ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
@@ -77,7 +77,7 @@ class AccountTypeInvestmentController extends Controller
 
         // if status is unknown then show all accounts
         if(!$accounts_filter) {
-            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->orderBy('id', 'desc')->paginate(15);
+            $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', '!=', InvestmentStatus::PENDING)->orderBy('id', 'desc')->paginate(15);
             $title = 'All Accounts';
             if($request->status != 'all') {
                 return redirect()->route('admin.accounts.index', ['status' => 'all']);

@@ -18,7 +18,7 @@ class InvoiceController extends Controller
 
     // Ajax function to Verify Coupon Code
     public function verifyCoupon(Request $request) {
-        $schemeType = get_hash($request->input('scheme_type')); // Retrieve the scheme type from the request
+        $account_type_id = get_hash($request->input('account_type_id')); // Retrieve the scheme type from the request
         $userId = auth()->user()->id; // Get the current user's ID
 
         $discountQuery = Discount::where('code', $request->input('code'))
@@ -31,26 +31,52 @@ class InvoiceController extends Controller
         $discount = $discountQuery->first();
 
         if ($discount) {
+
             // Check if the discount has reached its usage limit
             if ($discount->used_count >= $discount->usage_limit) {
                 return response()->json(['valid' => false, 'message' => __('This discount code has reached its usage limit.')]);
             }
 
-            // Determine the type of discount (percentage or fixed)
-            $discountAmount = 0;
-            if ($discount->type === 'percentage') {
-                $discountAmount = $discount->percentage;  // Percentage discount
-            } elseif ($discount->type === 'fixed') {
-                $discountAmount = $discount->fixed_amount;  // Fixed discount amount
+            // Check if you can apply discount to this account type
+            if(!in_array($account_type_id, $discount->applied_to) && !in_array('all', $discount->applied_to)) {
+                return response()->json(['valid' => false, 'message' => __('Invalid or expired discount code.')]);
             }
 
-            return response()->json([
-                'valid' => true,
-                'discount_id' => the_hash($discount->id),
-                'discount_type' => $discount->type,
-                'discount_amount' => $discountAmount,
-                'message' => __('Discount applied successfully.')
-            ]);
+            // Check if the total price falls in between some levels
+            $totalPrice = $request->total_price;
+            $levelExists = null;
+
+            foreach ($discount->discount_levels as $level) {
+                $from = (float) $level['amount_from'];
+                $to = (float) $level['amount_to'];
+
+                if ($totalPrice >= $from && $totalPrice <= $to) {
+                    $levelExists = [
+                        'amount' => $level['amount'],
+                        'type' => $level['type'], 
+                    ];
+                    break;
+                }
+            }
+
+            if ($levelExists) {
+                return response()->json([
+                    'valid' => true,
+                    'discount_id' => the_hash($discount->id),
+                    'discount_amount' => $levelExists['amount'],
+                    'discount_type' => $levelExists['type'],
+                    'message' => "Discount applied successfully"
+                ]);
+            } else {
+                return response()->json([
+                    'valid' => true,
+                    'discount_id' => the_hash($discount->id),
+                    'discount_type' => $discount->type,
+                    'discount_amount' => $discount->type == 'fixed' ? $discount->fixed_amount : $discount->percentage,
+                    'message' => "Discount applied successfully"
+                ]);
+            }
+
         }
 
         return response()->json(['valid' => false, 'message' => __('Invalid or expired discount code.')]);

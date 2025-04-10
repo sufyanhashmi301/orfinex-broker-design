@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use DataTables;
+use App\Models\Discount;
+use App\Models\AccountType;
+use Illuminate\Http\Request;
+use App\Services\DiscountService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDiscountRequest;
 use App\Http\Requests\UpdateDiscountRequest;
-use App\Models\Discount;
-use DataTables;
-use App\Services\DiscountService;
-use Illuminate\Http\Request;
 
 class DiscountController extends Controller
 {
@@ -27,33 +28,11 @@ class DiscountController extends Controller
     public function index(Request $request)
     {
         
-        if ($request->ajax()) {
-            $data = Discount::latest('updated_at')->get();
-
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('type', function($row) {
-                    return view('backend.discounts.include.__type', [
-                        'type' => $row->type,
-                        'percentage' => $row->percentage,
-                        'fixed_amount' => $row->fixed_amount
-                    ]);
-                })
-                ->editColumn('expire_at', function($row) {
-                    return \Carbon\Carbon::parse($row->expire_at)->format('Y-m-d');
-                })
-                ->addColumn('status', 'backend.discounts.include.__status')
-                ->addColumn('action', 'backend.discounts.include.__action')
-                ->rawColumns(['status', 'action', 'type'])  // Add 'type' to rawColumns for rendering HTML
-                ->make(true);
-        }
-
-        return view('backend.discounts.index');
+        $account_types = AccountType::all();
+        $discount_codes = Discount::paginate(10);
+        
+        return view('backend.discounts.index', get_defined_vars());
     }
-
-
-
-
 
     // Create method
     public function create()
@@ -64,9 +43,9 @@ class DiscountController extends Controller
     // Store method to save a discount
     public function store(StoreDiscountRequest $request)
     {
-        
-//        dd($request->all());
+
         $data = $request->validated();
+        
         // Ensure fixed_amount is null if the type is 'percentage'
         if ($data['type'] === 'percentage') {
             $data['fixed_amount'] = null; // Set fixed_amount to null
@@ -76,21 +55,22 @@ class DiscountController extends Controller
         if ($data['type'] === 'fixed') {
             $data['percentage'] = null; // Set percentage to null
         }
-        $this->discountService->create($data);
+
+        Discount::create($data);
+
         notify()->success(__('Discount created successfully.'));
         return redirect()->route('admin.discounts.index');
     }
 
     // Edit method for showing the edit form
-        public function edit(Discount $discount)
-    {
-        return view('backend.discounts.include.__edit_form', compact('discount'))->render();
+    public function edit(Discount $discount) {
+        $account_types = AccountType::all();
+        return view('backend.discounts.include.__edit_form', get_defined_vars())->render();
     }
 
     // Update method to modify an existing discount
     public function update(UpdateDiscountRequest $request, Discount $discount)
     {
-        
         $data = $request->validated();
 
         // Handle `fixed_amount` and `percentage` based on the type
@@ -107,10 +87,28 @@ class DiscountController extends Controller
         }
 
         // Update the discount using the validated data
-        $this->discountService->update($discount, $data);
+        $discount->update($data);
 
         notify()->success(__('Discount updated successfully.'));
         return redirect()->route('admin.discounts.index');
+    }
+
+    /**
+     * Discount Levels Update
+     */
+    public function updateLevels(Request $request) {
+        $discount = Discount::find($request->discount_id);
+
+        if(!$discount) {
+            notify()->error('Unknown error occured.');
+            return redirect()->back();
+        }
+
+        $discount->update(['discount_levels' => array_values($request->data ?? [])]);
+
+        notify()->success('Discount Levels updated successfully!');
+        return redirect()->back();
+
     }
 
 

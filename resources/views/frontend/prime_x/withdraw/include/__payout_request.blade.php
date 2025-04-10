@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="action-btns text-right">
-                        <a href="{{ route('user.withdraw.payout_request', ['wallet_unique_id' => $payout_wallet->unique_id]) }}" class="btn btn-dark inline-flex items-center justify-center {{ $total_user_profit_share_amount == 0 ? 'disabled' : '' }}" >
+                        <a href="{{ route('user.withdraw.payout_request', ['wallet_unique_id' => $payout_wallet->unique_id]) }}" class="btn btn-dark submit-button inline-flex items-center justify-center {{ $total_user_profit_share_amount == 0 ? 'disabled' : '' }}" >
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Create Payout Request') }}
                         </a>

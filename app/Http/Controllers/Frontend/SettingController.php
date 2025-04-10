@@ -31,7 +31,7 @@ class SettingController extends Controller
     public function profileUpdate(Request $request)
     {
         $input = $request->all();
-        dd($input);
+
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',

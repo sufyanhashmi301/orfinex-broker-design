@@ -266,8 +266,17 @@ class WithdrawController extends Controller
      */
     public function payoutRequest(Request $request) {
         $user = Auth::user();
-        if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() != 'none') {
+        $first_trade_days = $user->first_trade_at != null ? Carbon::now()->diffInDays($user->first_trade_at) : 0;
+
+        // KYC Check
+        if($user->kyc->status != KycStatusEnums::VERIFIED && kyc_invoke_at() != 'none') {
             return redirect()->route('user.verification.index');
+        }
+
+        // Is Payout Eligible Period passed
+        if($first_trade_days <= setting('payout_eligibility_period', 'defaults')) {
+            notify()->error('Not Eligible for Payouts. Please try again later.', 'Error');
+            return redirect()->back();
         }
 
         // if wallets dont exist then return false
@@ -337,8 +346,10 @@ class WithdrawController extends Controller
      */
     public function step1Index()
     {
+
         $user = Auth::user();
-        $kyc_check_exists = $user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() != 'none' ? true : false;
+        $kyc_check_exists = $user->kyc->status != KycStatusEnums::VERIFIED && kyc_invoke_at() != 'none' ? true : false;
+        $first_trade_days = $user->first_trade_at != null ? Carbon::now()->diffInDays($user->first_trade_at) : 0;
 
         // Payout Wallet Create if not exists
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);

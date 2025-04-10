@@ -121,29 +121,12 @@ class MatchTraderTradingAccountService
       return false;
     }
 
-    // initialize stats records
-    $this->createInitialRecords($account);
+    // // initialize stats records
+    // $this->createInitialRecords($account);
 
     return true;
   }
 
-  /**
-   * Create the hourly stats record and singlular stats record
-   */
-  private function createInitialRecords($account) {
-
-    $initial_data = [
-      'account_type_investment_id' => $account->id,
-      'balance' => $this->ruleData['allotted_funds'],
-      'current_equity' => $this->ruleData['allotted_funds'],
-      'trading_days' => 0
-    ];
-
-    // Updatable Stats
-    AccountTypeInvestmentStat::create($initial_data + ['updated_at' => CarbonImmutable::now()]);
-    AccountTypeInvestmentHourlyStatsRecord::create($initial_data + [ 'created_at' => CarbonImmutable::now() ]);
-
-    return true;
-  }
+  
 
 }

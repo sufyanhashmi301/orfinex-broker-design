@@ -745,7 +745,7 @@ if (!function_exists('kyc_invoke_at')) {
 if (!function_exists('kyc_check_exists')) {
     function kyc_check_exists($kyc_invoke) {
         $user = Auth::user();
-        if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == $kyc_invoke) {
+        if($user->kyc->status != KycStatusEnums::VERIFIED && kyc_invoke_at() == $kyc_invoke) {
             return true;
         }
 
@@ -767,7 +767,7 @@ if (!function_exists('show_kyc_notice')) {
             
         }
 
-        if($user->kyc->status == KycStatusEnums::UNVERIFIED) {
+        if($user->kyc->status != KycStatusEnums::VERIFIED) {
 
             // Account Purchase (Always)
             if($kyc_invoke_at == KycNoticeInvokeEnums::ACCOUNT_PURCHASE) {

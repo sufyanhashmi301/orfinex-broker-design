@@ -7,6 +7,7 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+       
     </div>
     <div class="innerMenu card p-6 mb-5">
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
@@ -75,6 +76,7 @@
     </div>
 
     @include('backend.accounts.includes.__accounts', ['view' => 'admin_accounts'])
+    @include('backend.accounts.includes.__adjust_account_balance')
 
 @endsection
 @section('script')

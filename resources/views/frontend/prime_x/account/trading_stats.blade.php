@@ -263,18 +263,11 @@
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
                         {{ __('Total PnL') }}
                     </div>
-                    @php
-                        $profit =
-                            $investment->accountTypeInvestmentStat->current_equity -
-                            $investment->getRuleSnapshotData()['allotted_funds'];
-                        $profit = $profit;
-
-                    @endphp
-                    @if ($profit < 0)
-                        <h4 class="text-base font-medium badge badge-danger whitespace-nowrap" style="font-size: 16px">{{ number_format(($profit), 2) }}
+                    @if ($trading_objectives['total_pnl'] < 0)
+                        <h4 class="text-base font-medium badge badge-danger whitespace-nowrap" style="font-size: 16px">{{ number_format(($trading_objectives['total_pnl']), 2) }}
                             {{ base_currency() }}</h4>
                     @else
-                        <h4 class="text-base font-medium badge badge-success whitespace-nowrap" style="font-size: 16px">{{ number_format(($profit), 2) }}
+                        <h4 class="text-base font-medium badge badge-success whitespace-nowrap" style="font-size: 16px">{{ number_format(($trading_objectives['total_pnl']), 2) }}
                             {{ base_currency() }}</h4>
                     @endif
                 </div>

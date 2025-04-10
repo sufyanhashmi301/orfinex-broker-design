@@ -66,6 +66,15 @@ return [
             ],
         ],
     ],
+    'defaults' => [
+        'elements' => [
+            'kyc_badge_visibility' => 'show',
+            [
+                'name' => 'payout_eligibility_period', 
+                'value' => '2', 
+            ],
+        ]
+    ],
     'light_colors' => [
         'title' => 'Light Theme Colors',
         'elements' => [

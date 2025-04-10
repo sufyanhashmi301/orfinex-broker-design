@@ -54,7 +54,7 @@
                     <form action="{{ $is_trial ? route('user.account.free_trial', ['id' => $account_type->id]) : route('user.investment.store') }}" method="post" enctype="multipart/form-data"
                         id="payment-form" class="space-y-6">
                         @csrf
-                        <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->phaseOne->type) }}">
+                        <input type="hidden" id="account_type_id" value="{{ the_hash($account_type->id) }}">
                         <input type="hidden" id="discount-id" name="discount_id" >
                         <input type="hidden" id="addon-ids" name="addons" value="">
                         <input type="hidden" name="free_trial" value="{{ $is_trial ? true : false }}" >
@@ -362,7 +362,12 @@
             updatePriceDisplay();
 
             // Update values when radio button is changed
-            $('input[name="rule_id"]').on('change', updatePriceDisplay);
+            $('input[name="rule_id"]').on('change', function() {
+                discountAmount = 0;
+                $('#discount-id').val('')
+                $('#discount-message').html('')
+                updatePriceDisplay()
+            });
 
             // Update values when addon checkboxes are changed
             $('.addon-checkbox').on('change', updatePriceDisplay);
@@ -380,7 +385,7 @@
             });
             $('#verify-discount').on('click', function() {
                 let discountCode = $('#discount-code').val().trim();
-                let schemeType = $('#scheme_type').val().trim();
+                let account_type_id = $('#account_type_id').val().trim();
 
                 if (!discountCode) {
                     $('#discount-message').text('{{ __('Please enter a discount code.') }}').css('color',
@@ -394,7 +399,8 @@
                     data: {
                         _token: '{{ csrf_token() }}',
                         code: discountCode,
-                        scheme_type: schemeType
+                        account_type_id: account_type_id,
+                        total_price: parseFloat($('input[name="rule_id"]:checked').data('price'))
                     },
                     success: function(response) {
                         if (response.valid) {
@@ -460,6 +466,7 @@
                     total -= discountAmount; // Apply fixed discount amount
                 }
 
+                console.log(discountAmount, discountType)
                 // Ensure the total is not negative
                 total = total < 0 ? 0 : total;
 
@@ -467,7 +474,7 @@
                 $('.price-display').text('$' + basePrice.toFixed(2));
                 $('.discount-display').text('$' + ruleDiscount.toFixed(2));
                 $('.coupon-discount-display').text(discountType === 'percentage' ? discountAmount + '%' : '$' +
-                    discountAmount.toFixed(2));
+                    discountAmount);
                 $('.addons-display').text('$' + addon.toFixed(2));
                 $('.total-display').text('$' + total.toFixed(2));
                 $('.daily-dd').text('$' + dailyDD);

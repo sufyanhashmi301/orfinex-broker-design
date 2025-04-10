@@ -35,13 +35,20 @@
             <div class="relative">
                 <div class="flex items-center text-left">
                     <p class="dark:text-white">{{auth()->user()->full_name}}</p>
-                    @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
-                        <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/verified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
-                    @else
-                        <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/unverified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
+                    @if (
+                        setting('kyc_badge_visibility', 'defaults') == 'show' || 
+                        (setting('kyc_badge_visibility', 'defaults') == 'show_verified' && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED) ||
+                        (setting('kyc_badge_visibility', 'defaults') == 'show_unverified' && $user->kyc->status != \App\Enums\KycStatusEnums::VERIFIED)
+                    )
+                        @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
+                            <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/verified.svg" class="inline-flex ml-2" alt="" style="height: 14px;">
+                        @else
+                            <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/unverified.svg" class="inline-flex ml-2" alt="" style="height: 14px;">
+                        @endif
                     @endif
-                </div>
-            </div>
+                    </div>
+                </div>    
+            
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">

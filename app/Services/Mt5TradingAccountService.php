@@ -33,12 +33,11 @@ class Mt5TradingAccountService
    */
   public function createTradingAccount($investment) {
 
-
     $this->accountTypeData = $investment->getAccountTypeSnapshotData();
     $this->phaseData = $investment->getPhaseSnapshotData();
     $this->ruleData = $investment->getRuleSnapshotData();
 
-    $password = Str::random(12);
+    $password = Str::random(11) . '$';
    
     // will replace the values by static table later
     $user_data = [
@@ -65,8 +64,6 @@ class Mt5TradingAccountService
       "masterPassword" => $password,
       "investorPassword" => 'Abc12345$' // SNNH@2024@bol
     ];
-
-    // dd($user_data);
 
     $retryCount = 0;
     $maxRetries = 3;
@@ -96,31 +93,37 @@ class Mt5TradingAccountService
     } catch (RequestException $e) {
       abort($e->getCode(), 'API Response Error. Please try again later.');
     }
+    
 
     // if it still fails after $maxRetries tries
     if ($response['result'] == null) {
       abort(400, 'API Response Error. Please try again later.');
     } 
 
+
     if ($response['success']) {
-        $resResult = $response['result'];
-        $mt5_login = $resResult['login'];
 
-        if ($mt5_login && $resResult['responseCode'] == 0) {
- 
-            $user_rights_data =  [
-                "login" => $mt5_login,
-                "rights" => 'USER_RIGHT_ENABLED',
-            ];
-            $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
 
-            $investment->main_password = $password;
-            $investment->save();
-            return $mt5_login;
-        }
 
+      $resResult = $response['result'];
+      $mt5_login = $resResult['login'];
+      
+      if ($mt5_login && $resResult['responseCode'] == 0) {
+        
+        $user_rights_data =  [
+          "login" => $mt5_login,
+          "rights" => 'USER_RIGHT_ENABLED',
+        ];
+        $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
+        
+        $investment->main_password = $password;
+        $investment->save();
+        
+        return $mt5_login;
+      }
+      
     }
-
+    
 
   }
 

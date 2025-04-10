@@ -22,24 +22,20 @@ class UpdateDiscountRequest extends FormRequest
             'type' => 'required|in:percentage,fixed',
             'percentage' => 'nullable|numeric|min:0|max:100|required_if:type,percentage',
             'fixed_amount' => 'nullable|numeric|min:0|required_if:type,fixed',
-            'applied_to' => 'nullable|string',
+            'applied_to' => 'required|array',
             'usage_limit' => 'required|integer|min:1',
-//            'expire_at' => 'nullable|date',
+            'expire_at' => 'required|date',
             'status' => 'boolean',
         ];
     }
 
     /**
-     * Handle failed validation.
+     * Handle a failed validation attempt.
      */
-//    protected function failedValidation(Validator $validator) // Correctly using the Illuminate Validator
-//    {
-////        notify()->error(__('Please check the form for errors.'));
-////
-////        $response = redirect()->back()
-////            ->withErrors($validator)
-////            ->withInput();
-////
-////        throw new ValidationException($validator, $response);
-//    }
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        notify()->error($validator->errors()->first(), __('Error'));
+
+        throw new ValidationException($validator, redirect()->back()->withErrors($validator)->withInput());
+    }
 }

@@ -15,7 +15,7 @@
         </div>
         <button style="float:right" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
-            Configure KYC Notice
+            Configure KYC
         </button>
     </div>
 
@@ -89,7 +89,7 @@
 
     @include('backend.setting.kyc.includes.__add_fields_manual_modal')
     @include('backend.setting.kyc.includes.__edit_fields_manual')
-    @include('backend.setting.kyc.includes.__kyc_notice_modal')
+    @include('backend.setting.kyc.includes.__kyc_config_modal')
 @endsection
 
 @section('user-management-script')

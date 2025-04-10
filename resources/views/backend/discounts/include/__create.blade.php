@@ -4,7 +4,7 @@
             <div class="flex items-start justify-between gap-3 p-5">
                 <div>
                     <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
-                        {{ __('Create New Discount Code') }}
+                        {{ __('Create Discount Code') }}
                     </h3>
                 </div>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
@@ -19,7 +19,7 @@
                     <form action="{{ route('admin.discounts.store') }}" method="POST">
                         <div class="space-y-5">
                         @csrf
-                        <!-- Code Name -->
+                            <!-- Code Name -->
                             <div class="input-area !mt-0">
                                 <label for="code_name" class="form-label">{{ __('Code Name') }}</label>
                                 <input
@@ -43,6 +43,16 @@
                                 />
                             </div>
 
+                            <div class="input-area">
+                                <label for="code" class="form-label">{{ __('Applied To') }}</label>
+                                <select name="applied_to[]" required multiple id="" class="select2 form-control">
+                                    <option value="all" selected>All</option>
+                                    @foreach ($account_types as $account_type)
+                                        <option value="{{ $account_type->id }}">{{ $account_type->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <!-- Type -->
                             <div class="input-area">
                                 <label for="type" class="form-label">{{ __('Type') }}</label>
@@ -56,7 +66,7 @@
                             <!-- Value based on type (Fixed or Percentage) -->
                             <div class="input-area">
                                 <div class="discount-type hidden" data-div="fixed">
-                                    <label for="fixed_amount" class="form-label">{{ __('Fixed Amount') }}</label>
+                                    <label for="fixed_amount" class="form-label">Default {{ __('Fixed Amount') }}</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -66,7 +76,7 @@
                                     />
                                 </div>
                                 <div class="discount-type hidden" data-div="percentage">
-                                    <label for="percentage" class="form-label">{{ __('Percentage') }}</label>
+                                    <label for="percentage" class="form-label">Default {{ __('Percentage') }}</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -76,17 +86,6 @@
                                     />
                                 </div>
                             </div>
-
-                            <!-- Applied To -->
-    {{--                        <div class="input-area">--}}
-    {{--                            <label for="applied_to" class="form-label">{{ __('Applies To') }}</label>--}}
-    {{--                            <input--}}
-    {{--                                type="text"--}}
-    {{--                                name="applied_to"--}}
-    {{--                                class="form-control mb-0"--}}
-    {{--                                placeholder="Specific product or category (optional)"--}}
-    {{--                            />--}}
-    {{--                        </div>--}}
 
                             <!-- Usage Limit -->
                             <div class="input-area">
@@ -131,7 +130,7 @@
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                {{ __('Add Discount Code') }}
+                                {{ __('Create') }}
                             </button>
                             <a
                                 href="#"

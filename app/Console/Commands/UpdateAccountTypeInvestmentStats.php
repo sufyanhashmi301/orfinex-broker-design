@@ -112,6 +112,12 @@ class UpdateAccountTypeInvestmentStats extends Command
                     }
                 }
 
+                if($data['trading_days'] > 0) {
+                    if($investment->user->first_trade_at == null) {
+                        $investment->user->update(['first_trade_at' => Carbon::now()]);
+                    }
+                }
+
                 // Update Trading Days
                 $this->updateTradingDays($investment);
             }

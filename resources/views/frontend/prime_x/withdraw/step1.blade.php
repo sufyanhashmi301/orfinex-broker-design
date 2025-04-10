@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('My Wallets') }}
+    {{ __('Payout & Withdraw') }}
 @endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-3">
@@ -73,15 +73,23 @@
                             </span>
                         </a>
                     @else
-                        <a href="#"  data-bs-toggle="modal" data-bs-target="#payoutRequest" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                        <a href="#"  data-bs-toggle="modal" data-bs-target="#payoutRequest" class="btn btn-sm btn-outline-dark {{ $first_trade_days <= setting('payout_eligibility_period', 'defaults') ? 'disabled' : '' }} inline-flex items-center justify-center ">
                             <span class="flex items-center">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                                 <span>{{ __('Create Payout Request') }}</span>
                             </span>
                         </a>        
+                        
                     @endif
                     
                 </div>
+
+                @if ($first_trade_days <= setting('payout_eligibility_period', 'defaults'))
+                    <div class="mt-5 text-sm" >
+                        <iconify-icon class="" style="position: relative; top: 2px; margin-right: 3px" icon="lucide:circle-alert"></iconify-icon>
+                        You're not eligible for payouts yet. To qualify, you need to complete {{ setting('payout_eligibility_period', 'defaults') - $first_trade_days }} days without any violations.
+                    </div>
+                @endif
             </div>
         </div>
         @if (!$kyc_check_exists)

@@ -16,6 +16,11 @@ class KycNoticeController extends Controller
             ['val' => $request->kyc_notice]  
         );
 
+        Setting::updateOrCreate(
+            ['name' => 'kyc_badge_visibility'],             
+            ['val' => $request->kyc_badge_visibility]  
+        );
+
         notify()->success('KYC Notice updated Successfully!');
         return redirect()->back();
     }

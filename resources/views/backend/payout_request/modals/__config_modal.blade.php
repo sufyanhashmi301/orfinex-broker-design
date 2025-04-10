@@ -4,7 +4,7 @@
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize" id="config-modalLabel">
-                    Configure KYC Notice
+                    Configure Payout Requests 
                 </h3>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                     <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -14,19 +14,14 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.kyc_notice.update') }}" method="post" class="space-y-5">
+                <form action="{{ route('admin.payout_requests.config') }}" method="post" class="">
                     @csrf
                     <div class="site-input-area relative">
-                      <label for="" class="form-label">Invoke KYC Notice at</label>
-                      <select name="kyc_notice" class="form-control capitalize" id="" >
-                        <option value="none" {{ 'none' == $current_kyc_notice_invoke ? 'selected' : '' }} >None</option>
-                        @foreach ($kyc_notice_invokes as $invoke)
-                            <option value="{{ $invoke }}" {{ $invoke == $current_kyc_notice_invoke ? 'selected' : '' }} >{{ str_replace('_', ' ', $invoke) }}</option>
-                        @endforeach
-                      </select>
+                        <label for="" class="form-label">Payout Eligibility Period</label>
+                        <input type="number" required value="{{ setting('payout_eligibility_period', 'defaults') }}" name="payout_eligibility_period" class="form-control">
                     </div>  
                     
-                    <div class="action-btns text-right">
+                    <div class="action-btns text-right mt-5">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             Save Changes

@@ -77,6 +77,9 @@ class AccountTypeInvestment extends Model
         return $this->hasOne(AccountTrial::class);
     }
 
+    public function operations() {
+        return $this->hasMany(AccountBalanceOperation::class);
+    }
 
     /**
      * Scopes

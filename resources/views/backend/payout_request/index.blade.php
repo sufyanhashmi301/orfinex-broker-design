@@ -7,6 +7,10 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+        <button style="float:right" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+            Configure Payout Requests
+        </button>
     </div>
     <div class="innerMenu card p-6 mb-5">
         <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 md:pb-0 gap-4 menu-open w-full">
@@ -34,6 +38,7 @@
         </div>
     </div>
 
+    @include('backend.payout_request.modals.__config_modal')
 
 @endsection
 

@@ -36,9 +36,10 @@ class Discount extends Model
 	protected $casts = [
 		'usage_limit' => 'int',
 		'used_count' => 'int',
+		'applied_to' => 'array',
+		'discount_levels' => 'array',
 		'percentage' => 'float',
 		'fixed_amount' => 'float',
-		'expire_at' => 'date',
 		'status' => 'bool'
 	];
 
@@ -48,6 +49,7 @@ class Discount extends Model
 		'scheme_type',
 		'type',
 		'applied_to',
+		'discount_levels',
 		'usage_limit',
 		'used_count',
 		'percentage',

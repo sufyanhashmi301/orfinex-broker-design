@@ -42,6 +42,9 @@
         $('button[type="submit"]').addClass('disabled')
         $('input[type="submit"]').addClass('disabled')
     })
+    $('.submit-button').on('click', function() {
+        $('.submit-button').addClass('disabled');
+    })
 
     $(document).ready(function () {
         function calculateHeights() {

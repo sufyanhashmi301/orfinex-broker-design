@@ -8,6 +8,8 @@ use App\Traits\NotifyTrait;
 use Carbon\CarbonImmutable;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
+use App\Models\AccountTypeInvestmentStat;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\AccountTypePhase as AccountTypePhaseEnum;
 
 class AccountTypeInvestmentPaymentService
@@ -68,8 +70,10 @@ class AccountTypeInvestmentPaymentService
         $balance_deposit = $this->matchTraderTradingAccount->depositBalance($trading_account_login_id, $investment);
     }
 
-    // Throw Error
-    if(!$balance_deposit) {
+    // Create initial records to make account instantly accessible
+    if($balance_deposit) {
+      $this->createInitialRecords($investment);
+    } else {
       return false;
     }
     
@@ -179,6 +183,25 @@ class AccountTypeInvestmentPaymentService
     //   }
     // }
 
+  }
+
+  /**
+   * Create the hourly stats record and singlular stats record
+   */
+  private function createInitialRecords($account) {
+
+    $initial_data = [
+      'account_type_investment_id' => $account->id,
+      'balance' => $this->ruleData['allotted_funds'],
+      'current_equity' => $this->ruleData['allotted_funds'],
+      'trading_days' => 0
+    ];
+
+    // Updatable Stats
+    AccountTypeInvestmentStat::create($initial_data + ['updated_at' => CarbonImmutable::now()]);
+    AccountTypeInvestmentHourlyStatsRecord::create($initial_data + [ 'created_at' => CarbonImmutable::now() ]);
+
+    return true;
   }
 
 }

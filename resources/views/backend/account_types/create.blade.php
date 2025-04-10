@@ -290,6 +290,7 @@
                             {{ setting('active_trader_type', 'features') == \App\Enums\TraderType::MT ? 'readonly' : '' }}
                         />
                     </div>
+                    
                     {{-- <div class="input-area">
                         <label class="form-label" for="">{{ __('Commission') }}</label>
                         <input

@@ -19,6 +19,7 @@
                             </thead>
                             <tbody>
                                 @foreach($investments as $investment)
+
                                     @php
                                         $accountTypeData = $investment->getAccountTypeSnapshotData();
                                         $phaseData = $investment->getPhaseSnapshotData();
@@ -26,6 +27,13 @@
 
                                         $stats = $investment->accountTypeInvestmentStat;
                                         $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
+                                    @endphp
+
+                                    @php
+                                        // Don't show account that are purchase and pending
+                                        if($phaseData['phase_step'] == 1 && $investment->status == \App\Enums\InvestmentStatus::PENDING) {
+                                            continue;
+                                        }
                                     @endphp
 
                                     {{-- Contracts Function --}}

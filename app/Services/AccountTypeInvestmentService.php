@@ -21,6 +21,7 @@ use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\KycNoticeInvokeEnums;
 use App\Enums\KycStatusEnums;
 use App\Enums\TraderType;
+use App\Models\AccountBalanceOperation;
 use App\Models\User;
 
 class AccountTypeInvestmentService
@@ -161,23 +162,34 @@ class AccountTypeInvestmentService
 
     $trading_objectives = [];
 
+    // Varies when the balance is adjusted manually
+    $adjustments = AccountBalanceOperation::where('account_type_investment_id', $investment->id)->where('affect_stats', 0)->get();
+    $balance_adjustments = 0;
+    foreach($adjustments as $adjustment) {
+      if($adjustment->operation == 'remove') {
+        $balance_adjustments += $adjustment->amount;
+      } else {
+        $balance_adjustments -= $adjustment->amount;
+      }
+    }
+
+    // Total PnL
+    $trading_objectives['total_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments;
 
     // ---- Daily Drawdown Stats ----
     $trading_objectives['daily_drawdown_status'] = TradingObjective::PASSING;
             
     $trading_objectives['daily_drawdown_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity;
     
-
     $trading_objectives['daily_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['daily_drawdown_limit'] + $trading_objectives['daily_drawdown_pnl']);
     if($trading_objectives['daily_drawdown_remaining_loss_limit'] < 0){
       $trading_objectives['daily_drawdown_remaining_loss_limit'] = 'Limit Over';
       $trading_objectives['daily_drawdown_status'] = TradingObjective::VIOLATED;
     }
 
-    
     // ---- Max Drawdown stats ----
     $trading_objectives['max_drawdown_status'] = TradingObjective::PASSING;
-    $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'];
+    $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments;
 
     $trading_objectives['max_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['max_drawdown_limit'] + $trading_objectives['max_drawdown_pnl']);
     if($trading_objectives['max_drawdown_remaining_loss_limit'] <= 0){
@@ -192,7 +204,7 @@ class AccountTypeInvestmentService
     $trading_objectives['profit_target'] = $investment->getRuleSnapshotData()['profit_target'];
 
     // Achievied Profit
-    $trading_objectives['current_profit_target'] = $investment->accountTypeInvestmentStat->current_equity - ($investment->getRuleSnapshotData()['allotted_funds']);
+    $trading_objectives['current_profit_target'] = $investment->accountTypeInvestmentStat->current_equity - ($investment->getRuleSnapshotData()['allotted_funds']) + $balance_adjustments;
     // if($trading_objectives['current_profit_target'] < 0) {
     //     $trading_objectives['current_profit_target'] = 0;
     // }
@@ -261,7 +273,7 @@ class AccountTypeInvestmentService
     $kyc_verified = true;
     $user = User::find($investment->user_id);
     // KYC STATUS
-    if($user->kyc->status == KycStatusEnums::UNVERIFIED && 
+    if($user->kyc->status != KycStatusEnums::VERIFIED && 
       (kyc_invoke_at() == KycNoticeInvokeEnums::VERIFICATION_PHASE || kyc_invoke_at() == KycNoticeInvokeEnums::FUNDED_PHASE)
     ) {
       $kyc_verified = false;
@@ -271,13 +283,10 @@ class AccountTypeInvestmentService
 
     // Same day 1st record after 12AM
     $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
-
     
     // If no record found, fallback to the most recent record
     if (!$first_record_after_midnight) {
-        $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)->orderBy('created_at', 'desc')->first();
     }
 
     // Calculate the trading objectives
@@ -366,12 +375,12 @@ class AccountTypeInvestmentService
                         ->first();
 
       // Check if there is any KYC Check for Verification Phase
-      if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::VERIFICATION_PHASE && $next_phase['type'] == EnumsAccountTypePhase::VERIFICATION) {
+      if($user->kyc->status != KycStatusEnums::VERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::VERIFICATION_PHASE && $next_phase['type'] == EnumsAccountTypePhase::VERIFICATION) {
         return false;
       }
 
       // Check if there is any KYC Check for Funded Phase
-      if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::FUNDED_PHASE && $next_phase['type'] == EnumsAccountTypePhase::FUNDED) {
+      if($user->kyc->status != KycStatusEnums::VERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::FUNDED_PHASE && $next_phase['type'] == EnumsAccountTypePhase::FUNDED) {
         return false;
       }
 

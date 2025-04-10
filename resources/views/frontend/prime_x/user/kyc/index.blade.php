@@ -6,82 +6,68 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="mb-10">
-                <h4 class="card-title mb-2">{{ __('Verification Center') }}</h4>
-                <p class="block font-normal text-sm text-slate-500">
-                    {{ __('Ensure Trust and Security: Complete your KYC to access all features.') }}
+                <h4 class="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <iconify-icon icon="lucide:shield-check" class="text-primary text-2xl"></iconify-icon>
+                    {{ __('KYC Verification Center') }}
+                </h4>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {{ __('To maintain a secure and compliant trading environment, identity verification is required.') }} <br>
+                    {{ __('Complete your KYC steps to unlock full access including deposits, trading, and withdrawals.') }}
                 </p>
             </div>
             @if($totalActiveLevels > 1)
-            <div class="max-w-5xl mx-auto mb-6">
-                <ul class="relative w-full m-0 flex list-none justify-between overflow-hidden p-0 transition-[height] duration-200 ease-in-out">
-                    <!--First item-->
-                    <li class="w-[4.5rem] flex-auto">
-                        <div class="flex items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-3px after:w-full after:flex-1 @if($user->email_verified_at != null) after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
-                            <div>
-                                @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
-                                    <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="9.5" cy="9.5" r="9.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
-                                    </svg>
-                                @else
-                                    <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="14" cy="13.5" r="9" stroke="{{ setting('primary_color', 'global') }}"/>
-                                        <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="{{ setting('primary_color', 'global') }}" stroke-width="4"/>
-                                        <circle cx="14" cy="13.5" r="3.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                    </svg>
-                                @endif
-                            </div>
-                        </div>
-                    </li>
 
-                    <!--Second item-->
-                    <li class="w-[4.5rem] flex-auto">
-                        <div class="flex items-center leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 @if($user->kyc > \App\Enums\KYCStatus::Level1->value) before:bg-primary @else before:bg-[#e0e0e0] @endif before:content-[''] @if($totalActiveLevels > 2)after:ml-2 after:h-3px after:w-full after:flex-1 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b] @endif">
-                            <div>
-                                @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
-                                    <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="9.5" cy="9.5" r="9.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
-                                    </svg>
-                                @else
-                                    <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="14" cy="13.5" r="9" stroke="{{ setting('primary_color', 'global') }}"/>
-                                        <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="{{ setting('primary_color', 'global') }}" stroke-width="4"/>
-                                        <circle cx="14" cy="13.5" r="3.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                    </svg>
-                                @endif
+                <div class="max-w-5xl mx-auto mb-10">
+                    <div class="relative w-full flex items-center justify-between">
+                    @php
+                        $completedStep = $user->kyc >= \App\Enums\KYCStatus::Level3->value ? 3 :
+                                         ($user->kyc >= \App\Enums\KYCStatus::Level2->value ? 2 :
+                                         ($user->kyc >= \App\Enums\KYCStatus::Level1->value ? 1 : 0));
+                    @endphp
+
+                    <!-- Progress Line -->
+                        <div class="absolute top-1/2 left-0 right-0 h-1 z-0 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full transition-all duration-300 ease-in-out rounded-full bg-primary"
+                                 style="width: {{ $completedStep == 1 ? '50%' : ($completedStep == 2 ? '100%' : ($completedStep == 3 ? '100%' : '0%')) }}">
                             </div>
                         </div>
-                    </li>
+
+                        <!-- Step 1 -->
+                        <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                            @if($user->kyc >= \App\Enums\KYCStatus::Level1->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
+                            @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
+                                <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
+                            @else
+                                <span class="text-xs font-semibold">1</span>
+                            @endif
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                            @if($user->kyc >= \App\Enums\KYCStatus::Level2->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
+                            @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                                <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
+                            @else
+                                <span class="text-xs font-semibold">2</span>
+                            @endif
+                        </div>
 
                     @if($totalActiveLevels == 3)
-                        <!--Third item-->
-                        <li class="w-[4.5rem] flex-auto">
-                            <div class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b']">
-                                <div>
-                                    @if($user->kyc == \App\Enums\KYCStatus::Level3->value)
-                                        <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="9.5" cy="9.5" r="9.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
-                                        </svg>
-                                    @else
-                                        <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="14" cy="13.5" r="9" stroke="{{ setting('primary_color', 'global') }}"/>
-                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="{{ setting('primary_color', 'global') }}" stroke-width="4"/>
-                                            <circle cx="14" cy="13.5" r="3.5" fill="{{ setting('primary_color', 'global') }}"/>
-                                        </svg>
-                                    @endif
-                                </div>
+                        <!-- Step 3 -->
+                            <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                                @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
+                                @if($user->kyc >= \App\Enums\KYCStatus::Level3->value)
+                                    <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
+                                @else
+                                    <span class="text-xs font-semibold">3</span>
+                                @endif
                             </div>
-                        </li>
-                    @endif
-                </ul>
-            </div>
+                        @endif
+                    </div>
+                </div>
             @endif
+
+
             <div class="grid grid-cols-1 md:grid-cols-3  gap-5">
                 @foreach($kycLevels as $kycLevel)
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
@@ -95,7 +81,7 @@
                                 $emailSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::EMAIL)->first();
                             @endphp
                             <h4 class="text-2xl text-slate-900 dark:text-white">{{ __('1 - Confirm ') }} @if($emailSubLevel && $emailSubLevel->status) {{__('Email')}}  @endif @if($kycLevel->kyc_sub_levels()->where('status', true)->count()>1) {{__(' and ')}} @endif @if($phoneSubLevel && $phoneSubLevel->status) {{__('Phone')}}  @endif</h4>
-                                @if($phoneSubLevel && $phoneSubLevel->status)
+                            @if($phoneSubLevel && $phoneSubLevel->status)
                                 <div class="input-area w-full">
                                     <div class="relative">
                                         <input type="text" class="form-control form-control-lg !pr-32" value="{{ $user->phone }}" disabled>
@@ -128,19 +114,27 @@
                             @endif
 
                             <div>
-                                <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
+                                <p class="text-slate-900 dark:text-white mb-3 text-sm font-semibold uppercase tracking-wide">{{ __('Privileges of Account Verification') }}</p>
                                 <ul class="space-y-2 mb-10">
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
+                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                        <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
+                                        <span>{{ __('Update your full profile securely.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Open demo accounts.') }}</span>
+                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                        <iconify-icon class="text-primary mt-0.5" icon="lucide:wallet"></iconify-icon>
+                                        <span>{{ __('Deposit funds without restrictions.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Trade on demo accounts.') }}</span>
+                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                        <iconify-icon class="text-primary mt-0.5" icon="lucide:rocket"></iconify-icon>
+                                        <span>{{ __('Open demo and real trading accounts.') }}</span>
+                                    </li>
+                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                        <iconify-icon class="text-primary mt-0.5" icon="lucide:refresh-cw"></iconify-icon>
+                                        <span>{{ __('Transfer funds internally.') }}</span>
+                                    </li>
+                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                        <iconify-icon class="text-primary mt-0.5" icon="lucide:headset"></iconify-icon>
+                                        <span>{{ __('Create support ticket for assistance.') }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -160,6 +154,7 @@
                             $automaticSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::AUTOMATIC)->where('status', true)->first();
                         @endphp
                         @if($automaticSubLevel && $automaticSubLevel->status)
+
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                                 <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
@@ -169,20 +164,35 @@
                                 <h4 class="text-2xl text-slate-900 dark:text-white">
                                     {{ __('2 - Verify your identity using Sumsub') }}
                                 </h4>
-                                {{--                    <div class="input-area w-full">--}}
-                                {{--                        <div class="relative">--}}
-                                {{--                            <input type="text" class="form-control form-control-lg !pr-9" placeholder="+971509760755">--}}
-                                {{--                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">--}}
-                                {{--                                <iconify-icon icon="lucide:folder-open"></iconify-icon>--}}
-                                {{--                            </button>--}}
-                                {{--                        </div>--}}
-                                {{--                    </div>--}}
+
                                 <div>
-                                    <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
+                                    <p class="text-slate-900 dark:text-white mb-2 text-sm font-semibold uppercase tracking-wide">
+                                        {{ __('Privileges of Profile Verification') }}
+                                    </p>
                                     <ul class="space-y-2 mb-10">
-                                        @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
+                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
+                                            <span>{{ __('Withdraw funds from verified accounts.') }}</span>
+                                        </li>
+                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
+                                            <span>{{ __('Make external transfers securely.') }}</span>
+                                        </li>
+                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
+                                            <span>{{ __('Get approved for higher trading limits.') }}</span>
+                                        </li>
+                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:layout-dashboard"></iconify-icon>
+                                            <span>{{ __('Unlock advanced account features.') }}</span>
+                                        </li>
+                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:clock"></iconify-icon>
+                                            <span>{{ __('Faster processing of requests and reviews.') }}</span>
+                                        </li>
                                     </ul>
                                 </div>
+
                                 @if($user->kyc>=\App\Enums\KYCStatus::Level2->value)
                                     <a href="javascript:void(0);" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
                                 @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
@@ -234,16 +244,16 @@
                             <h4 class="text-2xl text-slate-500 dark:text-white">
                                 {{ __('3 - Verify residential address') }}
                             </h4>
-{{--                            <div class="input-area w-full">--}}
-{{--                                <div class="relative">--}}
-{{--                                    <input type="text" class="form-control form-control-lg !pr-9"--}}
-{{--                                           placeholder="Add profile information">--}}
-{{--                                    <span--}}
-{{--                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">--}}
-{{--                                        <iconify-icon icon="lucide:folder-open"></iconify-icon>--}}
-{{--                                    </span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            {{--                            <div class="input-area w-full">--}}
+                            {{--                                <div class="relative">--}}
+                            {{--                                    <input type="text" class="form-control form-control-lg !pr-9"--}}
+                            {{--                                           placeholder="Add profile information">--}}
+                            {{--                                    <span--}}
+                            {{--                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">--}}
+                            {{--                                        <iconify-icon icon="lucide:folder-open"></iconify-icon>--}}
+                            {{--                                    </span>--}}
+                            {{--                                </div>--}}
+                            {{--                            </div>--}}
                             <div>
                                 <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
@@ -293,6 +303,54 @@
                     @endif
                 @endforeach
             </div>
+
+
+            <div class="pt-10 border-t border-slate-200 mt-14">
+                <h4 class="text-xl font-semibold mb-6 text-slate-800 dark:text-white">{{ __('Why KYC Matters') }}</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <!-- Secure Account -->
+                    <div class="flex items-start gap-4">
+                        <div class="text-yellow-600 text-xl mt-1">
+                            <iconify-icon icon="lucide:shield-check"></iconify-icon>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-base text-slate-700 dark:text-white mb-1">Secure Your Account</h5>
+                            <p class="leading-relaxed">
+                                Your personal information and funds are safeguarded with top-level encryption and ID checks.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Full Access -->
+                    <div class="flex items-start gap-4">
+                        <div class="text-yellow-600 text-xl mt-1">
+                            <iconify-icon icon="lucide:lock-keyhole"></iconify-icon>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-base text-slate-700 dark:text-white mb-1">Full Platform Access</h5>
+                            <p class="leading-relaxed">
+                                Unlock deposits, withdrawals, real account trading, and financial transactions without limits.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Priority Support -->
+                    <div class="flex items-start gap-4">
+                        <div class="text-yellow-600 text-xl mt-1">
+                            <iconify-icon icon="lucide:badge-check"></iconify-icon>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-base text-slate-700 dark:text-white mb-1">Priority Support</h5>
+                            <p class="leading-relaxed">
+                                Get faster support, quicker approvals, and special attention from our client success team.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 

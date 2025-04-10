@@ -13,10 +13,10 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-//        $codesToDelete = ['email_verification','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
-//
-//        // Delete the existing templates that match the codes
-//        EmailTemplate::whereIn('code', $codesToDelete)->delete();
+        $codesToDelete = ['transaction_otp'];
+
+        // Delete the existing templates that match the codes
+        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
         $templates = [
@@ -1342,8 +1342,8 @@ class EmailTemplatesSeeder extends Seeder
                 'subject' => 'Important: Verify Your [[site_title]] Transaction OTP',
                 'salutation' => 'Dear [[full_name]],',
                 'message_body' => '<p><img src="https://cdn.brokeret.com/crm-assets/email/header.png" style="width: 100%; height: auto;" alt="[[site_title]]"></p> <p>Hello [[full_name]],</p>To complete your transaction securely on <strong>[[site_title]]</strong>, please enter the following One-Time Password (OTP)<div style="background-color: #f4f4f4; padding: 16px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">[[code]]</div><p>Enter this code on the verification page to proceed with your transaction.</p><p>If you did not initiate this transaction, please contact our support team immediately.</p>',
-                'button_level' => '',
-                'button_link' => '',
+                'button_level' => 'Login',
+                'button_link' => url('/').'/login',
                 'footer_status' => 1,
                 'footer_body' => 'Best Regards,<br />[[site_title]] Team',
                 'bottom_status' => 1,

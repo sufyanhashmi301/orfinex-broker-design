@@ -46,6 +46,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\AccountType as AccountTypeEnums;
 use Illuminate\Contracts\Foundation\Application;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
@@ -427,4 +428,50 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+
+    /**
+     * Export User CSV
+     */
+    public function exportCsv(): StreamedResponse
+    {
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=users_export.csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'gender',
+            'date_of_birth',
+            'address',
+            'zip_code',
+            'city',
+            'country'
+        ];
+
+        $callback = function () use ($columns) {
+            $handle = fopen('php://output', 'w');
+
+            // Add CSV header
+            fputcsv($handle, $columns);
+
+            // Get users data
+            $users = User::all($columns);
+
+            foreach ($users as $user) {
+                fputcsv($handle, $user->toArray());
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
 }

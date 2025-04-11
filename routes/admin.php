@@ -271,6 +271,9 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::resource('discounts', DiscountController::class);
     Route::post('discount/levels', [DiscountController::class, 'updateLevels'])->name('discount.levels.update');
 
+    // User
+    Route::get('/export-users', [UserController::class, 'exportCsv'])->name('export.all_users');
+
     // =============================== Optimization ===============================
     
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');

@@ -303,12 +303,13 @@ class MultiLevelRebateDistribution extends Command
         return MetaDeal::where('login', $login)
             ->where('user_id', $childUserId)
             ->latest('time')
-            ->value('time') ?: Carbon::now()->startOfDay();
+            ->value('time') ?: Carbon::now()->subDay(4)->startOfDay();
     }
 
     protected function getMT5Deals($login, $lastDealTime, $sysmbols)
     {
-        $table = 'mt5_deals_' . Carbon::now()->year;
+//        $table = 'mt5_deals_' . Carbon::now()->year;
+        $table = 'mt5_deals';
 //        dd($table,$login,$lastDealTime,$sysmbols);
 
         return DB::connection('mt5_db')

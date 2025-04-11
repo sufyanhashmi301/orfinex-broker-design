@@ -73,7 +73,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'XSS' => \App\Http\Middleware\XSS::class,
-        'KYC' => \App\Http\Middleware\KYC::class,
+        // 'KYC' => \App\Http\Middleware\KYC::class,
         '2fa' => \App\Http\Middleware\TwoFaCheck::class,
         '2fa_admin' => \App\Http\Middleware\TwoFaCheckForAdmin::class,
         'isActive' => \App\Http\Middleware\CheckDeactivate::class,
@@ -81,6 +81,6 @@ class Kernel extends HttpKernel
         'isDemo' => \App\Http\Middleware\DemoMode::class,
         // 'set.session.lifetime' => \App\Http\Middleware\SetSessionLifetime::class,
         'secure_header' => SecureHeaders1Middleware::class,
-
+        'check.user.profile' => \App\Http\Middleware\CheckUserProfileRequiredFields::class,
     ];
 }

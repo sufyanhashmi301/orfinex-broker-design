@@ -41,6 +41,8 @@ class AccountTypeInvestmentController extends Controller
         $this->investment_payment = $investment_payment;
         $this->forexApiService = $forexApiService;
         $this->matchTraderApiService = $matchTraderApiService;
+
+        $this->middleware('check.user.profile')->only(['store']);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\ImageUpload;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 
@@ -38,7 +39,9 @@ class SettingController extends Controller
             'last_name' => 'required',
             'username' => 'required|unique:users,username,'.$user->id,
             'gender' => 'required',
-            'date_of_birth' => 'date',
+            'date_of_birth' => 'required|date',
+            'city' => 'required',
+            'address' => 'required',
             'phone' => 'required',
         ]);
 
@@ -52,7 +55,6 @@ class SettingController extends Controller
             'avatar' => $request->hasFile('avatar') ? self::imageUploadTrait($input['avatar'], $user->avatar) : $user->avatar,
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
-            'nickname' => $input['nickname'] ?? '',
             'username' => $input['username'],
             'gender' => $input['gender'],
             'date_of_birth' => $input['date_of_birth'] == '' ? null : $input['date_of_birth'],
@@ -61,6 +63,10 @@ class SettingController extends Controller
             'zip_code' => $input['zip_code'],
             'address' => $input['address'],
         ];
+
+        if(!is_null($user->date_of_birth)) {
+            $data['date_of_birth'] = $user->date_of_birth;
+        }
 
         $user->update($data);
 

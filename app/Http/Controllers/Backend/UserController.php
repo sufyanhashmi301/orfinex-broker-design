@@ -7,6 +7,7 @@ use Hash;
 use Exception;
 use DataTables;
 use Carbon\Carbon;
+use App\Models\Kyc;
 use App\Models\User;
 use App\Enums\TxnType;
 use App\Models\Wallet;
@@ -22,11 +23,13 @@ use App\Traits\NotifyTrait;
 use App\Exports\UsersExport;
 use App\Models\ForexAccount;
 use Illuminate\Http\Request;
+use App\Enums\KycStatusEnums;
 use App\Models\CustomerGroup;
 use App\Models\LevelReferral;
 use App\Traits\ForexApiTrait;
 use App\Jobs\AgentReferralJob;
 use App\Models\RiskProfileTag;
+use App\Enums\InvestmentStatus;
 use App\Enums\ForexAccountStatus;
 use App\Services\ForexApiService;
 use Illuminate\Http\JsonResponse;
@@ -42,8 +45,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\AccountType as AccountTypeEnums;
-use App\Enums\KycStatusEnums;
-use App\Models\Kyc;
 use Illuminate\Contracts\Foundation\Application;
 
 class UserController extends Controller
@@ -177,7 +178,7 @@ class UserController extends Controller
         $page = $request->page ?? 1;
         
         // Fetch accounts
-        $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10, ['*'], 'page', ($tab === 'accounts' && isset($request->page)) ? $request->page : 1);
+        $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', '!=', InvestmentStatus::PENDING)->where('user_id', $id)->orderBy('id', 'DESC')->paginate(8, ['*'], 'page', ($tab === 'accounts' && isset($request->page)) ? $request->page : 1);
         
         // Fetch payments
         $payments = Transaction::where(function ($query) {
@@ -294,12 +295,7 @@ class UserController extends Controller
             $input['date_of_birth'] = null;
         }
         User::find($id)->update($input);
-        $user = User::find($id);
-        if (isset($input['group_id']) && $input['group_id'] !== '') {
-            $user->customerGroups()->sync($input['group_id']);
-        } else {
-            $user->customerGroups()->detach();
-        }
+  
         notify()->success('User Info Updated Successfully', 'success');
 
         return redirect()->back();

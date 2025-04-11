@@ -21,6 +21,8 @@ class AccountTrialController extends Controller
     public function __construct(AccountTypeInvestmentService $account, AccountTypeInvestmentPaymentService $account_payment) {
         $this->account = $account;
         $this->account_payment = $account_payment;
+
+        $this->middleware('check.user.profile')->only(['freeTrial']);
     }
 
     /**

@@ -27,6 +27,8 @@ class AccountBuyController extends Controller
         $this->account_buy = $account_buy;
         $this->account = $account;
         $this->account_payment = $account_payment;
+
+        $this->middleware('check.user.profile')->only(['show']);
     }
 
     /**
@@ -48,6 +50,12 @@ class AccountBuyController extends Controller
         $trial_used = AccountTrial::where('user_id', Auth::id())->where('trial_used', 1)->exists();
 
         $kyc_check_exists = kyc_check_exists(KycNoticeInvokeEnums::ACCOUNT_PURCHASE);
+
+        // check if the profile is completed
+        $profile_completed = true;
+        if (is_null($user->date_of_birth) || is_null($user->city) || is_null($user->address) || strlen($user->phone) < 5) {
+            $profile_completed = false;
+        }
 
         return view('frontend::account_buy.index', get_defined_vars());
     }

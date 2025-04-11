@@ -91,13 +91,18 @@
                         <a href="{{ route('user.verification.index') }}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                             Complete KYC Verification
                         </a>
+                    @elseif (!$profile_completed)
+                        <a href="{{route('user.setting.profile')}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
+                            <iconify-icon class="mr-2" style="position: relative; top: 3px; font-size: 16px" icon="lucide:lock"></iconify-icon>
+                            {{ __('Complete Profile') }}
+                        </a>
                     @else
                         <a href="{{route('user.account.show',$account_type->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                             {{ __('Buy Now') }}
                         </a>
                     @endif
                     
-                    @if ($account_type->is_trial == 1 && !$trial_used)
+                    @if ($account_type->is_trial == 1 && !$trial_used && $profile_completed)
                         <a href="{{route('user.account.show',['id' => $account_type->id, 'action' => 'free_trial'])}}" class="btn inline-flex justify-center btn-primary w-full mt-2">
                             {{ __('Start Free Trial') }}
                         </a>

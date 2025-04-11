@@ -233,7 +233,7 @@ class EmailTemplatesSeeder extends Seeder
                 'bottom_status' => 1,
                 'bottom_title' => 'More About [[site_title]]',
                 'bottom_body' => '[[site_url]]',
-                'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]","[[kyc_type]]"]',
+                'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]"]',
                 'note' => '',
                 'support_link' => '',
                 'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high-risk investments.',

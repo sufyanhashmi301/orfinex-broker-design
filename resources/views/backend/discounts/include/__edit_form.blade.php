@@ -82,6 +82,14 @@
                 />
             </div>
 
+            <div class="input-area">
+                <label for="type" class="form-label">{{ __('Implementation') }}</label>
+                <select id="" name="implementation" class="form-control w-100" required>
+                    <option value="default" {{ $discount->implementation == 'default' ? 'selected' : '' }} >{{ __('Default') }}</option>
+                    <option value="level_system" {{ $discount->implementation != 'default' ? 'selected' : '' }} >{{ __('Level System') }}</option>
+                </select>
+            </div>
+
             <!-- Status -->
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto mb-0">{{ __('Status') }}</label>

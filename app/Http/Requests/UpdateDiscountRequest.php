@@ -22,6 +22,7 @@ class UpdateDiscountRequest extends FormRequest
             'type' => 'required|in:percentage,fixed',
             'percentage' => 'nullable|numeric|min:0|max:100|required_if:type,percentage',
             'fixed_amount' => 'nullable|numeric|min:0|required_if:type,fixed',
+            'implementation' => 'required',
             'applied_to' => 'required|array',
             'usage_limit' => 'required|integer|min:1',
             'expire_at' => 'required|date',

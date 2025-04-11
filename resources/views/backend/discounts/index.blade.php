@@ -30,10 +30,9 @@
                             <tr>
                                 <th scope="col" class="table-th">{{ __('Code Name') }}</th>
                                 <th scope="col" class="table-th">{{ __('Code') }}</th>
-                                <th scope="col" class="table-th">{{ __('Discount') }}</th> <!-- New Column -->
-                                <th scope="col" class="table-th" style="width: 500px">{{ __('Applies To') }}</th>
+                                <th scope="col" class="table-th">{{ __('Discount') }}</th>
+                                <th scope="col" class="table-th" style="width: 400px">{{ __('Applies To') }}</th>
                                 <th scope="col" class="table-th">{{ __('Usage Limit') }}</th>
-                                <th scope="col" class="table-th">{{ __('Multiple Levels') }}</th>
                                 <th scope="col" class="table-th">{{ __('Expiry At') }}</th>
                                 <th scope="col" class="table-th">{{ __('Status') }}</th>
                                 <th scope="col" class="table-th">{{ __('Actions') }}</th>
@@ -44,13 +43,7 @@
                                     <tr>
                                         <td class="table-td">{{ $discount_code->code_name }}</td>
                                         <td class="table-td">{{ $discount_code->code }}</td>
-                                        <td class="table-td">
-                                            @if($discount_code->type === 'percentage')
-                                                {{ $discount_code->percentage }}%
-                                            @elseif($discount_code->type === 'fixed')
-                                                ${{ $discount_code->fixed_amount }}
-                                            @endif
-                                        </td>
+                                        <td class="table-td"><span class="badge badge-primary">{{ str_replace('_', ' ', $discount_code->implementation) }} - {{ $discount_code->implementation == 'default' ? $discount_code->type === 'percentage' ? $discount_code->percentage . '%' : '$' . $discount_code->fixed_amount : count($discount_code->discount_levels ?? []) .  ' levels' }}</span></td>
                                         <td class="table-td">
 
                                             @if (in_array('all', $discount_code->applied_to))
@@ -65,8 +58,8 @@
 
                                             
                                         </td>
+                                        
                                         <td class="table-td" style="text-transform: none">{{ $discount_code->usage_limit }} time(s)</td>
-                                        <td class="table-td" style="text-transform: none">{{ count($discount_code->discount_levels ?? []) }} levels</td>
                                         <td class="table-td">{{ date('jS F, Y', strtotime($discount_code->expire_at)) }}</td>
                                         <td class="table-td">
                                             @switch($discount_code->status)
@@ -85,9 +78,11 @@
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                     </a>
                                                 @endcan
-                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#discountLevels{{ $discount_code->id }}" class="action-btn">
-                                                    <iconify-icon icon="lucide:list-plus"></iconify-icon>
-                                                </a>
+                                                @if ($discount_code->implementation != 'default')
+                                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#discountLevels{{ $discount_code->id }}" class="action-btn">
+                                                        <iconify-icon icon="lucide:list-plus"></iconify-icon>
+                                                    </a>
+                                                @endif
                                                 @can('discount-code-delete')
                                                     <a href="javascript:void(0)" class="action-btn delete-schema-btn" data-id="{{ $discount_code->id }}" data-name="{{ $discount_code->code_name }}" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal" onclick="deleteDiscount({{ $discount_code->id }}, '{{ $discount_code->code_name }}')">
                                                         <iconify-icon icon="lucide:trash"></iconify-icon>
@@ -217,25 +212,31 @@
             $(this).css('border-color', '#E2E8F0')
         })
         
-        $(document).ready(function() {
-            function toggleDiscountDiv() {
-                // Hide all discount type divs
-                $('.discount-type').addClass('hidden');
+        function toggleDiscountDiv() {
+            // Hide all discount type divs
+            $('.discount-type').addClass('hidden');
 
-                // Get the selected value from the type dropdown
-                const selectedValue = $('#discounttype').val();
+            // Get the selected value from the type dropdown
+            const selectedValue = $('#discounttype').val();
 
-                // Show the corresponding div based on selected type
-                if (selectedValue) {
-                    $('.discount-type[data-div="' + selectedValue + '"]').removeClass('hidden');
-                }
+            // Show the corresponding div based on selected type
+            if (selectedValue) {
+                $('.discount-type[data-div="' + selectedValue + '"]').removeClass('hidden');
             }
+        }
 
-            // Attach the change event to the dropdown
-            $('#discounttype').change(toggleDiscountDiv);
-
-
+        // Trigger the function when the type changes
+        $(document).on('change', '#edit_discount_type', function() {
+            if($(this).val() == 'fixed') {
+                $('#fixed_amount_field').show()
+                $('#percentage_field').hide()
+            } else {
+                $('#fixed_amount_field').hide()
+                $('#percentage_field').show()
+            }
         });
+
+
         function editDiscount(id) {
             $.get("{{ route('admin.discounts.edit', ':id') }}".replace(':id', id), function(html) {
                 $('#editDiscountModal .modal-body').html(html);

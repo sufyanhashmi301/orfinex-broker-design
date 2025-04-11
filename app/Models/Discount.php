@@ -54,6 +54,7 @@ class Discount extends Model
 		'used_count',
 		'percentage',
 		'fixed_amount',
+		'implementation',
 		'expire_at',
 		'status'
 	];

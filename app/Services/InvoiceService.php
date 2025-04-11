@@ -187,27 +187,29 @@ class InvoiceService
 		// If the discount exists and is valid
 		if ($discount) {
 
-			$levelExists = null;
-			foreach ($discount->discount_levels ?? [] as $level) {
-				$from = (float) $level['amount_from'];
-				$to = (float) $level['amount_to'];
+			if ($discount->implementation != 'default') {
+				$levelExists = null;
+				foreach ($discount->discount_levels ?? [] as $level) {
+					$from = (float) $level['amount_from'];
+					$to = (float) $level['amount_to'];
 
-				if ($amount >= $from && $amount <= $to) {
-					$levelExists = [
-						'amount' => $level['amount'],
-						'type' => $level['type'],
-					];
-					break;
+					if ($amount >= $from && $amount <= $to) {
+						$levelExists = [
+							'amount' => $level['amount'],
+							'type' => $level['type'],
+						];
+						break;
+					}
 				}
-			}
 
-			if ($levelExists) {
-				if ($levelExists['type'] == 'percentage') {
-					$discountAmount = ($levelExists['amount'] * $discount->percentage) / 100;
-					$invoice_data['coupon_amount'] = $discount->percentage;
-				} else if ($levelExists['type'] == 'fixed') {
-					$discountAmount = $levelExists['amount'];
-					$invoice_data['coupon_amount'] = $discount->fixed_amount;
+				if ($levelExists) {
+					if ($levelExists['type'] == 'percentage') {
+						$discountAmount = ($levelExists['amount'] * $discount->percentage) / 100;
+						$invoice_data['coupon_amount'] = $discount->percentage;
+					} else if ($levelExists['type'] == 'fixed') {
+						$discountAmount = $levelExists['amount'];
+						$invoice_data['coupon_amount'] = $discount->fixed_amount;
+					}
 				}
 			} else {
 				if ($discount->type == 'percentage') {

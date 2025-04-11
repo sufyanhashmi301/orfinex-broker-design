@@ -43,23 +43,27 @@ class InvoiceController extends Controller
             }
 
             // Check if the total price falls in between some levels
-            $totalPrice = $request->total_price;
-            $levelExists = null;
+            if ($discount->implementation != 'default') {
+                $totalPrice = $request->total_price;
+                $levelExists = null;
 
-            foreach ($discount->discount_levels ?? [] as $level) {
-                $from = (float) $level['amount_from'];
-                $to = (float) $level['amount_to'];
+                foreach ($discount->discount_levels ?? [] as $level) {
+                    $from = (float) $level['amount_from'];
+                    $to = (float) $level['amount_to'];
 
-                if ($totalPrice >= $from && $totalPrice <= $to) {
-                    $levelExists = [
-                        'amount' => $level['amount'],
-                        'type' => $level['type'], 
-                    ];
-                    break;
+                    if ($totalPrice >= $from && $totalPrice <= $to) {
+                        $levelExists = [
+                            'amount' => $level['amount'],
+                            'type' => $level['type'], 
+                        ];
+                        break;
+                    }
                 }
-            }
 
-            if ($levelExists) {
+                if(!$levelExists) {
+                    return response()->json(['valid' => false, 'message' => "Invalid or expired discount code."]);
+                }
+
                 return response()->json([
                     'valid' => true,
                     'discount_id' => the_hash($discount->id),

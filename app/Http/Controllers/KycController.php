@@ -9,6 +9,7 @@ use App\Models\Plugin;
 use sumsub\SumsubClient;
 use App\Models\KycMethod;
 use App\Traits\ImageUpload;
+use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
 use App\Enums\KycStatusEnums;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class KycController extends Controller
 {
-    use ImageUpload;
+    use ImageUpload, NotifyTrait;
 
     /**
      * Display a listing of the resource.
@@ -70,11 +71,20 @@ class KycController extends Controller
     public function action(Request $request) {
         
         if($request->action == 'approve') {
-            Kyc::findorFail($request->id)->update([
+            $kyc = Kyc::findorFail($request->id);
+            $kyc->update([
                 'method' => 'Manual',
                 'status' => KycStatusEnums::VERIFIED,
                 'verified_at' => Carbon::now()
             ]);
+
+            $shortcodes = [
+                '[[site_url]]' => route('home'),
+                '[[full_name]]' => $kyc->user->first_name . ' ' . $kyc->user->last_name,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[message]]' => $request->message
+            ];
+            $this->mailNotify($kyc->user->email, 'kyc_approve', $shortcodes);
 
             notify()->success('KYC marked as approved successfully');
         }

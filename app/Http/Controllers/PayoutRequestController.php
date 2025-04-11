@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Wallet;
 use App\Models\Setting;
 use App\Enums\TraderType;
@@ -13,6 +14,7 @@ use App\Enums\PayoutRequestStatus;
 use App\Models\AccountTypeInvestment;
 use App\Services\MatchTraderApiService;
 use App\Models\AccountTypeInvestmentStat;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class PayoutRequestController extends Controller
 {
@@ -113,6 +115,15 @@ class PayoutRequestController extends Controller
                 $acocunt_stats->balance = $acocunt_stats->balance - $total_profit;
                 $acocunt_stats->current_equity = $acocunt_stats->current_equity - $total_profit;
                 $acocunt_stats->save();
+
+                // Removal from hourly stats (1st record after 12AM) to avoid Daily DD hit
+                $hourly_stats = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
+                if (!$hourly_stats) {
+                    $hourly_stats = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->orderBy('created_at', 'desc')->first();
+                }
+                $hourly_stats->balance = $hourly_stats->balance - $total_profit;
+                $hourly_stats->current_equity = $hourly_stats->current_equity - $total_profit;
+                $hourly_stats->save();
 
                 // removal from funded balances
                 $funded_balance = FundedBalance::where('account_type_investment_id', $single['account_id'])->first();

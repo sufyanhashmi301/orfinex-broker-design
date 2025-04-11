@@ -294,9 +294,11 @@ class ForexApiService
             $body = json_encode($params);
             
             $response = Http::withHeaders($this->getCommonHeadersReal())
-                ->retry(3, 100)
-                ->withBody($body, 'application/json')
-                ->post($URL);
+                            ->retry(3, 100)
+                            ->timeout(45)                // response timeout (in seconds)
+                            ->connectTimeout(45)
+                            ->withBody($body, 'application/json')
+                            ->post($URL);
             
             return $this->handleResponse($response);
         } catch (RequestException $e) {
@@ -310,9 +312,11 @@ class ForexApiService
             $URL = $this->baseUrlDemo . '/' . $endpoint;
             $body = json_encode($params);
             $response = Http::withHeaders($this->getCommonHeadersDemo())
-                ->retry(3, 100)
-                ->withBody($body, 'application/json')
-                ->post($URL);
+                            ->retry(3, 100)
+                            ->timeout(45)                // response timeout (in seconds)
+                            ->connectTimeout(45)
+                            ->withBody($body, 'application/json')
+                            ->post($URL);
 
             return $this->handleResponse($response);
         } catch (RequestException $e) {

@@ -42,7 +42,7 @@ class SendPromoteViolateMails extends Command
 
             $account_phase = $account->getPhaseSnapshotData();
 
-            if(!$account_phase || !$account || $account->user) {
+            if(!$account_phase || !$account || !$account->user) {
                 continue;
             }
 

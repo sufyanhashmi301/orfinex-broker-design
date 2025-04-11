@@ -42,6 +42,10 @@ class SendPromoteViolateMails extends Command
 
             $account_phase = $account->getPhaseSnapshotData();
 
+            if(!$account_phase) {
+                continue;
+            }
+
             $shortcodes = [
                 '[[full_name]]' => $account->user->first_name . ' ' . $account->user->last_name,
                 '[[site_title]]' => setting('site_title', 'global'),

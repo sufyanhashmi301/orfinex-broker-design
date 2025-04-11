@@ -102,7 +102,7 @@ class RegisteredUserController extends Controller
             'phone' => $phone,
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
         ]);
 
         // Assign referring id

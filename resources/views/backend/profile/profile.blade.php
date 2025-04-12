@@ -90,7 +90,6 @@
                                     value="{{ $staff->first_name }}"
                                     placeholder="First Name"
                                     required
-                                    readonly
                                 />
                             </div>
                             <div class="input-area !mt-0">
@@ -105,7 +104,7 @@
                                     value="{{ $staff->last_name }}"
                                     placeholder="Last Name"
                                     required
-                                    readonly
+
                                 />
                             </div>
                             <div class="input-area !mt-0">
@@ -120,7 +119,6 @@
                                     value="{{ $staff->name }}"
                                     placeholder="Staff Name"
                                     required
-                                    readonly
                                 />
                             </div>
                             <div class="input-area">
@@ -143,53 +141,53 @@
                     </div>
                 </div>
 
-                <div class="card mb-5">
-                    <div class="card-header">
-                        <h4 class="card-title">{{ __('Work Information') }}</h4>
-                    </div>
-                    <div class="card-body p-6">
-                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
-                            <div class="input-area">
-                                <label class="form-label" for="">
-                                    {{ __('Employment Type:') }}
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    value="{{ $staff->employment_type }}"
-                                    placeholder=""
-                                    readonly
-                                >
-                            </div>
+{{--                <div class="card mb-5">--}}
+{{--                    <div class="card-header">--}}
+{{--                        <h4 class="card-title">{{ __('Work Information') }}</h4>--}}
+{{--                    </div>--}}
+{{--                    <div class="card-body p-6">--}}
+{{--                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">--}}
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">--}}
+{{--                                    {{ __('Employment Type:') }}--}}
+{{--                                </label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    class="form-control"--}}
+{{--                                    value="{{ $staff->employment_type }}"--}}
+{{--                                    placeholder=""--}}
+{{--                                    readonly--}}
+{{--                                >--}}
+{{--                            </div>--}}
 
-                            <div class="input-area">
-                                <label class="form-label" for="">
-                                    {{ __('Employment Status:') }}
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    value="{{ $staff->employment_status }}"
-                                    placeholder=""
-                                    readonly
-                                >
-                            </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">--}}
+{{--                                    {{ __('Employment Status:') }}--}}
+{{--                                </label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    class="form-control"--}}
+{{--                                    value="{{ $staff->employment_status }}"--}}
+{{--                                    placeholder=""--}}
+{{--                                    readonly--}}
+{{--                                >--}}
+{{--                            </div>--}}
 
-                            <div class="input-area">
-                                <label class="form-label" for="">
-                                    {{ __('Source Of Hire:') }}
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    value="{{ $staff->source_of_hire }}"
-                                    placeholder=""
-                                    readonly
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">--}}
+{{--                                    {{ __('Source Of Hire:') }}--}}
+{{--                                </label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    class="form-control"--}}
+{{--                                    value="{{ $staff->source_of_hire }}"--}}
+{{--                                    placeholder=""--}}
+{{--                                    readonly--}}
+{{--                                >--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
                 <div class="card mb-5">
                     <div class="card-header">
@@ -199,15 +197,9 @@
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
-                                <input
-                                    type="text"
-                                    name="date_of_birth"
-                                    class="form-control dateOfBirth"
-                                    value="{{ $staff->date_of_birth }}"
-                                    placeholder="2006-12-19"
-                                    readonly
-                                >
+                                <input type="text" name="date_of_birth" class="form-control dateOfBirth" placeholder="2006-12-19" readonly>
                             </div>
+
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Gender:') }}</label>
                                 <select name="status" class="select2 form-control w-full">
@@ -269,4 +261,11 @@
         </div>
     </div>
 @endsection
-
+@section('script')
+    <script>
+         $(".dateOfBirth").flatpickr({
+                    dateFormat: "Y-m-d",
+                    maxDate: "15-12-2017"
+                });
+    </script>
+@endsection

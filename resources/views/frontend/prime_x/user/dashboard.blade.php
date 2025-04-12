@@ -350,7 +350,7 @@
     </script>
 
     @if(setting('popup_status', 'popup'))
-        <script !src="">
+        <script>
             $(document).ready(function() {
                 $('#offerModal').modal('show');
             });

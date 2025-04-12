@@ -10,7 +10,7 @@ class AddExternalKycIdToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'external_kyc_id')) {
-                $table->string('external_kyc_id')->after('applicant_id')->nullable()->unique();
+                $table->string('external_kyc_id')->after('kyc_level3_credential')->nullable()->unique();
             }
 
             if (!Schema::hasColumn('users', 'auto_kyc_credentials')) {

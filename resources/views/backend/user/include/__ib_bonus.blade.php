@@ -5,36 +5,48 @@
     aria-labelledby="pills-bonus-tab"
 >
     <div class="card">
-        <div class="card-header">
             <div class="card-header">
-                <form id="filter-form" class="flex gap-3 mb-4">
-                    <div class="flex gap-3 mb-4">
-                        <input type="text" id="ib-bonus-login" class="form-control" placeholder="Login">
-                        <input type="text" id="ib-bonus-deal" class="form-control" placeholder="Deal">
-                        <input type="text" id="ib-bonus-order" class="form-control" placeholder="Order">
-                        <input type="text" id="ib-bonus-symbol" class="form-control" placeholder="Symbol">
-                        <input
-                            type="text"
-                            id="ib-bonus-created-at"
-                            class="form-control flatpickr-created-at w-[260px]"
-                            placeholder="Created At Range"
-                            readonly
-                        />
-                        <button type="button" id="ib-bonus-filter-btn" class="btn btn-primary">Filter</button>
-                    </div>
-                </form>
+                <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                    <!-- Filter Inputs -->
+                    <form id="filter-form" class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-login" class="form-control h-full" placeholder="Login">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-deal" class="form-control h-full" placeholder="Deal">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-symbol" class="form-control h-full" placeholder="Symbol">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-created-at" class="form-control flatpickr-created-at h-full w-full" placeholder="Created At Range" readonly>
+                        </div>
+                        <div class="input-area relative">
+                            <button type="button" id="ib-bonus-filter-btn" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                                {{ __('Filter') }}
+                            </button>
+                        </div>
+                    </form>
 
-{{--                <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">--}}
-{{--                    @csrf--}}
-{{--                    <div class="input-area relative">--}}
-{{--                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">--}}
-{{--                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>--}}
-{{--                            {{ __('Export') }}--}}
-{{--                        </button>--}}
-{{--                    </div>--}}
-{{--                </form>--}}
+                    <!-- Action Buttons -->
+                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse mt-2 sm:mt-0">
+                        @can('customer-export')
+                            <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
+                                @csrf
+                                <div class="input-area relative">
+                                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                        {{ __('Export') }}
+                                    </button>
+                                </div>
+                            </form>
+                        @endcan
+
+                    </div>
+                </div>
+
             </div>
-        </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>

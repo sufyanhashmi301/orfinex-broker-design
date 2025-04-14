@@ -171,6 +171,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
         Route::post('log/export', 'export')->name('log.export');
+        Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
+        Route::post('resend-otp', 'resendOtp')->name('otp.resend');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -382,7 +384,8 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
-Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
+Route::post('/user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');

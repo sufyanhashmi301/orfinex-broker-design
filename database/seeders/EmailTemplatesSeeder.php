@@ -13,10 +13,10 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-//        $codesToDelete = ['email_verification','kyc_approve', 'kyc_request', 'kyc_reject', 'admin_kyc_request', 'kyc_approval_confirmation'];
-//
-//        // Delete the existing templates that match the codes
-//        EmailTemplate::whereIn('code', $codesToDelete)->delete();
+        $codesToDelete = ['transaction_otp'];
+
+        // Delete the existing templates that match the codes
+        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
         $templates = [
@@ -1332,7 +1332,34 @@ class EmailTemplatesSeeder extends Seeder
                 'created_at' => '2024-03-07 15:54:46',
                 'updated_at' => '2024-03-07 15:54:46',
             ],
+            [
 
+                'name' => 'Transaction OTP',
+                'code' => 'transaction_otp',
+                'for' => 'User',
+                'banner' => 'global/images/email_verification.jpg',
+                'title' => 'Transaction Verification OTP',
+                'subject' => 'Important: Verify Your [[site_title]] Transaction OTP',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => '<p><img src="https://cdn.brokeret.com/crm-assets/email/header.png" style="width: 100%; height: auto;" alt="[[site_title]]"></p> <p>Hello [[full_name]],</p>To complete your transaction securely on <strong>[[site_title]]</strong>, please enter the following One-Time Password (OTP)<div style="background-color: #f4f4f4; padding: 16px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">[[code]]</div><p>Enter this code on the verification page to proceed with your transaction.</p><p>If you did not initiate this transaction, please contact our support team immediately.</p>',
+                'button_level' => 'Login',
+                'button_link' => url('/').'/login',
+                'footer_status' => 1,
+                'footer_body' => 'Best Regards,<br />[[site_title]] Team',
+                'bottom_status' => 1,
+                'bottom_title' => 'Your OTP',
+                'bottom_body' => '<p style="font-size: 14px; color: #555;">This OTP is valid for [[otp_validity]] minutes. For your protection, do not share this code with anyone.</p><p><img src="https://cdn.brokeret.com/crm-assets/email/footer.png" style="width: 100%; height: auto;" alt="[[site_title]]"></p>',
+                'short_codes' => json_encode(["[[code]]", "[[otp_validity]]","[[full_name]]", "[[site_title]]", "[[site_url]]"]),
+                'note' => 'If you did not request this, please ignore this email.',
+                'support_link' => '[[site_url]]/support',
+                'warning_content' => 'Security Notice: Never share your verification code with anyone. [[site_title]] will never ask for your OTP.',
+                'company_info' => setting('site_title', 'global') . ' GLOBAL LIMITED. Registered under company number 2023-00532.',
+                'status' => 1,
+                'is_disclaimer' => 1,
+                'is_risk_warning' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
 
         ];
 

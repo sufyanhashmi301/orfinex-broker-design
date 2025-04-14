@@ -864,41 +864,64 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
-                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
-                ->latest();
+                ->where('type', TxnType::IbBonus->value);
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('status', 'backend.user.include.__txn_status')
-                ->editColumn('type', 'backend.user.include.__txn_type')
-                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->editColumn('created_at', function ($row) {
-                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
-                        $manualData = json_decode($row->manual_field_data, true);
-
-                        if (is_array($manualData) && isset($manualData['time'])) {
-                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
-                        }
-                    }
-
-                    // Fallback to created_at
-                    return $row->created_at;
-                })
-
-
-                ->addColumn('action', function ($row) {
-                    // Replicate the same structure and styling
-                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
-                                    <iconify-icon icon="lucide:eye"></iconify-icon>
-                                </button>
-                            </span>';
-                })
-
-                ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
-                ->make(true);
+        // Date Range Filter
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $data->where(function ($query) use ($start, $end) {
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
+                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
+                    })->orWhereBetween('created_at', [$start, $end]);
+                });
+            }
         }
+
+
+        // Field filters
+        foreach (['login', 'deal', 'order', 'symbol'] as $field) {
+            if (!empty($request->$field)) {
+                $value = $request->$field;
+//                dd($value);
+
+                if (in_array($field, ['login', 'deal', 'order'])) {
+                    $data->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) AS UNSIGNED) = ?", [$value]);
+                } else {
+                    $data->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) LIKE ?", ["%$value%"]);
+                }
+            }
+        }
+
+        return Datatables::of($data->latest())
+            ->addIndexColumn()
+            ->editColumn('status', 'backend.user.include.__txn_status')
+            ->editColumn('type', 'backend.user.include.__txn_type')
+            ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+            ->editColumn('created_at', function ($row) {
+                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                    $manualData = json_decode($row->manual_field_data, true);
+                    if (is_array($manualData) && isset($manualData['time'])) {
+                        return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                    }
+                }
+                return $row->created_at;
+            })
+            ->addColumn('action', function ($row) {
+                return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                            <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                <iconify-icon icon="lucide:eye"></iconify-icon>
+                            </button>
+                        </span>';
+            })
+            ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
+            ->make(true);
     }
+    }
+
     public function ibInfo($id, Request $request)
     {
         //dd($id);

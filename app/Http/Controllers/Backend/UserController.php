@@ -872,6 +872,20 @@ class UserController extends Controller
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->editColumn('created_at', function ($row) {
+                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                        $manualData = json_decode($row->manual_field_data, true);
+
+                        if (is_array($manualData) && isset($manualData['time'])) {
+                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                        }
+                    }
+
+                    // Fallback to created_at
+                    return $row->created_at;
+                })
+
+
                 ->addColumn('action', function ($row) {
                     // Replicate the same structure and styling
                     return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
@@ -880,7 +894,8 @@ class UserController extends Controller
                                 </button>
                             </span>';
                 })
-                ->rawColumns(['status', 'type', 'final_amount', 'action'])
+
+                ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
                 ->make(true);
         }
     }

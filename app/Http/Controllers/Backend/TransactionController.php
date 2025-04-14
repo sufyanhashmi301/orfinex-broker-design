@@ -98,6 +98,18 @@ class TransactionController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
+                ->editColumn('created_at', function ($row) {
+                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                        $manualData = json_decode($row->manual_field_data, true);
+
+                        if (is_array($manualData) && isset($manualData['time'])) {
+                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                        }
+                    }
+
+                    // Fallback to created_at
+                    return $row->created_at;
+                })
                 ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
                 ->make(true);
         }

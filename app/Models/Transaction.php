@@ -68,6 +68,14 @@ class Transaction extends Model
     {
         return $this->referrals()->where('type', '=', $this->target_type);
     }
+    public function getDisplayTimeAttribute()
+    {
+        $data = json_decode($this->manual_field_data, true);
+        return isset($data['time']) && $data['time'] !== '[]'
+            ? \Carbon\Carbon::parse($data['time'])
+            : \Carbon\Carbon::parse($this->created_at);
+    }
+
 
     public function referrals()
     {

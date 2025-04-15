@@ -94,7 +94,6 @@ class AppController extends Controller
 
     public function profileUpdate(Request $request)
     {
-        // dd($request->all());
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
@@ -123,6 +122,21 @@ class AppController extends Controller
         notify()->success('Profile Update Successfully');
 
         return redirect()->back();
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = \Auth::user();
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = self::imageUploadTrait($request->file('avatar'), $user->avatar);
+        } else {
+            $avatarPath = $user->avatar;
+        }
+
+        auth()->user()->update(['avatar' => $avatarPath]);
+
+        return response()->json(['success' => true]);
     }
 
     public function passwordChange()

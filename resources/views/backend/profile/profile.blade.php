@@ -12,8 +12,12 @@
                 <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
                 </div>
                 <div class="profile-box">
-                    <div class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
+                    <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative mx-auto">
                         <img src="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+                        <label class="absolute right-1 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center top-[100px] cursor-pointer">
+                            <input type="file" class="hidden" id="file-input" name="image" accept="image/*">
+                            <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                        </label>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
@@ -208,21 +212,23 @@
                                     <option value="other" @selected($staff->gender === 'other')>{{ __('Other') }}</option>
                                 </select>
                             </div>
-                            <div class="input-area">
+                            <div class="input-area phone-input-wrapper">
                                 <label for="" class="form-label">{{ __('Work Phone Number:') }}</label>
                                 <input
-                                    type="text"
+                                    type="tel"
                                     name="work_phone"
+                                    id="work_phone"
                                     class="form-control"
                                     value="{{ $staff->work_phone }}"
                                     placeholder=""
                                 >
                             </div>
-                            <div class="input-area">
+                            <div class="input-area phone-input-wrapper">
                                 <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
                                 <input
-                                    type="text"
+                                    type="tel"
                                     name="phone"
+                                    id="phone"
                                     class="form-control"
                                     value="{{ $staff->phone }}"
                                     placeholder=""
@@ -260,12 +266,116 @@
             </form>
         </div>
     </div>
+
+    {{-- Modal for avatar copper--}}
+    @include('frontend::user.setting.include.__avatar_cropper_modal')
+
+@endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/css/cropper.css') }}">
 @endsection
 @section('script')
+    <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('global/js/cropper.js') }}"></script>
     <script>
-         $(".dateOfBirth").flatpickr({
-                    dateFormat: "Y-m-d",
-                    maxDate: "15-12-2017"
+        const inputPhone = document.querySelector("#phone");
+        const inputWorkPhone = document.querySelector("#work_phone");
+
+        window.intlTelInput(inputPhone, {
+            strictMode: true,
+            initialCountry: 'auto',
+            hiddenInput: () => ({ phone: "phone", country: "country_code" }),
+            loadUtils: () => import("{{ asset('frontend/js/utils.js') }}")
+        });
+
+        window.intlTelInput(inputWorkPhone, {
+            strictMode: true,
+            initialCountry: 'auto',
+            hiddenInput: () => ({ phone: "work_phone", country: "country_code" }),
+            loadUtils: () => import("{{ asset('frontend/js/utils.js') }}")
+        });
+
+        $(".dateOfBirth").flatpickr({
+            dateFormat: "Y-m-d",
+            maxDate: "15-12-2017"
+        });
+
+        //Profile picture JS
+        window.addEventListener('DOMContentLoaded', function () {
+            var image = document.getElementById('uploadedAvatar');
+            var input = document.getElementById('file-input');
+            var cropBtn = document.getElementById('crop-image');
+
+            var $modal = $('#cropperModal');
+            var cropper;
+
+            input.addEventListener('change', function (e) {
+                var files = e.target.files;
+                var done = function (url) {
+                    image.src = url;
+                    $modal.modal('show');
+                };
+
+                if (files && files.length > 0) {
+                    let file = files[0];
+
+                    reader = new FileReader();
+                    reader.onload = function (e) {
+                        done(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $modal.on('shown.bs.modal', function () {
+                cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 3,
                 });
+            }).on('hidden.bs.modal', function () {
+                cropper.destroy();
+                cropper = null;
+            });
+
+            cropBtn.addEventListener('click', function () {
+                // var initialAvatarURL;
+                var canvas;
+
+                $modal.modal('hide');
+
+                if (cropper) {
+                    canvas = cropper.getCroppedCanvas({
+                        width: 160,
+                        height: 160,
+                    });
+
+                    canvas.toBlob(function (blob) {
+                        var formData = new FormData();
+                        formData.append('avatar', blob, 'avatar.jpg');
+
+                        fetch('{{ route("admin.profile.updateAvatar") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    tNotify('success', 'Profile picture updated successfully');
+                                    location.reload();
+                                } else {
+                                    tNotify('error', 'Upload failed');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                tNotify('error', 'Something went wrong');
+                            });
+                    }, 'image/jpeg');
+                }
+            });
+        });
     </script>
 @endsection

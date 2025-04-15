@@ -288,6 +288,9 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
 
+        // All the eligible funded balances entries created/updated
+        $this->payout->updateAllFundedBalance(Auth::id());
+
         // All eligible funded balances record.
         $funded_balances = FundedBalance::where('user_id', Auth::id())->whereRaw('profit - payout_pending != 0')->get();
 

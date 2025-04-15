@@ -37,12 +37,14 @@ class PayoutService
     $funded_balance = FundedBalance::where('user_id', Auth::id())->where('account_type_investment_id', $investment->id)->first();
     $funded_balance->profit = $funded_balance->profit + ($total_profit - $funded_balance->last_retrieved_profit);
 
-    if( $total_profit <= $funded_balance->last_retrieved_profit ) {
-      return true;
-    }
-
     $funded_balance->last_retrieved_profit = $total_profit;
     $funded_balance->save();
+
+    if($funded_balance->profit < $investment->getRuleSnapshotData()['profit_target']) {
+      $funded_balance->profit = 0;
+      $funded_balance->last_retrieved_profit = 0;
+      $funded_balance->save();
+    }
 
     return $funded_balance;
 
@@ -74,9 +76,10 @@ class PayoutService
         }
 
         if( 
-            $account_stats->balance >= ( $account_rule['allotted_funds'] + $account_rule['profit_target'] ) && 
+            ($account_stats->balance >= ( $account_rule['allotted_funds'] + $account_rule['profit_target'] ) && 
             $account_stats->trading_days >= $trading_days &&
-            $account_stats->balance == $account_stats->current_equity
+            $account_stats->balance == $account_stats->current_equity) ||
+            in_array($acc->id, FundedBalance::where('user_id', $user_id)->get()->pluck('account_type_investment_id')->toArray())
         ){
             array_push($eligible_for_payout_accounts, $acc);
         }

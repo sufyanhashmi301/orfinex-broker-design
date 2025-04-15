@@ -94,8 +94,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' 
     Route::get('contract/{id}', [ContractController::class, 'show'])->name('contract.show');
     Route::post('contract/store', [ContractController::class, 'storeContract'])->name('contract.store');
 
-    
-
     // Contract Agreement
     Route::get('agreements', function () {
         $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_show%')->get();

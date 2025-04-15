@@ -148,7 +148,7 @@
                                 <strong>{{ $invoice->status }}</strong>
                             </h4>
                         @endif
-                        <p>Transaction ID: <strong>{{ $invoice->getSerialNumber() }}</strong></p>
+                        <p>Transaction ID: <strong>{{ $invoice->getCustomData()['transaction_id'] }}</strong></p>
                         <p>Created At: <strong>{{ $invoice->getDate() }}</strong></p>
                     </td>
                 </tr>

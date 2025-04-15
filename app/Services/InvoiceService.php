@@ -84,11 +84,11 @@ class InvoiceService
 					'addons' => count($addon_data) != 0 ? $addon_data['items'] : '',
 					'coupon_code' => $coupon_code_data,
 
-					'subtotal' => $transaction->invoice->package_price
-
+					'subtotal' => $transaction->invoice->package_price,
+					'transaction_id' => $transaction->tnx
 				])
 				// ->logo( str_replace("public", 'assets', public_path(setting('site_logo','global') )) )
-				->sequence($transaction->tnx)
+				// ->sequence($transaction->tnx)
 				->totalAmount($transaction->invoice->total_amount)
 				->date(Carbon::parse($transaction->created_at))
 				->template('invoice');
@@ -111,9 +111,10 @@ class InvoiceService
 					'has_addons' => false,
 					'has_coupon_code_discount' => false,
 					'package_discount' => 0,
+					'transaction_id' => $transaction->tnx
 				])
 				// ->logo( str_replace("public", 'assets', public_path(setting('site_logo','global') )) )
-				->sequence($transaction->tnx)
+				// ->sequence($transaction->tnx)
 				->date(Carbon::parse($transaction->created_at))
 				->template('invoice');
 		}

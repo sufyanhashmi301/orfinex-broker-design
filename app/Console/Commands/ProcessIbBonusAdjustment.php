@@ -113,7 +113,7 @@ class ProcessIbBonusAdjustment extends Command
                 if ($ledger) {
                     $ledger->balance = $s['wallet_amount'];
                     $ledger->save();
-                    $s['ledger_balance'] = $ledger->balance;
+                    $s['balance'] = $ledger->balance;
                 }
             }
 
@@ -122,7 +122,7 @@ class ProcessIbBonusAdjustment extends Command
             // 7. Output
             $this->info("=== IB Wallet Adjustment Summary ===");
             foreach ($accountSummary as $s) {
-                $this->line("User {$s['user_id']} ({$s['email']}): final wallet {$s['wallet_amount']}, ledger {$s['ledger_balance']}");
+                $this->line("User {$s['user_id']} ({$s['email']}): final wallet {$s['wallet_amount']}, ledger {$s['balance']}");
             }
 
             if ($insufficientReport) {

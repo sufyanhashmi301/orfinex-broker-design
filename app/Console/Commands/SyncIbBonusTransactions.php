@@ -5,56 +5,61 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Enums\TxnType;
+use Illuminate\Database\QueryException;
 
 class SyncIbBonusTransactions extends Command
 {
     protected $signature   = 'sync:ib-bonus';
-    protected $description = 'Copy missing IB Bonus rows from old_connection into primary DB';
+    protected $description = 'Copy missing IB Bonus rows from old_connection into primary DB, chunked to avoid huge placeholders';
 
     public function handle()
     {
-        // 1) Point at the old table
-        $old = DB::connection('old_connection')->table('transactions');
+        $this->info("Starting IB‑bonus sync…");
 
-        // 2) Grab every IB‑bonus ID from old_connection
-        $oldIds = $old
+        // Define the query on the old connection, ordered by PK
+        $oldQuery = DB::connection('old_connection')
+            ->table('transactions')
             ->where('type', TxnType::IbBonus)
-            ->pluck('id')
-            ->toArray();
+//            ->where('created_at', '>=', '2025-04-01')
+            ->orderBy('id');
 
-        if (empty($oldIds)) {
-            return $this->info('No IB‑bonus records found in old_connection.');
-        }
+        // Stream in chunks of 500 rows at a time
+        $oldQuery->chunkById(500, function ($rows) {
+            // 1) Gather this chunk’s IDs
+            $ids = array_map(fn($r) => $r->id, $rows->all());
 
-        // 3) See which of those IDs already live in your main DB
-        $existing = DB::table('transactions')
-            ->where('type', TxnType::IbBonus)
-            ->whereIn('id', $oldIds)
-            ->pluck('id')
-            ->toArray();
+            // 2) Find which of these IDs already exist in main DB
+            $existing = DB::table('transactions')
+                ->whereIn('id', $ids)
+                ->pluck('id')
+                ->all();
 
-        $missing = array_diff($oldIds, $existing);
-
-        if (empty($missing)) {
-            return $this->info('All IB‑bonus transactions already copied.');
-        }
-
-        $this->info('Importing '.count($missing).' missing IB‑bonus rows…');
-
-        // 4) Chunk through just the missing rows, casting to array, and insert verbatim
-        $old
-            ->where('type', TxnType::IbBonus)
-            ->whereIn('id', $missing)
-            ->orderBy('id')
-            ->chunk(100, function ($rows) {
-                $batch = [];
-                foreach ($rows as $row) {
-                    // (array)$row preserves exactly the columns that actually exist
+            // 3) Build a batch of *only* the missing rows
+            $batch = [];
+            foreach ($rows as $row) {
+                if (! in_array($row->id, $existing, true)) {
                     $batch[] = (array) $row;
                 }
-                DB::table('transactions')->insert($batch);
-            });
+            }
 
-        $this->info('✓ Done copying IB‑bonus transactions.');
+            // 4) Bulk‐insert that batch (if any)
+            if (! empty($batch)) {
+                try {
+                    DB::table('transactions')->insert($batch);
+                } catch (QueryException $e) {
+                    // Fallback: insert one by one to isolate bad rows
+                    foreach ($batch as $data) {
+                        try {
+                            DB::table('transactions')->insert($data);
+                        } catch (QueryException $inner) {
+                            \Log::error("IB‑bonus insert failed for id={$data['id']}: {$inner->getMessage()}");
+                        }
+                    }
+                }
+                $this->info('  → Inserted IDs: '.implode(', ', array_column($batch, 'id')));
+            }
+        });
+
+        $this->info("IB‑bonus sync complete.");
     }
 }

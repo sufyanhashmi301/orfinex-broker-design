@@ -18,41 +18,40 @@ class ProcessIbBonusAdjustment extends Command
 
     public function handle()
     {
-        $startDate   = Carbon::parse('2025-04-08')->startOfDay();
-        $currentDate = Carbon::now();
+        $startDate = Carbon::parse('2025-04-08')->startOfDay();
 
-        $insufficientReport = [];
-        $accountSummary     = [];
+        $insufficientReport   = [];
+        $accountSummary       = [];
 
-        // 1. Accumulate all MetaDeal IDs, in chunks
+        // 1. Gather MetaDeal IDs
         $metaDealIds = [];
         MetaDeal::where('time', '>=', $startDate)
             ->chunkById(200, function ($deals) use (&$metaDealIds) {
-                foreach ($deals as $deal) {
-                    $metaDealIds[] = $deal->id;
-                }
+                $metaDealIds = array_merge($metaDealIds, $deals->pluck('id')->all());
             });
 
-        // 2. Accumulate per‐user bonus sums, in chunks
-        $bonusSums = [];
+        // 2. Gather bonus sums _and_ transaction IDs
+        $bonusSums           = [];
+        $bonusTransactionIds = [];
+
         Transaction::where('type', 'ib_bonus')
             ->where('status', 'success')
             ->where('created_at', '>=', $startDate)
-            ->chunkById(200, function ($txs) use (&$bonusSums) {
+            ->chunkById(200, function ($txs) use (&$bonusSums, &$bonusTransactionIds) {
                 foreach ($txs as $tx) {
                     $bonusSums[$tx->user_id] = ($bonusSums[$tx->user_id] ?? 0) + $tx->amount;
+                    $bonusTransactionIds[]   = $tx->id;
                 }
             });
-//dd($bonusSums);
+
         DB::beginTransaction();
         try {
-            // 3. Process each user’s bonus adjustment
+            // 3. Process each user’s wallet
             foreach ($bonusSums as $userId => $totalBonus) {
-                /** @var Account|null $account */
                 $account = Account::where('user_id', $userId)
                     ->where('balance', 'ib_wallet')
                     ->first();
-                $user = User::find($userId);
+                $user    = User::find($userId);
 
                 if (! $account) {
                     $insufficientReport[] = [
@@ -67,16 +66,16 @@ class ProcessIbBonusAdjustment extends Command
                 if ($account->amount >= $totalBonus) {
                     $account->amount -= $totalBonus;
                 } else {
-                    $subtractedAmount     = $account->amount;
-                    $remainingToSubtract  = $totalBonus - $subtractedAmount;
-                    $account->amount      = 0;
+                    $sub        = $account->amount;
+                    $remaining  = $totalBonus - $sub;
+                    $account->amount = 0;
 
                     $insufficientReport[] = [
                         'user_id'              => $userId,
                         'email'                => $user->email ?? 'N/A',
                         'expected_bonus'       => $totalBonus,
-                        'subtracted_amount'    => $subtractedAmount,
-                        'remaining_to_subtract'=> $remainingToSubtract,
+                        'subtracted_amount'    => $sub,
+                        'remaining_to_subtract'=> $remaining,
                         'reason'               => 'Insufficient IB wallet balance',
                     ];
                 }
@@ -91,58 +90,50 @@ class ProcessIbBonusAdjustment extends Command
                 ];
             }
 
-            // 4. Delete related ledgers & transactions in chunks
-            if (! empty($bonusSums)) {
-                $ids = array_keys($bonusSums);
-                Transaction::whereIn('id', $ids)
-                    ->chunkById(200, function ($txs) {
-                        Ledger::whereIn('transaction_id', $txs->pluck('id'))->delete();
-                        $txs->each->delete();
-                    });
+            // 4. Delete ledgers & transactions by _transaction_ IDs
+            if ($bonusTransactionIds) {
+                foreach (array_chunk($bonusTransactionIds, 200) as $chunk) {
+                    Ledger::whereIn('transaction_id', $chunk)->delete();
+                    Transaction::whereIn('id', $chunk)->delete();
+                }
             }
 
-            // 5. Delete MetaDeals in chunks
-            if (! empty($metaDealIds)) {
-                MetaDeal::whereIn('id', $metaDealIds)
-                    ->chunkById(200, function ($deals) {
-                        $deals->each->delete();
-                    });
+            // 5. Delete MetaDeals
+            if ($metaDealIds) {
+                foreach (array_chunk($metaDealIds, 200) as $chunk) {
+                    MetaDeal::whereIn('id', $chunk)->delete();
+                }
             }
 
-            // 6. Update last ledger balance for each account
-            foreach ($accountSummary as &$summary) {
-                $ledgerEntry = Ledger::where('account_id', $summary['account_id'])
-                    ->orderByDesc('id')
+            // 6. Patch last ledger balances
+            foreach ($accountSummary as &$s) {
+                $ledger = Ledger::where('account_id', $s['account_id'])
+                    ->latest('id')
                     ->first();
-                if ($ledgerEntry) {
-                    $ledgerEntry->balance = $summary['wallet_amount'];
-                    $ledgerEntry->save();
-                    $summary['ledger_balance'] = $ledgerEntry->balance;
+                if ($ledger) {
+                    $ledger->balance = $s['wallet_amount'];
+                    $ledger->save();
+                    $s['ledger_balance'] = $ledger->balance;
                 }
             }
 
             DB::commit();
 
-            // 7. Finally: show the consolidated report
+            // 7. Output
             $this->info("=== IB Wallet Adjustment Summary ===");
             foreach ($accountSummary as $s) {
-                $this->line(
-                    "User ID: {$s['user_id']}, Email: {$s['email']}, " .
-                    "Final Wallet: {$s['wallet_amount']}, Ledger Balance: {$s['ledger_balance']}"
-                );
+                $this->line("User {$s['user_id']} ({$s['email']}): final wallet {$s['wallet_amount']}, ledger {$s['ledger_balance']}");
             }
 
             if ($insufficientReport) {
-                $this->info("\n=== Users with Insufficient Funds ===");
+                $this->info("\n=== Insufficient Funds ===");
                 foreach ($insufficientReport as $r) {
-                    $this->warn(
-                        "User ID: {$r['user_id']}, Email: {$r['email']}, " .
-                        "Remaining to Subtract: {$r['remaining_to_subtract']}"
-                    );
+                    $this->warn("User {$r['user_id']} ({$r['email']}): remaining to subtract {$r['remaining_to_subtract']}");
                 }
             } else {
-                $this->info("\nNo users had insufficient IB wallet funds.");
+                $this->info("\nNo insufficient‑funds cases.");
             }
+
         } catch (\Exception $e) {
             DB::rollBack();
             $this->error("Error: " . $e->getMessage());

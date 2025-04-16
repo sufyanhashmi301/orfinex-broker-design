@@ -13,10 +13,12 @@ class SyncIbBonusTransactions extends Command
 
     public function handle()
     {
+        // 1) Point at the old table
         $old = DB::connection('old_connection')->table('transactions');
 
-        // 1) get all IB‑bonus IDs in old
-        $oldIds = $old->where('type', TxnType::IbBonus)
+        // 2) Grab every IB‑bonus ID from old_connection
+        $oldIds = $old
+            ->where('type', TxnType::IbBonus)
             ->pluck('id')
             ->toArray();
 
@@ -24,7 +26,7 @@ class SyncIbBonusTransactions extends Command
             return $this->info('No IB‑bonus records found in old_connection.');
         }
 
-        // 2) find which of those are already in primary DB
+        // 3) See which of those IDs already live in your main DB
         $existing = DB::table('transactions')
             ->where('type', TxnType::IbBonus)
             ->whereIn('id', $oldIds)
@@ -39,14 +41,15 @@ class SyncIbBonusTransactions extends Command
 
         $this->info('Importing '.count($missing).' missing IB‑bonus rows…');
 
-        // 3) chunk through just the missing rows and insert them verbatim
-        $old->where('type', TxnType::IbBonus)
+        // 4) Chunk through just the missing rows, casting to array, and insert verbatim
+        $old
+            ->where('type', TxnType::IbBonus)
             ->whereIn('id', $missing)
             ->orderBy('id')
             ->chunk(100, function ($rows) {
                 $batch = [];
                 foreach ($rows as $row) {
-                    // cast stdClass → array so we keep every column
+                    // (array)$row preserves exactly the columns that actually exist
                     $batch[] = (array) $row;
                 }
                 DB::table('transactions')->insert($batch);

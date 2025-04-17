@@ -94,7 +94,7 @@ if (!function_exists('get_user_account')) {
         // Attempt to retrieve the account.
         $account = Account::where('user_id', $userId)
             ->where('balance', $balance)
-            ->first();
+            ->lockForUpdate()->first();
 
         // If no account exists, create a new one.
         if (blank($account)) {
@@ -126,7 +126,7 @@ if (!function_exists('w2n_by_wallet_id')) {
         if($userId)
             $account->where('user_id', $userId);
 
-        $account = $account->first();
+        $account = $account->lockForUpdate()->first();
         $nameMap = [
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
             AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
@@ -154,7 +154,7 @@ if (!function_exists('get_user_account_by_wallet_id')) {
         if($userId)
             $account->where('user_id', $userId);
 
-        $account = $account->first();
+        $account = $account->lockForUpdate()->first();
         return $account;
     }
 }
@@ -182,7 +182,7 @@ if (!function_exists('get_all_wallets')) {
                 $accounts->where('balance',$balance);
             }
         }
-        $accounts = $accounts->get();
+        $accounts = $accounts->lockForUpdate()->get();
 
         return $accounts;
     }

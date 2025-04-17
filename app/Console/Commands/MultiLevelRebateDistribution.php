@@ -4,13 +4,12 @@ namespace App\Console\Commands;
 
 use App\Enums\AccountBalanceType;
 use App\Enums\IBStatus;
-use App\Enums\TransactionCalcType;
-use App\Models\ForexAccount;
-use App\Models\Ledger;
-use App\Models\MetaDeal;
 use App\Enums\TxnStatus;
 use App\Enums\TxnTargetType;
 use App\Enums\TxnType;
+use App\Models\ForexAccount;
+use App\Models\Ledger;
+use App\Models\MetaDeal;
 use App\Models\RebateRule;
 use App\Models\ReferralRelationship;
 use App\Models\Symbol;
@@ -19,14 +18,14 @@ use App\Models\UserIbRule;
 use App\Models\UserIbRuleLevel;
 use App\Models\UserIbRuleLevelShare;
 use App\Models\Level;
+use App\Models\Transaction;
 use App\Services\WalletService;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
+use Throwable;
 use Txn;
 
 class MultiLevelRebateDistribution extends Command
@@ -36,296 +35,257 @@ class MultiLevelRebateDistribution extends Command
 
     public function handle()
     {
-        DB::beginTransaction();
         try {
-            $ReferralRelationships = ReferralRelationship::with('referralLink')
-//                ->where('user_id',3216)
-                ->get();
+            $referrals = ReferralRelationship::with('referralLink')->get();
 
-            foreach ($ReferralRelationships as $ReferralRelationship) {
-                $this->processReferralRelationship($ReferralRelationship);
+            foreach ($referrals as $referral) {
+                DB::transaction(function () use ($referral) {
+                    $this->processReferralRelationship($referral);
+                }, 3); // Retry up to 3 times on deadlocks
             }
 
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error('Failed to distribute rebates: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            Log::error('Rebate distribution failed: ' . $e->getMessage());
             return 1;
         }
+
         return 0;
     }
 
-    protected function processReferralRelationship($ReferralRelationship)
+    protected function processReferralRelationship($referral)
     {
-        $notedParentData = $this->getValidParent($ReferralRelationship->user);
-        // dd($notedParentData);
+        $parentData = $this->getValidParent($referral->user);
 
-        if (!$notedParentData) {
-            return false;
-        }
+        if (!$parentData) return;
 
-        $notedParent = $notedParentData['user'];
-        $notedLevel = $notedParentData['level']; // Get the valid IB parent's level
+        $parent = $parentData['user'];
+        $level = $parentData['level'];
+        $childUserId = $referral->user_id;
 
-        $childUserId = $ReferralRelationship->user_id;
-        $forexSchemas = $notedParent->ibGroup->rebateRules()
+        $forexSchemas = $parent->ibGroup->rebateRules()
             ->with('forexSchemas')
             ->get()
             ->flatMap(fn($rebateRule) => $rebateRule->forexSchemas)
             ->pluck('id')
             ->unique();
-//dd($forexSchemas);
-        $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
-            ->whereIn('forex_schema_id', $forexSchemas) // Ensure it belongs to the IB's allowed schemas
+
+        $accounts = ForexAccount::realActiveAccount($childUserId)
+            ->whereIn('forex_schema_id', $forexSchemas)
             ->get();
 
-        if ($realForexAccounts->isEmpty()) {
-            return false;
-        }
-
-
-        foreach ($realForexAccounts as $realForexAccount) {
-            // dd($realForexAccount);
-            $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
-            // dd($symbols);
-//
-            $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-            // dd($lastDealTime);
-            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $symbols);
-            //   dd($deals);
+        foreach ($accounts as $account) {
+            $symbols = $this->getUserAssignedSymbols($parent, $account);
+            $lastDealTime = $this->getLastDeal($childUserId, $account->login);
+            $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
 
             if (!$deals->isEmpty()) {
-                $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
             }
         }
-
     }
 
-    protected function getValidParent($user)
-    {
-        // dd($user);
-        $level = 0; // Start from level 0
-        $maxLevel = Level::max('level_order'); // Get max level from levels table
-        if (!$maxLevel) {
-            return null; // Ignore further processing if no levels exist
-        }
-        while ($user && $user->ref_id && $level <= $maxLevel) {
-            $parent = User::find($user->ref_id);
-
-            if ($parent && $parent->ib_group_id && $parent->ib_status === IBStatus::APPROVED) {
-                return ['user' => $parent, 'level' => $level];
-            }
-
-            $user = $parent;
-            $level++;
-        }
-
-        return null;
-    }
-    protected function saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount)
+    protected function saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account)
     {
         foreach ($deals as $deal) {
-            if(!MetaDeal::where('login',$deal->Login)->where('deal',$deal->Deal)->where('order',$deal->Order)->exists()) {
-                $data = [
-                    'user_id' => $childUserId,
-                    'login' => $deal->Login,
-                    'deal' => $deal->Deal,
-                    'dealer' => $deal->Dealer,
-                    'order' => $deal->Order,
-                    'symbol' => $deal->Symbol,
-                    'volume' => $deal->Volume,
-                    'volume_closed' => $deal->VolumeClosed,
-                    'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
-                    'time' => $deal->Time
-                ];
-                $metaDeal = MetaDeal::create($data);
-                // $metaDeal = MetaDeal::find(13125);
-                // dd($metaDeal);
-                $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount);
-            }
+            $exists = MetaDeal::where('login', $deal->Login)
+                ->where('deal', $deal->Deal)
+                ->where('order', $deal->Order)
+                ->exists();
+
+            if ($exists) continue;
+
+            $metaDeal = MetaDeal::create([
+                'user_id' => $childUserId,
+                'login' => $deal->Login,
+                'deal' => $deal->Deal,
+                'dealer' => $deal->Dealer,
+                'order' => $deal->Order,
+                'symbol' => $deal->Symbol,
+                'volume' => $deal->Volume,
+                'volume_closed' => $deal->VolumeClosed,
+                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
+                'time' => $deal->Time
+            ]);
+
+            $this->distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account);
         }
     }
 
-    protected function distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel, $realForexAccount)
+    protected function distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account)
     {
-        $shareDistribution = $this->calculateRebate($metaDeal->symbol, $notedParent, $notedLevel, $realForexAccount);
-        // dd($shareDistribution);
+        $distribution = $this->calculateRebate($metaDeal->symbol, $parent, $level, $account);
+        if (empty($distribution)) return;
 
-        if (empty($shareDistribution)) {
-            return;
-        }
+        $currentUser = $referral->referralLink->user->id;
+        $hierarchy = [$currentUser];
+        $currentLevel = $level;
 
-        $currentUser = $ReferralRelationship->referralLink->user->id;
-        $userHierarchy = [$currentUser];
-        $currentLevel = $notedLevel; // Highest level for child, decrement for parents
-// dd($userHierarchy);
-        // Get parents in hierarchy order
         while ($currentUser && $currentLevel > 0) {
             $parentUser = User::find($currentUser)->ref_id;
             if ($parentUser) {
-                $userHierarchy[] = $parentUser;
+                $hierarchy[] = $parentUser;
                 $currentUser = $parentUser;
             }
             $currentLevel--;
         }
-        // dd($userHierarchy);
 
-        // Reverse the order to distribute correctly
-        $userHierarchy = array_reverse($userHierarchy);
-        $totalLevels = count($userHierarchy);
-        //user have the trade
+        $hierarchy = array_reverse($hierarchy);
         $childUser = User::find($childUserId);
-        // dd($userHierarchy,$totalLevels);
 
-        foreach ($userHierarchy as $index => $userId) {
-            $levelIndex = ++$index; // Assign correct level share
-// dd($userHierarchy,$shareDistribution,$levelIndex,$shareDistribution[$levelIndex]);
-            if (isset($shareDistribution[$levelIndex])) {
-                $share = $shareDistribution[$levelIndex];
+        foreach ($hierarchy as $index => $userId) {
+            $levelIndex = ++$index;
+            if (!isset($distribution[$levelIndex]) || $distribution[$levelIndex] <= 0) continue;
 
-                if ($share > 0) {
-                    $userAccount = get_user_account($userId, AccountBalanceType::IB_WALLET);
-                    $targetId = $userAccount->wallet_id;
-                    $amount = $share * $metaDeal->lot_share;
+            $share = $distribution[$levelIndex];
+            $amount = $share * $metaDeal->lot_share;
 
-                    $transaction = Txn::new(
-                        $amount, 0, $amount, 'system',
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from the account {$metaDeal->login} of {$childUser->full_name}",
-                        TxnType::IbBonus, TxnStatus::Success, base_currency(),
-                        $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from the account {$metaDeal->login} of {$childUser->full_name}", $targetId, TxnTargetType::Wallet->value
-                );
+            $account = get_user_account($userId, AccountBalanceType::IB_WALLET);
+            $walletId = $account->wallet_id;
+            $description = "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login} of {$childUser->full_name}";
 
-                $this->addBalance($transaction);
-                }
-            }
+            if (Transaction::isDuplicateIbBonus($userId, $childUserId, $description, $amount)) continue;
+
+            $transaction = Txn::new(
+                $amount, 0, $amount, 'system',
+                $description,
+                TxnType::IbBonus, TxnStatus::Success, base_currency(),
+                $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
+                $description, $walletId, TxnTargetType::Wallet->value
+            );
+
+            $this->safeAddBalance($transaction);
         }
 
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
     }
 
-    protected function calculateRebate($symbol, $notedParent, $notedLevel, $forexAccount)
+    protected function safeAddBalance($transaction, $retries = 3)
     {
-        // Fetch the rebate rule that matches the IB Group, Forex Schema, and Symbol
-        $rebateRule = RebateRule::whereHas('ibGroups', fn($query) =>
-        $query->where('ib_group_id', $notedParent->ibGroup->id)) // Ensure it belongs to the IB Group
-        ->whereHas('forexSchemas', fn($query) =>
-        $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure schema matches
-        ->whereHas('symbolGroups.symbols', fn($query) =>
-        $query->where('symbol', $symbol)) // Ensure the rule applies to the symbol
-        ->first();
+        for ($i = 0; $i < $retries; $i++) {
+            try {
+                DB::transaction(function () use ($transaction) {
+                    $account = \App\Models\Account::where('wallet_id', $transaction->target_id)
+                        ->lockForUpdate()
+                        ->firstOrFail();
 
-        // dd($rebateRule);
-        if (!$rebateRule) {
-            return [];
+                    $wallet = new WalletService();
+                    $ledgerBalance = $wallet->getLedgerBalance($account->id);
+                    $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
+
+                    if ($transaction->target_type == TxnTargetType::Wallet->value) {
+                        $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount));
+                        $account->save();
+                    }
+                });
+                return;
+            } catch (Throwable $e) {
+                if ($i === $retries - 1) throw $e;
+                usleep(100000); // wait 100ms before retry
+            }
         }
+    }
 
-        $totalRebateAmount = $rebateRule->rebate_amount;
-
-        // Fetch the IB Rule for the parent user
-        $ibRule = UserIbRule::where('user_id', $notedParent->id)
-            ->where('rebate_rule_id', $rebateRule->id)
-            ->first();
-        // dd($ibRule);
-
-        if (!$ibRule) {
-            return [];
-        }
-
-        // Find User IB Rule Level
-        $ibRuleLevel = UserIbRuleLevel::where('user_ib_rule_id', $ibRule->id)
-            ->where('level_id', $notedLevel)
+    protected function calculateRebate($symbol, $parent, $level, $account)
+    {
+        $rule = RebateRule::whereHas('ibGroups', fn($q) =>
+        $q->where('ib_group_id', $parent->ibGroup->id))
+            ->whereHas('forexSchemas', fn($q) =>
+            $q->where('forex_schema_id', $account->forex_schema_id))
+            ->whereHas('symbolGroups.symbols', fn($q) =>
+            $q->where('symbol', $symbol))
             ->first();
 
-        // Initialize default rebate distribution
-        $rebateDistribution = array_fill(1, $notedLevel, 0);
-        $totalShared = 0;
-        // dd($rebateDistribution);
+        if (!$rule) return [];
 
-        if ($ibRuleLevel) {
-            $shares = UserIbRuleLevelShare::where('user_ib_rule_level_id', $ibRuleLevel->id)->get();
-            // dd($shares);
+        $total = $rule->rebate_amount;
+        $userRule = UserIbRule::where('user_id', $parent->id)
+            ->where('rebate_rule_id', $rule->id)
+            ->first();
+
+        if (!$userRule) return [];
+
+        $ruleLevel = UserIbRuleLevel::where('user_ib_rule_id', $userRule->id)
+            ->where('level_id', $level)
+            ->first();
+
+        $distribution = array_fill(1, $level, 0);
+        $shared = 0;
+
+        if ($ruleLevel) {
+            $shares = UserIbRuleLevelShare::where('user_ib_rule_level_id', $ruleLevel->id)->get();
             foreach ($shares as $share) {
-                $rebateDistribution[$share->level_id] = $share->share;
-                $totalShared += $share->share;
+                $distribution[$share->level_id] = $share->share;
+                $shared += $share->share;
             }
         }
-        // dd($rebateDistribution,$totalShared,$totalRebateAmount);
 
-        // Assign remaining rebate to the highest level
-            $remaining = $totalRebateAmount - $totalShared;
+        $remaining = $total - $shared;
+        $shifted = [];
 
-            // Shift all existing levels down by 1
-            $shifted = [];
-            foreach ($rebateDistribution as $level => $share) {
-                $shifted[$level + 1] = $share;
-            }
+        foreach ($distribution as $lvl => $share) {
+            $shifted[$lvl + 1] = $share;
+        }
 
-            // Put the remaining rebate at level 1
-            $rebateDistribution = [1 => $remaining] + $shifted;
-
-        return $rebateDistribution;
+        return [1 => $remaining] + $shifted;
     }
 
-    protected function getUserAssignedSymbols($notedParentData, $forexAccount): array
+    protected function getUserAssignedSymbols($parent, $account): array
     {
-        $filteredRebateRules = $this->getFilteredRebateRules($notedParentData, $forexAccount);
+        $rules = RebateRule::whereHas('ibGroups', fn($q) =>
+        $q->where('ib_group_id', $parent->ibGroup->id))
+            ->whereHas('forexSchemas', fn($q) =>
+            $q->where('forex_schema_id', $account->forex_schema_id))
+            ->with('symbolGroups.symbols')
+            ->get();
 
-        return $filteredRebateRules
-            ->flatMap(fn($rebateRule) => $rebateRule->symbolGroups->flatMap(fn($symbolGroup) => $symbolGroup->symbols))
-            ->pluck('symbol') // Extract only the 'symbol' column
-            ->unique() // Remove duplicates
-            ->toArray(); // Convert to an array
+        return $rules->flatMap(fn($r) =>
+        $r->symbolGroups->flatMap(fn($g) => $g->symbols))
+            ->pluck('symbol')
+            ->unique()
+            ->toArray();
     }
 
-    protected function getFilteredRebateRules($notedParentData, $forexAccount)
-    {
-//        dd($notedParentData->ibGroup->id);
-        return RebateRule::whereHas('ibGroups', fn($query) =>
-        $query->where('ib_group_id', $notedParentData->ibGroup->id)) // Ensure the rebate rule belongs to the IB Group
-        ->whereHas('forexSchemas', fn($query) =>
-        $query->where('forex_schema_id', $forexAccount->forex_schema_id)) // Ensure the rebate rule is attached to the Forex Schema
-        ->with(['symbolGroups.symbols']) // Load related symbols to avoid N+1 problem
-        ->get();
-    }
-
-
-    protected function getLastDeal($childUserId, $login)
+    protected function getLastDeal($userId, $login)
     {
         return MetaDeal::where('login', $login)
-            ->where('user_id', $childUserId)
+            ->where('user_id', $userId)
             ->latest('time')
             ->value('time') ?: Carbon::now()->startOfDay();
     }
 
-    protected function getMT5Deals($login, $lastDealTime, $sysmbols)
+    protected function getMT5Deals($login, $lastTime, $symbols)
     {
         $table = 'mt5_deals_' . Carbon::now()->year;
+        //For Qorva
 //        $table = 'mt5_deals';
-//        dd($table,$login,$lastDealTime,$sysmbols);
 
         return DB::connection('mt5_db')
             ->table($table)
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
-            ->whereIn('Symbol', $sysmbols)
-            ->where('Time', '>', $lastDealTime)
+            ->whereIn('Symbol', $symbols)
+            ->where('Time', '>', $lastTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')
             ->get();
     }
-    protected function addBalance($transaction)
+
+    protected function getValidParent($user)
     {
-        $userAccount = get_user_account_by_wallet_id($transaction->target_id);
+        $level = 0;
+        $maxLevel = Level::max('level_order');
+        if (!$maxLevel) return null;
 
-        $wallet = new WalletService();
-        $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
-        $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
-        if ($transaction->target_type == TxnTargetType::Wallet->value) {
-        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
-        $userAccount->save();
-    }
-    }
+        while ($user && $user->ref_id && $level <= $maxLevel) {
+            $parent = User::find($user->ref_id);
+            if ($parent && $parent->ib_group_id && $parent->ib_status === IBStatus::APPROVED) {
+                return ['user' => $parent, 'level' => $level];
+            }
+            $user = $parent;
+            $level++;
+        }
 
+        return null;
+    }
 }

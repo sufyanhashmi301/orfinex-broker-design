@@ -11,14 +11,13 @@ use App\Models\User;
 
 class DeduplicateIbBonusTransactions extends Command
 {
-    protected $signature = 'transactions:deduplicate-ib-bonus';
-    protected $description = 'Detect duplicate ib_bonus transactions, delete one, and deduct from accounts and ledgers.';
+    protected $signature = 'transactions:clean-ib-bonus-duplicates';
+    protected $description = 'Delete duplicate ib_bonus transactions and track remaining amount per user for future manual deduction.';
 
     public function handle()
     {
         $this->info('🔍 Scanning for duplicate IB Bonus transactions...');
-
-        $report = [];
+        $remainingReport = [];
 
         $duplicates = Transaction::select(
             'user_id',
@@ -38,9 +37,7 @@ class DeduplicateIbBonusTransactions extends Command
         }
 
         foreach ($duplicates as $dup) {
-            // Retry transaction in case of lock
-            DB::transaction(function () use ($dup, &$report) {
-                // Get all matching transactions
+            DB::transaction(function () use ($dup, &$remainingReport) {
                 $transactions = Transaction::where('type', 'ib_bonus')
                     ->where('user_id', $dup->user_id)
                     ->where('from_user_id', $dup->from_user_id)
@@ -49,60 +46,58 @@ class DeduplicateIbBonusTransactions extends Command
                     ->orderBy('id')
                     ->get();
 
-                if ($transactions->count() <= 1) {
-                    return;
+                if ($transactions->count() <= 1) return;
+
+                $keep = $transactions->first();
+                $toDeleteList = $transactions->skip(1);
+
+                foreach ($toDeleteList as $toDelete) {
+                    $amount = $toDelete->amount;
+                    $userId = $toDelete->user_id;
+
+                    $account = Account::where('user_id', $userId)
+                        ->where('balance', 'ib_wallet')
+                        ->lockForUpdate()
+                        ->first();
+
+                    $deleted = $toDelete->delete();
+
+                    if (!$account || $account->amount < $amount) {
+                        $shortfall = $amount - ($account->amount ?? 0);
+                        $remainingReport[$userId] = ($remainingReport[$userId] ?? 0) + $shortfall;
+                        $this->warn("⚠️  Deleted Transaction ID {$toDelete->id}, but insufficient balance for User {$userId}");
+                        return;
+                    }
+
+                    // Deduct from IB Wallet
+                    $account->amount -= $amount;
+                    $account->save();
+
+                    // Deduct from latest ledger
+                    $ledger = Ledger::where('account_id', $account->id)
+                        ->orderByDesc('id')
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($ledger) {
+                        $ledger->balance -= $amount;
+                        $ledger->save();
+                    }
+
+                    $this->info("🗑 Deleted Transaction ID: {$toDelete->id}, deducted {$amount} from User {$userId}");
                 }
-
-                // Pick one to delete
-                $toDelete = $transactions->skip(1)->first();
-                $amount = $toDelete->amount;
-                $userId = $toDelete->user_id;
-
-                // Fetch account with IB Wallet
-                $account = Account::where('user_id', $userId)
-                    ->where('balance', 'ib_wallet')
-                    ->lockForUpdate()
-                    ->first();
-
-                // If account missing or insufficient balance, add to report
-                if (!$account || $account->amount < $amount) {
-                    $user = User::find($userId);
-                    $email = $user?->email ?? 'Unknown';
-                    $remaining = number_format($amount - ($account->amount ?? 0), 3);
-                    $report[] = "User {$userId} ({$email}): remaining to subtract {$remaining}";
-                    return;
-                }
-
-                // Proceed with deletion and deduction
-                $toDelete->delete();
-                $this->info("🗑 Deleted transaction ID: {$toDelete->id}");
-
-                $account->amount -= $amount;
-                $account->save();
-                $this->info("💸 Deducted {$amount} from IB Wallet (Account ID: {$account->id})");
-
-                // Deduct from latest ledger
-                $ledger = Ledger::where('account_id', $account->id)
-                    ->orderByDesc('id')
-                    ->lockForUpdate()
-                    ->first();
-
-                if ($ledger) {
-                    $ledger->balance -= $amount;
-                    $ledger->save();
-                    $this->info("📉 Updated Ledger ID {$ledger->id} with new balance.");
-                }
-            }, 5); // Retry transaction up to 5 times on lock wait
+            }, 5); // Retry if lock wait timeout
         }
 
-        // Show final report for insufficient funds
-        if (!empty($report)) {
-            $this->warn("\n⚠️ Report of users with insufficient IB Wallet balance:");
-            foreach ($report as $line) {
-                $this->line($line);
+        // Generate collective shortfall report
+        if (!empty($remainingReport)) {
+            $this->warn("\n⚠️ Collective shortfall report (manual deduction needed):");
+            foreach ($remainingReport as $userId => $remaining) {
+                $email = User::find($userId)?->email ?? 'Unknown Email';
+                $this->line("User {$userId} ({$email}): total remaining to subtract " . number_format($remaining, 3));
             }
         }
 
-        $this->info("\n✅ IB Bonus deduplication process completed.");
+        $this->info("\n✅ IB Bonus deduplication process complete.");
     }
 }

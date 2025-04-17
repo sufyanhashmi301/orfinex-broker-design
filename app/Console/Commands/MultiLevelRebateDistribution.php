@@ -36,7 +36,7 @@ class MultiLevelRebateDistribution extends Command
 
     public function handle()
     {
-        
+
         DB::beginTransaction();
         try {
             $ReferralRelationships = ReferralRelationship::with('referralLink')
@@ -294,7 +294,7 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getLastDeal($childUserId, $login)
     {
-        return Carbon::now()->subDay(8)->startOfDay();
+//        return Carbon::now()->subDay(8)->startOfDay();
         return MetaDeal::where('login', $login)
             ->where('user_id', $childUserId)
             ->latest('time')

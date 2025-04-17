@@ -12,6 +12,10 @@
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New Lead') }}
             </a>
+            <button class="btn btn-sm btn-white inline-flex items-center" data-bs-toggle="modal" data-bs-target="#importModal">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:download"></iconify-icon>
+                {{ __('Import') }}
+            </button>
         </div>
     </div>
 
@@ -48,6 +52,9 @@
 
     {{-- Modal for lead delete--}}
     @include('backend.lead.modal.__delete')
+
+    {{-- Modal for import leads--}}
+    @include('backend.lead.modal.__import')
 
 @endsection
 @section('script')

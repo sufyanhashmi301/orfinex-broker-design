@@ -160,7 +160,7 @@ class WalletService
 
     public function getLedgerBalance($accountId)
     {
-        $latestLedgerEntry = Ledger::where('account_id', $accountId)->orderBy('id', 'desc')->first();
+        $latestLedgerEntry = Ledger::where('account_id', $accountId)->orderBy('id', 'desc')->lockForUpdate()->first();
         return data_get($latestLedgerEntry, 'balance', 0.00);
     }
 

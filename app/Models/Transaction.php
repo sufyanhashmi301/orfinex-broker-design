@@ -180,6 +180,16 @@ class Transaction extends Model
             get: fn ($value) => ucwords($value),
         );
     }
+    public static function isDuplicateIbBonus($userId, $fromUserId, $description, $amount): bool
+    {
+        return self::where('user_id', $userId)
+            ->where('from_user_id', $fromUserId)
+            ->where('type', \App\Enums\TxnType::IbBonus)
+            ->where('amount', $amount)
+            ->where('description', $description)
+            ->exists();
+    }
+
     public function scopeApplyFilters(Builder $query, $filters)
     {
 

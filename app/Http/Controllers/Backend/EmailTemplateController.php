@@ -122,7 +122,6 @@ class EmailTemplateController extends Controller
         if($template->for == 'User'){
             return redirect()->route('admin.email-template.user');
         }
-
         return redirect()->route('admin.email-template');
     }
 

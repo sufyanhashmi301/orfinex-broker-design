@@ -864,20 +864,22 @@ if (!function_exists('txn_type')) {
         switch ($type) {
             case TxnType::Interest->value:
             case TxnType::ReceiveMoney->value:
+            case TxnType::ReceiveMoneyInternal->value:
             case TxnType::Deposit->value:
             case TxnType::ManualDeposit->value:
             case TxnType::Bonus->value:
             case TxnType::Refund->value:
             case TxnType::Exchange->value:
             case TxnType::Referral->value:
-                $result = ['green-color', '+'];
+                $result = ['text-success', '+'];
                 break;
             case TxnType::SendMoney->value:
+            case TxnType::SendMoneyInternal->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
             case TxnType::BonusSubtract->value:
             case TxnType::BonusRefund->value:
-                $result = ['red-color', '-'];
+                $result = ['text-danger', '-'];
                 break;
         }
         $commonResult = array_intersect($value, $result);

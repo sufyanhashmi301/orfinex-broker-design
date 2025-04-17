@@ -98,8 +98,8 @@
                                             {{ $transaction->target_id }}
                                         </td>
                                         <td class="table-td">
-                                            <strong class="{{ $transaction->type->value !== 'subtract' && $transaction->type->value !== 'investment' && $transaction->type->value !==  'withdraw' && $transaction->type->value !==  'send_money' && $transaction->type->value !==  'bonus_refund' && $transaction->type->value !==  'bonus_subtract' ? 'text-success': 'text-danger'}}">
-                                                {{ txn_type($transaction->type->value,['+','-']) .$transaction->amount.' '.$currency }}
+                                            <strong class="{{ $transaction->type->value !== 'subtract' && $transaction->type->value !== 'investment' && $transaction->type->value !==  'withdraw' && $transaction->type->value !==  'send_money' && $transaction->type->value !== 'send_money_internal' && $transaction->type->value !==  'bonus_refund' && $transaction->type->value !==  'bonus_subtract' ? 'text-success': 'text-danger'}}">
+                                                {{ txn_type($transaction->type->value, ['+','-']) .$transaction->amount.' '.$currency }}
                                             </strong>
                                         </td>
                                         <td class="table-td">

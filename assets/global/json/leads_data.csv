@@ -1,0 +1,12 @@
+salutation,first_name,last_name,client_email,phone,source_id,lead_owner,company_name,website,office_phone_number,country,state,city,postal_code,address,created
+Mr.,Aron,Kris,abc@example.com,1234567890,1,1,Acme Corporation,https://www.example.com,,United States,California,New York,90250.0,"132, My Street, Kingston, New York 12401",2024-11-13
+Mr.,Dalton,Botsford,xyz@example.com,1234567891,1,1,,,,,,,,,2024-11-13
+Mr.,Gaetano,Parker,Sales@example.com,1234567892,2,1,,,,,,,,,2024-11-13
+Mr.,Jalon,Yundt,fake@example.com,1234567893,3,1,,,,,,,,,2024-11-13
+Mr.,Baby,Schiller,qwe@example.com,1234567894,3,1,,,,,,,,,2024-11-13
+Mr.,Dayne,Wuckert,poll@example.com,1234567895,1,1,,,,,,,,,2024-11-13
+Mr.,Brock,Shield,city@example.com,1234567896,3,1,,,,,,,,,2024-11-13
+Mr.,Reina,Tromp,jaipur@example.com,1234567897,6,1,,,,,,,,,2024-11-13
+Mr.,Joaquin,Schuppe,random@example.com,1234567898,6,1,,,,,,,,,2024-11-13
+Prof.,Shawn,Nolan,time@example.com,1234567899,6,1,,,,,,,,,2024-11-13
+Mrs.,Maud,Stamm,fakes@example.com,1234567900,3,1,,,,,,,,,2024-11-13

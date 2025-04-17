@@ -9,7 +9,7 @@ use Illuminate\Database\QueryException;
 
 class SyncIbBonusTransactions extends Command
 {
-    protected $signature   = 'sync:ib-bonus';
+    protected $signature   = 'sync:ib-bonus-transaction';
     protected $description = 'Copy missing IB Bonus rows from old_connection into primary DB, chunked to avoid huge placeholders';
 
     public function handle()
@@ -20,7 +20,7 @@ class SyncIbBonusTransactions extends Command
         $oldQuery = DB::connection('old_connection')
             ->table('transactions')
             ->where('type', TxnType::IbBonus)
-//            ->where('created_at', '>=', '2025-04-01')
+            ->where('created_at', '>=', '2025-04-08')
             ->orderBy('id');
 
         // Stream in chunks of 500 rows at a time

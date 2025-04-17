@@ -23,17 +23,16 @@ class ProcessIbBonusAdjustment extends Command
         $insufficientReport   = [];
         $accountSummary       = [];
 
-        // 1. Gather MetaDeal IDs
+        // 1. Gather MetaDeal IDs (unchanged)
         $metaDealIds = [];
         MetaDeal::where('time', '>=', $startDate)
             ->chunkById(200, function ($deals) use (&$metaDealIds) {
                 $metaDealIds = array_merge($metaDealIds, $deals->pluck('id')->all());
             });
 
-        // 2. Gather bonus sums _and_ transaction IDs
+        // 2. Gather bonus sums and IDs (unchanged)
         $bonusSums           = [];
         $bonusTransactionIds = [];
-
         Transaction::where('type', 'ib_bonus')
             ->where('status', 'success')
             ->where('created_at', '>=', $startDate)
@@ -44,14 +43,17 @@ class ProcessIbBonusAdjustment extends Command
                 }
             });
 
+        // 3. Do everything in one DB transaction
         DB::beginTransaction();
         try {
-            // 3. Process each user’s wallet
             foreach ($bonusSums as $userId => $totalBonus) {
+                // ⚠️ Lock the account row for update
                 $account = Account::where('user_id', $userId)
                     ->where('balance', 'ib_wallet')
+                    ->lockForUpdate()
                     ->first();
-                $user    = User::find($userId);
+
+                $user = User::find($userId);
 
                 if (! $account) {
                     $insufficientReport[] = [
@@ -66,17 +68,17 @@ class ProcessIbBonusAdjustment extends Command
                 if ($account->amount >= $totalBonus) {
                     $account->amount -= $totalBonus;
                 } else {
-                    $sub        = $account->amount;
-                    $remaining  = $totalBonus - $sub;
+                    $sub       = $account->amount;
+                    $remaining = $totalBonus - $sub;
                     $account->amount = 0;
 
                     $insufficientReport[] = [
-                        'user_id'              => $userId,
-                        'email'                => $user->email ?? 'N/A',
-                        'expected_bonus'       => $totalBonus,
-                        'subtracted_amount'    => $sub,
-                        'remaining_to_subtract'=> $remaining,
-                        'reason'               => 'Insufficient IB wallet balance',
+                        'user_id'               => $userId,
+                        'email'                 => $user->email ?? 'N/A',
+                        'expected_bonus'        => $totalBonus,
+                        'subtracted_amount'     => $sub,
+                        'remaining_to_subtract' => $remaining,
+                        'reason'                => 'Insufficient IB wallet balance',
                     ];
                 }
 
@@ -90,7 +92,7 @@ class ProcessIbBonusAdjustment extends Command
                 ];
             }
 
-            // 4. Delete ledgers & transactions by _transaction_ IDs
+            // 4. Delete ledgers and transactions (unchanged)
             if ($bonusTransactionIds) {
                 foreach (array_chunk($bonusTransactionIds, 200) as $chunk) {
                     Ledger::whereIn('transaction_id', $chunk)->delete();
@@ -98,28 +100,29 @@ class ProcessIbBonusAdjustment extends Command
                 }
             }
 
-            // 5. Delete MetaDeals
+            // 5. Delete MetaDeals (unchanged)
             if ($metaDealIds) {
                 foreach (array_chunk($metaDealIds, 200) as $chunk) {
                     MetaDeal::whereIn('id', $chunk)->delete();
                 }
             }
 
-            // 6. Patch last ledger balances
+            // 6. Patch last ledger balances – locking each ledger row
             foreach ($accountSummary as &$s) {
                 $ledger = Ledger::where('account_id', $s['account_id'])
                     ->latest('id')
+                    ->lockForUpdate()
                     ->first();
+
                 if ($ledger) {
                     $ledger->balance = $s['wallet_amount'];
                     $ledger->save();
-//                    $s['balance'] = $ledger->balance;
                 }
             }
 
             DB::commit();
 
-            // 7. Output
+            // 7. Output (unchanged)
             $this->info("=== IB Wallet Adjustment Summary ===");
             foreach ($accountSummary as $s) {
                 $this->line("User {$s['user_id']} ({$s['email']}): final wallet {$s['wallet_amount']}");
@@ -139,5 +142,6 @@ class ProcessIbBonusAdjustment extends Command
             $this->error("Error: " . $e->getMessage());
         }
     }
+
 
 }

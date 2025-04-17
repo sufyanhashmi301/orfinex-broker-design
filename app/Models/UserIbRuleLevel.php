@@ -38,5 +38,9 @@ class UserIbRuleLevel extends Model
     {
         return $this->hasMany(UserIbRuleLevelShare::class, 'user_ib_rule_level_id');
     }
+    public function level()
+    {
+        return $this->belongsTo(Level::class, 'level_id', 'id');
+    }
 
 }

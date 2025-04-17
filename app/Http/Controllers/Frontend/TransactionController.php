@@ -36,15 +36,31 @@ class TransactionController extends Controller
 
         if (request('transaction_date')) {
             $filter = request('transaction_date');
-            if (in_array($filter, ['3_days', '5_days', '15_days'])) {
-                $daysAgo = substr($filter, 0, strpos($filter, '_'));
-                $query->where('created_at', '>=', Carbon::now()->subDays($daysAgo)->startOfDay());
-            } elseif ($filter == '1_month') {
-                $query->where('created_at', '>=', Carbon::now()->subMonth()->startOfDay());
-            } elseif ($filter == '3_months') {
-                $query->where('created_at', '>=', Carbon::now()->subMonths(3)->startOfDay());
+
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $query->where(function ($q) use ($dateRange) {
+                    $start = $dateRange[0]->toDateTimeString();
+                    $end = $dateRange[1]->toDateTimeString();
+
+                    $q->whereRaw("
+                COALESCE(
+                    JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')),
+                    created_at
+                ) BETWEEN ? AND ?
+            ", [$start, $end]);
+                });
             }
         }
+
 
         if (request('transaction_status')) {
             $query->where('status', request('transaction_status'));

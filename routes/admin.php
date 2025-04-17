@@ -520,6 +520,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //admin self manage
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
     Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
+    Route::post('update-avatar', [AppController::class, 'updateAvatar'])->name('profile.updateAvatar');
 
     Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
     Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
@@ -631,6 +632,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
         Route::get('get-lead/{id}', 'getLead')->name('getLead');
         Route::get('create-client/{id}', 'createClient')->name('createClient');
+        Route::post('import', 'importLeads')->name('import');
 
         Route::post('store/client', [UserController::class, 'leadAsClient'])->name('storeAsClient');
 

@@ -32,7 +32,7 @@ class SyncIbBonusOldToNew extends Command
      */
     public function handle()
     {
-        $dateArg = $this->option('date') ?: '2025-08-04';
+        $dateArg = $this->option('date') ?: '2025-04-08';
         $cutoff = Carbon::parse($dateArg)->startOfDay();
 
         $this->info("Starting IB bonus sync from {$cutoff->toDateString()}...");
@@ -114,10 +114,10 @@ class SyncIbBonusOldToNew extends Command
                             DB::table('ledgers')
                                 ->where('id', $newLast->id)
                                 ->update([
-                                    'debit'      => $oldLedger->debit,
-                                    'credit'     => $oldLedger->credit,
+//                                    'debit'      => $oldLedger->debit,
+//                                    'credit'     => $oldLedger->credit,
                                     'balance'    => $oldLedger->balance,
-                                    'created_at' => $oldLedger->created_at,
+//                                    'created_at' => $oldLedger->created_at,
                                     'updated_at' => Carbon::now(),
                                 ]);
                         }

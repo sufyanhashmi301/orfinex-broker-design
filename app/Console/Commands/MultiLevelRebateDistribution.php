@@ -294,7 +294,7 @@
 
         protected function getLastDeal($childUserId, $login)
         {
-            return Carbon::now()->subDay(9)->startOfDay();
+//            return Carbon::now()->subDay(9)->startOfDay();
             return MetaDeal::where('login', $login)
                 ->where('user_id', $childUserId)
                 ->latest('time')

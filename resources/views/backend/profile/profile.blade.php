@@ -12,7 +12,7 @@
                 <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
                 </div>
                 <div class="profile-box">
-                    <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative mx-auto">
+                    <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-body mx-auto">
                         <img src="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                         <label class="absolute right-1 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center top-[100px] cursor-pointer">
                             <input type="file" class="hidden" id="file-input" name="image" accept="image/*">
@@ -268,7 +268,7 @@
     </div>
 
     {{-- Modal for avatar copper--}}
-    @include('frontend::user.setting.include.__avatar_cropper_modal')
+    @include('backend.profile.modal.__avatar_cropper_modal')
 
 @endsection
 @section('style')
@@ -331,6 +331,7 @@
                 cropper = new Cropper(image, {
                     aspectRatio: 1,
                     viewMode: 0,
+                    responsive: true,
                 });
             }).on('hidden.bs.modal', function () {
                 cropper.destroy();

@@ -68,8 +68,9 @@ class SendPromoteViolateMails extends Command
                 $shortcodes2 = [
                     '[[full_name]]' => $account->user->first_name . ' ' . $account->user->last_name,
                     '[[account_login]]' => $account->login,
-                    '[[account_password]]' => $account->main_password,
-                    '[[server]]' => setting('live_server', 'platform_api'),
+                    '[[email]]' => $account->user->email,
+                    '[[account_password]]' => $account->trader_type == \App\Enums\TraderType::MT5 ? $account->main_password : $account->user->plaformAccountCredentials->password, 
+                    '[[server]]' => $account->trader_type == \App\Enums\TraderType::MT5 ? setting('live_server', 'platform_api') : setting('mt_live_server_real', 'match_trader_platform_api'),
                     '[[phase_step]]' => $account_phase['type'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
                     '[[site_title]]' => setting('site_title', 'global'),
                 ];

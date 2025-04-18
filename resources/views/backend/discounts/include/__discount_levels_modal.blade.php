@@ -60,8 +60,8 @@
                                     <div class="xl:col-span-2 col-span-12">
                                     <div class="input-area">
                                         <select name="data[{{ $loop->index }}][type]" class="form-control w-full mb-3">
-                                        <option value="fixed" selected="">$</option>
-                                        <option value="percentage">%</option>
+                                        <option value="fixed" {{ $level['type'] == 'fixed' ? 'selected' : '' }}>$</option>
+                                        <option value="percentage" {{ $level['type'] == 'percentage' ? 'selected' : '' }}>%</option>
                                         </select>
                                     </div>
                                     </div>

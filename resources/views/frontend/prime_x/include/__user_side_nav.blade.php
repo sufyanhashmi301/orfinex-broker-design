@@ -39,7 +39,7 @@
         <li>
             <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:home"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:layout-dashboard"></iconify-icon>
                     <span>{{ __('Dashboard') }}</span>
                 </span>
             </a>
@@ -56,9 +56,9 @@
         </li> --}}
 
         <li>
-            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index') }}">
+            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index ') }} {{ isActive('user.investment.trading-stats') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
                     <span>{{ __('My Accounts') }}</span>
                 </span>
             </a>
@@ -78,7 +78,7 @@
         <li>
             <a href="{{route('user.account.buy')}}" class="navItem {{ isActive('user.account*') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:square-plus"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
                 </span>
             </a>
@@ -87,7 +87,7 @@
         <li>
             <a href="{{ route('user.verification.index') }}" class="navItem {{ isActive('user.verification.index') }}">
             <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
+                <iconify-icon class="nav-icon" icon="lucide:lock-open"></iconify-icon>
                 <span>{{ __('Verification') }}</span>
             </span>
             </a>
@@ -107,7 +107,7 @@
         <li>
             <a href="{{ route('user.withdraw.step1') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:hand-coins"></iconify-icon>
                     <span>{{ __('Payout') }}</span>
                 </span>
             </a>
@@ -116,7 +116,7 @@
         <li>
             <a href="{{ route('user.billing.index') }}" class="navItem {{ isActive('user.billing.index') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="uil:bill"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:receipt-text"></iconify-icon>
                     <span>{{ __('Billing') }}</span>
                 </span>
             </a>
@@ -125,7 +125,7 @@
         <li>
             <a href="{{ route('user.certificates.index') }}" class="navItem {{ isActive('user.certificates.index') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:file-badge"></iconify-icon>
                     <span>{{ __('Certificates') }}</span>
                 </span>
             </a>
@@ -198,7 +198,7 @@
         <li>
             <a href="{{ route('user.affiliate-area.index') }}" class="navItem loaderBtn {{ isActive('user.affiliate-area.index') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:share-2"></iconify-icon>
                     <span>{{ __('Affiliate Area') }}</span>
                 </span>
             </a>
@@ -207,7 +207,7 @@
         <li>
             <a href="{{ route('user.ticket.index') }}" class="navItem {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:headset"></iconify-icon>
                     <span>{{ __('Support Tickets') }}</span>
                 </span>
             </a>

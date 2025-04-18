@@ -213,6 +213,9 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/contract/config', [ContractController::class, 'config'])->name('contract.config');
     Route::post('/contract/mark-as', [ContractController::class, 'markContractAs'])->name('contract.mark_as');
 
+    // Contract Template
+    // Route::get('/contract/template', [])
+
     // Addons
     Route::get('/addons', [AddonController::class, 'index'])->name('addons.index');
     Route::post('/addon', [AddonController::class, 'update'])->name('addon.update');

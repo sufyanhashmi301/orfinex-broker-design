@@ -219,6 +219,9 @@ class UpdateAccountTypeInvestmentStats extends Command
             $yesterday_latest_record = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)
                                                                         ->whereBetween('created_at', [Carbon::yesterday()->startOfDay(), Carbon::yesterday()->endOfDay()])
                                                                         ->orderBy('id', 'desc')->first();
+            if(!$yesterday_latest_record) {
+                return false;
+            }                                                                        
             // Trading days not updated today 
             if(Carbon::today()->toDateString() != Carbon::parse($latest_record->trading_days_updated_at)->toDateString()) {
                 // Difference between yesterday's record balance compared to latest one

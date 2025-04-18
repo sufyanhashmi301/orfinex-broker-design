@@ -2,27 +2,28 @@
 
 namespace App\Services;
 
-use App\Enums\AccountActivityStatusEnums;
-use App\Enums\AccountTypePhase as EnumsAccountTypePhase;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Enums\TraderType;
 use App\Models\AccountType;
 use App\Traits\NotifyTrait;
 use Illuminate\Support\Str;
+use App\Enums\KycStatusEnums;
 use App\Models\FundedBalance;
+use App\Models\PayoutRequest;
 use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
 use App\Models\AccountTypePhase;
 use App\Services\InvoiceService;
+use App\Enums\KycNoticeInvokeEnums;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
+use App\Models\AccountBalanceOperation;
+use App\Enums\AccountActivityStatusEnums;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
-use App\Enums\KycNoticeInvokeEnums;
-use App\Enums\KycStatusEnums;
-use App\Enums\TraderType;
-use App\Models\AccountBalanceOperation;
-use App\Models\User;
+use App\Enums\AccountTypePhase as EnumsAccountTypePhase;
 
 class AccountTypeInvestmentService
 {
@@ -173,8 +174,12 @@ class AccountTypeInvestmentService
       }
     }
 
+    // Payout Pending Balance
+    $payout_pending = $investment->fundedBalance->payout_pending ?? 0;
+    $trading_objectives['payout_pending'] = $payout_pending;
+
     // Total PnL
-    $trading_objectives['total_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments;
+    $trading_objectives['total_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments - $payout_pending;
 
     // ---- Daily Drawdown Stats ----
     $trading_objectives['daily_drawdown_status'] = TradingObjective::PASSING;
@@ -189,7 +194,7 @@ class AccountTypeInvestmentService
 
     // ---- Max Drawdown stats ----
     $trading_objectives['max_drawdown_status'] = TradingObjective::PASSING;
-    $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments;
+    $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments - $payout_pending;
 
     $trading_objectives['max_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['max_drawdown_limit'] + $trading_objectives['max_drawdown_pnl']);
     if($trading_objectives['max_drawdown_remaining_loss_limit'] <= 0){
@@ -204,7 +209,7 @@ class AccountTypeInvestmentService
     $trading_objectives['profit_target'] = $investment->getRuleSnapshotData()['profit_target'];
 
     // Achievied Profit
-    $trading_objectives['current_profit_target'] = $investment->accountTypeInvestmentStat->current_equity - ($investment->getRuleSnapshotData()['allotted_funds']) + $balance_adjustments;
+    $trading_objectives['current_profit_target'] = $investment->accountTypeInvestmentStat->current_equity - ($investment->getRuleSnapshotData()['allotted_funds']) + $balance_adjustments - $payout_pending;
     // if($trading_objectives['current_profit_target'] < 0) {
     //     $trading_objectives['current_profit_target'] = 0;
     // }
@@ -485,7 +490,7 @@ class AccountTypeInvestmentService
       $deduct_balance_data = [
         "systemUuid" => $violate_investment->getAccountTypeSnapshotData()['system_uuid'],
         "login" => $violate_investment->login,
-        "amount" => $violate_investment->getRuleSnapshotData()['allotted_funds'],
+        "amount" => $violate_investment->accountTypeInvestmentStat->balance,
         // "amount" => $violate_investment->accountTypeInvestmentStat->balance,
         "comment" => "Account Violated"
       ];

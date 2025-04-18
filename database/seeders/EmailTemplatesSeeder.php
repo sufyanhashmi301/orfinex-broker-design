@@ -481,9 +481,10 @@ class EmailTemplatesSeeder extends Seeder
                 
 Thank you for purchasing package. We’re happy to let you know that your order has been successfully processed, and you are now set to start trading with us.
 
-Here are your MT5 account details for accessing the trading platform:
+Here are your Aaccount details for accessing the trading platform:
 
-- MT5 Account ID: [[account_login]]
+- Account Email: [[email]]
+- Account ID: [[account_login]]
 - Password: [[account_password]]
 - Server: [[server]]
 
@@ -655,7 +656,8 @@ Thanks for submitting the funded account contract.
 
 Here are your MT5 account details for accessing the trading platform:
 
-- MT5 Account ID: [[account_login]]
+- Account Email: [[email]]
+- Account ID: [[account_login]]
 - Password: [[account_password]]
 - Server: [[server]]
 
@@ -727,7 +729,8 @@ The [[package_name]] trial account is active now. The trial account will be acti
 
 Here are your account details for accessing the trading platform:
 
-- MT5 Account ID: [[account_login]]
+- Account Email: [[email]]
+- Account ID: [[account_login]]
 - Password: [[account_password]]
 - Server: [[server]] 
 

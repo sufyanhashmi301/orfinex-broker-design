@@ -23,6 +23,7 @@ use App\Services\AccountTypeInvestmentPaymentService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Models\Transaction;
 use App\Services\MatchTraderApiService;
+use Illuminate\Support\Facades\Artisan;
 
 class AccountTypeInvestmentController extends Controller
 {
@@ -216,7 +217,8 @@ class AccountTypeInvestmentController extends Controller
                 notify()->error('Unknown error occured. Please try again.');
             }
         }
-  
+
+        // Update Account
         $account->update([
             'status' => InvestmentStatus::ACTIVE,
             'violation_reason' => null,
@@ -224,6 +226,10 @@ class AccountTypeInvestmentController extends Controller
             'mail_sent' => 0,
 
         ]);
+  
+        // Update the Stats and Hourly Stats
+        Artisan::call('update:investment-stats --both');
+
         notify()->success('Balance is added to account and the Account is active.');
        
         return redirect()->back();

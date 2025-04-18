@@ -50,8 +50,8 @@
                             <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                                 {{ auth()->user()->full_name }}
                             </h4>
-                            <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                {{ isset($investment->forexSchemaPhaseRule->forexSchemaPhase->funded_type) ? $investment->forexSchemaPhaseRule->forexSchemaPhase->funded_type : '0.00' }}
+                            <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mt-1">
+                                {{ isset($investment->getAccountTypeSnapshotData()['type']) ? ucfirst($investment->getAccountTypeSnapshotData()['type']) . ' Account' : 'N/A' }} | ID: <b>{{ $investment->unique_id }}</b>
                             </div>
                         </div>
                     </div>
@@ -69,11 +69,15 @@
                         <li class="text-sm block py-[8px]">
                             <div class="flex justify-between space-x-2 rtl:space-x-reverse">
                                 <span class="text-left text-slate-700">
-                                    {{ __('Plan Type') }}
+                                    {{ __('Plan Details') }}
                                 </span>
                                 <span class="text-right text-slate-900">
                                     {{ isset($investment->getAccountTypeSnapshotData()['title']) ? ucfirst($investment->getAccountTypeSnapshotData()['title']) : 'N/A' }}
-                                    | {{ number_format($investment->getRuleSnapshotData()['amount'], 2) ?? 0.0 }} {{ base_currency() }}
+                                    @if ($investment->getPhaseSnapshotData()['phase_step'] == 1)
+                                    | {{ number_format($investment->getRuleSnapshotData()['amount'], 2) ?? 0.0 }} {{ base_currency() }}    
+                                    @endif
+                                    | Phase {{ $investment->getPhaseSnapshotData()['phase_step']}}
+                                    
                                 </span>
                             </div>
                         </li>
@@ -139,31 +143,37 @@
                             <div class="flex-none">
                                 <div
                                     class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                                    <iconify-icon class="text-2xl" icon="solar:pie-chart-outline"></iconify-icon>
+                                    <iconify-icon class="text-2xl" icon="lucide:calendar-check-2"></iconify-icon>
                                 </div>
                             </div>
                             <div class="flex-1 text-start">
-                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3 mb-1">
-                                    <span class="text-slate-900 font-medium">{{ __('Start Date') }}</span>
-                                    <span class="">{{ $investment->phase_started_at }}</span>
+                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                    <span class="text-slate-900 font-medium">{{ __('Phase Start Date') }}</span>
+                                </h4>
+                                <div class="text-xs mt-1 font-normal text-slate-600 dark:text-slate-400 space-x-3 mb-1">
+                                    <span class="">{{ date('h:i A | jS F, Y', strtotime($investment->phase_started_at)) }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="flex items-center mb-5">
                             <div class="flex-none">
-                                {{-- <div
+                                <div
                                     class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                                    <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
-                                </div> --}}
+                                    <iconify-icon class="text-2xl" icon="lucide:calendar-minus"></iconify-icon>
+                                </div>
                             </div>
                             <div class="flex-1 text-start">
-                                {{-- <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                    {{ __('N/A') }}
+                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                    <span class="text-slate-900 font-medium">{{ __('Phase End Date') }}</span>
                                 </h4>
-                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                    {{ __('Account Growth') }}
-                                </div> --}}
+                                <div class="text-xs mt-1 font-normal text-slate-600 dark:text-slate-400 space-x-3 mb-1">
+                                    @if ($investment->phase_ended_at == null)
+                                        -
+                                    @else
+                                        <span class="">{{ date('h:i A | jS F, Y', strtotime($investment->phase_ended_at)) }}</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -211,12 +221,32 @@
         </h4>
     </div>
     <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
+        @if ($trading_objectives['payout_pending'] != 0)
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="flex-none">
+                        <div
+                            class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
+                            <iconify-icon class="text-2xl" icon="lucide:lock"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="flex-1 text-start">
+                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
+                            {{ __('Locked Balance') }}
+                        </div>
+                        <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
+                            {{ number_format($trading_objectives['payout_pending'], 2) }} {{ base_currency() }}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="card p-6">
             <div class="flex items-center">
                 <div class="flex-none">
                     <div
                         class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                        <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
+                        <iconify-icon class="text-2xl" icon="lucide:wallet-minimal"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1 text-start">
@@ -227,7 +257,7 @@
                         $current_balance = $investment->accountTypeInvestmentStat->balance ?? '0.00';
                     @endphp
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ number_format($current_balance, 2) }} {{ base_currency() }}
+                        {{ number_format($current_balance - $trading_objectives['payout_pending'], 2) }} {{ base_currency() }}
                     </h4>
                 </div>
             </div>
@@ -237,7 +267,7 @@
                 <div class="flex-none">
                     <div
                         class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                        <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
+                        <iconify-icon class="text-2xl" icon="lucide:piggy-bank"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1 text-start">
@@ -245,7 +275,7 @@
                         {{ __('Equity') }}
                     </div>
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ number_format($investment->accountTypeInvestmentStat->current_equity, 2) ?? '0.00' }}
+                        {{ number_format($investment->accountTypeInvestmentStat->current_equity - $trading_objectives['payout_pending'], 2) ?? '0.00' }}
                         {{ base_currency() }}
                     </h4>
                 </div>
@@ -256,7 +286,7 @@
                 <div class="flex-none">
                     <div
                         class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                        <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
+                        <iconify-icon class="text-2xl" icon="lucide:chart-candlestick"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1 text-start">
@@ -278,7 +308,7 @@
                 <div class="flex-none">
                     <div
                         class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                        <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
+                        <iconify-icon class="text-2xl" icon="lucide:equal-not"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1 text-start">
@@ -319,9 +349,13 @@
                     @else
                     @if($current_balance != $investment->accountTypeInvestmentStat->current_equity) 
                         <b><span class="text-sm"> 
-                            <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> 
                             @if ($investment->getPhaseSnapshotData()['type'] != \App\Enums\AccountTypePhase::FUNDED)
+                                <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> 
                                 Close all active trades to get promoted to next phase!
+                            @endif
+                            @if ($investment->getPhaseSnapshotData()['type'] == \App\Enums\AccountTypePhase::FUNDED)
+                                <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> 
+                                Close all active trades to create a payout request!
                             @endif
                         </span></b>
                     @endif

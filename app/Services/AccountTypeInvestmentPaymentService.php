@@ -136,8 +136,9 @@ class AccountTypeInvestmentPaymentService
     $shortcodes = [
       '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
       '[[account_login]]' => $investment->login,
-      '[[account_password]]' => $investment->main_password,
-      '[[server]]' => setting('live_server', 'platform_api'),
+      '[[email]]' => $investment->user->email,
+      '[[account_password]]' => $investment->trader_type == \App\Enums\TraderType::MT5 ? $investment->main_password : $investment->user->plaformAccountCredentials->password, 
+      '[[server]]' => $investment->trader_type == \App\Enums\TraderType::MT5 ? setting('live_server', 'platform_api') : setting('mt_live_server_real', 'match_trader_platform_api'),
       '[[site_title]]' => setting('site_title', 'global')
     ];
 
@@ -150,9 +151,10 @@ class AccountTypeInvestmentPaymentService
     if($slug == 'pending_contract_email') {
       $shortcodes2 = [
         '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
+        '[[email]]' => $investment->user->email,
         '[[account_login]]' => $investment->login,
         '[[account_password]]' => $investment->main_password,
-        '[[server]]' => setting('live_server', 'platform_api'),
+        '[[server]]' =>$investment->trader_type == \App\Enums\TraderType::MT5 ? setting('live_server', 'platform_api') : setting('mt_live_server_real', 'match_trader_platform_api'),
         '[[phase_step]]' => $data['passed_phase_step'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
         '[[site_title]]' => setting('site_title', 'global'),
       ];

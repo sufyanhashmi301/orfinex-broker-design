@@ -87,7 +87,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     }
 
     public function plaformAccountCredentials() {
-        return $this->hasMany(PlatformAccountCredential::class);
+        return $this->hasOne(PlatformAccountCredential::class);
     }
 
     public function wallets() {

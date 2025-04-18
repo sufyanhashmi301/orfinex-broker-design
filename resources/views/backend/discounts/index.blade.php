@@ -225,6 +225,10 @@
             }
         }
 
+        $(document).on('change', '#discounttype', function() {
+            toggleDiscountDiv()
+        })
+
         // Trigger the function when the type changes
         $(document).on('change', '#edit_discount_type', function() {
             if($(this).val() == 'fixed') {

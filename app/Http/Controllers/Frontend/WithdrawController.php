@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
+use App\Enums\KycStatusEnums;
 use App\Models\FundedBalance;
 use App\Models\PayoutRequest;
 use App\Models\UserAffiliate;
@@ -21,7 +22,6 @@ use App\Models\WithdrawAccount;
 use App\Services\PayoutService;
 use App\Enums\PayoutRequestStatus;
 use App\Enums\KycNoticeInvokeEnums;
-use App\Enums\KycStatusEnums;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +30,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use App\Http\Requests\UserWithdrawRequest;
 use Illuminate\Contracts\Foundation\Application;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class WithdrawController extends Controller
 {
@@ -327,6 +328,26 @@ class WithdrawController extends Controller
             $fb->save();
 
         }
+
+        // Clear the daily drawdown if it is in profit
+        foreach($funded_balances as $fb) {
+            $account = $fb->accountTypeInvestment;
+            
+            // get Same day 1st record after 12AM
+            $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
+            if (!$first_record_after_midnight) {
+                $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->orderBy('created_at', 'desc')->first();
+            }
+
+            // if daily drawdown is in profitable state then reset it
+            if( ($account->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity) > 0 ) {
+                $first_record_after_midnight->update([
+                    'balance' => $account->accountTypeInvestmentStat->balance,
+                    'current_equity' => $account->accountTypeInvestmentStat->current_equity
+                ]);
+            }
+        }
+        
 
         // create new payout request
         $payout_request = new PayoutRequest();

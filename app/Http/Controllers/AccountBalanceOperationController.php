@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TraderType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\AccountBalanceOperation;
@@ -9,14 +10,17 @@ use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentStat;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Services\ForexApiService;
+use App\Services\MatchTraderApiService;
 
 class AccountBalanceOperationController extends Controller
 {
 
     protected $forexApiService;
+    protected $matchTraderApiService;
 
-    public function __construct(ForexApiService $forexApiService) {
+    public function __construct(ForexApiService $forexApiService, MatchTraderApiService $matchTraderApiService) {
         $this->forexApiService = $forexApiService;
+        $this->matchTraderApiService = $matchTraderApiService;
     }
 
     /**
@@ -36,22 +40,47 @@ class AccountBalanceOperationController extends Controller
 
         if($request->operation == 'remove' || $request->operation == 'add') {
 
+            $account = AccountTypeInvestment::where('id', $request->account_type_investment_id)->first();
+
             // Do balance operation via API
-            $data = [
-                'login' => AccountTypeInvestment::where('id', $request->account_type_investment_id)->first()->login,
-                'Amount' => $request->amount,
-                'type' => $request->operation == 'add' ? 1 : 2, // deposit
-                'TransactionComments' => $request->comments
-            ];
-          
-            $response = $this->forexApiService->balanceOperation($data);
-        
-            if ($response['success'] && $response['result']['responseCode'] == 10009) {
-                
+            if($account->trader_type == TraderType::MT5) {
+                // MT5 Platform
+                $data = [
+                    'login' => $account->login,
+                    'Amount' => $request->amount,
+                    'type' => $request->operation == 'add' ? 1 : 2, // deposit
+                    'TransactionComments' => $request->comments
+                ];
+            
+                $response = $this->forexApiService->balanceOperation($data);
+            
+                if ($response['success'] && $response['result']['responseCode'] == 10009) {
+                    
+                } else {
+                    notify()->error('Unknown error occured. Please try again later!');
+                    return false;
+                }
             } else {
-                notify()->error('Unknown error occured. Please try again later!');
-                return false;
+                // MatchTrader Platform
+                $data = [
+                    "systemUuid" => $account->getAccountTypeSnapshotData()['system_uuid'],
+                    "login" => $account->login,
+                    "amount" => $request->amount,
+                    "comment" => $request->comments
+                ];
+
+                if($request->operation == 'add') {
+                    $response = $this->matchTraderApiService->depositBalance($data);
+                } else {
+                    $response = $this->matchTraderApiService->deductBalance($data);
+                }
+
+                if(!$response) {
+                    notify()->error('Unknown error occured. Please try again later!');
+                    return false;
+                }
             }
+            
 
             AccountBalanceOperation::create($request->except('_token'));
             $latest_record = AccountTypeInvestmentStat::where('account_type_investment_id', $request->account_type_investment_id)->first();

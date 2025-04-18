@@ -45,9 +45,10 @@ class ContractService
     $shortcodes = [
       '[[site_title]]' => setting('site_title', 'global'),
       '[[full_name]]' => $account->user->first_name . ' ' . $account->user->last_name,
+      '[[email]]' => $account->user->email,
       '[[account_login]]' => $account->login,
-      '[[account_password]]' => $account->main_password,
-      '[[server]]' => setting('live_server', 'platform_api'),
+      '[[account_password]]' => $account->trader_type == \App\Enums\TraderType::MT5 ? $account->main_password : $account->user->plaformAccountCredentials->password, 
+      '[[server]]' => $account->trader_type == \App\Enums\TraderType::MT5 ? setting('live_server', 'platform_api') : setting('mt_live_server_real', 'match_trader_platform_api'),
     ];
 
     $mail = $this->mailNotify($account->user->email, 'contract_signed', $shortcodes);

@@ -32,15 +32,21 @@ class PayoutService
    * Update Funded balance Profit Values
    */
   public function updateFundedBalance(AccountTypeInvestment $investment) {
+
     $total_profit = $investment->accountTypeInvestmentStat->balance - $investment->getRuleSnapshotData()['allotted_funds'];
-
     $funded_balance = FundedBalance::where('user_id', Auth::id())->where('account_type_investment_id', $investment->id)->first();
-    $funded_balance->profit = $funded_balance->profit + ($total_profit - $funded_balance->last_retrieved_profit);
 
-    $funded_balance->last_retrieved_profit = $total_profit;
+    // Open Trades Existence Check
+    $open_trades_exist = false;
+    if($investment->accountTypeInvestmentStat->balance != $investment->accountTypeInvestmentStat->current_equity) {
+      $open_trades_exist = true;
+    }
+    
+    $funded_balance->profit = $funded_balance->profit + ($total_profit - $funded_balance->last_retrieved_profit);
+    $funded_balance->last_retrieved_profit = $total_profit; 
     $funded_balance->save();
 
-    if($funded_balance->profit < $investment->getRuleSnapshotData()['profit_target']) {
+    if($funded_balance->profit < $investment->getRuleSnapshotData()['profit_target'] || $open_trades_exist) {
       $funded_balance->profit = 0;
       $funded_balance->last_retrieved_profit = 0;
       $funded_balance->save();

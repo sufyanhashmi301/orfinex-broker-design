@@ -438,7 +438,7 @@
                 
                     @can('affiliate-config')
                         <li class="">
-                            <a href="{{ route('admin.affiliate-rules.create') }}" class="">
+                            <a href="{{ route('admin.affiliate-rules.create') }}" class="{{ isActive('admin.affiliate-rules.create') }}">
                                 Affiliate Rules
                             </a>
                         </li> 
@@ -452,13 +452,21 @@
                         </li>
                     @endcan
 
+                    {{-- <li class="" >
+                        <a href="#" class="">
+                            Contract Templates
+                        </a>
+                    </li>  --}}
+
                     @can('addon-list')
                         <li class="" >
-                            <a href="{{route('admin.addons.index')}}" class="navItem {{ isActive('admin.addons.index') }}">
+                            <a href="{{route('admin.addons.index')}}" class="{{ isActive('admin.addons.index') }}">
                                 Addons
                             </a>
                         </li> 
                     @endcan
+
+                    
                     
                 </ul>
             </li> 

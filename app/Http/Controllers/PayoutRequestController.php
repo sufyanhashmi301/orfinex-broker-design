@@ -111,22 +111,23 @@ class PayoutRequestController extends Controller
                 }
 
                 // Latest account stats
-                $acocunt_stats = AccountTypeInvestmentStat::where('account_type_investment_id', $single['account_id'])->first();
+                $account_stats = AccountTypeInvestmentStat::where('account_type_investment_id', $single['account_id'])->first();
 
                 // Removal from hourly stats (1st record after 12AM) to avoid Daily DD hit
                 $hourly_stats_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
                 if (!$hourly_stats_after_midnight) {
                     $hourly_stats_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->orderBy('created_at', 'desc')->first();
                 }
-                  // Change midnight stats to maintain the daily DD
-                $hourly_stats_after_midnight->balance = ($acocunt_stats->balance - $total_profit) - ($acocunt_stats->balance - $hourly_stats_after_midnight->balance);
-                $hourly_stats_after_midnight->current_equity = ($acocunt_stats->current_equity - $total_profit) - ($acocunt_stats->current_equity - $hourly_stats_after_midnight->current_equity);
+                  
+                // Change midnight stats to maintain the daily DD
+                $hourly_stats_after_midnight->balance = ($account_stats->balance - $total_profit) - ($account_stats->balance - $hourly_stats_after_midnight->balance);
+                $hourly_stats_after_midnight->current_equity = ($account_stats->current_equity - $total_profit) - ($account_stats->current_equity - $hourly_stats_after_midnight->current_equity);
                 $hourly_stats_after_midnight->save();
 
                 // removal from Stats
-                $acocunt_stats->balance = $acocunt_stats->balance - $total_profit;
-                $acocunt_stats->current_equity = $acocunt_stats->current_equity - $total_profit;
-                $acocunt_stats->save();
+                $account_stats->balance = $account_stats->balance - $total_profit;
+                $account_stats->current_equity = $account_stats->current_equity - $total_profit;
+                $account_stats->save();
 
                 // removal from funded balances
                 $funded_balance = FundedBalance::where('account_type_investment_id', $single['account_id'])->first();

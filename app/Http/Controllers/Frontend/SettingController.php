@@ -69,6 +69,22 @@ class SettingController extends Controller
 
         return redirect()->back();
     }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = \Auth::user();
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = self::imageUploadTrait($request->file('avatar'), $user->avatar);
+        } else {
+            $avatarPath = $user->avatar;
+        }
+
+        auth()->user()->update(['avatar' => $avatarPath]);
+
+        return response()->json(['success' => true]);
+    }
+
     public function infoUpdate(Request $request)
     {
         $input = $request->all();

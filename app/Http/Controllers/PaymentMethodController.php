@@ -97,7 +97,7 @@ class PaymentMethodController extends Controller
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
-            'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
+            'payment_details' => isset($input['payment_details']) ? htmlspecialchars_decode($input['payment_details']) : null,
         ];
 
         $depositMethod = DepositMethod::create($data);
@@ -189,7 +189,7 @@ class PaymentMethodController extends Controller
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
-            'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
+            'payment_details' => isset($input['payment_details']) ? htmlspecialchars_decode($input['payment_details']) : null,
         ];
         //dd($data);
         if ($request->hasFile('logo')) {

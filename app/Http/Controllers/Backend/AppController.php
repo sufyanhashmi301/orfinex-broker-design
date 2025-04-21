@@ -129,32 +129,35 @@ class AppController extends Controller
     public function updateAvatar(Request $request)
     {
         $user = auth()->user();
-        $companyPrefix = setting('site_title', 'common_settings');
+        $domain = Str::slug(request()->getHttpHost());
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
 
-            // Use timestamp + original filename (slugged)
+            // Safe filename: timestamp + slug of original name
             $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
 
-            // Path: {company}/client/{email}/profile-photos/
-            $directory = "{$companyPrefix}/staff/{$user->id}/profile-photos";
+            // Path format: {domain}/staff/{user_id}/profile-photos/
+            $directory = "{$domain}/staff/{$user->id}/profile-photos";
             $path = "{$directory}/{$filename}";
 
-            // Upload using putFileAs
+            // Upload to R2
             Storage::disk('r2')->putFileAs($directory, $file, $filename, 'public');
 
-            // Save path to DB
             $avatarPath = rtrim(env('R2_ASSET_URL'), '/') . '/' . $path;
 
         } else {
             $avatarPath = $user->avatar;
         }
-
+        
         $user->update(['avatar' => $avatarPath]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'avatar_url' => $avatarPath
+        ]);
     }
+
 
     public function passwordChange()
     {

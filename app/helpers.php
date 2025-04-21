@@ -16,6 +16,7 @@ use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+use Illuminate\Support\Str;
 
 if (!function_exists('is_force_https')) {
     /**

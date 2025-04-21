@@ -13,9 +13,10 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         // KYC webhooks
-        'user/advance/kyc/*',
+        '*user/kyc/status',
         '*gateway/coingate/callback',
         '*ipn*',
+        'webhook/*',
         '*advance/kyc/status',
         '*telegram/webhook',
     ];

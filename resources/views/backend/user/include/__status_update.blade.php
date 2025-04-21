@@ -8,7 +8,7 @@
             class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
             <img
                 class="w-full h-full object-cover rounded-full"
-                src="{{asset($user->avatar ?? 'global/materials/user.png')}}"
+                src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}"
                 alt="{{$user->first_name}}"
             />
         </div>

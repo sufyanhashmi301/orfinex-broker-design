@@ -689,4 +689,4 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     })->name('customerLead');
 
 });
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

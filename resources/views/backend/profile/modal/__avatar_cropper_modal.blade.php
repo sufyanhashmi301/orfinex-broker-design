@@ -18,7 +18,6 @@
                 <div class="flex align-center justify-center" style="max-height: 400px;">
                     <img id="uploadedAvatar" src="" alt="">
                 </div>
-
                 <div class="input-area text-right p-6">
                     <button id="crop-image" class="btn inline-flex justify-center btn-dark me-2">
                         <span class="flex items-center">

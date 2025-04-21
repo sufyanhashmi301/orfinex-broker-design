@@ -364,7 +364,6 @@ class DepositController extends Controller
             return redirect()->back();
         }
 
-        // Prevent double processing
         DB::beginTransaction();
         try {
             $existingTransaction = Transaction::where('id', $id)->lockForUpdate()->first();
@@ -386,21 +385,31 @@ class DepositController extends Controller
             ];
 
             if (isset($input['approve'])) {
-                // Update transaction
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
                 $transaction->pay_amount = $input['pay_amount'] ?? $input['final_amount'];
                 $transaction->save();
 
-                // Call transaction update method
-                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                $updated = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
-                // Notify user
+                if (!$updated) {
+                    DB::rollBack();
+                    notify()->error('An error occurred while approving the deposit. Please try again.');
+                    return redirect()->back();
+                }
+
                 $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
                 notify()->success('Deposit approved successfully.');
+
             } elseif (isset($input['reject'])) {
-                // Reject transaction
-                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                $rejected = Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+
+                if (!$rejected) {
+                    DB::rollBack();
+                    notify()->error('An error occurred while rejecting the deposit. Please try again.');
+                    return redirect()->back();
+                }
+
                 $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
                 notify()->success('Deposit rejected successfully.');
             }
@@ -408,9 +417,10 @@ class DepositController extends Controller
             $transaction->approval_cause = $approvalCause;
             $transaction->action_by = auth()->user()->id;
             $transaction->save();
-            DB::commit();
 
+            DB::commit();
             return redirect()->back();
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Deposit action failed: ' . $e->getMessage());
@@ -418,6 +428,7 @@ class DepositController extends Controller
             return redirect()->back();
         }
     }
+
     public function export(Request $request)
     {
 

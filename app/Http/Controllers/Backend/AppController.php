@@ -10,6 +10,8 @@ use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use DataTables;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -126,18 +128,36 @@ class AppController extends Controller
 
     public function updateAvatar(Request $request)
     {
-        $user = \Auth::user();
+        $user = auth()->user();
+        $domain = Str::slug(request()->getHttpHost());
 
         if ($request->hasFile('avatar')) {
-            $avatarPath = self::imageUploadTrait($request->file('avatar'), $user->avatar);
+            $file = $request->file('avatar');
+
+            // Safe filename: timestamp + slug of original name
+            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+
+            // Path format: {domain}/staff/{user_id}/profile-photos/
+            $directory = "{$domain}/staff/{$user->id}/profile-photos";
+            $path = "{$directory}/{$filename}";
+
+            // Upload to R2
+            Storage::disk('r2')->putFileAs($directory, $file, $filename, 'public');
+
+            $avatarPath = rtrim(env('R2_ASSET_URL'), '/') . '/' . $path;
+
         } else {
             $avatarPath = $user->avatar;
         }
+        
+        $user->update(['avatar' => $avatarPath]);
 
-        auth()->user()->update(['avatar' => $avatarPath]);
-
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'avatar_url' => $avatarPath
+        ]);
     }
+
 
     public function passwordChange()
     {

@@ -6,7 +6,7 @@
     <div class="card">
         <div class="card-header flex flex-col sm:flex-row">
             <div class="flex-none">
-                <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3 ring-2 ring-slate-100 dark:ring-slate-100">
                     <img src="{{ getFilteredPath($staff->avatar, 'frontend/images/avatar/av-4.svg') }}" alt=""
                          class="w-full h-full rounded-[100%] object-cover">
                 </div>

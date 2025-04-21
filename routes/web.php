@@ -32,6 +32,7 @@ use App\Http\Controllers\UserIbRuleController;
 use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
+use App\Http\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -384,10 +385,15 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
+Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
-Route::post('/user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
 Route::view('verify-email-2', 'frontend::auth.verify-email-2');
 Route::view('register-2', 'frontend::auth.register-2');
+
+
+// Webhook Routers
+Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
+Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');

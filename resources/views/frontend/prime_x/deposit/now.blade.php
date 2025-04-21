@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div id="right-block" style="display: none">
                     {{-- <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Review Details') }}
                     </h4> --}}
@@ -176,6 +176,8 @@
                     $('.manual-row').append(data.credentials)
                     imagePreview()
                 }
+
+                $('#right-block').show()
 
             });
 

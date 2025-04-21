@@ -458,99 +458,115 @@ class Txn
     }
 
 
+
+
     public function update($tnx, $status, $userId = null, $approvalCause = 'none')
     {
         $transaction = Transaction::tnx($tnx);
-        //        dd($transaction);
 
         $uId = $userId == null ? auth()->user()->id : $userId;
-
         $user = User::find($uId);
-        //        dd($status,$transaction->type,$transaction);
 
-        if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
-            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexDeposit->value) {
-                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-                $data = [
+        try {
+            if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
+                if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexDeposit->value) {
+                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+                    $data = [
+                        'login' => $transaction->target_id,
+                        'Amount' => $transaction->amount,
+                        'type' => 1, //deposit
+                        'TransactionComments' => $comment
+                    ];
+                    $traderType = $transaction->forexTarget->trader_type;
+
+                    if ($traderType == \App\Enums\TraderType::MT5) {
+                        $forexApiService = new ForexApiService();
+                        $response = $forexApiService->balanceOperation($data);
+
+                        if ($response['success'] && $response['result']['responseCode'] == 10009) {
+                            $manualData = json_decode($transaction->manual_field_data, true);
+                            if (!is_array($manualData) || array_values($manualData) === $manualData) {
+                                $manualData = [];
+                            }
+                            $manualData['mt5_deposit_status'] = 'Deposited';
+                            $transaction->manual_field_data = json_encode($manualData);
+                            $transaction->save();
+                        } else {
+                            throw new \Exception('MT5 deposit failed at API level');
+                        }
+                    } elseif ($traderType == \App\Enums\TraderType::X9) {
+                        $forexApiService = new x9ApiService();
+                        $forexApiService->balanceOperation($transaction->target_id, 'balance', 'deposit', $transaction->final_amount, $comment);
+                    }
+
+                    $this->applyBonusToForexAccount($transaction, $user, $uId);
+                    first_min_deposit($transaction->target_id);
+
+                } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
+                    $userAccount = get_user_account_by_wallet_id($transaction->target_id);
+
+                    $wallet = new WalletService();
+                    $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
+                    $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
+
+                    if ($transaction->target_type == TxnTargetType::Wallet->value) {
+                        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
+                        $userAccount->save();
+                    }
+            }
+        }
+
+            if ($status == TxnStatus::Pending && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
+                if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                    $this->deductBonusFromForexAccount($transaction, $user, $uId, 'pending');
+                }
+        }
+
+            if ($status == TxnStatus::Failed && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
+                if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                    $this->refundBonusToForexAccount($transaction, $user, $uId);
+                }
+        }
+
+            if ($status == TxnStatus::Success && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
+                $deductionApplied = $this->applyWithdrawalDeduction($transaction);
+                if (!$deductionApplied) {
+                    throw new \Exception('Withdrawal deduction failed');
+                }
+            }
+
+            $existingManualData = json_decode($transaction->manual_field_data, true);
+            if (!is_array($existingManualData) || array_values($existingManualData) === $existingManualData) {
+                $existingManualData = [];
+            }
+
+            $data = [
+                'status' => $status,
+                'approval_cause' => $approvalCause,
+                'manual_field_data' => json_encode($existingManualData)
+            ];
+
+            return $transaction->update($data);
+
+        } catch (\Exception $e) {
+            $manualData = json_decode($transaction->manual_field_data, true);
+            if (isset($manualData['mt5_deposit_status']) && $manualData['mt5_deposit_status'] === 'Deposited') {
+                $reverseData = [
                     'login' => $transaction->target_id,
                     'Amount' => $transaction->amount,
-                    'type' => 1, //deposit
-                    'TransactionComments' => $comment
+                    'type' => 2, //withdraw to reverse
+                    'TransactionComments' => 'Auto-Reverse: ' . $transaction->method . '/' . substr($transaction->tnx, -7),
                 ];
-                $traderType = $transaction->forexTarget->trader_type;
-                if ($traderType == \App\Enums\TraderType::MT5) {
-                    $forexApiService = new ForexApiService();
-                    $forexApiService->balanceOperation($data);
-                } elseif ($traderType == \App\Enums\TraderType::X9) {
-                    $forexApiService = new x9ApiService();
-                    $forexApiService->balanceOperation($transaction->target_id, 'balance', 'deposit', $transaction->final_amount, $comment);
-                }
-                // --- Bonus ---
-                $this->applyBonusToForexAccount($transaction, $user, $uId);
 
-                //$this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
-                first_min_deposit($transaction->target_id);
-
-            } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
-//                $userAccount = get_user_account($transaction->user_id);
-                $userAccount = get_user_account_by_wallet_id($transaction->target_id);
-
-                $wallet = new WalletService();
-                $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
-                $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
-
-                if ($transaction->target_type == TxnTargetType::Wallet->value) {
-                    $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
-                    $userAccount->save();
-                }
-            }
-            //level referral
-            //            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-            //                if(!isset($transaction->user->multi_ib_login)) {
-            //                    createMultiIBAccount($transaction->user);
-            //                }
-            //                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-            //                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
-            //            }
-        }
-
-        // withdrawal by user
-        if($status == TxnStatus::Pending && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){
-            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
-                // Deduct from Bonus and mark it as pending
-                $this->deductBonusFromForexAccount($transaction, $user, $uId, 'pending');
-            }
-        }
-
-        // Withdrawl Rejected
-        if($status == TxnStatus::Failed && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){
-            // Bonus Withdraw Rejected
-            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
-                $this->refundBonusToForexAccount($transaction, $user, $uId);
+                $forexApiService = new ForexApiService();
+                $forexApiService->balanceOperation($reverseData);
             }
 
+            Log::error("Transaction update failed for tnx {$tnx}: " . $e->getMessage());
+            return false;
         }
-
-        if ($status == TxnStatus::Success && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
-
-            $deductionApplied = $this->applyWithdrawalDeduction($transaction);
-
-
-            if (!$deductionApplied) {
-                // If deduction fails, return false or handle error
-                return false;
-            }
-        }
-
-        // Update the transaction status
-        $data = [
-            'status' => $status,
-            'approval_cause' => $approvalCause,
-            'manual_field_data' => json_encode(json_decode($transaction->manual_field_data, true)) // Re-encode manual_field_data
-        ];
-
-        return $transaction->update($data);
     }
+
 
     /**
      * Apply deduction for Wallet or Forex withdrawals

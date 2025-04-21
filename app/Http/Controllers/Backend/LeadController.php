@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Imports\ImportLeads;
+use App\Imports\CustomStringBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Enums\KYCStatus;
 use App\Models\Lead;
@@ -274,4 +278,38 @@ class LeadController extends Controller
 
         return view('backend.lead.create-client', compact('lead', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs'));
     }
+
+    public function importLeads(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Cell::setValueBinder(new CustomStringBinder());
+
+        $import = new ImportLeads;
+        Excel::import($import, $request->file('import_file'));
+
+        // Handle validation failures
+        if ($import->failures()->isNotEmpty()) {
+            foreach ($import->failures() as $failure) {
+                $row = $failure->row(); // Row number
+                foreach ($failure->errors() as $error) {
+                    notify()->error("Row {$row}: {$error}");
+                }
+            }
+            return back();
+        }
+
+        $successCount = $import->getSuccessCount();
+
+        if ($successCount === 0) {
+            notify()->warning('No leads were imported. All rows may have failed validation.');
+        } else {
+            notify()->success("{$successCount} leads imported successfully.");
+        }
+        return redirect()->back();
+
+    }
+
 }

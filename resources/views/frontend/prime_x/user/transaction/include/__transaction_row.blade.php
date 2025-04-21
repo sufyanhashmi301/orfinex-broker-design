@@ -42,7 +42,7 @@
                         @endif
                     </h4>
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                        {{ $transaction->created_at }}
+                        {{ $transaction->display_time->format('M d, Y h:i A') }}
                     </div>
                 </div>
             </div>

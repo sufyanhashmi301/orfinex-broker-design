@@ -211,6 +211,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('action-2fa', 'actionTwoFa')->name('action-2fa');
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
         Route::post('info-update', 'infoUpdate')->name('info-update');
+        Route::post('update-avatar', 'updateAvatar')->name('updateAvatar');
 
         Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
             //            dd($request->all());

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\AccountBalanceType;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
@@ -145,6 +146,15 @@ class SendMoneyController extends Controller
             $wallet = get_user_account_by_wallet_id($targetId, \Auth::id());
             if (!$wallet) {
                 throw new \Exception(__('The selected Wallet account does not belong to you.'));
+            }
+            if ($wallet->balance === AccountBalanceType::IB_WALLET) {
+                $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
+                if ($amount < $ibMinLimit) {
+                    notify()->error(__('You must transfer at least :limit from IB Wallet.', [
+                        'limit' => setting('currency_symbol', 'global') . $ibMinLimit
+                    ]), 'Error');
+                    return redirect()->back();
+                }
             }
             $balance = BigDecimal::of($wallet->amount);
         }
@@ -450,6 +460,7 @@ class SendMoneyController extends Controller
         return redirect()->back();
     }
 
+
     // Check daily send limit for successful transactions only
     $dailyLimit = setting('internal_send_daily_limit', 'transfer_internal');
     $todayTransfers = Transaction::where('user_id', $fromUser->id)
@@ -482,6 +493,15 @@ class SendMoneyController extends Controller
         if (!$wallet) {
             notify()->error(__('The selected Wallet account does not belong to you.'), __('Error'));
             return redirect()->back();
+        }
+        if ($wallet->balance === AccountBalanceType::IB_WALLET) {
+            $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
+            if ($amount < $ibMinLimit) {
+                notify()->error(__('You must transfer at least :limit from IB Wallet.', [
+                    'limit' => setting('currency_symbol', 'global') . $ibMinLimit
+                ]), 'Error');
+                return redirect()->back();
+            }
         }
         $balance = BigDecimal::of($wallet->amount);
     }

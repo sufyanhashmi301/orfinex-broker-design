@@ -213,8 +213,8 @@
 
                 if (cropper) {
                     var canvas = cropper.getCroppedCanvas({
-                        width: 160,
-                        height: 160,
+                        width: 600,
+                        height: 600,
                     });
 
                     canvas.toBlob(function (blob) {

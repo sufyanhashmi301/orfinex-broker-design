@@ -149,7 +149,7 @@ class AppController extends Controller
         } else {
             $avatarPath = $user->avatar;
         }
-        
+
         $user->update(['avatar' => $avatarPath]);
 
         return response()->json([

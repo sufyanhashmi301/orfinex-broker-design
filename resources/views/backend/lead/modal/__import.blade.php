@@ -44,7 +44,7 @@
                                         src="{{asset('global/materials/upload.svg')}}"
                                         alt=""
                                     />
-                                    <span>{{ __('Upload Avatar') }}</span>
+                                    <span>{{ __('Upload File') }}</span>
                                 </label>
                             </div>
                             <p class="text-xs dark:text-white">

@@ -54,7 +54,7 @@ class NewPasswordController extends Controller
 
         DB::table('password_resets')->where(['email' => $request->email])->delete();
         $shortcodes = [
-            '[[full_name]]' => $user->full_name,
+            '[[full_name]]' => $user->first_name . ' ' . $user->last_name,
             '[[password]]' => $request->password,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),

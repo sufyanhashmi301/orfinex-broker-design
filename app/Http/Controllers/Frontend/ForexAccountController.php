@@ -229,7 +229,10 @@ class ForexAccountController extends GatewayController
             if ($success) {
                 $resResult = $response['result'];
                 $mt5Login = $resResult['login'];
-
+                if ($this->isAccountAlreadyExists(TraderType::MT5, $mt5Login)) {
+                    notify()->error(__('An account with the same login already exists in our records. Please contact support for assistance.'), __('Error'));
+                    return redirect()->back();
+                }
                 if ($mt5Login && $resResult['responseCode'] == 0) {
                     $rightData = [
                         "login" => $mt5Login,
@@ -275,8 +278,15 @@ class ForexAccountController extends GatewayController
             if ($response['success']) {
                 $resResult = $response['result']['trading_account'];
                 $mt5Login = $resResult['account_number'];
+
+                if ($this->isAccountAlreadyExists(TraderType::X9,$mt5Login)) {
+                    notify()->error(__('An account with the same login already exists in our records. Please contact support for assistance.'), __('Error'));
+                    return redirect()->back();
+                }
                 $data['group'] = (int)$group;
                 $data['leverage'] = $request->leverage;
+                // Prevent duplicate account creation
+
                 //save account in DB
                 $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
@@ -294,6 +304,7 @@ class ForexAccountController extends GatewayController
 
     public function saveAccount($request,$schema,$mt5Login,$accountType,$user,$data,$server)
     {
+
         $accountData = $request->all();
 
         $accountData['forex_schema_id'] = $schema->id;
@@ -328,6 +339,12 @@ class ForexAccountController extends GatewayController
 //        }
         return true;
     }
+
+    protected function isAccountAlreadyExists($traderType,$login)
+    {
+        return ForexAccount::where('trader_type' , $traderType)->where('login' , $login)->exists();
+    }
+
     public function sendNotification($user,$mt5Login,$password,$schema,$server)
     {
         $shortcodes = [
@@ -344,7 +361,7 @@ class ForexAccountController extends GatewayController
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
     }
-        public function getServe($request,$schema)
+    public function getServe($request,$schema)
 
     {
 
@@ -365,7 +382,6 @@ class ForexAccountController extends GatewayController
 
         return $server;
     }
-
     public function getGroup($user,$request, $schema)
     {
         $group = '';
@@ -381,7 +397,6 @@ class ForexAccountController extends GatewayController
         }
         return $group;
     }
-
     public function userAccountExist($account)
     {
 //        dd($account);
@@ -395,7 +410,6 @@ class ForexAccountController extends GatewayController
 
         return $data;
     }
-
     public function forexAccountLogs(Request $request)
     {
 
@@ -419,7 +433,6 @@ class ForexAccountController extends GatewayController
 
         return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts', 'platformLinks'));
     }
-
     public function testForexAccount(Request $request)
     {
         $data = [

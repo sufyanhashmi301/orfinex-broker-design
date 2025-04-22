@@ -187,7 +187,13 @@
             $('#filter').click(function () {
                 table.draw();
             });
-
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
+            });
             $('#global_search').keyup(function() {
                 table.draw();
             });

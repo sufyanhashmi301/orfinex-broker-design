@@ -10,12 +10,13 @@
                 {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                @can('user-direct-referral-create')
+                @can('customer-direct-referrals-create')
                     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addReferralModal" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Referral') }}
                     </a>
                 @endcan
+                @can('customer-direct-referrals-export')
                 <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'refferal', 'user_id' => $user->id]) }}">
                     @csrf
                     <button type="submit" class="btn btn-light btn-sm inline-flex items-center justify-center min-w-max">
@@ -23,6 +24,7 @@
                         {{ __('Export') }}
                     </button>
                 </form>
+                @endcan
             </div>
         </div>
         <div class="card-body px-6 pt-3">

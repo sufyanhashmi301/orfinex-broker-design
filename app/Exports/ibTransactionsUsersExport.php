@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
 
-class TransactionsUsersExport implements FromQuery, WithHeadings, WithMapping
+class ibTransactionsUsersExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
@@ -21,7 +21,7 @@ class TransactionsUsersExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Transaction::where('user_id', $this->userId)->latest()
+        return Transaction::where('user_id', $this->userId)->where('type', TxnType::IbBonus->value)->latest()
         ->select('created_at', 'tnx', 'type', 'target_id', 'final_amount', 'method', 'status');
     }
 

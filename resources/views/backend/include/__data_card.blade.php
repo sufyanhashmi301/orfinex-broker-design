@@ -50,12 +50,17 @@
                         {{ __('Site Staff') }}
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $data['total_staff'] }}
+                        @if(auth()->user()->hasRole('Super-Admin'))
+                            {{ $data['total_staff'] }}
+                        @else
+                            1
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="card">
         <div class="card-body p-5">
             <div class="flex space-x-3 rtl:space-x-reverse">

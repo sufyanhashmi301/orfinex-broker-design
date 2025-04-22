@@ -24,6 +24,7 @@
                     </a>
                 </li>
             @endcan
+            @can('withdraw-add')
             <li class="nav-item !ml-auto">
                 <a href="{{ route('admin.withdraw.add') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
                 <span class="flex items-center">
@@ -32,6 +33,7 @@
                 </span>
                 </a>
             </li>
+            @endcan
             <li class="nav-item">
                 <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                 <span class="flex items-center">

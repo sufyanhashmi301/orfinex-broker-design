@@ -20,6 +20,7 @@
     </div>
 
     <div class="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+        @canany(['company-setting', 'misc-setting', 'company-permissions-setting', 'departments-list', 'designations-list','all-countries-list','blacklist-countries-list','document-link-list','platform-link-list'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -64,7 +65,8 @@
                 </ul>
             </div>
         </div>
-
+        @endcanany
+        @canany(['ranking-list','ranking-create','ranking-edit','kyc-levels-list','lead-source-list','lead-pipeline-list','role-list','role-create','role-edit','risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions','customer-registration-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -76,11 +78,13 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions','customer-registration-settings'])
                     <li>
                         <a href="{{ route('admin.customer-groups.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Customer') }}
                         </a>
                     </li>
+                    @endcanany
                     @canany(['role-list','role-create','role-edit'])
                         <li>
                             <a href="{{ route('admin.roles.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -88,11 +92,13 @@
                             </a>
                         </li>
                     @endcanany
+                    @canany(['lead-source-list','lead-pipeline-list'])
                     <li>
                         <a href="{{ route('admin.lead.source.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Lead Settings') }}
                         </a>
                     </li>
+                    @endcanany
                     @can('kyc-levels-list')
                     <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -110,6 +116,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['automatic-gateway-manage','manual-gateway-manage','automatic-withdraw-method','manual-withdraw-method', 'withdraw-schedule','currency-setting','internal-transfer-display','external-transfer-display','bonus-list'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -162,6 +170,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['theme-settings','branding-settings','site-settings','banner-settings','gdpr-compliance-settings','maintainance-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -229,6 +239,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['custom-colors-settings','custom-fonts-settings','routes-settings','dynamic-content-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -283,6 +295,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['c-trader-display', 'meta-trader-display', 'x9-trader-display','db-synchronization-setting','copy-trading-setting','mt5-group-list', 'manual-group-list','risk-book-list','mt5-webterminal-display', 'x9-webterminal-display'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -345,6 +359,7 @@
                 </ul>
             </div>
         </div>
+        @endcanany
         @canany(['email-setting', 'collab-tools-setting','admin-email-template', 'user-email-template', 'admin-sms-template', 'user-sms-template'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
@@ -592,6 +607,7 @@
             </div>
         </div>
         @endcanany
+        @canany(['all-sections-settings', 'blocklist-ip-settings', 'single-session-settings', 'blocklist-email-settings', 'login-expiry-settings','language-list','multi-factor-auth-setting','ticket-type-list','ticket-category-list'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -617,6 +633,7 @@
                             </a>
                         </li>
                     @endcan
+                    @can('multi-factor-auth-setting')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Multi-Factor Auth')}}
@@ -625,14 +642,18 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @canany(['ticket-type-list','ticket-category-list'])
                     <li>
                         <a href="{{ route('admin.ticket.label.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Support Center')}}
                         </a>
                     </li>
+                    @endcanany
                 </ul>
             </div>
         </div>
+        @endcanany
     </div>
 @endsection
 @section('script')

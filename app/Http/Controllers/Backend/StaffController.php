@@ -40,6 +40,7 @@ class StaffController extends Controller
         $this->middleware('permission:staff-list|staff-create|staff-edit', ['only' => ['index', 'store']]);
         $this->middleware('permission:staff-create', ['only' => ['store']]);
         $this->middleware('permission:staff-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:staff-delete', ['only' => ['destroy']]);
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 namespace App\Exports;
-use App\Enums\IBStatus;
+
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
 
-class IbExport implements FromQuery, WithHeadings, WithMapping
+class withBalanceUsersExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
@@ -23,11 +23,12 @@ class IbExport implements FromQuery, WithHeadings, WithMapping
         $filters = $this->request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
         $balanceStatus = $this->request->balanceStatus;
 
-        $query = User::latest()
+        $query = User::query()
+        ->where('Balance', '>', 0)
             ->applyFilters($filters)
             ->applyBalanceStatusFilter($balanceStatus);
 
-        return $query->select('first_name', 'last_name', 'username', 'email', 'phone', 'country', 'gender', 'comment');
+        return $query->select('first_name', 'last_name', 'username', 'email', 'phone', 'country', 'gender', 'comment', 'balance');
     }
 
     public function headings(): array
@@ -40,7 +41,8 @@ class IbExport implements FromQuery, WithHeadings, WithMapping
             'Phone',
             'Country',
             'Gender',
-            'Tag'
+            'Tag',
+            'balance'
         ];
     }
 
@@ -55,6 +57,7 @@ class IbExport implements FromQuery, WithHeadings, WithMapping
             $user->country,
             $user->gender,
             $user->comment,
+            $user->balance,
         ];
     }
 }

@@ -1,3 +1,4 @@
+@can('support-ticket-status')
 <div class="dropdown">
     <button class="btn btn-sm inline-flex justify-between btn-outline-light items-center" type="button" id="statusDropdownMenuButton_{{ $id }}" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 135px;">
         <span class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -51,3 +52,4 @@
         </li>
     </ul>
 </div>
+@endcan

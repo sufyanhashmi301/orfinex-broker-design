@@ -1,3 +1,4 @@
+@can('lead-action')
 <div class="dropdown">
     <button class="btn btn-sm inline-flex justify-center btn-outline-dark items-center cursor-default relative !pr-14" type="button" id="cardDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         {{ __('actions') }}
@@ -32,3 +33,4 @@
         </li>
     </ul>
 </div>
+@endcan

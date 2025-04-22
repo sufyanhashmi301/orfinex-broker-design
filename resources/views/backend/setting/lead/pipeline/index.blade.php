@@ -4,6 +4,7 @@
 @endsection
 @section('title-btns')
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        @can('lead-pipeline-create')
         <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center"
            type="button"
            data-bs-toggle="modal"
@@ -11,10 +12,13 @@
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
             {{ __('Add New Pipeline') }}
         </a>
+        @endcan
+        @can('lead-stage-create')
         <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" id="addStage">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
             {{ __('Add New Deal Stage') }}
         </a>
+        @endcan
     </div>
 @endsection
 @section('lead-setting-content')
@@ -31,9 +35,11 @@
                                     <div class="flex-1 ml-2">
                                         <div class="flex text-slate-800 dark:text-slate-300 text-sm font-medium mb-1">
                                             <span class="mr-1">{{ $pipeline->name }}</span>
+                                            @can('lead-pipeline-edit')
                                             <a href="javascript:;" data-pipeline-id="{{ $pipeline->id }}" class="edit-pipeline inline-flex text-primary">
                                                 <iconify-icon class="text-base" icon="lucide:edit"></iconify-icon>
                                             </a>
+                                            @endcan
                                         </div>
                                         <div class="text-slate-400 dark:text-slate-400 text-xs">
                                             {{ $pipeline->stages->count() }}{{ __(' Deal Stages') }}
@@ -51,14 +57,18 @@
                                         <span class="text-sm text-slate-600 font-Inter font-normal">{{ __('Default') }}</span>
                                     </div>
                                     <div class="flex space-x-3 rtl:space-x-reverse">
+                                        @can('lead-pipeline-delete')
                                         @if(!$pipeline->default)
                                             <button type="button" data-pipeline-id="{{ $pipeline->id }}" data-pipeline-name="{{ $pipeline->name }}" class="deletePipeline toolTip onTop action-btn" data-tippy-content="delete pipeline">
                                                 <iconify-icon icon="lucide:trash"></iconify-icon>
                                             </button>
                                         @endif
+                                        @endcan
+                                        @can('lead-stage-list')
                                         <button type="button" data-pipeline-id="{{ $pipeline->id }}" class="view-pipeline toolTip onTop action-btn" data-tippy-content="show stages">
                                             <iconify-icon icon="lucide:sliders-vertical"></iconify-icon>
                                         </button>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>
@@ -98,14 +108,18 @@
                                                     </td>
                                                     <td class="table-td">
                                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                                            @can('lead-stage-edit')
                                                             <button class="editStage action-btn" data-id="{{ $stage->id }}">
                                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                             </button>
+                                                            @endcan
+                                                            @can('lead-stage-delete')
                                                             @if (!$stage->default && $stage->slug != 'generated' &&  $stage->slug != 'win' && $stage->slug != 'lost' )
                                                                 <button type="button" data-id="{{ $stage->id }}" data-name="{{ $stage->name }}" class="action-btn deleteStageBtn">
                                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                                 </button>
                                                             @endif
+                                                            @endcan
                                                         </div>
                                                     </td>
                                                 </tr>

@@ -21,27 +21,23 @@ class RealAccountExport implements FromQuery, WithHeadings, WithMapping
     public function query()
     {
         $filters = $this->request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-        $balanceStatus = $this->request->balanceStatus;
 
         $query = ForexAccount::query()
             ->where('account_type','real')
-            ->applyFilters($filters)
-            ->applyBalanceStatusFilter($balanceStatus);
+            ->applyFilters($filters);
 
-        return $query->select('login', 'ib_number', 'schema', 'username', 'group', 'currency', 'leverage', 'balance', 'equity', 'credit', 'status');
+        return $query->select('login', 'account_name', 'group', 'currency', 'leverage', 'balance', 'equity', 'credit', 'status');
     }
 
     public function headings(): array
     {
         return [
             'Account Number',
-            'User',
-            'Account Type',
+            'Account Name',
             'Group',
             'Currency',
             'Leverage',
             'Balance',
-            'Agent/IB Number',
             'Status',
         ];
     }
@@ -50,13 +46,11 @@ class RealAccountExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             $forexAccount->login,
-            $forexAccount->username,
-            $forexAccount->schema,
+            $forexAccount->account_name,
             $forexAccount->group,
             $forexAccount->currency,
             $forexAccount->leverage,
             $forexAccount->balance,
-            $forexAccount->ib_number,
             $forexAccount->status,
         ];
     }

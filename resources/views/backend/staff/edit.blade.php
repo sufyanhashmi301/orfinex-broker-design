@@ -40,25 +40,26 @@
                             {{ $staff->phone }}
                         </div>
                     @endif
-                    @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin') && $staff->getRoleNames()->first() != 'Super-Admin')
+                   @can('staff-login')
                         <a href="{{ route('admin.staff.login', $staff->id) }}"
                            class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
                             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light"
                                           icon="mdi:user-add-outline"></iconify-icon>
                             {{ __('Login As Staff') }}
                         </a>
-                    @endif
-                    @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
+                        @endcan
+                 @canany(['staff-attach-users-create','staff-attach-users-list'])
                         <a href="{{ route('admin.staff.attachUser.index', $staff->id) }}"
                            class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
                             <iconify-icon class="ltr:mr-2 rtl:ml-2 font-light"
                                           icon="icomoon-free:attachment"></iconify-icon>
                             {{ __('Attached Users') }}
                         </a>
-                    @endif
+                        @endcanany
                 </div>
             </div>
         </div>
+        @can('staff-edit')
         <div class="card-body p-6">
             <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                 <div class="lg:col-span-2">
@@ -420,6 +421,7 @@
                 </div>
             </div>
         </div>
+        @endcan
         @if(!$staff->hasRole('Super-Admin'))
 
             <div class="card-header">
@@ -444,17 +446,19 @@
             </div>
         @endif
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center p-6">
+            @can('staff-edit') 
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                 {{ __('Save Changes') }}
             </button>
-            @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
+            @endcan
+            @can('staff-delete')          
                 <button type="button" class="btn btn-danger inline-flex items-center justify-center delete-staff-btn"
                         data-id="{{ $staff->id }}">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="heroicons:trash"></iconify-icon>
                     {{ __('Delete') }}
                 </button>
-            @endif
+            @endcan
         </div>
     </div>
 

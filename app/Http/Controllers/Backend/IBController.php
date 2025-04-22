@@ -114,81 +114,89 @@ class IBController extends Controller
 
 
     public function IbPendingList(Request $request)
-    {
-        if ($request->ajax()) {
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $loggedInUser = auth()->user();
 
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::where('ib_status', IBStatus::PENDING)->latest();
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        if ($canViewAllUsers) {
+            // Fetch all pending IB users
+            $data = User::where('ib_status', IBStatus::PENDING)->latest();
+        } else {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                // Fetch pending IB users for attached user IDs only
+                $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)->latest();
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('ib_status', IBStatus::PENDING)->applyFilters($filters);
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
-                ->make(true);
         }
-        $ibGroups = IbGroup::where('status', 1)->get();
 
-        return view('backend.ib.pending', compact('ibGroups'));
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', 'backend.user.include.__user')
+            ->addColumn('email', 'backend.user.include.__email')
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'email', 'ib_status', 'action'])
+            ->make(true);
     }
+
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.pending', compact('ibGroups'));
+}
 
     public function IbApprovedList(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $loggedInUser = auth()->user();
+
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        // Initialize query
+        $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+
+        if (!$canViewAllUsers) {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data->whereIn('id', $attachedUserIds);
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::where('ib_status', IBStatus::APPROVED)->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('ib_status', IBStatus::APPROVED)->applyFilters($filters);
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
-                ->make(true);
         }
-        $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.approved', compact('ibGroups'));
+
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', 'backend.user.include.__user')
+            ->addColumn('email', 'backend.user.include.__email')
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'email', 'ib_status', 'action'])
+            ->make(true);
     }
+
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.approved', compact('ibGroups'));
+}
+
 
     public function IbRejectedList(Request $request)
     {
@@ -225,45 +233,44 @@ class IBController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::latest();
-            } else {
+    
+            // Check if the user can view all users
+            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+    
+            // Initialize query
+            $data = User::query()->latest();
+    
+            if (!$canViewAllUsers) {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
+    
                 if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::whereIn('id', $attachedUserIds)
-                        ->latest();
+                    $data->whereIn('id', $attachedUserIds);
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = User::applyFilters($filters);
+                    return Datatables::of(collect([]))->make(true);
                 }
             }
-
+    
+            // Apply additional filters
+            $data->applyFilters($filters);
+    
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
-//                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-//                ->editColumn('username', function ($request) {
-//                    return safe($request->username);
-//                })
-//                ->addColumn('ib_group', function ($user) {
-//                    return view('backend.ib.include.__action', ['user' => $user]);
-//                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
                 ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
+    
         $ibGroups = IbGroup::where('status', 1)->get();
         return view('backend.ib.all', compact('ibGroups'));
     }
+    
 
     public function answerView(User $user)
     {

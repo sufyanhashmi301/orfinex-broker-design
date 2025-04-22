@@ -7,10 +7,13 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Enums\KYCStatus;
 use App\Exports\ActiveUsersExport;
+use App\Exports\ibTransactionsUsersExport;
 use App\Exports\DisabledUsersExport;
 use App\Exports\RefferalUsersExport;
 use App\Exports\TransactionsUsersExport;
 use App\Exports\UsersExport;
+use App\Exports\withBalanceUsersExport;
+use App\Exports\withOutBalanceUsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\Bonus;
@@ -62,15 +65,16 @@ class UserController extends Controller
      */
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member|customer-edit', ['only' => ['edit']]);
+        $this->middleware('permission:customer-list', ['only' => ['index', 'activeUser', 'disabled', 'withOutBalance', 'withBalance']]);
+        // $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage', ['only' => ['update']]);
+        $this->middleware('permission:customer-overview-update', ['only' => ['update']]);
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
-        $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
-        $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
-        $this->middleware('permission:customer-export', ['only' => ['export']]);
+        $this->middleware('permission:customer-profile-toggles', ['only' => ['statusUpdate']]);
+        $this->middleware('permission:customer-funds', ['only' => ['balanceUpdate']]);
+        $this->middleware('permission:customer-edit|customer-overview-update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:customer-create', ['only' => ['store', 'createCustomer']]);
         $this->forexApiService = $forexApiService;
     }
 
@@ -85,21 +89,28 @@ class UserController extends Controller
         $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
         if ($request->ajax()) {
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::applyFilters($filters);
-            } else {
-                // Get the attached users if the user is not a Super-Admin
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Show only attached users
-                    $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
-                } else {
-                    // If no users are attached, show all users
-                    $data = User::applyFilters($filters);
-                }
-            }
+         // Check if the logged-in user is a Super-Admin
+         if ($loggedInUser->hasRole('Super-Admin')) {
+            $data = User::applyFilters($filters);
+        } 
+        // Check if the user has the "show-all-users-by-default-to-staff" permission
+        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $data = User::applyFilters($filters);
+        } 
+        else {
+            // Get the attached users if the user is not a Super-Admin
+            $attachedUserIds = $loggedInUser->users->pluck('id');
 
+            if ($attachedUserIds->isNotEmpty()) {
+                // Show only attached users
+                $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
+            } else {
+                // If no users are attached, show nothing (empty dataset)
+                $data = User::where('id', -1); // Return an empty result set
+            }
+        }
+
+        $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
@@ -122,35 +133,57 @@ class UserController extends Controller
     }
 
 
-    public function export(Request $request, $type)
-    {
-        $userId = $request->user_id; // Get the selected user's ID from the request
-
-        if (!$userId) {
-            return back()->with('error', 'User not found.');
-        }
-        $user = User::find($userId);
-
-        if (!$user) {
-            return back()->with('error', 'User not found.');
-        }
-
-        $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
-        $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
-        switch ($type) {
-            case 'active':
-                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
-            case 'disabled':
-                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
-            case 'refferal':
-                return Excel::download(new RefferalUsersExport($userId), $fileName);
-            case 'transaction':
-                return Excel::download(new TransactionsUsersExport($userId), $fileName2);
-            default:
-                return Excel::download(new UsersExport($request), 'users.xlsx');
-        }
+    public function export(Request $request, $type = null)
+{
+    switch ($type) {
+        case 'active':
+            return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
+        case 'disabled':
+            return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+        case 'withbalance':
+            return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
+        case 'withoutbalance':
+            return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
+        case 'refferal':
+            // Only for referral exports we need user_id
+            $userId = $request->user_id;
+            if (!$userId) {
+                return back()->with('error', 'User ID is required for referral export');
+            }
+            $user = User::find($userId);
+            if (!$user) {
+                return back()->with('error', 'User not found');
+            }
+            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
+            return Excel::download(new RefferalUsersExport($userId), $fileName);
+        case 'transaction':
+            // Only for transaction exports we need user_id
+            $userId = $request->user_id;
+            if (!$userId) {
+                return back()->with('error', 'User ID is required for transaction export');
+            }
+            $user = User::find($userId);
+            if (!$user) {
+                return back()->with('error', 'User not found');
+            }
+            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
+            return Excel::download(new TransactionsUsersExport($userId), $fileName);
+        case 'ibtransaction':
+                // Only for transaction exports we need user_id
+                $userId = $request->user_id;
+                if (!$userId) {
+                    return back()->with('error', 'User ID is required for transaction export');
+                }
+                $user = User::find($userId);
+                if (!$user) {
+                    return back()->with('error', 'User not found');
+                }
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
+                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);    
+        default:
+            return Excel::download(new UsersExport($request), 'users.xlsx');
     }
-
+}
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -159,28 +192,31 @@ class UserController extends Controller
     public function activeUser(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
             // Check if the logged-in user is a Super-Admin
             if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all active users
                 $data = User::where('status', 1)->latest();
-            } else {
-                // Get attached user IDs for non-Super-Admin users
+            } 
+            // If user has permission "show-all-users-by-default-to-staff", show all users
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::where('status', 1)->latest();
+            } 
+            // Otherwise, show only attached users
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
+    
                 if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch active users for attached user IDs
                     $data = User::where('status', 1)
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('status', 1)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
+    
 
             // Apply additional filters if any
             $data->applyFilters($filters);
@@ -218,20 +254,27 @@ class UserController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::where('status', 0)->latest();
+             // Super-Admin sees all disabled users
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            $data = User::where('status', 0)->latest();
+        } 
+        // If user has permission "show-all-users-by-default-to-staff", show all disabled users
+        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $data = User::where('status', 0)->latest();
+        } 
+        // Otherwise, show only attached disabled users
+        else {
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data = User::where('status', 0)
+                    ->whereIn('id', $attachedUserIds)
+                    ->latest();
             } else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::where('status', 0)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    $data = User::where('status', 0)->latest();
-                }
+                // No attached users = No results
+                $data = User::where('id', -1); // Returns an empty dataset
             }
-
+        }
             $data->applyFilters($filters);
 
             return Datatables::of($data)
@@ -257,7 +300,7 @@ class UserController extends Controller
     public function withBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -266,21 +309,29 @@ class UserController extends Controller
                 ->where('Balance', '>', 0)
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-
+    
+            // Super-Admin sees all users with balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } else {
+            } 
+            // If user has permission "show-all-users-by-default-to-staff", show all users with balance
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } 
+            // Otherwise, show only attached users with balance
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
+    
                 if ($attachedUserIds->isNotEmpty()) {
                     $data = User::whereIn('id', $userIds)
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::whereIn('id', $userIds)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-
+    
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
@@ -294,17 +345,20 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity','staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-
-        return view('backend.user.with_balance');
+    
+        return view('backend.user.with_balance', [
+            'riskProfileTags' => $riskProfileTags
+        ]);
     }
+    
 
     public function withOutBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -313,21 +367,29 @@ class UserController extends Controller
                 ->where('Balance', '<=', 0)
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-
+    
+            // Super-Admin sees all users without balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } else {
+            } 
+            // If user has permission "show-all-users-by-default-to-staff", show all users without balance
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } 
+            // Otherwise, show only attached users without balance
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-
+    
                 if ($attachedUserIds->isNotEmpty()) {
                     $data = User::whereIn('id', $userIds)
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::whereIn('id', $userIds)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-
+    
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
@@ -341,12 +403,15 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity',  'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-
-        return view('backend.user.without_balance');
+    
+        return view('backend.user.without_balance', [
+            'riskProfileTags' => $riskProfileTags
+        ]);
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -359,7 +424,7 @@ class UserController extends Controller
         $loggedInUser = auth()->user();
 
         // Check if the logged-in user is a Super-Admin
-        if (!$loggedInUser->hasRole('Super-Admin')) {
+        if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
             // Validate if the `id` exists in attached users
             $attachedUserIds = $loggedInUser->users->pluck('id');
             if ($attachedUserIds->isNotEmpty()) {

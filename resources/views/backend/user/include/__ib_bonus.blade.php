@@ -5,6 +5,7 @@
     aria-labelledby="pills-bonus-tab"
 >
     <div class="card">
+
             <div class="card-header">
                 <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
                     <!-- Filter Inputs -->
@@ -31,8 +32,8 @@
 
                     <!-- Action Buttons -->
                     <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse mt-2 sm:mt-0">
-                        @can('customer-export')
-                            <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
+                        @can('customer-ib-bonus-export')
+                            <form method="POST" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
                                 @csrf
                                 <div class="input-area relative">
                                     <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">

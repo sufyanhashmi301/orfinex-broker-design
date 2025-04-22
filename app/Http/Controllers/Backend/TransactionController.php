@@ -36,86 +36,75 @@ class TransactionController extends Controller
      * @throws \Exception
      */
     public function transactions(Request $request, $id = null)
-    {
-        $loggedInUser = auth()->user();
+{
+    $loggedInUser = auth()->user();
 
-        if ($request->ajax()) {
-            $filters = $request->only(['email', 'status', 'type', 'created_at']);
+    if ($request->ajax()) {
+        $filters = $request->only(['email', 'status', 'type', 'created_at']);
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
+        // Check if user is Super Admin or has permission to view all transactions
+        $canViewAll = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        if ($canViewAll) {
+            if ($id) {
+                $data = Transaction::where('user_id', $id)->latest();
+            } else {
+                $data = Transaction::query()->latest();
+            }
+        } else {
+            // Only show transactions of attached users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
                 if ($id) {
-                    // Fetch transactions for a specific user (if ID is provided)
-                    $data = Transaction::where('user_id', $id)->latest();
+                    $data = Transaction::where('user_id', $id)
+                        ->whereIn('user_id', $attachedUserIds)
+                        ->latest();
                 } else {
-                    // Fetch all transactions
-                    $data = Transaction::query()->latest();
+                    $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
                 }
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    if ($id) {
-                        // Fetch transactions for the specified user and ensure they are attached
-                        $data = Transaction::where('user_id', $id)
-                            ->whereIn('user_id', $attachedUserIds)
-                            ->latest();
-                    } else {
-                        // Fetch transactions for attached users only
-                        $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
-                    }
-                } else {
-                    // If no users are attached, return all users
-                    if ($id) {
-                        // Fetch transactions for a specific user (if ID is provided)
-                        $data = Transaction::where('user_id', $id)->latest();
-                    } else {
-                        // Fetch all transactions
-                        $data = Transaction::query()->latest();
-                    }
-                }
-
+                // No attached users, return empty result if ID is not allowed
+                $data = Transaction::whereNull('id'); // Will return no results
             }
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
-                })
-                ->addColumn('action_by', function ($row) {
-                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
-                })
-
-                ->editColumn('status', 'backend.transaction.include.__txn_status')
-                ->editColumn('type', 'backend.transaction.include.__txn_type')
-                ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
-                ->editColumn('charge', function ($request) {
-                    return $request->charge . ' ' . setting('site_currency', 'global');
-                })
-                ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('action', 'backend.transaction.include.__action')
-                ->editColumn('created_at', function ($row) {
-                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
-                        $manualData = json_decode($row->manual_field_data, true);
-
-                        if (is_array($manualData) && isset($manualData['time'])) {
-                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
-                        }
-                    }
-
-                    // Fallback to created_at
-                    return $row->created_at;
-                })
-                ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
-                ->make(true);
         }
 
-        return view('backend.transaction.index');
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('created_at', function ($row) {
+                return '<span class="text-nowrap">' . $row->created_at . '</span>';
+            })
+            ->addColumn('action_by', function ($row) {
+                return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+            })
+            ->editColumn('status', 'backend.transaction.include.__txn_status')
+            ->editColumn('type', 'backend.transaction.include.__txn_type')
+            ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
+            ->editColumn('charge', function ($request) {
+                return $request->charge . ' ' . setting('site_currency', 'global');
+            })
+            ->addColumn('username', 'backend.transaction.include.__user')
+            ->addColumn('action', 'backend.transaction.include.__action')
+            ->editColumn('created_at', function ($row) {
+                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                    $manualData = json_decode($row->manual_field_data, true);
+                    if (is_array($manualData) && isset($manualData['time'])) {
+                        return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                    }
+                }
+                return $row->created_at;
+            })
+            ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
+            ->make(true);
     }
+
+    return view('backend.transaction.index');
+}
+
+
 
     public function export(Request $request)
     {

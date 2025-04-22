@@ -133,10 +133,10 @@
                                         </li>
                                     @endcan
 
-                                    @canany(['deposit-list','deposit-action',
-                                            'withdraw-list','withdraw-action','target-manage','referral-create',
+                                    @canany(['deposit-list',
+                                            'withdraw-list','target-manage','referral-create',
                                             'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                                        @canany(['deposit-list','deposit-action'])
+                                        @canany(['deposit-list'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.deposit.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -148,6 +148,8 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @endcanany
+                                            @canany(['withdraw-list'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.withdraw.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -159,7 +161,7 @@
                                                     </div>
                                                 </a>
                                             </li>
-                                        @endcanany
+                                            @endcanany
                                     @endcanany
                                 </ul>
                             </div>

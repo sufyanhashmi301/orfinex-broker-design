@@ -1,7 +1,7 @@
 <div class="hv-item">
     <div class="hv-item-parent">
         <div class="person">
-            <img src="{{ asset($levelUser->avatar ?? 'global/materials/user.png')}}" class="inline-flex" alt="">
+            <img src="{{ getFilteredPath($levelUser->avatar, 'frontend/images/all-img/user.png') }}" class="inline-flex" alt="">
             <p class="name">
                 @if($me)
                     {{ __("It's Me") }}( {{ $levelUser->full_name }} )

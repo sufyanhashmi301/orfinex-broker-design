@@ -36,9 +36,7 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="user-referral-dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Phone') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
@@ -80,8 +78,6 @@
                 ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
-                    {data: 'full_name', name: 'full_name'},
-                    {data: 'email', name: 'email'},
                     {data: 'phone', name: 'phone'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},

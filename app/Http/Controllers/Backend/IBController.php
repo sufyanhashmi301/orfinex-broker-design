@@ -233,17 +233,17 @@ class IBController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $loggedInUser = auth()->user();
-    
+
             // Check if the user can view all users
             $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-    
+
             // Initialize query
             $data = User::query()->latest();
-    
+
             if (!$canViewAllUsers) {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                 if ($attachedUserIds->isNotEmpty()) {
                     $data->whereIn('id', $attachedUserIds);
                 } else {
@@ -251,26 +251,25 @@ class IBController extends Controller
                     return Datatables::of(collect([]))->make(true);
                 }
             }
-    
+
             // Apply additional filters
             $data->applyFilters($filters);
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'ib_status', 'action'])
                 ->make(true);
         }
-    
+
         $ibGroups = IbGroup::where('status', 1)->get();
         return view('backend.ib.all', compact('ibGroups'));
     }
-    
+
 
     public function answerView(User $user)
     {

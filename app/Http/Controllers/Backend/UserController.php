@@ -92,11 +92,11 @@ class UserController extends Controller
          // Check if the logged-in user is a Super-Admin
          if ($loggedInUser->hasRole('Super-Admin')) {
             $data = User::applyFilters($filters);
-        } 
+        }
         // Check if the user has the "show-all-users-by-default-to-staff" permission
         elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
             $data = User::applyFilters($filters);
-        } 
+        }
         else {
             // Get the attached users if the user is not a Super-Admin
             $attachedUserIds = $loggedInUser->users->pluck('id');
@@ -114,7 +114,6 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
@@ -125,7 +124,7 @@ class UserController extends Controller
                 })
 
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -179,7 +178,7 @@ class UserController extends Controller
                     return back()->with('error', 'User not found');
                 }
                 $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
-                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);    
+                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);
         default:
             return Excel::download(new UsersExport($request), 'users.xlsx');
     }
@@ -198,15 +197,15 @@ class UserController extends Controller
             // Check if the logged-in user is a Super-Admin
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::where('status', 1)->latest();
-            } 
+            }
             // If user has permission "show-all-users-by-default-to-staff", show all users
             elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
                 $data = User::where('status', 1)->latest();
-            } 
+            }
             // Otherwise, show only attached users
             else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                 if ($attachedUserIds->isNotEmpty()) {
                     $data = User::where('status', 1)
                         ->whereIn('id', $attachedUserIds)
@@ -216,7 +215,7 @@ class UserController extends Controller
                     $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-    
+
 
             // Apply additional filters if any
             $data->applyFilters($filters);
@@ -224,7 +223,6 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('username', 'backend.user.include.__user')
-                ->editColumn('email', 'backend.user.include.__email')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
@@ -234,7 +232,7 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -257,11 +255,11 @@ class UserController extends Controller
              // Super-Admin sees all disabled users
         if ($loggedInUser->hasRole('Super-Admin')) {
             $data = User::where('status', 0)->latest();
-        } 
+        }
         // If user has permission "show-all-users-by-default-to-staff", show all disabled users
         elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
             $data = User::where('status', 0)->latest();
-        } 
+        }
         // Otherwise, show only attached disabled users
         else {
             $attachedUserIds = $loggedInUser->users->pluck('id');
@@ -280,7 +278,6 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
@@ -290,7 +287,7 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -309,19 +306,19 @@ class UserController extends Controller
                 ->where('Balance', '>', 0)
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-    
+
             // Super-Admin sees all users with balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } 
+            }
             // If user has permission "show-all-users-by-default-to-staff", show all users with balance
             elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } 
+            }
             // Otherwise, show only attached users with balance
             else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                 if ($attachedUserIds->isNotEmpty()) {
                     $data = User::whereIn('id', $userIds)
                         ->whereIn('id', $attachedUserIds)
@@ -331,11 +328,10 @@ class UserController extends Controller
                     $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
@@ -345,15 +341,15 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-    
+
         return view('backend.user.with_balance', [
             'riskProfileTags' => $riskProfileTags
         ]);
     }
-    
+
 
     public function withOutBalance(Request $request)
     {
@@ -367,19 +363,19 @@ class UserController extends Controller
                 ->where('Balance', '<=', 0)
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-    
+
             // Super-Admin sees all users without balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } 
+            }
             // If user has permission "show-all-users-by-default-to-staff", show all users without balance
             elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } 
+            }
             // Otherwise, show only attached users without balance
             else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                 if ($attachedUserIds->isNotEmpty()) {
                     $data = User::whereIn('id', $userIds)
                         ->whereIn('id', $attachedUserIds)
@@ -389,11 +385,10 @@ class UserController extends Controller
                     $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
@@ -403,15 +398,15 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-    
+
         return view('backend.user.without_balance', [
             'riskProfileTags' => $riskProfileTags
         ]);
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.

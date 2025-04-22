@@ -90,7 +90,30 @@
         })(jQuery);
 
         $('#countrySelect').select2({
-            dropdownParent: $('#addReferralModal')
+            dropdownParent: $('#addReferralModal'),
+            ajax: {
+                url: '{{ route("admin.user.search") }}',
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: data.results.map(function(item) {
+                            return {
+                                id: item.id,
+                                text: item.text + ' (' + item.email + ')',
+                                email: item.email
+                            };
+                        })
+                    };
+                },
+                cache: true
+            },
+            templateResult: function(data) {
+                return $('<span>' + data.text + '</span>');
+            },
+            templateSelection: function(data) {
+                return data.text;
+            }
         });
 
     </script>

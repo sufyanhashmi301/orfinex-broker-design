@@ -26,13 +26,7 @@
                         <div class="input-area">
                             <label class="block capitalize form-label">{{ __('Select User*') }}</label>
                             <div class="relative ">
-                                <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
-                                    @foreach( $users as $user)
-                                        <option  value="{{ $user->id }}" class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
-                                            {{ $user->email  }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2" data-placeholder="Select User"></select>
                             </div>
                         </div>
                         <div class="action-btns text-right">

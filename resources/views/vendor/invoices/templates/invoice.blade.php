@@ -130,8 +130,8 @@
 
     <body>
         {{-- Header --}}
-        @if($invoice->logo) 
-            <img src="{{ $invoice->logo ?? '' }}" height="100">
+        @if($invoice->logo)
+            <img src="{{ $invoice->getLogo() }}" alt="logo" height="50">
         @endif
 
         <table class="table mt-5">

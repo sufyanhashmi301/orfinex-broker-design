@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
+use App\Console\Commands\DeleteStaleUsers;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\MultiLevelRebateDistribution;
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('rebate:distribution')->everyTenMinutes();
+        $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
@@ -47,6 +49,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SynchroniseMissingTranslationKeys::class,
         CreateForexAccountsFromMysqlToMT5::class,
+        DeleteStaleUsers::class,
         ResetData::class,
         IBProfitRecord::class,
         MultiIbBonus::class,

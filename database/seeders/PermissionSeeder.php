@@ -153,6 +153,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
+ 
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-list'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-create'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-edit'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-delete'],
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
@@ -202,11 +207,6 @@ class PermissionSeeder extends Seeder
             ['category' => 'System Tags Setting', 'name' => 'system-tag-list'],
             ['category' => 'System Tags Setting', 'name' => 'system-tag-edit'],
             ['category' => 'System Tags Setting', 'name' => 'system-tag-delete'],
-
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-create'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-list'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-edit'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-delete'],
 
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-create'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-list'],

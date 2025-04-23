@@ -495,12 +495,13 @@
                         </li>
 
                     @endcan
-
+                   @can('ib-group-list')
                     <li class="">
                         <a href="{{ route('admin.ib-group.index') }}" class="{{ isActive('admin.ib-group*') }}">
                             {{ __('IB Groups') }}
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </li>
         @endcanany

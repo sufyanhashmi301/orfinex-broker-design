@@ -88,8 +88,8 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Username') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('User') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
 {{--                                    <th scope="col" class="table-th">{{ __('IB') }}</th>--}}
 {{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('IB Status') }}</th>
@@ -169,7 +169,7 @@
                 },
                 columns: [
                     {data: 'username', name: 'username'},
-                    {data: 'email', name: 'email'},
+                    // {data: 'email', name: 'email'},
                     // {data: 'ib_login', name: 'ib_login'},
                     // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},

@@ -80,7 +80,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
@@ -153,7 +152,6 @@
 
                 columns: [
                     {data: 'username', name: 'username'},
-                    {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},

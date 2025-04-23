@@ -198,6 +198,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Platform Links Setting', 'name' => 'platform-link-edit'],
             ['category' => 'Platform Links Setting', 'name' => 'platform-link-delete'],
 
+            ['category' => 'Social Links Setting', 'name' => 'social-link-list'],
+            ['category' => 'Social Links Setting', 'name' => 'social-link-edit'],
+
+            ['category' => 'Social logins Setting', 'name' => 'social-logins-list'],
+            ['category' => 'Social logins Setting', 'name' => 'social-logins-action'],
+
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-create'],
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-list'],
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-edit'],

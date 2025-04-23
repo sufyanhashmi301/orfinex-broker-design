@@ -298,6 +298,11 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return $this->hasMany(User::class, 'ref_id');
     }
 
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'ref_id');
+    }
+
 
 // Ensure this function is part of a class where `mt5_total_balance` is defined.
 

@@ -8,7 +8,7 @@
             <div class="flex items-center">
                 <div class="flex-none">
                     <div class="h-12 w-12 rounded-full flex-1 border-2 border-primary">
-                        <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
+                        <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                     </div>
                 </div>
                 <div class="flex-1 text-start ml-2">

@@ -9,7 +9,7 @@
             padding-top: 0;
         }
         .dashboardTitle {
-            background-image: url('https://cdn.brokeret.com/crm-assets/admin/home/header.svg');
+            background-image: url('{{ config('app.r2_asset_url') . '/fallback/header.svg' }}');
             background-repeat: repeat;
             border-radius: 0;
         }

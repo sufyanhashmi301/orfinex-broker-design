@@ -26,11 +26,6 @@ class PermissionSeeder extends Seeder
 
         $permissions = [
 
-            ['category' => 'Role Management', 'name' => 'role-list'],
-            ['category' => 'Role Management', 'name' => 'role-create'],
-            ['category' => 'Role Management', 'name' => 'role-edit'],
-            ['category' => 'Role Management', 'name' => 'role-delete'],
-
             ['category' => 'Customer Management', 'name' => 'customer-list'],
             ['category' => 'Customer Management', 'name' => 'show-all-users-by-default-to-staff'],
             ['category' => 'Customer Management', 'name' => 'customer-create'],
@@ -219,6 +214,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-delete'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-permissions'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-registration-settings'],
+
+            ['category' => 'Role Management', 'name' => 'role-list'],
+            ['category' => 'Role Management', 'name' => 'role-create'],
+            ['category' => 'Role Management', 'name' => 'role-edit'],
+            ['category' => 'Role Management', 'name' => 'role-delete'],
 
             ['category' => 'Lead Source Setting', 'name' => 'lead-source-list'],
             ['category' => 'Lead Source Setting', 'name' => 'lead-source-create'],

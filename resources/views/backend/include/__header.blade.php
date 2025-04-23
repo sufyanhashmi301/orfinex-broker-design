@@ -119,7 +119,7 @@
                                         @endcanany
                                     @endcanany
 
-                                    @can('schema-create')
+                                    @can('account-type-create')
                                         <li class="pb-2">
                                             <a href="{{ route('admin.accountType.create') }}">
                                                 <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">

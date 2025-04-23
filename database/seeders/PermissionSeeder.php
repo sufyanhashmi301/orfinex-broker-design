@@ -39,12 +39,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'customer-mail-send'],
             ['category' => 'Customer Management', 'name' => 'customer-change-password'],
 
-            ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-login'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-bonus'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-funds'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],     
-           
+            ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
+
             ['category' => 'Customer festures Management', 'name' => 'customer-overview-update'],
             ['category' => 'Customer festures Management', 'name' => 'customer-accounts-list'],
             ['category' => 'Customer festures Management', 'name' => 'customer-account-mapping'],
@@ -100,10 +100,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-create'],
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-delete'],
 
-            ['category' => 'Account Type Management', 'name' => 'schema-list'],
-            ['category' => 'Account Type Management', 'name' => 'schema-create'],
-            ['category' => 'Account Type Management', 'name' => 'schema-edit'],
-            ['category' => 'Account Type Management', 'name' => 'schema-delete'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-list'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-create'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-edit'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-delete'],
 
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
@@ -117,11 +117,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Risk Hub Management', 'name' => 'net-positions-groups'],
             ['category' => 'Risk Hub Management', 'name' => 'older-positions-days'],
 
-            ['category' => 'Referral Management', 'name' => 'target-manage'],
-            ['category' => 'Referral Management', 'name' => 'referral-create'],
-            ['category' => 'Referral Management', 'name' => 'referral-list'],
-            ['category' => 'Referral Management', 'name' => 'referral-edit'],
-            ['category' => 'Referral Management', 'name' => 'referral-delete'],
+            // ['category' => 'Referral Management', 'name' => 'target-manage'],
+            // ['category' => 'Referral Management', 'name' => 'referral-create'],
+            // ['category' => 'Referral Management', 'name' => 'referral-list'],
+            // ['category' => 'Referral Management', 'name' => 'referral-edit'],
+            // ['category' => 'Referral Management', 'name' => 'referral-delete'],
 
             ['category' => 'IB Management', 'name' => 'ib-list'],
             ['category' => 'IB Management', 'name' => 'ib-action'],
@@ -143,6 +143,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Support Ticket Management', 'name' => 'support-ticket-status'],
 
             ['category' => 'Partnership Levels Management', 'name' => 'levels-list'],
+
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-list'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-create'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-edit'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-delete'],
 
             ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],

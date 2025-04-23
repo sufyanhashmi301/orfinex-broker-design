@@ -220,7 +220,7 @@
       
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
-        @canany(['schema-list'])
+        @canany(['account-type-list'])
             <li class="{{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -466,11 +466,13 @@
                             </a>
                         </li>
                     @endcan
+                    @can('multi-ib-level-list')
                     <li>
                         <a href="{{ route('admin.multi-ib-level.index') }}" class="{{ isActive('admin.multi-ib-level*') }}">
                             {{ __('Multi IB Levels') }}
                         </a>
                     </li>
+                    @endcan
                     @can('symbols-list')
                         <li class="">
                             <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">

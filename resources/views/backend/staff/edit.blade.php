@@ -40,6 +40,7 @@
                             {{ $staff->phone }}
                         </div>
                     @endif
+                    @if(!$staff->hasRole('Super-Admin'))
                    @can('staff-login')
                         <a href="{{ route('admin.staff.login', $staff->id) }}"
                            class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400 hover:underline">
@@ -56,6 +57,7 @@
                             {{ __('Attached Users') }}
                         </a>
                         @endcanany
+                    @endif
                 </div>
             </div>
         </div>

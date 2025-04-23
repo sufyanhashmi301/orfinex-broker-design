@@ -45,7 +45,7 @@ class DeleteStaleUsers extends Command
         // STEP 2: Delete users who are stale (unverified + no activity)
         $staleUsers = \App\Models\User::where('in_grace_period', true)
             ->whereNull('email_verified_at')
-            ->where('created_at', '<', now()->subDays(30))
+            ->where('created_at', '<', now()->subDays(setting('user_removal_grace_period', 'customer_misc', 30)))
             ->whereDoesntHave('transaction')
             ->whereDoesntHave('accounts') // again, forex_accounts
             ->get();

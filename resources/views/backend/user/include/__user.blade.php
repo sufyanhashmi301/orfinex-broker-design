@@ -11,6 +11,8 @@
         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
             {{ safe($user->full_name) }}
         </h4>
+        <div class="text-xs font-normal lowercase text-slate-600 dark:text-slate-400">
+            {{ safe($user->email) }}
+        </div>
     </div>
 </a>
-

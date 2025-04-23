@@ -29,7 +29,7 @@
                                 @forelse($data['latest_user']->take(10) as $user)
                                     <tr>
                                         <td class="table-td">
-                                            <div class="flex items-center">
+                                            <a href="{{ route('admin.user.edit', $user->id) }}" class="flex items-center">
                                                 <div class="flex-none">
                                                     <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
                                                         <img src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
@@ -43,7 +43,7 @@
                                                         {{ safe($user->email) }}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </td>
                                         <td class="table-td font-medium">{{ $currencySymbol . $user->balance }}</td>
                                         <td class="table-td font-medium">{{ $currencySymbol . $user->total_profit }}</td>

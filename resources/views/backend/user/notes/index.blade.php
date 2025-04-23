@@ -68,7 +68,7 @@
     ajax: "{{ route('admin.user.note.data', $user->id) }}",
     columns: [
         {data: 'description', name: 'description'},
-        {data: 'admin_name', name: 'admin.name'},
+        {data: 'staff', name: 'staff'},
         {
             data: 'created_at',
             name: 'created_at',

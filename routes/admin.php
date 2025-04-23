@@ -276,7 +276,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('manual-pending', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');
-        Route::post('export',  'export')->name('export');
+        Route::post('export/{type?}', 'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
 
@@ -520,6 +520,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //admin self manage
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
     Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
+    Route::post('update-avatar', [AppController::class, 'updateAvatar'])->name('profile.updateAvatar');
 
     Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
     Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
@@ -583,7 +584,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
-    Route::get('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+    Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+  
 
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
@@ -631,6 +633,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
         Route::get('get-lead/{id}', 'getLead')->name('getLead');
         Route::get('create-client/{id}', 'createClient')->name('createClient');
+        Route::post('import', 'importLeads')->name('import');
 
         Route::post('store/client', [UserController::class, 'leadAsClient'])->name('storeAsClient');
 
@@ -687,4 +690,4 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     })->name('customerLead');
 
 });
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

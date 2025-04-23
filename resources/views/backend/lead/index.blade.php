@@ -7,12 +7,18 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+        @can('lead-create')
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('admin.lead.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New Lead') }}
             </a>
+            <button class="btn btn-sm btn-white inline-flex items-center" data-bs-toggle="modal" data-bs-target="#importModal">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:download"></iconify-icon>
+                {{ __('Import') }}
+            </button>
         </div>
+        @endcan
     </div>
 
     <div class="card">
@@ -48,6 +54,9 @@
 
     {{-- Modal for lead delete--}}
     @include('backend.lead.modal.__delete')
+
+    {{-- Modal for import leads--}}
+    @include('backend.lead.modal.__import')
 
 @endsection
 @section('script')

@@ -111,6 +111,8 @@ class RegisteredUserController extends Controller
                 'ranking_id' => $rank->id,
                 'rankings' => json_encode([$rank->id]),
                 'email_verified_at' => now(),
+                'in_grace_period' => false,
+
             ]
         );
 
@@ -170,6 +172,8 @@ class RegisteredUserController extends Controller
             'email' => $input['email'],
             'account_limit' => setting('forex_account_create_limit', 'forex_account_settings'),
             'password' => Hash::make($input['password']),
+            'in_grace_period' => true,
+
         ]);
     }
     private function applyBonuses(User $user, $rank)

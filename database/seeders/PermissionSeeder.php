@@ -26,54 +26,79 @@ class PermissionSeeder extends Seeder
 
         $permissions = [
 
-            ['category' => 'Role Management', 'name' => 'role-list'],
-            ['category' => 'Role Management', 'name' => 'role-create'],
-            ['category' => 'Role Management', 'name' => 'role-edit'],
-            ['category' => 'Role Management', 'name' => 'role-delete'],
-
             ['category' => 'Customer Management', 'name' => 'customer-list'],
-            ['category' => 'Customer Management', 'name' => 'customer-profile-toggles'],
+            ['category' => 'Customer Management', 'name' => 'show-all-users-by-default-to-staff'],
             ['category' => 'Customer Management', 'name' => 'customer-create'],
             ['category' => 'Customer Management', 'name' => 'customer-edit'],
             ['category' => 'Customer Management', 'name' => 'customer-export'],
-            ['category' => 'Customer Management', 'name' => 'customer-login'],
             ['category' => 'Customer Management', 'name' => 'customer-mail-send'],
-            ['category' => 'Customer Management', 'name' => 'customer-basic-manage'],
-            ['category' => 'Customer Management', 'name' => 'customer-balance-add-or-subtract'],
             ['category' => 'Customer Management', 'name' => 'customer-change-password'],
-            ['category' => 'Customer Management', 'name' => 'all-type-status'],
-            ['category' => 'Customer Management', 'name' => 'kyc-status-update'],
-            ['category' => 'Customer Management', 'name' => 'ib-partner-list'],
-            ['category' => 'Customer Management', 'name' => 'approve-ib-member'],
-            ['category' => 'Customer Management', 'name' => 'customer-bonus'],
-            ['category' => 'Customer Management', 'name' => 'customer-funds'],
-            ['category' => 'Customer Management', 'name' => 'forex-account-mapping'],
-            ['category' => 'Customer Management', 'name' => 'forex-account-create'],
+
+            ['category' => 'Customer Profile Management', 'name' => 'customer-login'],
+            ['category' => 'Customer Profile Management', 'name' => 'customer-bonus'],
+            ['category' => 'Customer Profile Management', 'name' => 'customer-funds'],
+            ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],     
+            ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
+
+            ['category' => 'Customer festures Management', 'name' => 'customer-overview-update'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-accounts-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-account-mapping'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-account-create'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-kyc-manage'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-ib-partner-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-approve-ib-member'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-transactions-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-transactions-export'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-ib-bonus-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-ib-bonus-export'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-direct-referrals-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-direct-referrals-create'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-direct-referrals-export'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-network-tree'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-tickets-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-notes-list'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-notes-create'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-notes-edit'],
+            ['category' => 'Customer festures Management', 'name' => 'customer-notes-delete'],
+  
+            ['category' => 'leads Management', 'name' => 'lead-list'],
+            ['category' => 'leads Management', 'name' => 'lead-action'],
+            ['category' => 'leads Management', 'name' => 'lead-create'],
+            ['category' => 'leads Management', 'name' => 'deal-list'],
+            ['category' => 'leads Management', 'name' => 'deal-action'],
+            ['category' => 'leads Management', 'name' => 'deal-create'],
 
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
-            ['category' => 'Deposit Management', 'name' => 'deposit-action'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-add'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-approve'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-reject'],
             ['category' => 'Deposit Management', 'name' => 'deposit-auto-approve'],
             ['category' => 'Deposit Management', 'name' => 'deposit-export'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-add'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-approve'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-reject'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-auto-approve'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],
             ['category' => 'Kyc Management', 'name' => 'kyc-export'],
-            ['category' => 'Kyc Management', 'name' => 'kyc-form-manage'],
 
             ['category' => 'Staff Management', 'name' => 'staff-list'],
             ['category' => 'Staff Management', 'name' => 'staff-create'],
             ['category' => 'Staff Management', 'name' => 'staff-edit'],
             ['category' => 'Staff Management', 'name' => 'staff-delete'],
+            ['category' => 'Staff Management', 'name' => 'staff-login'],
+            ['category' => 'Staff Management', 'name' => 'staff-attach-users-list'],
+            ['category' => 'Staff Management', 'name' => 'staff-attach-users-create'],
+            ['category' => 'Staff Management', 'name' => 'staff-attach-users-delete'],
 
-            ['category' => 'Account Type Management', 'name' => 'schema-list'],
-            ['category' => 'Account Type Management', 'name' => 'schema-create'],
-            ['category' => 'Account Type Management', 'name' => 'schema-edit'],
-            ['category' => 'Account Type Management', 'name' => 'schema-delete'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-list'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-create'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-edit'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-delete'],
 
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
@@ -87,11 +112,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Risk Hub Management', 'name' => 'net-positions-groups'],
             ['category' => 'Risk Hub Management', 'name' => 'older-positions-days'],
 
-            ['category' => 'Referral Management', 'name' => 'target-manage'],
-            ['category' => 'Referral Management', 'name' => 'referral-create'],
-            ['category' => 'Referral Management', 'name' => 'referral-list'],
-            ['category' => 'Referral Management', 'name' => 'referral-edit'],
-            ['category' => 'Referral Management', 'name' => 'referral-delete'],
+            // ['category' => 'Referral Management', 'name' => 'target-manage'],
+            // ['category' => 'Referral Management', 'name' => 'referral-create'],
+            // ['category' => 'Referral Management', 'name' => 'referral-list'],
+            // ['category' => 'Referral Management', 'name' => 'referral-edit'],
+            // ['category' => 'Referral Management', 'name' => 'referral-delete'],
 
             ['category' => 'IB Management', 'name' => 'ib-list'],
             ['category' => 'IB Management', 'name' => 'ib-action'],
@@ -107,9 +132,17 @@ class PermissionSeeder extends Seeder
             ['category' => 'Subscriber Management', 'name' => 'subscriber-mail-send'],
 
             ['category' => 'Support Ticket Management', 'name' => 'support-ticket-list'],
-            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-action'],
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-create'],
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-chat'],
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-assign'],
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-status'],
 
             ['category' => 'Partnership Levels Management', 'name' => 'levels-list'],
+
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-list'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-create'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-edit'],
+            ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-delete'],
 
             ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],
@@ -120,11 +153,6 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
-
-            ['category' => 'Frontend Management', 'name' => 'landing-page-manage'],
-            ['category' => 'Frontend Management', 'name' => 'page-manage'],
-            ['category' => 'Frontend Management', 'name' => 'footer-manage'],
-            ['category' => 'Frontend Management', 'name' => 'navigation-manage'],
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
@@ -184,6 +212,27 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-list'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-edit'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-delete'],
+            ['category' => 'Customer Groups Setting', 'name' => 'customer-permissions'],
+            ['category' => 'Customer Groups Setting', 'name' => 'customer-registration-settings'],
+
+            ['category' => 'Role Management', 'name' => 'role-list'],
+            ['category' => 'Role Management', 'name' => 'role-create'],
+            ['category' => 'Role Management', 'name' => 'role-edit'],
+            ['category' => 'Role Management', 'name' => 'role-delete'],
+
+            ['category' => 'Lead Source Setting', 'name' => 'lead-source-list'],
+            ['category' => 'Lead Source Setting', 'name' => 'lead-source-create'],
+            ['category' => 'Lead Source Setting', 'name' => 'lead-source-edit'],
+            ['category' => 'Lead Source Setting', 'name' => 'lead-source-delete'],
+
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-pipeline-list'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-pipeline-create'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-pipeline-edit'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-pipeline-delete'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-stage-list'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-stage-create'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-stage-edit'],
+            ['category' => 'Lead Pipeline and Stage Setting', 'name' => 'lead-stage-delete'],
 
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-list'],
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-edit'],
@@ -298,14 +347,16 @@ class PermissionSeeder extends Seeder
             ['category' => 'Language Setting', 'name' => 'language-create'],
             ['category' => 'Language Setting', 'name' => 'language-action'],
 
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-list'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-create'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-edit'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-delete'],
+            ['category' => 'Support Center Ticket Type Setting', 'name' => 'ticket-type-list'],
+            ['category' => 'Support Center Ticket Type Setting', 'name' => 'ticket-type-create'],
+            ['category' => 'Support Center Ticket Type Setting', 'name' => 'ticket-type-edit'],
+            ['category' => 'Support Center Ticket Type Setting', 'name' => 'ticket-type-delete'],
 
-
-
-        ];
+            ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-list'],
+            ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-create'],
+            ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-edit'],
+            ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-delete'],
+     ];
 
         foreach ($permissions as $permission) {
             foreach ($permissions as $permission) {

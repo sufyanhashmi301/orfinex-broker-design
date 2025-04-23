@@ -6,7 +6,7 @@
     $riskProfileTags = getRiskProfileTag();
 @endphp
 @section('filters')
-    <form id="filter-form" method="GET" action="{{ route('admin.user.index') }}">
+    <form id="filter-form" method="POST" action="{{ route('admin.user.export')}}">
         @csrf
         <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
             <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
@@ -46,14 +46,14 @@
             </div>
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="input-area relative">
-                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                         {{ __('Filter') }}
                     </button>
                 </div>
                 @can('customer-export')
                 <div class="input-area relative">
-                    <button type="button" id="exportButton" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
@@ -80,7 +80,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
@@ -155,7 +154,6 @@
                 },
                 columns: [
                     {data: 'username', name: 'username'},
-                    {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},
@@ -191,12 +189,21 @@
 
                 $('#resetPasswordModal').modal('show');
             });
-
-
-            $('#filter-form').on('submit', function (e) {
-                e.preventDefault(); // Prevent the default form submission
-                table.draw(); // Redraw the table with new parameters
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
             });
+            $('#filter').click(function () {
+                table.draw();
+            });
+
+            // $('#filter-form').on('submit', function (e) {
+            //     e.preventDefault(); // Prevent the default form submission
+            //     table.draw(); // Redraw the table with new parameters
+            // });
 
             $('#country').select2({
                 placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
@@ -220,33 +227,34 @@
                 $('#sendEmail').modal('toggle')
             });
 
-            $('#exportButton').click(function() {
-                const formData = $('#filter-form').serialize();
-                const exportType = 'all'; // Specify your export type if needed
+            // $('#exportButton').click(function() {
+            //     const formData = $('#filter-form').serialize();
+            //     const exportType = 'all'; // Specify your export type if needed
 
-                $.ajax({
-                    url: "{{ route('admin.user.export', ':type') }}".replace(':type', exportType),
-                    type: 'POST',
-                    data: formData,
-                    xhrFields: {
-                        responseType: 'blob' // Important for handling file downloads
-                    },
-                    success: function(data, status, xhr) {
-                        const filename = xhr.getResponseHeader('Content-Disposition').match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1].replace(/['"]/g, '');
-                        const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Export failed:', error);
-                    }
-                });
-            });
+            //     $.ajax({
+            //         url: "{{ route('admin.user.export', ':type') }}".replace(':type', exportType),
+            //         type: 'POST',
+            //         data: formData,
+            //         xhrFields: {
+            //             responseType: 'blob' // Important for handling file downloads
+            //         },
+            //         success: function(data, status, xhr) {
+            //             const filename = xhr.getResponseHeader('Content-Disposition').match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1].replace(/['"]/g, '');
+            //             const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+            //             const link = document.createElement('a');
+            //             link.href = window.URL.createObjectURL(blob);
+            //             link.download = filename;
+            //             document.body.appendChild(link);
+            //             link.click();
+            //             document.body.removeChild(link);
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.error('Export failed:', error);
+            //         }
+            //     });
+            // });
 
         })(jQuery);
+
     </script>
 @endsection

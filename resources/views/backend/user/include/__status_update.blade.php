@@ -4,11 +4,12 @@
          style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
     </div>
     <div class="profile-box">
+        @can('customer-edit')
         <div
             class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
             <img
                 class="w-full h-full object-cover rounded-full"
-                src="{{asset($user->avatar ?? 'global/materials/user.png')}}"
+                src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}"
                 alt="{{$user->first_name}}"
             />
         </div>
@@ -58,6 +59,7 @@
                 </a>
             </span>
             @endcan
+            @can('customer-delete')
             {{--@can('Delete User')--}}
             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModall">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
@@ -65,6 +67,7 @@
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                 </a>
             </span>
+            @endcan
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
@@ -188,6 +191,7 @@
                 </div>
             </div>
         </div>
+        @endcan
         @can('customer-profile-toggles')
             <form action="{{route('admin.user.status-update',$user->id)}}" method="post" class="space-y-5">
                 @csrf

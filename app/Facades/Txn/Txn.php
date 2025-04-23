@@ -449,12 +449,14 @@ class Txn
         $account_target_id = $transaction->target_id;
         $account_target_type = 'forex';
 
-        $new_transaction = Txn::new($amount_to_add_again, 0, $amount_to_add_again, 'system', $transaction_description, $transaction_type, $transaction_status, null, null, $user_id, null, 'User', [], $comment, $account_target_id, $account_target_type);
+        if ($amount_to_add_again > 0){
+            $new_transaction = Txn::new($amount_to_add_again, 0, $amount_to_add_again, 'system', $transaction_description, $transaction_type, $transaction_status, null, null, $user_id, null, 'User', [], $comment, $account_target_id, $account_target_type);
 
-        // Add bonus via API
-        $forexApiService = new ForexApiService();
-        $bonusService = new BonusService($forexApiService);
-        $bonusService->addOrSubtractBonusToAccount('forex', $transaction->target_id, $amount_to_add_again, 'Bonus Refunded!', 'add');
+            // Add bonus via API
+            $forexApiService = new ForexApiService();
+            $bonusService = new BonusService($forexApiService);
+            $bonusService->addOrSubtractBonusToAccount('forex', $transaction->target_id, $amount_to_add_again, 'Bonus Refunded!', 'add');
+        }
     }
 
 

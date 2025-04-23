@@ -32,7 +32,7 @@
         </li>
 
         {{-- *************************************************************  Customer Management *********************************************************--}}
-        @canany(['customer-list','customer-login','customer-mail-send','customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status'])
+        @canany(['customer-list','customer-mail-send'])
             <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.user*','admin.notification*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -42,7 +42,7 @@
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
                 <ul class="sidebar-submenu">
-                    @canany(['customer-list','customer-login','customer-mail-send','customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status'])
+                    @canany(['customer-list'])
                         <li>
                             <a href="{{route('admin.user.index')}}" class="{{ isActive('admin.user.index') }}">
                                 {{ __('All Customers') }}
@@ -72,7 +72,7 @@
                 </ul>
             </li>
         @endcanany
-
+        @canany(['lead-list','deal-list'])
         <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.user*','admin.notification*']) }}">
             <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
@@ -82,24 +82,28 @@
                 <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
             <ul class="sidebar-submenu">
+                @can('lead-list')
                 <li>
                     <a href="{{route('admin.lead.index')}}" class="{{ isActive('admin.lead.index') }}">
                         {{ __('Lead Contact') }}
                     </a>
                 </li>
+                @endcan
+                @can('deal-list')
                 <li>
                     <a href="{{ route('admin.deal.index') }}" class="">
                         {{ __('Deals') }}
                     </a>
                 </li>
+                @endcan
             </ul>
         </li>
-
+        @endcanany
         {{-- *************************************************************  Essentials *********************************************************--}}
-        @canany(['deposit-list','deposit-action',
-        'withdraw-list','withdraw-action','target-manage','referral-create',
+        @canany(['deposit-list',
+        'withdraw-list','target-manage','referral-create',
         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-            @canany(['deposit-list','deposit-action'])
+            @canany(['deposit-list'])
                 <li class="{{ isActive(['admin.deposit*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -109,12 +113,14 @@
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
+                        @can('deposit-add')
                         <li class="">
                             <a href="{{ route('admin.deposit.add') }}" class="{{ isActive('admin.deposit.add') }}">
                                 {{ __('Add Deposit') }}
                             </a>
                         </li>
-                        @canany(['deposit-list','deposit-action'])
+                        @endcan
+                        @canany(['deposit-list'])
                             <li class="">
                                 <a href="{{ route('admin.deposit.manual.pending') }}"
                                    class="{{ isActive('admin.deposit.manual.pending') }}">
@@ -132,7 +138,7 @@
                 </li>
             @endcanany
 
-            @canany(['withdraw-list','withdraw-action'])
+            @canany(['withdraw-list'])
                 <li class="{{ isActive(['admin.withdraw*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -142,20 +148,20 @@
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
+                        @can('withdraw-add')
                         <li class="">
                             <a href="{{ route('admin.withdraw.add') }}" class="{{ isActive('admin.withdraw.add')  }}">
                                 {{ __('Add Withdraw') }}
                             </a>
                         </li>
-                        @canany(['withdraw-list','withdraw-action'])
+                        @endcan
+                        @can('withdraw-list')
                             <li class="">
                                 <a href="{{ route('admin.withdraw.pending') }}"
                                    class="{{ isActive('admin.withdraw.pending')  }}">
                                     {{ __('Pending Withdraws') }}
                                 </a>
                             </li>
-                        @endcanany
-                        @can('withdraw-list')
                             <li class="">
                                 <a href="{{ route('admin.withdraw.history') }}"
                                    class="{{ isActive('admin.withdraw.history') }}">
@@ -169,7 +175,7 @@
 
         @endcanany
 
-        @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
+        @canany(['kyc-list','kyc-action','risk-profile-tag'])
             <li class="{{ isActive(['admin.kyc*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -201,7 +207,6 @@
         @endcanany
 
         {{-- *************************************************************  Staff Management *********************************************************--}}
-        @canany(['role-list','role-create','role-edit','staff-list','staff-create','staff-edit'])
             @canany(['staff-list','staff-create','staff-edit'])
                 <li>
                     <a href="{{route('admin.staff.index')}}" class="navItem {{ isActive('admin.staff*') }}">
@@ -212,10 +217,10 @@
                     </a>
                 </li>
             @endcanany
-        @endcanany
+      
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
-        @canany(['schema-list'])
+        @canany(['account-type-list'])
             <li class="{{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -421,7 +426,7 @@
                 </a>
             </li>
         @endcanany
-        @canany(['support-ticket-list','support-ticket-action'])
+        @canany(['support-ticket-list'])
             <li class="">
                 <a href="{{ route('admin.ticket.index') }}"
                    class="navItem {{ isActive('admin.ticket.index') }} || {{ isActive('admin.ticket.show*') }}">
@@ -461,11 +466,13 @@
                             </a>
                         </li>
                     @endcan
+                    @can('multi-ib-level-list')
                     <li>
                         <a href="{{ route('admin.multi-ib-level.index') }}" class="{{ isActive('admin.multi-ib-level*') }}">
                             {{ __('Multi IB Levels') }}
                         </a>
                     </li>
+                    @endcan
                     @can('symbols-list')
                         <li class="">
                             <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
@@ -501,7 +508,7 @@
 </div>
 <div class="stickySetting_menu sticky border-t dark:border-slate-800 z-50 bottom-0 px-6 py-3">
     {{-- ************************************************************* Site  Settings *********************************************************--}}
-    @canany(['site-setting','plugin-setting','page-manage'])
+    @canany(['site-setting','plugin-setting'])
         @canany(['site-setting','plugin-setting'])
             <a href="{{ route('admin.settings.index') }}" class="navItem {{ isActive(['admin.settings*']) }}">
                 <span class="flex items-center">

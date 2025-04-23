@@ -8,7 +8,7 @@
             {{ __('All IB Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            @can('schema-create')
+            @can('account-type-create')
                 <a href="{{route('admin.ibAccountType.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
@@ -59,12 +59,12 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                @can('schema-edit')
+                                                @can('account-type-edit')
                                                     <a href="{{route('admin.ibAccountType.edit',$schema->id)}}" class="action-btn">
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                     </a>
                                                 @endcan
-                                                @can('schema-delete')
+                                                @can('account-type-delete')
                                                     <a href="#" class="action-btn delete-schema-btn" data-id="{{ $schema->id }}">
                                                         <iconify-icon icon="lucide:trash"></iconify-icon>
                                                     </a>

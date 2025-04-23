@@ -5,18 +5,49 @@
     aria-labelledby="pills-bonus-tab"
 >
     <div class="card">
-        <div class="card-header">
 
-            <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
-                @csrf
-                <div class="input-area relative">
-                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                        {{ __('Export') }}
-                    </button>
+            <div class="card-header">
+                <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                    <!-- Filter Inputs -->
+                    <form id="filter-form" class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-login" class="form-control h-full" placeholder="Login">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-deal" class="form-control h-full" placeholder="Deal">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-symbol" class="form-control h-full" placeholder="Symbol">
+                        </div>
+                        <div class="flex-1 input-area relative">
+                            <input type="text" id="ib-bonus-created-at" class="form-control flatpickr-created-at h-full w-full" placeholder="Created At Range" readonly>
+                        </div>
+                        <div class="input-area relative">
+                            <button type="button" id="ib-bonus-filter-btn" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                                {{ __('Filter') }}
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Action Buttons -->
+                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse mt-2 sm:mt-0">
+                        @can('customer-ib-bonus-export')
+                            <form method="POST" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
+                                @csrf
+                                <div class="input-area relative">
+                                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                        {{ __('Export') }}
+                                    </button>
+                                </div>
+                            </form>
+                        @endcan
+
+                    </div>
                 </div>
-            </form>
-        </div>
+
+            </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
@@ -60,53 +91,73 @@
 </div>
 @push('single-script')
     <script>
-        (function ($) {
-            "use strict";
-            $('#user-ib-transaction-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                    },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.user.ib_bonus',$user->id) }}",
-                columns: [
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'description', name: 'description'},
-                    {data: 'tnx', name: 'tnx'},
-                    {data: 'type', name: 'type'},
-                    {data: 'target_id', name: 'target_id'},
-                    {data: 'final_amount', name: 'final_amount'},
-                    {data: 'method', name: 'method'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
-                ]
-            });
-            $('body').on('click', '#deposit-action', function () {
-                $('.deposit-action').empty();
+    flatpickr(".flatpickr-created-at", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    allowInput: true
+});
 
-                var id = $(this).data('id');
-                $.ajax({
-                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('.deposit-action').append(response);
-                        imagePreview();
-                        $('#transaction-action-modal').modal('show');
+    $(document).ready(function () {
+    const table = $('#user-ib-transaction-dataTable').DataTable({
+        dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+        searching: false,
+        lengthChange: false,
+        info: true,
+        language: {
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+            },
+        },
+        processing: true,
+        serverSide: true,
+        autoWidth: false,
+        ajax: {
+            url: "{{ route('admin.user.ib_bonus', $user->id) }}",
+            data: function (d) {
+                d.login = $('#ib-bonus-login').val();
+                d.deal = $('#ib-bonus-deal').val();
+                d.order = $('#ib-bonus-order').val();
+                d.symbol = $('#ib-bonus-symbol').val();
+                d.created_at = $('#ib-bonus-created-at').val();
+            }
+        }
+        ,
+        columns: [
+            {data: 'created_at', name: 'created_at'},
+            {data: 'description', name: 'description'},
+            {data: 'tnx', name: 'tnx'},
+            {data: 'type', name: 'type'},
+            {data: 'target_id', name: 'target_id'},
+            {data: 'final_amount', name: 'final_amount'},
+            {data: 'method', name: 'method'},
+            {data: 'status', name: 'status'},
+            {data: 'action', name: 'action'},
+        ]
+    });
 
-                    }
-                });
-            });
-        })(jQuery);
+
+    $('#ib-bonus-filter-btn').on('click', function () {
+        $('#user-ib-transaction-dataTable').DataTable().ajax.reload();
+    });
+
+    // 👁️ Modal action
+    $('body').on('click', '#deposit-action', function () {
+        $('.deposit-action').empty();
+        const id = $(this).data('id');
+        $.ajax({
+            url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+            method: 'GET',
+            success: function(response) {
+                $('.deposit-action').append(response);
+                imagePreview();
+                $('#transaction-action-modal').modal('show');
+            }
+        });
+    });
+});
+
     </script>
 @endpush

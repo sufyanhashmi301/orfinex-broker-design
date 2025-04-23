@@ -87,7 +87,11 @@ class InvoiceService
 					'subtotal' => $transaction->invoice->package_price,
 					'transaction_id' => $transaction->tnx
 				])
-				->logo( str_replace("public", 'assets', public_path(setting('site_logo','global') )) )
+				->logo( 
+					str_contains(setting('site_logo', 'global'), 'amazonaws') 
+					? setting('site_logo', 'global')  
+					: str_replace("public", 'assets', public_path(setting('site_logo', 'global'))) 
+				 )
 				// ->sequence($transaction->tnx)
 				->totalAmount($transaction->invoice->total_amount) 
 				->date(Carbon::parse($transaction->created_at))

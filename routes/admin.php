@@ -184,6 +184,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('all', 'ibAllList')->name('all.list');
         Route::get('answer/view/{user}', 'answerView')->name('answer.view');
         Route::post('approve', 'approveIbMember')->name('approve');
+        Route::post('disable', 'disableIbMember')->name('disable');
         Route::post('update', 'updateIbMember')->name('update');
         Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
         Route::post('multi/update', 'updateMIbMember')->name('multi.update');
@@ -585,7 +586,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
     Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
-  
+
 
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');

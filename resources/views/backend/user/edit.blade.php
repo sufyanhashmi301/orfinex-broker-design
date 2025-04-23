@@ -341,7 +341,7 @@
                                     </a>
                                 </li>
                                 @endcan
-                                @can('customer-change-password') 
+                                @can('customer-change-password')
                                     <li class="nav-item" role="presentation">
                                         <a
                                             href=""
@@ -363,14 +363,14 @@
                 </div>
                 <div class="tab-content" id="pills-tabContent">
                     <!-- basic Info -->
-                @canany(['customer-edit'])
-                    @include('backend.user.include.__basic_info')
-                @endcanany
+                    @canany(['customer-edit'])
+                        @include('backend.user.include.__basic_info')
+                    @endcanany
 
-                <!-- investments -->
-                @can('customer-accounts-list')
-                     @include('backend.user.include.__accounts')
-                 @endcan
+                    <!-- investments -->
+                    @can('customer-accounts-list')
+                         @include('backend.user.include.__accounts')
+                     @endcan
                      {{-- Modal for add Forex Account --}}
                      @can('customer-account-create')
                          @include('backend.user.include.__forex_account')
@@ -378,57 +378,57 @@
                      @can('customer-account-mapping')
                          @include('backend.user.include.__forex_account_mapping')
                     @endcan
-                    @can('customer-ib-bonus-list')   
-                @include('backend.user.include.__ib_bonus')
-                @endcan
-                @can('customer-kyc-manage')
-                <!-- KYC Tab -->
-                @include('backend.user.include.__kycTab')
-                @endcan
+                    @can('customer-ib-bonus-list')
+                        @include('backend.user.include.__ib_bonus')
+                    @endcan
+                    @can('customer-kyc-manage')
+                        <!-- KYC Tab -->
+                        @include('backend.user.include.__kycTab')
+                    @endcan
 
-                <!-- IB -->
-{{--                @can('IB-List')--}}
+                    <!-- IB -->
+    {{--                @can('IB-List')--}}
 
-                @can('customer-ib-partner-list')
-                    @include('backend.user.include.__ib_info')
-                @endcan
-                @can('customer-approve-ib-member')
-                    @include('backend.user.include.__ib_approve')
-                @endcan
+                    @can('customer-ib-partner-list')
+                        @include('backend.user.include.__ib_info')
+                    @endcan
+                    @can('customer-approve-ib-member')
+                        @include('backend.user.include.__ib_approve')
+                        @include('backend.user.include.__ib_disable')
+                    @endcan
 
-                {{--                @endcan--}}
+                    {{--                @endcan--}}
 
-                <!-- earnings -->
-                @can('profit-list')
-                    @include('backend.user.include.__earnings')
-                @endcan
+                    <!-- earnings -->
+                    @can('profit-list')
+                        @include('backend.user.include.__earnings')
+                    @endcan
 
-                <!-- transaction -->
-                @can('customer-transactions-list')
-                    @include('backend.user.include.__transactions')
-                @endcan
+                    <!-- transaction -->
+                    @can('customer-transactions-list')
+                        @include('backend.user.include.__transactions')
+                    @endcan
 
-                <!-- Referral Tree -->
-                @if(setting('site_referral','global') == 'level')
-                    @include('backend.user.include.__referral_direct')
-                    @include('backend.user.include.__referral_add')
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_direct')
+                        @include('backend.user.include.__referral_add')
+                    @endif
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_tree')
+                    @endif
 
-                @endif
-                <!-- Referral Tree -->
-                @if(setting('site_referral','global') == 'level')
-                    @include('backend.user.include.__referral_tree')
-                @endif
-
-                <!-- ticket -->
-                @canany(['customer-tickets-list'])
-                    @include('backend.user.include.__ticket')
-                @endcan
-                @can('customer-notes-list')
-                @include('backend.user.notes.index')
-                @endcan
-                @can('customer-change-password') 
-                @include('backend.user.include.__security')
-                @endcan
+                    <!-- ticket -->
+                    @canany(['customer-tickets-list'])
+                        @include('backend.user.include.__ticket')
+                    @endcan
+                    @can('customer-notes-list')
+                        @include('backend.user.notes.index')
+                    @endcan
+                    @can('customer-change-password')
+                        @include('backend.user.include.__security')
+                    @endcan
                 </div>
             </div>
         </div>
@@ -446,7 +446,7 @@
     @include('backend.user.include.__bonus')
 
     <!-- Modal for Add or Subtract Balance -->
-    
+
         @include('backend.user.include.__balance')
 
     <!-- Modal for Add or Subtract Balance End-->
@@ -623,6 +623,14 @@
                 var password = $(this).val();
                 checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
+
+            {{--$('#partner_status_btn').on('change', function (){--}}
+            {{--    @if($user->ib_status == 'approved')--}}
+            {{--        $('#disableIBModal').modal('show');--}}
+            {{--    @else--}}
+            {{--        $('#addIBModal').modal('show');--}}
+            {{--    @endif--}}
+            {{--});--}}
         });
     </script>
 @endsection

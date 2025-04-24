@@ -533,8 +533,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
-    protected static function booted()
-    {
-        static::addGlobalScope(new ExcludeGracePeriodScope);
-    }
+//    protected static function booted()
+//    {
+//        static::addGlobalScope(new ExcludeGracePeriodScope);
+//    }
 }

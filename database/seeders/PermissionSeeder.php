@@ -40,6 +40,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],     
             ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
 
+            ['category' => 'Customer festures Management', 'name' => 'customer-add-tag'],
             ['category' => 'Customer festures Management', 'name' => 'customer-overview-update'],
             ['category' => 'Customer festures Management', 'name' => 'customer-accounts-list'],
             ['category' => 'Customer festures Management', 'name' => 'customer-account-mapping'],
@@ -161,9 +162,6 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
-            ['category' => 'Setting Management', 'name' => 'language-setting'],
-            ['category' => 'Setting Management', 'name' => 'page-setting'],
-            ['category' => 'Setting Management', 'name' => 'custom-css'],
 
             ['category' => 'Company Settings', 'name' => 'company-setting'],
             ['category' => 'Company Settings', 'name' => 'company-edit'],

@@ -460,8 +460,8 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->addColumn('action', 'backend.user.include.__action')
+//                ->editColumn('status', 'backend.user.include.__status')
+//                ->addColumn('action', 'backend.user.include.__action')
                 ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }

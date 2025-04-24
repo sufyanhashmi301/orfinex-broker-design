@@ -86,8 +86,8 @@
                                     <th scope="col" class="table-th">{{ __('Country') }}</th>
                                     <th scope="col" class="table-th">{{ __('Staff') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('Status') }}</th>--}}
+{{--                                    <th scope="col" class="table-th">{{ __('Action') }}</th>--}}
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -157,8 +157,8 @@
                     {data: 'country', name: 'country'},
                     {data: 'staff_name', name: 'staff_name'},
                     {data: 'kyc', name: 'kyc'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
+                    // {data: 'status', name: 'status'},
+                    // {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
             $('#filter').click(function () {

@@ -17,8 +17,12 @@
         <p class="text-center mb-3">
             {{ __('We’re working to resolve the issue as quickly as possible. You can try refreshing the page or come back later. If the issue persists, please contact our support team for assistance.') }}
         </p>
+        @php
+            $adminPrefix = trim(setting('site_admin_prefix', 'global'), '/');
+            $prefix = request()->segment(1);
+        @endphp
         <div class="max-w-[300px] mx-auto w-full">
-            <a href="{{route('home')}}" class="btn btn-dark dark:bg-slate-800 block text-center">
+            <a href="{{ $prefix === $adminPrefix ? route('admin.dashboard') : route('home') }}" class="btn btn-dark dark:bg-slate-800 block text-center">
                 {{ __('Return to Home') }}
             </a>
         </div>

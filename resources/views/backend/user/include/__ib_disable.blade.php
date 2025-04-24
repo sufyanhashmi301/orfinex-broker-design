@@ -16,13 +16,12 @@
                     </h4>
                 </div>
                 <p class="dark:text-slate-300">
-                    Are you sure you want to disable partner?
+                    {{ __('Are you sure you want to disable IB?') }}
                 </p>
                 <div class="action-btns">
-                    <form id="deleteDirectReferral" action="{{ route('admin.ib.disable') }}" method="POST" style="display: inline;">
-                        <input type="hidden" name="id"  id="referralId">
-                        @method('DELETE')
+                    <form action="{{ route('admin.ib.disable') }}" method="POST" style="display: inline;">
                         @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Disable') }}

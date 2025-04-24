@@ -58,6 +58,11 @@
                                 {{ __('Disabled Customers') }}
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('admin.user.gracePeriodUsers') }}" class="{{ isActive('admin.user.gracePeriodUsers') }}">
+                                {{ __('Grace Period Customers') }}
+                            </a>
+                        </li>
 
                     @endcanany
                     @can('customer-mail-send')
@@ -217,7 +222,7 @@
                     </a>
                 </li>
             @endcanany
-      
+
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
         @canany(['account-type-list'])

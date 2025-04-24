@@ -140,8 +140,9 @@ class IBController extends Controller
 
         return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', 'backend.user.include.__user')
-            ->addColumn('email', 'backend.user.include.__email')
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })             ->addColumn('email', 'backend.user.include.__email')
             ->editColumn('ib_status', 'backend.ib.include.__ib_status')
             ->addColumn('action', function ($user) {
                 return view('backend.ib.include.__action', ['user' => $user]);
@@ -183,8 +184,9 @@ class IBController extends Controller
 
         return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', 'backend.user.include.__user')
-            ->addColumn('email', 'backend.user.include.__email')
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })             ->addColumn('email', 'backend.user.include.__email')
             ->editColumn('ib_status', 'backend.ib.include.__ib_status')
             ->addColumn('action', function ($user) {
                 return view('backend.ib.include.__action', ['user' => $user]);
@@ -209,8 +211,9 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -257,8 +260,9 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })

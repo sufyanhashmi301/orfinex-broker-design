@@ -28,6 +28,7 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\KycLevel;
 use App\Models\Lead;
+use App\Scopes\ExcludeGracePeriodScope;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -113,8 +114,9 @@ class UserController extends Controller
         $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -222,8 +224,9 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('username', 'backend.user.include.__user')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('staff_name', function ($row) {
@@ -238,7 +241,6 @@ class UserController extends Controller
 
         return view('backend.user.active_user');
     }
-
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -277,8 +279,9 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -331,8 +334,9 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -388,8 +392,9 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -407,6 +412,62 @@ class UserController extends Controller
         ]);
     }
 
+    public function gracePeriodUsers(Request $request)
+    {
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+//        dd($request->all());
+        if ($request->ajax()) {
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                    ->where('in_grace_period', true)->latest();
+            }
+            // If user has permission "show-all-users-by-default-to-staff", show all users
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                    ->where('in_grace_period', true)->latest();
+            }
+            // Otherwise, show only attached users
+            else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                        ->where('in_grace_period', true)->where('status', 1)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
+                }
+            }
+
+
+            // Apply additional filters if any
+            $data->applyFilters($filters);
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.user.grace_users');
+    }
 
     /**
      * Show the form for editing the specified resource.

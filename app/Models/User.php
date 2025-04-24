@@ -39,6 +39,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'username',
         'email',
         'email_verified_at',
+        'in_grace_period',
         'gender',
         'date_of_birth',
         'city',
@@ -533,8 +534,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
-//    protected static function booted()
-//    {
-//        static::addGlobalScope(new ExcludeGracePeriodScope);
-//    }
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludeGracePeriodScope);
+    }
 }

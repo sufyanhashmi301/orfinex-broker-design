@@ -105,6 +105,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('disabled', 'disabled')->name('disabled');
         Route::get('withBalance', 'withBalance')->name('with_balance');
         Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
+        Route::get('grace/period', 'gracePeriodUsers')->name('gracePeriodUsers');
         Route::get('login/{id}', 'userLogin')->name('login');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
         Route::post('password-reset', 'resetPassword')->name('reset-password');

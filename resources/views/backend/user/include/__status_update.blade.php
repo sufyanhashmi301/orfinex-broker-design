@@ -21,7 +21,7 @@
     </div>
 @endif
 <div class="profiel-wrap px-[35px] pb-10 pt-10 @if(!$user->ref_id) rounded-t-lg @endif rounded-b-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
-    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg"
+    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] @if(!$user->ref_id) rounded-t-lg @endif"
          style="background-image: url('{{ config('app.r2_asset_url') . '/fallback/user-header.png' }}')">
     </div>
     <div class="profile-box">

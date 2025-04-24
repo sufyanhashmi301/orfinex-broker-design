@@ -1,32 +1,31 @@
-<div
-    class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
+@if($user->ref_id)
+    <div class="flex items-center justify-between bg-slate-900 dark:bg-secondary rounded-t-lg px-[35px] py-5">
+        <div class="flex items-center">
+            <div class="flex-none">
+                <div class="w-8 h-8 rounded-[100%] ring-2 ring-slate-100 dark:ring-slate-100 ltr:mr-3 rtl:ml-3">
+                    <img src="{{ getFilteredPath($user->referrer->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                </div>
+            </div>
+            <div class="flex-1 text-start">
+                <h4 class="text-sm font-medium text-white whitespace-nowrap">
+                    {{ $user->referrer->first_name.' '.$user->referrer->last_name }}
+                </h4>
+                <div class="text-xs font-normal text-slate-100">
+                    {{ $user->referrer->email }}
+                </div>
+            </div>
+        </div>
+        <a href="{{ route('admin.user.edit',$user->referrer->id) }}" class="action-btn text-slate-100" target="_blank">
+            <iconify-icon icon="heroicons:eye"></iconify-icon>
+        </a>
+    </div>
+@endif
+<div class="profiel-wrap px-[35px] pb-10 pt-10 @if(!$user->ref_id) rounded-t-lg @endif rounded-b-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
     <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg"
          style="background-image: url('{{ config('app.r2_asset_url') . '/fallback/user-header.png' }}')">
     </div>
     <div class="profile-box">
         @can('customer-edit')
-            @if($user->ref_id)
-            <div class="flex items-center justify-between space-x-3 rtl:space-x-reverse mb-6">
-                <div class="flex items-center">
-                    <div class="flex-none">
-                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                            <img src="{{ getFilteredPath($user->referrer->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                        </div>
-                    </div>
-                    <div class="flex-1 text-start">
-                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                            {{ $user->referrer->first_name.' '.$user->referrer->last_name }}
-                        </h4>
-                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                            {{ $user->referrer->email }}
-                        </div>
-                    </div>
-                </div>
-                <a href="{{ route('admin.user.edit',$user->referrer->id) }}" class="action-btn" target="_blank">
-                    <iconify-icon icon="heroicons:eye"></iconify-icon>
-                </a>
-            </div>
-        @endif
         <div class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
             <img
                 class="w-full h-full object-cover rounded-full"

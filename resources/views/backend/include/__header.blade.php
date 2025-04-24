@@ -119,7 +119,7 @@
                                         @endcanany
                                     @endcanany
 
-                                    @can('schema-create')
+                                    @can('account-type-create')
                                         <li class="pb-2">
                                             <a href="{{ route('admin.accountType.create') }}">
                                                 <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -133,10 +133,10 @@
                                         </li>
                                     @endcan
 
-                                    @canany(['deposit-list','deposit-action',
-                                            'withdraw-list','withdraw-action','target-manage','referral-create',
+                                    @canany(['deposit-list',
+                                            'withdraw-list','target-manage','referral-create',
                                             'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                                        @canany(['deposit-list','deposit-action'])
+                                        @canany(['deposit-list'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.deposit.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -148,6 +148,8 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @endcanany
+                                            @canany(['withdraw-list'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.withdraw.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -159,7 +161,7 @@
                                                     </div>
                                                 </a>
                                             </li>
-                                        @endcanany
+                                            @endcanany
                                     @endcanany
                                 </ul>
                             </div>
@@ -227,8 +229,7 @@
                         class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium text-sm text-center inline-flex items-center"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full ring-2 ring-slate-100 dark:ring-slate-100">
-                            <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{ asset(auth()->user()->avatar) }} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user"
-                                 class="block w-full h-full object-cover rounded-full">
+                            <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/staff.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                         </div>
                     </button>
                     <div

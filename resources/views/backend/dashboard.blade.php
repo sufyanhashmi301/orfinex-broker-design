@@ -9,7 +9,7 @@
             padding-top: 0;
         }
         .dashboardTitle {
-            background-image: url('https://cdn.brokeret.com/crm-assets/admin/home/header.svg');
+            background-image: url('{{ config('app.r2_asset_url') . '/fallback/header.svg' }}');
             background-repeat: repeat;
             border-radius: 0;
         }
@@ -28,14 +28,14 @@
                     {{ Auth::user()->email }}
                 </p>
             </div>
-            @canany(['deposit-action','withdraw-action','kyc-action',])
+            @canany(['deposit-list','withdraw-list','kyc-list',])
                 @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
                     <div class="md:text-right">
                         <p class="text-base dark:text-white font-medium mb-2">
                             {{ __("Explore what's important to review first") }}
                         </p>
                         <div class="flex md:justify-end flex-wrap gap-3">
-                            @can('withdraw-action')
+                            @can('withdraw-list')
                                 @if($data['withdraw_count'])
                                     <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-danger inline-flex items-center justify-center">
                                         <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
@@ -45,7 +45,7 @@
                                 @endif
                             @endcan
 
-                            @can('kyc-action')
+                            @can('kyc-list')
                                 @if($data['kyc_count'])
                                     <a href="{{ route('admin.kyc.pending') }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
                                         <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
@@ -55,7 +55,7 @@
                                 @endif
                             @endcan
 
-                            @can('deposit-action')
+                            @can('deposit-list')
                                 @if($data['deposit_count'])
                                     <a href="{{ route('admin.deposit.manual.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
                                         <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>

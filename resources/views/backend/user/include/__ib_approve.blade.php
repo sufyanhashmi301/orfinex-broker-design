@@ -9,8 +9,7 @@
         <div
             class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body p-6 py-8 text-center space-y-5">
-                <div
-                    class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
+                <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                     <iconify-icon class="text-4xl" icon="lucide:shield-question"></iconify-icon>
                 </div>
                 <div class="title">
@@ -23,13 +22,14 @@
                     @csrf
                     <div class="row">
                         <div class="col-span-12">
-                            <div class="site-input-groups relative">
+                            <div class="site-input-groups relative text-left">
                                 <label class="form-label" for="">{{ __('IB Group:') }}</label>
                                 <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
                                     <option value="">{{__('Select IB Group')}}</option>
                                     @foreach($ibGroups as $ibGroup)
-                                        <option value="{{$ibGroup->id}}"
-                                                @if($ibGroup->ib_group_id == $ibGroup->id) selected @endif>{{$ibGroup->name}}</option>
+                                        <option value="{{$ibGroup->id}}" @if($ibGroup->ib_group_id == $ibGroup->id) selected @endif>
+                                            {{$ibGroup->name}}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>

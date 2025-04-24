@@ -143,13 +143,15 @@ class AppController extends Controller
 
             // Upload to R2
             Storage::disk('r2')->putFileAs($directory, $file, $filename, 'public');
+            $assetUrl = config('filesystems.disks.r2.url');
+            $avatarPath = rtrim($assetUrl, '/') . '/' . $path;
 
-            $avatarPath = rtrim(env('R2_ASSET_URL'), '/') . '/' . $path;
-
-        } else {
+        }
+        else {
             $avatarPath = $user->avatar;
         }
-        
+        // dd($avatarPath);
+
         $user->update(['avatar' => $avatarPath]);
 
         return response()->json([

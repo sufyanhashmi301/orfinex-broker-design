@@ -239,4 +239,7 @@ return [
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class,
     ])->toArray(),
 
+    'r2_asset_url' => env('R2_ASSET_URL', 'https://default-url.com'),
+
+
 ];

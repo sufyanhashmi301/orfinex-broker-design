@@ -17,6 +17,13 @@ class DealController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('permission:deal-list', ['only' => ['index']]);
+         $this->middleware('permission:deal-create', ['only' => ['store']]);
+         $this->middleware('permission:deal-action', ['only' => ['destroy,update']]);
+
+    }
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();

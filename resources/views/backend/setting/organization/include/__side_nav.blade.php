@@ -14,11 +14,13 @@
             </a>
         </li>
         @endcanany
+        @can('social-logins-list')
         <li>
             <a href="{{ route('admin.social.index') }}" class="navItem {{ isActive('admin.social.index') }}">
                 {{ __('Social Logins')}}
             </a>
         </li>
+        @endcan
         @canany(['document-link-list','platform-link-list'])
         <li>
             <a href="{{route('admin.links.document.index')}}" class="navItem {{ isActive('admin.links*') }}">

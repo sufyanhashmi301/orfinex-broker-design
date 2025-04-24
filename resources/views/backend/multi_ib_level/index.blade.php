@@ -9,12 +9,14 @@
         <h1 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Levels') }}
         </h1>
+        @can('multi-ib-level-create')
         <div>
             <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#levelModal">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
         </div>
+        @endcan
     </div>
     <!-- /Title and Buttons Section -->
 
@@ -42,15 +44,16 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('multi-ib-level-edit')
                                             <button type="button" class="action-btn edit-level" data-bs-toggle="modal" data-bs-target="#editLevelModal" data-id="{{ $level->id }}">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
-
-
+                                            @endcan
+                                            @can('multi-ib-level-delete')
                                             <button type="button" class="action-btn delete-level" data-bs-toggle="modal" data-bs-target="#deleteLevelModal" data-id="{{ $level->id }}" data-title="{{ $level->title }}">
                                                 <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                             </button>
-
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -68,18 +71,16 @@
             </div>
         </div>
     </div>
-
+    @can('multi-ib-level-create')
     <!-- Modals -->
     @include('backend.multi_ib_level.modal.__create_level')
-
-
-
+    @endcan
+    @can('multi-ib-level-edit')
     @include('backend.multi_ib_level.modal.__edit_level')
-
-
-
+    @endcan
+    @can('multi-ib-level-delete')
     @include('backend.multi_ib_level.modal.__delete_level')
-
+    @endcan
 
 @endsection
 

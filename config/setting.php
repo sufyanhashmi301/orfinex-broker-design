@@ -701,6 +701,21 @@ return [
             ],
         ]
     ],
+    'customer_misc' => [
+        'title' => 'Customer Miscellaneous',
+        'elements' => [
+            [
+                'type' => 'text',
+                'data' => 'int',
+                'name' => 'user_removal_grace_period',
+                'label' => 'User Removal Grace Period (Days)',
+                'description' => 'Number of days after which inactive users will be automatically removed.',
+                'rules' => 'required|integer|min:1|max:365',
+                'value' => 30, // default value
+            ],
+        ],
+    ],
+
     'staff_permission' => [
         'title' => 'Staff Permissions',
         'elements' => [

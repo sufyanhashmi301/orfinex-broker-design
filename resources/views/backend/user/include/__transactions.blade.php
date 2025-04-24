@@ -6,7 +6,7 @@
 >
     <div class="card">
         <div class="card-header">
-
+@can('customer-transactions-export')
             <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
                 @csrf
                 <div class="input-area relative">
@@ -16,6 +16,7 @@
                     </button>
                 </div>
             </form>
+@endcan            
         </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

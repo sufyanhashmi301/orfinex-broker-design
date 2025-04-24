@@ -13,6 +13,15 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+     {
+         $this->middleware('permission:ticket-category-list', ['only' => ['index']]);
+         $this->middleware('permission:ticket-category-create', ['only' => ['store']]);
+         $this->middleware('permission:ticket-category-edit', ['only' => ['update']]);
+         $this->middleware('permission:ticket-category-delete', ['only' => ['destroy']]);
+        
+     }
     public function index()
     {
         $categories = Category::paginate();

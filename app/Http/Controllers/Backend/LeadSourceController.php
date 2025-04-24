@@ -13,6 +13,10 @@ class LeadSourceController extends Controller
 
     public function __construct(LeadSourceService $leadSourceService)
     {
+        $this->middleware('permission:lead-source-list', ['only' => ['index']]);
+         $this->middleware('permission:lead-source-create', ['only' => ['store']]);
+         $this->middleware('permission:lead-source-edit', ['only' => ['update']]);
+         $this->middleware('permission:lead-source-delete', ['only' => ['destroy']]);
         $this->leadSourceService = $leadSourceService;
     }
 

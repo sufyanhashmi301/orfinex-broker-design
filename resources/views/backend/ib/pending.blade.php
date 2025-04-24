@@ -88,8 +88,8 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Username') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('User') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
 {{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -108,7 +108,7 @@
             </div>
         </div>
     </div>
-    @can('approve-ib-member')
+    @can('customer-approve-ib-member')
 {{--        @include('backend.user.include.__ib_approve')--}}
     @endcan
     <!-- Modal for confirm IB -->
@@ -169,7 +169,7 @@
                 },
                 columns: [
                     {data: 'username', name: 'username'},
-                    {data: 'email', name: 'email'},
+                    // {data: 'email', name: 'email'},
                     // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -187,7 +187,13 @@
             $('#filter').click(function () {
                 table.draw();
             });
-
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
+            });
             $('#global_search').keyup(function() {
                 table.draw();
             });

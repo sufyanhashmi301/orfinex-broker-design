@@ -1,6 +1,7 @@
 <?php
 namespace App\Exports;
 use App\Enums\TxnType;
+use App\Enums\TxnStatus;
 use App\Models\Transaction;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;

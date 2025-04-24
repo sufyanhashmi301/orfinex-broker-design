@@ -8,5 +8,8 @@
         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
             {{ $owner['first_name'].' '.$owner['last_name'] }}
         </h4>
+        <div class="text-xs font-normal lowercase text-slate-600 dark:text-slate-400">
+            {{ $owner['email'] }}
+        </div>
     </div>
 </div>

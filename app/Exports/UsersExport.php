@@ -40,7 +40,8 @@ class UsersExport implements FromQuery, WithHeadings, WithMapping
             'Phone',
             'Country',
             'Gender',
-            'Tag'
+            'Tag',
+            'balance'
         ];
     }
 
@@ -55,6 +56,7 @@ class UsersExport implements FromQuery, WithHeadings, WithMapping
             $user->country,
             $user->gender,
             $user->comment,
+            $user->balance,
         ];
     }
 }

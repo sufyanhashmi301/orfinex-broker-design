@@ -12,6 +12,7 @@ enum TxnStatus: string
     public function label(): string
     {
         return match($this) {
+            self::None => 'None',
             self::Success => 'Success',
             self::Pending => 'Pending',
             self::Failed => 'Failed',

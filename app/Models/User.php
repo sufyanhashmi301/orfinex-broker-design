@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Scopes\ExcludeGracePeriodScope;
 use App\Traits\UserFilterable;
 use Carbon\Carbon;
 use Coderflex\LaravelTicket\Concerns\HasTickets;
@@ -38,6 +39,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'username',
         'email',
         'email_verified_at',
+        'in_grace_period',
         'gender',
         'date_of_birth',
         'city',
@@ -101,7 +103,20 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
+    public function markEmailAsVerified()
+    {
+        if (!$this->hasVerifiedEmail()) {
+            $this->forceFill([
+                'email_verified_at' => now(),
+                'in_grace_period' => false,
+            ])->save();
 
+            // Optionally trigger an event if needed
+            event(new \Illuminate\Auth\Events\Verified($this));
+        }
+
+        return true;
+    }
     public function staff()
     {
         return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id')
@@ -282,6 +297,11 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function referrals()
     {
         return $this->hasMany(User::class, 'ref_id');
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'ref_id');
     }
 
 
@@ -514,5 +534,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
-
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExcludeGracePeriodScope);
+    }
 }

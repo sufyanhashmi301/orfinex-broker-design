@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Services\SymbolService;
+use App\Exports\SymbolsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use Maatwebsite\Excel\Facades\Excel;
 class SymbolController extends Controller
 {
     protected $symbolService;
@@ -107,6 +108,19 @@ class SymbolController extends Controller
     {
         $result = $this->symbolService->storeAllSymbolsFromMt5();
         return response()->json(['success' => $result['success'], 'message' =>$result['message'] ]);
+    }
+    
+    public function export(Request $request)
+    {
+        try {
+            return Excel::download(
+                new SymbolsExport($request), 
+                'symbols_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx'
+            );
+        } catch (\Exception $e) {
+            \Log::error('Export failed: ' . $e->getMessage());
+            return back()->with('error', 'Export failed. Please try again.');
+        }
     }
 }
 

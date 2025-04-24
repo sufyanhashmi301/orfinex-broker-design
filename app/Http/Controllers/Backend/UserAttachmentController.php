@@ -17,6 +17,14 @@ use DataTables;
 
 class UserAttachmentController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:staff-attach-users-list|staff-attach-users-create', ['only' => ['index','getAttachedUsers','attachUser']]);
+        $this->middleware('permission:staff-attach-users-create', ['only' => ['attachUser']]);
+        $this->middleware('permission:staff-attach-users-delete', ['only' => ['detachUser']]);
+
+    }
     public function index($staffId)
     {
         $staff = Admin::find($staffId);

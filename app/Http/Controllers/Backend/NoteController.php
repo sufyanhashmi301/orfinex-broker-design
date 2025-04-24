@@ -16,24 +16,9 @@ class NoteController extends Controller
 
         // Return data for DataTables with admin name and action buttons
         return Datatables::of($notes)
-            ->addColumn('admin_name', function ($note) {
-                // Show admin name, or 'Unknown' if no admin is associated
-                return $note->admin ? $note->admin->name : 'Unknown';
-            })
-            ->addColumn('action', function ($note) {
-                // URLs for editing and deleting the note
-                $editUrl = route('admin.user.note.edit', $note->id); // Edit route
-
-                return '
-                    <div class="flex space-x-3 rtl:space-x-reverse">
-                        <button class="action-btn edit-note" data-id="' . $note->id . '" data-description="' . e($note->description) . '" data-url="' . $editUrl . '">
-                            <iconify-icon icon="lucide:edit"></iconify-icon>
-                        </button>
-                        <button class="action-btn delete-note" data-id="' . $note->id . '">
-                            <iconify-icon icon="lucide:trash"></iconify-icon>
-                        </button>
-                    </div>';
-            })
+            ->addColumn('staff', 'backend.user.notes.include.__staff')
+            ->addColumn('action', 'backend.user.notes.include.__action')
+            ->rawColumns(['staff', 'action'])
             ->make(true);
     }
 

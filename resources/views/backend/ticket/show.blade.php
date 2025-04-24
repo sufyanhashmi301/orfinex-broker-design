@@ -185,7 +185,7 @@
                                 {{ $ticket->user->created_at }}
                             </div>
                         </div>
-                        <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
+                        {{-- <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
                             @can('customer-mail-send')
                                 <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
                                     <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
@@ -193,14 +193,14 @@
                                         <iconify-icon icon="lucide:mail"></iconify-icon>
                                     </a>
                                 </span>
-                            @endcan
+                            @endcan --}}
                             @can('customer-login')
                                 <a href="{{ route('admin.user.login',$ticket->user->id) }}" target="_blank"
                                    class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark" data-tippy-content="Login As User">
                                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                                 </a>
                             @endcan
-                            @can('customer-balance-add-or-subtract')
+                            @can('customer-funds')
                                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
                                     <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                                        data-tippy-theme="dark" data-tippy-content="Add Funds">
@@ -209,12 +209,14 @@
                                 </span>
                             @endcan
                             {{--@can('Delete User')--}}
+                            @can('customer-delete')
                             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
                                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                                    data-tippy-theme="dark" data-tippy-content="Delete User">
                                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                                 </a>
                             </span>
+                            @endcan
                         </div>
                         <div class="flex items-center justify-around border-t border-slate-100 dark:border-slate-700 pt-4">
                             <form action="{{ route('admin.ticket.update', $ticket) }}" method="POST" class="w-full">

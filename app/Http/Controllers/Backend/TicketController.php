@@ -26,8 +26,8 @@ class TicketController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:support-ticket-list|support-ticket-action', ['only' => ['index']]);
-        $this->middleware('permission:support-ticket-action', ['only' => ['closeNow', 'reply', 'show']]);
+        $this->middleware('permission:support-ticket-list', ['only' => ['index']]);
+        $this->middleware('permission:support-ticket-chat|support-ticket-assign', ['only' => ['closeNow', 'reply', 'show','showAssignModal']]);
 
     }
 
@@ -36,7 +36,7 @@ class TicketController extends Controller
         $loggedInUser = auth()->user();
         $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
 
-        if ($loggedInUser->hasRole('Super-Admin')) {
+        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
             $totalTickets = Ticket::count();
             $closedTickets = Ticket::closed()->count();
             $openTickets = Ticket::opened()->count();
@@ -58,7 +58,7 @@ class TicketController extends Controller
                 }
             }
 
-            if ($loggedInUser->hasRole('Super-Admin')) {
+            if ($loggedInUser->hasRole('Super-Admin')|| $loggedInUser->can('show-all-users-by-default-to-staff')) {
                 $data = $ticketQuery->get();
             } else {
                 // Get attached user IDs for non-Super-Admin users

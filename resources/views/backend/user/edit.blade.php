@@ -39,7 +39,7 @@
         <div class="grid grid-cols-12 gap-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                 <!-- User Status Update -->
-            @can('all-type-status')
+            @can('customer-edit')
                 @include('backend.user.include.__status_update')
             @endcan
             <!-- User Status Update End-->
@@ -47,11 +47,12 @@
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
 
                 <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+                    @can('customer-add-tag')
                     <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Tag') }}
                     </a>
-
+                    @endcan
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                         <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
@@ -163,7 +164,7 @@
                     </div>
                     <div class="site-tab-bars card p-3 mb-5">
                         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 gap-3 menu-open" id="pills-tab" role="tablist">
-                            @canany(['customer-basic-manage','customer-change-password'])
+                            @canany(['customer-edit'])
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -180,7 +181,7 @@
                                     </a>
                                 </li>
                             @endcanany
-                            @can('accounts-list')
+                            @can('customer-accounts-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -197,7 +198,7 @@
                                     </a>
                                 </li>
                             @endcan
-                                @can('kyc-status-update')
+                                @can('customer-kyc-manage')
 
                                 <li class="nav-item" role="presentation">
                                 <a
@@ -216,7 +217,7 @@
                             </li>
                                 @endcan
 
-                            @can('ib-partner-list')
+                            @can('customer-ib-partner-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -234,7 +235,7 @@
                                 </li>
                             @endcan
 
-                            @can('transaction-list')
+                            @can('customer-transactions-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -251,6 +252,7 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('customer-ib-bonus-list')
                             <li class="nav-item" role="presentation">
                                 <a
                                     href=""
@@ -266,6 +268,8 @@
                                     {{ __('IB Bonus') }}
                                 </a>
                             </li>
+                            @endcan
+                            @can('customer-direct-referrals-list')
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -283,6 +287,8 @@
                                     </a>
                                 </li>
                             @endif
+                            @endcan
+                            @can('customer-network-tree')
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -300,9 +306,9 @@
                                     </a>
                                 </li>
                             @endif
+                            @endcan
 
-
-                            @canany(['support-ticket-list','support-ticket-action'])
+                            @canany(['customer-tickets-list'])
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -318,6 +324,8 @@
                                         {{ __('Ticket') }}
                                     </a>
                                 </li>
+                                @endcanany
+                                @can('customer-notes-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -333,6 +341,8 @@
                                         {{ __('Add Note') }}
                                     </a>
                                 </li>
+                                @endcan
+                                @can('customer-change-password')
                                     <li class="nav-item" role="presentation">
                                         <a
                                             href=""
@@ -348,27 +358,31 @@
                                             {{ __('Security') }}
                                         </a>
                                     </li>
-                            @endcanany
+                           @endcan
                         </ul>
                     </div>
                 </div>
                 <div class="tab-content" id="pills-tabContent">
                     <!-- basic Info -->
-                    @canany(['customer-basic-manage','customer-change-password'])
+                    @canany(['customer-edit'])
                         @include('backend.user.include.__basic_info')
                     @endcanany
 
                     <!-- investments -->
-                    @can('accounts-list')
+                    @can('customer-accounts-list')
                          @include('backend.user.include.__accounts')
-                         {{-- Modal for add Forex Account --}}
+                     @endcan
+                     {{-- Modal for add Forex Account --}}
+                     @can('customer-account-create')
                          @include('backend.user.include.__forex_account')
+                     @endcan
+                     @can('customer-account-mapping')
                          @include('backend.user.include.__forex_account_mapping')
                     @endcan
-
-                    @include('backend.user.include.__ib_bonus')
-
-                    @can('kyc-status-update')
+                    @can('customer-ib-bonus-list')
+                        @include('backend.user.include.__ib_bonus')
+                    @endcan
+                    @can('customer-kyc-manage')
                         <!-- KYC Tab -->
                         @include('backend.user.include.__kycTab')
                     @endcan
@@ -376,12 +390,12 @@
                     <!-- IB -->
     {{--                @can('IB-List')--}}
 
-                    @can('ib-partner-list')
+                    @can('customer-ib-partner-list')
                         @include('backend.user.include.__ib_info')
                     @endcan
-
-                    @can('approve-ib-member')
+                    @can('customer-approve-ib-member')
                         @include('backend.user.include.__ib_approve')
+                        @include('backend.user.include.__ib_disable')
                     @endcan
 
                     {{--                @endcan--}}
@@ -392,7 +406,7 @@
                     @endcan
 
                     <!-- transaction -->
-                    @can('transaction-list')
+                    @can('customer-transactions-list')
                         @include('backend.user.include.__transactions')
                     @endcan
 
@@ -400,7 +414,6 @@
                     @if(setting('site_referral','global') == 'level')
                         @include('backend.user.include.__referral_direct')
                         @include('backend.user.include.__referral_add')
-
                     @endif
                     <!-- Referral Tree -->
                     @if(setting('site_referral','global') == 'level')
@@ -408,14 +421,15 @@
                     @endif
 
                     <!-- ticket -->
-                    @canany(['support-ticket-list','support-ticket-action'])
+                    @canany(['customer-tickets-list'])
                         @include('backend.user.include.__ticket')
                     @endcan
-
-                    @include('backend.user.notes.index')
-
-                    @include('backend.user.include.__security')
-
+                    @can('customer-notes-list')
+                        @include('backend.user.notes.index')
+                    @endcan
+                    @can('customer-change-password')
+                        @include('backend.user.include.__security')
+                    @endcan
                 </div>
             </div>
         </div>
@@ -433,9 +447,9 @@
     @include('backend.user.include.__bonus')
 
     <!-- Modal for Add or Subtract Balance -->
-    @can('customer-balance-add-or-subtract')
+
         @include('backend.user.include.__balance')
-    @endcan
+
     <!-- Modal for Add or Subtract Balance End-->
     {{--    @can('customer-balance-add-or-subtract')--}}
     @include('backend.user.include.__tags')
@@ -610,43 +624,14 @@
                 var password = $(this).val();
                 checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
+
+            {{--$('#partner_status_btn').on('change', function (){--}}
+            {{--    @if($user->ib_status == 'approved')--}}
+            {{--        $('#disableIBModal').modal('show');--}}
+            {{--    @else--}}
+            {{--        $('#addIBModal').modal('show');--}}
+            {{--    @endif--}}
+            {{--});--}}
         });
-
-        $('body').on('change', '#kycLevelSelect', function() {
-            var level = $(this).val();
-            $('.kycData').empty();
-
-            $.ajax({
-                url: '{{ route("admin.kyc.kycMethods") }}',
-                type: "GET",
-                data: { kyc_level: level },
-                success: function (data) {
-                    $('#kycTypeSelect').empty();
-                    $('#kycTypeSelect').append('<option value="">Select Level</option>');
-
-                    // Append new options based on the KYC records
-                    $.each(data.kycs, function(index, kyc) {
-                        $('#kycTypeSelect').append('<option value="' + kyc.id + '">' + kyc.name + '</option>');
-                    });
-                }
-            })
-        });
-
-        $('body').on('change', '#kycTypeSelect', function(e) {
-            "use strict";
-            e.preventDefault();
-
-            $('.kycData').empty();
-            var id = $(this).val();
-            var url = '{{ route("admin.kyc.data", ":id") }}';
-            url = url.replace(':id', id);
-
-            $.get(url, function(data) {
-                console.log(data);
-                $('.kycData').append(data);
-                imagePreview();
-            });
-        });
-
     </script>
 @endsection

@@ -34,7 +34,7 @@ class DeleteStaleUsers extends Command
             ->where(function ($query) {
                 $query->whereNotNull('email_verified_at')
                     ->orWhereHas('transaction')
-                    ->orWhereHas('accounts'); // forex_accounts
+                    ->orWhereHas('ForexAccounts'); // forex_accounts
             })
             ->get();
 
@@ -74,7 +74,4 @@ class DeleteStaleUsers extends Command
 
         return 0;
     }
-
-
-
 }

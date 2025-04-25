@@ -33,6 +33,15 @@
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-3">
                             <span class="text-sm text-slate-600 dark:text-slate-300">
+                                {{ __('Account Type') }}
+                            </span>
+                            <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                            <span class="text-right text-slate-600 dark:text-slate-300">
+                                {{ $account->account_type }}
+                            </span>
+                        </li>
+                        <li class="flex items-baseline relative overflow-hidden py-3">
+                            <span class="text-sm text-slate-600 dark:text-slate-300">
                                 {{ __('Platform') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>

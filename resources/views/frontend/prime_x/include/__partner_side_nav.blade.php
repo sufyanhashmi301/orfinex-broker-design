@@ -79,10 +79,10 @@
         </li>
 
         <li>
-            <a href="{{ route('user.referral.reports') }}" class="navItem {{ isActive('user.referral.reports') }}">
+            <a href="{{ route('user.referral.history') }}" class="navItem {{ isActive('user.referral.history') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
-                    <span>{{ __('Reports') }}</span>
+                    <span>{{ __('History') }}</span>
                 </span>
             </a>
         </li>

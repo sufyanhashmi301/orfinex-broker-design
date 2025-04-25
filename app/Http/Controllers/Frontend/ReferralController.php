@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -113,6 +114,55 @@ class ReferralController extends Controller
         $totalReferralProfit = $user->totalReferralProfit();
 
         return view('frontend::referral.index', compact('referrals', 'getReferral', 'totalReferralProfit', 'generalReferrals'));
+    }
+
+    public function history()
+    {
+        $query = Transaction::where('user_id', auth()->user()->id)->where('type', '=', 'ib_bonus');;
+
+        if (request('transaction_date')) {
+            $filter = request('transaction_date');
+
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $query->where(function ($q) use ($dateRange) {
+                    $start = $dateRange[0]->toDateTimeString();
+                    $end = $dateRange[1]->toDateTimeString();
+
+                    $q->whereRaw("
+                COALESCE(
+                    JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')),
+                    created_at
+                ) BETWEEN ? AND ?
+            ", [$start, $end]);
+                });
+            }
+        }
+
+
+        if (request('transaction_status')) {
+            $query->where('status', request('transaction_status'));
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(10)->appends(request()->query());
+
+        if (request()->ajax()) {
+            return response()->json([
+                'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
+                'pagination' => (string) $transactions->links(),
+                'total' => $transactions->total(),
+            ]);
+        }
+
+        return view('frontend::referral.index', compact('transactions'));
     }
 
     public function network() {

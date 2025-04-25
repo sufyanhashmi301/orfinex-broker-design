@@ -185,8 +185,8 @@
                                 {{ $ticket->user->created_at }}
                             </div>
                         </div>
-                        {{-- <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
-                            @can('customer-mail-send')
+                        <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
+                            {{--@can('customer-mail-send')
                                 <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
                                     <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
                                        data-tippy-theme="dark" data-tippy-content="Send Email">

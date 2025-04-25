@@ -32,7 +32,7 @@
                                             <a href="{{ route('admin.user.edit', $user->id) }}" class="flex items-center">
                                                 <div class="flex-none">
                                                     <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                        <img src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                        <img src="{{ getFilteredPath($user->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">

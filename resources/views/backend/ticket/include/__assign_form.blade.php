@@ -7,7 +7,7 @@
                 @foreach($staff as $staff)
                     <option
                         value="{{ $staff->id }}"
-                        data-avatar="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}"
+                        data-avatar="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}"
                         data-role="{{ $staff->getRoleNames()->first() }}"
                         @if($ticket->assigned_to == $staff->id) selected @endif
                     >

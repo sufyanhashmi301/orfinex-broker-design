@@ -50,7 +50,7 @@ class DeleteStaleUsers extends Command
             ->whereNull('email_verified_at')
             ->where('created_at', '<', now()->subDays(setting('user_removal_grace_period', 'customer_misc', 1)))
             ->whereDoesntHave('transaction')
-            ->whereDoesntHave('accounts') // forex_accounts
+            ->whereDoesntHave('ForexAccounts') // forex_accounts
             ->get();
 
         foreach ($staleUsers as $user) {

@@ -285,8 +285,18 @@ class IBController extends Controller
 
     public function approveIbMember(Request $request)
     {
+        $input = $request->all();
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
         $isReload = ($request->get('reload')) ? $request->get('reload') : false;
+
+        $validator = Validator::make($input, [
+            'user_id' => 'required',
+            'ib_group_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back();
+        }
 
         $user = User::find($userID);
 
@@ -294,23 +304,16 @@ class IBController extends Controller
             $ibGroup = !empty($request->ib_group_id) ? (int)$request->ib_group_id : null;
 
             // Validation: Check if the provided IB group is different
-            if ($user->ib_group_id === $ibGroup) {
-                $message = __('The provided IB Group is the same as the current one. No changes made.');
-                if ($request->ajax()) {
-                    return response()->json(['title' => 'No Changes', 'error' => $message, 'reload' => false]);
-                } else {
-                    notify()->info($message, 'No Changes');
-                    return redirect()->back();
-                }
+            if ($user->ib_group_id !== $ibGroup) {
+                $this->manageUserRebateRules($user, $ibGroup);
             }
+
+            // Add or Remove Rebate Rules
 
             // Update user status and IB group
             $user->ib_status = IBStatus::APPROVED;
             $user->ib_group_id = $ibGroup;
             $user->save();
-
-            // Add or Remove Rebate Rules
-            $this->manageUserRebateRules($user, $ibGroup);
 
             // Notify the user
             $shortcodes = [
@@ -360,6 +363,35 @@ class IBController extends Controller
         }
     }
 
+    public function disableIbMember(Request $request)
+    {
+        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
+
+        $user = User::find($userID);
+
+        if (!blank($user)) {
+            // Update user status and IB group
+            $user->ib_status = IBStatus::DISABLED;
+            $user->save();
+
+            // Notify the user
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::DISABLED,
+            ];
+            $this->mailNotify($user->email, 'ib_disable_action', $shortcodes);
+            $this->smsNotify('ib_disable_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_disable_action', $shortcodes, route('user.referral'), $user->id);
+
+            notify()->success('IB disabled successfully', 'success');
+            return redirect()->back();
+        }
+
+        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
+    }
 
     public function updateIbMember(Request $request)
     {
@@ -656,6 +688,17 @@ class IBController extends Controller
 
             $ibGroup = null;
             $this->manageUserRebateRules($user, $ibGroup);
+
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::REJECTED,
+            ];
+            $this->mailNotify($user->email, 'ib_reject_action', $shortcodes);
+            $this->smsNotify('ib_reject_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_reject_action', $shortcodes, route('user.referral'), $user->id);
 
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }

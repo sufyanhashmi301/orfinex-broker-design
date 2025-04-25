@@ -625,13 +625,13 @@
                 checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
 
-            {{--$('#partner_status_btn').on('change', function (){--}}
-            {{--    @if($user->ib_status == 'approved')--}}
-            {{--        $('#disableIBModal').modal('show');--}}
-            {{--    @else--}}
-            {{--        $('#addIBModal').modal('show');--}}
-            {{--    @endif--}}
-            {{--});--}}
+            $('#partner_status_btn').on('change', function (){
+                @if($user->ib_status == 'approved')
+                    $('#disableIBModal').modal('show');
+                @else
+                    $('#addIBModal').modal('show');
+                @endif
+            });
         });
     </script>
 @endsection

@@ -16,6 +16,10 @@ class SocialController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('permission:social-logins-list', ['only' => ['index']]);
+    }
     public function index(Request $request)
     {
 

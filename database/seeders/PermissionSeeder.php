@@ -40,6 +40,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],     
             ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
 
+            ['category' => 'Customer festures Management', 'name' => 'customer-add-tag'],
             ['category' => 'Customer festures Management', 'name' => 'customer-overview-update'],
             ['category' => 'Customer festures Management', 'name' => 'customer-accounts-list'],
             ['category' => 'Customer festures Management', 'name' => 'customer-account-mapping'],
@@ -153,12 +154,14 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
+ 
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-list'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-create'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-edit'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-delete'],
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
-            ['category' => 'Setting Management', 'name' => 'language-setting'],
-            ['category' => 'Setting Management', 'name' => 'page-setting'],
-            ['category' => 'Setting Management', 'name' => 'custom-css'],
 
             ['category' => 'Company Settings', 'name' => 'company-setting'],
             ['category' => 'Company Settings', 'name' => 'company-edit'],
@@ -193,6 +196,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Platform Links Setting', 'name' => 'platform-link-edit'],
             ['category' => 'Platform Links Setting', 'name' => 'platform-link-delete'],
 
+            ['category' => 'Social Links Setting', 'name' => 'social-link-list'],
+            ['category' => 'Social Links Setting', 'name' => 'social-link-edit'],
+
+            ['category' => 'Social logins Setting', 'name' => 'social-logins-list'],
+            ['category' => 'Social logins Setting', 'name' => 'social-logins-action'],
+
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-create'],
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-list'],
             ['category' => 'Risk Profile Tags Setting', 'name' => 'risk-profile-edit'],
@@ -202,11 +211,6 @@ class PermissionSeeder extends Seeder
             ['category' => 'System Tags Setting', 'name' => 'system-tag-list'],
             ['category' => 'System Tags Setting', 'name' => 'system-tag-edit'],
             ['category' => 'System Tags Setting', 'name' => 'system-tag-delete'],
-
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-create'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-list'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-edit'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-delete'],
 
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-create'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-list'],

@@ -13,7 +13,7 @@
                 </div>
                 <div class="profile-box">
                     <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-body mx-auto">
-                        <img src="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+                        <img src="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                         <label class="absolute right-1 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center top-[100px] cursor-pointer">
                             <input type="file" class="hidden" id="file-input" name="image" accept="image/*">
                             <iconify-icon icon="heroicons:pencil-square"></iconify-icon>

@@ -39,6 +39,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'username',
         'email',
         'email_verified_at',
+        'in_grace_period',
         'gender',
         'date_of_birth',
         'city',
@@ -246,6 +247,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(Account::class, 'user_id');
     }
+    public function ForexAccounts()
+    {
+        return $this->hasMany(ForexAccount::class, 'user_id');
+    }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');
@@ -296,6 +301,11 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function referrals()
     {
         return $this->hasMany(User::class, 'ref_id');
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'ref_id');
     }
 
 

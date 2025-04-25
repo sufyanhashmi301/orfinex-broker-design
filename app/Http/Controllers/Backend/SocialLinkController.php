@@ -16,6 +16,12 @@ class SocialLinkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+    {
+        $this->middleware('permission:social-link-list', ['only' => ['index']]);
+        $this->middleware('permission:social-link-edit', ['only' => ['edit', 'update']]);
+    }
     public function index(Request $request)
     {
 

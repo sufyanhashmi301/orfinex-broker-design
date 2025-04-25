@@ -7,18 +7,14 @@
         <div class="grid grid-cols-12 gap-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                 <div class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
-                    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')"></div>
+                    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('{{ config('app.r2_asset_url') . '/fallback/user-header.png' }}')"></div>
                     <div class="profile-box">
                         <div class="flex items-center justify-center h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 mx-auto">
-                            @if(null != $user->avatar)
-                                <img
-                                    class="w-full h-full object-cover rounded-full"
-                                    src="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}"
-                                    alt="{{$user->first_name}}"
-                                />
-                            @else
-                                <span class="uppercase text-4xl">{{$user->first_name[0] .$user->last_name[0] }}</span>
-                            @endif
+                            <img
+                                class="w-full h-full object-cover rounded-full"
+                                src="{{ getFilteredPath($user->avatar, 'fallback/user.png') }}"
+                                alt="{{$user->first_name}}"
+                            />
                             <label class="absolute right-1 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center top-[100px] cursor-pointer">
                                 <input type="file" class="hidden" id="file-input" name="image" accept="image/*">
                                 <iconify-icon icon="heroicons:pencil-square"></iconify-icon>

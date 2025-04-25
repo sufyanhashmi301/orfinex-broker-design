@@ -23,7 +23,9 @@
                 <select id="transaction-type" class="form-control">
                     <option value="">{{ __('All transaction types') }}</option>
                     @foreach (getFilteredTxnTypes() as $txnType)
-                        <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                        @if ($txnType->value !== 'ib_bonus')
+                            <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                        @endif
                     @endforeach
 {{--                    <option value="deposit">{{ __('Deposit') }}</option>--}}
 {{--                    <option value="withdraw">{{ __('Withdraw') }}</option>--}}
@@ -156,12 +158,12 @@
                     @foreach($transactions as $transaction)
                         <tr>
                             <td class="table-td">
-            <span class="block font-medium text-slate-700 dark:text-white">
-                {{ $transaction->description }}
-            </span>
+                                <span class="block font-medium text-slate-700 dark:text-white">
+                                    {{ $transaction->description }}
+                                </span>
                                 <span class="block text-xs text-gray-500">
-                {{ $transaction->display_time->format('M d, Y h:i A') }}
-            </span>
+                                {{ $transaction->display_time->format('M d, Y h:i A') }}
+                            </span>
                             </td>
                             <td class="table-td">{{ $transaction->tnx }}</td>
                             <td class="table-td">{{ $transaction->target_id ?? '-' }}</td>

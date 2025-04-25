@@ -4567,6 +4567,9 @@ textarea.form-control.is-invalid{
 .h-2{
   height: 0.5rem;
 }
+.h-\[115px\] {
+    height: 115px;
+}
 .h-\[150px\]{
   height: 150px;
 }

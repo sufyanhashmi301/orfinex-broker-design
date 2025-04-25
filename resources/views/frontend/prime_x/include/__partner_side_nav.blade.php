@@ -21,7 +21,7 @@
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="{{ __('User Profile') }}" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/user.png') }}" alt="{{ __('User Profile') }}" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start mobileUserInfo">
@@ -79,10 +79,10 @@
         </li>
 
         <li>
-            <a href="{{ route('user.referral.reports') }}" class="navItem {{ isActive('user.referral.reports') }}">
+            <a href="{{ route('user.referral.history') }}" class="navItem {{ isActive('user.referral.history') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
-                    <span>{{ __('Reports') }}</span>
+                    <span>{{ __('History') }}</span>
                 </span>
             </a>
         </li>

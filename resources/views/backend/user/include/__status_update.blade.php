@@ -3,7 +3,7 @@
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ring-2 ring-slate-100 dark:ring-slate-100 ltr:mr-3 rtl:ml-3">
-                    <img src="{{ getFilteredPath($user->referrer->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ getFilteredPath($user->referrer?->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">

@@ -27,7 +27,7 @@
                                 <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
                                     <option value="">{{__('Select IB Group')}}</option>
                                     @foreach($ibGroups as $ibGroup)
-                                        <option value="{{$ibGroup->id}}" @if($ibGroup->ib_group_id == $ibGroup->id) selected @endif>
+                                        <option value="{{$ibGroup->id}}" @if($user->ib_group_id == $ibGroup->id) selected @endif>
                                             {{$ibGroup->name}}
                                         </option>
                                     @endforeach

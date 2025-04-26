@@ -26,11 +26,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use App\Traits\ImageUpload;
+use Carbon\Carbon;
 
 class KycController extends Controller
 {
-    use NotifyTrait;
-
+    use ImageUpload, NotifyTrait;
     /**
      * Display a listing of the resource.
      *
@@ -38,6 +39,7 @@ class KycController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('permission:kyc-form-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
         $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
         $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
         $this->middleware('permission:kyc-export', ['only' => ['export']]);
@@ -256,13 +258,13 @@ class KycController extends Controller
     public function KycLevel3Pending(Request $request)
     {
         $loggedInUser = auth()->user();
-    
+
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'status', 'created_at']);
-    
+
             // Check if the user can view all users
             $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-    
+
             if ($canViewAllUsers) {
                 // Fetch all Level 3 KYC pending users
                 $data = User::whereNotNull('kyc_level3_credential')
@@ -272,7 +274,7 @@ class KycController extends Controller
             } else {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                 if ($attachedUserIds->isNotEmpty()) {
                     // Fetch Level 3 KYC pending users for attached user IDs only
                     $data = User::whereNotNull('kyc_level3_credential')
@@ -285,7 +287,7 @@ class KycController extends Controller
                     return Datatables::of(collect([]))->make(true);
                 }
             }
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', function ($row) {
@@ -300,10 +302,10 @@ class KycController extends Controller
                 ->rawColumns(['time', 'user', 'type', 'status', 'action'])
                 ->make(true);
         }
-    
+
         return view('backend.kyc.level3.pending');
     }
-    
+
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -610,5 +612,171 @@ public function actionLevel3Now(Request $request)
             default:
                 return Excel::download(new AllKycExport($request), 'all-kyc.xlsx');
         }
+    }
+
+
+    public function getKycMethods(Request $request)
+    {
+        $kycLevel = $request->input('kyc_level');
+        $kycs = Kyc::where('kyc_sub_level_id', $kycLevel)
+            ->where('status', true)
+            ->get();
+
+        // Return response as JSON
+        return response()->json(['kycs' => $kycs]);
+    }
+
+    public function kycData($id)
+    {
+        $fields = Kyc::find($id)->fields;
+        return view('backend.user.include.__kyc_data', compact('fields'))->render();
+    }
+
+    public function kycSubmit(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $input = $request->all();
+
+        if ($request->kyc_level == 1) {
+
+            $kyc = $request->kyc_level;
+
+            if (empty($kyc)) {
+                $kyc = 0;
+                $data['email_verified_at'] = null;
+            }
+            if ($kyc >= KYCStatus::Level1->value) {
+                $data['email_verified_at'] = Carbon::now();
+            }
+            $data['kyc'] = $kyc;
+            // Update basic user details
+            $user->update($data);
+
+            // Redirect with success message
+            notify()->success('User Kyc Updated Successfully', 'success');
+            return redirect()->back();
+        }
+
+        $validator = Validator::make($input, [
+            'kyc_id' => 'required',
+            'kyc_credential' => 'required_if:kyc_level,5',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), __('Error'));
+            return redirect()->back();
+        }
+
+        $kyc = Kyc::find($input['kyc_id']);
+        $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
+        $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+
+        if ($checkLevel1) {
+            if (!isset($user->kyc ) && $user->kyc < KYCStatus::Level1->value) {
+                notify()->error(__('kindly complete the level 1 first'));
+                return redirect()->back();
+            }
+        }
+
+        if ($request->kyc_level == 3) {
+            //validate the valid type of file or text
+            foreach ($input['kyc_credential'] as $key => $value) {
+                if ($value instanceof \Illuminate\Http\UploadedFile) {
+                    if (!$value->isValid()) {
+                        notify()->error(__('The file in "' . $key . '" is not valid.'), __('Error'));
+                        return redirect()->back();
+                    }
+                }
+            }
+
+            if ($user->kyc_credential) {
+                foreach (json_decode($user->kyc_credential, true) as $key => $value) {
+                    self::delete($value);
+                }
+            }
+            foreach ($kycCredential as $key => $value) {
+                if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid()) {
+                    $path = self::kycImageUploadTrait($value);
+                    if (!empty($path)) {
+                        $kycCredential[$key] = $path;
+                    } else {
+                        notify()->error(__('Failed to upload ') . $key, __('Error'));
+                        return redirect()->back();
+                    }
+                }
+            }
+
+            if ($request->is_auto_approve == true) {
+                $status = KYCStatus::Level2->value;
+                $template = 'kyc_approve_level_2';
+            }else {
+                $status = KYCStatus::Pending->value;
+                $template = 'kyc_request_level_2';
+            }
+
+            $user->update([
+                'kyc_credential' => json_encode($kycCredential),
+                'kyc' => $status,
+            ]);
+        }
+        elseif ($request->kyc_level == 5) {
+            $checkLevel2 = KycLevel::where('slug', KycLevelSlug::LEVEL2)->first();
+            if ($checkLevel2->status == 1) {
+                if ($user->kyc < KYCStatus::Level2->value) {
+                    notify()->error(__('kindly complete the level 2 first'));
+                    return redirect()->back();
+                }
+            }
+            if ($user->kyc_level3_credential) {
+                foreach (json_decode($user->kyc_level3_credential, true) as $key => $value) {
+                    self::delete($value);
+                }
+            }
+            foreach ($kycCredential as $key => $value) {
+                if (is_file($value)) {
+                    $path = self::kycImageUploadTrait($value);
+                    if (isset($path) && !empty($path)) {
+                        $kycCredential[$key] = $path;
+                    } else {
+                        notify()->error(__('kindly Set the ') . $key, __('Error'));
+                        return redirect()->back();
+                    }
+                }
+            }
+            if ($request->is_auto_approve == true) {
+                $status = KYCStatus::Level3->value;
+                $template = 'kyc_approve_level_3';
+            }else {
+                $status = KYCStatus::PendingLevel3;
+                $template = 'kyc_request_level_3';
+            }
+
+            $user->update([
+                'kyc_level3_credential' => json_encode($kycCredential),
+                'kyc' => $status,
+            ]);
+
+        }
+
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[kyc_type]]' => $kyc->name,
+            '[[status]]' => 'Pending',
+        ];
+
+        $this->mailNotify($user->email, $template, $shortcodes);
+        if ($request->kyc_level == 3){
+            $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request', $shortcodes);
+        }
+        elseif ($request->kyc_level == 5) {
+            $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_3', $shortcodes);
+        }
+
+        $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
+        notify()->success(__('User Kyc Updated Successfully'));
+        return redirect()->back();
     }
 }

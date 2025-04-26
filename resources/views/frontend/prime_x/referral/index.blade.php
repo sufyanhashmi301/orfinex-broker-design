@@ -173,6 +173,9 @@
     @if(request()->routeIs('user.referral.reports'))
         @include('frontend::referral.include.__reports')
     @endif
+    @if(request()->routeIs('user.referral.history'))
+        @include('frontend::referral.include.__history')
+    @endif
     {{-- IB account modal --}}
     @include('frontend::referral.modal.__ib_form')
     {{--    @endif--}}
@@ -248,5 +251,109 @@
             document.execCommand('copy');
             $('#copy').text($('#copied').val())
         }
+
+        $(document).ready(function () {
+            function fetchTransactions(url = '{{ route("user.referral.history") }}') {
+                let status = $('#transaction-status').val();
+                let date = $('#transaction-date').val();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        transaction_status: status,
+                        transaction_date: date,
+                    },
+                    beforeSend: function () {
+                        $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
+                    },
+                    success: function (response) {
+                        if (response.html.trim() === "") {
+                            $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">No transactions found</td></tr>');
+                        } else {
+                            $('#transaction-table-body').html(response.html);
+                        }
+                        $('.pagination-container').html(response.pagination);
+                        $('#total-records').html(`
+                    {{ __('Showing') }}
+                        <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
+                    {{ __('to') }}
+                        <span class="font-medium">${response.total}</span>
+                    {{ __('of') }}
+                        <span class="font-medium">${response.total}</span>
+                    {{ __('results') }}
+                        `);
+
+                        // Store selections in localStorage
+                        localStorage.setItem('transaction_status', status);
+                        localStorage.setItem('transaction_date', date);
+
+                        // Reattach event handlers
+                        attachPaginationEvents();
+                    },
+                    error: function () {
+                        alert('Error loading transactions.');
+                    }
+                });
+            }
+
+            function attachPaginationEvents() {
+                $('.pagination a').off('click').on('click', function (e) {
+                    e.preventDefault();
+                    let url = $(this).attr('href');
+                    if (url) {
+                        fetchTransactions(url);
+                    }
+                });
+            }
+
+            function resetFiltersIfNavigatedBack() {
+                let isNavigatedBack = performance.navigation.type === 2 || sessionStorage.getItem('navigatedBack') === 'true';
+
+                if (isNavigatedBack) {
+                    console.log("Navigated back - resetting filters");
+
+                    // Clear stored filters
+                    localStorage.removeItem('transaction_status');
+                    localStorage.removeItem('transaction_date');
+
+                    // Reset dropdown values
+                    $('#transaction-status').val('');
+                    $('#transaction-date').val('');
+
+                    sessionStorage.removeItem('navigatedBack'); // Reset flag
+                }
+            }
+
+            function restoreSelections() {
+                if (localStorage.getItem('transaction_status')) {
+                    $('#transaction-status').val(localStorage.getItem('transaction_status'));
+                }
+                if (localStorage.getItem('transaction_date')) {
+                    $('#transaction-date').val(localStorage.getItem('transaction_date'));
+                }
+            }
+
+            // Detect if user navigated back
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                    sessionStorage.setItem('navigatedBack', 'true');
+                }
+            });
+
+            // Reset filters if user navigated back
+            resetFiltersIfNavigatedBack();
+
+            // Restore previous selections if they exist
+            restoreSelections();
+
+            // Attach event handlers to filters
+            $('#transaction-date, #transaction-status').on('change', function () {
+                fetchTransactions();
+            });
+
+            // Attach pagination event initially
+            attachPaginationEvents();
+        });
     </script>
 @endsection

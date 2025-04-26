@@ -1,5 +1,5 @@
-@if($user->ref_id)
-    <div class="flex items-center justify-between bg-slate-900 dark:bg-secondary rounded-t-lg px-[35px] py-5">
+@if($user->ref_id && $user->referrer)
+    <div class="flex items-center justify-between bg-slate-900 dark:bg-secondary rounded-t-lg px-[35px] py-4">
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ring-2 ring-slate-100 dark:ring-slate-100 ltr:mr-3 rtl:ml-3">
@@ -192,8 +192,7 @@
             </li>
 
         </ul>
-        <div
-            class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
+        <div class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                     {{ __('Current Balance') }}
@@ -245,7 +244,7 @@
                                 type="checkbox"
                                 name="partner_status"
                                 value="1"
-                                @if(isset($user->ib_group_id)) checked @endif
+                                @if($user->ib_status == 'approved') checked @endif
                                 class="sr-only peer"
                             />
                             <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>

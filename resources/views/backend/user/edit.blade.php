@@ -553,6 +553,44 @@
 
         });
 
+
+        $('body').on('change', '#kycLevelSelect', function() {
+            var level = $(this).val();
+            $('.kycData').empty();
+
+            $.ajax({
+                url: '{{ route("admin.kyc.kycMethods") }}',
+                type: "GET",
+                data: { kyc_level: level },
+                success: function (data) {
+                    $('#kycTypeSelect').empty();
+                    $('#kycTypeSelect').append('<option value="">Select Level</option>');
+
+                    // Append new options based on the KYC records
+                    $.each(data.kycs, function(index, kyc) {
+                        $('#kycTypeSelect').append('<option value="' + kyc.id + '">' + kyc.name + '</option>');
+                    });
+                }
+            })
+        });
+
+        $('body').on('change', '#kycTypeSelect', function(e) {
+            "use strict";
+            e.preventDefault();
+
+            $('.kycData').empty();
+            var id = $(this).val();
+            var url = '{{ route("admin.kyc.data", ":id") }}';
+            url = url.replace(':id', id);
+
+            $.get(url, function(data) {
+                console.log(data);
+                $('.kycData').append(data);
+                imagePreview();
+            });
+        });
+
+
     </script>
     <script>
         $(document).ready(function () {
@@ -625,13 +663,13 @@
                 checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
 
-            {{--$('#partner_status_btn').on('change', function (){--}}
-            {{--    @if($user->ib_status == 'approved')--}}
-            {{--        $('#disableIBModal').modal('show');--}}
-            {{--    @else--}}
-            {{--        $('#addIBModal').modal('show');--}}
-            {{--    @endif--}}
-            {{--});--}}
+            $('#partner_status_btn').on('change', function (){
+                @if($user->ib_status == 'approved')
+                    $('#disableIBModal').modal('show');
+                @else
+                    $('#addIBModal').modal('show');
+                @endif
+            });
         });
     </script>
 @endsection

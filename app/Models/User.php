@@ -247,6 +247,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(Account::class, 'user_id');
     }
+    public function ForexAccounts()
+    {
+        return $this->hasMany(ForexAccount::class, 'user_id');
+    }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');

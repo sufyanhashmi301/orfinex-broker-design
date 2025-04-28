@@ -13,10 +13,10 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-        $codesToDelete = ['transaction_otp'];
+//        $codesToDelete = ['transaction_otp'];
 
         // Delete the existing templates that match the codes
-        EmailTemplate::whereIn('code', $codesToDelete)->delete();
+//        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
         $templates = [

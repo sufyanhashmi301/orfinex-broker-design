@@ -408,7 +408,8 @@
         $('.update-password-modal-login').text($(this).data('login'));
         $('.update-password-modal-login').val($(this).data('login'));
     });
-    $('body').on('click', '#submit-password', function () {
+    $('body').on('submit', '#main-password-form', function (e) {
+        e.preventDefault();
         var main_pass = $('#update-main-password').val();
         if (main_pass) {
             var btn = $(this);
@@ -432,7 +433,7 @@
     $('body').on('click', '#submit-investor-password', function () {
         var invest_pass = $('#update-invest-password').val();
         if (invest_pass) {
-            var btn = $(this);
+            var btn = $('#submit-password');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-investor-password-modal-login').val());

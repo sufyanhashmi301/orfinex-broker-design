@@ -37,20 +37,20 @@
                 @if (request()->get('area') == 'admin')
                     <div class="site-input-area relative">
                         <label for="" class="form-label">Header Code</label>
-                        <textarea name="site_admin_header_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ _header_code') }}</textarea>
+                        <textarea name="site_admin_header_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_admin_header_code', 'defaults') }}</textarea>
                     </div>
                     <div class="site-input-area relative mt-3">
                         <label for="" class="form-label">Footer Code</label>
-                        <textarea name="site_admin_footer_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ _footer_code') }}</textarea>
+                        <textarea name="site_admin_footer_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_admin_footer_code', 'defaults') }}</textarea>
                     </div>
                 @else
                     <div class="site-input-area relative">
                         <label for="" class="form-label">Header Code</label>
-                        <textarea name="site_user_header_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_user_header_code') }}</textarea>
+                        <textarea name="site_user_header_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_user_header_code', 'defaults') }}</textarea>
                     </div>
                     <div class="site-input-area relative mt-3">
                         <label for="" class="form-label">Footer Code</label>
-                        <textarea name="site_user_footer_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_user_footer_code') }}</textarea>
+                        <textarea name="site_user_footer_code" class="form-control" id="" cols="30" rows="10" placeholder="// Code...">{{ setting('site_user_footer_code', 'defaults') }}</textarea>
                     </div>
                 @endif
 

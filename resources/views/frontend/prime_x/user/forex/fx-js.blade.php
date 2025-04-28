@@ -374,10 +374,10 @@
     //     var leverages = $(this).data('leverage');
     // });
 
-    $('body').on('click', '#submit-leverage', function () {
+    $('body').on('click', '#leverage-change-form', function () {
         var leverage = $('#update-leverage-modal-leverage').val();
         if (leverage) {
-            var btn = $(this);
+            var btn = $('#submit-leverage');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-leverage-modal-login-id').val());
@@ -392,10 +392,10 @@
         $('.update-name-modal-login').val($(this).data('login'));
         $('#update-name-modal-name').val($(this).data('account_name'));
     });
-    $('body').on('click', '#submit-name', function () {
+    $('body').on('click', '#rename-account-form', function () {
         var name = $('#update-name-modal-name').val();
         if (name) {
-            var btn = $(this);
+            var btn = $('#submit-name');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-name-modal-login').val());
@@ -412,7 +412,7 @@
         e.preventDefault();
         var main_pass = $('#update-main-password').val();
         if (main_pass) {
-            var btn = $(this);
+            var btn = $('#submit-password');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-password-modal-login').val());
@@ -430,10 +430,10 @@
         checkPassword(password,'main','submit-password');
 
     });
-    $('body').on('click', '#submit-investor-password', function () {
+    $('body').on('click', '#investor-password-form', function () {
         var invest_pass = $('#update-invest-password').val();
         if (invest_pass) {
-            var btn = $('#submit-password');
+            var btn = $('#submit-investor-password');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-investor-password-modal-login').val());

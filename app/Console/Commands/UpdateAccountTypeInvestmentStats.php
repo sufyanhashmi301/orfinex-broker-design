@@ -47,6 +47,7 @@ class UpdateAccountTypeInvestmentStats extends Command
         // Loop through each account_type_investment_id and delete records older than 48 hours
         foreach ($investmentIds as $id) {
             AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $id)
+                ->where('status', InvestmentStatus::ACTIVE)
                 ->where('created_at', '<', $cutoffTime)
                 ->delete();
         }

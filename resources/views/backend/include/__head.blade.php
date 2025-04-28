@@ -22,4 +22,6 @@
     @yield('style')
 
     <title>{{ setting('site_title', 'global') }} - @yield('title')</title>
+    
+    {!!setting('site_admin_header_code')!!}
 </head>

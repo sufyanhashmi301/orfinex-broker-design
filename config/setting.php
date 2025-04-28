@@ -70,8 +70,24 @@ return [
         'elements' => [
             'kyc_badge_visibility' => 'show',
             [
-                'name' => 'payout_eligibility_period', 
-                'value' => '2', 
+                'name' => 'payout_eligibility_period',
+                'value' => '2',
+            ],
+            [
+                'name' => 'site_user_header_code',
+                'value' => ''
+            ],
+            [
+                'name' => 'site_user_footer_code',
+                'value' => ''
+            ],
+            [
+                'name' => 'site_admin_header_code',
+                'value' => ''
+            ],
+            [
+                'name' => 'site_admin_footer_code',
+                'value' => ''
             ],
         ]
     ],
@@ -693,7 +709,7 @@ return [
                 'label' => 'Terms and Conditions Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
-                
+
             ],
             [
                 'type' => 'checkbox', // input fields type
@@ -753,7 +769,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
-            
+
 
             [
                 'type' => 'url', // input fields type
@@ -890,7 +906,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
-            
+
 
             [
                 'type' => 'url', // input fields type
@@ -958,7 +974,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
-           
+
 
         ],
 
@@ -1447,7 +1463,7 @@ return [
     'platform_api' => [
         'title' => 'Platform API Settings',
         'elements' => [
-           
+
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean

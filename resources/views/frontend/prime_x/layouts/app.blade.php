@@ -20,6 +20,7 @@
     </main>
     
     @include('frontend::include.__script')
+    {!! setting('site_user_footer_code') !!}
     
 </body>
 </html>

@@ -174,6 +174,14 @@
                             {{ __('Maintenance') }}
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.settings.dynamic-header-footer.index', ['area' => 'user']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Site Header & Footer') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

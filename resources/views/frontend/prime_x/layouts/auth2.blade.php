@@ -21,6 +21,7 @@
                 });
             });
         </script>
+        {!! setting('site_user_footer_code') !!}
     </body>
 </html>
 

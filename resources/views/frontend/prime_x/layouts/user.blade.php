@@ -64,9 +64,9 @@
 </main>
 <!--/Full Layout-->
 
-@include('frontend::include.__script')
-@stack('single-script')
-
+    @include('frontend::include.__script')
+    @stack('single-script')
+    {!! setting('site_user_footer_code') !!}
 
 </body>
 </html>

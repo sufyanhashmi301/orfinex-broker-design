@@ -60,6 +60,7 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
+use App\Http\Controllers\HeaderFooterController;
 use App\Http\Controllers\VoiceCallController;
 use App\Models\PayoutRequest;
 
@@ -276,6 +277,11 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     // User
     Route::get('/export-users', [UserController::class, 'exportCsv'])->name('export.all_users');
+    
+    // Dynamic Header and Footer
+    Route::get('settings/dynamic-header-footer', [HeaderFooterController::class, 'index'])->name('settings.dynamic-header-footer.index');
+    Route::post('settings/dynamic-header-footer/update', [HeaderFooterController::class, 'updateSettings'])->name('settings.dynamic-header-footer.update');
+
 
     // =============================== Optimization ===============================
     

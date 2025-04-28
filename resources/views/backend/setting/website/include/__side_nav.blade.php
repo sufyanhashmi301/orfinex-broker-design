@@ -25,5 +25,10 @@
                 {{ __('Maintenance')}}
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.settings.dynamic-header-footer.index', ['area' => 'user']) }}" class="navItem {{ isActive('admin.settings.dynamic-header-footer.index') }}">
+                {{ __('Site Header & Footer') }}
+            </a>
+        </li>
     </ul>
 @endsection

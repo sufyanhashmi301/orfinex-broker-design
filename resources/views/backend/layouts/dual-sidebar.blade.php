@@ -64,6 +64,7 @@
             $('.submenu-toggle-btn .close-icon').toggle();
         })
     </script>
+    {!! setting('site_admin_footer_code') !!}    
 
 </body>
 </html>

@@ -53,7 +53,8 @@
     <!--/Full Layout-->
 
     @include('backend.include.__script')
-    {!! setting('site_admin_footer_code') !!}
+    {!! setting('site_admin_footer_code', 'defaults') !!}
+
 
 </body>
 </html>

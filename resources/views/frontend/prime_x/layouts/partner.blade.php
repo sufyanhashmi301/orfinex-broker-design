@@ -64,7 +64,7 @@
 
     @include('frontend::include.__script')
 
-    {!! setting('site_user_footer_code') !!}
+    {!! setting('site_user_footer_code', 'defaults') !!}
 </body>
 </html>
 

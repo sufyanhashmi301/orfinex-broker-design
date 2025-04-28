@@ -23,5 +23,5 @@
 
     <title>{{ setting('site_title', 'global') }} - @yield('title')</title>
     
-    {!!setting('site_admin_header_code')!!}
+    {!!setting('site_admin_header_code', 'defaults')!!}
 </head>

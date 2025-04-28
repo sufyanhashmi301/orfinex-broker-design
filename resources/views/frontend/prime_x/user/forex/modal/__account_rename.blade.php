@@ -21,7 +21,7 @@
                 </div>
                 <div class="p-6 space-y-4">
                     <input type="hidden" name="login" id="update-name-modal-login"  class="form-control update-name-modal-login"  >
-                    <form action="" method="post">
+                    <form action="" method="post" id="rename-account-form">
                         @csrf
                         <label class="form-label" for="">{{ __('New nickname:') }}</label>
                         <div class="input-form-group">

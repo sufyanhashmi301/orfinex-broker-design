@@ -2,7 +2,7 @@
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         @canany(['risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions','customer-registration-settings'])
         <li>
-            <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ request()->routeIs('admin.risk-profile-tag*') || request()->routeIs('admin.customer-groups*') ? 'active' : '' }}">
+            <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ request()->routeIs('admin.risk-profile-tag*') || request()->routeIs('admin.customer-groups*') || request()->routeIs('admin.settings.customer.misc') ? 'active' : '' }}">
                 {{ __('Customer') }}
             </a>
         </li>

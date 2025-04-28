@@ -374,7 +374,7 @@
     //     var leverages = $(this).data('leverage');
     // });
 
-    $('body').on('click', '#leverage-change-form', function () {
+    $('body').on('submit', '#leverage-change-form', function () {
         var leverage = $('#update-leverage-modal-leverage').val();
         if (leverage) {
             var btn = $('#submit-leverage');
@@ -392,7 +392,7 @@
         $('.update-name-modal-login').val($(this).data('login'));
         $('#update-name-modal-name').val($(this).data('account_name'));
     });
-    $('body').on('click', '#rename-account-form', function () {
+    $('body').on('submit', '#rename-account-form', function () {
         var name = $('#update-name-modal-name').val();
         if (name) {
             var btn = $('#submit-name');
@@ -430,7 +430,7 @@
         checkPassword(password,'main','submit-password');
 
     });
-    $('body').on('click', '#investor-password-form', function () {
+    $('body').on('submit', '#investor-password-form', function () {
         var invest_pass = $('#update-invest-password').val();
         if (invest_pass) {
             var btn = $('#submit-investor-password');

@@ -250,6 +250,11 @@ public function update(Request $request)
         return view('backend.setting.customer.permission');
     }
 
+    public static function customerMiscSettings()
+    {
+        return view('backend.setting.customer.misc');
+    }
+
     public static function miscSetting()
     {
         return view('backend.setting.company.misc');

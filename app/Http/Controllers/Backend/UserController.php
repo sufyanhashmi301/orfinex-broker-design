@@ -16,6 +16,7 @@ use App\Exports\withBalanceUsersExport;
 use App\Exports\withOutBalanceUsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\Account;
 use App\Models\Bonus;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
@@ -30,6 +31,7 @@ use App\Models\KycLevel;
 use App\Models\Lead;
 use App\Scopes\ExcludeGracePeriodScope;
 use App\Services\ForexApiService;
+use App\Services\WalletService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -59,12 +61,14 @@ class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
     protected $forexApiService;
+    protected $walletService;
+
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct(ForexApiService $forexApiService)
+    public function __construct(ForexApiService $forexApiService,WalletService $walletService)
     {
         $this->middleware('permission:customer-list', ['only' => ['index', 'activeUser', 'disabled', 'withOutBalance', 'withBalance']]);
         // $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['edit']]);
@@ -77,6 +81,8 @@ class UserController extends Controller
         $this->middleware('permission:customer-edit|customer-overview-update', ['only' => ['edit', 'update']]);
         $this->middleware('permission:customer-create', ['only' => ['store', 'createCustomer']]);
         $this->forexApiService = $forexApiService;
+        $this->walletService = $walletService;
+
     }
 
     /**
@@ -133,7 +139,6 @@ class UserController extends Controller
         return view('backend.user.all');
     }
 
-
     public function export(Request $request, $type = null)
 {
     switch ($type) {
@@ -185,6 +190,7 @@ class UserController extends Controller
             return Excel::download(new UsersExport($request), 'users.xlsx');
     }
 }
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -550,7 +556,6 @@ class UserController extends Controller
         ));
     }
 
-
     public function destroy(Request $request, $id)
     {
         // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
@@ -577,7 +582,6 @@ class UserController extends Controller
         // Redirect to the user listing page after the operation
         return redirect()->route('admin.user.index');
     }
-
 
     /**
      * @return RedirectResponse
@@ -727,6 +731,7 @@ class UserController extends Controller
         notify()->success('User Info Updated Successfully', 'success');
         return redirect()->back();
     }
+
     public function kyc(Request $request, $id)
     {
         //        dd($request->all());
@@ -750,7 +755,6 @@ class UserController extends Controller
         notify()->success('User Kyc Updated Successfully', 'success');
         return redirect()->back();
     }
-
 
     /**
      * @return RedirectResponse
@@ -780,6 +784,7 @@ class UserController extends Controller
         notify()->success('Password has been successfully reset and emailed to the user', 'success');
         return redirect()->back();
     }
+
     public function passwordUpdate($id, Request $request)
     {
         $input = $request->all();
@@ -810,81 +815,162 @@ class UserController extends Controller
     /**
      * @return RedirectResponse|void
      */
+
     public function balanceUpdate($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'target_id' => 'required',
-            'amount' => 'required',
-            'type' => 'required',
-            'target_type' => 'required',
-            'comment' => 'required',
+            'amount' => 'required|numeric|min:0.01',
+            'type' => 'required|in:add,subtract',
+            'target_type' => 'required|in:forex,wallet',
+            'comment' => 'required|string|max:255',
         ]);
-        $targetId = $request->input('target_id');
-        $targetType = $request->input('target_type');
-        // dd($targetType);
+//dd($request->all());
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
 
         try {
-            //dd($request->all());
-            $amount = $request->amount;
-            $type = $request->type;
-            $comment = $request->comment;
+            DB::beginTransaction();
 
-            $user = User::find($id);
+            $targetId = $request->input('target_id');
+            $targetType = $request->input('target_type');
+            $amount = BigDecimal::of($request->amount);
+            $type = $request->input('type');
+            $comment = $request->input('comment');
+
+            $user = User::findOrFail($id);
             $adminUser = \Auth::user();
 
-            if ($type == 'add') {
-                if ($targetType == 'forex') {
+            if ($targetType === 'forex') {
+                // Forex account operations
+                if ($type === 'add') {
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 1, //deposit
-                        'TransactionComments' => $comment
+                        'Amount' => $amount->toFloat(),
+                        'type' => 1, // Deposit
+                        'TransactionComments' => $comment,
                     ];
-                    $this->forexApiService->balanceOperation($data);
-                }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
+                    $response = $this->forexApiService->balanceOperation($data);
 
-                $status = 'success';
-                $message = __('Account Balance Update');
-            } elseif ($type == 'subtract') {
-                if ($targetType == 'forex') {
-                    $balance = $this->forexApiService->getValidatedBalance([
-                        'login' => $targetId
-                    ]);
-                    //                    $balance = $this->getForexAccountBalance($targetId);
-
-                    if (BigDecimal::of($amount)->compareTo($balance) > 0) {
-                        notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
-                        return redirect()->back();
+                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                        throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
+
+                } else {
+                    $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+                    if ($amount->compareTo($balance) > 0) {
+                        throw new \Exception(__('Insufficient funds in Forex account.'));
+                    }
+
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 2, //withdraw
-                        'TransactionComments' => $comment
+                        'Amount' => $amount->toFloat(),
+                        'type' => 2, // Withdraw
+                        'TransactionComments' => $comment,
                     ];
-                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                    //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if (!$withdrawResponse['success']) {
-                        return redirect()->back();
+                    $response = $this->forexApiService->balanceOperation($data);
+
+                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                        throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
-                $status = 'success';
-                $message = __('Account Balance Updated');
+
+                // ✅ Only after success
+                $txn = Txn::new(
+                    $amount->toFloat(),
+                    0,
+                    $amount->toFloat(),
+                    'system',
+                    $type === 'add' ? 'Admin Added Balance' : 'Admin Subtracted Balance',
+                    $type === 'add' ? TxnType::Deposit : TxnType::Subtract,
+                    TxnStatus::Success,
+                    null,
+                    null,
+                    $user->id,
+                    $adminUser->id,
+                    'Admin',
+                    [],
+                    $comment,
+                    $targetId,
+                    'forex'
+                );
+                $txn->action_by = auth()->user()->id;
+                $txn->save();
+            } elseif ($targetType === 'wallet') {
+                // Wallet account operations
+                $account = Account::where('wallet_id', $targetId)->where('user_id', $user->id)->firstOrFail();
+
+                if ($type === 'add') {
+                    $account->amount = BigDecimal::of($account->amount)->plus($amount);
+                    $account->save();
+
+                    $txn = Txn::new(
+                        $amount->toFloat(),
+                        0,
+                        $amount->toFloat(),
+                        'system',
+                        'Admin Added Balance',
+                        TxnType::Deposit,
+                        TxnStatus::Success,
+                        null,
+                        null,
+                        $user->id,
+                        $adminUser->id,
+                        'Admin',
+                        [],
+                        $comment,
+                        $account->wallet_id,
+                        'wallet'
+                    );
+                    $txn->action_by = auth()->user()->id;
+                    $txn->save();
+                    $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
+                    $this->walletService->createCreditLedgerEntry($txn, $ledgerBalance);
+
+                } else {
+                    if ($amount->compareTo(BigDecimal::of($account->amount)) > 0) {
+                        throw new \Exception(__('Insufficient funds in Wallet account.'));
+                    }
+
+                    $account->amount = BigDecimal::of($account->amount)->minus($amount);
+                    $account->save();
+
+                    $txn = Txn::new(
+                        $amount->toFloat(),
+                        0,
+                        $amount->toFloat(),
+                        'system',
+                        'Admin Subtracted Balance',
+                        TxnType::Subtract,
+                        TxnStatus::Success,
+                        null,
+                        null,
+                        $user->id,
+                        $adminUser->id,
+                        'Admin',
+                        [],
+                        $comment,
+                        $account->wallet_id,
+                        'wallet'
+                    );
+                    $txn->action_by = auth()->user()->id;
+                    $txn->save();
+                    $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
+                    $this->walletService->createDebitLedgerEntry($txn, $ledgerBalance);
+                }
             }
 
-            notify()->success($message, $status);
-
+            DB::commit();
+            notify()->success(__('Balance Updated Successfully.'), 'Success');
             return redirect()->back();
-        } catch (Exception $e) {
-            $status = 'warning';
-            $message = __('something is wrong');
-            $code = 503;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Balance Update Failed: ' . $e->getMessage());
+            notify()->error($e->getMessage(), 'Error');
+            return redirect()->back();
         }
     }
 
@@ -1068,7 +1154,6 @@ class UserController extends Controller
         return redirect()->route('user.dashboard');
     }
 
-
     public function createCustomer()
     {
         // Get the location (e.g., from a user's profile or a service like IP-based location)
@@ -1209,7 +1294,6 @@ class UserController extends Controller
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
-
 
     public function createNote(Request $request, $id)
     {

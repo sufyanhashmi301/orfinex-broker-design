@@ -1,4 +1,4 @@
-<form action="" method="post">
+<form action="" method="post" id="leverage-change-form">
     @csrf
     <input type="hidden" name="login" id="update-leverage-modal-login-id" class="form-control" value="{{$forexTrading->login}}">
     <div class="input-area relative">

@@ -13,10 +13,10 @@ class EmailTemplatesSeeder extends Seeder
     {
 //        DB::table('email_templates')->truncate();
         // Define the email template codes to be deleted
-        $codesToDelete = ['transaction_otp'];
+//        $codesToDelete = ['transaction_otp'];
 
         // Delete the existing templates that match the codes
-        EmailTemplate::whereIn('code', $codesToDelete)->delete();
+//        EmailTemplate::whereIn('code', $codesToDelete)->delete();
 
 
         $templates = [
@@ -789,6 +789,31 @@ class EmailTemplatesSeeder extends Seeder
                 'subject' => 'IB Request Rejected',
                 'salutation' => 'Dear [[full_name]],',
                 'message_body' => 'We regret to inform you that your Introducing Broker (IB) account request has been rejected.',
+                'button_level' => 'Login Your Account',
+                'button_link' => url('/').'/login',
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 1,
+                'bottom_title' => 'Learn More About [[site_title]]',
+                'bottom_body' => '[[site_url]]',
+                'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]"]',
+                'note' => '',
+                'support_link' => '',
+                'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high-risk investments.',
+                'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
+                'status' => 1,
+                'created_at' => '2024-02-19 12:37:37',
+                'updated_at' => '2024-03-07 15:53:51',
+            ],
+            [
+                'name' => 'IB Disable Action',
+                'code' => 'ib_disable_action',
+                'for' => 'User',
+                'banner' => 'global/images/hF1mZgJGVe42XLpC55SP.png',
+                'title' => 'IB Disabled',
+                'subject' => 'IB Disabled',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'We regret to inform you that your Introducing Broker (IB) account has been disabled.',
                 'button_level' => 'Login Your Account',
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,

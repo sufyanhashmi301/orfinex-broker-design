@@ -12,8 +12,8 @@
                 <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
                 </div>
                 <div class="profile-box">
-                    <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative mx-auto">
-                        <img src="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+                    <div class="h-[140px] w-[140px] mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-body mx-auto">
+                        <img src="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                         <label class="absolute right-1 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center top-[100px] cursor-pointer">
                             <input type="file" class="hidden" id="file-input" name="image" accept="image/*">
                             <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
@@ -268,7 +268,7 @@
     </div>
 
     {{-- Modal for avatar copper--}}
-    @include('frontend::user.setting.include.__avatar_cropper_modal')
+    @include('backend.profile.modal.__avatar_cropper_modal')
 
 @endsection
 @section('style')
@@ -300,53 +300,46 @@
             maxDate: "15-12-2017"
         });
 
-        //Profile picture JS
-        window.addEventListener('DOMContentLoaded', function () {
-            var image = document.getElementById('uploadedAvatar');
-            var input = document.getElementById('file-input');
-            var cropBtn = document.getElementById('crop-image');
-
+        $(document).ready(function () {
+            var $image = $('#uploadedAvatar');
+            var $input = $('#file-input');
+            var $cropBtn = $('#crop-image');
             var $modal = $('#cropperModal');
             var cropper;
 
-            input.addEventListener('change', function (e) {
+            $input.on('change', function (e) {
                 var files = e.target.files;
-                var done = function (url) {
-                    image.src = url;
-                    $modal.modal('show');
-                };
 
                 if (files && files.length > 0) {
-                    let file = files[0];
+                    var reader = new FileReader();
 
-                    reader = new FileReader();
                     reader.onload = function (e) {
-                        done(reader.result);
+                        $image.attr('src', e.target.result);
+                        $modal.modal('show');
                     };
-                    reader.readAsDataURL(file);
+
+                    reader.readAsDataURL(files[0]);
                 }
             });
 
             $modal.on('shown.bs.modal', function () {
-                cropper = new Cropper(image, {
+                cropper = new Cropper($image[0], {
                     aspectRatio: 1,
                     viewMode: 0,
+                    responsive: true
                 });
             }).on('hidden.bs.modal', function () {
-                cropper.destroy();
-                cropper = null;
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
             });
 
-            cropBtn.addEventListener('click', function () {
-                // var initialAvatarURL;
-                var canvas;
-
-                $modal.modal('hide');
-
+            $cropBtn.on('click', function () {
                 if (cropper) {
-                    canvas = cropper.getCroppedCanvas({
-                        width: 160,
-                        height: 160,
+                    var canvas = cropper.getCroppedCanvas({
+                        width: 600,
+                        height: 600
                     });
 
                     canvas.toBlob(function (blob) {
@@ -374,6 +367,8 @@
                                 tNotify('error', 'Something went wrong');
                             });
                     }, 'image/jpeg');
+
+                    $modal.modal('hide');
                 }
             });
         });

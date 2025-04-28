@@ -9,6 +9,7 @@
         </h4>
     </div>
     <div class="grid grid-cols-12 gap-5">
+        @can('staff-attach-users-create')
         <div class="lg:col-span-5 col-span-12">
             <div class="card">
                 <div class="card-header noborder">
@@ -61,6 +62,7 @@
                 </div>
             </div>
         </div>
+        @endcan
         <div class="lg:col-span-7 col-span-12">
             <div class="card h-full">
                 <div class="card-body relative px-6">
@@ -94,8 +96,9 @@
     </div>
 
     {{-- Detach User Modal--}}
+    @can('staff-attach-users-delete')
     @include('backend.staff.modal.__detach_user')
-
+    @endcan
 @endsection
 @section('script')
     <script>

@@ -21,10 +21,12 @@
                     </select>
                 </div>
             </div>
+            @can('deal-create')
             <a href="{{ route('admin.deal.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New Deal') }}
             </a>
+            @endcan
         </div>
     </div>
 
@@ -52,6 +54,7 @@
 
                     <div id="{{ __('stage-container__').$stage->slug }}" class="min-h-full" data-stage-id="{{ $stage->id }}" data-stage-slug="{{ $stage->slug }}">
                         @if ($stage->deals->isEmpty())
+                        @can('deal-create')
                             <div class="p-2">
                                 <a href="{{ route('admin.deal.create') }}" data-pipeline-id="{{ $pipeline->id }}" class="non-draggable w-full leading-0 inline-flex justify-center bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal px-2 py-5">
                                     <span class="flex items-center">
@@ -60,6 +63,7 @@
                                     </span>
                                 </a>
                             </div>
+                            @endcan
                         @else
                             @foreach ($stage->deals as $deal)
                                 <div class="p-2 h-full space-y-4 rounded-bl rounded-br" data-deal-id="{{ $deal->id }}">

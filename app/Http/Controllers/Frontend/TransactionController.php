@@ -32,7 +32,7 @@ class TransactionController extends Controller
             ->orderBy('balance', 'desc')
             ->get();
 
-        $query = Transaction::where('user_id', auth()->user()->id);
+        $query = Transaction::where('user_id', auth()->user()->id)->where('type', '!=', 'ib_bonus');;
 
         if (request('transaction_date')) {
             $filter = request('transaction_date');

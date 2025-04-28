@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Traits\ImageUpload;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 use App\Models\User;
 use App\Models\UserLanguage;
@@ -69,6 +71,35 @@ class SettingController extends Controller
 
         return redirect()->back();
     }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = \Auth::user();
+        $domain = Str::slug(request()->getHttpHost());
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+
+            // Safe filename: timestamp + slug of original name
+            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+
+            // Path format: {domain}/staff/{user_id}/profile-photos/
+            $directory = "{$domain}/user/{$user->id}/profile-photos";
+            $path = "{$directory}/{$filename}";
+
+            // Upload to R2
+            Storage::disk('r2')->putFileAs($directory, $file, $filename, 'public');
+            $assetUrl = config('filesystems.disks.r2.url');
+            $avatarPath = rtrim($assetUrl, '/') . '/' . $path;
+        } else {
+            $avatarPath = $user->avatar;
+        }
+
+        auth()->user()->update(['avatar' => $avatarPath]);
+
+        return response()->json(['success' => true]);
+    }
+
     public function infoUpdate(Request $request)
     {
         $input = $request->all();

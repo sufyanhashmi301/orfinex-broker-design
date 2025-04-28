@@ -34,9 +34,11 @@
                         @default
                             <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/discord-login.webp" alt=""/>
                     @endswitch
+                    @can('social-logins-action')
                     <button type="button" class="action-btn cursor-pointer editBtn dark:text-slate-300" data-id="{{ $socialLogin->id }}">
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
+                    @endcan
                 </div>
                 <div class="card-body p-4 pt-2">
                     <div class="flex items-center justify-between mb-3">

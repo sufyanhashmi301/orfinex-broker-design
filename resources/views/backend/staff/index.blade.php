@@ -47,15 +47,20 @@
                             @endcan
                         </div>
                     </div>
+                    @can('staff-list')
                     <div id="staff-list" class="p-6 pr-0">
                         @include('backend.staff.include.__staff_list', ['staff' => $staffs])
                     </div>
+                    @endcan
                 </div>
             </div>
             <div class="medium:col-span-8 col-span-12">
+               
                 <div id="edit-staff-body">
                     @include('backend.staff.edit')
                 </div>
+               
+
                 <div class="card hidden p-6" id="loader_placeholder">
                     @include('backend.staff.include.placeholder')
                 </div>
@@ -64,13 +69,13 @@
     </div>
 
     <!-- Modal for Edit Staff -->
-    @can('staff-edit')
+ 
         @include('backend.staff.modal.__edit_staff')
-    @endcan
-
+   
     <!-- Delete Confirmation Modal -->
+    @can('staff-delete')
     @include('backend.staff.include.__delete')
-
+    @endcan
     {{-- Detach User Modal--}}
     @include('backend.staff.modal.__detach_user')
 

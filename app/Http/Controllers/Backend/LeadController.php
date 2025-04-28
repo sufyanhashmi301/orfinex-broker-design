@@ -29,6 +29,13 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('permission:lead-list', ['only' => ['index']]);
+         $this->middleware('permission:lead-create', ['only' => ['store']]);
+         $this->middleware('permission:lead-action', ['only' => ['destroy,update']]);
+
+    }
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();

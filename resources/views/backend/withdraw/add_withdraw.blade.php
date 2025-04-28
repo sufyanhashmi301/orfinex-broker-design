@@ -182,7 +182,6 @@
             </div>
         </div>
     </div>
-    @can('transaction-action')
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
@@ -194,7 +193,6 @@
                 </div>
             </div>
         </div>
-    @endcan
 
     {{-- modal for withdraw account--}}
     @include('backend.withdraw.modals.__new_account')
@@ -257,6 +255,13 @@
     });
             $('#filter').click(function () {
                 table.draw();
+            });
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
             });
 
             $('body').on('click', '#deposit-action', function () {

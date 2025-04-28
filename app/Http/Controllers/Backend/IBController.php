@@ -114,81 +114,91 @@ class IBController extends Controller
 
 
     public function IbPendingList(Request $request)
-    {
-        if ($request->ajax()) {
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $loggedInUser = auth()->user();
 
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::where('ib_status', IBStatus::PENDING)->latest();
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        if ($canViewAllUsers) {
+            // Fetch all pending IB users
+            $data = User::where('ib_status', IBStatus::PENDING)->latest();
+        } else {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                // Fetch pending IB users for attached user IDs only
+                $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)->latest();
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('ib_status', IBStatus::PENDING)->applyFilters($filters);
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
-                ->make(true);
         }
-        $ibGroups = IbGroup::where('status', 1)->get();
 
-        return view('backend.ib.pending', compact('ibGroups'));
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })             ->addColumn('email', 'backend.user.include.__email')
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'email', 'ib_status', 'action'])
+            ->make(true);
     }
+
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.pending', compact('ibGroups'));
+}
 
     public function IbApprovedList(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $loggedInUser = auth()->user();
+
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        // Initialize query
+        $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+
+        if (!$canViewAllUsers) {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data->whereIn('id', $attachedUserIds);
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::where('ib_status', IBStatus::APPROVED)->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('ib_status', IBStatus::APPROVED)->applyFilters($filters);
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
-                ->make(true);
         }
-        $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.approved', compact('ibGroups'));
+
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })             ->addColumn('email', 'backend.user.include.__email')
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'email', 'ib_status', 'action'])
+            ->make(true);
     }
+
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.approved', compact('ibGroups'));
+}
+
 
     public function IbRejectedList(Request $request)
     {
@@ -201,8 +211,9 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -225,45 +236,44 @@ class IBController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $loggedInUser = auth()->user();
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::latest();
-            } else {
+
+            // Check if the user can view all users
+            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+            // Initialize query
+            $data = User::query()->latest();
+
+            if (!$canViewAllUsers) {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::whereIn('id', $attachedUserIds)
-                        ->latest();
+                    $data->whereIn('id', $attachedUserIds);
                 } else {
                     // If no users are attached, return an empty collection
-                    $data = User::applyFilters($filters);
+                    return Datatables::of(collect([]))->make(true);
                 }
             }
 
+            // Apply additional filters
+            $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-//                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-//                ->editColumn('username', function ($request) {
-//                    return safe($request->username);
-//                })
-//                ->addColumn('ib_group', function ($user) {
-//                    return view('backend.ib.include.__action', ['user' => $user]);
-//                })
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'ib_status', 'action'])
                 ->make(true);
         }
+
         $ibGroups = IbGroup::where('status', 1)->get();
         return view('backend.ib.all', compact('ibGroups'));
     }
+
 
     public function answerView(User $user)
     {
@@ -275,8 +285,18 @@ class IBController extends Controller
 
     public function approveIbMember(Request $request)
     {
+        $input = $request->all();
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
         $isReload = ($request->get('reload')) ? $request->get('reload') : false;
+
+        $validator = Validator::make($input, [
+            'user_id' => 'required',
+            'ib_group_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back();
+        }
 
         $user = User::find($userID);
 
@@ -284,23 +304,16 @@ class IBController extends Controller
             $ibGroup = !empty($request->ib_group_id) ? (int)$request->ib_group_id : null;
 
             // Validation: Check if the provided IB group is different
-            if ($user->ib_group_id === $ibGroup) {
-                $message = __('The provided IB Group is the same as the current one. No changes made.');
-                if ($request->ajax()) {
-                    return response()->json(['title' => 'No Changes', 'error' => $message, 'reload' => false]);
-                } else {
-                    notify()->info($message, 'No Changes');
-                    return redirect()->back();
-                }
+            if ($user->ib_group_id !== $ibGroup) {
+                $this->manageUserRebateRules($user, $ibGroup);
             }
+
+            // Add or Remove Rebate Rules
 
             // Update user status and IB group
             $user->ib_status = IBStatus::APPROVED;
             $user->ib_group_id = $ibGroup;
             $user->save();
-
-            // Add or Remove Rebate Rules
-            $this->manageUserRebateRules($user, $ibGroup);
 
             // Notify the user
             $shortcodes = [
@@ -350,6 +363,35 @@ class IBController extends Controller
         }
     }
 
+    public function disableIbMember(Request $request)
+    {
+        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
+
+        $user = User::find($userID);
+
+        if (!blank($user)) {
+            // Update user status and IB group
+            $user->ib_status = IBStatus::DISABLED;
+            $user->save();
+
+            // Notify the user
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::DISABLED,
+            ];
+            $this->mailNotify($user->email, 'ib_disable_action', $shortcodes);
+            $this->smsNotify('ib_disable_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_disable_action', $shortcodes, route('user.referral'), $user->id);
+
+            notify()->success('IB disabled successfully', 'success');
+            return redirect()->back();
+        }
+
+        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
+    }
 
     public function updateIbMember(Request $request)
     {
@@ -646,6 +688,17 @@ class IBController extends Controller
 
             $ibGroup = null;
             $this->manageUserRebateRules($user, $ibGroup);
+
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::REJECTED,
+            ];
+            $this->mailNotify($user->email, 'ib_reject_action', $shortcodes);
+            $this->smsNotify('ib_reject_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_reject_action', $shortcodes, route('user.referral'), $user->id);
 
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }

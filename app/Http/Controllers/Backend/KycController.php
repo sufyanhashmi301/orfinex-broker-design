@@ -14,9 +14,7 @@ use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
 use App\Models\KycSubLevel;
 use App\Models\User;
-use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use Carbon\Carbon;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -28,11 +26,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use App\Traits\ImageUpload;
+use Carbon\Carbon;
 
 class KycController extends Controller
 {
     use ImageUpload, NotifyTrait;
-
     /**
      * Display a listing of the resource.
      *
@@ -212,49 +211,49 @@ class KycController extends Controller
      * @throws Exception
      */
     public function KycPending(Request $request)
-    {
-        $loggedInUser = auth()->user();
+{
+    $loggedInUser = auth()->user();
 
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status', 'created_at']);
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'status', 'created_at']);
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with pending KYC
-                $data = User::where('kyc', KYCStatus::Pending->value)
-                ->latest('updated_at');
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        if ($canViewAllUsers) {
+            // Fetch all KYC pending users
+            $data = User::where('kyc', KYCStatus::Pending->value)
+                ->latest('updated_at')
+                ->applyFilters($filters);
         } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch KYC pending users for attached user IDs only
-                    $data = User::where('kyc', KYCStatus::Pending->value)
+            if ($attachedUserIds->isNotEmpty()) {
+                // Fetch KYC pending users for attached user IDs only
+                $data = User::where('kyc', KYCStatus::Pending->value)
                     ->whereIn('id', $attachedUserIds)
-                        ->latest('updated_at');
+                    ->latest('updated_at')
+                    ->applyFilters($filters);
             } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('kyc', KYCStatus::Pending->value)->applyFilters($filters);
-
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('time', 'backend.kyc.include.__time')
-                ->addColumn('user', 'backend.kyc.include.__user')
-                ->addColumn('type', 'backend.kyc.include.__type')
-                ->addColumn('status', 'backend.kyc.include.__status')
-                ->addColumn('action', 'backend.kyc.include.__action')
-                ->rawColumns(['time', 'user', 'type', 'status', 'action'])
-                ->make(true);
         }
 
-        return view('backend.kyc.pending');
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('time', 'backend.kyc.include.__time')
+            ->addColumn('user', 'backend.kyc.include.__user')
+            ->addColumn('type', 'backend.kyc.include.__type')
+            ->editColumn('status', 'backend.kyc.include.__status')
+            ->addColumn('action', 'backend.kyc.include.__action')
+            ->rawColumns(['time', 'user', 'type', 'status', 'action'])
+            ->make(true);
     }
+
+    return view('backend.kyc.pending');
+}
 
     public function KycLevel3Pending(Request $request)
     {
@@ -263,31 +262,31 @@ class KycController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'status', 'created_at']);
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
+            // Check if the user can view all users
+            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+            if ($canViewAllUsers) {
                 // Fetch all Level 3 KYC pending users
-                $data = User::where('kyc_level3_credential', '!=', null)
+                $data = User::whereNotNull('kyc_level3_credential')
                     ->where('kyc', KYCStatus::PendingLevel3->value)
-                ->latest('updated_at');
-        } else {
+                    ->latest('updated_at')
+                    ->applyFilters($filters);
+            } else {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
                     // Fetch Level 3 KYC pending users for attached user IDs only
-                    $data = User::where('kyc_level3_credential', '!=', null)
+                    $data = User::whereNotNull('kyc_level3_credential')
                         ->where('kyc', KYCStatus::PendingLevel3->value)
-                    ->whereIn('id', $attachedUserIds)
-                        ->latest('updated_at');
-            } else {
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest('updated_at')
+                        ->applyFilters($filters);
+                } else {
                     // If no users are attached, return an empty collection
-                    $data = User::where('kyc_level3_credential', '!=', null)
-                        ->where('kyc', KYCStatus::PendingLevel3->value)
-                ->latest('updated_at');                }
+                    return Datatables::of(collect([]))->make(true);
+                }
             }
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -298,7 +297,7 @@ class KycController extends Controller
                 ->addColumn('type', function ($row) {
                     return $row->kyc_type_level3;
                 })
-                ->addColumn('status', 'backend.kyc.include.__statuslevel3')
+                ->editColumn('status', 'backend.kyc.include.__statuslevel3')
                 ->addColumn('action', 'backend.kyc.include.__action')
                 ->rawColumns(['time', 'user', 'type', 'status', 'action'])
                 ->make(true);
@@ -314,47 +313,47 @@ class KycController extends Controller
      * @throws Exception
      */
     public function KycRejected(Request $request)
-    {
-        $loggedInUser = auth()->user();
+{
+    $loggedInUser = auth()->user();
 
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status', 'created_at']);
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'status', 'created_at']);
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all users with rejected KYC
-                $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        if ($canViewAllUsers) {
+            // Fetch all users with rejected KYC
+            $data = User::where('kyc', KYCStatus::Rejected->value)->applyFilters($filters);
         } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch rejected KYC users for attached user IDs only
-                    $data = User::where('kyc', KYCStatus::Rejected->value)
+            if ($attachedUserIds->isNotEmpty()) {
+                // Fetch rejected KYC users for attached user IDs only
+                $data = User::where('kyc', KYCStatus::Rejected->value)
                     ->whereIn('id', $attachedUserIds)
-                        ->latest();
+                    ->applyFilters($filters);
             } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('kyc', KYCStatus::Rejected->value)->applyFilters($filters);
-                }
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('time', 'backend.kyc.include.__time')
-                ->addColumn('user', 'backend.kyc.include.__user')
-                ->addColumn('type', 'backend.kyc.include.__type')
-                ->addColumn('status', 'backend.kyc.include.__status')
-                ->addColumn('action', 'backend.kyc.include.__action')
-                ->rawColumns(['time', 'user', 'type', 'status', 'action'])
-                ->make(true);
         }
 
-        return view('backend.kyc.rejected');
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('time', 'backend.kyc.include.__time')
+            ->addColumn('user', 'backend.kyc.include.__user')
+            ->addColumn('type', 'backend.kyc.include.__type')
+            ->addColumn('status', 'backend.kyc.include.__status')
+            ->addColumn('action', 'backend.kyc.include.__action')
+            ->rawColumns(['time', 'user', 'type', 'status', 'action'])
+            ->make(true);
     }
+
+    return view('backend.kyc.rejected');
+}
+
 
     /**
      * @return string
@@ -562,40 +561,44 @@ public function actionLevel3Now(Request $request)
      * @throws Exception
      */
     public function kycAll(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status',  'created_at']);
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'status', 'created_at']);
+        $loggedInUser = auth()->user();
 
-                $loggedInUser = auth()->user();
+        // Check if the user can view all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
 
-                // Check if the logged-in user is a Super-Admin
-                if ($loggedInUser->hasRole('Super-Admin')) {
-                    $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
-                } else {
-                    // Get the attached users if the user is not a Super-Admin
-                    $attachedUserIds = $loggedInUser->users->pluck('id');
-                    if ($attachedUserIds->isNotEmpty()) {
-                        // Show only attached users
-                        $data = User::whereIn('id', $attachedUserIds)->whereNotNull('kyc_credential')->applyFilters($filters);
-                    } else {
-                        // If no users are attached, show all users
-                        $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
-                    }
-                }
+        if ($canViewAllUsers) {
+            // Fetch all users with KYC credentials
+            $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
+        } else {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
 
-                return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('time', 'backend.kyc.include.__time')
-                ->addColumn('user', 'backend.kyc.include.__user')
-                ->addColumn('type', 'backend.kyc.include.__type')
-                ->addColumn('status', 'backend.kyc.include.__status')
-                ->addColumn('action', 'backend.kyc.include.__action')
-                ->rawColumns(['time', 'user', 'type', 'status', 'action'])
-                ->make(true);
+            if ($attachedUserIds->isNotEmpty()) {
+                // Fetch only attached users with KYC credentials
+                $data = User::whereIn('id', $attachedUserIds)->whereNotNull('kyc_credential')->applyFilters($filters);
+            } else {
+                // If no users are attached, return an empty collection
+                return Datatables::of(collect([]))->make(true);
+            }
         }
 
-        return view('backend.kyc.all');
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('time', 'backend.kyc.include.__time')
+            ->addColumn('user', 'backend.kyc.include.__user')
+            ->addColumn('type', 'backend.kyc.include.__type')
+            ->addColumn('status', 'backend.kyc.include.__status')
+            ->addColumn('action', 'backend.kyc.include.__action')
+            ->rawColumns(['time', 'user', 'type', 'status', 'action'])
+            ->make(true);
     }
+
+    return view('backend.kyc.all');
+}
+
 
     public function export(Request $request, $type)
     {
@@ -610,6 +613,7 @@ public function actionLevel3Now(Request $request)
                 return Excel::download(new AllKycExport($request), 'all-kyc.xlsx');
         }
     }
+
 
     public function getKycMethods(Request $request)
     {

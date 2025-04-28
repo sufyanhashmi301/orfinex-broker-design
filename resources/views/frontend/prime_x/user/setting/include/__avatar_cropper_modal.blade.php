@@ -15,7 +15,9 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <img id="uploadedAvatar" src="" class="w-3/4 mx-auto" alt="">
+                <div class="flex align-center justify-center" style="max-height: 400px;">
+                    <img id="uploadedAvatar" src="" alt="">
+                </div>
 
                 <div class="input-area text-right p-6">
                     <button id="crop-image" class="btn inline-flex justify-center btn-dark me-2">

@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Validator;
 class MultiIbLevelController extends Controller
 {
     use NotifyTrait;
+    public function __construct()
+    {
+        $this->middleware('permission:multi-ib-level-list', ['only' => ['index']]);
+         $this->middleware('permission:multi-ib-level-create', ['only' => ['store']]);
+         $this->middleware('permission:multi-ib-level-edit', ['only' => ['update']]);
+         $this->middleware('permission:multi-ib-level-delete', ['only' => ['destroy']]);
+    }
 
     public function index()
     {

@@ -16,6 +16,7 @@ use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+use Illuminate\Support\Str;
 
 if (!function_exists('is_force_https')) {
     /**
@@ -1664,11 +1665,19 @@ if (!function_exists('social_links')) {
 }
 
 if (! function_exists('getFilteredPath')) {
-    function getFilteredPath($path = null, $fallback = 'global/materials/default.png')
+    function getFilteredPath($path = null, $fallback = 'fallbacks/default.png')
     {
-        // Check if the provided path is a full URL
-        return filter_var($path, FILTER_VALIDATE_URL)
-            ? $path
-            : asset($path ?? $fallback);
+        // Step 1: If the path is a valid full URL (http or https), return as-is
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        // Step 2: If it's a non-empty local path (e.g., from DB), return using asset()
+        if (!empty($path)) {
+            return asset($path);
+        }
+
+        // Step 3: Fallback using R2 asset URL
+        return config('app.r2_asset_url') . '/' . ltrim($fallback, '/');
     }
 }

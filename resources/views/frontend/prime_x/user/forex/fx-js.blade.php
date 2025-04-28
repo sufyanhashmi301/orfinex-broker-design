@@ -374,7 +374,8 @@
     //     var leverages = $(this).data('leverage');
     // });
 
-    $('body').on('submit', '#leverage-change-form', function () {
+    $('body').on('submit', '#leverage-change-form', function (e) {
+        e.preventDefault();
         var leverage = $('#update-leverage-modal-leverage').val();
         if (leverage) {
             var btn = $('#submit-leverage');
@@ -392,7 +393,8 @@
         $('.update-name-modal-login').val($(this).data('login'));
         $('#update-name-modal-name').val($(this).data('account_name'));
     });
-    $('body').on('submit', '#rename-account-form', function () {
+    $('body').on('submit', '#rename-account-form', function (e) {
+        e.preventDefault();
         var name = $('#update-name-modal-name').val();
         if (name) {
             var btn = $('#submit-name');
@@ -430,7 +432,8 @@
         checkPassword(password,'main','submit-password');
 
     });
-    $('body').on('submit', '#investor-password-form', function () {
+    $('body').on('submit', '#investor-password-form', function (e) {
+        e.preventDefault();
         var invest_pass = $('#update-invest-password').val();
         if (invest_pass) {
             var btn = $('#submit-investor-password');
@@ -464,6 +467,7 @@
                     }
                 } else if (res.error) {
                     tNotify('warning', res.error);
+                    btn.closest('form')[0].reset();
                     // NioApp.Toast(res.error, 'warning');
                     // setTimeout(function () {
                     //     location.reload();
@@ -472,6 +476,7 @@
                     tNotify('warning', res.message);
                     // NioApp.Form.errors(res, true);
                     btn.prop('disabled', false);
+                    btn.closest('form')[0].reset();
                 }
             },
             error: function (data) {

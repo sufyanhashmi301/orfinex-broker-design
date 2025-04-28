@@ -84,14 +84,17 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.verification.index') }}" class="navItem {{ isActive('user.verification.index') }}">
-            <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="lucide:lock-open"></iconify-icon>
-                <span>{{ __('Verification') }}</span>
-            </span>
-            </a>
-        </li>
+        @if (show_kyc_notice()['show'])
+            <li>
+                <a href="{{ route('user.verification.index') }}" class="navItem {{ isActive('user.verification.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:lock-open"></iconify-icon>
+                    <span>{{ __('Verification') }}</span>
+                </span>
+                </a>
+            </li>    
+        @endif
+        
  
 
         {{--<li>

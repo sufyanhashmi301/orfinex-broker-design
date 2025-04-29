@@ -37,7 +37,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Profile Management', 'name' => 'customer-login'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-bonus'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-funds'],
-            ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],     
+            ['category' => 'Customer Profile Management', 'name' => 'customer-delete'],
             ['category' => 'Customer Profile Management', 'name' => 'customer-profile-toggles'],
 
             ['category' => 'Customer festures Management', 'name' => 'customer-add-tag'],
@@ -61,7 +61,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer festures Management', 'name' => 'customer-notes-create'],
             ['category' => 'Customer festures Management', 'name' => 'customer-notes-edit'],
             ['category' => 'Customer festures Management', 'name' => 'customer-notes-delete'],
-  
+
             ['category' => 'leads Management', 'name' => 'lead-list'],
             ['category' => 'leads Management', 'name' => 'lead-action'],
             ['category' => 'leads Management', 'name' => 'lead-create'],
@@ -154,7 +154,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
- 
+
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-list'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-create'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-edit'],
@@ -218,6 +218,8 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-delete'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-permissions'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-registration-settings'],
+
+            ['category' => 'Customer Misc Setting', 'name' => 'customer-misc-settings'],
 
             ['category' => 'Role Management', 'name' => 'role-list'],
             ['category' => 'Role Management', 'name' => 'role-create'],

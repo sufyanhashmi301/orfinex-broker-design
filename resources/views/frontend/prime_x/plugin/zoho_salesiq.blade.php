@@ -1,1 +1,5 @@
-<script type="text/javascript" id="zsiqchat">{!! $data['script'] !!}</script>
+<script>
+    window.$zoho=window.$zoho || {};
+    $zoho.salesiq=$zoho.salesiq||{ready:function(){}}
+</script>
+<script id="zsiqscript" src="{!! $data['script'] !!}" defer></script>

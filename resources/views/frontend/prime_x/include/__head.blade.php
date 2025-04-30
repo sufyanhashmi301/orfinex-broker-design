@@ -5,6 +5,7 @@
     <meta name="keywords" content="@yield('meta_keywords',setting('site_title','global'))">
     <meta name="description" content="@yield('meta_description',setting('site_title','global'))">
     <meta property="og:image" content="{{ asset(setting('link_thumbnail','global')) }}">
+
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link rel="shortcut icon" href="{{ asset(setting('site_favicon','global')) }}" type="image/x-icon"/>
     <link rel="icon" href="{{ asset(setting('site_favicon','global')) }}" type="image/x-icon"/>
@@ -22,8 +23,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/theme_base/prime_x/css/styles.css?var=1') }}"/>
-    @include('global.__styles')
-    <!-- End : Theme CSS-->
+@include('global.__styles')
+<!-- End : Theme CSS-->
     <script src="{{ asset('frontend/js/settings.js') }}" sync></script>
     <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>
     <style>

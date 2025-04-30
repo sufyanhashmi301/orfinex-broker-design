@@ -7,12 +7,16 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Enums\KYCStatus;
 use App\Exports\ActiveUsersExport;
+use App\Exports\ibTransactionsUsersExport;
 use App\Exports\DisabledUsersExport;
 use App\Exports\RefferalUsersExport;
 use App\Exports\TransactionsUsersExport;
 use App\Exports\UsersExport;
+use App\Exports\withBalanceUsersExport;
+use App\Exports\withOutBalanceUsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\Account;
 use App\Models\Bonus;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
@@ -25,7 +29,9 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\KycLevel;
 use App\Models\Lead;
+use App\Scopes\ExcludeGracePeriodScope;
 use App\Services\ForexApiService;
+use App\Services\WalletService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -55,23 +61,28 @@ class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
     protected $forexApiService;
+    protected $walletService;
+
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct(ForexApiService $forexApiService)
+    public function __construct(ForexApiService $forexApiService,WalletService $walletService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member|customer-edit', ['only' => ['edit']]);
+        $this->middleware('permission:customer-list', ['only' => ['index', 'activeUser', 'disabled', 'withOutBalance', 'withBalance']]);
+        // $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract|kyc-status-update|ib-partner-list|approve-ib-member', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage', ['only' => ['update']]);
+        $this->middleware('permission:customer-overview-update', ['only' => ['update']]);
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
-        $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
-        $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
-        $this->middleware('permission:customer-export', ['only' => ['export']]);
+        $this->middleware('permission:customer-profile-toggles', ['only' => ['statusUpdate']]);
+        $this->middleware('permission:customer-funds', ['only' => ['balanceUpdate']]);
+        $this->middleware('permission:customer-edit|customer-overview-update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:customer-create', ['only' => ['store', 'createCustomer']]);
         $this->forexApiService = $forexApiService;
+        $this->walletService = $walletService;
+
     }
 
     /**
@@ -85,26 +96,33 @@ class UserController extends Controller
         $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
         if ($request->ajax()) {
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::applyFilters($filters);
-            } else {
-                // Get the attached users if the user is not a Super-Admin
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Show only attached users
-                    $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
-                } else {
-                    // If no users are attached, show all users
-                    $data = User::applyFilters($filters);
-                }
-            }
+         // Check if the logged-in user is a Super-Admin
+         if ($loggedInUser->hasRole('Super-Admin')) {
+            $data = User::applyFilters($filters);
+        }
+        // Check if the user has the "show-all-users-by-default-to-staff" permission
+        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $data = User::applyFilters($filters);
+        }
+        else {
+            // Get the attached users if the user is not a Super-Admin
+            $attachedUserIds = $loggedInUser->users->pluck('id');
 
+            if ($attachedUserIds->isNotEmpty()) {
+                // Show only attached users
+                $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
+            } else {
+                // If no users are attached, show nothing (empty dataset)
+                $data = User::where('id', -1); // Return an empty result set
+            }
+        }
+
+        $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -114,42 +132,64 @@ class UserController extends Controller
                 })
 
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.all');
     }
 
-
-    public function export(Request $request, $type)
-    {
-        $userId = $request->user_id; // Get the selected user's ID from the request
-
-        if (!$userId) {
-            return back()->with('error', 'User not found.');
-        }
-        $user = User::find($userId);
-
-        if (!$user) {
-            return back()->with('error', 'User not found.');
-        }
-
-        $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
-        $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
-        switch ($type) {
-            case 'active':
-                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
-            case 'disabled':
-                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
-            case 'refferal':
-                return Excel::download(new RefferalUsersExport($userId), $fileName);
-            case 'transaction':
-                return Excel::download(new TransactionsUsersExport($userId), $fileName2);
-            default:
-                return Excel::download(new UsersExport($request), 'users.xlsx');
-        }
+    public function export(Request $request, $type = null)
+{
+    switch ($type) {
+        case 'active':
+            return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
+        case 'disabled':
+            return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+        case 'withbalance':
+            return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
+        case 'withoutbalance':
+            return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
+        case 'refferal':
+            // Only for referral exports we need user_id
+            $userId = $request->user_id;
+            if (!$userId) {
+                return back()->with('error', 'User ID is required for referral export');
+            }
+            $user = User::find($userId);
+            if (!$user) {
+                return back()->with('error', 'User not found');
+            }
+            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
+            return Excel::download(new RefferalUsersExport($userId), $fileName);
+        case 'transaction':
+            // Only for transaction exports we need user_id
+            $userId = $request->user_id;
+            if (!$userId) {
+                return back()->with('error', 'User ID is required for transaction export');
+            }
+            $user = User::find($userId);
+            if (!$user) {
+                return back()->with('error', 'User not found');
+            }
+            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
+            return Excel::download(new TransactionsUsersExport($userId), $fileName);
+        case 'ibtransaction':
+                // Only for transaction exports we need user_id
+                $userId = $request->user_id;
+                if (!$userId) {
+                    return back()->with('error', 'User ID is required for transaction export');
+                }
+                $user = User::find($userId);
+                if (!$user) {
+                    return back()->with('error', 'User not found');
+                }
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
+                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);
+        default:
+            return Excel::download(new UsersExport($request), 'users.xlsx');
     }
+}
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -159,37 +199,40 @@ class UserController extends Controller
     public function activeUser(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
             // Check if the logged-in user is a Super-Admin
             if ($loggedInUser->hasRole('Super-Admin')) {
-                // Fetch all active users
                 $data = User::where('status', 1)->latest();
-            } else {
-                // Get attached user IDs for non-Super-Admin users
+            }
+            // If user has permission "show-all-users-by-default-to-staff", show all users
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::where('status', 1)->latest();
+            }
+            // Otherwise, show only attached users
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch active users for attached user IDs
                     $data = User::where('status', 1)
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    // If no users are attached, return an empty collection
-                    $data = User::where('status', 1)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
+
 
             // Apply additional filters if any
             $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('username', 'backend.user.include.__user')
-                ->editColumn('email', 'backend.user.include.__email')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('staff_name', function ($row) {
@@ -198,13 +241,12 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.active_user');
     }
-
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -218,27 +260,34 @@ class UserController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::where('status', 0)->latest();
+             // Super-Admin sees all disabled users
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            $data = User::where('status', 0)->latest();
+        }
+        // If user has permission "show-all-users-by-default-to-staff", show all disabled users
+        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $data = User::where('status', 0)->latest();
+        }
+        // Otherwise, show only attached disabled users
+        else {
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data = User::where('status', 0)
+                    ->whereIn('id', $attachedUserIds)
+                    ->latest();
             } else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::where('status', 0)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    $data = User::where('status', 0)->latest();
-                }
+                // No attached users = No results
+                $data = User::where('id', -1); // Returns an empty dataset
             }
-
+        }
             $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -247,7 +296,7 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -257,7 +306,7 @@ class UserController extends Controller
     public function withBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -267,9 +316,16 @@ class UserController extends Controller
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
+            // Super-Admin sees all users with balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } else {
+            }
+            // If user has permission "show-all-users-by-default-to-staff", show all users with balance
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            }
+            // Otherwise, show only attached users with balance
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
@@ -277,15 +333,16 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::whereIn('id', $userIds)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -294,17 +351,20 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity','staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.with_balance');
+        return view('backend.user.with_balance', [
+            'riskProfileTags' => $riskProfileTags
+        ]);
     }
+
 
     public function withOutBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-
+        $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -314,9 +374,16 @@ class UserController extends Controller
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
+            // Super-Admin sees all users without balance
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = User::whereIn('id', $userIds)->latest();
-            } else {
+            }
+            // If user has permission "show-all-users-by-default-to-staff", show all users without balance
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            }
+            // Otherwise, show only attached users without balance
+            else {
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
@@ -324,15 +391,16 @@ class UserController extends Controller
                         ->whereIn('id', $attachedUserIds)
                         ->latest();
                 } else {
-                    $data = User::whereIn('id', $userIds)->latest();
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -341,11 +409,70 @@ class UserController extends Controller
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'email', 'kyc', 'status', 'balance', 'equity',  'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.without_balance');
+        return view('backend.user.without_balance', [
+            'riskProfileTags' => $riskProfileTags
+        ]);
+    }
+
+    public function gracePeriodUsers(Request $request)
+    {
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+//        dd($request->all());
+        if ($request->ajax()) {
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                    ->where('in_grace_period', true)->latest();
+            }
+            // If user has permission "show-all-users-by-default-to-staff", show all users
+            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                    ->where('in_grace_period', true)->latest();
+            }
+            // Otherwise, show only attached users
+            else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+                        ->where('in_grace_period', true)->where('status', 1)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // No attached users = No results
+                    $data = User::where('id', -1); // Returns an empty dataset
+                }
+            }
+
+
+            // Apply additional filters if any
+            $data->applyFilters($filters);
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('staff_name', function ($row) {
+                    return view('backend.user.include.__staff')->with('staff', $row->staff);
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+//                ->editColumn('status', 'backend.user.include.__status')
+//                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.user.grace_users');
     }
 
     /**
@@ -359,7 +486,7 @@ class UserController extends Controller
         $loggedInUser = auth()->user();
 
         // Check if the logged-in user is a Super-Admin
-        if (!$loggedInUser->hasRole('Super-Admin')) {
+        if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
             // Validate if the `id` exists in attached users
             $attachedUserIds = $loggedInUser->users->pluck('id');
             if ($attachedUserIds->isNotEmpty()) {
@@ -429,7 +556,6 @@ class UserController extends Controller
         ));
     }
 
-
     public function destroy(Request $request, $id)
     {
         // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
@@ -456,7 +582,6 @@ class UserController extends Controller
         // Redirect to the user listing page after the operation
         return redirect()->route('admin.user.index');
     }
-
 
     /**
      * @return RedirectResponse
@@ -606,6 +731,7 @@ class UserController extends Controller
         notify()->success('User Info Updated Successfully', 'success');
         return redirect()->back();
     }
+
     public function kyc(Request $request, $id)
     {
         //        dd($request->all());
@@ -629,7 +755,6 @@ class UserController extends Controller
         notify()->success('User Kyc Updated Successfully', 'success');
         return redirect()->back();
     }
-
 
     /**
      * @return RedirectResponse
@@ -659,6 +784,7 @@ class UserController extends Controller
         notify()->success('Password has been successfully reset and emailed to the user', 'success');
         return redirect()->back();
     }
+
     public function passwordUpdate($id, Request $request)
     {
         $input = $request->all();
@@ -689,81 +815,162 @@ class UserController extends Controller
     /**
      * @return RedirectResponse|void
      */
+
     public function balanceUpdate($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'target_id' => 'required',
-            'amount' => 'required',
-            'type' => 'required',
-            'target_type' => 'required',
-            'comment' => 'required',
+            'amount' => 'required|numeric|min:0.01',
+            'type' => 'required|in:add,subtract',
+            'target_type' => 'required|in:forex,wallet',
+            'comment' => 'required|string|max:255',
         ]);
-        $targetId = $request->input('target_id');
-        $targetType = $request->input('target_type');
-        // dd($targetType);
+//dd($request->all());
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
 
         try {
-            //dd($request->all());
-            $amount = $request->amount;
-            $type = $request->type;
-            $comment = $request->comment;
+            DB::beginTransaction();
 
-            $user = User::find($id);
+            $targetId = $request->input('target_id');
+            $targetType = $request->input('target_type');
+            $amount = BigDecimal::of($request->amount);
+            $type = $request->input('type');
+            $comment = $request->input('comment');
+
+            $user = User::findOrFail($id);
             $adminUser = \Auth::user();
 
-            if ($type == 'add') {
-                if ($targetType == 'forex') {
+            if ($targetType === 'forex') {
+                // Forex account operations
+                if ($type === 'add') {
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 1, //deposit
-                        'TransactionComments' => $comment
+                        'Amount' => $amount->toFloat(),
+                        'type' => 1, // Deposit
+                        'TransactionComments' => $comment,
                     ];
-                    $this->forexApiService->balanceOperation($data);
-                }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
+                    $response = $this->forexApiService->balanceOperation($data);
 
-                $status = 'success';
-                $message = __('Account Balance Update');
-            } elseif ($type == 'subtract') {
-                if ($targetType == 'forex') {
-                    $balance = $this->forexApiService->getValidatedBalance([
-                        'login' => $targetId
-                    ]);
-                    //                    $balance = $this->getForexAccountBalance($targetId);
-
-                    if (BigDecimal::of($amount)->compareTo($balance) > 0) {
-                        notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
-                        return redirect()->back();
+                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                        throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
+
+                } else {
+                    $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+                    if ($amount->compareTo($balance) > 0) {
+                        throw new \Exception(__('Insufficient funds in Forex account.'));
+                    }
+
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 2, //withdraw
-                        'TransactionComments' => $comment
+                        'Amount' => $amount->toFloat(),
+                        'type' => 2, // Withdraw
+                        'TransactionComments' => $comment,
                     ];
-                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                    //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if (!$withdrawResponse['success']) {
-                        return redirect()->back();
+                    $response = $this->forexApiService->balanceOperation($data);
+
+                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                        throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
-                $status = 'success';
-                $message = __('Account Balance Updated');
+
+                // ✅ Only after success
+                $txn = Txn::new(
+                    $amount->toFloat(),
+                    0,
+                    $amount->toFloat(),
+                    'system',
+                    $type === 'add' ? 'Admin Added Balance' : 'Admin Subtracted Balance',
+                    $type === 'add' ? TxnType::Deposit : TxnType::Subtract,
+                    TxnStatus::Success,
+                    null,
+                    null,
+                    $user->id,
+                    $adminUser->id,
+                    'Admin',
+                    [],
+                    $comment,
+                    $targetId,
+                    'forex'
+                );
+                $txn->action_by = auth()->user()->id;
+                $txn->save();
+            } elseif ($targetType === 'wallet') {
+                // Wallet account operations
+                $account = Account::where('wallet_id', $targetId)->where('user_id', $user->id)->firstOrFail();
+
+                if ($type === 'add') {
+                    $account->amount = BigDecimal::of($account->amount)->plus($amount);
+                    $account->save();
+
+                    $txn = Txn::new(
+                        $amount->toFloat(),
+                        0,
+                        $amount->toFloat(),
+                        'system',
+                        'Admin Added Balance',
+                        TxnType::Deposit,
+                        TxnStatus::Success,
+                        null,
+                        null,
+                        $user->id,
+                        $adminUser->id,
+                        'Admin',
+                        [],
+                        $comment,
+                        $account->wallet_id,
+                        'wallet'
+                    );
+                    $txn->action_by = auth()->user()->id;
+                    $txn->save();
+                    $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
+                    $this->walletService->createCreditLedgerEntry($txn, $ledgerBalance);
+
+                } else {
+                    if ($amount->compareTo(BigDecimal::of($account->amount)) > 0) {
+                        throw new \Exception(__('Insufficient funds in Wallet account.'));
+                    }
+
+                    $account->amount = BigDecimal::of($account->amount)->minus($amount);
+                    $account->save();
+
+                    $txn = Txn::new(
+                        $amount->toFloat(),
+                        0,
+                        $amount->toFloat(),
+                        'system',
+                        'Admin Subtracted Balance',
+                        TxnType::Subtract,
+                        TxnStatus::Success,
+                        null,
+                        null,
+                        $user->id,
+                        $adminUser->id,
+                        'Admin',
+                        [],
+                        $comment,
+                        $account->wallet_id,
+                        'wallet'
+                    );
+                    $txn->action_by = auth()->user()->id;
+                    $txn->save();
+                    $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
+                    $this->walletService->createDebitLedgerEntry($txn, $ledgerBalance);
+                }
             }
 
-            notify()->success($message, $status);
-
+            DB::commit();
+            notify()->success(__('Balance Updated Successfully.'), 'Success');
             return redirect()->back();
-        } catch (Exception $e) {
-            $status = 'warning';
-            $message = __('something is wrong');
-            $code = 503;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Balance Update Failed: ' . $e->getMessage());
+            notify()->error($e->getMessage(), 'Error');
+            return redirect()->back();
         }
     }
 
@@ -864,26 +1071,64 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
-                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
-                ->latest();
+                ->where('type', TxnType::IbBonus->value);
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('status', 'backend.user.include.__txn_status')
-                ->editColumn('type', 'backend.user.include.__txn_type')
-                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->addColumn('action', function ($row) {
-                    // Replicate the same structure and styling
-                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
-                                    <iconify-icon icon="lucide:eye"></iconify-icon>
-                                </button>
-                            </span>';
-                })
-                ->rawColumns(['status', 'type', 'final_amount', 'action'])
-                ->make(true);
+        // Date Range Filter
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $data->where(function ($query) use ($start, $end) {
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
+                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
+                    })->orWhereBetween('created_at', [$start, $end]);
+                });
+            }
         }
+
+
+        // Field filters
+        foreach (['login', 'deal', 'order', 'symbol'] as $field) {
+            if (!empty($request->$field)) {
+                $value = $request->$field;
+//                dd($value);
+
+                if (in_array($field, ['login', 'deal', 'order'])) {
+                    $data->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) AS UNSIGNED) = ?", [$value]);
+                } else {
+                    $data->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) LIKE ?", ["%$value%"]);
+                }
+            }
+        }
+
+        return Datatables::of($data->latest())
+            ->addIndexColumn()
+            ->editColumn('status', 'backend.user.include.__txn_status')
+            ->editColumn('type', 'backend.user.include.__txn_type')
+            ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+            ->editColumn('created_at', function ($row) {
+                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                    $manualData = json_decode($row->manual_field_data, true);
+                    if (is_array($manualData) && isset($manualData['time'])) {
+                        return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                    }
+                }
+                return $row->created_at;
+            })
+            ->addColumn('action', function ($row) {
+                return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                            <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                <iconify-icon icon="lucide:eye"></iconify-icon>
+                            </button>
+                        </span>';
+            })
+            ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
+            ->make(true);
     }
+    }
+
     public function ibInfo($id, Request $request)
     {
         //dd($id);
@@ -908,7 +1153,6 @@ class UserController extends Controller
 
         return redirect()->route('user.dashboard');
     }
-
 
     public function createCustomer()
     {
@@ -1037,6 +1281,8 @@ class UserController extends Controller
                 'date_of_birth' => $input['date_of_birth'],
                 'email_verified_at' => $request->has('is_email_verified') ? now() : null,
                 'kyc' => $kyc,
+                'in_grace_period' => false,
+
             ]);
 
             // Handle risk profile tags
@@ -1050,7 +1296,6 @@ class UserController extends Controller
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
-
 
     public function createNote(Request $request, $id)
     {

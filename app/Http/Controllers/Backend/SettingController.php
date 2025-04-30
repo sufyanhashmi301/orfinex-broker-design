@@ -51,6 +51,7 @@ class SettingController extends Controller
         $this->middleware('permission:web-hooks-setting', ['only' => ['webHook']]);
         $this->middleware('permission:currency-setting', ['only' => ['currencySetting']]);
         $this->middleware('permission:collab-tools-setting', ['only' => ['slackSetting']]);
+        $this->middleware('permission:customer-misc-settings', ['only' => ['customerMiscSettings']] );
 
 
 
@@ -248,6 +249,11 @@ public function update(Request $request)
     public static function customerPermissions()
     {
         return view('backend.setting.customer.permission');
+    }
+
+    public static function customerMiscSettings()
+    {
+        return view('backend.setting.customer.misc');
     }
 
     public static function miscSetting()

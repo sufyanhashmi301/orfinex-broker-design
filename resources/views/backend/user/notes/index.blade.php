@@ -1,12 +1,12 @@
 <!-- Notes Tab -->
 <div class="tab-pane fade space-y-5" id="pills-note" role="tabpanel" aria-labelledby="pills-note-tab">
-    @can('customer-basic-manage')
+    @can('customer-notes-create')
     <div class="flex justify-end items-center mb-3">
         <button class="btn btn-primary btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNotesModal">
             {{ __('Add Notes') }}
         </button>
     </div>
-
+    @endcan
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
@@ -30,14 +30,19 @@
             </div>
         </div>
     </div>
-    @endcan
+
 </div>
 
 <!-- Include Add, Edit, and Delete Modals -->
+@can('customer-notes-create')
 @include('backend.user.notes.include.__add_notes')
+@endcan
+@can('customer-notes-edit')
 @include('backend.user.notes.include.__edit_notes')
+@endcan
+@can('customer-notes-delete')
 @include('backend.user.notes.include.__delete_notes')
-
+@endcan
 @push('single-script')
 <script>
     (function ($) {
@@ -63,7 +68,7 @@
     ajax: "{{ route('admin.user.note.data', $user->id) }}",
     columns: [
         {data: 'description', name: 'description'},
-        {data: 'admin_name', name: 'admin.name'},
+        {data: 'staff', name: 'staff'},
         {
             data: 'created_at',
             name: 'created_at',

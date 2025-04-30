@@ -8,7 +8,7 @@ use App\Enums\TraderType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Exports\RealAccountExport;
-use App\Exports\DemoAccountExport;
+use App\Exports\DemoAcoountExport;
 use App\Models\LeverageUpdate;
 use App\Models\ForexSchema;
 use App\Models\Invest;
@@ -57,25 +57,26 @@ class   AccountsController extends Controller
 //        dd($type);
         $loggedInUser = auth()->user(); // Get the logged-in admin or user
 
-        // Get attached user IDs for non-Super-Admin users
-        $attachedUserIds = $loggedInUser->hasRole('Super-Admin')
-            ? null
-            : $loggedInUser->users->pluck('id');
+        // Determine if the user should see all users
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        // Get attached user IDs for non-Super-Admin users without permission
+        $attachedUserIds = $canViewAllUsers ? collect([]) : $loggedInUser->users->pluck('id');
 
         // Query for Forex Accounts
         $data = ForexAccount::query()
             ->with('schema')
             ->where('account_type', $type);
 
-        if (!$loggedInUser->hasRole('Super-Admin')) {
-            // Apply attached user filter for non-Super-Admin
-            if ($attachedUserIds->isNotEmpty()) {
-                $data->whereIn('user_id', $attachedUserIds);
-            }
+        if (!$canViewAllUsers && $attachedUserIds->isNotEmpty()) {
+            // Apply attached user filter for non-Super-Admin users without permission
+            $data->whereIn('user_id', $attachedUserIds);
         }
+
         if ($id) {
             $data->where('user_id', $id);
         }
+
 
         // Apply additional filters
         $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
@@ -88,9 +89,9 @@ class   AccountsController extends Controller
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('balance', 'backend.investment.include.__balance_mt5')
-                ->addColumn('equity', 'backend.investment.include.__equity_mt5')
-                ->addColumn('credit', 'backend.investment.include.__credit_mt5')
+                 ->addColumn('balance', 'backend.investment.include.__balance_mt5')
+                 ->addColumn('equity', 'backend.investment.include.__equity_mt5')
+                 ->addColumn('credit', 'backend.investment.include.__credit_mt5')
                 ->addColumn('schema', 'backend.investment.include.__invest_schema')
                 ->addColumn('status', 'backend.investment.include.__status')
                 ->addColumn('action', 'backend.investment.include.__action')
@@ -520,35 +521,34 @@ class   AccountsController extends Controller
 
     }
 
-    public
-    function pendingLeverage(Request $request)
-    {
-        $loggedInUser = auth()->user();
+    public function pendingLeverage(Request $request)
+{
+    $loggedInUser = auth()->user();
 
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            // Super-Admin can view all leverage updates
+    if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+        // Super-Admin and staff with permission can view all leverage updates
+        $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+            ->where('status', 0)
+            ->get();
+    } else {
+        // Get attached user IDs for non-Super-Admin users without the permission
+        $attachedUserIds = $loggedInUser->users->pluck('id');
+
+        if ($attachedUserIds->isNotEmpty()) {
+            // Show leverage updates for attached users only
             $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
                 ->where('status', 0)
+                ->whereIn('user_id', $attachedUserIds)
                 ->get();
         } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                // Show leverage updates for attached users only
-                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                    ->where('status', 0)
-                    ->whereIn('user_id', $attachedUserIds)
-                    ->get();
-            } else {
-                // If no users are attached, return an empty collection
-                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                    ->where('status', 0)
-                    ->get();            }
+            // If no users are attached, return an empty collection
+            $leverageUpdates = collect(); // Returns an empty collection
         }
-
-        return view('backend.investment.leverage.pending', compact('leverageUpdates'));
     }
+
+    return view('backend.investment.leverage.pending', compact('leverageUpdates'));
+}
+
 
 
     public
@@ -613,32 +613,34 @@ class   AccountsController extends Controller
         return response()->json(['message' => $message]);
     }
 
-    public
-    function allLeverage(Request $request)
-    {
-        // Fetch all leverage updates with their associated user and forexAccount relationships
-        $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')->get();
-        $loggedInUser = auth()->user();
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            // Super-Admin can view all leverage updates
-            $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                ->get();
-        } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-            if ($attachedUserIds->isNotEmpty()) {
-                // Show leverage updates for attached users only
-                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                    ->whereIn('user_id', $attachedUserIds)
-                    ->get();
-            } else {
-                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                    ->get();
-            }
-        }
+    public function allLeverage(Request $request)
+{
+    $loggedInUser = auth()->user();
 
-        return view('backend.investment.leverage.all', compact('leverageUpdates'));
+    // Check if the user can view all users
+    $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+    // Initialize query with necessary relationships
+    $query = LeverageUpdate::with('user', 'forexAccount');
+
+    if (!$canViewAllUsers) {
+        // Get attached user IDs for non-Super-Admins without permission
+        $attachedUserIds = $loggedInUser->users->pluck('id');
+
+        if ($attachedUserIds->isNotEmpty()) {
+            $query->whereIn('user_id', $attachedUserIds);
+        } else {
+            // If no attached users, return an empty collection
+            $leverageUpdates = collect([]);
+            return view('backend.investment.leverage.all', compact('leverageUpdates'));
+        }
     }
+
+    // Execute query
+    $leverageUpdates = $query->get();
+
+    return view('backend.investment.leverage.all', compact('leverageUpdates'));
+}
 
 
     public

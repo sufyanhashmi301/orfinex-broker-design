@@ -3,8 +3,8 @@
         <li class="flex items-center space-x-3 rtl:space-x-reverse border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
             <a href="javascript:;" class="edit-staff flex items-center w-full" data-id="{{$staff->id}}" type="button">
                 <div class="flex-none">
-                    <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                        <img src="{{ getFilteredPath($staff->avatar, 'frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3 ring-2 ring-slate-100 dark:ring-slate-100">
+                        <img src="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                     </div>
                 </div>
                 <div class="flex-1 text-start">

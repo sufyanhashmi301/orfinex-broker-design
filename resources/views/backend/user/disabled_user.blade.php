@@ -46,14 +46,14 @@
             </div>
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="input-area relative">
-                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                         {{ __('Filter') }}
                     </button>
                 </div>
                 @can('customer-export')
                 <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
@@ -80,7 +80,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
@@ -153,7 +152,6 @@
 
                 columns: [
                     {data: 'username', name: 'username'},
-                    {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},
@@ -163,6 +161,13 @@
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
+            });
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
             });
             $('#filter').click(function () {
                 table.draw();

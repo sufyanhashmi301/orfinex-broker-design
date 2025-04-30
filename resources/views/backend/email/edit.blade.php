@@ -8,8 +8,7 @@
             {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.email-template') }}"
-               class="btn btn-sm btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -29,53 +28,26 @@
                     </div>
                 </div>
                 <div class="card-body space-y-5 p-6">
-                    <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Full Name:') }}</label>
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-12" id="fullname-input" value="[[full_name]]"
-                                   readonly>
-                            <button
-                                class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button"
-                                type="button" data-target="#fullname-input">
-                                <iconify-icon icon="lucide:copy"></iconify-icon>
-                            </button>
+                    @foreach(json_decode($template->short_codes) as $shortcode)
+                        @php
+                            $cleanShortcode = preg_replace('/[\[\]]/', '', $shortcode);
+                            $label = ucwords(str_replace('_', ' ', $cleanShortcode));
+                            $inputId = $cleanShortcode . '-input';
+                        @endphp
+                        <div class="input-areaa relative pl-32">
+                            <label for="" class="form-label inline-inputLabel">
+                                {{ $label }}:
+                            </label>
+                            <div class="relative">
+                                <input type="text" class="form-control !pr-12" id="{{ $inputId }}" value="{{ $shortcode }}" readonly>
+                                <button
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button"
+                                    type="button" data-target="#{{ $inputId }}">
+                                    <iconify-icon icon="lucide:copy"></iconify-icon>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Site title:') }}</label>
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-12" id="sitetitle-input" value="[[site_title]]"
-                                   readonly>
-                            <button
-                                class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button"
-                                type="button" data-target="#sitetitle-input">
-                                <iconify-icon icon="lucide:copy"></iconify-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Site URL:') }}</label>
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-12" id="siteurl-input" value="[[site_url]]"
-                                   readonly>
-                            <button
-                                class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button"
-                                type="button" data-target="#siteurl-input">
-                                <iconify-icon icon="lucide:copy"></iconify-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-areaa relative pl-28">
-                        <label for="" class="form-label inline-inputLabel">{{ __('Token:') }}</label>
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-12" id="token-input" value="[[token]]" readonly>
-                            <button
-                                class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button"
-                                type="button" data-target="#token-input">
-                                <iconify-icon icon="lucide:copy"></iconify-icon>
-                            </button>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -85,6 +57,7 @@
                     <form action="{{ route('admin.email-template-update') }}" method="post"
                           enctype="multipart/form-data" id="form-submit">
                         @csrf
+                        <input type="hidden" name="page" value="{{ request('page') }}">
                         <input type="hidden" name="id" value="{{ $template->id }}">
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
                             <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">

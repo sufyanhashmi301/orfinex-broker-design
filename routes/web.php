@@ -32,6 +32,7 @@ use App\Http\Controllers\UserIbRuleController;
 use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
+use App\Http\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -196,6 +197,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
         Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
+        Route::get('referral/history', [ReferralController::class, 'history'])->name('referral.history');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
     //    Route::get('referral/advertisement-material', function () {
@@ -211,6 +213,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('action-2fa', 'actionTwoFa')->name('action-2fa');
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
         Route::post('info-update', 'infoUpdate')->name('info-update');
+        Route::post('update-avatar', 'updateAvatar')->name('updateAvatar');
 
         Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
             //            dd($request->all());
@@ -384,9 +387,15 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
-Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
 
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
 Route::view('verify-email-2', 'frontend::auth.verify-email-2');
 Route::view('register-2', 'frontend::auth.register-2');
+
+
+// Webhook Routers
+Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
+Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');

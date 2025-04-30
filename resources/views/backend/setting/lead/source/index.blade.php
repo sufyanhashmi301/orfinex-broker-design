@@ -2,6 +2,7 @@
 @section('title')
     {{ __('Lead Source') }}
 @endsection
+@can('lead-source-create')
 @section('title-btns')
     <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center"
        type="button"
@@ -11,6 +12,7 @@
         {{ __('Add New Source') }}
     </a>
 @endsection
+@endcan
 @section('lead-setting-content')
     <div class="card">
         <div class="card-body px-6 pt-3">
@@ -36,12 +38,16 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('lead-source-edit')
                                             <button class="action-btn" id="editSource" data-id="{{ $source->id }}">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
+                                            @endcan
+                                            @can('lead-source-delete')
                                             <button type="button" data-id="{{ $source->id }}" data-name="{{ $source->name }}" class="action-btn deleteSourceBtn">
                                                 <iconify-icon icon="lucide:trash"></iconify-icon>
                                             </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

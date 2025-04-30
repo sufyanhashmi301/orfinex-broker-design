@@ -3,13 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plugin;
-
-use App\Models\User;
-use Illuminate\Http\Request;
-
-// Use the correct class for the request
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use App\Enums\KYCStatus;
 use sumsub\SumsubClient;
@@ -18,92 +12,81 @@ class SumsubController extends Controller
 {
     public function advanceKyc()
     {
-        $sumsub = Plugin::find(8);
-        $sumsubstatus = $sumsub->status;
-        $sumsubscredentials = json_decode($sumsub->data);
+        $plugin = Plugin::find(8);
+        if (!$plugin || $plugin->status !== 1) {
+            return redirect()->back()->with('error', 'KYC system not available.');
+        }
 
+        $credentials = json_decode($plugin->data);
+        $levelName = $credentials->level_name ?? null;
         $user = \Auth::user();
-        $currentTime = Carbon::now();
-        $lastUpdatedTime = $user->kyc_created_at;
-
-        if (empty($lastUpdatedTime) ||
-            $currentTime->diffInMinutes($lastUpdatedTime) > 25 &&
-            $user->kyc < KYCStatus::Level2->value && $sumsubstatus === 1
-        ) {
-        $externalUserId = Crypt::encrypt($user->id);
-        $levelName = $sumsubscredentials->level_name;
+        $now = Carbon::now();
 
         try {
-            $testObject = new SumsubClient($sumsubscredentials->app_token, $sumsubscredentials->app_secret_id);
+            if ($user->kyc < KYCStatus::Level2->value) {
+                $client = new SumsubClient(
+                    $credentials->app_token,
+                    $credentials->app_secret_id
+                );
 
-            $applicantId = $testObject->createApplicant($externalUserId, $levelName);
+                $externalId = $user->external_kyc_id;
+                $shouldCreateNew = false;
 
-            $accessTokenInfo = $testObject->getAccessToken($externalUserId, $levelName);
+                // ðŸ‘‡ Check if external ID exists and is valid on Sumsub
+                if ($externalId) {
+                    try {
+                        $applicant = $client->getApplicant($externalId);
+                        Log::info('Sumsub applicant reused', ['external_id' => $externalId]);
 
-            $user->update([
-                'kyc_token' => $accessTokenInfo['token'],
-                'kyc_created_at' => Carbon::now(),
-            ]);
-        } catch (\Throwable $th) {
-            return redirect()->back();
-        }
-    }
-
-        return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
-    }
-
-    public function UpdateKycStatus(Request $request)
-    {
-        \Log::info('Incoming KYC request:', [
-            'headers' => $request->headers->all(),
-            'content' => $request->getContent(),
-        ]);
-
-        $response = $request->getContent(); // Get raw JSON content
-        $responseData = json_decode($response, true);
-
-        if (isset($responseData['externalUserId'])) {
-            $externalUserId = $responseData['externalUserId'];
-            $userId = Crypt::decrypt($externalUserId); // Decrypt to get userId
-
-            try {
-                $user = User::findOrFail($userId);
-
-                // Update auto_kyc_credentials column with the response
-                $user->auto_kyc_credentials = $responseData;
-
-                // Determine KYC status based on response
-                $kycStatus = KYCStatus::Level1->value; // Default
-
-            if (isset($responseData['type']) && $responseData['type'] === 'applicantReviewed') {
-                if (isset($responseData['reviewResult']['reviewAnswer']) &&
-                    $responseData['reviewResult']['reviewAnswer'] === 'GREEN') {
-                    $kycStatus = KYCStatus::Level2->value; // Verified
+                        // Check if it's already rejected, deleted or unusable (optional logic)
+                        if (!isset($applicant['review'])) {
+                            $shouldCreateNew = true;
+                        }
+                    } catch (\Throwable $e) {
+                        $shouldCreateNew = true;
+                        Log::warning('Sumsub getApplicant failed. Will create new.', [
+                            'external_id' => $externalId,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                } else {
+                    $shouldCreateNew = true;
                 }
-            }
 
-            // Update KYC status
-            $user->kyc = $kycStatus;
-            $user->save();
+                // âœ… Create new ID only if needed
+                if ($shouldCreateNew) {
+                    $externalId = 'unil-' . sha1($user->id . '-' . $user->email . '-' . $now->timestamp);
+                    $user->external_kyc_id = $externalId;
+                    $user->kyc_token = null;
+                    $user->kyc_created_at = null;
+                    $user->save();
 
-            return response()->json([
-                'status' => 200,
-                'success' => __('KYC status updated successfully'),
-            ]);
-        } catch (\Throwable $th) {
-                Log::error('Error in UpdateKycStatus:', ['error' => $th->getMessage()]);
+                    $client->createApplicant($externalId, $levelName);
+                    Log::info('New Sumsub applicant created', ['external_id' => $externalId]);
+                }
 
-                return response()->json([
-                    'status' => 500,
-                    'error' => __('Something went wrong'),
+                // âœ… Always generate new access token (needed per session)
+                $accessTokenInfo = $client->getAccessToken($externalId, $levelName);
+                $user->update([
+                    'kyc_token' => $accessTokenInfo['token'],
+                    'kyc_created_at' => $now,
                 ]);
+
+                Log::info('Sumsub token refreshed', ['user_id' => $user->id]);
             }
+        } catch (\Throwable $th) {
+            Log::error('Sumsub KYC init failed', [
+                'user_id' => $user->id,
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+            return redirect()->back()->with('error', 'KYC initialization failed: ' . $th->getMessage());
         }
 
-        return response()->json([
-            'status' => 400,
-            'error' => __('Invalid data received.'),
+        return view('frontend::user.kyc.advance.index', [
+            'sumsubstatus' => $plugin->status,
+            'currentTime' => $now,
+            'lastUpdatedTime' => $user->kyc_created_at,
         ]);
     }
-
 }

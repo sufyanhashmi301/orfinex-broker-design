@@ -2,12 +2,14 @@
 @section('title')
     {{ __('Ticket Types') }}
 @endsection
+@can('ticket-type-create')
 @section('header-btn')
     <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#labelModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
         {{ __('Add Type') }}
     </a>
 @endsection
+@endcan
 @section('ticket-content')
     <div class="card">
         <div class="card-body px-6 pt-3">
@@ -33,12 +35,16 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
+                                                @can('ticket-type-edit')
                                                 <button class="action-btn" id="editLabel" data-id="{{ $label->id }}">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </button>
+                                                @endcan
+                                                @can('ticket-type-delete')
                                                 <button type="button" data-id="{{ $label->id }}" data-name="{{ $label->name }}" class="action-btn deleteTicketLabel">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>

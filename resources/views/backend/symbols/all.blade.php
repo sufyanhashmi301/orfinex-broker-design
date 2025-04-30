@@ -12,55 +12,46 @@
 @endsection
 
 @section('filters')
-    <form id="filter-form" method="GET" action="{{ route('admin.symbols.index') }}">
-        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
-            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+    <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+       
+            <!-- Filter Form (GET request) -->
+            <form id="filter-form" method="GET" action="{{ route('admin.symbols.index') }}" class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="global_search" id="global_search" class="form-control h-full"
-                           placeholder="Search by Symbol Name">
+                           placeholder="Search by Symbol Name" value="{{ request('global_search') }}">
                 </div>
                 <div class="flex-1 input-area relative">
                     <input type="text" name="contact_size" id="contact_size" class="form-control h-full"
-                           placeholder="Contact Size">
+                           placeholder="Contact Size" value="{{ request('contact_size') }}">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="path" id="path" class="form-control h-full" placeholder="Path">
+                    <input type="text" name="path" id="path" class="form-control h-full" 
+                           placeholder="Path" value="{{ request('path') }}">
                 </div>
-                {{--                <div class="flex-1 input-area relative">--}}
-                {{--                    <select name="status" id="status" class="select2 form-control h-full w-full">--}}
-                {{--                        <option value="">{{ __('Select Status') }}</option>--}}
-                {{--                        <option value="1">{{ __('Enabled') }}</option>--}}
-                {{--                        <option value="0">{{ __('Disabled') }}</option>--}}
-                {{--                    </select>--}}
-                {{--                </div>--}}
-            </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
+                
+                <!-- Filter Button -->
                 <div class="input-area relative">
                     <button type="submit" id="filter"
                             class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
-                                      icon="lucide:filter"></iconify-icon>
+                                    icon="lucide:filter"></iconify-icon>
                         {{ __('Filter') }}
                     </button>
                 </div>
-            </div>
-            <div class="input-area relative">
-                <button type="button"
-                        class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
-                                  icon="lets-icons:export-fill"></iconify-icon>
-                    {{ __('Export') }}
-                </button>
-            </div>
-            <div class="input-area relative">
-                <button type="button"
-                        class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white"
-                        data-bs-toggle="modal" data-bs-target="#configureModal">
-                    <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
-                </button>
-            </div>
-        </div>
-    </form>
+                <div class="input-area relative">
+                    <button id="export-button" 
+                            class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" 
+                                      icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+            </form>
+        
+        
+        <!-- Export Form (POST request) - Placed at the end to maintain your layout -->
+       
+    </div>
 @endsection
 
 @section('symbol-groups-content')
@@ -142,8 +133,52 @@
             $("#filter-form").submit(function (event) {
                 event.preventDefault();
                 fetchSymbols();
+               
             });
-
+            $('#export-button').click(function() {
+        const btn = $(this);
+        btn.prop('disabled', true);
+        btn.html('<iconify-icon class="animate-spin" icon="lucide:loader"></iconify-icon> Exporting...');
+        
+        // Get current filter values
+        const filters = {
+            global_search: $('#global_search').val(),
+            contact_size: $('#contact_size').val(),
+            path: $('#path').val(),
+            status: $('#status').val(),
+            _token: '{{ csrf_token() }}'
+        };
+        
+        // Submit via AJAX
+        $.ajax({
+            url: '{{ route("admin.symbols.export") }}',
+            type: 'POST',
+            data: filters,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                // Create download link
+                const url = window.URL.createObjectURL(response);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'filtered_symbols.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Reset button
+                btn.prop('disabled', false);
+                btn.html('<iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon> {{ __("Export") }}');
+            },
+            error: function(xhr) {
+                console.error('Export failed:', xhr.responseText);
+                tNotify('error', 'Export failed. Please try again.');
+                btn.prop('disabled', false);
+                btn.html('<iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon> {{ __("Export") }}');
+            }
+        });
+    });
             function fetchSymbols(page = 1) {
                 var formData = $("#filter-form").serialize(); // Serialize form data
                 $.ajax({
@@ -197,6 +232,16 @@
                         console.error("Error:", error);
                     }
                 });
+            });
+            $('#filter').click(function () {
+                table.draw();
+            });
+            $('#filter-form').on('keypress', function(e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent form submission
+                    table.draw(); // Trigger filtering only
+                    return false;
+                }
             });
 
             // Handle Enable All Click

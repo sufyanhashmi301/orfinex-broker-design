@@ -18,6 +18,10 @@ class LeadStageController extends Controller
     public function __construct(LeadStageService $leadStageService)
     {
         $this->leadStageService = $leadStageService;
+        $this->middleware('permission:lead-stage-list', ['only' => ['index']]);
+        $this->middleware('permission:lead-stage-create', ['only' => ['store']]);
+        $this->middleware('permission:lead-stage-edit', ['only' => ['update']]);
+        $this->middleware('permission:lead-stage-delete', ['only' => ['destroy']]);
     }
 
     /**

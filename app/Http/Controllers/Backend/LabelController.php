@@ -13,6 +13,15 @@ class LabelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+     {
+         $this->middleware('permission:ticket-type-list', ['only' => ['index']]);
+         $this->middleware('permission:ticket-type-create', ['only' => ['store']]);
+         $this->middleware('permission:ticket-type-edit', ['only' => ['update']]);
+         $this->middleware('permission:ticket-type-delete', ['only' => ['destroy']]);
+        
+     }
     public function index()
     {
         $labels = Label::paginate();

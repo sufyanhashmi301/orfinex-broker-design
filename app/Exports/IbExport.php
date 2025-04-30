@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
 
-class PendingIbExport implements FromQuery, WithHeadings, WithMapping
+class IbExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 

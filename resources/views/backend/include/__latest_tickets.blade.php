@@ -2,7 +2,7 @@
     <div class="card h-full">
         <div class="card-header noborder">
             <h3 class="card-title">{{ __('Latest Tickets') }}</h3>
-            @canany(['support-ticket-list','support-ticket-action'])
+            @canany(['support-ticket-list'])
                 <a href="{{ route('admin.ticket.index') }}" class="inline-flex items-center underline">
                     {{ __('See All') }}
                     <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
@@ -31,11 +31,10 @@
                                             </a>
                                         </td>
                                         <td class="table-td">
-                                            @can('support-ticket-action')
                                                 <a href="{{ route('admin.ticket.show',$ticket->uuid) }}" class="font-semibold hover:underline">
                                                     {{ $ticket->title }}
                                                 </a>
-                                            @endcan
+                                          
                                         </td>
                                         <td class="table-td">
                                             <span class="inline-block text-center mx-auto py-1">

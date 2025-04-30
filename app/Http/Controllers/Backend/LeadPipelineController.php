@@ -16,6 +16,17 @@ class LeadPipelineController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     
+    public function __construct()
+    {
+        $this->middleware('permission:lead-pipeline-list', ['only' => ['index']]);
+         $this->middleware('permission:lead-pipeline-create', ['only' => ['store']]);
+         $this->middleware('permission:lead-pipeline-edit', ['only' => ['update']]);
+         $this->middleware('permission:lead-pipeline-delete', ['only' => ['destroy']]);
+
+    }
+
     public function index()
     {
         $pipelines = LeadPipeline::with('stages')->get();

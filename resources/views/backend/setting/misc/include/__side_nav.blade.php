@@ -14,15 +14,19 @@
                 </a>
             </li>
         @endcan
+        @canany(['ticket-type-list','ticket-category-list'])
         <li>
             <a href="{{ route('admin.ticket.label.index') }}" class="navItem" class="navItem {{ isActive('admin.ticket*') }}">
                 {{ __('Support Center')}}
             </a>
         </li>
+        @endcanany
+        @can('multi-factor-auth-setting')
         <li>
             <a href="" class="navItem" class="navItem">
                 {{ __('Multi-Factor Auth')}}
             </a>
         </li>
+        @endcan
     </ul>
 @endsection

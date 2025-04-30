@@ -119,7 +119,7 @@
                             </label>
                             <select name="lead_owner" id="leadOwner" class="form-control">
                                 @foreach($staff as $staff)
-                                    <option data-avatar="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}" data-role="{{ $staff->getRoleNames()->first() }}" value="{{ $staff->id }}">
+                                    <option data-avatar="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}" data-role="{{ $staff->getRoleNames()->first() }}" value="{{ $staff->id }}">
                                         {{ $staff->first_name .' '. $staff->last_name }}
                                     </option>
                                 @endforeach

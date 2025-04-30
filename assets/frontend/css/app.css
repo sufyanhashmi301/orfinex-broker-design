@@ -4567,6 +4567,9 @@ textarea.form-control.is-invalid{
 .h-2{
   height: 0.5rem;
 }
+.h-\[115px\] {
+    height: 115px;
+}
 .h-\[150px\]{
   height: 150px;
 }
@@ -4695,6 +4698,9 @@ textarea.form-control.is-invalid{
 }
 .max-h-\[calc\(100vh-200px\)\]{
   max-height: calc(100vh - 200px);
+}
+.max-h-\[calc\(100vh-150px\)\]{
+  max-height: calc(100vh - 150px);
 }
 .max-h-\[calc\(100\%-64px\)\]{
   max-height: calc(100% - 64px);

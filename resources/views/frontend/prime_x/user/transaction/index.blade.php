@@ -23,7 +23,9 @@
                 <select id="transaction-type" class="form-control">
                     <option value="">{{ __('All transaction types') }}</option>
                     @foreach (getFilteredTxnTypes() as $txnType)
-                        <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                        @if ($txnType->value !== 'ib_bonus')
+                            <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                        @endif
                     @endforeach
 {{--                    <option value="deposit">{{ __('Deposit') }}</option>--}}
 {{--                    <option value="withdraw">{{ __('Withdraw') }}</option>--}}
@@ -153,31 +155,31 @@
                     </form>
                 </div>
                 <div class="contents space-y-3">
-                    @foreach($transactions as $transaction )
-                        <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
-                            <div class="transaction-left w-3/4">
-                                <div class="transaction-des">
-                                    <div class="transaction-title mb-1 dark:text-white">{{ $transaction->description }}</div>
-                                    <div class="transaction-id mb-1 dark:text-white">{{ $transaction->tnx }}</div>
-                                    <div class="transaction-date mb-1 dark:text-white">{{ $transaction->created_at }}</div>
-                                </div>
-                            </div>
-                            <div class="transaction-right text-right">
-                                <div class="transaction-amount {{ txn_type($transaction->type->value,['add','sub']) }} mb-1 dark:text-white">
-                                    {{ txn_type($transaction->type->value,['+','-']) }}{{ $transaction->amount . ' ' . $currency }}</div>
-                                <div class="transaction-fee sub mb-1 dark:text-white">
-                                    -{{ $transaction->charge . ' ' . $currency . ' ' . __('Fee') }} </div>
-                                <div class="transaction-gateway mb-1 dark:text-white">{{ $transaction->method }}</div>
-
+                    @foreach($transactions as $transaction)
+                        <tr>
+                            <td class="table-td">
+                                <span class="block font-medium text-slate-700 dark:text-white">
+                                    {{ $transaction->description }}
+                                </span>
+                                <span class="block text-xs text-gray-500">
+                                {{ $transaction->display_time->format('M d, Y h:i A') }}
+                            </span>
+                            </td>
+                            <td class="table-td">{{ $transaction->tnx }}</td>
+                            <td class="table-td">{{ $transaction->target_id ?? '-' }}</td>
+                            <td class="table-td">{{ txn_type($transaction->type->value, ['+','-']) }}{{ number_format($transaction->amount, 2) }} {{ $currency }}</td>
+                            <td class="table-td">{{ $transaction->method ?? '-' }}</td>
+                            <td class="table-td">-{{ number_format($transaction->charge, 2) }} {{ $currency }}</td>
+                            <td class="table-td">
                                 @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <div class="transaction-status text-warning">{{ __('Pending') }}</div>
+                                    <span class="badge badge-warning">{{ __('Pending') }}</span>
                                 @elseif($transaction->status->value == App\Enums\TxnStatus::Success->value)
-                                    <div class="transaction-status text-success">{{ __('Success') }}</div>
+                                    <span class="badge badge-success">{{ __('Success') }}</span>
                                 @elseif($transaction->status->value == App\Enums\TxnStatus::Failed->value)
-                                    <div class="transaction-status text-danger">{{ __('Canceled') }}</div>
+                                    <span class="badge badge-danger">{{ __('Canceled') }}</span>
                                 @endif
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
                     @endforeach
                 </div>
                 {{ $transactions->onEachSide(1)->links() }}

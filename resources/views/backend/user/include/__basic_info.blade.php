@@ -4,7 +4,7 @@
     role="tabpanel"
     aria-labelledby="pills-informations-tab"
 >
-    @can('customer-basic-manage')
+    @can('customer-edit')
     <div class="card">
         <div class="card-body p-5">
             <form action="{{route('admin.user.update',$user->id)}}" method="post">
@@ -128,12 +128,14 @@
                         <label for="" class="form-label">{{ __('Comment:') }}</label>
                         <textarea type="text"  name="comment" class="form-control basicTinymce" rows="5"> {{ $user->comment }}</textarea>
                     </div>
+                    @can('customer-overview-update')
+                        
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}
                         </button>
                     </div>
-
+                    @endcan
                 </div>
             </form>
         </div>

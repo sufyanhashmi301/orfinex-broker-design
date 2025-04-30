@@ -68,6 +68,14 @@ class Transaction extends Model
     {
         return $this->referrals()->where('type', '=', $this->target_type);
     }
+    public function getDisplayTimeAttribute()
+    {
+        $data = json_decode($this->manual_field_data, true);
+        return isset($data['time']) && $data['time'] !== '[]'
+            ? \Carbon\Carbon::parse($data['time'])
+            : \Carbon\Carbon::parse($this->created_at);
+    }
+
 
     public function referrals()
     {
@@ -172,6 +180,16 @@ class Transaction extends Model
             get: fn ($value) => ucwords($value),
         );
     }
+    public static function isDuplicateIbBonus($userId, $fromUserId, $description, $amount): bool
+    {
+        return self::where('user_id', $userId)
+            ->where('from_user_id', $fromUserId)
+            ->where('type', \App\Enums\TxnType::IbBonus)
+            ->where('amount', $amount)
+            ->where('description', $description)
+            ->exists();
+    }
+
     public function scopeApplyFilters(Builder $query, $filters)
     {
 
@@ -198,11 +216,19 @@ class Transaction extends Model
         if (!empty($filters['created_at'])) {
             $dateRange = explode(' to ', $filters['created_at']);
             if (count($dateRange) === 2) {
-                $startDate = Carbon::parse($dateRange[0])->startOfDay();  // Start of the day for the start date
-                $endDate = Carbon::parse($dateRange[1])->endOfDay();      // End of the day for the end date
-                $query->whereBetween('created_at', [$startDate, $endDate]);
+                $startDate = Carbon::parse($dateRange[0])->startOfDay()->toDateTimeString();
+                $endDate = Carbon::parse($dateRange[1])->addDay()->endOfDay()->toDateTimeString();
+
+                $query->whereRaw("
+            COALESCE(
+                NULLIF(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), ''),
+                created_at
+            ) BETWEEN ? AND ?
+        ", [$startDate, $endDate]);
             }
         }
+
+
 
         return $query;
     }

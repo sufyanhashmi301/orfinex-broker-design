@@ -16,6 +16,7 @@ use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+use Illuminate\Support\Str;
 
 if (!function_exists('is_force_https')) {
     /**
@@ -94,7 +95,7 @@ if (!function_exists('get_user_account')) {
         // Attempt to retrieve the account.
         $account = Account::where('user_id', $userId)
             ->where('balance', $balance)
-            ->first();
+            ->lockForUpdate()->first();
 
         // If no account exists, create a new one.
         if (blank($account)) {
@@ -126,7 +127,7 @@ if (!function_exists('w2n_by_wallet_id')) {
         if($userId)
             $account->where('user_id', $userId);
 
-        $account = $account->first();
+        $account = $account->lockForUpdate()->first();
         $nameMap = [
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
             AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
@@ -154,7 +155,7 @@ if (!function_exists('get_user_account_by_wallet_id')) {
         if($userId)
             $account->where('user_id', $userId);
 
-        $account = $account->first();
+        $account = $account->lockForUpdate()->first();
         return $account;
     }
 }
@@ -182,7 +183,7 @@ if (!function_exists('get_all_wallets')) {
                 $accounts->where('balance',$balance);
             }
         }
-        $accounts = $accounts->get();
+        $accounts = $accounts->lockForUpdate()->get();
 
         return $accounts;
     }
@@ -864,20 +865,22 @@ if (!function_exists('txn_type')) {
         switch ($type) {
             case TxnType::Interest->value:
             case TxnType::ReceiveMoney->value:
+            case TxnType::ReceiveMoneyInternal->value:
             case TxnType::Deposit->value:
             case TxnType::ManualDeposit->value:
             case TxnType::Bonus->value:
             case TxnType::Refund->value:
             case TxnType::Exchange->value:
             case TxnType::Referral->value:
-                $result = ['green-color', '+'];
+                $result = ['text-success', '+'];
                 break;
             case TxnType::SendMoney->value:
+            case TxnType::SendMoneyInternal->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
             case TxnType::BonusSubtract->value:
             case TxnType::BonusRefund->value:
-                $result = ['red-color', '-'];
+                $result = ['text-danger', '-'];
                 break;
         }
         $commonResult = array_intersect($value, $result);
@@ -1662,11 +1665,19 @@ if (!function_exists('social_links')) {
 }
 
 if (! function_exists('getFilteredPath')) {
-    function getFilteredPath($path = null, $fallback = 'global/materials/default.png')
+    function getFilteredPath($path = null, $fallback = 'fallbacks/default.png')
     {
-        // Check if the provided path is a full URL
-        return filter_var($path, FILTER_VALIDATE_URL)
-            ? $path
-            : asset($path ?? $fallback);
+        // Step 1: If the path is a valid full URL (http or https), return as-is
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        // Step 2: If it's a non-empty local path (e.g., from DB), return using asset()
+        if (!empty($path)) {
+            return asset($path);
+        }
+
+        // Step 3: Fallback using R2 asset URL
+        return config('app.r2_asset_url') . '/' . ltrim($fallback, '/');
     }
 }

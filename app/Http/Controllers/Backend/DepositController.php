@@ -29,6 +29,7 @@ use App\Models\DepositMethod;
 use App\Models\LevelReferral;
 use App\Traits\ForexApiTrait;
 use App\Exports\DepositsExport;
+use App\Exports\pendingDepositsExport;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
@@ -45,9 +46,9 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:deposit-list|deposit-action|deposit-export', ['only' => ['pending', 'history','export']]);
-        $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
+        $this->middleware('permission:deposit-list', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
+        $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
 
     }
@@ -221,110 +222,109 @@ class DepositController extends Controller
     //-------------------------------------------  Deposit method end ---------------------------------------------------------------
 
     public function pending(Request $request)
-    {
-        $loggedInUser = auth()->user();
+{
+    $loggedInUser = auth()->user();
 
-        if ($request->ajax()) {
-            $filters = $request->only(['email', 'status', 'created_at']);
+    if ($request->ajax()) {
+        $filters = $request->only(['email', 'status', 'created_at']);
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = Transaction::where('status', 'pending')
-                    ->where(function ($query) {
-                        return $query->where('type', TxnType::ManualDeposit);
-                    })->latest()->applyFilters($filters);
+        // Check if the user can view all transactions
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        // Initialize query
+        $data = Transaction::query()
+            ->where('status', 'pending')
+            ->where('type', TxnType::ManualDeposit)
+            ->latest();
+
+        if (!$canViewAllUsers) {
+            // Get attached user IDs for non-Super-Admins without permission
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data->whereIn('user_id', $attachedUserIds);
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Show transactions for attached users only
-                    $data = Transaction::where('status', 'pending')
-                        ->whereIn('user_id', $attachedUserIds)
-                        ->where(function ($query) {
-                            return $query->where('type', TxnType::ManualDeposit);
-                        })->latest()->applyFilters($filters);
-                } else {
-                    // If no users are attached, show no transactions
-                    $data = Transaction::where('status', 'pending')
-                        ->where(function ($query) {
-                            return $query->where('type', TxnType::ManualDeposit);
-                        })->latest()->applyFilters($filters);                }
+                // If no attached users, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('status', 'backend.transaction.include.__txn_status')
-                ->editColumn('type', 'backend.transaction.include.__txn_type')
-                ->editColumn('amount', 'backend.transaction.include.__txn_amount')
-                ->editColumn('charge', function ($request) {
-                    return $request->charge . ' ' . setting('site_currency', 'global');
-                })
-                ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('action', 'backend.deposit.include.__action')
-                ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
-                ->make(true);
         }
 
-        return view('backend.deposit.manual');
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->editColumn('status', 'backend.transaction.include.__txn_status')
+            ->editColumn('type', 'backend.transaction.include.__txn_type')
+            ->editColumn('amount', 'backend.transaction.include.__txn_amount')
+            ->editColumn('charge', function ($request) {
+                return $request->charge . ' ' . setting('site_currency', 'global');
+            })
+            ->addColumn('username', 'backend.transaction.include.__user')
+            ->addColumn('action', 'backend.deposit.include.__action')
+            ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
+            ->make(true);
     }
+
+    return view('backend.deposit.manual');
+}
+
 
 
     public function history(Request $request)
-    {
-        $loggedInUser = auth()->user();
-        $filters = $request->only(['email', 'status', 'created_at']);
+{
+    $loggedInUser = auth()->user();
+    $filters = $request->only(['email', 'status', 'created_at']);
 
-        if ($request->ajax()) {
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = Transaction::where(function ($query) {
-                    $query->where('type', TxnType::ManualDeposit)
-                        ->orWhere('type', TxnType::Deposit);
-                })->latest();
+    if ($request->ajax()) {
+        // Check if the user can view all transactions
+        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+
+        // Initialize query
+        $data = Transaction::query()
+            ->where(function ($query) {
+                $query->where('type', TxnType::ManualDeposit)
+                    ->orWhere('type', TxnType::Deposit);
+            })->latest();
+
+        if (!$canViewAllUsers) {
+            // Get attached user IDs for non-Super-Admins without permission
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                $data->whereIn('user_id', $attachedUserIds);
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Show transactions for attached users only
-                    $data = Transaction::whereIn('user_id', $attachedUserIds)
-                        ->where(function ($query) {
-                            $query->where('type', TxnType::ManualDeposit)
-                                ->orWhere('type', TxnType::Deposit);
-                        })->latest();
-                } else {
-                    $data = Transaction::where(function ($query) {
-                        $query->where('type', TxnType::ManualDeposit)
-                            ->orWhere('type', TxnType::Deposit);
-                    })->latest();          }
+                // If no attached users, return an empty collection
+                return Datatables::of(collect([]))->make(true);
             }
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
-                })
-                ->editColumn('status', 'backend.transaction.include.__txn_status')
-                ->editColumn('type', 'backend.transaction.include.__txn_type')
-                ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
-                ->editColumn('charge', function ($request) {
-                    return $request->charge . ' ' . setting('site_currency', 'global');
-                })
-                ->addColumn('action_by', function ($row) {
-                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
-                })
-                ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
-                ->make(true);
         }
 
-        return view('backend.deposit.history');
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('created_at', function ($row) {
+                return '<span class="text-nowrap">' . $row->created_at . '</span>';
+            })
+            ->editColumn('status', 'backend.transaction.include.__txn_status')
+            ->editColumn('type', 'backend.transaction.include.__txn_type')
+            ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
+            ->editColumn('charge', function ($request) {
+                return $request->charge . ' ' . setting('site_currency', 'global');
+            })
+            ->addColumn('action_by', function ($row) {
+                return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+            })
+            ->addColumn('username', 'backend.transaction.include.__user')
+            ->addColumn('action', 'backend.transaction.include.__action')
+            ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
+            ->make(true);
     }
+
+    return view('backend.deposit.history');
+}
+
 
 
     public function depositAction($id)
@@ -418,11 +418,15 @@ class DepositController extends Controller
             return redirect()->back();
         }
     }
-    public function export(Request $request)
-    {
-
-        return Excel::download(new DepositsExport($request), 'deposits.xlsx');
+    public function export(Request $request, $type = null)
+{
+    switch ($type) {
+        case 'pending':
+            return Excel::download(new pendingDepositsExport($request), 'pending-deposits.xlsx');
+        default:
+        return Excel::download(new DepositsExport($request), 'deposits-history.xlsx');
     }
+}
     public function view($id)
     {
         $transaction = Transaction::find($id);
@@ -455,7 +459,7 @@ class DepositController extends Controller
         $loggedInUser = auth()->user();
 
         // Fetch users based on the logged-in user's role
-        if ($loggedInUser->hasRole('Super-Admin')) {
+        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
             // If Super-Admin, show all users
             $users = User::where('status', 1)->get();
         } else {

@@ -56,23 +56,23 @@ class   AccountsController extends Controller
     {
 //        dd($type);
         $loggedInUser = auth()->user(); // Get the logged-in admin or user
-        
+
         // Determine if the user should see all users
         $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-        
+
         // Get attached user IDs for non-Super-Admin users without permission
         $attachedUserIds = $canViewAllUsers ? collect([]) : $loggedInUser->users->pluck('id');
-        
+
         // Query for Forex Accounts
         $data = ForexAccount::query()
             ->with('schema')
             ->where('account_type', $type);
-        
+
         if (!$canViewAllUsers && $attachedUserIds->isNotEmpty()) {
             // Apply attached user filter for non-Super-Admin users without permission
             $data->whereIn('user_id', $attachedUserIds);
         }
-        
+
         if ($id) {
             $data->where('user_id', $id);
         }
@@ -89,9 +89,9 @@ class   AccountsController extends Controller
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')
                 ->addColumn('username', 'backend.transaction.include.__user')
-                // ->addColumn('balance', 'backend.investment.include.__balance_mt5')
-                // ->addColumn('equity', 'backend.investment.include.__equity_mt5')
-                // ->addColumn('credit', 'backend.investment.include.__credit_mt5')
+                 ->addColumn('balance', 'backend.investment.include.__balance_mt5')
+                 ->addColumn('equity', 'backend.investment.include.__equity_mt5')
+                 ->addColumn('credit', 'backend.investment.include.__credit_mt5')
                 ->addColumn('schema', 'backend.investment.include.__invest_schema')
                 ->addColumn('status', 'backend.investment.include.__status')
                 ->addColumn('action', 'backend.investment.include.__action')

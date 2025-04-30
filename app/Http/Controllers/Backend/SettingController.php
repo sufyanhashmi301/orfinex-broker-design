@@ -51,6 +51,7 @@ class SettingController extends Controller
         $this->middleware('permission:web-hooks-setting', ['only' => ['webHook']]);
         $this->middleware('permission:currency-setting', ['only' => ['currencySetting']]);
         $this->middleware('permission:collab-tools-setting', ['only' => ['slackSetting']]);
+        $this->middleware('permission:customer-misc-settings', ['only' => ['customerMiscSettings']] );
 
 
 

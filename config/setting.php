@@ -705,7 +705,7 @@ return [
         'title' => 'Customer Miscellaneous',
         'elements' => [
             [
-                'type' => 'text',
+                'type' => 'number',
                 'data' => 'int',
                 'name' => 'user_removal_grace_period',
                 'label' => 'User Removal Grace Period (Days)',

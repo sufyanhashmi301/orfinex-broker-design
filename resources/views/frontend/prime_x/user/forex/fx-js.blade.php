@@ -374,10 +374,11 @@
     //     var leverages = $(this).data('leverage');
     // });
 
-    $('body').on('click', '#submit-leverage', function () {
+    $('body').on('submit', '#leverage-change-form', function (e) {
+        e.preventDefault();
         var leverage = $('#update-leverage-modal-leverage').val();
         if (leverage) {
-            var btn = $(this);
+            var btn = $('#submit-leverage');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-leverage-modal-login-id').val());
@@ -392,10 +393,11 @@
         $('.update-name-modal-login').val($(this).data('login'));
         $('#update-name-modal-name').val($(this).data('account_name'));
     });
-    $('body').on('click', '#submit-name', function () {
+    $('body').on('submit', '#rename-account-form', function (e) {
+        e.preventDefault();
         var name = $('#update-name-modal-name').val();
         if (name) {
-            var btn = $(this);
+            var btn = $('#submit-name');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-name-modal-login').val());
@@ -408,10 +410,11 @@
         $('.update-password-modal-login').text($(this).data('login'));
         $('.update-password-modal-login').val($(this).data('login'));
     });
-    $('body').on('click', '#submit-password', function () {
+    $('body').on('submit', '#main-password-form', function (e) {
+        e.preventDefault();
         var main_pass = $('#update-main-password').val();
         if (main_pass) {
-            var btn = $(this);
+            var btn = $('#submit-password');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-password-modal-login').val());
@@ -429,10 +432,11 @@
         checkPassword(password,'main','submit-password');
 
     });
-    $('body').on('click', '#submit-investor-password', function () {
+    $('body').on('submit', '#investor-password-form', function (e) {
+        e.preventDefault();
         var invest_pass = $('#update-invest-password').val();
         if (invest_pass) {
-            var btn = $(this);
+            var btn = $('#submit-investor-password');
             btn.prop('disabled', true);
             let formData = new FormData();
             formData.append('login', $('#update-investor-password-modal-login').val());
@@ -463,6 +467,7 @@
                     }
                 } else if (res.error) {
                     tNotify('warning', res.error);
+                    btn.closest('form')[0].reset();
                     // NioApp.Toast(res.error, 'warning');
                     // setTimeout(function () {
                     //     location.reload();
@@ -471,6 +476,7 @@
                     tNotify('warning', res.message);
                     // NioApp.Form.errors(res, true);
                     btn.prop('disabled', false);
+                    btn.closest('form')[0].reset();
                 }
             },
             error: function (data) {

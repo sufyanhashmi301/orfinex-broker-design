@@ -1281,6 +1281,8 @@ class UserController extends Controller
                 'date_of_birth' => $input['date_of_birth'],
                 'email_verified_at' => $request->has('is_email_verified') ? now() : null,
                 'kyc' => $kyc,
+                'in_grace_period' => false,
+
             ]);
 
             // Handle risk profile tags

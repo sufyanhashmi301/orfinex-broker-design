@@ -21,6 +21,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Services\AccountTypeInvestmentPaymentService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Models\AccountTypeInvestmentStat;
 use App\Models\Transaction;
 use App\Services\MatchTraderApiService;
 use Illuminate\Support\Facades\Artisan;
@@ -217,6 +218,10 @@ class AccountTypeInvestmentController extends Controller
                 notify()->error('Unknown error occured. Please try again.');
             }
         }
+
+        // Any hourly stats should be deleted before restoring the account and also the account type investment stats   
+        AccountTypeInvestmentStat::where('account_type_investment_id', $account->id)->delete();
+        AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $account->id)->delete();
 
         // Update Account
         $account->update([

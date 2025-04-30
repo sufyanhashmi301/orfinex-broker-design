@@ -55,7 +55,7 @@
                                             </button>
                                         </h2>
                                         <div id="{{ str_replace(' ', '', $category) }}"
-                                            class="accordion-collapse collapse"
+                                            class="accordion-collapse collapse p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-slate-700 dark:bg-body"
                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
                                                 <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
@@ -112,7 +112,7 @@
 
             const categoryElement = document.querySelector(`#${category}`);
             const buttonElement = document.querySelector(`[data-bs-target="#${category}"]`);
-            
+
             if (anyChecked) {
                 categoryElement.classList.add('show'); // Keep category open
                 buttonElement.setAttribute('aria-expanded', 'true');

@@ -34,6 +34,9 @@ class VerifyEmailController extends Controller
             event(new UserReferred($request->cookie('invite'), $request->user()));
             //send welcome email
             $user = $request->user();
+            $user->in_grace_period = false;
+            $user->save();
+
             $shortcodes = [
                 '[[full_name]]' => $user->first_name . ' ' . $user->last_name,
                 '[[message]]' => '.New User added to our system.',
@@ -77,6 +80,7 @@ class VerifyEmailController extends Controller
 //            dd($user,$request->user());
             $request->user()->verification_code = null;
             $request->user()->verification_code_expires_at = null;
+            $user->in_grace_period = false;
             $request->user()->save();
 
             event(new Verified($request->user()));

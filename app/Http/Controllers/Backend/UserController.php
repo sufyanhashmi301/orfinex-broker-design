@@ -592,7 +592,7 @@ class UserController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'status' => 'required',
-            'is_multi_ib' => 'required',
+//            'is_multi_ib' => 'required',
             'email_verified' => 'required',
 //            'kyc' => 'required',
             'two_fa' => 'required',
@@ -612,7 +612,7 @@ class UserController extends Controller
         }
         $data = [
             'status' => $input['status'],
-            'is_multi_ib' => $input['is_multi_ib'],
+//            'is_multi_ib' => $input['is_multi_ib'],
 //            'kyc' => $input['kyc'],
             'two_fa' => $input['two_fa'],
             'deposit_status' => $input['deposit_status'],

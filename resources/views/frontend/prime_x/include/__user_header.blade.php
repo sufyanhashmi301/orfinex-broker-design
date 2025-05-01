@@ -32,13 +32,17 @@
                 </button>
             </div>
 
+            
+
             <div class="relative">
                 <div class="flex items-center text-left">
-                    <p class="dark:text-white">{{auth()->user()->full_name}}</p>
+                    <p class="dark:text-white">{{$user->first_name . ' ' . $user->last_name}}</p>
                     @if (
-                        setting('kyc_badge_visibility', 'defaults') == 'show' || 
-                        (setting('kyc_badge_visibility', 'defaults') == 'show_verified' && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED) ||
-                        (setting('kyc_badge_visibility', 'defaults') == 'show_unverified' && $user->kyc->status != \App\Enums\KycStatusEnums::VERIFIED)
+                        isset($user->kyc) && (
+                            setting('kyc_badge_visibility', 'defaults') == 'show' || 
+                            (setting('kyc_badge_visibility', 'defaults') == 'show_verified' && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED) ||
+                            (setting('kyc_badge_visibility', 'defaults') == 'show_unverified' && $user->kyc->status != \App\Enums\KycStatusEnums::VERIFIED)
+                        )
                     )
                         @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
                             <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/verified.svg" class="inline-flex ml-2" alt="" style="height: 14px;">
@@ -62,7 +66,7 @@
                 <!-- BEGIN: Notification Dropdown -->
                 @auth
                     @php
-                        $userId = auth()->id();
+                        $userId = $user->id;
                         $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
                         $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
                         $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
@@ -77,7 +81,7 @@
                 <div class="md:block hidden w-full">
                     <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2" style="border-color: #0ebe3b;">
-                            <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
+                            <img src="@if($user->avatar && file_exists('assets/'.$user->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
                         </div>
                     </button>
                     <!-- Dropdown menu -->

@@ -1,3 +1,7 @@
+@php
+    $isUser = isset(auth()->user()->first_name) ? true : false;
+@endphp
+
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{ route('home') }}" class="loaderBtn items-center md:flex hidden">

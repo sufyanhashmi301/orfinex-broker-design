@@ -243,7 +243,6 @@
 
 <!-- END: Header -->
 @push('script')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
     <script>
         // Color Switcher
         $(".color-switcher").on('click', function () {
@@ -251,13 +250,6 @@
             $("body").toggleClass("dark-theme");
             var url = '{{ route("mode-theme") }}';
             $.get(url)
-        });
-        var animation = lottie.loadAnimation({
-            container: document.getElementById('lottie-container'), // ID of the div where the animation will render
-            renderer: 'svg',  // Render the animation in SVG format
-            loop: true,       // Loop the animation
-            autoplay: true,   // Autoplay the animation
-            path: '{{ asset('global/json/secure.json') }}' // Path to your JSON file
         });
     </script>
 @endpush

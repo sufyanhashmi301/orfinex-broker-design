@@ -124,6 +124,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('kyc/{id}', 'kyc')->name('kyc');
 
         Route::get('search', 'searchUsers')->name('search');
+        Route::post('{user}/run-master-ib-distribution', 'runMasterIbDistribution')->name('run-master-ib-distribution');
+        Route::post('{user}/child-ib-distribution', 'runChildIbDistribution')->name('child-ib-distribution');
     });
 
     Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {

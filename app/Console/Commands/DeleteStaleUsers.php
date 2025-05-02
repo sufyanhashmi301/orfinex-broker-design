@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Scopes\ExcludeGracePeriodScope;
 use Illuminate\Console\Command;
 
@@ -28,6 +29,11 @@ class DeleteStaleUsers extends Command
      */
     public function handle()
     {
+        User::withoutGlobalScope(ExcludeGracePeriodScope::class)
+            ->where('in_grace_period', true)
+            ->whereNotNull('email_verified_at')
+            ->update(['in_grace_period' => false]);
+
         // STEP 1: Remove grace period from users who are active (email verified + any activity)
         $activeUsers = \App\Models\User::withoutGlobalScope(ExcludeGracePeriodScope::class)
             ->where('in_grace_period', true)

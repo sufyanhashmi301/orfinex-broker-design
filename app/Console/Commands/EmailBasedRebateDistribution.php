@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Level;
 use App\Models\ReferralRelationship;
 use App\Models\User;
 use App\Models\MetaDeal;
@@ -26,8 +27,10 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
             $this->error("User with email $email not found.");
             return 1;
         }
+        $maxLevel = Level::max('level_order');
+//        dd($maxLevel);
 
-        $network = $this->getReferralNetwork($parent->id, 3);
+        $network = $this->getReferralNetwork($parent->id, $maxLevel);
 //        dd(count($network));
 
         DB::beginTransaction();
@@ -49,7 +52,7 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
         return 0;
     }
 
-    protected function getReferralNetwork($parentId, $maxDepth = 3)
+    protected function getReferralNetwork($parentId, $maxDepth = 0)
     {
         $result = [];
         $queue = [[$parentId, 0]];
@@ -81,7 +84,7 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
             return;
         }
 
-        $validParentData = $this->getValidParent($referralRelationship->referralLink->user);
+        $validParentData = $this->getValidParent($referralRelationship->user);
 //        dd($validParentData);
 
         if (!$validParentData) {
@@ -103,11 +106,13 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
             ->get();
 
         foreach ($realForexAccounts as $realForexAccount) {
+//            if($realForexAccount->login == '')
             $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
             $deals = $this->getMT5Deals($realForexAccount->login, $startDate, $symbols);
+//            dd($deals);
 
             if (!$deals->isEmpty()) {
-                $this->saveMT5Deals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
             }
         }
     }

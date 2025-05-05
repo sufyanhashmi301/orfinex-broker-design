@@ -74,11 +74,11 @@
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Nickname:') }}</label>
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
+                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" aria-describedby="basic-addon1" required>
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account">
+                        <button type="submit" class="btn inline-flex justify-center btn-dark me-3">
                             {{ __('Map Account') }}
                         </button>
                         <button type="button" class="btn inline-flex justify-center btn-outline-dark" data-bs-dismiss="modal">

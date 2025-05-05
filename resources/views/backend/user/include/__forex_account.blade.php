@@ -61,7 +61,7 @@
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Account Nickname:') }}</label>
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
+                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Main Password:') }}</label>

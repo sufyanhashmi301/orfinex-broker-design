@@ -18,7 +18,10 @@
             <div class="card-body">
                 <div class="grid-view-layout">
                     <div class="flex items-center justify-between border-b dark:border-slate-700 p-3">
-                        <h5 class="text-xl mb-0 dark:text-white">{{ $account->account_name }}</h5>
+                        <div class="flex items-center">
+                            <h5 class="text-xl mb-0 dark:text-white">{{ $account->account_name }}</h5>
+                            <span class="badge badge-primary capitalize ml-2">{{ $account->schema->title }}</span>
+                        </div>
                         @include('frontend::.user.forex.dropdown-menu')
                     </div>
                     <ul class="h-full p-3">

@@ -197,6 +197,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
         Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
+        Route::get('referral/history', [ReferralController::class, 'history'])->name('referral.history');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
     //    Route::get('referral/advertisement-material', function () {
@@ -348,7 +349,7 @@ Route::get('user/provider_access', function () {
 })->name('user.provider_access')->middleware('secure_header');
 
 Route::get('user/follower_access', function () {
-    return view('frontend.prime_x.copy_trading.follower_access');
+    return view('frontend::copy_trading.follower_access');
 })->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {

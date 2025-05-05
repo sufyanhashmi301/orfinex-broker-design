@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <form action="" method="post">
+                    <form action="" method="post" id="investor-password-form">
                         @csrf
                         <input type="hidden" name="login" id="update-investor-password-modal-login"
                                class="form-control update-password-modal-login">
@@ -44,7 +44,7 @@
                             </ul>
                         </div>
                         <div class="action-btns mt-4">
-                            <button type="button" class="btn btn-primary mr-2" id="submit-investor-password" disabled>
+                            <button type="submit" class="btn btn-primary mr-2" id="submit-investor-password" disabled>
                                 {{ __('Change Password') }}
                             </button>
                             <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">

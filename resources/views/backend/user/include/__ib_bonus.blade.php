@@ -5,7 +5,27 @@
     aria-labelledby="pills-bonus-tab"
 >
     <div class="card">
-
+            @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
+            <div class="flex justify-end items-center gap-2 mt-2 sm:mt-0">
+                @can('customer-master-ib-network-distribution')
+                @if ($user->ib_status == \App\Enums\IBStatus::APPROVED)
+                <button type="button" id="master-ib-distribution-btn" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="carbon:network-4"></iconify-icon>
+                    Master IB Network Distribution
+                </button>
+                @endif
+                @endcan
+            
+                @can('customer-child-ib-distribution')
+                @if ($user->ib_status !== \App\Enums\IBStatus::APPROVED && isset($user->ref_id))
+                <button type="button" id="child-ib-distribution-btn" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="carbon:network-4"></iconify-icon>
+                    Child IB Distribution
+                </button>
+                @endif
+                @endcan
+            </div>
+            @endcanany
             <div class="card-header">
                 <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
                     <!-- Filter Inputs -->
@@ -89,6 +109,9 @@
         </div>
     </div>
 </div>
+
+@include('backend.user.include.__child_ib_distribution')
+@include('backend.user.include.__master_ib_distribution')
 @push('single-script')
     <script>
     flatpickr(".flatpickr-created-at", {
@@ -140,7 +163,7 @@
 
 
     $('#ib-bonus-filter-btn').on('click', function () {
-        $('#user-ib-transaction-dataTable').DataTable().ajax.reload();
+        table.ajax.reload();
     });
 
     // 👁️ Modal action
@@ -157,6 +180,34 @@
             }
         });
     });
+});
+flatpickr(".flatpickr-master-ib", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i:S", // Sent to backend (value of input)
+    altInput: true,
+    altFormat: "Y-m-d", // Shown to user
+    maxDate: "today",
+    defaultDate: new Date(),
+    time_24hr: true,
+    allowInput: true,
+    minuteIncrement: 1,
+    disableMobile: "true",
+    onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length > 0) {
+            instance.close();
+        }
+    }
+});
+
+
+// Show modal
+$('#master-ib-distribution-btn').on('click', function() {
+    $('#master-ib-modal').modal('show');
+});
+
+$('#child-ib-distribution-btn').on('click', function() {
+    var myModal = new bootstrap.Modal(document.getElementById('child-ib-modal'));
+    myModal.show();
 });
 
     </script>

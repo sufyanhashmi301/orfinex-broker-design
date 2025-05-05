@@ -138,14 +138,14 @@
             var deleteUrl = '{{ route("admin.user.note.delete", ":id") }}'.replace(':id', noteId); // Updated route without userId
 
             // Set the form action dynamically
-            $('#deleteForm').attr('action', deleteUrl);
+            $('#deleteNoteForm').attr('action', deleteUrl);
 
             // Open the delete confirmation modal
             $('#deleteConfirmationModal').modal('show');
         });
 
         // Submit the delete form via AJAX
-        $('#deleteForm').on('submit', function(e) {
+        $('#deleteNoteForm').on('submit', function(e) {
             e.preventDefault(); // Prevent default form submission
 
             var formAction = $(this).attr('action'); // Get the form action URL

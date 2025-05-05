@@ -17,7 +17,7 @@
                     </a>
                 @endcan
                 @can('customer-direct-referrals-export')
-                <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'refferal', 'user_id' => $user->id]) }}">
+                <form method="POST" action="{{ route('admin.user.export', ['type' => 'refferal', 'user_id' => $user->id]) }}">
                     @csrf
                     <button type="submit" class="btn btn-light btn-sm inline-flex items-center justify-center min-w-max">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lets-icons:export-fill"></iconify-icon>

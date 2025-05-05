@@ -314,7 +314,10 @@
   $.sidebarMenu($(".sidebar-menu"));
 
   // Simple Bar
-  new SimpleBar($("#sidebar_menus, #scrollModal")[0]);
+  var scrollElement = $("#sidebar_menus, #scrollModal")[0];
+  if (scrollElement) {
+    new SimpleBar(scrollElement);
+  }
 
   // Basic Carousel
   $(".basic-carousel").owlCarousel({

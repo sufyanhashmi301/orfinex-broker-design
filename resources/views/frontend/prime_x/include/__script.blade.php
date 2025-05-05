@@ -3,6 +3,7 @@
 <script src="{{ asset('global/js/simple-notify.min.js') }}"></script>
 <script src="{{ asset('frontend/js/app.js') }}"></script>
 <script src="{{ asset('global/js/custom.js?var=6') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
 @include('global.__t_notify')
 @if(auth()->check())
     <script src="{{ asset('global/js/pusher.min.js') }}"></script>

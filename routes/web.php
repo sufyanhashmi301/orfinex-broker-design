@@ -349,7 +349,7 @@ Route::get('user/provider_access', function () {
 })->name('user.provider_access')->middleware('secure_header');
 
 Route::get('user/follower_access', function () {
-    return view('frontend.prime_x.copy_trading.follower_access');
+    return view('frontend::copy_trading.follower_access');
 })->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {

@@ -56,7 +56,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use App\Models\Ranking;
 use App\Rules\Recaptcha;
-
+use Illuminate\Support\Facades\Artisan;
 class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
@@ -80,6 +80,8 @@ class UserController extends Controller
         $this->middleware('permission:customer-funds', ['only' => ['balanceUpdate']]);
         $this->middleware('permission:customer-edit|customer-overview-update', ['only' => ['edit', 'update']]);
         $this->middleware('permission:customer-create', ['only' => ['store', 'createCustomer']]);
+        $this->middleware('permission:customer-master-ib-network-distribution', ['only' => ['runMasterIbDistribution']]);
+        $this->middleware('permission:customer-child-ib-distribution', ['only' => ['runChildIbDistribution']]);
         $this->forexApiService = $forexApiService;
         $this->walletService = $walletService;
 
@@ -1486,5 +1488,50 @@ class UserController extends Controller
             })
         ]);
     }
-
+    public function runMasterIbDistribution(Request $request, $userId)
+    {
+        $request->validate([
+            'date' => ['required', 'date_format:Y-m-d H:i:s'],
+        ]);
+    
+        $user = User::findOrFail($userId);
+    
+        try {
+            Artisan::call('rebate:email-distribution', [
+                'email' => $user->email,
+                'start_date' => $request->input('date'),
+            ]);
+    
+            notify()->success("Rebate distribution triggered successfully for {$user->username}.");
+    
+            return redirect()->back();
+        } catch (\Exception $e) {
+            notify()->error('Command failed: ' . $e->getMessage());
+    
+            return redirect()->back();
+        }
+    }
+    public function  runChildIbDistribution(Request $request, $userId)
+    {
+        $request->validate([
+            'date' => ['required', 'date_format:Y-m-d H:i:s'],
+        ]);
+    
+        $user = User::findOrFail($userId);
+    
+        try {
+            Artisan::call('rebate:email-distribution', [
+                'email' => $user->email,
+                'start_date' => $request->input('date'),
+            ]);
+    
+            notify()->success("Rebate distribution triggered successfully for {$user->username}.");
+    
+            return redirect()->back();
+        } catch (\Exception $e) {
+            notify()->error('Command failed: ' . $e->getMessage());
+    
+            return redirect()->back();
+        }
+    }
 }

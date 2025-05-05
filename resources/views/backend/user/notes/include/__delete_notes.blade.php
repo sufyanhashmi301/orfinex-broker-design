@@ -21,7 +21,7 @@
                 </p>
 
                 <div class="action-btns text-center">
-                    <form id="deleteForm" method="POST" style="display: inline;">
+                    <form id="deleteNoteForm" method="POST" style="display: inline;">
                         @method('DELETE')
                         @csrf
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">

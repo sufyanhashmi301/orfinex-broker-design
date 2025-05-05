@@ -590,9 +590,6 @@
             });
         });
 
-
-    </script>
-    <script>
         $(document).ready(function () {
             // Function to update the Islamic checkbox state
             function updateIslamicCheckboxState(modalId, accountType, isRealIslamic, isDemoIslamic) {

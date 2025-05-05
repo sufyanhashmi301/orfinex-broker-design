@@ -144,15 +144,28 @@ class UserAttachmentController extends Controller
 
     public function detachUser(Request $request, $staffId)
     {
-
         $staff = Admin::findOrFail($staffId);
-        $userId = $request->input('user_id');
-
-        // Detach the user from the staff
-        $staff->users()->detach($userId);
-
-
-        notify()->success('User detached successfully!');
+        $userIds = $request->input('user_id') ? [$request->input('user_id')] : explode(',', $request->input('user_ids', ''));
+    
+        try {
+            $detachedCount = $staff->users()->detach($userIds);
+    
+            if ($detachedCount > 0) {
+                $message = count($userIds) > 1 
+                    ? 'Users detached successfully!'
+                    : 'User detached successfully!';
+                notify()->success($message);
+            } else {
+                $message = count($userIds) > 1 
+                    ? 'No users were detached'
+                    : 'User was not detached';
+                notify()->error($message);
+            }
+    
+        } catch (\Exception $e) {
+            notify()->error('Error detaching users: ' . $e->getMessage());
+        }
+    
         return redirect()->back();
     }
 }

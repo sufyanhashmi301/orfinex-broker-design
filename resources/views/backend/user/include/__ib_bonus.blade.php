@@ -11,7 +11,7 @@
                 @if ($user->ib_status == \App\Enums\IBStatus::APPROVED)
                 <button type="button" id="master-ib-distribution-btn" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="carbon:network-4"></iconify-icon>
-                    Master IB Network Distribution
+                    {{ __('Master IB Network Distribution') }}
                 </button>
                 @endif
                 @endcan
@@ -20,7 +20,7 @@
                 @if ($user->ib_status !== \App\Enums\IBStatus::APPROVED && isset($user->ref_id))
                 <button type="button" id="child-ib-distribution-btn" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="carbon:network-4"></iconify-icon>
-                    Child IB Distribution
+                    {{ __('Child IB Distribution') }}
                 </button>
                 @endif
                 @endcan

@@ -55,22 +55,7 @@ class PluginSeeder extends Seeder
                 'name' => 'Zoho SalesIQ',
                 'description' => 'Enhance customer engagement and track visitor behavior with real-time chat and analytics tools.',
                 'data' => json_encode([
-                    'script' => <<<'EOD'
-                                var $zoho=$zoho || {};
-                                $zoho.salesiq = $zoho.salesiq || {
-                                    widgetcode: "siq0d84b4a936b62d007a8b69171ad0bda856c528f3a2459c49b38109540292025a",
-                                    values: {},
-                                    ready: function(){}
-                                };
-                                var d=document;
-                                s=d.createElement("script");
-                                s.type="text/javascript";
-                                s.id="zsiqscript";
-                                s.defer=true;
-                                s.src="https://salesiq.zohopublic.com/widget";
-                                t=d.getElementsByTagName("script")[0];
-                                t.parentNode.insertBefore(s,t);
-                                EOD,
+                    'script' => 'https://salesiq.zohopublic.com/widget?wc=siqfa9c40c8e1860867576bdf256294f0d6a4ea805bdf69c4522834275a36d7f9b1'
                 ]),
                 'status' => 0,
                 'created_at' => Carbon::now(),

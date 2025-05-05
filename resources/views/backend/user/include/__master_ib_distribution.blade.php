@@ -5,14 +5,14 @@
                 @csrf
                 <div class="modal-header flex justify-between items-center p-4 border-b">
                     <h5 class="modal-title font-bold text-lg text-slate-800 dark:text-white" id="master-ib-modal-label">
-                        Master IB Network Distribution
+                        {{ __('Master IB Network Distribution') }}
                     </h5>
-                    <button type="button" class="btn-close text-2xl" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    <button type="button" class="btn-close text-2xl" data-bs-dismiss="modal" aria-label="{{ __('Close') }}">&times;</button>
                 </div>
                 <div class="modal-body p-6">
                     <div class="flex flex-col space-y-2">
                         <label for="master-ib-date" class="text-sm font-medium text-slate-600 dark:text-slate-300">
-                            Select Date
+                            {{ __('Select Date') }}
                         </label>
                         <div class="relative">
                             <input 
@@ -20,27 +20,32 @@
                                 name="date" 
                                 id="master-ib-date" 
                                 class="form-control flatpickr-master-ib w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-800 dark:text-white" 
-                                placeholder="YYYY-MM-DD"
+                                placeholder="{{ __('YYYY-MM-DD') }}"
                                 required
                             >
-                           
                         </div>
                     </div>
-                    <div class="mt-4 p-3 rounded-md bg-yellow-50 border border-yellow-300 text-yellow-700 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200 text-sm">
-                        <strong>Note:</strong> If any user is missing in the network, the distribution will still proceed based on the current structure. Please ensure your IB network is correctly set up before continuing.
+                    <div class="mt-4 p-4 rounded-md bg-yellow-50 border border-yellow-300 text-yellow-700 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200 text-sm">
+                        <strong class="block mb-2">{{ __('Note:') }}</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>{{ __('This distribution will be applied to the entire network of the master IB.') }}</li>
+                            <li>{{ __('It will check for any missing distributions from the selected date up to now.') }}</li>
+                            <li>{{ __('It will not distribute again for any deals that have already been processed.') }}</li>
+                            <li>{{ __('If a user is missing from the network, the distribution will still go ahead using the current network structure.') }}</li>
+                            <li>{{ __('Please make sure your IB network is set up correctly before continuing.') }}</li>
+                        </ul>
                     </div>
                 </div>
                 
                 <div class="modal-footer flex justify-end p-4 border-t">
                     <button type="submit" class="btn btn-dark" id="run-master-ib-btn">
-                        Run Distribution
+                        {{ __('Run Distribution') }}
                     </button>
                     <button type="button" class="btn btn-outline-dark ml-2" data-bs-dismiss="modal">
-                        Cancel
+                        {{ __('Cancel') }}
                     </button>
                 </div>
             </form>
-            
         </div>
     </div>
 </div>

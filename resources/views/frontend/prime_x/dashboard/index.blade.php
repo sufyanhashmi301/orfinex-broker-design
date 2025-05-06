@@ -143,8 +143,19 @@
         </div>
 
         {{-- Optimized --}}
+        @php
+            $dashboard_icons = 0;
+            foreach(config('setting.social_links')['elements'] as $key => $field) {
+                
+                if(str_contains($field['name'], '_dashboard') ) {
+                    if(setting($field['name']) == 1) {
+                        $dashboard_icons += 1;
+                    }
+                }
+            }
+        @endphp
         <div class="grid grid-cols-12 gap-3 mb-3">
-            <div class="lg:col-span-7 col-span-12">
+            <div class="lg:col-span-{{ 12 - $dashboard_icons }} col-span-12">
                 <div class="card h-full flex flex-col">
                     <header class="card-header noborder">
                         <h4 class="card-title">{{ __('Wallets') }}</h4>
@@ -188,18 +199,65 @@
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-5 col-span-12">
+            <div class="lg:col-span-{{ $dashboard_icons }} col-span-12">
                 <div class="card h-full">
-                    <div class="card-body relative p-6 pb-0">
-                        <div id="profitLossChart" style="opacity: 0.05"></div>
-                        <div
-                            class="flex flex-col items-center justify-center text-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3 p-5">
-                            <iconify-icon class="text-xl dark:text-white" icon="lucide:info"></iconify-icon>
-                            <p class="text-sm dark:text-white">
-                                {{ __("We'll show your balance graph here once there is enough data") }}
-                            </p>
+
+                    <header class="card-header noborder">
+                        <h4 class="card-title">{{ __('Join Us On') }}</h4>
+                    </header>
+                    <div class="card-body p-6 pb-0">
+                        <style>
+                            .social-icons-container {
+                                display: flex;
+                                justify-content: space-around;
+                                align-items: center;
+                                flex-wrap: wrap;
+                                gap: 1rem; /* optional for spacing between rows if wrapping */
+                            }
+                    
+                            .social-icon {
+                                border-radius: 50% !important;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: filter 0.3s ease, opacity 0.3s ease;
+                            }
+                    
+                            .social-icon svg {
+                                height: 50px !important;
+                                width: 50px !important;
+                            }
+
+                        </style>
+                    
+                        @php
+                            $fields2 = config('setting.social_links');
+                        @endphp
+                    
+                        <div class="social-icons-container">
+                            @foreach ($fields2['elements'] as $key => $field)
+                                @php
+                                    $is_enabled = false;
+                                    $settings_name = '';
+                                    if(str_contains($field['name'], '_dashboard') ) {
+                                        if(setting($field['name']) == 1) {
+                                            $is_enabled = true;
+                                            $settings_name = str_replace('_on_dashboard', '', $field['name']);
+                                            $label = str_replace( '_', ' ', str_replace( 'social_', '', $settings_name) );
+                                        }
+                                    }
+                                @endphp
+                                @if ($is_enabled)
+                                    <div class="social-icon">
+                                        <a href="{{ setting($fields2['elements'][$loop->index - 2]['name'], 'social_links') }}" target="_blank">
+                                            {!! $fields2['elements'][$loop->index - 2]['icon'] !!}
+                                        </a>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

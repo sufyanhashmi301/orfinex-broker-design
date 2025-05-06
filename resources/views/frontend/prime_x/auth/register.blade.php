@@ -173,6 +173,8 @@
                 {{ __('Sign In') }}
             </a>
         </div>
+
+        @include('frontend::auth.join_us')
     </div>
 @endsection
 @section('script')

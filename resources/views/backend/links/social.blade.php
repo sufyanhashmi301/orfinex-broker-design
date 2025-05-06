@@ -1,93 +1,79 @@
 @extends('backend.links.index')
-@section('page-title')
-    <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-        {{ __('Social Links') }}
-    </h4>
+@section('title')
+    {{ __('Social Links') }}
 @endsection
 @section('links-content')
-    <div class="card">
-        <div class="card-body relative px-6 pt-3">
-            <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8 hidden"></span>
-                <span class="  col-span-4 hidden"></span>
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="socialLink-dataTable">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="table-th">{{ __('Title') }}</th>
-                                <th scope="col" class="table-th">{{ __('URL') }}</th>
-                                <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                <th scope="col" class="table-th">{{ __('Action') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+    <?php
+        $section = 'social_links';
+        $fields = config('setting.social_links');
+    ?>
 
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <style>
+        svg {
+            height: 24px !important;
+            width: 24px !important;
+        }
+    </style>
+    <div class="card">
+        <div class="card-body p-6">
+            @include('backend.setting.site_setting.include.form.__open_action')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                @foreach($fields['elements'] as $key => $field)
+                    {{-- @dd($field) --}}
+                    @if($field['type'] == 'url')
+                        <div class="input-area">
+                            <div></div>
+                            <label for="" class="form-label">{{ __($field['label']) }}</label>
+                            <div class="relative">
+                                <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="form-control {{ $errors->has($field['name']) ? 'has-error' : '' }}" value="{{oldSetting($field['name'],$section)}}" placeholder="URL" style="padding-left: 55px" />
+
+                                <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center">{!! isset($field['icon']) ? $field['icon'] : '' !!}</span>
+                            </div>
+                    
+                            {{-- To show chekboxes for overall, purchase page and signup  --}}
+                            @php
+                                $navbar = $fields['elements'][$loop->index + 1];
+                                $dashboard = $fields['elements'][$loop->index + 2];
+                                $auth = $fields['elements'][$loop->index + 3];
+                            @endphp
+                            
+                            <div class="pt-2 ml-1">
+                                <input type="hidden" name="{{ $navbar['name'] }}" value="0">
+                                <span class="">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="{{ $navbar['name'] }}" value="1" @if(oldSetting($navbar['name'],$section)) checked @endif class="sr-only peer">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </span> 
+                                <small><label class="ml-2" style="display: inline; position: relative; top: -7px" >On Navbar Page</label></small>
+                            </div>
+                            <div class="pt-2 ml-1">
+                                <input type="hidden" name="{{ $dashboard['name'] }}" value="0">
+                                <span class="">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="{{ $dashboard['name'] }}" value="1" @if(oldSetting($dashboard['name'],$section)) checked @endif class="sr-only peer">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </span> 
+                                <small><label class="ml-2" style="display: inline; position: relative; top: -7px" >On Dashboard Page</label></small>
+                            </div>
+                            <div class="pt-2 ml-1">
+                                <input type="hidden" name="{{ $auth['name'] }}" value="0">
+                                <span class="">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="{{ $auth['name'] }}" value="1" @if(oldSetting($auth['name'],$section)) checked @endif class="sr-only peer">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </span> 
+                                <small><label class="ml-2" style="display: inline; position: relative; top: -7px" >On Auth Page</label></small>
+                            </div>
+
+                        </div>
+                    @endif
+
+                @endforeach
             </div>
-            <div id="processingIndicator" class="text-center">
-                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
-                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
-            </div>
+            @include('backend.setting.site_setting.include.form.__close_action')
         </div>
     </div>
-
-    {{--Modal for update social link--}}
-    @can('social-link-edit')
-        @include('backend.links.modal.__edit_social_link')
-    @endcan
-
-@endsection
-@section('script')
-    <script !src="">
-        (function ($) {
-            "use strict";
-            var table = $('#socialLink-dataTable').DataTable();
-            table.destroy();
-            var table = $('#socialLink-dataTable')
-            .on('processing.dt', function (e, settings, processing) {
-                $('#processingIndicator').css('display', processing ? 'block' : 'none');
-            }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                    },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.links.social.index') }}",
-                columns: [
-                    {data: 'title', name: 'title'},
-                    {data: 'link', name: 'link'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
-                ]
-            });
-        })(jQuery);
-
-        $('body').on('click', '.editBtn', function (event){
-            "use strict";
-            event.preventDefault();
-            $('#edit-social-link-body').empty();
-            var recordId = $(this).data('id');
-            var url = "{{ route('admin.links.social.edit', ':id') }}".replace(':id', recordId);
-
-            $.get(url, function (response) {
-                $('#editSocialLinkModal').modal('show');
-                $('#edit-social-link-body').append(response);
-            });
-        });
-    </script>
 @endsection

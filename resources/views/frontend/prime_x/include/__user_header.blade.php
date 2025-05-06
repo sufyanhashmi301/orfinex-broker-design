@@ -54,8 +54,52 @@
                 </div>    
             
             <!-- end vertcial -->
-
+            <style>
+                .nav-icon {
+                    border-radius: 50% !important
+                }
+                .nav-icon svg {
+                    height: 20px !important;
+                    width: 20px !important;
+                    opacity: 0.5;
+                    
+                }
+                .nav-icon svg g, .nav-icon svg path:first-child {
+                    fill: #999;
+                }
+                .nav-icon svg:hover {
+                    filter: grayscale(0);
+                    opacity: 1;
+                }
+            </style>
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
+                @php
+                    $fields = config('setting.social_links');
+                    $has_icons = false;
+                @endphp
+                @foreach ($fields['elements'] as $key => $field)
+                    @php
+                        $is_enabled = false;
+                        $settings_name = '';
+                        if(str_contains($field['name'], '_navbar') ) {
+                            if(setting($field['name']) == 1) {
+                                $is_enabled = true;
+                                $settings_name = str_replace('_on_navbar', '', $field['name']);
+                                $label = str_replace( '_', ' ', str_replace( 'social_', '', $settings_name) );
+                            }
+                        }
+                    @endphp
+                    @if ($is_enabled)
+                        @php $has_icons = true @endphp
+                        <div class="nav-icon">
+                            <a href="{{ setting($fields['elements'][$loop->index - 1]['name'], 'social_links')  }}" target="__blank">{!! $fields['elements'][$loop->index - 1]['icon'] !!}</a>
+                        </div>
+                    @endif
+                @endforeach
+                
+                @if ($has_icons)
+                    <hr style="background: #ccc; height: 20px; width: 2px" >
+                @endif
                 <div>
                     <button id="themeMood" class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
                         <iconify-icon class="text-slate-800 dark:text-white text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
@@ -79,6 +123,8 @@
 
                 <!-- BEGIN: Profile Dropdown -->
                 <div class="md:block hidden w-full">
+                    
+                   
                     <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2" style="border-color: #0ebe3b;">
                             <img src="@if($user->avatar && file_exists('assets/'.$user->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">

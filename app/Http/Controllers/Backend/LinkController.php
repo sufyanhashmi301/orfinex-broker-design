@@ -19,4 +19,9 @@ class LinkController extends Controller
     {
         return view('backend.links.platform');
     }
+
+    public static function socialLinks()
+    {
+        return view('backend.links.social');
+    }
 }

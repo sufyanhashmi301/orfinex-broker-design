@@ -49,7 +49,6 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\Backend\DepartmentController;
-use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\Backend\DesignationController;
 use App\Http\Controllers\Backend\LeaderboardController;
@@ -284,6 +283,12 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 
     // =============================== Optimization ===============================
+
+    Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
+        Route::get('legal-links', 'legalLinks')->name('legal-links');
+        Route::get('platform-links', 'platformLinks')->name('platform-links');
+        Route::get('social-links', 'socialLinks')->name('social-links');
+    });
     
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
     
@@ -455,16 +460,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         });
     });
 
-
-    //===============================  Links Settings ==================================
-    Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-        Route::get('legal-links', 'legalLinks')->name('legal-links');
-        Route::get('platform-links', 'platformLinks')->name('platform-links');
-
-        Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');
-        Route::get('social/{id}', [SocialLinkController::class, 'edit'])->name('social.edit');
-        Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
-    });
+    
 
 
     //===============================  Others ==================================

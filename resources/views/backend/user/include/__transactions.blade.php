@@ -6,17 +6,18 @@
 >
     <div class="card">
         <div class="card-header">
-        @can('customer-transactions-export')
-            <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
-                @csrf
-                <div class="input-area relative">
-                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                        {{ __('Export') }}
-                    </button>
-                </div>
-            </form>
-        @endcan
+            <h4 class="card-title">{{ __('Transactions') }}</h4>
+            @can('customer-transactions-export')
+                <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
+                    @csrf
+                    <div class="input-area relative">
+                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                            {{ __('Export') }}
+                        </button>
+                    </div>
+                </form>
+            @endcan
         </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

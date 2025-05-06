@@ -729,13 +729,6 @@ if (!function_exists("generate_dummy_password")) {
     }
 }
 
-if (!function_exists('social_links')) {
-    function social_links()
-    {
-        return App\Models\SocialLink::where('status', 1)->get();
-    }
-}
-
 if (!function_exists('kyc_invoke_at')) {
     function kyc_invoke_at() {
         return Setting::where('name', 'kyc_notice')->first() ? Setting::where('name', 'kyc_notice')->first()->val : KycNoticeInvokeEnums::FUNDED_PHASE;

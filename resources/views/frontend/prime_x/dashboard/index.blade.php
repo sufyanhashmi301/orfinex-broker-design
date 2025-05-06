@@ -155,7 +155,7 @@
             }
         @endphp
         <div class="grid grid-cols-12 gap-3 mb-3">
-            <div class="lg:col-span-{{ 12 - $dashboard_icons }} col-span-12">
+            <div class="lg:col-span-{{ 12 - $dashboard_icons }} ">
                 <div class="card h-full flex flex-col">
                     <header class="card-header noborder">
                         <h4 class="card-title">{{ __('Wallets') }}</h4>
@@ -199,7 +199,7 @@
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-{{ $dashboard_icons }} col-span-12">
+            <div class="lg:col-span-{{ $dashboard_icons }} ">
                 <div class="card h-full">
 
                     <header class="card-header noborder">

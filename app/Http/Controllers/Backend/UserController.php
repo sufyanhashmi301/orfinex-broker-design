@@ -469,14 +469,31 @@ class UserController extends Controller
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
 //                ->editColumn('status', 'backend.user.include.__status')
-//                ->addColumn('action', 'backend.user.include.__action')
+               ->addColumn('action', 'backend.user.include.__grace_action')
                 ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.grace_users');
     }
+    public function updateGracePeriod(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'status' => 'required|in:0,1',
+    ]);
 
+    $user = User::withoutGlobalScope(ExcludeGracePeriodScope::class)->findOrFail($request->user_id);
+    $user->in_grace_period = $request->status;
+    $user->save();
+
+    notify()->success('Grace period status updated successfully.');
+
+    return redirect()->back();
+}
+
+    
+    
     /**
      * Show the form for editing the specified resource.
      *

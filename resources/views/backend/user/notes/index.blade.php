@@ -1,15 +1,18 @@
 <!-- Notes Tab -->
 <div class="tab-pane fade space-y-5" id="pills-note" role="tabpanel" aria-labelledby="pills-note-tab">
-    @can('customer-notes-create')
-    <div class="flex justify-end items-center mb-3">
-        <button class="btn btn-primary btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNotesModal">
-            {{ __('Add Notes') }}
-        </button>
-    </div>
-    @endcan
     <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Notes') }}</h4>
+            @can('customer-notes-create')
+                <div class="flex justify-end items-center">
+                    <button class="btn btn-primary btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNotesModal">
+                        {{ __('Add Notes') }}
+                    </button>
+                </div>
+            @endcan
+        </div>
         <div class="card-body px-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="notes-table">
@@ -49,49 +52,48 @@
         "use strict";
 
         var table = $('#notes-table').DataTable({
-    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-    searching: false,
-    lengthChange: false,
-    info: true,
-    language: {
-        lengthMenu: "Show _MENU_ entries",
-        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-        paginate: {
-            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-        },
-        search: "Search:"
-    },
-    processing: true,
-    serverSide: true,
-    autoWidth: false,
-    ajax: "{{ route('admin.user.note.data', $user->id) }}",
-    columns: [
-        {data: 'description', name: 'description'},
-        {data: 'staff', name: 'staff'},
-        {
-            data: 'created_at',
-            name: 'created_at',
-            render: function(data) {
-                // Create a new Date object
-                var date = new Date(data);
+            dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+            searching: false,
+            lengthChange: false,
+            info: true,
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                },
+                search: "Search:"
+            },
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            ajax: "{{ route('admin.user.note.data', $user->id) }}",
+            columns: [
+                {data: 'description', name: 'description'},
+                {data: 'staff', name: 'staff'},
+                {
+                    data: 'created_at',
+                    name: 'created_at',
+                    render: function(data) {
+                        // Create a new Date object
+                        var date = new Date(data);
 
-                // Get year, month, day, hours, minutes, and seconds
-                var year = date.getFullYear();
-                var month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
-                var day = String(date.getDate()).padStart(2, '0');
-                var hours = String(date.getHours()).padStart(2, '0');
-                var minutes = String(date.getMinutes()).padStart(2, '0');
-                var seconds = String(date.getSeconds()).padStart(2, '0');
+                        // Get year, month, day, hours, minutes, and seconds
+                        var year = date.getFullYear();
+                        var month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+                        var day = String(date.getDate()).padStart(2, '0');
+                        var hours = String(date.getHours()).padStart(2, '0');
+                        var minutes = String(date.getMinutes()).padStart(2, '0');
+                        var seconds = String(date.getSeconds()).padStart(2, '0');
 
-                // Format the date as 'YYYY-MM-DD HH:MM:SS'
-                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            }
-        },
-        {data: 'action', name: 'action', orderable: false, searchable: false}
-    ],
-});
-
+                        // Format the date as 'YYYY-MM-DD HH:MM:SS'
+                        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                    }
+                },
+                {data: 'action', name: 'action', orderable: false, searchable: false}
+            ],
+        });
 
 
         // Edit note

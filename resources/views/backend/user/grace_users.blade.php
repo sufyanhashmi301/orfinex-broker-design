@@ -87,7 +87,7 @@
                                     <th scope="col" class="table-th">{{ __('Staff') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
 {{--                                    <th scope="col" class="table-th">{{ __('Status') }}</th>--}}
-{{--                                    <th scope="col" class="table-th">{{ __('Action') }}</th>--}}
+                                   <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -104,6 +104,7 @@
         </div>
     </div>
 
+    @include('backend.user.include.__grace_period_status')
     <!-- Modal for Send Email -->
     @can('customer-mail-send')
         @include('backend.user.include.__mail_send')
@@ -158,9 +159,19 @@
                     {data: 'staff_name', name: 'staff_name'},
                     {data: 'kyc', name: 'kyc'},
                     // {data: 'status', name: 'status'},
-                    // {data: 'action', name: 'action', orderable: false, searchable: false},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+
+  // Grace Period Modal Setup
+  $('#gracePeriodModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            $('#formUserId').val(button.data('id'));
+            $('#graceStatus').val(button.data('in_grace'));
+        });
+
+     
+
             $('#filter').click(function () {
                 table.draw();
             });

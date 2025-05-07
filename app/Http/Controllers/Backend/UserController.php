@@ -360,11 +360,12 @@ class UserController extends Controller
             $input = [
                 'subject' => $request->subject,
                 'message' => $request->message,
+                'html_message_body' => $request->html_message_body,
             ];
 
             $shortcodes = [
                 '[[subject]]' => $input['subject'],
-                '[[message]]' => $input['message'],
+                '[[message]]' => html_entity_decode($input['html_message_body']),
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
             ];
@@ -385,11 +386,10 @@ class UserController extends Controller
                 }
             }
             $status = 'success';
-            $message = __('Mail Send Successfully');
+            $message = __('Mail Sent Successfully');
         } catch (Exception $e) {
-
             $status = 'warning';
-            $message = __('something is wrong');
+            $message = __('Something went wrong');
         }
 
         notify()->$status($message, $status);

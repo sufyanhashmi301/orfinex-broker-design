@@ -3,6 +3,14 @@
     {{ __('Send Email to All') }}
 @endsection
 @section('content')
+    <style>
+        .note-group-select-from-files {
+            display: none !important
+        }
+        .note-modal-content {
+            height: 230px;
+        }
+    </style>
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-header">
@@ -17,7 +25,8 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Email Details') }}</label>
-                        <textarea name="message" class="form-control mb-0" rows="7"></textarea>
+                        <textarea name="message" class="summernote form-control mb-0" rows="7"></textarea>
+                        <input type="hidden" class="html-message-body" name="html_message_body">
                     </div>
 
                     <div class="action-btns text-right">

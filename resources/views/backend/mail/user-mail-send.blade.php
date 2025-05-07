@@ -48,7 +48,7 @@
                 <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">
                     {!! $details['message_body'] !!}
                 </p>
-                <a href="{{ $details['button_link'] }}" class="btn-link" style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: #001219; background: #ffffff; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
+                <a href="{{ $details['button_link'] }}" class="btn-link" style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: #ffffff; background: #ffffff; font-weight: 500; text-transform: capitalize; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #001219; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
                     {{ $details['button_level'] }}
                 </a>
 
@@ -66,7 +66,7 @@
                     <h3 class="title"
                         style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>
                     <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
-                    <a href="{{ $details['site_link'] }}" class="link" style="font-size: 14px; font-weight: 500; color: #ff0000; display: inline-block; margin-top: 10px; text-decoration: none;">
+                    <a href="{{ $details['site_link'] }}" class="link" style="font-size: 14px; font-weight: 500; color: #001219; display: inline-block; margin-top: 10px; text-decoration: none;">
                     Learn More
                     </a>
                 </div>

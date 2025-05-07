@@ -71,16 +71,11 @@ class EmailTemplateController extends Controller
 
     public function update(Request $request)
     {
-        // $message_body = $request->input('html_message_body');
-        // dd(str_replace(['{', '}'], ['<', '>'], $message_body));
         
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
             'message_body' => 'required',
         ]);
-
-
-        
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
@@ -91,14 +86,14 @@ class EmailTemplateController extends Controller
         $input = $request->all();
         $data = [
             'subject' => $input['subject'],
-            'message_body' => nl2br($input['message_body']),
+            'message_body' => html_entity_decode($request->html_message_body),
             'title' => $input['title'],
             'button_level' => $input['button_level'],
             'button_link' => $input['button_link'],
-            'footer_status' => $input['footer_status'] ?? 0,
-            'bottom_status' => $input['bottom_status'] ?? 0,
-            'bottom_title' => $input['bottom_title'] ?? null,
-            'bottom_body' => nl2br($input['bottom_body']) ?? null,
+            // 'footer_status' => $input['footer_status'] ?? 0,
+            // 'bottom_status' => $input['bottom_status'] ?? 0,
+            // 'bottom_title' => $input['bottom_title'] ?? null,
+            // 'bottom_body' => nl2br($input['bottom_body']) ?? null,
             'status' => $input['status'] ?? 0,
             // 'is_disclaimer' => $input['is_disclaimer'] ?? 0,
             // 'is_risk_warning' => $input['is_risk_warning'] ?? 0,

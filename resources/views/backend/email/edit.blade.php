@@ -3,6 +3,16 @@
     {{ __('Edit Email Template') }}
 @endsection
 @section('content')
+
+    <style>
+        .note-group-select-from-files {
+            display: none !important
+        }
+        .note-modal-content {
+            height: 230px;
+        }
+    </style>
+
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
@@ -99,9 +109,10 @@
                                 <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the main Messages here"></iconify-icon>
                             </label>
                             <div class="md:col-span-9 col-span-12">
-                                <textarea name="message_body" class="form-control" cols="30" rows="8">
-                                    {{ br2nl($template->message_body) }}
+                                <textarea name="message_body" class="summernote form-control" cols="30" rows="8">
+                                    {!! $template->message_body !!}
                                 </textarea>
+                                <input type="hidden" name="html_message_body" class="html-message-body"/>
                             </div>
                         </div>
                         {{-- <input type="hidden" name="html_message_body" class="html-message-body"/> --}}
@@ -117,68 +128,22 @@
                                 <input type="text" name="button_link" class="form-control" value="{{ $template->button_link }}" required/>
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Secondary Message Body') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Newslatter Bottom Status"></iconify-icon>
-                            </label>
-                            <div class="md:col-span-9 col-span-12">
-                                <div class="input-area mb-5">
-                                    <div class="form-switch ps-0">
-                                        <input type="hidden" value="0" name="bottom_status">
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer secondary_message__toggle">
-                                            <input type="checkbox" name="bottom_status" value="1" class="sr-only peer" @checked( $template->bottom_status)>
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="input-area mb-5" id="secondary_message__body">
-                                    <textarea name="bottom_body" class="form-control" cols="30" rows="8">
-                                        {{ br2nl($template->bottom_body) }}
-                                    </textarea>
-                                </div>
-
-                                <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
-                                    <div class="flex items-center space-x-7 flex-wrap">
-                                        <label class="form-label !w-auto pt-0">
-                                            {{ __('Template Status') }}
-                                        </label>
-                                        <div class="form-switch ps-0">
-                                            <input type="hidden" value="0" name="status">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($template->status)>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    {{-- <div class="flex items-center space-x-7 flex-wrap">
-                                        <label class="form-label !w-auto pt-0">
-                                            {{ __('Disclaimer') }}
-                                        </label>
-                                        <div class="form-switch ps-0">
-                                            <input type="hidden" value="0" name="is_disclaimer">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                <input type="checkbox" name="is_disclaimer" value="1" class="sr-only peer" @checked($template->is_disclaimer)>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-7 flex-wrap">
-                                        <label class="form-label !w-auto pt-0">
-                                            {{ __('Risk Warning') }}
-                                        </label>
-                                        <div class="form-switch ps-0">
-                                            <input type="hidden" value="0" name="is_risk_warning">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                <input type="checkbox" name="is_risk_warning" value="1" class="sr-only peer" @checked($template->is_risk_warning)>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </div> --}}
+                        <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+                            <div class="flex items-center space-x-7 flex-wrap">
+                                <label class="form-label !w-auto pt-0">
+                                    {{ __('Template Status') }}
+                                </label>
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="status">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($template->status)>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </div>
+
                         </div>
+                        
                         <div class="text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}

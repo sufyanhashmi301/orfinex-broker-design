@@ -156,6 +156,46 @@
     localStorage.contentLayout = "container";
   });
 
+  // Summernote editor
+  $('.summernote').summernote({
+    height: 300,
+    minHeight: null,
+    maxHeight: null,
+    focus: true,
+    dialogsInBody: true,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'insertImageURL']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+    ],
+    callbacks: {
+        onChange: function(contents, $editable) {
+
+            var markupStr = contents;
+            markupStr = $('<div>').text(markupStr).html()
+
+            var html_container = $('.html-message-body')
+
+            html_container.val(markupStr);
+        },
+        onImageLinkInsert: function(url) {
+            var $img = $('<img>').attr({ src: url });
+
+            $img.css({
+                width: '100%',
+                height: 'auto'
+            });
+
+            $(this).summernote('insertNode', $img[0]);
+        }
+    }
+  });
+
   // Menu Layout toggle
   if (localStorage.menuLayout == "horizontalMenu") {
     // $(".app-wrapper").addClass(localStorage.menuLayout);

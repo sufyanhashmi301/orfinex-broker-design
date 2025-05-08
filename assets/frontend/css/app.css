@@ -15830,6 +15830,9 @@ ul.custom-list ul li{
   .sm\:flex{
     display: flex;
   }
+  .sm\:flex-row{
+    flex-direction: row;
+  }
   .sm\:max-w-\[604px\]{
     max-width: 604px;
   }
@@ -16885,6 +16888,9 @@ ul.custom-list ul li{
   left: 50%;
   background-color: #7c7474b3;
   transform: translateY(100%);
+}
+.hv-wrapper .hv-item .hv-item-parent.hide-line:after{
+    display: none;
 }
 
 .hv-wrapper .hv-item .hv-item-children {

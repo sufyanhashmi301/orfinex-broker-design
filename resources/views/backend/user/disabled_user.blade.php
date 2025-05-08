@@ -14,6 +14,9 @@
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
+                    <input type="text" name="staff_name" id="staff_name" class="form-control h-full" placeholder="Staff Name">
+                </div>
+                <div class="flex-1 input-area relative">
                     <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
                 </div>
                 <div class="flex-1 input-area relative">
@@ -144,6 +147,7 @@
                     data: function (d) {
                         d.global_search = $('#global_search').val();
                         d.phone = $('#phone').val();
+                        d.staff_name = $('#staff_name').val();
                         d.country = $('#country').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
@@ -193,6 +197,9 @@
                     return false;
                 }
             });
+            $('#staff_name').keyup(function() {
+    table.draw();
+});
             $('#filter').click(function () {
                 table.draw();
             });

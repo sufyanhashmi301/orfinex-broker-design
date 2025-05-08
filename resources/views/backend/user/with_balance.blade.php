@@ -11,6 +11,9 @@
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
+                    <input type="text" name="staff_name" id="staff_name" class="form-control h-full" placeholder="Staff Name">
+                </div>
+                <div class="flex-1 input-area relative">
                     <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
                 </div>
                 <div class="flex-1 input-area relative">
@@ -143,6 +146,7 @@
                         d.global_search = $('#global_search').val();
                         d.phone = $('#phone').val();
                         d.country = $('#country').val();
+                        d.staff_name = $('#staff_name').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
                         d.tag = $('#tag').val();
@@ -193,6 +197,9 @@
             $('#filter').click(function () {
                 table.draw();
             });
+            $('#staff_name').keyup(function() {
+    table.draw();
+});
 
             $('#country').select2({
                 placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute

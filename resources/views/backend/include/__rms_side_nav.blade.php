@@ -2,12 +2,16 @@
 <div class="logo-segment">
     <a class="flex items-center" href="{{route('admin.dashboard')}}">
         @php
-            $logoSrc = setting('site_favicon','global')
-                ? asset(setting('site_favicon','global'))
+            $logoSrcLight = setting('site_mobile_logo_light', 'theme')
+                ? asset(setting('site_mobile_logo_light', 'theme'))
                 : asset('backend/images/example_favicon.png');
+
+            $logoSrcDark = setting('site_mobile_logo', 'theme')
+                ? asset(setting('site_mobile_logo', 'theme'))
+                : asset('backend/images/example_favicon_dark.png');
         @endphp
-        <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
-        <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
+        <img src="{{ $logoSrcDark }}" class="black_logo h-8" alt="logo">
+        <img src="{{ $logoSrcLight }}" class="white_logo h-8" alt="logo">
         <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('Risk Hub') }}
         </span>

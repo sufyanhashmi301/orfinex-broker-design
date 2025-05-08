@@ -156,48 +156,52 @@ class IBController extends Controller
 }
 
     public function IbApprovedList(Request $request)
-{
-    if ($request->ajax()) {
-        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-        $loggedInUser = auth()->user();
+    {
+        if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+            $loggedInUser = auth()->user();
 
-        // Check if the user can view all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+            // Check if the user can view all users
+            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
 
-        // Initialize query
-        $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+            // Initialize query
+            $data = User::with('ibGroup')->where('ib_status', IBStatus::APPROVED)->latest();
 
-        if (!$canViewAllUsers) {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
+            if (!$canViewAllUsers) {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
 
-            if ($attachedUserIds->isNotEmpty()) {
-                $data->whereIn('id', $attachedUserIds);
-            } else {
-                // If no users are attached, return an empty collection
-                return Datatables::of(collect([]))->make(true);
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data->whereIn('id', $attachedUserIds);
+                } else {
+                    // If no users are attached, return an empty collection
+                    return Datatables::of(collect([]))->make(true);
+                }
             }
+
+            // Apply additional filters
+            $data->applyFilters($filters);
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('username', function ($row) {
+                    return view('backend.user.include.__user', compact('row'))->render();
+                })
+                ->addColumn('email', 'backend.user.include.__email')
+                ->addColumn('ib_group_name', function ($row) {
+                    return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
+                })
+                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+                ->addColumn('action', function ($user) {
+                    return view('backend.ib.include.__action', ['user' => $user]);
+                })
+                ->rawColumns(['username', 'email', 'ib_group_name', 'ib_status', 'action'])
+                ->make(true);
         }
 
-        // Apply additional filters
-        $data->applyFilters($filters);
-
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('username', function ($row) {
-                return view('backend.user.include.__user', compact('row'))->render();
-            })             ->addColumn('email', 'backend.user.include.__email')
-            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-            ->addColumn('action', function ($user) {
-                return view('backend.ib.include.__action', ['user' => $user]);
-            })
-            ->rawColumns(['username', 'email', 'ib_status', 'action'])
-            ->make(true);
+        $ibGroups = IbGroup::where('status', 1)->get();
+        return view('backend.ib.approved', compact('ibGroups'));
     }
-
-    $ibGroups = IbGroup::where('status', 1)->get();
-    return view('backend.ib.approved', compact('ibGroups'));
-}
 
 
     public function IbRejectedList(Request $request)

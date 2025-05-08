@@ -275,9 +275,25 @@ class ReferralController extends Controller
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
+                ->addColumn('real_forex_accounts', function ($user) {
+                    $accounts = $user->realTradingAccounts;
+                    if ($accounts->isEmpty()) {
+                        return '<span class="text-muted">-</span>';
+                    }
+                    return $accounts->map(function ($account) {
+                        try {
+                            $equity = get_mt5_account_balance($account->login);
+                        } catch (\Throwable $e) {
+                            $equity = 'Error';
+                        }
+
+                        return "Login: {$account->login}, Balance: " . (is_numeric($equity) ? number_format($equity, 2) : $equity);
+                    })->implode('<br>');
+                })
+
                 ->editColumn('balance', 'backend/user/include/__total_balance_mt5')
                 ->addColumn('action', 'backend.user.include.__direct_referral_action')
-                ->rawColumns(['avatar', 'kyc','balance', 'status', 'action'])
+                ->rawColumns(['avatar', 'kyc','real_forex_accounts','balance', 'status', 'action'])
                 ->make(true);
         }
     }

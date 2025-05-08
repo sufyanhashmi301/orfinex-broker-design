@@ -38,7 +38,8 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Phone') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Accounts') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Total Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -79,6 +80,7 @@
                 columns: [
                     {data: 'avatar', name: 'avatar'},
                     {data: 'phone', name: 'phone'},
+                    {data: 'real_forex_accounts', name: 'real_forex_accounts'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},

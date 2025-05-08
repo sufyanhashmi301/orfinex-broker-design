@@ -5,12 +5,16 @@
             <div class="flex items-center md:space-x-4 space-x-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
                 <a href="{{route('home')}}" class="mobile-logo xl:hidden flex items-center">
                     @php
-                        $logoSrc = setting('site_favicon','global')
-                            ? asset(setting('site_favicon','global'))
+                        $logoSrcLight = setting('site_mobile_logo_light', 'theme')
+                            ? asset(setting('site_mobile_logo_light', 'theme'))
                             : asset('backend/images/example_favicon.png');
+
+                        $logoSrcDark = setting('site_mobile_logo', 'theme')
+                            ? asset(setting('site_mobile_logo', 'theme'))
+                            : asset('backend/images/example_favicon_dark.png');
                     @endphp
-                    <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
-                    <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
+                    <img src="{{ $logoSrcDark }}" class="black_logo h-8" alt="logo">
+                    <img src="{{ $logoSrcLight }}" class="white_logo h-8" alt="logo">
                     <span class="logo-title ltr:ml-3 rtl:mr-3 text-lg font-Inter font-medium text-white">
                         {{ __('Backoffice') }}
                     </span>

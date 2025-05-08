@@ -95,7 +95,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();
-        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
 
         if ($request->ajax()) {
          // Check if the logged-in user is a Super-Admin
@@ -118,7 +118,34 @@ class UserController extends Controller
                 $data = User::where('id', -1); // Return an empty result set
             }
         }
-
+ // Apply staff name filter if present
+ if (!empty($filters['staff_name'])) {
+    $data->whereHas('staff', function($query) use ($filters) {
+        $searchTerm = $filters['staff_name'];
+        
+        // Check if search term contains a space (possible first + last name)
+        if (str_contains($searchTerm, ' ')) {
+            $nameParts = explode(' ', $searchTerm, 2);
+            $query->where(function($subQuery) use ($nameParts) {
+                $subQuery->where(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
+                    })
+                    ->orWhere(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
+                    });
+            });
+        } else {
+            // Single term search
+            $query->where(function($subQuery) use ($searchTerm) {
+                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
+            });
+        }
+    });
+}
         $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -201,7 +228,7 @@ class UserController extends Controller
     public function activeUser(Request $request)
     {
         $loggedInUser = auth()->user();
-        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
         if ($request->ajax()) {
 
             // Check if the logged-in user is a Super-Admin
@@ -225,7 +252,34 @@ class UserController extends Controller
                     $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-
+// Apply staff name filter if present
+if (!empty($filters['staff_name'])) {
+    $data->whereHas('staff', function($query) use ($filters) {
+        $searchTerm = $filters['staff_name'];
+        
+        // Check if search term contains a space (possible first + last name)
+        if (str_contains($searchTerm, ' ')) {
+            $nameParts = explode(' ', $searchTerm, 2);
+            $query->where(function($subQuery) use ($nameParts) {
+                $subQuery->where(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
+                    })
+                    ->orWhere(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
+                    });
+            });
+        } else {
+            // Single term search
+            $query->where(function($subQuery) use ($searchTerm) {
+                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
+            });
+        }
+    });
+}
 
             // Apply additional filters if any
             $data->applyFilters($filters);
@@ -260,7 +314,7 @@ class UserController extends Controller
         $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+            $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
 
              // Super-Admin sees all disabled users
         if ($loggedInUser->hasRole('Super-Admin')) {
@@ -283,6 +337,34 @@ class UserController extends Controller
                 $data = User::where('id', -1); // Returns an empty dataset
             }
         }
+        // Apply staff name filter if present
+ if (!empty($filters['staff_name'])) {
+    $data->whereHas('staff', function($query) use ($filters) {
+        $searchTerm = $filters['staff_name'];
+        
+        // Check if search term contains a space (possible first + last name)
+        if (str_contains($searchTerm, ' ')) {
+            $nameParts = explode(' ', $searchTerm, 2);
+            $query->where(function($subQuery) use ($nameParts) {
+                $subQuery->where(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
+                    })
+                    ->orWhere(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
+                    });
+            });
+        } else {
+            // Single term search
+            $query->where(function($subQuery) use ($searchTerm) {
+                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
+            });
+        }
+    });
+}
             $data->applyFilters($filters);
 
             return Datatables::of($data)
@@ -423,7 +505,7 @@ class UserController extends Controller
     public function gracePeriodUsers(Request $request)
     {
         $loggedInUser = auth()->user();
-        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
 //        dd($request->all());
         if ($request->ajax()) {
 
@@ -451,7 +533,34 @@ class UserController extends Controller
                     $data = User::where('id', -1); // Returns an empty dataset
                 }
             }
-
+// Apply staff name filter if present
+if (!empty($filters['staff_name'])) {
+    $data->whereHas('staff', function($query) use ($filters) {
+        $searchTerm = $filters['staff_name'];
+        
+        // Check if search term contains a space (possible first + last name)
+        if (str_contains($searchTerm, ' ')) {
+            $nameParts = explode(' ', $searchTerm, 2);
+            $query->where(function($subQuery) use ($nameParts) {
+                $subQuery->where(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
+                    })
+                    ->orWhere(function($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
+                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
+                    });
+            });
+        } else {
+            // Single term search
+            $query->where(function($subQuery) use ($searchTerm) {
+                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
+                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
+            });
+        }
+    });
+}
 
             // Apply additional filters if any
             $data->applyFilters($filters);

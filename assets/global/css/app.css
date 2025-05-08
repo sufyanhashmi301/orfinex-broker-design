@@ -16953,6 +16953,9 @@ ul.custom-list ul li{
   background-color: #7c7474b3;
   transform: translateY(100%);
 }
+.hv-wrapper .hv-item .hv-item-parent.hide-line:after{
+    display: none;
+}
 
 .hv-wrapper .hv-item .hv-item-children {
   display: flex;

@@ -118,7 +118,7 @@ class ProcessMasterIbBonusAdjustment extends Command
 
             $walletIds = Account::whereIn('user_id', $allUserIds)
                 ->where('balance', 'ib_wallet')
-                ->pluck('id')
+                ->pluck('wallet_id')
                 ->toArray();
 
             Transaction::whereIn('target_id', $walletIds)->delete();

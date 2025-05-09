@@ -6,16 +6,20 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Illuminate\Support\Facades\Auth;
 
 class withBalanceUsersExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
     protected $request;
+    protected $loggedInUser;
 
     public function __construct($request)
     {
         $this->request = $request;
+        $this->loggedInUser = Auth::user();
+
     }
 
     public function query()
@@ -28,7 +32,21 @@ class withBalanceUsersExport implements FromQuery, WithHeadings, WithMapping
                 $query->select('admins.id', 'admins.first_name', 'admins.last_name', 'admins.email');
             }])
             ->where('Balance', '>', 0); // Only users with positive balance
-
+ // Apply user visibility rules (same as in index method)
+ if ($this->loggedInUser->hasRole('Super-Admin')) {
+    // Super-Admin sees all users - no additional filtering needed
+} elseif ($this->loggedInUser->can('show-all-users-by-default-to-staff')) {
+    // Staff with permission sees all users - no additional filtering needed
+} else {
+    // Regular staff only sees attached users
+    $attachedUserIds = $this->loggedInUser->users->pluck('id');
+    if ($attachedUserIds->isNotEmpty()) {
+        $query->whereIn('id', $attachedUserIds);
+    } else {
+        // If no users are attached, return empty result
+        $query->where('id', -1);
+    }
+}
         // Apply staff name filter if present
         if (!empty($filters['staff_name'])) {
             $query->whereHas('staff', function($q) use ($filters) {

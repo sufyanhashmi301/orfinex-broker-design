@@ -3,13 +3,6 @@
     {{ __('Send Money') }}
 @endsection
 @section('content')
-    <div class="flex justify-end flex-wrap items-center mb-5">
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.send-money.log') }}" class="btn btn-primary inline-flex items-center">
-                {{ __('Transfer History') }}
-            </a>
-        </div>
-    </div>
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12">
             <div class="card hidden md:block mb-6">
@@ -32,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            
+
             @yield('send_money_content_internal')
 
         </div>

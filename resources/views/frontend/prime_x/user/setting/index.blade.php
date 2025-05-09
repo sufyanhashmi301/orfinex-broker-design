@@ -13,6 +13,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.withdraw.account*') }}">
+                            {{ __('Withdraw Accounts') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('user.setting.security') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.security') }}">
                             {{ __('Security') }}
                         </a>

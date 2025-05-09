@@ -16226,6 +16226,9 @@ ul.custom-list ul li{
   .lg\:flex{
     display: flex;
   }
+  .lg\:flex-row{
+    flex-direction: row;
+  }
   .lg\:hidden{
     display: none;
   }
@@ -17356,4 +17359,25 @@ ul.custom-list ul li{
     --tw-shadow: 0px 0px 1px rgba(40, 41, 61, 0.08), 0px 0.5px 2px rgba(96, 97, 112, 0.16);
     --tw-shadow-colored: 0px 0px 1px var(--tw-shadow-color), 0px 0.5px 2px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+}
+
+@media (max-width: 992px) {
+    .btn:not(.btn-sm) {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
 }

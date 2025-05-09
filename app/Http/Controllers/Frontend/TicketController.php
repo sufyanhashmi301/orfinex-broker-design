@@ -28,17 +28,18 @@ class TicketController extends Controller
         $resolvedTickets = Ticket::where('user_id', Auth::id())->resolved()->count();
         $labels = Label::visible()->pluck('name', 'id');
 
-        if ($request->ajax()) {
-            $ticketsQuery = Ticket::where('user_id', Auth::id());
+        $ticketsQuery = Ticket::where('user_id', Auth::id());
 
-            if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
-                if ($request->status == 'resolved'){
-                    $ticketsQuery->where('is_resolved', true);
-                }else{
-                    $ticketsQuery->where('status', $request->status);
-                }
+        if ($request->filled('status') && $request->status !== 'all') {
+            if ($request->status === 'resolved') {
+                $ticketsQuery->where('is_resolved', true);
+            } else {
+                $ticketsQuery->where('status', $request->status);
             }
+        }
 
+        // For DataTables (desktop)
+        if ($request->ajax() && $request->wantsJson()) {
             return Datatables::of($ticketsQuery)
                 ->addIndexColumn()
                 ->addColumn('title', 'frontend::ticket.include.__title')
@@ -48,7 +49,16 @@ class TicketController extends Controller
                 ->make(true);
         }
 
-        return view('frontend::ticket.index', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets', 'labels'));
+        // For mobile AJAX (HTML partial)
+        if ($request->ajax()) {
+            $tickets = $ticketsQuery->latest()->paginate(10)->appends($request->query());
+            $html = view('frontend::ticket.include.__mobile_cards', compact('tickets'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        $tickets = $ticketsQuery->latest()->paginate(10)->appends($request->query());
+
+        return view('frontend::ticket.index', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets', 'labels', 'tickets'));
 
     }
 

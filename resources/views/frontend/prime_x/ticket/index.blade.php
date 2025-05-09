@@ -3,16 +3,16 @@
     {{ __('Support Tickets') }}
 @endsection
 @section('content')
-    <div class="pageTitle grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
-        <div class="card">
+    <div class="pageTitle grid lg:grid-cols-4 grid-cols-2 gap-5 mb-5">
+        <div class="card relative">
             <div class="card-body p-5">
-                <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex flex-col md:flex-row items-center gap-3">
                     <div class="flex-none">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 text-center md:text-start">
                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                             {{ __('Total Tickets') }}
                         </div>
@@ -20,21 +20,28 @@
                             {{ $totalTickets }}
                         </div>
                     </div>
-                    <a href="javascript:;" data-status="all" class="widget-filter-status inline-flex items-center justify-center ml-auto">
-                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
+                    <div class="hidden md:flex">
+                        <a href="javascript:;" data-status="all" class="widget-filter-status stretched-link inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="flex md:hidden">
+                        <a href="javascript:;" data-status="all" class="mobile-filter stretched-link inline-flex items-center justify-center ml-auto">
+                            <span class="sr-only">{{ __('Mobile button') }}</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card relative">
             <div class="card-body p-5">
-                <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex flex-col md:flex-row items-center gap-3">
                     <div class="flex-none">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 text-center md:text-start">
                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                             {{ __('Closed Tickets') }}
                         </div>
@@ -42,21 +49,28 @@
                             {{ $closedTickets }}
                         </div>
                     </div>
-                    <a href="javascript:;" data-status="closed" class="widget-filter-status inline-flex items-center justify-center ml-auto">
-                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
+                    <div class="hidden md:flex">
+                        <a href="javascript:;" data-status="closed" class="widget-filter-status stretched-link inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="flex md:hidden">
+                        <a href="javascript:;" data-status="closed" class="mobile-filter stretched-link inline-flex items-center justify-center ml-auto">
+                            <span class="sr-only">{{ __('Mobile button') }}</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card relative">
             <div class="card-body p-5">
-                <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex flex-col md:flex-row items-center gap-3">
                     <div class="flex-none">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 text-center md:text-start">
                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                             {{ __('Open Tickets') }}
                         </div>
@@ -64,21 +78,28 @@
                             {{ $openTickets }}
                         </div>
                     </div>
-                    <a href="javascript:;" data-status="open" class="widget-filter-status inline-flex items-center justify-center ml-auto">
-                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
+                    <div class="hidden md:flex">
+                        <a href="javascript:;" data-status="open" class="widget-filter-status stretched-link inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="flex md:hidden">
+                        <a href="javascript:;" data-status="open" class="mobile-filter stretched-link inline-flex items-center justify-center ml-auto">
+                            <span class="sr-only">{{ __('Mobile button') }}</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card relative">
             <div class="card-body p-5">
-                <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex flex-col md:flex-row items-center gap-3">
                     <div class="flex-none">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-primary">
                             <iconify-icon icon="lucide:ticket"></iconify-icon>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 text-center md:text-start">
                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                             {{ __('Resolved Tickets') }}
                         </div>
@@ -86,9 +107,16 @@
                             {{ $resolvedTickets }}
                         </div>
                     </div>
-                    <a href="javascript:;" data-status="resolved" class="widget-filter-status inline-flex items-center justify-center ml-auto">
-                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
+                    <div class="hidden md:flex">
+                        <a href="javascript:;" data-status="resolved" class="widget-filter-status stretched-link inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="flex md:hidden">
+                        <a href="javascript:;" data-status="resolved" class="mobile-filter stretched-link inline-flex items-center justify-center ml-auto">
+                            <span class="sr-only">{{ __('Mobile button') }}</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,40 +131,40 @@
             </a>
         </div>
     </div>
-    <div class="grid grid-cols-12 gap-5">
-        <div class="col-span-12">
-            <div class="card">
-                <div class="card-body relative px-6 pt-0">
-                    <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                        <span class="col-span-8 hidden"></span>
-                        <span class="col-span-4 hidden"></span>
-                        <div class="inline-block min-w-full align-middle">
-                            <div class="overflow-hidden ">
-                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" class="table-th">{{ __('Ticket #') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Ticket Subject') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Requested On') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Priority') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+    <div class="card desktop-screen-show md:block hidden">
+        <div class="card-body relative px-6 pt-0">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class="col-span-8 hidden"></span>
+                <span class="col-span-4 hidden"></span>
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="table-th">{{ __('Ticket #') }}</th>
+                                <th scope="col" class="table-th">{{ __('Ticket Subject') }}</th>
+                                <th scope="col" class="table-th">{{ __('Requested On') }}</th>
+                                <th scope="col" class="table-th">{{ __('Priority') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Action') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="processingIndicator" class="text-center">
-                        {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
-                        <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
+    </div>
+
+    <div class="md:hidden block mobile-screen-show" id="mobile-ticket-list">
+        @include('frontend::ticket.include.__mobile_cards', ['tickets' => $tickets])
     </div>
 
     {{-- Modal for new ticket--}}
@@ -203,6 +231,42 @@
             $('#attach-input').change(function() {
                 var fileName = this.files[0] ? this.files[0].name : 'Choose a file or drop it here...';
                 $('#fileTile').text(fileName);
+            });
+        });
+
+        $(document).ready(function () {
+            function fetchTickets(status = 'all', page = 1) {
+                $.ajax({
+                    url: '{{ route("user.ticket.index") }}',
+                    type: 'GET',
+                    data: {
+                        status: status,
+                        page: page
+                    },
+                    beforeSend: function () {
+                        $('#mobile-ticket-list').html('<p class="text-center py-5">Loading...</p>');
+                    },
+                    success: function (response) {
+                        $('#mobile-ticket-list').html(response.html);
+                    },
+                    error: function () {
+                        $('#mobile-ticket-list').html('<p class="text-center py-5 text-red-500">Error loading tickets.</p>');
+                    }
+                });
+            }
+
+            // Filter buttons
+            $(document).on('click', '.mobile-filter', function () {
+                const status = $(this).data('status');
+                fetchTickets(status, 1);
+            });
+
+            // Pagination links (using event delegation)
+            $(document).on('click', '#mobile-ticket-list .pagination a', function (e) {
+                e.preventDefault();
+                let page = $(this).attr('href').split('page=')[1];
+                let status = $('.mobile-filter.btn-primary').data('status');
+                fetchTickets(status, page);
             });
         });
     </script>

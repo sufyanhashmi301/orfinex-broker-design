@@ -37,7 +37,7 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_mobile_logo', // unique name for field
-                'label' => 'Mobile Logo (Dark)', // you know what label it is
+                'label' => 'Mobile / Admin Logo (Dark)', // you know what label it is
                 'description' => 'Recommended Size 32 x 32',
                 'example_logo' => 'example_logo_dark.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
@@ -47,7 +47,7 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_mobile_logo_light', // unique name for field
-                'label' => 'Mobile Logo (Light)', // you know what label it is
+                'label' => 'Mobile / Admin Logo (Light)', // you know what label it is
                 'description' => 'Recommended Size 32 x 32',
                 'example_logo' => 'example_logo_light.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel

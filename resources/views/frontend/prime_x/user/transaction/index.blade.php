@@ -4,11 +4,11 @@
 @endsection
 @section('content')
     @include('frontend::user.transaction.include.__tabs_nav')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+    <div class="flex flex-col md:flex-row justify-between md:items-center flex-wrap mb-6">
+        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 md:mb-0">
             @yield('title')
         </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        <div class="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
             <div class="input-area relative">
                 <select id="transaction-date" class="form-control">
                     <option value="">{{ __('Select Days') }}</option>
@@ -134,52 +134,43 @@
                 <h4 class="card-title">{{ __('All Transactions') }}</h4>
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
-                <div class="filter mb-3">
-                    <form action="{{ route('user.history.transactions') }}" method="get">
-                        <div class="search flex items-center gap-2">
-                            <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
-                            <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
-                            <button type="submit" class="apply-btn h-10 btn btn-dark">
-                                <iconify-icon icon="lucide:search"></iconify-icon>
-                            </button>
-                        </div>
-                    </form>
-                    <form method="POST" action="{{ route('user.history.transactions.export') }}">
-                        @csrf
-                        <input type="hidden" name="query" value="{{ request('query') }}">
-                        <input type="hidden" name="date" value="{{ request('date') }}">
-                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                            {{ __('Export') }}
-                        </button>
-                    </form>
-                </div>
                 <div class="contents space-y-3">
                     @foreach($transactions as $transaction)
-                        <tr>
-                            <td class="table-td">
-                                <span class="block font-medium text-slate-700 dark:text-white">
-                                    {{ $transaction->description }}
-                                </span>
-                                <span class="block text-xs text-gray-500">
-                                {{ $transaction->display_time->format('M d, Y h:i A') }}
-                            </span>
-                            </td>
-                            <td class="table-td">{{ $transaction->tnx }}</td>
-                            <td class="table-td">{{ $transaction->target_id ?? '-' }}</td>
-                            <td class="table-td">{{ txn_type($transaction->type->value, ['+','-']) }}{{ number_format($transaction->amount, 2) }} {{ $currency }}</td>
-                            <td class="table-td">{{ $transaction->method ?? '-' }}</td>
-                            <td class="table-td">-{{ number_format($transaction->charge, 2) }} {{ $currency }}</td>
-                            <td class="table-td">
-                                @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <span class="badge badge-warning">{{ __('Pending') }}</span>
-                                @elseif($transaction->status->value == App\Enums\TxnStatus::Success->value)
-                                    <span class="badge badge-success">{{ __('Success') }}</span>
-                                @elseif($transaction->status->value == App\Enums\TxnStatus::Failed->value)
-                                    <span class="badge badge-danger">{{ __('Canceled') }}</span>
-                                @endif
-                            </td>
-                        </tr>
+                        <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                            <div class="transaction-left w-3/4">
+                                <div class="transaction-des">
+                                    <div class="transaction-title font-semibold dark:text-white mb-1">
+                                        {{ $transaction->description }}
+                                    </div>
+                                    <div class="transaction-id dark:text-white mb-1">
+                                        {{ $transaction->tnx }}
+                                    </div>
+                                    <div class="transaction-date dark:text-white mb-1">
+                                        {{ $transaction->display_time->format('M d, Y h:i A') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-right text-right">
+                                <div class="transaction-amount font-semibold dark:text-white mb-1">
+                                    {{ txn_type($transaction->type->value, ['+','-']) }}{{ number_format($transaction->amount, 2) }} {{ $currency }}
+                                </div>
+                                <div class="transaction-fee dark:text-white mb-1">
+                                    -{{ number_format($transaction->charge, 2) }} {{ $currency }}
+                                </div>
+                                <div class="transaction-gateway dark:text-white mb-1">
+                                    {{ $transaction->method ?? '-' }}
+                                </div>
+                                <div class="transaction-status">
+                                    @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
+                                        <span class="badge badge-warning">{{ __('Pending') }}</span>
+                                    @elseif($transaction->status->value == App\Enums\TxnStatus::Success->value)
+                                        <span class="badge badge-success">{{ __('Success') }}</span>
+                                    @elseif($transaction->status->value == App\Enums\TxnStatus::Failed->value)
+                                        <span class="badge badge-danger">{{ __('Canceled') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
                 {{ $transactions->onEachSide(1)->links() }}
@@ -216,13 +207,13 @@
                         }
                         $('.pagination-container').html(response.pagination);
                         $('#total-records').html(`
-                    {{ __('Showing') }}
-                        <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
-                    {{ __('to') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('of') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('results') }}
+                            {{ __('Showing') }}
+                            <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
+                            {{ __('to') }}
+                            <span class="font-medium">${response.total}</span>
+                            {{ __('of') }}
+                            <span class="font-medium">${response.total}</span>
+                            {{ __('results') }}
                         `);
 
                         // Store selections in localStorage
@@ -308,8 +299,6 @@
             // Attach pagination event initially
             attachPaginationEvents();
         });
-
-
 
     </script>
 @endsection

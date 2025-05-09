@@ -10,19 +10,19 @@
         <?php
             $login = request()->get('login');
         ?>
-        <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+        <div class="pageTitle flex flex-col md:flex-row justify-between md:items-center flex-wrap mb-6">
+            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 md:mb-0">
                 @yield('title')
             </h4>
-            <form action="{{ route('user.history.tradingAccounts') }}" method="get" class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <div class="input-area relative min-w-[170px]">
+            <form action="{{ route('user.history.tradingAccounts') }}" method="get" class="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
+                <div class="input-area relative">
                     <select name="type" class="form-control">
                         <option>{{ __('Select Type') }}</option>
                         <option value="trades-report" @if(request()->get('type') == 'trades-report' ) selected @endif>{{ __('Trades') }}</option>
                         <option value="balance-report" @if(request()->get('type') == 'balance-report' ) selected @endif>{{ __('Balance Report') }}</option>
                     </select>
                 </div>
-                <div class="input-area relative min-w-[170px]">
+                <div class="input-area relative">
                     <select name="login" class="form-control">
                         <option>{{ __('Select Account') }}</option>
                         @foreach($forexAccounts as $forexAccount)
@@ -30,7 +30,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="input-area relative min-w-[170px]">
+                <div class="input-area relative">
                     <input type="text" class="form-control flatpickr" name="start_date" value="{{ request()->get('start_date') }}"/>
                 </div>
                 <div class="input-area relative min-w-[170px]">

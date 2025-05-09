@@ -18,5 +18,6 @@ class VerifyCsrfToken extends Middleware
         '*telegram/webhook',
         '*outgoing-call',
         '*outbound.xml',
+        '*m2p/deposit/crypto-agent'
     ];
 }

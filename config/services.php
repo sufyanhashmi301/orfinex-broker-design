@@ -40,4 +40,10 @@ return [
         'industry_type' => env('PAYTM_INDUSTRY_TYPE'),
     ],
 
+    'match2pay' => [
+        'url' => env('M2P_API_URL'),
+        'key' => env('M2P_API_KEY'),
+        'secret' => env('M2P_API_SECRET'),
+    ],
+
 ];

@@ -8,6 +8,7 @@ use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\Match2PayController;
 use App\Http\Controllers\AccountBuyController;
 use App\Http\Controllers\AccountTrialController;
 use App\Http\Controllers\Frontend\IpnController;
@@ -50,6 +51,9 @@ Route::get('/verify-email')->name('verification.notice');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 
 Route::get('user/verification/automatic-kyc/update', [KycController::class, 'updateAutomaticKyc'])->name('user.verification.automatic_kyc.update');
+
+// M2Pay
+Route::post('/m2p/deposit/crypto-agent', [Match2PayController::class, 'testCryptoDeposit']);
 
 //User Part
 Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {

@@ -19,6 +19,7 @@ class Match2payTxn extends BaseTxn
             'headers' => [
                 'Content-Type' => 'application/json',
                 'accept' => 'application/json',
+                'origin' => "https://demo.brokeret.com/"
             ],
         ]);
 
@@ -50,9 +51,9 @@ class Match2payTxn extends BaseTxn
             'amount' => $this->amount,                 // Amount to deposit
 //            'currency' => 'USD',                       // Final currency (USD)
             'currency' => base_currency(),                       // Final currency (USD)
-            'paymentGatewayName' => $this->gatewayName, // Payment gateway used for crypto deposits
-            'paymentCurrency' => $this->payCurrency,   // Payment currency (e.g., USX)
-            'callbackUrl' => $this->callbackUrl,       // Callback URL for handling the response
+            'paymentGatewayName' => 'USDT TRC20', // Payment gateway used for crypto deposits
+            'paymentCurrency' => 'UST',   // Payment currency (e.g., USX)
+            'callbackUrl' => url('/') . '/ipn/match2pay',       // Callback URL for handling the response
             'apiToken' => $this->apiToken,             // API token for authorization
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
@@ -60,7 +61,7 @@ class Match2payTxn extends BaseTxn
 //dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
-
+        
         // Send the deposit request to Match2Pay API
         $response = $this->client->request('POST', $this->baseUrl . '/api/v2/deposit/crypto_agent', [
             'body' => json_encode($payload),

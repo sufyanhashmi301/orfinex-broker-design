@@ -15,6 +15,7 @@
       $(".sidebar-wrapper").addClass("menu-hide");
       $("#menuCollapse").hide();
       $(".app-header").addClass("margin-0");
+      $("#kycAlert").addClass("margin-0");
       $(".site-footer ").addClass("margin-0");
       $("#content_wrapper").addClass("margin-0");
       $(".sidebarCloseIcon").show();
@@ -24,6 +25,7 @@
       $(".sidebar-wrapper").removeClass("menu-hide");
       $("#menuCollapse").show();
       $(".app-header").removeClass("margin-0");
+      $("#kycAlert").removeClass("margin-0");
       $(".site-footer").removeClass("margin-0");
       $("#content_wrapper").removeClass("margin-0");
       $(".sidebarCloseIcon").hide();

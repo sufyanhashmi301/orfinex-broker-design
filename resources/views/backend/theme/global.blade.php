@@ -30,7 +30,7 @@
                                         @php
                                             $imageSrc = oldSetting($field['name'], $section)
                                                 ? asset(oldSetting($field['name'], $section))
-                                                : asset('backend/images/' . __($field['example_logo']));
+                                                : config('app.r2_asset_url') . '/' . ltrim(__($field['example_logo']), '/');
                                         @endphp
                                         <img src="{{ $imageSrc }}" class="{{ $field['name'] }}_preview_img inline-flex h-10">
                                         <div class="w-full border-t dark:border-slate-700 mt-auto pt-3">

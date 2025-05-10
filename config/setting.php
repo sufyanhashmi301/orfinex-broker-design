@@ -19,7 +19,7 @@ return [
                 'name' => 'site_logo', // unique name for field
                 'label' => 'Desktop Logo (Dark)', // you know what label it is
                 'description' => 'Recommended Size 160 x 40',
-                'example_logo' => 'example_logo_dark.png',
+                'example_logo' => 'fallback/branding/desktop-logo.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -29,7 +29,7 @@ return [
                 'name' => 'site_logo_light', // unique name for field
                 'label' => 'Desktop Logo (Light)', // you know what label it is
                 'description' => 'Recommended Size 160 x 40',
-                'example_logo' => 'example_logo_light.png',
+                'example_logo' => 'fallback/branding/desktop-logo.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -39,7 +39,7 @@ return [
                 'name' => 'site_mobile_logo', // unique name for field
                 'label' => 'Mobile / Admin Logo (Dark)', // you know what label it is
                 'description' => 'Recommended Size 32 x 32',
-                'example_logo' => 'example_logo_dark.png',
+                'example_logo' => 'fallback/branding/mobile-admin-logo.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -49,7 +49,7 @@ return [
                 'name' => 'site_mobile_logo_light', // unique name for field
                 'label' => 'Mobile / Admin Logo (Light)', // you know what label it is
                 'description' => 'Recommended Size 32 x 32',
-                'example_logo' => 'example_logo_light.png',
+                'example_logo' => 'fallback/branding/mobile-admin-logo.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -59,7 +59,7 @@ return [
                 'name' => 'site_favicon', // unique name for field
                 'label' => 'Site Favicon', // you know what label it is
                 'description' => 'Recommended Size 32 x 32',
-                'example_logo' => 'example_favicon.png',
+                'example_logo' => 'fallback/branding/favicon.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'image/logo.png', // default value if you want
             ],
@@ -69,7 +69,7 @@ return [
                 'name' => 'login_bg', // unique name for field
                 'label' => 'Admin Login Cover', // you know what label it is
                 'description' => 'Recommended Size 935 x 920',
-                'example_logo' => 'example_',
+                'example_logo' => 'fallback/branding/admin-login-cover.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
@@ -79,7 +79,7 @@ return [
                 'name' => 'link_thumbnail', // unique name for field
                 'label' => 'Link Thumbnail Image ', // you know what label it is
                 'description' => 'Recommended Size 1600 x 627',
-                'example_logo' => 'example_thumbnail_crm.png',
+                'example_logo' => 'fallback/branding/thumbnail.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
@@ -89,7 +89,7 @@ return [
                 'name' => 'default_transaction_method', // unique name for field
                 'label' => 'Default Transaction Image', // you know what label it is
                 'description' => 'Recommended Size 160 x 40',
-                'example_logo' => 'example_',
+                'example_logo' => 'fallback/branding/transaction-logo.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],

@@ -9,7 +9,7 @@
     <nav class="bg-white border-gray-200 py-5 dark:bg-gray-900">
         <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset(setting('site_logo', 'global')) }}" width="192" alt=""/>
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" width="192" alt=""/>
             </a>
             <div class="items-center justify-between hidden md:flex md:order-1" id="navbarSupportedContent">
                 <ul class="flex flex-col font-medium md:flex-row md:space-x-6">

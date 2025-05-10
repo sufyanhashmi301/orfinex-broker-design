@@ -236,66 +236,75 @@
     </div>
 
     <div class="md:hidden block mobile-screen-show">
-        <p class="text-slate-400 dark:text-slate-50 text-sm mb-1">
-
-        </p>
-        <!-- Transactions -->
-        <div class="card all-feature-mobile mobile-transactions mb-3">
-            <div class="card-body p-3 mobile-transaction-filter">
-                <div class="contents space-y-3">
-                    @foreach($wallets as $raw)
-                        <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
-                            <div class="transaction-left w-3/4">
-                                <div class="transaction-des">
-                                    <div class="transaction-title font-semibold dark:text-white mb-1">
-                                        {{ $raw->description }}
-                                        @if(!in_array($raw->approval_cause,['none',""]))
-                                            <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
-                                                <i icon-name="mail"></i>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="transaction-id dark:text-white mb-1">
-                                        {{ $raw->tnx }}
-                                    </div>
-                                    <div class="transaction-id dark:text-white mb-1">
-                                        {{ w2n_by_wallet_id($raw->target_id) }}
-                                    </div>
-                                    <div class="transaction-date dark:text-white mb-1">
-                                        {{ $raw->created_at }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="transaction-right text-right">
-                                <div class="transaction-amount font-semibold dark:text-white mb-1">
-                                    +{{$raw->amount.' '.$currency }}
-                                </div>
-                                <div class="transaction-fee dark:text-white mb-1">
-                                    -{{ $raw->charge }} {{ $currency }}
-                                </div>
-                                <div class="transaction-gateway dark:text-white mb-1">
-                                    {{transaction_method_name($raw)}}
-                                </div>
-                                <div class="transaction-status">
-                                    @switch($raw->status->value)
-                                        @case('pending')
-                                        <span class="badge badge-warning">{{ __('Pending') }}</span>
-                                        @break
-                                        @case('success')
-                                        <span class="badge badge-success">{{ __('Success') }}</span>
-                                        @break
-                                        @case('failed')
-                                        <span class="badge badge-danger">{{ __('canceled') }}</span>
-                                        @break
-                                    @endswitch
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                {{ $wallets->onEachSide(1)->links() }}
+        @if(count($wallets) == 0)
+            <div class="card flex items-center justify-center flex-col p-4">
+                <svg width="42" height="43" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="text-sm text-slate-600 dark:text-slate-100 my-3">
+                    {{ __("You don't have any transactions yet.") }}
+                </p>
             </div>
-        </div>
+        @else
+            <div class="card all-feature-mobile mobile-transactions mb-3">
+                <div class="card-body p-3 mobile-transaction-filter">
+                    <div class="contents space-y-3">
+                        @foreach($wallets as $raw)
+                            <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                                <div class="transaction-left w-3/4">
+                                    <div class="transaction-des">
+                                        <div class="transaction-title font-semibold dark:text-white mb-1">
+                                            {{ $raw->description }}
+                                            @if(!in_array($raw->approval_cause,['none',""]))
+                                                <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
+                                                    <i icon-name="mail"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <div class="transaction-id dark:text-white mb-1">
+                                            {{ $raw->tnx }}
+                                        </div>
+                                        <div class="transaction-id dark:text-white mb-1">
+                                            {{ w2n_by_wallet_id($raw->target_id) }}
+                                        </div>
+                                        <div class="transaction-date dark:text-white mb-1">
+                                            {{ $raw->created_at }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="transaction-right text-right">
+                                    <div class="transaction-amount font-semibold dark:text-white mb-1">
+                                        +{{$raw->amount.' '.$currency }}
+                                    </div>
+                                    <div class="transaction-fee dark:text-white mb-1">
+                                        -{{ $raw->charge }} {{ $currency }}
+                                    </div>
+                                    <div class="transaction-gateway dark:text-white mb-1">
+                                        {{transaction_method_name($raw)}}
+                                    </div>
+                                    <div class="transaction-status">
+                                        @switch($raw->status->value)
+                                            @case('pending')
+                                            <span class="badge badge-warning">{{ __('Pending') }}</span>
+                                            @break
+                                            @case('success')
+                                            <span class="badge badge-success">{{ __('Success') }}</span>
+                                            @break
+                                            @case('failed')
+                                            <span class="badge badge-danger">{{ __('canceled') }}</span>
+                                            @break
+                                        @endswitch
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{ $wallets->onEachSide(1)->links() }}
+                </div>
+            </div>
+        @endif
     </div>
 
 @endsection

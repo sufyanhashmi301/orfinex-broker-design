@@ -3,7 +3,7 @@
         {{ __('No Data Found') }}
     </p>
 @else
-    <div class="card desktop-screen-show md:block hidden">
+    <div class="card">
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto basicTable_wrapper -mx-6">
                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
@@ -64,13 +64,6 @@
                     @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-    <div class="md:hidden block mobile-screen-show">
-        <div class="card mb-3">
-            <div class="card-body p-3">
-
             </div>
         </div>
     </div>

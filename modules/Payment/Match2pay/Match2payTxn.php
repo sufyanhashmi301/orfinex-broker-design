@@ -8,6 +8,14 @@ use Txn;
 
 class Match2payTxn extends BaseTxn
 {
+    private $baseUrl;
+    private $client;
+    private $txnInfo;
+    private $payCurrency;
+    private $apiToken;
+    private $apiSecretKey;
+    private $gatewayName;
+
     public function __construct($txnInfo)
     {
         parent::__construct($txnInfo);
@@ -18,8 +26,7 @@ class Match2payTxn extends BaseTxn
         $this->client = new Client([
             'headers' => [
                 'Content-Type' => 'application/json',
-                'accept' => 'application/json',
-                'origin' => "https://demo.brokeret.com/"
+                'accept' => 'application/json'
             ],
         ]);
 
@@ -29,7 +36,6 @@ class Match2payTxn extends BaseTxn
         $this->payCurrency = $txnInfo->pay_currency;
         $this->apiToken = $credentials->api_token;
         $this->apiSecretKey = $credentials->secret_key;
-        $this->callbackUrl = url('/').'/ipn/match2pay'; // Your callback URL
 
         // Set the gateway based on the currency
         $this->gatewayName = $this->getPaymentGatewayName($this->payCurrency);
@@ -42,23 +48,20 @@ class Match2payTxn extends BaseTxn
      */
     public function deposit()
     {
-//        dd();
         // Generate timestamp in seconds
         $timestamp = Carbon::now()->timestamp;
 
         // Prepare the payload according to Match2Pay staging deposit request
         $payload = [
-            'amount' => $this->amount,                 // Amount to deposit
-//            'currency' => 'USD',                       // Final currency (USD)
+            'amount' => $this->amount,                 // Amount to deposit              // Final currency (USD)
             'currency' => base_currency(),                       // Final currency (USD)
-            'paymentGatewayName' => 'USDT TRC20', // Payment gateway used for crypto deposits
-            'paymentCurrency' => 'UST',   // Payment currency (e.g., USX)
+            'paymentGatewayName' => 'BTC', // Payment gateway used for crypto deposits
+            'paymentCurrency' => 'BTC',   // Payment currency (e.g., USX)
             'callbackUrl' => url('/') . '/ipn/match2pay',       // Callback URL for handling the response
             'apiToken' => $this->apiToken,             // API token for authorization
             'timestamp' => $timestamp,                 // Current timestamp
-            'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
+            'tradingAccountLogin' => '35433',       // Trading account login (transaction/order ID)
         ];
-//dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
         
@@ -73,6 +76,9 @@ class Match2payTxn extends BaseTxn
         $transaction->tnx = $data['paymentId'];
         $transaction->manual_field_data = $data;
         $transaction->save();
+
+        // $data['checkoutUrl'] = str_replace('pp-staging', 'pp-staging-micro', $data['checkoutUrl']);
+    
         // Handle response (get the checkout URL and other details)
         if (isset($data['checkoutUrl'])) {
             $checkoutUrl = $data['checkoutUrl'];

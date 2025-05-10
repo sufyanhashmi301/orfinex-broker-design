@@ -37,6 +37,7 @@ class Match2payTxn extends BaseTxn
         $this->apiToken = $credentials->api_token;
         $this->apiSecretKey = $credentials->secret_key;
 
+
         // Set the gateway based on the currency
         $this->gatewayName = $this->getPaymentGatewayName($this->payCurrency);
     }
@@ -55,8 +56,8 @@ class Match2payTxn extends BaseTxn
         $payload = [
             'amount' => $this->amount,                 // Amount to deposit              // Final currency (USD)
             'currency' => base_currency(),                       // Final currency (USD)
-            'paymentGatewayName' => 'BTC', // Payment gateway used for crypto deposits
-            'paymentCurrency' => 'BTC',   // Payment currency (e.g., USX)
+            'paymentGatewayName' => $this->gatewayName, // Payment gateway used for crypto deposits
+            'paymentCurrency' => $this->payCurrency,   // Payment currency (e.g., USX)
             'callbackUrl' => url('/') . '/ipn/match2pay',       // Callback URL for handling the response
             'apiToken' => $this->apiToken,             // API token for authorization
             'timestamp' => $timestamp,                 // Current timestamp
@@ -77,7 +78,13 @@ class Match2payTxn extends BaseTxn
         $transaction->manual_field_data = $data;
         $transaction->save();
 
-        // $data['checkoutUrl'] = str_replace('pp-staging', 'pp-staging-micro', $data['checkoutUrl']);
+        if(str_contains($data['checkoutUrl'], 'pp-staging')) {
+            $data['checkoutUrl'] = str_replace('pp-staging', 'pp-staging-micro', $data['checkoutUrl']);
+        }
+
+        if(str_contains($data['checkoutUrl'], 'localhost')) {
+            $data['checkoutUrl'] = str_replace('https', 'http', $data['checkoutUrl']);
+        }
     
         // Handle response (get the checkout URL and other details)
         if (isset($data['checkoutUrl'])) {

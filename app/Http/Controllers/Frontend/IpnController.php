@@ -140,34 +140,23 @@ class IpnController extends Controller
                 // Handle pending payments
                 $txnInfo->update([
                     'status' => TxnStatus::Pending,
-//                    'txid' => $txid,
                     'manual_field_data' => $input,
                     'approval_cause' => 'Transaction is pending',
                 ]);
 
-//                return redirect()
-//                    ->route('user.deposit.now')
-//                    ->with('info', 'Payment is pending. Please wait for confirmation.');
+               return redirect()
+                   ->route('user.deposit.now')
+                   ->with('info', 'Payment is pending. Please wait for confirmation.');
 
             case 'DONE':
                 $txnInfo->update([
-//                    'txid' => $txid,
                     'manual_field_data' => $input,
                     'approval_cause' => 'Transaction is Completed',
                 ]);
                 // Call the payment success method
                 self::paymentSuccess($paymentId);
 
-//                $txnInfo->update([
-//                    'status' => TxnStatus::Completed,
-//                    'txid' => $txid,
-//                    'confirmations' => $confirmations,
-//                    'approval_cause' => 'Transaction completed successfully',
-//                ]);
-
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('success', 'Payment approved and processed successfully.');
+                // return redirect()->route('user.investments.index');
 
             case 'DECLINED':
                 // Handle declined payments

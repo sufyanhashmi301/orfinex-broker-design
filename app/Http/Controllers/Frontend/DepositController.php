@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Txn;
+use URL;
 use Validator;
 use Carbon\Carbon;
 use App\Enums\TxnType;
@@ -15,12 +16,13 @@ use App\Models\ForexAccount;
 use Illuminate\Http\Request;
 use App\Models\DepositMethod;
 use App\Traits\ForexApiTrait;
+use App\Enums\InvestmentStatus;
 use Illuminate\Validation\Rule;
 use App\Enums\ForexAccountStatus;
-use App\Enums\InvestmentStatus;
 use App\Services\ForexApiService;
 use App\Models\ForexSchemaPhaseRule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Models\AccountTypeInvestment;
 use App\Enums\PricingInvestmentStatus;
 use App\Rules\ForexLoginBelongsToUser;

@@ -2,63 +2,74 @@
 
 namespace App\Traits;
 
-use App\Enums\InvestStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Models\DepositMethod;
-use App\Models\Invest;
-use App\Models\LevelReferral;
-use App\Models\Transaction;
-use App\Services\ForexSchemaInvestormService;
-use charlesassets\LaravelPerfectMoney\PerfectMoney;
+use Txn;
+use URL;
+use Session;
 use Exception;
+use App\Enums\TxnType;
+use App\Models\Invest;
+use App\Enums\TxnStatus;
+use App\Enums\InvestStatus;
+use App\Models\Transaction;
+use Payment\Paytm\PaytmTxn;
+use App\Models\DepositMethod;
+use App\Models\LevelReferral;
+use Payment\Mollie\MollieTxn;
+use Payment\Paypal\PaypalTxn;
+use Payment\Stripe\StripeTxn;
 use Payment\Binance\BinanceTxn;
-use Payment\Blockchain\BlockchainTxn;
 use Payment\BlockIo\BlockIoTxn;
-use Payment\Bridgerpay\BridgerpayTxn;
-use Payment\Btcpayserver\BtcpayserverTxn;
+use Payment\Monnify\MonnifyTxn;
 use Payment\Cashmaal\CashmaalTxn;
 use Payment\Coinbase\CoinbaseTxn;
 use Payment\Coingate\CoingateTxn;
-use Payment\Coinpayments\CoinpaymentsTxn;
-use Payment\Coinremitter\CoinremitterTxn;
+use Payment\Paymongo\PaymongoTxn;
+use Payment\Razorpay\RazorpayTxn;
 use Payment\Cryptomus\CryptomusTxn;
-use Payment\Flutterwave\FlutterwaveTxn;
 use Payment\Instamojo\InstamojoTxn;
 use Payment\Match2pay\Match2payTxn;
-use Payment\Mollie\MollieTxn;
-use Payment\Monnify\MonnifyTxn;
+use Payment\Blockchain\BlockchainTxn;
+use Payment\Bridgerpay\BridgerpayTxn;
+use Payment\Flutterwave\FlutterwaveTxn;
 use Payment\Nowpayments\NowpaymentsTxn;
-use Payment\Paymongo\PaymongoTxn;
-use Payment\Paypal\PaypalTxn;
-use Payment\Paytm\PaytmTxn;
-use Payment\Perfectmoney\PerfectmoneyTxn;
-use Payment\Razorpay\RazorpayTxn;
 use Payment\Securionpay\SecurionpayTxn;
-use Payment\Stripe\StripeTxn;
 use Payment\Twocheckout\TwocheckoutTxn;
-use Session;
-use Txn;
-use URL;
+use App\Services\AccountActivityService;
+use App\Enums\AccountActivityStatusEnums;
+use Payment\Btcpayserver\BtcpayserverTxn;
+use Payment\Coinpayments\CoinpaymentsTxn;
+use Payment\Coinremitter\CoinremitterTxn;
+use Payment\Perfectmoney\PerfectmoneyTxn;
+use App\Services\ForexSchemaInvestormService;
+use charlesassets\LaravelPerfectMoney\PerfectMoney;
+use App\Services\AccountTypeInvestmentPaymentService;
 
 trait Payment
 {
+
+    private $investment_payment;
+
+
+    public function __construct(AccountTypeInvestmentPaymentService $investment_payment)
+    {
+        $this->investment_payment = $investment_payment;
+    }
+
     //automatic deposit gateway snippet
     protected function depositAutoGateway($gateway, $txnInfo)
     {
         $txn = $txnInfo->tnx;
         Session::put('deposit_tnx', $txn);
         $gateway = DepositMethod::code($gateway)->first()->gateway->gateway_code ?? 'none';
-//        dd($gateway);
+        //        dd($gateway);
 
         $gatewayTxn = self::gatewayMap($gateway, $txnInfo);
-//        dd($txnInfo,$gatewayTxn);
+        //        dd($txnInfo,$gatewayTxn);
         if ($gatewayTxn) {
             return $gatewayTxn->deposit();
         }
 
         return self::paymentNotify($txn, 'pending');
-
     }
 
     //automatic withdraw gateway snippet
@@ -66,18 +77,18 @@ trait Payment
     {
 
         $gatewayTxn = self::gatewayMap($gatewayCode, $txnInfo);
-//            dd($gatewayTxn,config('app.demo'));
+        //            dd($gatewayTxn,config('app.demo'));
         if ($gatewayTxn && config('app.demo') == 0) {
-//            dd('demo');
+            //            dd('demo');
             $gatewayTxn->withdraw();
         }
-//        dd('real');
+        //        dd('real');
         $symbol = setting('currency_symbol', 'global');
         $notify = [
             'card-header' => 'Withdraw Money',
-            'title' => $symbol.$txnInfo->amount.' Withdraw Request Successful',
+            'title' => $symbol . $txnInfo->amount . ' Withdraw Request Successful',
             'p' => 'The Withdraw Request has been successfully sent',
-            'strong' => 'Transaction ID: '.$txnInfo->tnx,
+            'strong' => 'Transaction ID: ' . $txnInfo->tnx,
             'action' => route('user.withdraw.view'),
             'a' => 'WITHDRAW REQUEST AGAIN',
             'view_name' => 'withdraw',
@@ -85,7 +96,6 @@ trait Payment
         Session::put('user_notify', $notify);
 
         return redirect()->route('user.notify');
-
     }
 
     //automatic payment notify snippet
@@ -108,25 +118,7 @@ trait Payment
         }
 
         $status = ucfirst($status);
-        if ($tnxInfo->type == TxnType::Investment) {
-
-            $shortcodes = [
-                '[[full_name]]' => $tnxInfo->user->full_name,
-                '[[txn]]' => $tnxInfo->tnx,
-                '[[plan_name]]' => $tnxInfo->invest->schema->name,
-                '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-            ];
-
-            $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
-            $this->pushNotify('user_investment', $shortcodes, route('user.invest-logs'), $tnxInfo->user->id);
-            $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
-
-            notify()->success($investNotifyTitle, $status);
-
-            return redirect()->route('user.invest-logs');
-        }
+        
 
         $symbol = setting('currency_symbol', 'global');
 
@@ -134,7 +126,7 @@ trait Payment
             'card-header' => "$status Your Payment Process",
             'title' => "$symbol $tnxInfo->amount Payment $title",
             'p' => "The amount has been $title added into your account",
-            'strong' => 'Transaction ID: '.$tnx,
+            'strong' => 'Transaction ID: ' . $tnx,
             'action' => route('user.deposit.amount'),
             'a' => 'Deposit again',
             'view_name' => 'deposit',
@@ -160,63 +152,32 @@ trait Payment
         $isStepTwo = 'current';
         Session::put('user_notify', $notify);
         return redirect()->route('user.notify');
-
     }
 
     //automatic payment success snippet
     protected function paymentSuccess($ref, $isRedirect = true)
     {
-        $txnInfo = Transaction::tnx($ref);
+        $transaction = Transaction::tnx($ref);
 
-        if ($txnInfo->status == TxnStatus::Success) {
+        if ($transaction->status == TxnStatus::Success) {
             return false;
         }
 
-        if ($txnInfo->type == TxnType::Investment) {
+        $new_account = $this->investment_payment->investmentActive($transaction->target_id);
+        AccountActivityService::log($new_account, AccountActivityStatusEnums::ACTIVE);
+        Txn::update($ref, TxnStatus::Success, $transaction->user_id);
 
-            $investmentInfo = Invest::where('transaction_id', $txnInfo->id)->first();
-            $investmentInfo->update([
-                'status' => InvestStatus::Ongoing,
-                'created_at' => now(),
-            ]);
+        // $investment = new ForexSchemaInvestormService();
+        // $investment->approveInvestment($txnInfo->target_id);
 
-            $txnInfo->update([
-                'status' => TxnStatus::Success,
-            ]);
 
-            if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
-                $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-                creditReferralBonus($txnInfo->user, 'investment', $txnInfo->amount, $level);
-            }
-
-            if ($isRedirect) {
-                notify()->success('Successfully Investment', 'success');
-
-                return redirect()->route('user.invest-logs');
-            }
-
-        } else {
-
-//            $txnInfo->update([
-//                'status' => TxnStatus::Success,
-//            ]);
-            $investment = new ForexSchemaInvestormService();
-            $investment->approveInvestment($txnInfo->target_id);
-
-            Txn::update($ref, TxnStatus::Success, $txnInfo->user_id);
-
-//            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-//                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-//                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
-//            }
-
-            if ($isRedirect) {
-                return redirect(URL::temporarySignedRoute(
-                    'status.success', now()->addMinutes(2)
-                ));
-            }
-
+        if ($isRedirect) {
+            notify()->success('Payment Successful');
+            return redirect(URL::temporarySignedRoute(
+                'user.investments.index', now()->addMinutes(2)
+            ));
         }
+
     }
 
     //automatic gateway map snippet
@@ -251,12 +212,11 @@ trait Payment
             'bridgerpay' => BridgerpayTxn::class,
             'match2pay' => Match2payTxn::class,
         ];
-//dd($gateway,$gatewayMap,$txnInfo);
+        //dd($gateway,$gatewayMap,$txnInfo);
         if (array_key_exists($gateway, $gatewayMap)) {
             return app($gatewayMap[$gateway], ['txnInfo' => $txnInfo]);
         }
 
         return false;
-
     }
 }

@@ -16,13 +16,13 @@ class PermissionSeeder extends Seeder
     public function run()
     {
        // Disable foreign key checks
-       DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-       // Truncate the permissions table
-       DB::table('permissions')->truncate();
-
-       // Re-enable foreign key checks
-       DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+//       DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//
+//       // Truncate the permissions table
+//       DB::table('permissions')->truncate();
+//
+//       // Re-enable foreign key checks
+//       DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $permissions = [
 
@@ -92,6 +92,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Staff Management', 'name' => 'staff-list'],
             ['category' => 'Staff Management', 'name' => 'staff-create'],
             ['category' => 'Staff Management', 'name' => 'staff-edit'],
+            ['category' => 'Staff Management', 'name' => 'staff-edit-role'],
             ['category' => 'Staff Management', 'name' => 'staff-delete'],
             ['category' => 'Staff Management', 'name' => 'staff-login'],
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-list'],
@@ -341,6 +342,10 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Notification Setting', 'name' => 'notification-list'],
             ['category' => 'Notification Setting', 'name' => 'notification-action'],
+
+            ['category' => 'Notification Tune Setting', 'name' => 'deposit-notification'],
+            ['category' => 'Notification Tune Setting', 'name' => 'withdraw-notification'],
+            ['category' => 'Notification Tune Setting', 'name' => 'transfer-notification'],
 
             ['category' => 'Integrations Setting', 'name' => 'api-access-setting'],
             ['category' => 'Integrations Setting', 'name' => 'web-hooks-setting'],

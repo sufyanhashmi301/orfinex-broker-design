@@ -10,12 +10,9 @@
         <div class="text-center space-y-4">
             <a href="{{ route('home') }}" class="inline-block">
                 @php
-                    $logoSrc = setting('site_logo', 'global')
-                        ? asset(setting('site_logo', 'global'))
-                        : asset('backend/images/example_logo_light.png');
                     $siteTitle = setting('site_title', 'global') ?? 'Your Site';
                 @endphp
-                <img src="{{ $logoSrc }}" class="h-[56px] mx-auto" alt="{{ $siteTitle }}">
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="h-[56px] mx-auto" alt="{{ $siteTitle }}">
             </a>
             <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-100 tracking-tight">
                 {{ __('Reset Password') }}

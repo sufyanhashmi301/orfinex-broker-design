@@ -53,7 +53,7 @@ class StaffController extends Controller
         $staff = Auth::user();
         $staffs = Admin::all();
         $superAdmin = Admin::find(1);
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $roles = Role::all();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
 
@@ -82,7 +82,7 @@ class StaffController extends Controller
     public function create(Request $request)
     {
         if ($request->ajax()) {
-            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            $roles = Role::all();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
 
@@ -107,7 +107,7 @@ class StaffController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
             'password' => 'required|same:confirm-password',
-            'role' => ['required', Rule::notIn('Super-Admin')],
+            'role' => 'required',
             'status' => 'boolean',
             'department_id' => 'nullable|integer',
             'designation_id' => 'nullable|integer',
@@ -117,40 +117,49 @@ class StaffController extends Controller
             'key' => 'nullable|string',
         ]);
 
-        // If validation fails, return error
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
 
-        // Get the validated input
-        $input = $request->all();
-
-//        dd($input);
-
-        // Convert empty fields to null if necessary
-        $input['password'] = Hash::make($input['password']);
-        $input['employee_id'] = $input['employee_id'] ?: null;
-        $input['department_id'] = $input['department_id'] ?: null;
-        $input['designation_id'] = $input['designation_id'] ?: null;
-        $input['date_of_joining'] = $input['date_of_joining'] ?: null;
-        $input['work_phone'] = $input['work_phone'] ?: null;
-        $input['phone'] = $input['phone'] ?: null;
-
-        if ($request->hasFile('avatar')) {
-            $logo = self::imageUploadTrait($request->file('avatar'));
-            $input['avatar'] = $logo;
+        // Check for Super-Admin role assignment
+        if (in_array('Super-Admin', (array)$request->input('role'))) {
+            if (!Auth::guard('admin')->user()->hasRole('Super-Admin')) {
+                notify()->error('Only Super-Admin can assign Super-Admin role.', 'Unauthorized');
+                return redirect()->back();
+            }
         }
 
-        // Create the new admin record
-        $admin = Admin::create($input);
-        $admin->assignRole($request->input('role'));
+        try {
+            DB::beginTransaction();
 
-        // Notify success
-        notify()->success('Staff created successfully');
+            $input = $request->all();
+            $input['password'] = Hash::make($input['password']);
+            $input['employee_id'] = $input['employee_id'] ?: null;
+            $input['department_id'] = $input['department_id'] ?: null;
+            $input['designation_id'] = $input['designation_id'] ?: null;
+            $input['date_of_joining'] = $input['date_of_joining'] ?: null;
+            $input['work_phone'] = $input['work_phone'] ?: null;
+            $input['phone'] = $input['phone'] ?: null;
 
-        // Redirect to the staff index page
-        return redirect()->route('admin.staff.index');
+            if ($request->hasFile('avatar')) {
+                $logo = self::imageUploadTrait($request->file('avatar'));
+                $input['avatar'] = $logo;
+            }
+
+            $admin = Admin::create($input);
+            $admin->assignRole($request->input('role'));
+
+            DB::commit();
+
+            notify()->success('Staff created successfully');
+            return redirect()->route('admin.staff.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Staff creation failed: ' . $e->getMessage());
+            notify()->error('An error occurred while creating the staff.', 'Error');
+            return redirect()->back();
+        }
     }
 
 
@@ -163,7 +172,7 @@ class StaffController extends Controller
     public function edit($id)
     {
         $staff = Admin::find($id);
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $roles = Role::all();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
 
@@ -190,7 +199,7 @@ class StaffController extends Controller
                 'name' => 'required',
                 'email' => 'required|email|unique:admins,email,' . $id,
                 'password' => 'nullable|same:confirm-password',
-                'role' => ['nullable', Rule::notIn('Super-Admin')],
+                'role' => 'nullable',
                 'status' => 'boolean',
                 'department' => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',
@@ -199,6 +208,23 @@ class StaffController extends Controller
             if ($validator->fails()) {
                 return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
             }
+
+            // Validate role change for Super-Admin
+            $currentUser = Auth::guard('admin')->user();
+            if ($request->filled('role')) {
+                $newRoles = (array)$request->input('role');
+
+                if (in_array('Super-Admin', $newRoles) || $staff->hasRole('Super-Admin')) {
+                    if (!$currentUser->hasRole('Super-Admin')) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Only a Super-Admin can assign or modify the Super-Admin role.',
+                        ], 403);
+                    }
+                }
+            }
+
+            DB::beginTransaction();
 
             $input = $request->all();
             $input['employee_id'] = $request->input('employee_id') ?: null;
@@ -217,13 +243,6 @@ class StaffController extends Controller
                 $input['avatar'] = $logo;
             }
 
-            if ($staff->getRoleNames()->first() === 'Super-Admin') {
-                return response()->json([
-                    'warning' => true,
-                    'message' => 'Super admin not changeable!',
-                ]);
-            }
-
             $staff->update($input);
 
             if ($request->filled('role')) {
@@ -231,7 +250,9 @@ class StaffController extends Controller
                 $staff->assignRole($request->input('role'));
             }
 
-            $roles = Role::whereNot('name', 'Super-Admin')->get();
+            DB::commit();
+
+            $roles = Role::all();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
 
@@ -243,8 +264,8 @@ class StaffController extends Controller
                 'message' => 'Staff updated successfully!',
                 'updatedHtml' => $updatedStaff
             ]);
-
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }

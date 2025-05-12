@@ -4,11 +4,11 @@
 @endsection
 @section('content')
     @include('frontend::user.transaction.include.__tabs_nav')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+    <div class="pageTitle flex flex-col md:flex-row justify-between md:items-center flex-wrap mb-6">
+        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 md:mb-0">
             @yield('title')
         </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        <div class="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
             <div class="input-area relative">
                 <select id="transaction-date" class="form-control">
                     <option value="">{{ __('Select Days') }}</option>
@@ -129,62 +129,32 @@
     </div>
     <div class="md:hidden block mobile-screen-show">
         <!-- Transactions -->
-        <div class="card all-feature-mobile mobile-transactions mb-3">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('All Transactions') }}</h4>
+        @if(count($transactions) == 0)
+            <div class="basicTable_wrapper card flex items-center justify-center flex-col p-4">
+                <svg width="42" height="43" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="text-sm text-slate-600 dark:text-slate-100 my-3">
+                    {{ __("You don't have any transactions yet.") }}
+                </p>
             </div>
-            <div class="card-body p-3 mobile-transaction-filter">
-                <div class="filter mb-3">
-                    <form action="{{ route('user.history.transactions') }}" method="get">
-                        <div class="search flex items-center gap-2">
-                            <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
-                            <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
-                            <button type="submit" class="apply-btn h-10 btn btn-dark">
-                                <iconify-icon icon="lucide:search"></iconify-icon>
-                            </button>
-                        </div>
-                    </form>
-                    <form method="POST" action="{{ route('user.history.transactions.export') }}">
-                        @csrf
-                        <input type="hidden" name="query" value="{{ request('query') }}">
-                        <input type="hidden" name="date" value="{{ request('date') }}">
-                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                            {{ __('Export') }}
-                        </button>
-                    </form>
+        @else
+            <div class="card all-feature-mobile mobile-transactions mb-3">
+                <div class="card-header">
+                    <h4 class="card-title">{{ __('All Transactions') }}</h4>
                 </div>
-                <div class="contents space-y-3">
-                    @foreach($transactions as $transaction)
-                        <tr>
-                            <td class="table-td">
-                                <span class="block font-medium text-slate-700 dark:text-white">
-                                    {{ $transaction->description }}
-                                </span>
-                                <span class="block text-xs text-gray-500">
-                                {{ $transaction->display_time->format('M d, Y h:i A') }}
-                            </span>
-                            </td>
-                            <td class="table-td">{{ $transaction->tnx }}</td>
-                            <td class="table-td">{{ $transaction->target_id ?? '-' }}</td>
-                            <td class="table-td">{{ txn_type($transaction->type->value, ['+','-']) }}{{ number_format($transaction->amount, 2) }} {{ $currency }}</td>
-                            <td class="table-td">{{ $transaction->method ?? '-' }}</td>
-                            <td class="table-td">-{{ number_format($transaction->charge, 2) }} {{ $currency }}</td>
-                            <td class="table-td">
-                                @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <span class="badge badge-warning">{{ __('Pending') }}</span>
-                                @elseif($transaction->status->value == App\Enums\TxnStatus::Success->value)
-                                    <span class="badge badge-success">{{ __('Success') }}</span>
-                                @elseif($transaction->status->value == App\Enums\TxnStatus::Failed->value)
-                                    <span class="badge badge-danger">{{ __('Canceled') }}</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+                <div class="card-body p-3 mobile-transaction-filter">
+                    <div class="contents space-y-3" id="mobile-transactions-container">
+                        @include('frontend::user.transaction.include.__transaction_row_mobile', ['transactions' => $transactions])
+                    </div>
+                    <div class="pagination-container">
+                        {{ $transactions->onEachSide(1)->links() }}
+                    </div>
                 </div>
-                {{ $transactions->onEachSide(1)->links() }}
             </div>
-        </div>
+        @endif
     </div>
 @endsection
 @section('script')
@@ -211,18 +181,20 @@
                     success: function (response) {
                         if (response.html.trim() === "") {
                             $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">No transactions found</td></tr>');
+                            $('#mobile-transactions-container').html('<p class="text-center py-4 text-sm text-gray-500">{{ __("No transactions found") }}</p>');
                         } else {
                             $('#transaction-table-body').html(response.html);
+                            $('#mobile-transactions-container').html(response.mobile_html);
                         }
                         $('.pagination-container').html(response.pagination);
                         $('#total-records').html(`
-                    {{ __('Showing') }}
-                        <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
-                    {{ __('to') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('of') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('results') }}
+                            {{ __('Showing') }}
+                            <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
+                            {{ __('to') }}
+                            <span class="font-medium">${response.total}</span>
+                            {{ __('of') }}
+                            <span class="font-medium">${response.total}</span>
+                            {{ __('results') }}
                         `);
 
                         // Store selections in localStorage
@@ -308,8 +280,6 @@
             // Attach pagination event initially
             attachPaginationEvents();
         });
-
-
 
     </script>
 @endsection

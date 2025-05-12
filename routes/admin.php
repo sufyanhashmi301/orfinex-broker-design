@@ -289,6 +289,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('gateway/{code}', 'gateway')->name('gateway');
         Route::post('now', 'depositNow')->name('now');
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
+
+        Route::get('notification-tune', 'notificationTune')->name('notificationTune');
     });
 
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
@@ -319,6 +321,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('method/{id}', 'withdrawAccount')->name('account');
         Route::post('account/store', 'accountStore')->name('account.store');
+        
+        Route::get('notification-tune', 'notificationTune')->name('notificationTune');
     });
 
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {

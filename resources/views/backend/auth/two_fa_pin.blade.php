@@ -6,12 +6,7 @@
     <div class="max-w-sm w-full space-y-10">
         <div class="text-center">
             <a href="{{ route('home')}}" class="inline-block">
-                @php
-                    $logoSrc = setting('site_logo','global')
-                        ? asset(setting('site_logo','global'))
-                        : asset('backend/images/example_logo_light.png');
-                @endphp
-                <img src="{{ $logoSrc }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
             </a>
             <div class="mt-5">
                 <p class="text-slate-500 dark:text-slate-400 mb-2">

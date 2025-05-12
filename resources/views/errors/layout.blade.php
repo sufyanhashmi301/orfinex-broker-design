@@ -7,10 +7,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }} ">
         <link
             rel="shortcut icon"
-            href="{{ asset(setting('site_favicon','global')) }}"
+            href="{{ getFilteredPath(setting('site_favicon','global'), 'fallback/branding/favicon.png') }}"
             type="image/x-icon"
         />
-        <link rel="icon" href="{{ asset(setting('site_favicon','global')) }}" type="image/x-icon"/>
+        <link rel="icon" href="{{ getFilteredPath(setting('site_favicon','global'), 'fallback/branding/favicon.png') }}" type="image/x-icon"/>
         <link rel="stylesheet" href="{{ asset('global/css/rt-plugins.css') }}">
         <link rel="stylesheet" href="{{ asset('global/css/app.css') }}">
         <title>{{ setting('site_title', 'global') }} - @yield('title')</title>

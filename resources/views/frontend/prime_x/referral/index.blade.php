@@ -69,28 +69,24 @@
                                         </div>
                                         @if($field->type === 'text')
                                             <div class="md:col-span-6 col-span-12">
-                                                <input name="fields[{{ $field->name }}]"
-                                                       class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
+                                                <input name="fields[{{ $field->name }}]" class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
                                             </div>
                                         @elseif($field->type === 'checkbox')
                                             <div class="col-span-12">
                                                 @foreach($field->options as $index=>$option)
                                                     <div class="checkbox-area mb-2">
-                                                        <label for="flexCheckDefault{{$qIndex}}{{$index}}"
-                                                               class="inline-flex items-center cursor-pointer">
+                                                        <label for="flexCheckDefault{{$qIndex}}{{$index}}" class="inline-flex items-center cursor-pointer">
                                                             <input class="hidden" type="checkbox"
                                                                    name="fields[{{ $field->name }}][]"
                                                                    value="{{ $option }}" id="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                    @if($field->validation === 'required') required @endif />
-                                                            <span
-                                                                class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                                                 <img
                                                                     src="{{ asset('frontend/images/icon/ck-white.svg') }}"
                                                                     alt=""
                                                                     class="h-[10px] w-[10px] block m-auto opacity-0">
                                                             </span>
-                                                            <span
-                                                                class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                                                 {{ $option }}
                                                             </span>
                                                         </label>
@@ -105,10 +101,8 @@
                                                             <input type="radio" class="hidden"
                                                                    name="fields[{{ $field->name }}]"
                                                                    value="{{ $option }}" @if($field->validation === 'required') required @endif>
-                                                            <span
-                                                                class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                            <span
-                                                                class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
+                                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
                                                                 {{ $option }}
                                                             </span>
                                                         </label>
@@ -117,13 +111,10 @@
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="md:col-span-6 col-span-12 select2-lg">
-                                                <select name="fields[{{ $field->name }}]"
-                                                        class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
+                                                <select name="fields[{{ $field->name }}]" class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
                                                     @foreach($field->options as $option)
-                                                        <option value="{{ $option }}"
-                                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
-                                                        ">
-                                                        {{ $option }}
+                                                        <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600"">
+                                                            {{ $option }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -140,10 +131,9 @@
                             <div class="checkbox-area">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
-                                    <span
-                                        class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
-                                                 class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+                                    <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                    </span>
                                     <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                         {{ __('I have read and agree with the ') }}
                                         <a href="javascript:;" class="btn-link">{{ __('IB Agreement') }}</a>
@@ -275,13 +265,13 @@
                         }
                         $('.pagination-container').html(response.pagination);
                         $('#total-records').html(`
-                    {{ __('Showing') }}
-                        <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
-                    {{ __('to') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('of') }}
-                        <span class="font-medium">${response.total}</span>
-                    {{ __('results') }}
+                            {{ __('Showing') }}
+                                <span class="font-medium">${response.total > 0 ? 1 : 0}</span>
+                            {{ __('to') }}
+                                <span class="font-medium">${response.total}</span>
+                            {{ __('of') }}
+                                <span class="font-medium">${response.total}</span>
+                            {{ __('results') }}
                         `);
 
                         // Store selections in localStorage

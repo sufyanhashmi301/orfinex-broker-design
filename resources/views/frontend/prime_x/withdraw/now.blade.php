@@ -6,13 +6,6 @@
     @php
         use Carbon\Carbon;
     @endphp
-    <div class="flex justify-end flex-wrap items-center mb-5">
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center">
-                {{ __('Add Withdraw Account') }}
-            </a>
-        </div>
-    </div>
     <div class="card mb-6">
         <div class="card-body hidden md:block p-3">
             <div class="progress-steps md:flex justify-between items-center gap-5">
@@ -72,9 +65,15 @@
                                 </div>
                             </div>
                             <div class="input-area relative">
-                                <label for="exampleFormControlInput1" class="form-label">
-                                    {{ __('Withdraw Account') }}
-                                </label>
+                                <div class="flex items-center justify-between gap-3">
+                                    <label for="exampleFormControlInput1" class="form-label">
+                                        {{ __('Withdraw Account') }}
+                                    </label>
+                                    <a href="{{ route('user.withdraw.account.index') }}" class="btn-link inline-flex items-center justify-center mb-2" style="min-width: fit-content;">
+                                        <iconify-icon icon="lucide:plus"></iconify-icon>
+                                        {{ __('Add New Account') }}
+                                    </a>
+                                </div>
                                 <div class="input-group select2-lg">
                                     <select name="withdraw_account" id="withdrawAccountId"
                                             class="select2 form-control !text-lg w-full mt-2 py-2">

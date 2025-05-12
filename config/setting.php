@@ -2073,5 +2073,34 @@ return [
             ],
         ],
     ],
+    'notification_tune' => [
+        'title' => 'Notification Tune',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'deposit_notification_tune', // unique name for field
+                'label' => 'Deposit Notification Tune', // label for field
+                'rules' => '', // validation rule of laravel
+                'value' => 'global/tune/knock_knock.mp3', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'withdraw_notification_tune', // unique name for field
+                'label' => 'Withdraw Notification Tune', // label for field
+                'rules' => '', // validation rule of laravel
+                'value' => 'global/tune/knock_knock.mp3', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'transfer_notification_tune', // unique name for field
+                'label' => 'Transfer Notification Tune', // label for field
+                'rules' => '', // validation rule of laravel
+                'value' => 'global/tune/knock_knock.mp3', // default value if you want
+            ],
+        ],
+    ],
 
 ];

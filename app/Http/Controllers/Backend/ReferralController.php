@@ -45,7 +45,6 @@ class ReferralController extends Controller
 
         return view('backend.referral.index', compact('targets', 'investments', 'deposits'));
     }
-
     /**
      * @return RedirectResponse
      */
@@ -79,6 +78,7 @@ class ReferralController extends Controller
 
         return redirect()->route('admin.referral.index');
     }
+
     public function addDirectReferral(Request $request)
     {
 
@@ -148,6 +148,7 @@ class ReferralController extends Controller
         return redirect()->route('admin.referral.index');
 
     }
+
     public function deleteDirectReferral(Request $request)
     {
         $validator = Validator::make($request->all(), [

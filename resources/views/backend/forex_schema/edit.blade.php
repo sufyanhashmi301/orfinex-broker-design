@@ -504,7 +504,7 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Cent Bonus') }}
+                                        {{ __('Cent Account') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input

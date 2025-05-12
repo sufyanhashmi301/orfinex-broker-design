@@ -16,6 +16,7 @@ use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 if (!function_exists('is_force_https')) {
@@ -1271,6 +1272,40 @@ if (!function_exists('get_mt5_account_balance')) {
         }
     }
         return 0.0;
+    }
+}
+
+if (!function_exists('apply_cent_bonus_adjustment')) {
+    /**
+     * Apply Cent Bonus Multiplier if applicable for login.
+     *
+     * @param int|mixed $login
+     * @param float $amount
+     * @return float
+     */
+    function apply_cent_bonus_adjustment($login, float $amount): float
+    {
+        try {
+            // Fetch the forex account by login
+            $account = ForexAccount::where('login', $login)->where('account_type','real')->first();
+//            dd($account);
+
+            if (!$account || !$account->schema) {
+                return $amount;
+            }
+            // Check if is_cent_bonus is enabled
+            if ($account->schema->is_cent_bonus) {
+                return $amount * 100;
+            }
+
+            return $amount;
+        } catch (\Throwable $e) {
+        Log::error("Failed to apply cent bonus adjustment: " . $e->getMessage(), [
+                'login' => $login,
+                'amount' => $amount
+            ]);
+            return $amount;
+        }
     }
 }
 

@@ -206,20 +206,6 @@
 
                     <div class="input-area">
                         <label class="form-label" for="">
-                            {{ __('Select Role:') }}
-                            <span class="text-xs text-danger">*</span>
-                        </label>
-                        <select name="role" class="select2 form-control w-100" required>
-                            @foreach($roles as $role)
-                                <option @selected($role->name == $staff->roles[0]['name']) value="{{$role->name}}">
-                                    {{ str_replace('-', ' ', $role->name) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="input-area">
-                        <label class="form-label" for="">
                             {{ __('Employment Type:') }}
                         </label>
                         <select name="employment_type" class="select2 form-control w-100">
@@ -294,6 +280,30 @@
                 </div>
             </div>
         @endif
+            @can('staff-edit-role')
+                <div class="card-header">
+                    <h4 class="card-title">{{ __('Role Management') }}</h4>
+                </div>
+                <div class="card-body p-6">
+                    <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+
+
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Select Role:') }}
+                                <span class="text-xs text-danger">*</span>
+                            </label>
+                            <select name="role" class="select2 form-control w-100" required>
+                                @foreach($roles as $role)
+                                    <option @selected($role->name == $staff->roles[0]['name']) value="{{$role->name}}">
+                                        {{ str_replace('-', ' ', $role->name) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endcan
         <div class="card-header">
             <h4 class="card-title">{{ __('Personal Details') }}</h4>
         </div>

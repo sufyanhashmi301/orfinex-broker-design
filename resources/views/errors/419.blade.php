@@ -5,8 +5,8 @@
 @section('content')
     <div class="">
         <a href="{{route('admin.dashboard')}}" class="items-center">
-            <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo max-w-xs" alt="Logo"/>
-            <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo max-w-xs" alt="Logo"/>
+            <img src="{{ getFilteredPath(setting('site_logo','theme'), 'fallback/branding/desktop-logo.png') }}" class="black_logo max-w-xs" alt="Logo"/>
+            <img src="{{ getFilteredPath(setting('site_logo_light','theme'), 'fallback/branding/desktop-logo.png') }}" class="white_logo max-w-xs" alt="Logo"/>
         </a>
     </div>
     <div class="max-w-3xl my-8 mx-auto">

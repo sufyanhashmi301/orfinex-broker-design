@@ -2,17 +2,8 @@
      class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment">
     <a class="flex items-center" href="{{route('admin.dashboard')}}">
-        @php
-            $logoSrcLight = setting('site_mobile_logo_light', 'theme')
-                ? asset(setting('site_mobile_logo_light', 'theme'))
-                : asset('backend/images/example_favicon.png');
-
-            $logoSrcDark = setting('site_mobile_logo', 'theme')
-                ? asset(setting('site_mobile_logo', 'theme'))
-                : asset('backend/images/example_favicon_dark.png');
-        @endphp
-        <img src="{{ $logoSrcDark }}" class="black_logo h-8" alt="logo">
-        <img src="{{ $logoSrcLight }}" class="white_logo h-8" alt="logo">
+        <img src="{{ getFilteredPath(setting('site_mobile_logo','theme'), 'fallback/branding/mobile-admin-logo.png') }}" class="black_logo h-8" alt="logo">
+        <img src="{{ getFilteredPath(setting('site_mobile_logo_light','theme'), 'fallback/branding/mobile-admin-logo.png') }}" class="white_logo h-8" alt="logo">
         <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('Backoffice') }}
         </span>

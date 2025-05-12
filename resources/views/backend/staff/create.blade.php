@@ -81,7 +81,57 @@
             </div>
         </div>
     </div>
+{{--    Personal Detail--}}
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Personal Details') }}</h4>
+        </div>
+        <div class="card-body p-6">
+            <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
+                    <input type="text" name="date_of_joining" class="form-control dateOfBirth" placeholder="2006-12-19">
+                </div>
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Gender:') }}</label>
+                    <select name="status" class="select2 form-control w-full">
+                        <option value="male">{{ __('Male') }}</option>
+                        <option value="female">{{ __('Female') }}</option>
+                        <option value="other">{{ __('Other') }}</option>
+                    </select>
+                </div>
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Marital Status:') }}</label>
+                    <div class="flex items-center space-x-7 flex-wrap pt-2">
+                        <div class="basicRadio">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" class="hidden" name="marital_status" value="single" checked="checked">
+                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Single') }}</span>
+                            </label>
+                        </div>
+                        <div class="basicRadio">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" class="hidden" name="marital_status" value="married">
+                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Married') }}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Work Phone Number:') }}</label>
+                    <input type="text" name="work_phone" class="form-control" placeholder="">
+                </div>
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
+                    <input type="text" name="phone" class="form-control" placeholder="">
+                </div>
+            </div>
+        </div>
+    </div>
 
+{{--    Work Information--}}
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">{{ __('Work Information') }}</h4>
@@ -112,17 +162,7 @@
                     </select>
                 </div>
 
-                <div class="input-area">
-                    <label class="form-label" for="">
-                        {{ __('Select Role:') }}
-                        <span class="text-xs text-danger">*</span>
-                    </label>
-                    <select name="role" class="select2 form-control w-100">
-                        @foreach($roles as $role)
-                            <option value="{{$role->name}}">{{ str_replace('-', ' ', $role->name) }}</option>
-                        @endforeach
-                    </select>
-                </div>
+
 
                 <div class="input-area">
                     <label class="form-label" for="">
@@ -181,52 +221,25 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Personal Details') }}</h4>
-        </div>
-        <div class="card-body p-6">
-            <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
-                <div class="input-area">
-                    <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
-                    <input type="text" name="date_of_joining" class="form-control dateOfBirth" placeholder="2006-12-19">
-                </div>
-                <div class="input-area">
-                    <label for="" class="form-label">{{ __('Gender:') }}</label>
-                    <select name="status" class="select2 form-control w-full">
-                        <option value="male">{{ __('Male') }}</option>
-                        <option value="female">{{ __('Female') }}</option>
-                        <option value="other">{{ __('Other') }}</option>
-                    </select>
-                </div>
-                <div class="input-area">
-                    <label for="" class="form-label">{{ __('Marital Status:') }}</label>
-                    <div class="flex items-center space-x-7 flex-wrap pt-2">
-                        <div class="basicRadio">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" class="hidden" name="marital_status" value="single" checked="checked">
-                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Single') }}</span>
-                            </label>
-                        </div>
-                        <div class="basicRadio">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" class="hidden" name="marital_status" value="married">
-                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                <span class="text-secondary-500 text-sm leading-6 capitalize">{{ __('Married') }}</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-area">
-                    <label for="" class="form-label">{{ __('Work Phone Number:') }}</label>
-                    <input type="text" name="work_phone" class="form-control" placeholder="">
-                </div>
-                <div class="input-area">
-                    <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
-                    <input type="text" name="phone" class="form-control" placeholder="">
-                </div>
+{{--    Role Management--}}
+    <div class="card-header">
+        <h4 class="card-title">{{ __('Role Management') }}</h4>
+    </div>
+    <div class="card-body p-6">
+        <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+
+            <div class="input-area">
+                <label class="form-label" for="">
+                    {{ __('Select Role:') }}
+                    <span class="text-xs text-danger">*</span>
+                </label>
+                <select name="role" class="select2 form-control w-100">
+                    @foreach($roles as $role)
+                        <option value="{{$role->name}}">{{ str_replace('-', ' ', $role->name) }}</option>
+                    @endforeach
+                </select>
             </div>
+
         </div>
     </div>
 

@@ -24,23 +24,14 @@
                     aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Archived') }}</a>
             </li>
         </ul>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <div class="flex justify-between sm:space-x-4 space-x-2">
-                <div class="input-area relative" style="padding-left: 3rem;">
-                    <label for="" class="inline-inputLabel">{{ __('Sort:') }}</label>
-                    <select class="form-control">
-                        <option selected>{{ __('Choose...') }}</option>
-                        <option>{{ __('...') }}</option>
-                    </select>
-                </div>
-                <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
-                    <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center grid-view-btn active" data-target="trading-accounts">
-                        <iconify-icon class="text-lg" icon="heroicons:view-columns"></iconify-icon>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center list-view-btn" data-target="trading-accounts">
-                        <iconify-icon class="text-lg" icon="heroicons:list-bullet"></iconify-icon>
-                    </button>
-                </div>
+        <div class="flex sm:justify-end items-center gap-3">
+            <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
+                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center grid-view-btn active" data-target="trading-accounts">
+                    <iconify-icon class="text-lg" icon="heroicons:view-columns"></iconify-icon>
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center list-view-btn" data-target="trading-accounts">
+                    <iconify-icon class="text-lg" icon="heroicons:list-bullet"></iconify-icon>
+                </button>
             </div>
             <a href="{{route('user.schema')}}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
                 <span class="flex items-center">

@@ -3,16 +3,16 @@
     <a href="{{ route('home') }}" class="loaderBtn items-center md:flex hidden">
         <span class="black_logo">
             @if (isDarkColor(setting('header_bg', 'light_colors')))
-                <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
+                <img src="{{ getFilteredPath(setting('site_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
             @else
-                <img src="{{ asset(setting('site_logo', 'global')) }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
             @endif
         </span>
         <span class="white_logo">
             @if (isDarkColor(setting('header_bg_dark', 'light_colors')))
-                <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
+                <img src="{{ getFilteredPath(setting('site_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
             @else
-                <img src="{{ asset(setting('site_logo', 'global')) }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
             @endif
         </span>
     </a>

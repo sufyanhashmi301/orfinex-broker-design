@@ -1,11 +1,11 @@
 @extends('frontend::layouts.partner')
 @section('title')
-    {{ __('Partner Dashboard') }}
+    {{ __('IB Distribution Rules') }}
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-700 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            {{ __('IB Distribution rules') }}
+        <h4 class="font-medium text-xl capitalize text-slate-700">
+            {{ __('IB Distribution Rules') }}
         </h4>
     </div>
 

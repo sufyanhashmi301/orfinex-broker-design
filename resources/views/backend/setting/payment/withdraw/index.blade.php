@@ -27,6 +27,13 @@
                     </a>
                 </li>
             @endcan
+            @can('withdraw-notification')
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.notificationTune') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.notificationTune') }}">
+                        {{ __('Notification Tune') }}
+                    </a>
+                </li>
+            @endcan
             @can('automatic-withdraw-method')
             <li class="nav-item">
                 <a href="{{ route('admin.withdraw.miscSetting') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.miscSetting') }}">

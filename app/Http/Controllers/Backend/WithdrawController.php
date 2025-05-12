@@ -26,6 +26,7 @@ use App\Traits\ForexApiTrait;
 use App\Models\WithdrawMethod;
 use App\Models\WithdrawAccount;
 use App\Models\ForexAccount;
+use App\Models\SetTune;
 use App\Services\WalletService;
 use App\Exports\WithdrawsExport;
 use App\Services\ForexApiService;
@@ -59,6 +60,7 @@ class WithdrawController extends Controller
         $this->middleware('permission:withdraw-add' , ['only' => ['addWithdraw']]);
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);
         $this->middleware('permission:withdraw-export', ['only' => ['export', 'pendingExport']]);
+        $this->middleware('permission:withdraw-notification' , ['only' => ['notificationTune']]);
         $this->forexApiService = $forexApiService;
 
     }
@@ -331,7 +333,7 @@ class WithdrawController extends Controller
                 } else {
                     // Get attached user IDs for non-Super-Admin users
                     $attachedUserIds = $loggedInUser->users->pluck('id');
-    
+
                     if ($attachedUserIds->isNotEmpty()) {
                         // Show transactions for attached users only
                         $data = Transaction::whereIn('user_id', $attachedUserIds)
@@ -347,7 +349,7 @@ class WithdrawController extends Controller
                     }
                 }
             }
-    
+
 
             // Apply additional filters if any
             $data = $data->applyFilters($filters);
@@ -909,6 +911,12 @@ class WithdrawController extends Controller
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
         return redirect()->back();
+    }
+
+    public function notificationTune()
+    {
+        $tunes = SetTune::all();
+        return view('backend.withdraw.notification_tune', compact('tunes'));
     }
 
 

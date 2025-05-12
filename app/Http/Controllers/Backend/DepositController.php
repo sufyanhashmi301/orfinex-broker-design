@@ -16,6 +16,7 @@ use App\Enums\TxnType;
 use App\Models\Invest;
 use App\Models\Country;
 use App\Models\Gateway;
+use App\Models\SetTune;
 use App\Enums\TxnStatus;
 use App\Enums\GatewayType;
 use App\Enums\InvestStatus;
@@ -50,6 +51,7 @@ class DepositController extends Controller
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
         $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
+        $this->middleware('permission:deposit-notification', ['only' => ['notificationTune']]);
 
     }
 
@@ -616,6 +618,12 @@ class DepositController extends Controller
 
         notify()->success('Successfully added pending deposit request');
         return redirect()->back();
+    }
+
+    public function notificationTune()
+    {
+        $tunes = SetTune::all();
+        return view('backend.deposit.notification_tune', compact('tunes'));
     }
 
 }

@@ -14,7 +14,10 @@ class AppController extends Controller
         $tune = DB::table('settings')->where('key', $key)->value('value');
 
         if (!$tune) {
-            $tune = DB::table('settings')->where('key', 'default_notification_tune')->value('value');
+            $setTune = SetTune::where('status', 1)->first();
+            if ($setTune && $setTune->tune) {
+                $tune = $setTune->tune;
+            }
         }
 
         return asset($tune);

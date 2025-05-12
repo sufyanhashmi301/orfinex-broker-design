@@ -9,12 +9,7 @@
         <!-- Branding -->
         <div class="text-center space-y-4">
             <a href="{{ route('home') }}" class="inline-block">
-                @php
-                    $logoSrc = setting('site_logo','global')
-                        ? asset(setting('site_logo','global'))
-                        : asset('backend/images/example_logo_light.png');
-                @endphp
-                <img src="{{ $logoSrc }}" class="h-[56px] mx-auto" alt="{{ asset(setting('site_title','global')) }}">
+                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="h-[56px] mx-auto" alt="{{ asset(setting('site_title','global')) }}">
             </a>
             <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-100 tracking-tight">
                 {{ __('Admin Backoffice Login') }}

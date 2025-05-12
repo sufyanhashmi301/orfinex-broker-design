@@ -9,7 +9,7 @@
                     <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
                         <div class="mx-auto max-w-xs text-center">
                             <a href="{{ route('home')}}" class="">
-                                <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Logo') }}">
+                                <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="h-[56px]" alt="{{ __('Logo') }}">
                             </a>
                         </div>
                     </div>
@@ -19,8 +19,8 @@
                         <div class="h-full flex flex-col justify-center">
                             <div class="w-full max-w-lg mx-auto">
                                 <div class="mobile-logo text-center mb-6 lg:hidden block">
-                                    <a href="{{ route('home')}}">
-                                        <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Logo') }}" class="h-[56px]">
+                                    <a href="{{ route('home')}}" class="inline-flex">
+                                        <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="{{ __('Logo') }}" class="h-[56px]">
                                     </a>
                                 </div>
                                 @yield('content')

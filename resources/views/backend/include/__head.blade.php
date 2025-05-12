@@ -3,13 +3,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="csrf-token" content="{{ csrf_token() }} ">
-
+    <meta property="og:image" content="{{ getFilteredPath(setting('link_thumbnail','global'), 'fallback/branding/thumbnail.png') }}">
     <link
         rel="shortcut icon"
-        href="{{ asset(setting('site_favicon','global')) }}"
+        href="{{ getFilteredPath(setting('site_favicon','global'), 'fallback/branding/favicon.png') }}"
         type="image/x-icon"
     />
-    <link rel="icon" href="{{ asset(setting('site_favicon','global')) }}" type="image/x-icon"/>
+    <link rel="icon" href="{{ getFilteredPath(setting('site_favicon','global'), 'fallback/branding/favicon.png') }}" type="image/x-icon"/>
     <link rel="stylesheet" href="{{ asset('global/css/simple-notify.min.css') }}"/>
     @notifyCss
     <link rel="stylesheet" href="{{ asset('global/css/custom.css?var=2.2') }}"/>

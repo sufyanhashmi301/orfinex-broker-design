@@ -11,7 +11,7 @@
                         {{ __('Internal Transfer') }}
                     </h4>
                     <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-white">
-                        <span class="text-[32px] leading-10 font-medium">
+                        <span class="text-3xl font-medium">
                             {{ __('Unlimited') }}
                         </span>
                         <span class="badge badge-primary capitalize h-auto">
@@ -47,7 +47,7 @@
                         {{ __('External Transfer') }}
                     </h4>
                     <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-white">
-                        <span class="text-[32px] leading-10 font-medium">
+                        <span class="text-3xl font-medium">
                             {{ __('$500') }}
                         </span>
                         <span class="badge badge-primary capitalize h-auto">

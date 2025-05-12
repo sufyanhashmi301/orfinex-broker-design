@@ -19,10 +19,10 @@
                     </div>
                     <div class="flex-1 input-area relative">
                         <select name="status" class="form-control h-full" id="status">
-                            <option value="">Status</option>
-                            <option value="success">Success</option>
-                            <option value="pending">Pending</option>
-                            <option value="failed">Cancelled</option>
+                            <option value="">{{ __('Status') }}</option>
+                            <option value="success">{{ __('Success') }}</option>
+                            <option value="pending">{{ __('Pending') }}</option>
+                            <option value="failed">{{ __('Cancelled') }}</option>
                         </select>
                     </div>
                     <div class="flex-1 input-area relative">

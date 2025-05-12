@@ -12,7 +12,8 @@
         });
         var channel = notification.subscribe('{{ $for }}-notification{{$userId}}');
         channel.bind('notification-event', function (result) {
-            playSound();
+            const type = result.data.type || 'default';
+            playSound(type);
             latestNotification();
             notifyToast(result);
         });
@@ -45,15 +46,13 @@
 
         }
 
-        function playSound() {
-            $.get(soundUrl, function (data) {
-                var audio = new Audio(data);
+        function playSound(type = 'default') {
+            $.get(`${soundUrl}?type=${type}`, function (data) {
+                const audio = new Audio(data);
                 audio.play();
                 audio.muted = false;
             });
         }
-
-
 
     })(jQuery);
 </script>

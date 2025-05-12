@@ -79,6 +79,7 @@ class TransactionController extends Controller
         if (request()->ajax()) {
             return response()->json([
                 'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
+                'mobile_html' => view('frontend::user.transaction.include.__transaction_row_mobile', compact('transactions'))->render(),
                 'pagination' => (string) $transactions->links(),
                 'total' => $transactions->total(),
             ]);

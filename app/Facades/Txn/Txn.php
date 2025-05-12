@@ -472,10 +472,12 @@ class Txn
         try {
             if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
                 if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexDeposit->value) {
+
+                    $amount = apply_cent_bonus_adjustment($transaction->target_id, $transaction->amount);
                     $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                     $data = [
                         'login' => $transaction->target_id,
-                        'Amount' => $transaction->amount,
+                        'Amount' => $amount,
                         'type' => 1, //deposit
                         'TransactionComments' => $comment
                     ];

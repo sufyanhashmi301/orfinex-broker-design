@@ -6,10 +6,17 @@ use App\Models\SetTune;
 
 class AppController extends Controller
 {
-    public function notificationTune()
+    public function notificationTune(Request $request)
     {
-        $tune = SetTune::where('status', 1)->first();
+        $type = $request->get('type', 'default');
+        $key = $type . '_notification_tune';
 
-        return asset($tune->tune);
+        $tune = DB::table('settings')->where('key', $key)->value('value');
+
+        if (!$tune) {
+            $tune = DB::table('settings')->where('key', 'default_notification_tune')->value('value');
+        }
+
+        return asset($tune);
     }
 }

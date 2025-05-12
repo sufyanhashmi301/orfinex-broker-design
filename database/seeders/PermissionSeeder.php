@@ -342,6 +342,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Notification Setting', 'name' => 'notification-list'],
             ['category' => 'Notification Setting', 'name' => 'notification-action'],
 
+            ['category' => 'Notification Tune Setting', 'name' => 'deposit-notification'],
+            ['category' => 'Notification Tune Setting', 'name' => 'withdraw-notification'],
+            ['category' => 'Notification Tune Setting', 'name' => 'transfer-notification'],
+
             ['category' => 'Integrations Setting', 'name' => 'api-access-setting'],
             ['category' => 'Integrations Setting', 'name' => 'web-hooks-setting'],
 

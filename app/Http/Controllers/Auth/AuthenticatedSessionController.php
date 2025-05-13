@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Models\LoginActivities;
 use App\Models\Page;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use App\Models\LoginActivities;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +35,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-//        dd($request->all());
+       dd($request->all());
+       $request->validate([
+            
+            'cf-turnstile-response' => [
+                Rule::requiredIf(function () {
+                    return !empty(config('services.turnstile.secret'));
+                }),
+            ],
+
+        ]);
         $oldTheme = session()->get('site-color-mode');
 
         $request->authenticate();

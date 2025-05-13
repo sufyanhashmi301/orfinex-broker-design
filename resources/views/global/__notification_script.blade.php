@@ -12,7 +12,7 @@
         });
         var channel = notification.subscribe('{{ $for }}-notification{{$userId}}');
         channel.bind('notification-event', function (result) {
-            const type = result.data.type || 'default';
+            console.log(result);
             playSound(type);
             latestNotification();
             notifyToast(result);

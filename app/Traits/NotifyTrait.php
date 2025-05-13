@@ -94,7 +94,8 @@ trait NotifyTrait
                 Notification::create($data);
             }
         } catch (Exception $e) {
-            notify()->error('Push notification errors', 'Error');
+            notify()->error($e->getMessage(), 'Push Notification Error');
+//            notify()->error('Push notification errors', 'Error');
 
             return false;
         }

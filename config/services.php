@@ -46,4 +46,9 @@ return [
         'secret' => env('M2P_API_SECRET'),
     ],
 
+    'turnstile' => [
+        'sitekey' => env('TURNSTILE_SITEKEY'),
+        'secret' => env('TURNSTILE_SECRET'),
+    ],
+
 ];

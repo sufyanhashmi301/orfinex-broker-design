@@ -73,9 +73,15 @@ class RegisteredUserController extends Controller
             'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
+            // 'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
             'i_agree' => ['required'],
-            'level' => ['sometimes', 'exists:multi_levels,id']
+            'level' => ['sometimes', 'exists:multi_levels,id'],
+            'cf-turnstile-response' => [
+                Rule::requiredIf(function () {
+                    return !empty(config('services.turnstile.secret'));
+                }),
+            ],
+
         ]);
 
         // Email Verification

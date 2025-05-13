@@ -117,8 +117,12 @@
                 </div>
             </div>
             <div class="formGroup">
-                @if($googleReCaptcha)
+                {{-- @if($googleReCaptcha)
                     <div class="g-recaptcha" id="feedback-recaptcha" data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}"></div>
+                @endif --}}
+
+                @if(config('services.turnstile.sitekey'))
+                    <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.sitekey') }}"></div>
                 @endif
             </div>
             <div class="flex justify-between">
@@ -178,8 +182,11 @@
     </div>
 @endsection
 @section('script')
-    @if($googleReCaptcha)
+    {{-- @if($googleReCaptcha)
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @endif --}}
+    @if(config('services.turnstile.sitekey'))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     @endif
     <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
     <script>

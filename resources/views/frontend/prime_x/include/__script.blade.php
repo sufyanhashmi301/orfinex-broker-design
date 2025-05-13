@@ -6,7 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
 @include('global.__t_notify')
 @if(auth()->check())
-    <script src="{{ asset('global/js/pusher.min.js') }}"></script>
+    <script data-cfasync="false" src="{{ asset('global/js/pusher.min.js') }}"></script>
     @include('global.__notification_script',['for'=>'user','userId' => auth()->user()->id])
 @endif
 {{--@if(setting('site_animation','permission'))--}}

@@ -1,4 +1,4 @@
-<script>
+<script data-cfasync="false">
     (function ($) {
         'use strict';
 

@@ -1133,8 +1133,7 @@ return [
                 'value' => null,
                 'icon' => '
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 48 48" version="1.1">
-    
-    <title>Whatsapp-color</title>
+   
     <desc>Created with Sketch.</desc>
     <defs>
 
@@ -1182,8 +1181,7 @@ return [
                 'value' => null,
                 'icon' => '
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 48 48" version="1.1">
-    
-    <title>Facebook-color</title>
+
     <desc>Created with Sketch.</desc>
     <defs>
 
@@ -1234,7 +1232,6 @@ return [
                 'icon' => '
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 20 20" version="1.1">
     
-    <title>instagram [#167]</title>
     <desc>Created with Sketch.</desc>
     <defs>
 
@@ -1285,7 +1282,6 @@ return [
                 'icon' => '
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 48 48" version="1.1">
     
-    <title>Messenger-color</title>
     <desc>Created with Sketch.</desc>
     <defs>
 

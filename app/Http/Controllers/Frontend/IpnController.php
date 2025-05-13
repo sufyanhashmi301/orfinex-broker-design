@@ -149,12 +149,13 @@ class IpnController extends Controller
                    ->with('info', 'Payment is pending. Please wait for confirmation.');
 
             case 'DONE':
+                
                 $txnInfo->update([
                     'manual_field_data' => $input,
                     'approval_cause' => 'Transaction is Completed',
                 ]);
                 // Call the payment success method
-                self::paymentSuccess($paymentId);
+                return self::paymentSuccess($paymentId);
 
                 // return redirect()->route('user.investments.index');
 
@@ -177,9 +178,10 @@ class IpnController extends Controller
                     'approval_cause' => 'Unknown status received',
                 ]);
 
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('error', 'Unknown error occurred during payment processing.');
+                return "Status Unknown";
+                // return redirect()
+                //     ->route('user.deposit.now')
+                //     ->with('error', 'Unknown error occurred during payment processing.');
         }
     }
 

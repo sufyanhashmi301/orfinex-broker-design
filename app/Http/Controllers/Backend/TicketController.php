@@ -62,7 +62,7 @@ class TicketController extends Controller
         Ticket::uuid($uuid)->close();
         notify()->success('Ticket Closed successfully', 'success');
 
-        return Redirect::route('admin.ticket.all');
+        return Redirect::route('admin.ticket.index');
 
     }
 

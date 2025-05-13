@@ -158,25 +158,26 @@ trait Payment
     protected function paymentSuccess($ref, $isRedirect = true)
     {
         $transaction = Transaction::tnx($ref);
+        
 
         if ($transaction->status == TxnStatus::Success) {
             return false;
         }
-
         $new_account = $this->investment_payment->investmentActive($transaction->target_id);
         AccountActivityService::log($new_account, AccountActivityStatusEnums::ACTIVE);
         Txn::update($ref, TxnStatus::Success, $transaction->user_id);
 
+        return true;
         // $investment = new ForexSchemaInvestormService();
         // $investment->approveInvestment($txnInfo->target_id);
 
 
-        if ($isRedirect) {
-            notify()->success('Payment Successful');
-            return redirect(URL::temporarySignedRoute(
-                'user.investments.index', now()->addMinutes(2)
-            ));
-        }
+        // if ($isRedirect) {
+        //     notify()->success('Payment Successful');
+        //     return redirect(URL::temporarySignedRoute(
+        //         'user.investments.index', now()->addMinutes(2)
+        //     ));
+        // }
 
     }
 

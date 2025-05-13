@@ -1,5 +1,5 @@
 <script data-cfasync="false">
-    (function ($) {
+    $(document).ready(function () {
         'use strict';
 
         let pusherAppKey = "{{ config('broadcasting.connections.pusher.key') }}";
@@ -54,5 +54,5 @@
             });
         }
 
-    })(jQuery);
+    });
 </script>

@@ -1275,7 +1275,7 @@ if (!function_exists('get_mt5_account_balance')) {
     }
 }
 
-if (!function_exists('apply_cent_bonus_adjustment')) {
+if (!function_exists('apply_cent_account_adjustment')) {
     /**
      * Apply Cent Bonus Multiplier if applicable for login.
      *
@@ -1283,7 +1283,7 @@ if (!function_exists('apply_cent_bonus_adjustment')) {
      * @param float $amount
      * @return float
      */
-    function apply_cent_bonus_adjustment($login, float $amount): float
+    function apply_cent_account_adjustment($login, float $amount): float
     {
         try {
             // Fetch the forex account by login
@@ -1293,8 +1293,8 @@ if (!function_exists('apply_cent_bonus_adjustment')) {
             if (!$account || !$account->schema) {
                 return $amount;
             }
-            // Check if is_cent_bonus is enabled
-            if ($account->schema->is_cent_bonus) {
+            // Check if is_cent_account is enabled
+            if ($account->schema->is_cent_account) {
                 return $amount * 100;
             }
 

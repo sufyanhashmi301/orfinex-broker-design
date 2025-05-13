@@ -1,10 +1,11 @@
 <?php
 namespace Payment\Match2pay;
 
+use Txn;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Payment\Transaction\BaseTxn;
-use Txn;
 
 class Match2payTxn extends BaseTxn
 {
@@ -61,7 +62,7 @@ class Match2payTxn extends BaseTxn
             'callbackUrl' => url('/') . '/ipn/match2pay',       // Callback URL for handling the response
             'apiToken' => $this->apiToken,             // API token for authorization
             'timestamp' => $timestamp,                 // Current timestamp
-            'tradingAccountLogin' => '35433',       // Trading account login (transaction/order ID)
+            'tradingAccountLogin' => Str::random(),       // Trading account login (transaction/order ID)
         ];
         
         // Generate signature using payload and secret key

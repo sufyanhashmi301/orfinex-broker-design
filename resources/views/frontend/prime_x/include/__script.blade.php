@@ -1,4 +1,4 @@
-<script src="{{ asset('frontend/js/jquery-3.6.0.min.js') }}"></script>
+<script data-cfasync="false" src="{{ asset('frontend/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('frontend/js/rt-plugins.js') }}"></script>
 <script src="{{ asset('global/js/simple-notify.min.js') }}"></script>
 <script src="{{ asset('frontend/js/app.js') }}"></script>
@@ -6,7 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
 @include('global.__t_notify')
 @if(auth()->check())
-    <script src="{{ asset('global/js/pusher.min.js') }}"></script>
+    <script data-cfasync="false" src="{{ asset('global/js/pusher.min.js') }}"></script>
     @include('global.__notification_script',['for'=>'user','userId' => auth()->user()->id])
 @endif
 {{--@if(setting('site_animation','permission'))--}}

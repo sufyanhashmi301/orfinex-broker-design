@@ -1,5 +1,5 @@
-<script>
-    (function ($) {
+<script data-cfasync="false">
+    $(document).ready(function () {
         'use strict';
 
         let pusherAppKey = "{{ config('broadcasting.connections.pusher.key') }}";
@@ -12,7 +12,7 @@
         });
         var channel = notification.subscribe('{{ $for }}-notification{{$userId}}');
         channel.bind('notification-event', function (result) {
-            const type = result.data.type || 'default';
+            console.log(result);
             playSound(type);
             latestNotification();
             notifyToast(result);
@@ -54,5 +54,5 @@
             });
         }
 
-    })(jQuery);
+    });
 </script>

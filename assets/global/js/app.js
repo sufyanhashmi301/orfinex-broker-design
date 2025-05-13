@@ -816,23 +816,6 @@
       theme: "snow"
     });
   });
-  // vector map init
-  $("#world-map").vectorMap({
-    map: "world_mill_en",
-    normalizeFunction: "polynomial",
-    hoverOpacity: 0.7,
-    hoverColor: false,
-    regionStyle: {
-      initial: {
-        fill: "#8092FF"
-      },
-      hover: {
-        fill: "#4669fa",
-        "fill-opacity": 1
-      }
-    },
-    backgroundColor: "transparent"
-  });
   $("#dashcode-mini-calendar").zabuto_calendar({
     header_format: "[year] - [month]",
     week_starts: "sunday",

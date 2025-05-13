@@ -34,6 +34,8 @@ use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\WebhookController;
 
+use App\Events\NotificationEvent;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -399,3 +401,14 @@ Route::view('register-2', 'frontend::auth.register-2');
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
 Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');
+
+Route::get('/test-notification', function () {
+    broadcast(new NotificationEvent('user', [
+        'title' => 'Test Notification',
+        'notice' => 'This is a test.',
+        'type' => 'info',
+        'action_url' => 'https://example.com'
+    ], 1));
+
+    return 'Notification sent!';
+});

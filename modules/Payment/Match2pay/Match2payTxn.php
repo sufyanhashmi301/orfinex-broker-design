@@ -96,8 +96,8 @@ class Match2payTxn extends BaseTxn
         // Handle response (get the checkout URL and other details)
         if (isset($data['checkoutUrl'])) {
             $checkoutUrl = $data['checkoutUrl'];
-            return redirect($checkoutUrl);
-            // return $checkoutUrl;
+            // return redirect($checkoutUrl);
+            return $checkoutUrl;
         }
 
         // Handle errors or missing fields if necessary

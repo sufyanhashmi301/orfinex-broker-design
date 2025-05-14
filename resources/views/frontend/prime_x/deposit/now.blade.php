@@ -227,8 +227,8 @@
 
         $('#payment_form').on('submit', function() {
             if($("#gatewaySelect").val().includes('match2pay')) {
-                // loadIframe()
-                // return false
+                loadIframe()
+                return false
             }
         }) 
 

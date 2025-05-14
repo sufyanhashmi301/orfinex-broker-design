@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadStagesSeeder::class);
         $this->call(LeadSourcesSeeder::class);
         $this->call(LeadPipelineSeeder::class);
+        $this->call(ForexSchemasTableSeeder::class);
 
 
     }

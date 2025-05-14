@@ -1275,7 +1275,7 @@ if (!function_exists('get_mt5_account_balance')) {
     }
 }
 
-if (!function_exists('apply_cent_bonus_adjustment')) {
+if (!function_exists('apply_cent_account_adjustment')) {
     /**
      * Apply Cent Bonus Multiplier if applicable for login.
      *
@@ -1283,30 +1283,36 @@ if (!function_exists('apply_cent_bonus_adjustment')) {
      * @param float $amount
      * @return float
      */
-    function apply_cent_bonus_adjustment($login, float $amount): float
+    function apply_cent_account_adjustment($login, float|\Brick\Math\BigDecimal $amount): float
     {
         try {
+            // Ensure amount is a float
+            if ($amount instanceof \Brick\Math\BigDecimal) {
+                $amount = (float) $amount->toFloat();
+            }
+
             // Fetch the forex account by login
-            $account = ForexAccount::where('login', $login)->where('account_type','real')->first();
-//            dd($account);
+            $account = \App\Models\ForexAccount::where('login', $login)
+                ->where('account_type', 'real')
+                ->with('schema') // eager load for safety
+                ->first();
 
             if (!$account || !$account->schema) {
                 return $amount;
             }
-            // Check if is_cent_bonus is enabled
-            if ($account->schema->is_cent_bonus) {
-                return $amount * 100;
-            }
 
-            return $amount;
+            return $account->schema->is_cent_account ? $amount * 100 : $amount;
+
         } catch (\Throwable $e) {
-        Log::error("Failed to apply cent bonus adjustment: " . $e->getMessage(), [
+            \Log::error("Failed to apply cent account adjustment", [
                 'login' => $login,
-                'amount' => $amount
+                'amount' => (string) $amount,
+                'error' => $e->getMessage(),
             ]);
-            return $amount;
+            return (float) $amount;
         }
     }
+
 }
 
 if (!function_exists('get_mt5_account_equity')) {

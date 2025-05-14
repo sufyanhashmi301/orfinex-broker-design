@@ -1,10 +1,9 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsCentBonusToForexSchemasTable extends Migration
+class AddIsCentAccountToForexSchemasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +11,7 @@ class AddIsCentBonusToForexSchemasTable extends Migration
     public function up(): void
     {
         Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->boolean('is_cent_bonus')->default(false)->after('is_bonus'); // Replace with actual column
+            $table->boolean('is_cent_account')->default(false)->after('is_bonus'); // Adjust position if needed
         });
     }
 
@@ -22,8 +21,7 @@ class AddIsCentBonusToForexSchemasTable extends Migration
     public function down(): void
     {
         Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->dropColumn('is_cent_bonus');
+            $table->dropColumn('is_cent_account');
         });
     }
 }
-

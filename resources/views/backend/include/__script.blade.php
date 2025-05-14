@@ -1,5 +1,5 @@
 <script src="{{ asset('frontend/js/settings.js') }}" sync></script>
-<script src="{{ asset('global/js/jquery.min.js') }}"></script>
+<script data-cfasync="false" src="{{ asset('global/js/jquery.min.js') }}"></script>
 <script src="{{ asset('global/js/jquery-migrate.js') }}"></script>
 <script src="{{ asset('backend/js/jquery-ui.js') }}"></script>
 
@@ -9,7 +9,7 @@
 
 <script src="{{ asset('global/js/simple-notify.min.js') }}"></script>
 <script src="{{ asset('backend/js/main.js?var=5') }}"></script>
-<script src="{{ asset('global/js/pusher.min.js') }}"></script>
+<script data-cfasync="false" src="{{ asset('global/js/pusher.min.js') }}"></script>
 <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
 <script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
 <script src="{{ asset('global/js/app.js') }}"></script>

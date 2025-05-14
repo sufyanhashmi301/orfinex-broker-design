@@ -2100,6 +2100,14 @@ return [
                 'rules' => '', // validation rule of laravel
                 'value' => 'global/tune/knock_knock.mp3', // default value if you want
             ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'default_notification_tune', // unique name for field
+                'label' => 'Default Notification Tune', // label for field
+                'rules' => '', // validation rule of laravel
+                'value' => 'global/tune/knock_knock.mp3', // default value if you want
+            ],
         ],
     ],
 

@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Level;
 use App\Models\ReferralRelationship;
 use App\Models\User;
-use App\Models\MetaDeal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +18,9 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 
     public function handle()
     {
+        ini_set('max_execution_time', 0); // No timeout
+        ini_set('memory_limit', -1); // No memory limit
+
         $email = $this->argument('email');
         $startDate = Carbon::parse($this->argument('start_date'))->startOfDay();
 
@@ -32,22 +34,30 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
         $maxLevel = Level::max('level_order');
         $network = $this->getReferralNetwork($parent->id, $maxLevel);
 
+        $this->info("Processing " . count($network) . " users in network of {$parent->email}");
+
         $chunks = collect($network)->chunk(500);
 
-        foreach ($chunks as $chunk) {
+        foreach ($chunks as $index => $chunk) {
             DB::beginTransaction();
             try {
                 foreach ($chunk as $childUser) {
                     $this->processUserDealsFromDate($childUser, $startDate);
+
+                    // Free memory after processing each user
+                    unset($childUser);
+                    gc_collect_cycles();
                 }
                 DB::commit();
+                Log::info("Chunk #$index processed successfully.");
             } catch (Throwable $e) {
                 DB::rollBack();
-                Log::error("Rebate distribution error for chunk: " . $e->getMessage());
+                Log::error("Rebate distribution error in chunk #$index: " . $e->getMessage());
+                $this->error("Chunk #$index failed: " . $e->getMessage());
             }
         }
 
-        $this->info("Rebate distribution completed for network under $email.");
+        $this->info("Rebate distribution completed for network under {$email}.");
         return 0;
     }
 
@@ -63,7 +73,9 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
                 continue;
             }
 
-            $children = User::where('ref_id', $currentId)->get();
+            $children = User::select(['id', 'ref_id', 'email', 'ib_group_id', 'ib_status'])
+                ->where('ref_id', $currentId)
+                ->get();
 
             foreach ($children as $child) {
                 $result[] = $child;
@@ -107,14 +119,15 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
                     try {
                         $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
                         DB::commit();
+                        Log::info("Deals processed for User ID: {$childUser->id}");
                     } catch (Throwable $e) {
                         DB::rollBack();
-                        Log::error("Deal distribution failed for user {$childUser->id}: {$e->getMessage()}");
+                        Log::error("Failed to distribute deals for user {$childUser->id}: " . $e->getMessage());
                     }
                 }
             }
         } catch (Throwable $e) {
-            Log::error("User processing error for user {$childUser->id}: {$e->getMessage()}");
+            Log::error("Failed to process user {$childUser->id}: " . $e->getMessage());
         }
     }
 }

@@ -1,7 +1,7 @@
 @extends('frontend::deposit.index')
 @section('deposit_content')
     <div class="progress-steps-form mb-6">
-        <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('user.deposit.now') }}" id="payment_form" method="post" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="target_id" value="{{the_hash($investment->id)}}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
@@ -131,6 +131,9 @@
             </div>
         </div>
     </div>
+
+    @include('frontend.default.deposit.auto_payment_modal')
+
 @endsection
 @section('script')
     <script>
@@ -139,6 +142,7 @@
         var currency = @json($currency)
 
         $("#gatewaySelect").on('change', function (e) {
+            
             "use strict"
             e.preventDefault();
             $('.manual-row').empty();
@@ -220,5 +224,50 @@
 
 
         });
+
+        $('#payment_form').on('submit', function() {
+            if($("#gatewaySelect").val().includes('match2pay')) {
+                // loadIframe()
+                // return false
+            }
+        }) 
+
+        // Iframe
+        let loadIframe = () => {
+            $('#autoPaymentModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            $('#autoPaymentModal').modal('show')
+
+            $.ajax({
+                url: '{{ route("user.deposit.now") }}',
+                method: 'POST',
+                data: $('#payment_form').serialize(),
+                success: function(response) {
+                    console.log(response)
+                    
+                    var iframe = $('<iframe>', {
+                        src: response,
+                        frameborder: 0,
+                        css: {
+                            border: 'none',
+                            width: '100%',
+                            height: '600px'
+                        }
+                    });
+
+                    iframe.on('load', function () {
+                        $('#loading-iframe').remove();
+                        $('button[type="submit"], input[type="submit"]').prop('disabled', true);
+                    });
+                    $('#iframe-container').html(iframe);
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+            
+        }
     </script>
 @endsection

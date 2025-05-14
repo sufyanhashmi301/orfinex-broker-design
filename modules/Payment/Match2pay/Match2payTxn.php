@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 use Payment\Transaction\BaseTxn;
+use Illuminate\Support\Facades\Hash;
 
 class Match2payTxn extends BaseTxn
 {
@@ -64,7 +65,6 @@ class Match2payTxn extends BaseTxn
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => Str::random(),       // Trading account login (transaction/order ID)
         ];
-        
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
         
@@ -87,11 +87,17 @@ class Match2payTxn extends BaseTxn
         if(str_contains($data['checkoutUrl'], 'localhost')) {
             $data['checkoutUrl'] = str_replace('https', 'http', $data['checkoutUrl']);
         }
+
+        // if match2pay then return the url to ajax for iframe
+        // if(str_contains($this->gatewayName, 'match2')) {
+        //     return $data['checkoutUrl'];
+        // }
     
         // Handle response (get the checkout URL and other details)
         if (isset($data['checkoutUrl'])) {
             $checkoutUrl = $data['checkoutUrl'];
             return redirect($checkoutUrl);
+            // return $checkoutUrl;
         }
 
         // Handle errors or missing fields if necessary

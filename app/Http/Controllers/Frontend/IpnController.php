@@ -104,16 +104,41 @@ class IpnController extends Controller
                     ->with('error', 'Unknown error.');
         }
     }
+
+    /**
+     * Match2Pay
+     */
+    private function validateMatch2Pay($request, $input) {
+        $credentials = gateway_info('match2pay');
+
+        $receivedSignature = $request->header('X-Signature');
+        $apiToken = $credentials->api_token;
+        $apiSecret = $credentials->secret_key;
+
+        $amount = number_format($input['transactionAmount'], 8, '.', '');
+        $currency = $input['transactionCurrency'];
+        $status = $input['status'];
+
+        $signatureString = $amount . $currency . $status . $apiToken . $apiSecret;
+        $expectedSignature = hash('sha384', $signatureString);
+
+        if (!hash_equals($receivedSignature, $expectedSignature)) {
+            abort(403, "Invalid Signature");
+            return false;
+        }
+        return true;
+    }
     public function match2payIpn(Request $request)
     {
-        // Get all the input data from the request
         $input = $request->all();
 
-        // Extract the payment ID from the Match2Pay request
+        // Validate request and check if it is actually from m2p
+        $fromMatch2Pay = $this->validateMatch2Pay($request, $input);
+        
+        // payment ID
         $paymentId = $input['paymentId'] ?? null;
-        $cryptoTransactionInfo = $input['cryptoTransactionInfo'][0] ?? null; // Get the first transaction info
 
-        // Find the transaction in the database using the payment ID
+        // linked transaction
         $txnInfo = Transaction::tnx($paymentId);
 
         // Check if the paymentId exists in the request
@@ -124,15 +149,10 @@ class IpnController extends Controller
                 'approval_cause' => 'Invalid payment ID',
             ]);
 
-            return redirect()
-                ->route('user.deposit.now')
-                ->with('error', 'Invalid payment ID.');
+            return false;
         }
 
-        // Extract relevant fields from the cryptoTransactionInfo
         $status = $input['status'] ?? null;
-        $confirmations = $cryptoTransactionInfo['confirmations'] ?? null;
-        $txid = $cryptoTransactionInfo['txid'] ?? null;
 
         // Handle different transaction statuses (PENDING, DONE, FAILED)
         switch ($status) {
@@ -144,32 +164,18 @@ class IpnController extends Controller
                     'approval_cause' => 'Transaction is pending',
                 ]);
 
-               return redirect()
-                   ->route('user.deposit.now')
-                   ->with('info', 'Payment is pending. Please wait for confirmation.');
+                return true;
 
             case 'DONE':
-                
+                if(!$fromMatch2Pay) {
+                    return false;
+                }
                 $txnInfo->update([
                     'manual_field_data' => $input,
                     'approval_cause' => 'Transaction is Completed',
                 ]);
                 // Call the payment success method
                 return self::paymentSuccess($paymentId);
-
-                // return redirect()->route('user.investments.index');
-
-            case 'DECLINED':
-                // Handle declined payments
-                $declineReason = $cryptoTransactionInfo['decline_reason'] ?? 'Unknown reason';
-                $txnInfo->update([
-                    'status' => TxnStatus::Failed,
-                    'approval_cause' => 'Transaction declined: ' . $declineReason,
-                ]);
-
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('error', "Payment declined. Reason: $declineReason.");
 
             default:
                 // Handle unknown or invalid statuses
@@ -178,10 +184,7 @@ class IpnController extends Controller
                     'approval_cause' => 'Unknown status received',
                 ]);
 
-                return "Status Unknown";
-                // return redirect()
-                //     ->route('user.deposit.now')
-                //     ->with('error', 'Unknown error occurred during payment processing.');
+                return false;
         }
     }
 

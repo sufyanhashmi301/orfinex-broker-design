@@ -2,6 +2,7 @@
 namespace App\Exports;
 
 use App\Models\ForexAccount;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -12,10 +13,12 @@ class RealAccountExport implements FromQuery, WithHeadings, WithMapping
     use Exportable;
 
     protected $request;
+    protected $loggedInUser;
 
     public function __construct($request)
     {
         $this->request = $request;
+        $this->loggedInUser = Auth::user()->load('users'); // Eager load the attached users
     }
 
     public function query()
@@ -23,10 +26,30 @@ class RealAccountExport implements FromQuery, WithHeadings, WithMapping
         $filters = $this->request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
         $query = ForexAccount::query()
-            ->where('account_type','real')
-            ->applyFilters($filters);
+            ->where('account_type', 'real');
 
-        return $query->select('login', 'account_name', 'group', 'currency', 'leverage', 'balance', 'equity', 'credit', 'status');
+        // Apply user visibility rules
+        if ($this->loggedInUser->hasRole('Super-Admin')) {
+            // Super-Admin sees all accounts - no additional filtering needed
+        } elseif ($this->loggedInUser->can('show-all-users-by-default-to-staff')) {
+            // Staff with permission sees all accounts - no additional filtering needed
+        } else {
+            // Regular staff only sees accounts of attached users
+            $attachedUserIds = $this->loggedInUser->users->pluck('id')->toArray();
+            if (!empty($attachedUserIds)) {
+                $query->whereIn('user_id', $attachedUserIds);
+            } else {
+                // If no users are attached, return empty result
+                $query->where('user_id', -1);
+            }
+        }
+
+        // Apply filters if method exists
+        if (method_exists(ForexAccount::class, 'applyFilters')) {
+            $query->applyFilters($filters);
+        }
+
+        return $query->select('login', 'account_name', 'group', 'currency', 'leverage', 'balance', 'status');
     }
 
     public function headings(): array

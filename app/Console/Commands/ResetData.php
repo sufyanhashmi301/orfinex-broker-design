@@ -153,6 +153,7 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make('user@12345'),
             'kyc' => 0,
+            'in_grace_period' => 0,
             'email_verified_at' => Carbon::now(),
         ];
         $user = User::create($dataUser);

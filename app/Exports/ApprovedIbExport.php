@@ -1,21 +1,25 @@
 <?php
 namespace App\Exports;
+
 use App\Enums\IBStatus;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Illuminate\Support\Facades\Auth;
 
 class ApprovedIbExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
     protected $request;
+    protected $loggedInUser;
 
     public function __construct($request)
     {
         $this->request = $request;
+        $this->loggedInUser = Auth::user();
     }
 
     public function query()
@@ -23,9 +27,23 @@ class ApprovedIbExport implements FromQuery, WithHeadings, WithMapping
         $filters = $this->request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
         $balanceStatus = $this->request->balanceStatus;
 
-        $query = User::where('ib_status', IBStatus::APPROVED)
-            ->applyFilters($filters)
-            ->applyBalanceStatusFilter($balanceStatus);
+        $query = User::where('ib_status', IBStatus::APPROVED);
+
+        if ($this->loggedInUser->hasRole('Super-Admin')) {
+            // Super-Admin sees all users
+        } elseif ($this->loggedInUser->can('show-all-users-by-default-to-staff')) {
+            // Staff with permission sees all users
+        } else {
+            $attachedUserIds = $this->loggedInUser->users->pluck('id');
+            if ($attachedUserIds->isNotEmpty()) {
+                $query->whereIn('id', $attachedUserIds);
+            } else {
+                $query->where('id', -1); // No users visible
+            }
+        }
+
+        $query->applyFilters($filters)
+              ->applyBalanceStatusFilter($balanceStatus);
 
         return $query->select('first_name', 'last_name', 'username', 'email', 'phone', 'country', 'gender', 'comment');
     }

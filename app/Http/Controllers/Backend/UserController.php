@@ -995,7 +995,8 @@ if (!empty($filters['staff_name'])) {
                 } else {
                     // Fetch balance from Forex API for validation
                     $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
-                    if ($scaledAmount > $balance) {
+
+                    if (BigDecimal::of($scaledAmount) > $balance) {
                         throw new \Exception(__('Insufficient funds in Forex account.'));
                     }
 

@@ -827,7 +827,7 @@ class WithdrawController extends Controller
                 $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
                 $data = [
                     'login' => $targetId,
-                    'Amount' => apply_cent_account_adjustment($targetId, $totalAmount),
+                    'Amount' => apply_cent_account_adjustment($targetId, $txnInfo->final_amount),
                     'type' => 2,  // Withdraw
                     'TransactionComments' => $comment
                 ];

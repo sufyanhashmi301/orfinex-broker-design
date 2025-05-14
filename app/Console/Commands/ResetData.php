@@ -153,12 +153,13 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make('user@12345'),
             'kyc' => 0,
+            'in_grace_period' => 0,
             'email_verified_at' => Carbon::now(),
         ];
         $user = User::create($dataUser);
 
         $superAdmin = Admin::create([
-            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
+            'avatar' => 'global/images/ybtQJbZbsYAzVRjOJeuT.png',
             'name' => 'Super Admin',
             'first_name' => 'Super',
             'last_name' => 'Admin',

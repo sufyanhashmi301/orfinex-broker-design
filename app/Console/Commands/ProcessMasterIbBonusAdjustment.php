@@ -23,7 +23,7 @@ class ProcessMasterIbBonusAdjustment extends Command
             return;
         }
 
-        $startDate = Carbon::parse('2024-01-01')->startOfDay();
+        $startDate = Carbon::parse('2025-04-30')->startOfDay();
 
         DB::beginTransaction();
         try {
@@ -116,12 +116,12 @@ class ProcessMasterIbBonusAdjustment extends Command
                 }
             }
 
-            $walletIds = Account::whereIn('user_id', $allUserIds)
-                ->where('balance', 'ib_wallet')
-                ->pluck('wallet_id')
-                ->toArray();
+//            $walletIds = Account::whereIn('user_id', $allUserIds)
+//                ->where('balance', 'ib_wallet')
+//                ->pluck('wallet_id')
+//                ->toArray();
 
-            Transaction::whereIn('target_id', $walletIds)->delete();
+//            Transaction::whereIn('target_id', $walletIds)->delete();
 
             DB::commit();
 

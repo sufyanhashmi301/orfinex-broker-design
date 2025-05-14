@@ -122,7 +122,7 @@ class UserController extends Controller
  if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -256,7 +256,7 @@ class UserController extends Controller
 if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -341,7 +341,7 @@ if (!empty($filters['staff_name'])) {
  if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -537,7 +537,7 @@ if (!empty($filters['staff_name'])) {
 if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -601,8 +601,8 @@ if (!empty($filters['staff_name'])) {
     return redirect()->back();
 }
 
-    
-    
+
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -972,11 +972,17 @@ if (!empty($filters['staff_name'])) {
             $adminUser = \Auth::user();
 
             if ($targetType === 'forex') {
-                // Forex account operations
+                // Fetch forex account for cent check
+                $forexAccount = ForexAccount::where('login', $targetId)->firstOrFail();
+
+                // Scale amount if it's a cent account
+                $scaledAmount = apply_cent_account_adjustment($targetId, $amount->toFloat());
+
+                // Add or subtract balance
                 if ($type === 'add') {
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount->toFloat(),
+                        'Amount' => $scaledAmount,
                         'type' => 1, // Deposit
                         'TransactionComments' => $comment,
                     ];
@@ -987,14 +993,16 @@ if (!empty($filters['staff_name'])) {
                     }
 
                 } else {
+                    // Fetch balance from Forex API for validation
                     $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
-                    if ($amount->compareTo($balance) > 0) {
+
+                    if (BigDecimal::of($scaledAmount) > $balance) {
                         throw new \Exception(__('Insufficient funds in Forex account.'));
                     }
 
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount->toFloat(),
+                        'Amount' => $scaledAmount,
                         'type' => 2, // Withdraw
                         'TransactionComments' => $comment,
                     ];
@@ -1005,7 +1013,7 @@ if (!empty($filters['staff_name'])) {
                     }
                 }
 
-                // ✅ Only after success
+                // Log transaction in system at original amount
                 $txn = Txn::new(
                     $amount->toFloat(),
                     0,
@@ -1282,7 +1290,7 @@ if (!empty($filters['staff_name'])) {
         return redirect()->route('user.dashboard');
     }
 
-    public function createCustomer()
+   public function createCustomer()
     {
         // Get the location (e.g., from a user's profile or a service like IP-based location)
         $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
@@ -1296,11 +1304,10 @@ if (!empty($filters['staff_name'])) {
         $riskProfileTags = RiskProfileTag::all();
         $kycStatus = KYCStatus::cases();
         // dd($kycstatus);
-
-        return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs'));
+        $staffMembers = Admin::all();
+        return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs', 'staffMembers'));
     }
-
-    public function store(Request $request)
+public function store(Request $request)
     {
         // Get setting-based flags
         $isUsername = (bool) getPageSetting('username_show');
@@ -1341,6 +1348,8 @@ if (!empty($filters['staff_name'])) {
                 ],
                 'password' => ['required', 'string', 'min:8'],
                 'date_of_birth' => 'nullable|date',
+                'kyc_level' => 'nullable|in:1,3,5',
+            'kyc_id' => 'nullable|exists:kycs,id',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -1382,12 +1391,28 @@ if (!empty($filters['staff_name'])) {
         $rank = Ranking::find(1);
 
         // Handle the status value
-        $kyc = $input['kyc'];
-        if (Str::startsWith($kyc, 'kyc_')) {
-            $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
-        } else {
-            $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
-        }
+       $kyc = $input['kyc'] ?? 0; // Default to 0 if not provided
+    if (is_string($kyc) && Str::startsWith($kyc, 'kyc_')) {
+        $kyc = (int) str_replace('kyc_', '', $kyc);
+    } else {
+        $kyc = (int) $kyc;
+    }
+  $kycLevel = (int)$request->kyc_level;
+$kycId = $request->kyc_id;
+
+// Basic validation for required fields using enum
+if ($kycLevel === KYCStatus::Rejected->value) {
+    if (empty($kycId)) {
+        notify()->error('Please select a KYC type and upload documents.');
+        return redirect()->back()->withInput();
+    }
+}
+
+if ($kycLevel === KYCStatus::PendingLevel3->value) {
+    notify()->error('Please Complete Level 2 first.');
+    return redirect()->back()->withInput();
+}
+
 
         // Create the user with exception handling
         try {
@@ -1408,7 +1433,7 @@ if (!empty($filters['staff_name'])) {
                 'password' => Hash::make($input['password']),
                 'date_of_birth' => $input['date_of_birth'],
                 'email_verified_at' => $request->has('is_email_verified') ? now() : null,
-                'kyc' => $kyc,
+                'kyc' => 0,
                 'in_grace_period' => false,
 
             ]);
@@ -1417,12 +1442,34 @@ if (!empty($filters['staff_name'])) {
             if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
                 $user->riskProfileTags()->attach($input['risk_profile_tags']);
             }
+              // Handle KYC submission if level was provided
+        if ($request->has('kyc_level') && $request->kyc_level) {
+            // Create a new request object for the KYC submission
+            $kycRequest = new \Illuminate\Http\Request();
+            $kycRequest->replace($request->all());
+            $kycRequest->setMethod('POST');
+
+            // Call the kycSubmit method
+            $kycController = app(\App\Http\Controllers\Backend\KycController::class);
+            $kycResponse = $kycController->kycSubmit($kycRequest, $user->id);
+        }
+             // Assign to staff
+        $staffId = auth()->user()->hasRole('Super-Admin')
+            ? $request->staff_id
+            : auth()->id();
+
+        if ($staffId) {
+            $staff = Admin::find($staffId);
+            if ($staff) {
+                $staff->users()->syncWithoutDetaching([$user->id]);
+            }
+        }
+         notify()->success('Customer created successfully', 'success');
+        // Redirect to the user index with success message
+        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
         }
-        notify()->success('Customer created successfully', 'success');
-        // Redirect to the user index with success message
-        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
 
     public function createNote(Request $request, $id)
@@ -1619,21 +1666,21 @@ if (!empty($filters['staff_name'])) {
         $request->validate([
             'date' => ['required', 'date_format:Y-m-d H:i:s'],
         ]);
-    
+
         $user = User::findOrFail($userId);
-    
+
         try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
             ]);
-    
+
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
-    
+
             return redirect()->back();
         } catch (\Exception $e) {
             notify()->error('Command failed: ' . $e->getMessage());
-    
+
             return redirect()->back();
         }
     }
@@ -1642,21 +1689,21 @@ if (!empty($filters['staff_name'])) {
         $request->validate([
             'date' => ['required', 'date_format:Y-m-d H:i:s'],
         ]);
-    
+
         $user = User::findOrFail($userId);
-    
+
         try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
             ]);
-    
+
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
-    
+
             return redirect()->back();
         } catch (\Exception $e) {
             notify()->error('Command failed: ' . $e->getMessage());
-    
+
             return redirect()->back();
         }
     }

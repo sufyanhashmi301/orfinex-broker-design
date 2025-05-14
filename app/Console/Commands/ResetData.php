@@ -68,6 +68,7 @@ class ResetData extends Command
         DB::table('admin_login_activities')->truncate();
         DB::table('login_activities')->truncate();
         DB::table('transactions')->truncate();
+        DB::table('forex_schemas')->truncate();
         DB::table('forex_accounts')->truncate();
         DB::table('ib_transactions')->truncate();
         DB::table('meta_deals')->truncate();

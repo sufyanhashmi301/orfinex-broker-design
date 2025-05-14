@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 {
@@ -27,28 +28,26 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
             $this->error("User with email $email not found.");
             return 1;
         }
+
         $maxLevel = Level::max('level_order');
-//        dd($maxLevel);
-
         $network = $this->getReferralNetwork($parent->id, $maxLevel);
-//        dd(count($network));
 
-        DB::beginTransaction();
-        try {
-            foreach ($network as $childUser) {
-//                dd($childUser);
-                $this->processUserDealsFromDate($childUser, $startDate);
+        $chunks = collect($network)->chunk(500);
+
+        foreach ($chunks as $chunk) {
+            DB::beginTransaction();
+            try {
+                foreach ($chunk as $childUser) {
+                    $this->processUserDealsFromDate($childUser, $startDate);
+                }
+                DB::commit();
+            } catch (Throwable $e) {
+                DB::rollBack();
+                Log::error("Rebate distribution error for chunk: " . $e->getMessage());
             }
-
-            DB::commit();
-            $this->info("Rebate distribution completed for network under $email.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('EmailBasedRebateDistribution Error: ' . $e->getMessage());
-            $this->error("Rebate distribution failed: " . $e->getMessage());
-            return 1;
         }
 
+        $this->info("Rebate distribution completed for network under $email.");
         return 0;
     }
 
@@ -77,43 +76,45 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 
     protected function processUserDealsFromDate($childUser, $startDate)
     {
-        $referralRelationship = $childUser->referralRelationship;
-//        dd($childUser,$referralRelationship);
+        try {
+            $referralRelationship = $childUser->referralRelationship;
 
-        if (!$referralRelationship) {
-            return;
-        }
+            if (!$referralRelationship) return;
 
-        $validParentData = $this->getValidParent($referralRelationship->user);
-//        dd($validParentData);
+            $validParentData = $this->getValidParent($referralRelationship->user);
+            if (!$validParentData) return;
 
-        if (!$validParentData) {
-            return;
-        }
+            $notedParent = $validParentData['user'];
+            $notedLevel = $validParentData['level'];
 
-        $notedParent = $validParentData['user'];
-        $notedLevel = $validParentData['level'];
+            $forexSchemas = $notedParent->ibGroup->rebateRules()
+                ->with('forexSchemas')
+                ->get()
+                ->flatMap(fn($r) => $r->forexSchemas)
+                ->pluck('id')
+                ->unique();
 
-        $forexSchemas = $notedParent->ibGroup->rebateRules()
-            ->with('forexSchemas')
-            ->get()
-            ->flatMap(fn($rebateRule) => $rebateRule->forexSchemas)
-            ->pluck('id')
-            ->unique();
+            $realForexAccounts = \App\Models\ForexAccount::realActiveAccount($childUser->id)
+                ->whereIn('forex_schema_id', $forexSchemas)
+                ->get();
 
-        $realForexAccounts = \App\Models\ForexAccount::realActiveAccount($childUser->id)
-            ->whereIn('forex_schema_id', $forexSchemas)
-            ->get();
+            foreach ($realForexAccounts as $realForexAccount) {
+                $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
+                $deals = $this->getMT5Deals($realForexAccount->login, $startDate, $symbols);
 
-        foreach ($realForexAccounts as $realForexAccount) {
-//            if($realForexAccount->login == '')
-            $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
-            $deals = $this->getMT5Deals($realForexAccount->login, $startDate, $symbols);
-//            dd($deals);
-
-            if (!$deals->isEmpty()) {
-                $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                if (!$deals->isEmpty()) {
+                    DB::beginTransaction();
+                    try {
+                        $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                        DB::commit();
+                    } catch (Throwable $e) {
+                        DB::rollBack();
+                        Log::error("Deal distribution failed for user {$childUser->id}: {$e->getMessage()}");
+                    }
+                }
             }
+        } catch (Throwable $e) {
+            Log::error("User processing error for user {$childUser->id}: {$e->getMessage()}");
         }
     }
 }

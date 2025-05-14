@@ -1277,24 +1277,30 @@ if (!function_exists('get_mt5_account_balance')) {
 
 if (!function_exists('apply_cent_account_adjustment')) {
     /**
-     * Apply Cent Bonus Multiplier if applicable for login.
+     * Adjust amount if the account is a cent account.
      *
-     * @param int|mixed $login
-     * @param float $amount
+     * @param int|string $login
+     * @param float|int|string|\Brick\Math\BigDecimal $amount
      * @return float
      */
-    function apply_cent_account_adjustment($login, float|\Brick\Math\BigDecimal $amount): float
+    function apply_cent_account_adjustment($login, float|int|string|\Brick\Math\BigDecimal $amount): float
     {
         try {
-            // Ensure amount is a float
+            // Normalize amount to float
             if ($amount instanceof \Brick\Math\BigDecimal) {
-                $amount = (float) $amount->toFloat();
+                $amount = $amount->toFloat();
+            } elseif (is_string($amount)) {
+                $amount = (float) trim($amount);
+            } elseif (is_int($amount)) {
+                $amount = (float) $amount;
+            } elseif (!is_float($amount)) {
+                throw new \InvalidArgumentException('Invalid amount type provided to apply_cent_account_adjustment.');
             }
 
             // Fetch the forex account by login
             $account = \App\Models\ForexAccount::where('login', $login)
                 ->where('account_type', 'real')
-                ->with('schema') // eager load for safety
+                ->with('schema')
                 ->first();
 
             if (!$account || !$account->schema) {
@@ -1307,13 +1313,14 @@ if (!function_exists('apply_cent_account_adjustment')) {
             \Log::error("Failed to apply cent account adjustment", [
                 'login' => $login,
                 'amount' => (string) $amount,
+                'type' => gettype($amount),
                 'error' => $e->getMessage(),
             ]);
-            return (float) $amount;
+            return (float) (is_numeric($amount) ? $amount : 0);
         }
     }
-
 }
+
 
 if (!function_exists('get_mt5_account_equity')) {
     /**

@@ -959,8 +959,8 @@ if (!empty($filters['staff_name'])) {
             return redirect()->back();
         }
 
-//        try {
-//            DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
             $targetId = $request->input('target_id');
             $targetType = $request->input('target_type');
@@ -1098,16 +1098,16 @@ if (!empty($filters['staff_name'])) {
                 }
             }
 
-//            DB::commit();
+            DB::commit();
             notify()->success(__('Balance Updated Successfully.'), 'Success');
             return redirect()->back();
-//
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            \Log::error('Balance Update Failed: ' . $e->getMessage());
-//            notify()->error($e->getMessage(), 'Error');
-//            return redirect()->back();
-//        }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Balance Update Failed: ' . $e->getMessage());
+            notify()->error($e->getMessage(), 'Error');
+            return redirect()->back();
+        }
     }
 
     /**

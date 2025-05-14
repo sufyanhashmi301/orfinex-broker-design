@@ -23,7 +23,7 @@ class BonusService{
 
   /**
    * Getting current credit amount
-   * 
+   *
    */
   private function getAccountCurrentCreditAmount($account_target_id) {
     $balance = $this->forexApiService->getCurrentCredit([
@@ -35,19 +35,21 @@ class BonusService{
 
   /**
    * Responsible for adding or subtracting from bonus/credit
-   * 
+   *
    */
   public function addOrSubtractBonusToAccount($account_target_type, $account_target_id, $amount, $comment, $type) {
 
-    $forexApiData = [
-      'login' => $account_target_id,
-      'Amount' => $amount,
-      'type' => $type == 'add' ? 1 : 2, // 1: deposit, 2: withdraw
-      'TransactionComments' => $comment
-    ];
 
-    
-    // Adding or Subtarcting Bonus to Balance
+      $scaledAmount = apply_cent_account_adjustment($account_target_id, (float)$amount);
+
+      $forexApiData = [
+          'login' => $account_target_id,
+          'Amount' => $scaledAmount,
+          'type' => $type == 'add' ? 1 : 2,
+          'TransactionComments' => $comment
+      ];
+
+      // Adding or Subtarcting Bonus to Balance
     if ($account_target_type == 'forex') {
 
       // Get account target id and check if the amount to be deducted is larger than current available credit then set the credit to 0, to avoid credit in -
@@ -65,7 +67,7 @@ class BonusService{
 
   /**
    * Use to add manual bonus from one user, admin to other user
-   * 
+   *
    */
   public function addBonus($request, $user) {
 
@@ -73,17 +75,17 @@ class BonusService{
     $amount = $request->amount;
     $account_target_id = $request->target_id;
     $comment = $request->comment ?? 'N/A';
-    $account_target_type = $request->target_type; 
+    $account_target_type = $request->target_type;
     $user_id = $user->id;
     $admin_id = Auth::id();
 
     $forex_account = ForexAccount::where('login', $account_target_id)->first();
-    
+
     // if adding the bonus manually by Admin
     if($type == 'add'){
       // Transaction description
-      
-      // Txn 
+
+      // Txn
       $transaction_description = "Bonus rewarded to " . $forex_account->account_name . ' forex account';;
       $transaction_type = TxnType::Bonus;
       $transaction_status = TxnStatus::Success;
@@ -95,15 +97,15 @@ class BonusService{
       // get account balance
       $user_credit = $this->getAccountCurrentCreditAmount($account_target_id);
 
-      // if amount to be subtracted is bigger than user's current balance 
+      // if amount to be subtracted is bigger than user's current balance
       if (BigDecimal::of($amount)->compareTo($user_credit) > 0) {
         return ['status' => 'error', 'message' => "Specify an amount to subtract that is less than the user's current available credit. The user's current credit is " . setting('site_currency', 'global') . $user_credit . '.' ];
       }
 
       // Transaction description
       $transaction_description = "Bonus deducted from " . $forex_account->account_name . ' forex account';;
-      
-      // Txn 
+
+      // Txn
       $transaction_type = TxnType::BonusSubtract;
       $transaction_status = TxnStatus::Success;
     }
@@ -131,7 +133,7 @@ class BonusService{
     $bonus_txn->save();
 
     return ['status' => 'success', 'message' => $transaction_description];
-    
+
   }
 
   public function assignBonusToAccountType($bonus, $forex_account_types, $type = 'forex'){

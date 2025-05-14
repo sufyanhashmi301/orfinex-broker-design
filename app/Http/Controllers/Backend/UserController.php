@@ -122,7 +122,7 @@ class UserController extends Controller
  if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -256,7 +256,7 @@ class UserController extends Controller
 if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -341,7 +341,7 @@ if (!empty($filters['staff_name'])) {
  if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -537,7 +537,7 @@ if (!empty($filters['staff_name'])) {
 if (!empty($filters['staff_name'])) {
     $data->whereHas('staff', function($query) use ($filters) {
         $searchTerm = $filters['staff_name'];
-        
+
         // Check if search term contains a space (possible first + last name)
         if (str_contains($searchTerm, ' ')) {
             $nameParts = explode(' ', $searchTerm, 2);
@@ -601,8 +601,8 @@ if (!empty($filters['staff_name'])) {
     return redirect()->back();
 }
 
-    
-    
+
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -972,11 +972,17 @@ if (!empty($filters['staff_name'])) {
             $adminUser = \Auth::user();
 
             if ($targetType === 'forex') {
-                // Forex account operations
+                // Fetch forex account for cent check
+                $forexAccount = ForexAccount::where('login', $targetId)->firstOrFail();
+
+                // Scale amount if it's a cent account
+                $scaledAmount = apply_cent_account_adjustment($targetId, $amount->toFloat());
+
+                // Add or subtract balance
                 if ($type === 'add') {
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount->toFloat(),
+                        'Amount' => $scaledAmount,
                         'type' => 1, // Deposit
                         'TransactionComments' => $comment,
                     ];
@@ -987,14 +993,15 @@ if (!empty($filters['staff_name'])) {
                     }
 
                 } else {
+                    // Fetch balance from Forex API for validation
                     $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
-                    if ($amount->compareTo($balance) > 0) {
+                    if ($scaledAmount > $balance) {
                         throw new \Exception(__('Insufficient funds in Forex account.'));
                     }
 
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $amount->toFloat(),
+                        'Amount' => $scaledAmount,
                         'type' => 2, // Withdraw
                         'TransactionComments' => $comment,
                     ];
@@ -1005,7 +1012,7 @@ if (!empty($filters['staff_name'])) {
                     }
                 }
 
-                // ✅ Only after success
+                // Log transaction in system at original amount
                 $txn = Txn::new(
                     $amount->toFloat(),
                     0,
@@ -1440,14 +1447,14 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             $kycRequest = new \Illuminate\Http\Request();
             $kycRequest->replace($request->all());
             $kycRequest->setMethod('POST');
-            
+
             // Call the kycSubmit method
             $kycController = app(\App\Http\Controllers\Backend\KycController::class);
             $kycResponse = $kycController->kycSubmit($kycRequest, $user->id);
         }
              // Assign to staff
-        $staffId = auth()->user()->hasRole('Super-Admin') 
-            ? $request->staff_id 
+        $staffId = auth()->user()->hasRole('Super-Admin')
+            ? $request->staff_id
             : auth()->id();
 
         if ($staffId) {
@@ -1658,21 +1665,21 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
         $request->validate([
             'date' => ['required', 'date_format:Y-m-d H:i:s'],
         ]);
-    
+
         $user = User::findOrFail($userId);
-    
+
         try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
             ]);
-    
+
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
-    
+
             return redirect()->back();
         } catch (\Exception $e) {
             notify()->error('Command failed: ' . $e->getMessage());
-    
+
             return redirect()->back();
         }
     }
@@ -1681,21 +1688,21 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
         $request->validate([
             'date' => ['required', 'date_format:Y-m-d H:i:s'],
         ]);
-    
+
         $user = User::findOrFail($userId);
-    
+
         try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
             ]);
-    
+
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
-    
+
             return redirect()->back();
         } catch (\Exception $e) {
             notify()->error('Command failed: ' . $e->getMessage());
-    
+
             return redirect()->back();
         }
     }

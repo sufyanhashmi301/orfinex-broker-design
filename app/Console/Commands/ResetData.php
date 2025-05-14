@@ -68,6 +68,7 @@ class ResetData extends Command
         DB::table('admin_login_activities')->truncate();
         DB::table('login_activities')->truncate();
         DB::table('transactions')->truncate();
+        DB::table('forex_schemas')->truncate();
         DB::table('forex_accounts')->truncate();
         DB::table('ib_transactions')->truncate();
         DB::table('meta_deals')->truncate();
@@ -139,7 +140,9 @@ class ResetData extends Command
         Artisan::call('db:seed');
 
         $rank = Ranking::find(1);
+
         $sitename = 'qorvamarkets';
+
 
         $dataUser = [
             'ranking_id' => $rank->id,
@@ -152,17 +155,19 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make('user@12345'),
             'kyc' => 0,
+            'in_grace_period' => 0,
             'email_verified_at' => Carbon::now(),
         ];
         $user = User::create($dataUser);
 
         $superAdmin = Admin::create([
-            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
+            'avatar' => 'global/images/ybtQJbZbsYAzVRjOJeuT.png',
             'name' => 'Super Admin',
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'email' => 'admin@'.$sitename.'.com',
             'password' => Hash::make('qorvamarkets@2025'),
+
             'role' => 1,
         ]);
         $data = [

@@ -23,7 +23,7 @@ class ProcessMasterIbBonusAdjustment extends Command
             return;
         }
 
-        $startDate = Carbon::parse('2024-01-01')->startOfDay();
+        $startDate = Carbon::parse('2025-04-30')->startOfDay();
 
         DB::beginTransaction();
         try {

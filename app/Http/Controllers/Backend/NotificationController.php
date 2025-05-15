@@ -18,7 +18,7 @@ class NotificationController extends Controller
 
         if ($loggedInAdmin->hasRole('Super-Admin') || $loggedInAdmin->can('show-all-users-by-default-to-staff')) {
             // Super-Admin: No user filter
-            $notifications = Notification::where('for', 'admin')->latest()->take(10)->get();
+            $notifications = Notification::where('for', 'admin')->latest()->take(5)->get();
             $totalUnread = Notification::where('for', 'admin')->where('read', 0)->count();
             $totalCount = Notification::where('for', 'admin')->get()->count();
         } else {

@@ -7,6 +7,10 @@
         <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             {{ __('All Notifications') }}
         </h4>
+        <a href="{{ route('user.read-notification', 0) }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
+            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+            {{ __(' Mark all read') }}
+        </a>
     </div>
     <div class="card">
         <div class="card-body px-6 pt-3">

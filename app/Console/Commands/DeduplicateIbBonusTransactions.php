@@ -42,7 +42,7 @@ class DeduplicateIbBonusTransactions extends Command
                     ->where('user_id', $dup->user_id)
                     ->where('from_user_id', $dup->from_user_id)
                     ->where('description', $dup->description)
-                    ->where('amount', $dup->amount)
+//                    ->where('amount', $dup->amount)
                     ->orderBy('id')
                     ->get();
 

@@ -23,11 +23,10 @@ class DeduplicateIbBonusTransactions extends Command
             'user_id',
             'from_user_id',
             'description',
-            'amount',
             DB::raw('COUNT(*) as total')
         )
             ->where('type', 'ib_bonus')
-            ->groupBy('user_id', 'from_user_id', 'description', 'amount')
+            ->groupBy('user_id', 'from_user_id', 'description')
             ->having('total', '>', 1)
             ->get();
 

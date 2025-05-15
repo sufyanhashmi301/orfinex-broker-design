@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Models\Account;
 use App\Models\Ledger;
+use Throwable;
 
 class UpdateIbWalletBalance extends Command
 {
@@ -21,7 +22,7 @@ class UpdateIbWalletBalance extends Command
      *
      * @var string
      */
-    protected $description = 'Update all IB Wallet account amounts based on the latest two ledger entries.';
+    protected $description = 'Update IB Wallet ledger balances with the account amount (wallet balance), using row-level locking.';
 
     /**
      * Execute the console command.
@@ -30,46 +31,39 @@ class UpdateIbWalletBalance extends Command
      */
     public function handle()
     {
-        // Fetch all IB Wallet accounts
-        $accounts = Account::where('balance', 'ib_wallet')->get();
+        Account::where('balance', 'ib_wallet')
+            ->chunkById(100, function ($accounts) {
+                foreach ($accounts as $account) {
+                    try {
+                        DB::beginTransaction();
 
-        foreach ($accounts as $account) {
-            DB::transaction(function () use ($account) {
-                // Retrieve the last two ledger entries for this account
-                $ledgers = Ledger::where('account_id', $account->id)
-                    ->orderBy('id', 'desc')
-                    ->take(2)
-                    ->get();
+                        // Lock the latest ledger entry for this account
+                        $lastLedger = Ledger::where('account_id', $account->id)
+                            ->orderByDesc('id')
+                            ->limit(1)
+                            ->lockForUpdate()
+                            ->first();
 
-                // Ensure at least two entries exist
-                if ($ledgers->count() < 2) {
-                    $this->info("Account ID {$account->id} skipped: not enough ledger entries.");
-                    return;
+                        if (!$lastLedger) {
+                            $this->warn("No ledger entry found for Account ID {$account->id}");
+                            DB::rollBack();
+                            continue;
+                        }
+
+                        // Update the ledger balance with the account amount
+                        $lastLedger->balance = $account->amount;
+                        $lastLedger->save();
+
+                        DB::commit();
+
+                        $this->info("Ledger updated for Account ID {$account->id} with balance: {$account->amount}");
+
+                    } catch (Throwable $e) {
+                        DB::rollBack();
+                        $this->error("Failed for Account ID {$account->id}: " . $e->getMessage());
+                    }
                 }
-
-                // Identify the relevant entries
-                $lastEntry = $ledgers->first();
-                $secondLastEntry = $ledgers->last();
-
-                // Handle null values by coalescing to zero
-                $previousBalance = $secondLastEntry->balance ?? 0;
-                $credit = $lastEntry->credit ?? 0;
-                $debit = $lastEntry->debit ?? 0;
-
-                // Calculate the new amount
-                $newAmount = $previousBalance + $credit - $debit;
-
-                // Update the account's amount
-                $account->amount = $newAmount;
-                $account->save();
-
-                // Update the last ledger entry's balance
-                $lastEntry->balance = $newAmount;
-                $lastEntry->save();
-
-                $this->info("Account ID {$account->id} updated: new IB Wallet amount is {$newAmount}.");
             });
-        }
 
         return 0;
     }

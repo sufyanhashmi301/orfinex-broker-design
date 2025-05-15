@@ -141,7 +141,12 @@ class SendMoneyController extends Controller
             if (!$fromForexAccount) {
                 throw new \Exception(__('The selected Forex account does not belong to you.'));
             }
+            $scaledAmount = apply_cent_account_adjustment($targetId, $amount);
             $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+
+            if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
+                throw new \Exception(__("Insufficient funds in your account."));
+            }
         } elseif ($targetType === 'wallet') {
             $wallet = get_user_account_by_wallet_id($targetId, \Auth::id());
             if (!$wallet) {
@@ -263,14 +268,50 @@ class SendMoneyController extends Controller
     {
         // Perform Forex-to-Forex transfer
         $comment = 'ext/' . $targetId . '/to/' . $receiverAccount;
-        $data = [
-            'FromLogin' => $targetId,
-            'ToLogin' => $receiverAccount,
-            'Amount' => $totalAmount,
-            'Comments' => $comment
-        ];
-        $this->forexApiService->transferFunds($data);
+        $this->adjustedForexToForexTransfer($targetId, $receiverAccount, $totalAmount,$txnInfoSender->amount, $comment);
+
     }
+    private function adjustedForexToForexTransfer($senderLogin, $receiverLogin, $amountToDeduct,$amountToCredit, $comment)
+    {
+        $senderIsCent = $this->isCentAccount($senderLogin);
+        $receiverIsCent = $this->isCentAccount($receiverLogin);
+
+        // Determine scaled amounts
+        $amountToDeduct = $senderIsCent ? $amountToDeduct * 100 : $amountToDeduct;
+        $amountToCredit = $receiverIsCent ? $amountToCredit * 100 : $amountToCredit;
+
+        $api = $this->forexApiService;
+
+        // 1. Deduct from sender
+        $withdrawData = [
+            'login' => $senderLogin,
+            'Amount' => $amountToDeduct,
+            'type' => 2,
+            'TransactionComments' => $comment
+        ];
+        $withdrawResponse = $api->balanceOperation($withdrawData);
+        if (!$withdrawResponse['success'] || $withdrawResponse['result']['responseCode'] != 10009) {
+            throw new \Exception(__('Forex Deduction Failed'));
+        }
+
+        // 2. Credit to receiver
+        $depositData = [
+            'login' => $receiverLogin,
+            'Amount' => $amountToCredit,
+            'type' => 1,
+            'TransactionComments' => $comment
+        ];
+        $depositResponse = $api->balanceOperation($depositData);
+        if (!$depositResponse['success'] || $depositResponse['result']['responseCode'] != 10009) {
+            throw new \Exception(__('Forex Deposit Failed'));
+        }
+    }
+    private function isCentAccount($login)
+    {
+        $account = \App\Models\ForexAccount::where('login', $login)->with('schema')->first();
+        return $account && $account->schema && $account->schema->is_cent_account;
+    }
+
     private function walletToForexTransfer($wallet, $targetId, $receiverAccount, $totalAmount, $txnInfoSender, $txnInfoReceiver)
     {
 //        try {
@@ -294,7 +335,7 @@ class SendMoneyController extends Controller
             $comment = 'ext/W/' . substr($txnInfoReceiver->tnx, -7);
             $depositData = [
                 'login' => $receiverAccount,
-                'Amount' => $totalAmount - $txnInfoSender->charge,
+                'Amount' => apply_cent_account_adjustment($receiverAccount, $txnInfoSender->amount),
                 'type' => 1, // Deposit into Forex
                 'TransactionComments' => $comment
             ];
@@ -487,7 +528,13 @@ class SendMoneyController extends Controller
             return redirect()->back();
         }
 
+        $scaledAmount = apply_cent_account_adjustment($targetId, $amount);
         $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+
+        if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
+            notify()->error(__('Insufficient funds'), __('Error'));
+            return redirect()->back();
+        }
     } elseif ($targetType == 'wallet') {
         $wallet = get_user_account_by_wallet_id($targetId, $fromUser->id);
         if (!$wallet) {
@@ -564,13 +611,7 @@ class SendMoneyController extends Controller
     if ($targetType == 'forex' && $receiverType == 'forex') {
         // Forex-to-Forex Transfer
         $comment = 'Int/from/' . $targetId . '/to/' . $receiverAccount;
-        $data = [
-            'FromLogin' => $targetId,
-            'ToLogin' => $receiverAccount,
-            'Amount' => $totalAmount,
-            'Comments' => $comment
-        ];
-        $this->forexApiService->transferFunds($data);
+        $this->adjustedForexToForexTransfer($targetId, $receiverAccount, $totalAmount, $txnInfoSender->amount, $comment);
 
     } elseif ($targetType == 'forex' && $receiverType == 'wallet') {
         // Forex-to-Wallet Transfer
@@ -578,7 +619,7 @@ class SendMoneyController extends Controller
 
         $withdrawData = [
             'login' => $targetId,
-            'Amount' => $totalAmount,
+            'Amount' => apply_cent_account_adjustment($targetId, $totalAmount),
             'type' => 2, // Withdraw from Forex
             'TransactionComments' => $comment
         ];
@@ -605,7 +646,7 @@ class SendMoneyController extends Controller
         $comment = 'Int/W/to/F/' . substr($txnInfoReceiver->tnx, -7);
         $depositData = [
             'login' => $receiverAccount,
-            'Amount' => $amount,
+            'Amount' => apply_cent_account_adjustment($receiverAccount, $amount),
             'type' => 1, // Deposit into Forex
             'TransactionComments' => $comment
         ];

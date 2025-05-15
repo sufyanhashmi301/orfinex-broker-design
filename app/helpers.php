@@ -1275,39 +1275,52 @@ if (!function_exists('get_mt5_account_balance')) {
     }
 }
 
-if (!function_exists('apply_cent_bonus_adjustment')) {
+if (!function_exists('apply_cent_account_adjustment')) {
     /**
-     * Apply Cent Bonus Multiplier if applicable for login.
+     * Adjust amount if the account is a cent account.
      *
-     * @param int|mixed $login
-     * @param float $amount
+     * @param int|string $login
+     * @param float|int|string|\Brick\Math\BigDecimal $amount
      * @return float
      */
-    function apply_cent_bonus_adjustment($login, float $amount): float
+    function apply_cent_account_adjustment($login, float|int|string|\Brick\Math\BigDecimal $amount): float
     {
         try {
+            // Normalize amount to float
+            if ($amount instanceof \Brick\Math\BigDecimal) {
+                $amount = $amount->toFloat();
+            } elseif (is_string($amount)) {
+                $amount = (float) trim($amount);
+            } elseif (is_int($amount)) {
+                $amount = (float) $amount;
+            } elseif (!is_float($amount)) {
+                throw new \InvalidArgumentException('Invalid amount type provided to apply_cent_account_adjustment.');
+            }
+
             // Fetch the forex account by login
-            $account = ForexAccount::where('login', $login)->where('account_type','real')->first();
-//            dd($account);
+            $account = \App\Models\ForexAccount::where('login', $login)
+                ->where('account_type', 'real')
+                ->with('schema')
+                ->first();
 
             if (!$account || !$account->schema) {
                 return $amount;
             }
-            // Check if is_cent_bonus is enabled
-            if ($account->schema->is_cent_bonus) {
-                return $amount * 100;
-            }
 
-            return $amount;
+            return $account->schema->is_cent_account ? $amount * 100 : $amount;
+
         } catch (\Throwable $e) {
-        Log::error("Failed to apply cent bonus adjustment: " . $e->getMessage(), [
+            \Log::error("Failed to apply cent account adjustment", [
                 'login' => $login,
-                'amount' => $amount
+                'amount' => (string) $amount,
+                'type' => gettype($amount),
+                'error' => $e->getMessage(),
             ]);
-            return $amount;
+            return (float) (is_numeric($amount) ? $amount : 0);
         }
     }
 }
+
 
 if (!function_exists('get_mt5_account_equity')) {
     /**

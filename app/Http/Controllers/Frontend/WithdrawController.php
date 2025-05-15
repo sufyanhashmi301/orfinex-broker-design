@@ -451,11 +451,14 @@ class WithdrawController extends Controller
                 return false;
             }
 
+            $scaledAmount = apply_cent_account_adjustment($targetId, $amount);
             $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
-            if ($totalAmount->compareTo($balance) > 0) {
+
+            if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
                 notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
                 return false;
             }
+
 
             // Set the transaction target type to Forex
             $targetType = TxnTargetType::ForexWithdraw->value;
@@ -537,7 +540,7 @@ class WithdrawController extends Controller
                     $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
                     $data = [
                         'login' => $targetId,
-                        'Amount' => $totalAmount,
+                        'Amount' => apply_cent_account_adjustment($targetId, $totalAmount),
                         'type' => 2,  // Withdraw
                         'TransactionComments' => $comment
                     ];

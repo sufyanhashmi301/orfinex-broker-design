@@ -1,10 +1,13 @@
-<script>
-    (function ($) {
+<script data-cfasync="false">
+
+    $(document).ready(function () {
         'use strict';
 
         let pusherAppKey = "{{ config('broadcasting.connections.pusher.key') }}";
         let pusherAppCluster = "{{ config('broadcasting.connections.pusher.options.cluster') }}";
         let soundUrl = "{{ route('notification-tune') }}";
+
+        console.log(pusherAppKey);
 
         var notification = new Pusher(pusherAppKey, {
             encrypted: true,
@@ -12,6 +15,7 @@
         });
         var channel = notification.subscribe('{{ $for }}-notification{{$userId}}');
         channel.bind('notification-event', function (result) {
+            console.log(result);
             const type = result.data.type || 'default';
             playSound(type);
             latestNotification();
@@ -54,5 +58,5 @@
             });
         }
 
-    })(jQuery);
+    });
 </script>

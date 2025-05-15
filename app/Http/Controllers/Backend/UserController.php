@@ -1296,7 +1296,9 @@ if (!empty($filters['staff_name'])) {
         $riskProfileTags = RiskProfileTag::all();
         $kycStatus = KYCStatus::cases();
         // dd($kycstatus);
-        $staffMembers = Admin::all();
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
         return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs', 'staffMembers'));
     }
 public function store(Request $request)

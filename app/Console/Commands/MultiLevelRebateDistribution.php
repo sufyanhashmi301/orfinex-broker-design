@@ -36,14 +36,18 @@ class MultiLevelRebateDistribution extends Command
     public function handle()
     {
         try {
-            $referrals = ReferralRelationship::with('referralLink')->get();
-
-            foreach ($referrals as $referral) {
-                DB::transaction(function () use ($referral) {
-                    $this->processReferralRelationship($referral);
-                }, 3); // Retry up to 3 times on deadlocks
-            }
-
+            ReferralRelationship::with('referralLink')
+                ->chunkById(500, function ($referrals) {
+                    foreach ($referrals as $referral) {
+                        try {
+                            DB::transaction(function () use ($referral) {
+                                $this->processReferralRelationship($referral);
+                            }, 3);
+                        } catch (Throwable $e) {
+                            Log::error("Failed processing referral user ID: {$referral->user_id} - " . $e->getMessage());
+                        }
+                    }
+                });
         } catch (Throwable $e) {
             Log::error('Rebate distribution failed: ' . $e->getMessage());
             return 1;

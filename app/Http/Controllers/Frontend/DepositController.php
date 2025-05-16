@@ -75,129 +75,129 @@ class DepositController extends GatewayController
     {
         try {
             DB::beginTransaction();
-        if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', __('Deposit Disabled Now'));
-        }
+            if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
+                abort('403', __('Deposit Disabled Now'));
+            }
 
-        // Validate request input
-        $validator = Validator::make($request->all(), [
-            'target_id' => ['required'], // Removed integer validation because wallet id and forex login are not the same type
-            'gateway_code' => 'required',
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
-        ], [
-            'target_id.required' => __('Kindly select an account for deposit'),
-        ]);
+            // Validate request input
+            $validator = Validator::make($request->all(), [
+                'target_id' => ['required'], // Removed integer validation because wallet id and forex login are not the same type
+                'gateway_code' => 'required',
+                'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+            ], [
+                'target_id.required' => __('Kindly select an account for deposit'),
+            ]);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(),  __('Error'));
-            return redirect()->back();
-        }
-        $user = \Auth::user();
+            if ($validator->fails()) {
+                notify()->error($validator->errors()->first(),  __('Error'));
+                return redirect()->back();
+            }
+            $user = \Auth::user();
 
-        // Check pending deposit request limits
-        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'deposit_settings')) {
-            $currencySymbol = setting('currency_symbol', 'global');
-            $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
-            notify()->error($message, 'Error');
-            return redirect()->back();
-        }
-        // Check deposit amount against the gateway's limits
-        if (!isset($user->country)) {
-            $message = __('Kindly choose the country from your profile for proceed to payment!');
-            notify()->error($message, __('Error'));
-            return redirect()->back();
-        }
-        $input = $request->all();
-        $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
-        $amount = $input['amount'];
-//        dd($amount);
-
-        // Check deposit amount against the gateway's limits
-        if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
-            $currencySymbol = setting('currency_symbol', 'global');
-            $message = __('Please deposit the amount within the range ') . $currencySymbol . $gatewayInfo->minimum_deposit . __(' to ')  . $currencySymbol . $gatewayInfo->maximum_deposit;
-            notify()->error($message,  __('Error'));
-            return redirect()->back();
-        }
-
-        // Determine whether it's a forex account or a wallet
-        $targetId = get_hash($input['target_id']);
-        $targetType = TxnTargetType::ForexDeposit->value; // Default to forex_deposit
-
-    // Check if the selected target is a forex account
-    $forexAccount = ForexAccount::where('login', $targetId)->first();
-//    dd('s');
-
-    if ($forexAccount) {
-        // It's a Forex account, handle the Forex-specific validation
-        if (isset($forexAccount->schema->first_min_deposit) && $forexAccount->schema->first_min_deposit > 0) {
-            if (!$forexAccount->first_min_deposit_paid && $amount < $forexAccount->schema->first_min_deposit) {
+            // Check pending deposit request limits
+            if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'deposit_settings')) {
                 $currencySymbol = setting('currency_symbol', 'global');
-                $message =  __('Please deposit the first minimum amount of ') . $currencySymbol . $forexAccount->schema->first_min_deposit;
+                $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
+                notify()->error($message, 'Error');
+                return redirect()->back();
+            }
+            // Check deposit amount against the gateway's limits
+            if (!isset($user->country)) {
+                $message = __('Kindly choose the country from your profile for proceed to payment!');
                 notify()->error($message, __('Error'));
                 return redirect()->back();
             }
-        }
-    } else {
-        // If it's not a Forex account, it must be a wallet, so change target type to wallet
-        $account = get_user_account_by_wallet_id($targetId,$user->id);
-        if ($account) {
-            $targetType = TxnTargetType::Wallet->value;
-        } else {
-            notify()->error(__('The selected account does not exist'), __('Error'));
-            return redirect()->back();
-        }
-    }
-    // Proceed with transaction
-    $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
-    $finalAmount = (float)$amount + (float)$charge;
-    $payAmount = $finalAmount * $gatewayInfo->rate;
-    $depositType = TxnType::Deposit;
+            $input = $request->all();
+            $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+            $amount = $input['amount'];
+            // dd($amount);
 
-    if (isset($input['manual_data'])) {
-        $depositType = TxnType::ManualDeposit;
-        $manualData = $input['manual_data'];
-
-        foreach ($manualData as $key => $value) {
-            if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid() && is_file($value)) {
-                $manualData[$key] = self::depositImageUploadTrait($value);
+            // Check deposit amount against the gateway's limits
+            if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
+                $currencySymbol = setting('currency_symbol', 'global');
+                $message = __('Please deposit the amount within the range ') . $currencySymbol . $gatewayInfo->minimum_deposit . __(' to ')  . $currencySymbol . $gatewayInfo->maximum_deposit;
+                notify()->error($message,  __('Error'));
+                return redirect()->back();
             }
-        }
-    }
 
-    // Create transaction with the appropriate target_id and target_type
-    $txnInfo = Txn::new(
-        $input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code,
-        __('Deposit With') . $gatewayInfo->name, $depositType, TxnStatus::Pending,
-        $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User',
-        $manualData ?? [], 'none', $targetId, $targetType
-    );
+            // Determine whether it's a forex account or a wallet
+            $targetId = get_hash($input['target_id']);
+            $targetType = TxnTargetType::ForexDeposit->value; // Default to forex_deposit
 
-        DB::commit();
+            // Check if the selected target is a forex account
+            $forexAccount = ForexAccount::where('login', $targetId)->first();
+            // dd('s');
 
-    if ($gatewayInfo->type == 'manual') {
-        $shortcodes = [
-            '[[full_name]]' => $txnInfo->user->full_name,
-            '[[txn]]' => $txnInfo->tnx,
-            '[[gateway_name]]' => $txnInfo->method,
-            '[[deposit_amount]]' => $txnInfo->amount,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $txnInfo->approval_cause,
-            '[[status]]' =>  'Pending',
-        ];
-        $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
-        $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
-        $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
+            if ($forexAccount) {
+                // It's a Forex account, handle the Forex-specific validation
+                if (isset($forexAccount->schema->first_min_deposit) && $forexAccount->schema->first_min_deposit > 0) {
+                    if (!$forexAccount->first_min_deposit_paid && $amount < $forexAccount->schema->first_min_deposit) {
+                        $currencySymbol = setting('currency_symbol', 'global');
+                        $message =  __('Please deposit the first minimum amount of ') . $currencySymbol . $forexAccount->schema->first_min_deposit;
+                        notify()->error($message, __('Error'));
+                        return redirect()->back();
+                    }
+                }
+            } else {
+                // If it's not a Forex account, it must be a wallet, so change target type to wallet
+                $account = get_user_account_by_wallet_id($targetId,$user->id);
+                if ($account) {
+                    $targetType = TxnTargetType::Wallet->value;
+                } else {
+                    notify()->error(__('The selected account does not exist'), __('Error'));
+                    return redirect()->back();
+                }
+            }
+            // Proceed with transaction
+            $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
+            $finalAmount = (float)$amount + (float)$charge;
+            $payAmount = $finalAmount * $gatewayInfo->rate;
+            $depositType = TxnType::Deposit;
 
-    }
-    return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
-     } catch (Exception $e) {
+            if (isset($input['manual_data'])) {
+                $depositType = TxnType::ManualDeposit;
+                $manualData = $input['manual_data'];
+
+                foreach ($manualData as $key => $value) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid() && is_file($value)) {
+                        $manualData[$key] = self::depositImageUploadTrait($value);
+                    }
+                }
+            }
+
+            // Create transaction with the appropriate target_id and target_type
+            $txnInfo = Txn::new(
+                $input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code,
+                __('Deposit With') . $gatewayInfo->name, $depositType, TxnStatus::Pending,
+                $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User',
+                $manualData ?? [], 'none', $targetId, $targetType
+            );
+
+            DB::commit();
+
+            if ($gatewayInfo->type == 'manual') {
+                $shortcodes = [
+                    '[[full_name]]' => $txnInfo->user->full_name,
+                    '[[txn]]' => $txnInfo->tnx,
+                    '[[gateway_name]]' => $txnInfo->method,
+                    '[[deposit_amount]]' => $txnInfo->amount,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[message]]' => $txnInfo->approval_cause,
+                    '[[status]]' =>  'Pending',
+                ];
+                $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+                $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+                $this->pushNotify('manual_deposit_request', $shortcodes, route('admin.deposit.manual.pending'), $txnInfo->user->id, 'deposit');
+
+            }
+            return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
+        } catch (Exception $e) {
             DB::rollBack();
             notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
             return redirect()->back()->withInput();
         }
-}
+    }
 
 
     public function depositDemoNow(Request $request)

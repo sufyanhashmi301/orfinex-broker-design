@@ -463,7 +463,7 @@ class WithdrawController extends Controller
             $transaction->action_by = auth()->user()->id;
             $transaction->save();
 
-            $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
+            $this->pushNotify('withdraw_request_user', $shortcodes, route('user.history.transactions'), $user->id, 'withdraw');
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
 
             DB::commit();
@@ -910,7 +910,7 @@ class WithdrawController extends Controller
         // Send notifications
         $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
-        $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
+        $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
         return redirect()->back();

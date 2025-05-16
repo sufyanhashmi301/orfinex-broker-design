@@ -133,7 +133,7 @@ trait Payment
                 '[[status]]' => $status,
             ];
             $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
-            $this->pushNotify('manual_deposit_request', $shortcodes, route('admin.deposit.manual.pending'), $tnxInfo->user->id);
+            $this->pushNotify('manual_deposit_request', $shortcodes, route('admin.deposit.manual.pending'), $tnxInfo->user->id, 'deposit');
             $this->smsNotify('manual_deposit_request', $shortcodes, $tnxInfo->user->phone);
         }
 

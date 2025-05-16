@@ -68,7 +68,7 @@ trait NotifyTrait
     }
 
     //============================= push notification template helper ===================================================
-    protected function pushNotify($code, $shortcodes, $action, $userId)
+    protected function pushNotify($code, $shortcodes, $action, $userId, $soundType = 'default')
     {
         try {
             $template = PushNotificationTemplate::where('status', true)->where('code', $code)->first();
@@ -83,6 +83,7 @@ trait NotifyTrait
                     'title' => str_replace($find, $replace, $template->title),
                     'notice' => strip_tags(str_replace($find, $replace, $template->message_body)),
                     'action_url' => $action,
+                    'sound_type' => $soundType,
                 ];
 
                 $pusher_credentials = config('broadcasting.connections.pusher');

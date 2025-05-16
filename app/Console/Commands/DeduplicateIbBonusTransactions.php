@@ -68,20 +68,20 @@ class DeduplicateIbBonusTransactions extends Command
                         return;
                     }
 
-//                    // Deduct from IB Wallet
-//                    $account->amount -= $amount;
-//                    $account->save();
-//
-//                    // Deduct from latest ledger
-//                    $ledger = Ledger::where('account_id', $account->id)
-//                        ->orderByDesc('id')
-//                        ->lockForUpdate()
-//                        ->first();
-//
-//                    if ($ledger) {
-//                        $ledger->balance -= $amount;
-//                        $ledger->save();
-//                    }
+                    // Deduct from IB Wallet
+                    $account->amount -= $amount;
+                    $account->save();
+
+                    // Deduct from latest ledger
+                    $ledger = Ledger::where('account_id', $account->id)
+                        ->orderByDesc('id')
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($ledger) {
+                        $ledger->balance -= $amount;
+                        $ledger->save();
+                    }
 
                     $this->info("🗑 Deleted Transaction ID: {$toDelete->id}, deducted {$amount} from User {$userId}");
                 }

@@ -31,11 +31,14 @@
             <li class="list-group-item dark:text-slate-300 block py-2 px-3">
                 <span class="mr-2">{{ $name }}:</span>
                 @if( $field_data['type'] == 'file' )
-                    <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 my-2" style="background-image: url('{{ asset($field_data['value']) }}')"></div>
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ asset($field_data['value']) }}" class="btn-link" download>{{ __('Download') }}</a>
-                        <a href="{{ asset($field_data['value']) }}" class="btn-link" target="_blank">{{ __('View') }}</a>
-                    </div>
+                    @if(!empty($field_data['value']) && is_string($field_data['value']))
+                        <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 my-2"
+                             style="background-image: url('{{ asset($field_data['value']) }}')"></div>
+                        <div class="flex justify-end gap-3">
+                            <a href="{{ asset($field_data['value']) }}" class="btn-link" download>{{ __('Download') }}</a>
+                            <a href="{{ asset($field_data['value']) }}" class="btn-link" target="_blank">{{ __('View') }}</a>
+                        </div>
+                    @endif
                 @else
                     <span class="font-medium">{{ $field_data['value'] }}</span>
                 @endif

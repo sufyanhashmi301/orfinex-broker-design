@@ -7,6 +7,7 @@ use App\Enums\IBStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnTargetType;
 use App\Enums\TxnType;
+use App\Jobs\ProcessReferralRebate;
 use App\Models\ForexAccount;
 use App\Models\Ledger;
 use App\Models\MetaDeal;
@@ -33,27 +34,32 @@ class MultiLevelRebateDistribution extends Command
     protected $signature = 'rebate:distribution';
     protected $description = 'Multi-Level IB Rebate Distribution';
 
+
     public function handle()
     {
         try {
-            $referrals = ReferralRelationship::with('referralLink')->get();
-
-            foreach ($referrals as $referral) {
-                DB::transaction(function () use ($referral) {
-                    $this->processReferralRelationship($referral);
-                }, 3); // Retry up to 3 times on deadlocks
-            }
-
+            ReferralRelationship::with('referralLink')
+                ->chunkById(500, function ($referrals) {
+                    foreach ($referrals as $referral) {
+                        try {
+                            ProcessReferralRebate::dispatch($referral->id);
+                            Log::info("Successfully dispatched referral ID: {$referral->id}");
+                        } catch (Throwable $e) {
+                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
+                        }
+                    }
+                });
         } catch (Throwable $e) {
-            Log::error('Rebate distribution failed: ' . $e->getMessage());
+            Log::error("Rebate distribution job dispatch failed: {$e->getMessage()}");
             return 1;
         }
 
         return 0;
     }
 
-    protected function processReferralRelationship($referral)
+    public function processReferralRelationship($referral)
     {
+//        dd($referral->user);
         $parentData = $this->getValidParent($referral->user);
 
         if (!$parentData) return;
@@ -77,6 +83,7 @@ class MultiLevelRebateDistribution extends Command
             $symbols = $this->getUserAssignedSymbols($parent, $account);
             $lastDealTime = $this->getLastDeal($childUserId, $account->login);
             $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
+//            dd($deals);
 
             if (!$deals->isEmpty()) {
                 $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
@@ -188,12 +195,9 @@ class MultiLevelRebateDistribution extends Command
 
     protected function calculateRebate($symbol, $parent, $level, $account)
     {
-        $rule = RebateRule::whereHas('ibGroups', fn($q) =>
-        $q->where('ib_group_id', $parent->ibGroup->id))
-            ->whereHas('forexSchemas', fn($q) =>
-            $q->where('forex_schema_id', $account->forex_schema_id))
-            ->whereHas('symbolGroups.symbols', fn($q) =>
-            $q->where('symbol', $symbol))
+        $rule = RebateRule::whereHas('ibGroups', fn($q) => $q->where('ib_group_id', $parent->ibGroup->id))
+            ->whereHas('forexSchemas', fn($q) => $q->where('forex_schema_id', $account->forex_schema_id))
+            ->whereHas('symbolGroups.symbols', fn($q) => $q->where('symbol', $symbol))
             ->first();
 
         if (!$rule) return [];
@@ -232,15 +236,12 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getUserAssignedSymbols($parent, $account): array
     {
-        $rules = RebateRule::whereHas('ibGroups', fn($q) =>
-        $q->where('ib_group_id', $parent->ibGroup->id))
-            ->whereHas('forexSchemas', fn($q) =>
-            $q->where('forex_schema_id', $account->forex_schema_id))
+        $rules = RebateRule::whereHas('ibGroups', fn($q) => $q->where('ib_group_id', $parent->ibGroup->id))
+            ->whereHas('forexSchemas', fn($q) => $q->where('forex_schema_id', $account->forex_schema_id))
             ->with('symbolGroups.symbols')
             ->get();
 
-        return $rules->flatMap(fn($r) =>
-        $r->symbolGroups->flatMap(fn($g) => $g->symbols))
+        return $rules->flatMap(fn($r) => $r->symbolGroups->flatMap(fn($g) => $g->symbols))
             ->pluck('symbol')
             ->unique()
             ->toArray();

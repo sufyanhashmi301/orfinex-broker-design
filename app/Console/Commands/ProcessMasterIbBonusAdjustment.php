@@ -141,6 +141,14 @@ class ProcessMasterIbBonusAdjustment extends Command
                 }
             }
 
+
+            $walletIds = Account::whereIn('user_id', $allUserIds)
+                ->where('balance', 'ib_wallet')
+                ->pluck('wallet_id')
+                ->toArray();
+
+            Transaction::whereIn('target_id', $walletIds)->delete();
+
             DB::commit();
 
             $this->info("=== Reversal Completed for Master IB: $email ===");

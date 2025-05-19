@@ -1,8 +1,8 @@
-@extends('backend.setting.user_management.index')
+@extends('backend.setting.kyc_levels.index')
 @section('title')
     {{ __('KYC & Compliance') }}
 @endsection
-@section('user-management-content')
+@section('kyc-levels-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-10">
         <div>
             <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">

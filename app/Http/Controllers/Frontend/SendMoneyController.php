@@ -76,9 +76,9 @@ class SendMoneyController extends Controller
     }
 
     // Check if KYC is completed
-    if (auth()->user()->kyc < kyc_required_completed_level()) {
+  if (!setting('external_transfer_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level()) {
         notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
-        return redirect()->back();
+        return redirect()->route('user.kyc');
     }
 
     // Validate inputs
@@ -438,7 +438,6 @@ class SendMoneyController extends Controller
 //            }
 //            $this->syncForexAccounts(auth()->id());
 //        }
-
         $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -462,11 +461,10 @@ class SendMoneyController extends Controller
     if (!setting('is_internal_transfer', 'transfer_internal') || !\Auth::user()->transfer_status) {
         abort(403, __('Send Money Disabled Now'));
     }
-
     // Check if KYC is completed
-    if (auth()->user()->kyc < kyc_required_completed_level()) {
+    if (!setting('internal_transfer_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level()) {
         notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
-        return redirect()->back();
+        return redirect()->route('user.kyc');
     }
 
     // Validation for input fields

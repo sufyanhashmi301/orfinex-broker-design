@@ -255,7 +255,10 @@ public function update(Request $request)
     {
         return view('backend.setting.customer.misc');
     }
-
+    public static function kycMiscSettings()
+    {
+        return view('backend.setting.kyc_levels.misc');
+    }
     public static function miscSetting()
     {
         return view('backend.setting.company.misc');

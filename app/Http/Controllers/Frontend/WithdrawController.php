@@ -354,7 +354,7 @@ class WithdrawController extends Controller
                 abort('403', __('Withdraw Disabled Now'));
             }
 
-            if (auth()->user()->kyc < kyc_required_completed_level()) {
+            if (!setting('withdraw_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level())  {
                 notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
                 return false;
             }

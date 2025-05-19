@@ -78,7 +78,10 @@ class DepositController extends GatewayController
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', __('Deposit Disabled Now'));
         }
-
+  if (!setting('deposit_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level())  {
+                notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+               return redirect()->route('user.kyc');
+            }
         // Validate request input
         $validator = Validator::make($request->all(), [
             'target_id' => ['required'], // Removed integer validation because wallet id and forex login are not the same type

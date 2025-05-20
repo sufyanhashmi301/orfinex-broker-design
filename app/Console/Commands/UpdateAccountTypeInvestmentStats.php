@@ -98,6 +98,7 @@ class UpdateAccountTypeInvestmentStats extends Command
         
         // Step 1: Call API to get results of all trading accounts
         $allResults = $this->getTradingAccountStats();
+        $this->info('Stats Fetched!');
 
         // Step 2: Loop through each AccountTypeInvestment and update stats
         $active_accounts = AccountTypeInvestment::where('status', InvestmentStatus::ACTIVE)->get();

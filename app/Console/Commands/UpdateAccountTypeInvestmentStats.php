@@ -62,26 +62,23 @@ class UpdateAccountTypeInvestmentStats extends Command
     /**
      * Delete older than 30 minutes logs
      */
-    private function deleteOldLatestLogs() {
-        // Get the cutoff time (X hours ago)
+    private function deleteOldLatestLogs()
+    {
         $cutoffTime = Carbon::now()->subMinutes($this->DELETE_LATEST_LOGS_BY_X_MINUTES);
 
-        // Get all distinct account_type_investment_id values
-        $investmentIds = LatestTradeLog::distinct()->pluck('account_type_investment_id');
+        // Step 1: Fetch only ACTIVE investment IDs
+        $activeInvestmentIds = AccountTypeInvestment::where('status', InvestmentStatus::ACTIVE)
+            ->pluck('id');
 
-        // Loop through each account_type_investment_id and delete records older than 48 hours
-        foreach ($investmentIds as $id) {
-            $investment = AccountTypeInvestment::where('id', $id)->where('status', InvestmentStatus::ACTIVE)->first();
-
-            if ($investment) {
-                // Calculate the cutoff time as 48 hours past the investment's updated_at
-                LatestTradeLog::where('account_type_investment_id', $id)
-                                                      ->where('created_at', '<', $cutoffTime)
-                                                      ->delete();
-                }
-            
-        }
+        // Step 2: Delete logs in batches
+        do {
+            $deleted = LatestTradeLog::whereIn('account_type_investment_id', $activeInvestmentIds)
+                ->where('created_at', '<', $cutoffTime)
+                ->limit(1000)
+                ->delete();
+        } while ($deleted > 0);
     }
+
 
     /**
      * Execute the console command.

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
-
 class ThemeController extends Controller
 {
 
@@ -38,6 +37,13 @@ class ThemeController extends Controller
         return view('backend.setting.banner.popup');
     }
 
+    public function companyLogo(Request $request)
+{
+    return view('backend.setting.branding.company_logo', [
+        'section' => 'company_logo',
+        'fields' => config('setting.company_logo')
+    ]);
+}
     public function colorsSetting(Request $request)
     {
         // Retrieve the 'type' query parameter from the request

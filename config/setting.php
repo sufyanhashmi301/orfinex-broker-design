@@ -832,6 +832,27 @@ return [
             ],
         ]
     ],
+     'company_logo' => [
+        'title' => 'Company Logo Settings',
+        'elements' => [
+            [
+                'type' => 'file',
+                'data' => 'string',
+                'name' => 'company_logo_image',
+                'label' => 'Company Logo Image',
+                'rules' => 'mimes:jpeg,jpg,png,svg|max:2048',
+                'value' => 'default/fav.png',
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'company_logo_status',
+                'label' => 'Enable Custom Logo',
+                'rules' => '',
+                'value' => 1,
+            ],
+        ]
+    ],
     'document_links' => [
         'title' => 'Document Links',
         'elements' => [

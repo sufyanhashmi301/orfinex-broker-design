@@ -143,7 +143,7 @@ class UpdateAccountTypeInvestmentStats extends Command
                         $stat->save();
 
                         $latest_logs = $investment->latestTrades()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
-                        $this->deleteOldLatestLogs();
+                        
                     }
                 }
 
@@ -155,6 +155,9 @@ class UpdateAccountTypeInvestmentStats extends Command
 
                 // Update Trading Days
                 $this->updateTradingDays($investment);
+
+                // delete old latest logs
+                $this->deleteOldLatestLogs();
             }
         }
 

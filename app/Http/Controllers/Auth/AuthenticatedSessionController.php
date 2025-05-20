@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-       dd($request->all());
+    //    dd($request->all());
        $request->validate([
             
             'cf-turnstile-response' => [

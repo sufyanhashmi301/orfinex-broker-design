@@ -29,13 +29,13 @@ class Kernel extends ConsoleKernel
 
         // Promotion and Violation
         $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();
-        $schedule->command('send:promote-violate-accounts-mails')->everyFourMinutes();
+        $schedule->command('send:promote-violate-accounts-mails')->everyTenMinutes();
 
         // Contracts Expiry Scheduler
         $schedule->command('check:contract-expiry')->daily();
 
         // Trial Active and Expiry
-        $schedule->command('trial-accounts:active-or-expire')->everyTwoMinutes();
+        $schedule->command('trial-accounts:active-or-expire')->everyThirtyMinutes();
 
         // Delete test uploads from S3
         $schedule->command('aws-s3:delete-test-uploads')->daily();

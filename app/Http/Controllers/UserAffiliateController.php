@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AffiliateRule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserAffiliate;
@@ -50,7 +51,6 @@ class UserAffiliateController extends Controller
     public function index()
     {
 
-        
 
         // create affiliate account, if not have one
         if( !UserAffiliate::where('user_id', Auth::id())->exists() ){
@@ -77,10 +77,11 @@ class UserAffiliateController extends Controller
         $referrals = User::where('id', Auth::id())->first()->referrals;
         $affiliate_info = User::find( Auth::id() )->userAffiliate;
         $affiliate_rule_configuration = AffiliateRuleConfiguration::all();
+        $affiliate_rule = AffiliateRule::first();
         // dd($affiliate_rule_configuration->where('count_start', '<=', 1)->where('count_end', '>=', 1)->first()->commission_percentage);
 
         // dd($affiliate_info);
-        return view('frontend::affiliates.index', compact('referrals', 'affiliate_info', 'affiliate_rule_configuration'));
+        return view('frontend::affiliates.index', compact('referrals', 'affiliate_info', 'affiliate_rule_configuration', 'affiliate_rule'));
     }
 
     /**

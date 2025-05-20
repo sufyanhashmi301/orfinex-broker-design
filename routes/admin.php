@@ -60,6 +60,7 @@ use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\HeaderFooterController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\VoiceCallController;
 use App\Models\PayoutRequest;
 
@@ -280,6 +281,12 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Dynamic Header and Footer
     Route::get('settings/dynamic-header-footer', [HeaderFooterController::class, 'index'])->name('settings.dynamic-header-footer.index');
     Route::post('settings/dynamic-header-footer/update', [HeaderFooterController::class, 'updateSettings'])->name('settings.dynamic-header-footer.update');
+
+    // Offers
+    Route::get('offers', [OfferController::class, 'index'])->name('offer.index');
+    Route::post('offer/store', [OfferController::class, 'store'])->name('offer.store');
+    Route::post('offer/update/{id}', [OfferController::class, 'update'])->name('offer.update');
+    Route::delete('offer/delete/{id}', [OfferController::class, 'destroy'])->name('offer.destroy');
 
 
     // =============================== Optimization ===============================

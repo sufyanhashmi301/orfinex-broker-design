@@ -65,6 +65,14 @@
                         </div>
 
                         <div class="input-area relative">
+                            <label class="form-label">
+                               Min. Payout Limit ({{ $currency }})
+                            </label>
+                            <input type="number" required value="{{ $affiliate_rule->min_payout_limit ?? 0 }}" name="min_payout_limit" class="form-control"
+                                placeholder="">
+                        </div>
+
+                        <div class="input-area relative">
                             <label for="" class="form-label">
                                 Is Active
                             </label>
@@ -73,6 +81,8 @@
                                 <option value="0" {{ $affiliate_rule->is_active == '0' ? 'selected' : '' }}>No</option>
                             </select>
                         </div>
+
+                        
 
                         <div class="input-area relative">
                             <label for="" class="form-label">

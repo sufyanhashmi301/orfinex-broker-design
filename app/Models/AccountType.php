@@ -14,6 +14,7 @@ class AccountType extends Model
 		'trader_type',
 		'icon',
 		'title',
+		'trading_platform_title_format',
 		'offer_uuid',
 		'system_uuid',
 		'platform_group',
@@ -23,21 +24,12 @@ class AccountType extends Model
 		'badge',
 		'leverage',
 		'accounts_limit',
-		'accounts_range_start',
-		'accounts_range_end',
 		'profit_share',
 		'trading_days',
 		'is_trial',
-		'is_weekend_holding',
-		'is_scalable',
-		'is_refundable',
 		'status',
+		'cta_button_text',
 		'countries',
-		'tags',
-		'upto_allotted_fund',
-		'upto_profit_target',
-		'upto_daily_max_loss',
-		'upto_maximum_loss'
 	];
 
 	public function accountTypePhases(){

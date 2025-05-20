@@ -20,6 +20,7 @@ class UpdateDiscountRequest extends FormRequest
             'code_name' => 'required|string|max:255',
             'code' => 'required|string|max:255|unique:discounts,code,' . $discountId,
             'type' => 'required|in:percentage,fixed',
+            'purpose' => 'required|string',
             'percentage' => 'nullable|numeric|min:0|max:100|required_if:type,percentage',
             'fixed_amount' => 'nullable|numeric|min:0|required_if:type,fixed',
             'implementation' => 'required',

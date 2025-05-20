@@ -50,6 +50,12 @@
                         </p>
                         <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $account_type->description }}</p>
                     </div>
+                    @php
+                        $highest_allotted_funds_rule = $account_type->accountTypePhases
+                            ->flatMap(fn($phase) => $phase->accountTypePhaseRules)
+                            ->sortByDesc('allotted_funds')
+                            ->first();
+                    @endphp
                     <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                         <li class="flex items-center py-3">
                             <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
@@ -57,7 +63,7 @@
                             </span>
                             <span class="flex-1 text-right">
                                 <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
-                                   ${{ $account_type->upto_allotted_fund }}
+                                   {{ setting('currency_symbol') }}{{ number_format($highest_allotted_funds_rule->allotted_funds, 0) }}
                                 </span>
                             </span>
                         </li>
@@ -66,7 +72,7 @@
                                 {{ __('Profit Target') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                               ${{ $account_type->upto_profit_target }}
+                               {{ setting('currency_symbol') }}{{ number_format($highest_allotted_funds_rule->profit_target, 0) }}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -74,7 +80,7 @@
                                 {{ __('Daily Max Loss') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                             ${{ $account_type->upto_daily_max_loss }}
+                                {{ setting('currency_symbol') }}{{ number_format($highest_allotted_funds_rule->daily_drawdown_limit, 0) }}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -82,7 +88,7 @@
                                 {{ __('Maximum Loss') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                               ${{ $account_type->upto_maximum_loss }}
+                               {{ setting('currency_symbol') }}{{ number_format($highest_allotted_funds_rule->max_drawdown_limit, 0) }}
                             </span>
                         </li>
                     </ul>
@@ -98,7 +104,7 @@
                         </a>
                     @else
                         <a href="{{route('user.account.show',$account_type->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
-                            {{ __('Buy Now') }}
+                            {{ $account_type->cta_button_text }}
                         </a>
                     @endif
                     

@@ -13,11 +13,13 @@ use App\Models\AccountTypeInvestment;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Models\AccountTypeInvestmentStat;
+use App\Models\LatestTradeLog;
 use App\Services\MatchTraderApiService;
 
 class UpdateAccountTypeInvestmentStats extends Command
 {
-    private $DELETE_OLD_RECORDS_BY_X_HOURS = 48;
+    private $DELETE_HOURLY_OLD_RECORDS_BY_X_HOURS = 48;
+    private $DELETE_LATEST_LOGS_BY_X_MINUTES = 30;
 
     /**
      * The name and signature of the console command.
@@ -36,9 +38,9 @@ class UpdateAccountTypeInvestmentStats extends Command
     /**
      * Delete older than 48 hours records
      */
-    private function deleteOldRecords() {
+    private function deleteOldHourlyRecords() {
         // Get the cutoff time (X hours ago)
-        $cutoffTime = Carbon::now()->subHours($this->DELETE_OLD_RECORDS_BY_X_HOURS);
+        $cutoffTime = Carbon::now()->subHours($this->DELETE_HOURLY_OLD_RECORDS_BY_X_HOURS);
 
         // Get all distinct account_type_investment_id values
         $investmentIds = AccountTypeInvestmentHourlyStatsRecord::distinct()
@@ -46,12 +48,34 @@ class UpdateAccountTypeInvestmentStats extends Command
 
         // Loop through each account_type_investment_id and delete records older than 48 hours
         foreach ($investmentIds as $id) {
-            $investment = AccountTypeInvestment::find($id);
+            $investment = AccountTypeInvestment::where('id', $id)->where('status', InvestmentStatus::ACTIVE)->first();
 
             if ($investment) {
                 // Calculate the cutoff time as 48 hours past the investment's updated_at
                 AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $id)
-                                                      ->where('status', InvestmentStatus::ACTIVE)
+                                                      ->where('created_at', '<', $cutoffTime)
+                                                      ->delete();
+                }
+            
+        }
+    }
+    /**
+     * Delete older than 30 minutes logs
+     */
+    private function deleteOldLatestLogs() {
+        // Get the cutoff time (X hours ago)
+        $cutoffTime = Carbon::now()->subMinutes($this->DELETE_LATEST_LOGS_BY_X_MINUTES);
+
+        // Get all distinct account_type_investment_id values
+        $investmentIds = LatestTradeLog::distinct()->pluck('account_type_investment_id');
+
+        // Loop through each account_type_investment_id and delete records older than 48 hours
+        foreach ($investmentIds as $id) {
+            $investment = AccountTypeInvestment::where('id', $id)->where('status', InvestmentStatus::ACTIVE)->first();
+
+            if ($investment) {
+                // Calculate the cutoff time as 48 hours past the investment's updated_at
+                LatestTradeLog::where('account_type_investment_id', $id)
                                                       ->where('created_at', '<', $cutoffTime)
                                                       ->delete();
                 }
@@ -111,11 +135,14 @@ class UpdateAccountTypeInvestmentStats extends Command
                         $stat = $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
                         
                         // Delete records older than 48 hours
-                        $this->deleteOldRecords();
+                        $this->deleteOldHourlyRecords();
                     } else {
                         $stat = $investment->accountTypeInvestmentStat()->firstOrNew();
                         $stat->fill($data + ['updated_at' => CarbonImmutable::now()]);
                         $stat->save();
+
+                        $latest_logs = $investment->latestTrades()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
+                        $this->deleteOldLatestLogs();
                     }
                 }
 

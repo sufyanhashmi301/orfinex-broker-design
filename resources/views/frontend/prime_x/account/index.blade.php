@@ -3,6 +3,22 @@
     {{ __('My Accounts') }}
 @endsection
 @section('content')
+    <div class="card mb-6">
+        <div class="card-body p-6 grid md:grid-cols-2">
+            <div>
+                <h4 class="card-title mb-2">
+                    {{ __('Accounts') }}
+                </h4>
+                <p class="card-text">
+                    Unlock your trading potential. Start trading now!
+                </p>
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <a href="{{ route('user.account.buy') }}" class="btn btn-primary" style="width: 200px; float:right; text-align: center">Start Challenge</a>
+                <a href="{{ route('user.account.buy') }}" class="btn btn-light" style="width: 200px; float:right; text-align: center; margin-right: 15px">Free Trial</a>
+            </div>
+        </div>
+    </div>
     {{-- <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">

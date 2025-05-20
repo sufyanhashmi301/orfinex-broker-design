@@ -9,6 +9,7 @@ use App\Models\AccountOpenPosition;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Models\LatestTradeLog;
 use App\Services\AccountTypeInvestmentService;
 
 class TradingStatsController extends Controller
@@ -79,9 +80,11 @@ class TradingStatsController extends Controller
 
         $account_array = $this->account->tradingStats($account_id);
         $account_open_positions = AccountOpenPosition::orderBy('id', 'DESC')->first();
+        $account_latest_logs = LatestTradeLog::where('account_type_investment_id', $account_id)->orderBy('id', 'DESC')->get();
 
         // All open positions
         $account_array["account_open_positions"] = $account_open_positions['data'] ?? [];
+        $account_array["account_latest_logs"] = $account_latest_logs;
 
         return $account_array;
 

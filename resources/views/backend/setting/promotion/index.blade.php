@@ -16,6 +16,11 @@
                   {{ __('Sliders') }}
               </a>
           </li>
+          <li>
+              <a href="{{ route('admin.offer.index') }}" class="navItem {{ isActive('admin.offer.index') }}">
+                  {{ __('Offers') }}
+              </a>
+          </li>
       
       </ul>
     @endsection

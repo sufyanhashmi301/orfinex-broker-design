@@ -74,6 +74,7 @@ class AffiliateRuleController extends Controller
         $affiliate_rule->balance_retention_period = $request->balance_retention_period;
         $affiliate_rule->description = $request->description;
         $affiliate_rule->has_levels = $request->has_levels;
+        $affiliate_rule->min_payout_limit = $request->min_payout_limit;
         $affiliate_rule->is_active = $request->is_active;
         $affiliate_rule->save();
 

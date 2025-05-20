@@ -30,6 +30,7 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\AccountTypeInvestmentController;
+use App\Http\Controllers\OfferController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,10 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' 
     Route::get('contracts', [ContractController::class, 'index'])->name('contracts');
     Route::get('contract/{id}', [ContractController::class, 'show'])->name('contract.show');
     Route::post('contract/store', [ContractController::class, 'storeContract'])->name('contract.store');
+
+    // Offers
+    Route::get('offers', [OfferController::class, 'userIndex'])->name('offers');
+
 
     // Contract Agreement
     Route::get('agreements', function () {

@@ -95,7 +95,7 @@
         @if (!$kyc_check_exists)
             @include('frontend.prime_x.withdraw.include.__payout_request')
         @endif
-        <div class="card h-full p-6 mb-6">
+        <div class="card h-full p-6 pb-0 mb-6">
             <div class="card-body">
                 <div class="flex flex-wrap justify-between items-center mb-5">
                     <div class="space-x-3">
@@ -115,13 +115,22 @@
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.withdraw.step2', ["wallet" => \App\Enums\WalletType::AFFILIATE])}}"  class="btn btn-sm btn-outline-dark inline-flex items-center justify-center {{ $affiliate_wallet->available_balance == 0 ? 'disabled' : '' }}">
+                    <a href="{{route('user.withdraw.step2', ["wallet" => \App\Enums\WalletType::AFFILIATE])}}"  class="{{ $affiliate_wallet->available_balance >= $affiliate_rule->min_payout_limit ? '' : 'disabled' }} btn btn-sm btn-outline-dark inline-flex items-center justify-center {{ $affiliate_wallet->available_balance == 0 ? 'disabled' : '' }}">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mingcute:refund-dollar-line"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>
                         </span>
                     </a>
+                    
                 </div>
+                @if ($affiliate_rule->min_payout_limit > 0 && $affiliate_wallet->available_balance < $affiliate_rule->min_payout_limit)
+                    <div class="mt-1">
+                        <small >
+                            <iconify-icon class="" icon="lucide:info" style="position: relative; top: 3px; font-size: 15px"></iconify-icon>
+                            Min. Withdraw Limit is <b>{{ $affiliate_rule->min_payout_limit }} {{ $currency }}</b>
+                        </small>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -30,6 +30,7 @@
                             <tr>
                                 <th scope="col" class="table-th">{{ __('Code Name') }}</th>
                                 <th scope="col" class="table-th">{{ __('Code') }}</th>
+                                <th scope="col" class="table-th">{{ __('For Offers') }}</th>
                                 <th scope="col" class="table-th">{{ __('Discount') }}</th>
                                 <th scope="col" class="table-th" style="width: 400px">{{ __('Applies To') }}</th>
                                 <th scope="col" class="table-th">{{ __('Usage Limit') }}</th>
@@ -43,6 +44,21 @@
                                     <tr>
                                         <td class="table-td">{{ $discount_code->code_name }}</td>
                                         <td class="table-td">{{ $discount_code->code }}</td>
+                                        <td class="table-td">
+                                           @if ($discount_code->purpose == 'offers')
+                                                <span class="text-success-500" data-bs-toggle="tooltip" data-bs-title="Active">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.75rem" height="1.75rem" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" fill-rule="evenodd" d="M12 1.25C6.063 1.25 1.25 6.063 1.25 12S6.063 22.75 12 22.75S22.75 17.937 22.75 12S17.937 1.25 12 1.25M7.53 11.97a.75.75 0 0 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l7-7a.75.75 0 0 0-1.06-1.06L10 14.44z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </span>
+                                           @else
+                                                <span class="text-danger-500" data-bs-toggle="tooltip" data-bs-title="Unverified">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.75rem" height="1.75rem" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" fill-rule="evenodd" d="M12 1.25C6.063 1.25 1.25 6.063 1.25 12S6.063 22.75 12 22.75S22.75 17.937 22.75 12S17.937 1.25 12 1.25M9.702 8.641a.75.75 0 0 0-1.061 1.06L10.939 12l-2.298 2.298a.75.75 0 0 0 1.06 1.06L12 13.062l2.298 2.298a.75.75 0 0 0 1.06-1.06L13.06 12l2.298-2.298a.75.75 0 1 0-1.06-1.06L12 10.938z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </span>
+                                           @endif 
+                                        </td>
                                         <td class="table-td"><span class="badge badge-primary">{{ str_replace('_', ' ', $discount_code->implementation) }} - {{ $discount_code->implementation == 'default' ? $discount_code->type === 'percentage' ? $discount_code->percentage . '%' : '$' . $discount_code->fixed_amount : count($discount_code->discount_levels ?? []) .  ' levels' }}</span></td>
                                         <td class="table-td">
 

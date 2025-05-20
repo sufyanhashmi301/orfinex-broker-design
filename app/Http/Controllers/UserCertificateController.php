@@ -41,11 +41,17 @@ class UserCertificateController extends Controller
 
         // Check Evaluation
         $passed_phase_one_accounts = AccountTypeInvestment::where('user_id', Auth::id())
-                            ->where('status', InvestmentStatus::PASSED)
-                            ->whereHas('accountTypePhase', function ($query) {
-                                $query->where('phase_step', 1);
-                            })
-                            ->get();
+                                                            ->whereIn('status', [
+                                                                InvestmentStatus::PASSED,
+                                                                InvestmentStatus::ACTIVE,
+                                                                InvestmentStatus::VIOLATED,
+                                                                InvestmentStatus::EXPIRED,
+                                                            ])
+                                                            ->whereHas('accountTypePhase', function ($query) {
+                                                                $query->where('phase_step', 2);
+                                                            })
+                                                            ->get();
+
         if(count($passed_phase_one_accounts) > 0) {
             $user_certificate = UserCertificate::where('user_id', Auth::id())->where('hook', CertificateHookEnums::PHASE_ONE);
             $certificate = Certificate::where('hook', CertificateHookEnums::PHASE_ONE)->first();
@@ -57,11 +63,16 @@ class UserCertificateController extends Controller
 
         // Check Verification 
         $passed_phase_two_accounts = AccountTypeInvestment::where('user_id', Auth::id())
-                            ->where('status', InvestmentStatus::PASSED)
-                            ->whereHas('accountTypePhase', function ($query) {
-                                $query->where('phase_step', 2);
-                            })
-                            ->get();
+                                                            ->whereIn('status', [
+                                                                InvestmentStatus::PASSED,
+                                                                InvestmentStatus::ACTIVE,
+                                                                InvestmentStatus::VIOLATED,
+                                                                InvestmentStatus::EXPIRED,
+                                                            ])
+                                                            ->whereHas('accountTypePhase', function ($query) {
+                                                                $query->where('phase_step', 3);
+                                                            })
+                                                            ->get();
         if(count($passed_phase_two_accounts) > 0) {
             $user_certificate = UserCertificate::where('user_id', Auth::id())->where('hook', CertificateHookEnums::PHASE_TWO);
             $certificate = Certificate::where('hook', CertificateHookEnums::PHASE_TWO)->first();

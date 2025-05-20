@@ -38,8 +38,8 @@
                         <div class="flex md:justify-end flex-wrap gap-3">
                             @can('withdraw-action')
                                 @if($data['withdraw_count'])
-                                    <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-danger inline-flex items-center justify-center">
-                                        <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                    <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                                        <iconify-icon class="text-lg mr-2"  icon="lucide:arrow-up-circle"></iconify-icon>
                                         {{ __('Withdraw Requests') }}
                                         ({{ $data['withdraw_count'] }})
                                     </a>
@@ -48,8 +48,8 @@
                             
                             @can('kyc-action')
                                 @if($data['pending_kycs'] > 0)
-                                    <a href="{{ route('admin.kyc.index', ['status' => 'pending']) }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
-                                        <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                    <a href="{{ route('admin.kyc.index', ['status' => 'pending']) }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                                        <iconify-icon class="text-lg mr-2"  icon="lucide:lock-open"></iconify-icon>
                                         {{ __('KYC Requests') }}
                                         ({{ $data['pending_kycs'] }})
                                     </a>
@@ -59,11 +59,26 @@
                             @can('deposit-action')
                                 @if($data['deposit_count'])
                                     <a href="{{ route('admin.deposit.manual.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
-                                        <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                        <iconify-icon class="text-lg mr-2"  icon="lucide:arrow-down-circle"></iconify-icon>
                                         {{ __('Pending Payments') }}
                                         ({{ $data['deposit_count'] }})
                                     </a>
                                 @endif
+                            @endcan
+
+                            @php
+                                $pending_approvals_count = App\Models\AccountActivity::where(['status' => 'admin_approve', 'action' => 0])->with(['accountTypeInvestment.user'])
+                                                                                    ->whereHas('accountTypeInvestment',   function($query) {
+                                                                                        $query->whereHas('user'); 
+                                                                                    })->count();
+                            @endphp
+
+                            @can('account-activity-list')
+                                <a href="{{route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ] )}}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                                    <iconify-icon class="text-lg mr-2"  icon="lucide:clock-9"></iconify-icon>
+                                    {{ __('Pending Approvals') }}
+                                    ({{ $pending_approvals_count }})
+                                </a>
                             @endcan
                         </div>
                     </div>

@@ -185,12 +185,20 @@
             </li>
         @endcan --}}
 
+        @php
+            $pending_approvals_count = App\Models\AccountActivity::where(['status' => 'admin_approve', 'action' => 0])->with(['accountTypeInvestment.user'])
+                                                                ->whereHas('accountTypeInvestment',   function($query) {
+                                                                    $query->whereHas('user'); 
+                                                                })->count();
+        @endphp
+
         @canany(['account-list', 'account-trading-history', 'account-activity-list'])
             <li class="">
                 <a href="javascript:void(0)" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
                         <span>{{ __('Accounts') }}</span>
+                        <div style="position: relative; top: -2px; background: #dc3545" class="badge text-white ml-2">{{ $pending_approvals_count }}</div>
                     </span>
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
@@ -198,7 +206,7 @@
                     @can('account-list')
                         <li>
                             <a href="{{route('admin.accounts.index', ['status' => 'all'])}}" class="{{ isActive('admin.accounts.index') }}">
-                                Accounts
+                                Accounts 
                             </a>
                         </li>
                     @endcan
@@ -206,7 +214,8 @@
                     @can('account-activity-list')
                         <li>
                             <a href="{{route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ] )}}" class="{{ isActive('admin.accounts_activity*') }}">
-                                {{ __('Pending Approvals') }}
+                                {{ __('Pending Approvals') }} 
+                                <div style="float: right; position: relative; top: -4px" class="badge badge-danger">{{ $pending_approvals_count }}</div>
                             </a>
                         </li>
                     @endcan

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\AccountType;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Enums\TraderType;
+use App\Enums\AccountType;
 use Brick\Math\BigDecimal;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountActivity;
@@ -17,17 +19,19 @@ use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Services\UserAffiliateService;
+use App\Services\MatchTraderApiService;
+use Illuminate\Support\Facades\Artisan;
+use App\Models\AccountTypeInvestmentStat;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Services\AccountTypeInvestmentPaymentService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
-use App\Models\AccountTypeInvestmentStat;
-use App\Models\Transaction;
-use App\Services\MatchTraderApiService;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\AccountTypePhase;
+use App\Traits\NotifyTrait;
 
 class AccountTypeInvestmentController extends Controller
 {
+    use NotifyTrait;
 
     public $investment;
     public $affiliate;
@@ -153,6 +157,7 @@ class AccountTypeInvestmentController extends Controller
 
         if($active_account->status == InvestmentStatus::ACTIVE) {
             notify()->success('Account created successfully!');
+            $this->doEmail('assign_manual_account', $account, []);
         } else {
             notify()->error('Account not created!', 'Unknown Error Occured');
             AccountTypeInvestmentSnapshot::where('account_type_investment_id', $account->id)->delete();
@@ -242,6 +247,23 @@ class AccountTypeInvestmentController extends Controller
         
     }
 
+    /**
+     * Email
+     */
+    private function doEmail($slug, $account, $data) {
+
+        if($slug == "assign_manual_account") {
+            $shortcodes2 = [
+                '[[full_name]]' => $account->user->first_name . ' ' . $account->user->last_name,
+                '[[email]]' => $account->user->email,
+                '[[phase_step]]' => $account->getPhaseSnapshotData()['phase_step'],
+                '[[plan_title]]' => $account->getAccountTypeSnapshotData()['title'],
+                '[[site_title]]' => setting('site_title', 'global'),
+            ];
+            $mail = $this->mailNotify($account->user->email, 'assign_manual_account', $shortcodes2);
+        }
+
+    }
 
     /**
      * Show the form for creating a new resource.

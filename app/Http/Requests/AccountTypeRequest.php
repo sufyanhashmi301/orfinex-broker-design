@@ -35,22 +35,13 @@ class AccountTypeRequest extends FormRequest
             'trader_type' => 'required',
             'title' => 'required',
             'leverage' => 'required',
-            'is_scalable' => 'required',
-            'is_weekend_holding' => 'required',
             'is_trial' => 'required',
-            'is_refundable' => 'required',
             'accounts_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
-            'accounts_range_start' => array_merge(
-                setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
-                ['integer']
-            ),
-            'accounts_range_end' => array_merge(
-                setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
-                ['integer']
-            ),
+            'trading_platform_title_format' => 'required|string',
             'profit_share' => 'required|min:1|max:100|integer',
             'platform_group' => 'required',
+            'cta_button_text' => 'required|string',
             'offer_uuid' => [
                 Rule::requiredIf(request('trader_type') === 'match_trader'),
             ],

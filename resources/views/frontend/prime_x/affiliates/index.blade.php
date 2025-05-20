@@ -124,9 +124,16 @@
                     <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none">
                         {{ $affiliate_info->withdrawable_balance }} {{$currency}}
                     </h6>
-                    <a href="{{route('user.withdraw.step1')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
+                    <a href="{{route('user.withdraw.step1')}}" class="{{ $affiliate_info->withdrawable_balance >= $affiliate_rule->min_payout_limit ? '' : 'disabled' }} btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
                         {{ __('Withdraw') }}
                     </a>
+                    @if ($affiliate_rule->min_payout_limit > 0 && $affiliate_info->withdrawable_balance < $affiliate_rule->min_payout_limit)
+                        <small>
+                            <iconify-icon class="" icon="lucide:info" style="position: relative; top: 3px; font-size: 15px"></iconify-icon>
+                            Min. Withdraw Limit is <b>{{ $affiliate_rule->min_payout_limit }} {{ $currency }}</b>
+                        </small>
+                    @endif
+                    
                 </div>
             </div>
         </div>

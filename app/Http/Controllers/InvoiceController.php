@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Offer;
 use App\Models\Discount;
+use App\Models\UserOffer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Services\InvoiceService;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -30,6 +33,8 @@ class InvoiceController extends Controller
 
         $discount = $discountQuery->first();
 
+        
+
         if ($discount) {
 
             // Check if the discount has reached its usage limit
@@ -40,6 +45,16 @@ class InvoiceController extends Controller
             // Check if you can apply discount to this account type
             if(!in_array($account_type_id, $discount->applied_to) && !in_array('all', $discount->applied_to)) {
                 return response()->json(['valid' => false, 'message' => __('Invalid or expired discount code.')]);
+            }
+
+            // check if the purpose is offers. then it is only available to users who have this offer marked as available
+            if($discount->purpose == "offers") {
+                $offer = Offer::where('discount_id', $discount->id)->first();
+                $userOffer = UserOffer::where('user_id', Auth::id())->where('offer_id', $offer->id)->where('status', 'available')->first();
+                
+                if($userOffer == null || $userOffer->status != 'available') {
+                    return response()->json(['valid' => false, 'message' => __('This offer is only valid for selected users.')]);
+                }
             }
 
             // Check if the total price falls in between some levels
@@ -63,7 +78,6 @@ class InvoiceController extends Controller
                 if(!$levelExists) {
                     return response()->json(['valid' => false, 'message' => "Invalid or expired discount code."]);
                 }
-
                 return response()->json([
                     'valid' => true,
                     'discount_id' => the_hash($discount->id),

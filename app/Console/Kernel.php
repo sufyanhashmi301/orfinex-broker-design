@@ -39,6 +39,9 @@ class Kernel extends ConsoleKernel
 
         // Delete test uploads from S3
         $schedule->command('aws-s3:delete-test-uploads')->daily();
+
+        // Expire Old Offers
+        $schedule->command('offers:expire-old')->everySixHours();
         
     }
 

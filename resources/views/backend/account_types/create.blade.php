@@ -2,6 +2,24 @@
 @section('title')
     {{ __('Add New Account Type') }}
 @endsection
+@section('style')
+    <style>
+        .title-placeholder {
+            padding: 4px 6px;
+            border-radius: 5px;
+            background: #eee;
+            color: #888;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 4px
+        }
+        .title-placeholder:hover {
+            background: #1a1a1a;
+            color: #fff;
+            transition: background 0.4s
+        }
+    </style>
+@endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -34,7 +52,7 @@
                                         src="{{asset('global/materials/upload.svg')}}"
                                         alt=""
                                     />
-                                    <span>{{ __('Upload Avatar') }}</span>
+                                    <span>{{ __('Upload Icon') }}</span>
                                 </label>
                             </div>
                         </div>
@@ -46,10 +64,10 @@
                     <div class="card-header noborder">
                         <div>
                             <h4 class="card-title">
-                                {{ __('Account Type Filter') }}
+                                {{ __('Filter Settings') }}
                             </h4>
                             <p class="card-text">
-                                {{ __('You can filter the account types based on users\' countries or tags.') }}
+                                {{ __('You can filter the account types based on users\' countries.') }}
                             </p>
                         </div>
                     </div>
@@ -70,10 +88,10 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="input-area">
+                        {{-- <div class="input-area">
                             <label class="form-label"
                                    for="">{{ __('Select User\'s Tags') }}</label>
-                            {{-- <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags"
+                            <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags"
                                     multiple>
                                 @foreach(getRiskProfileTag() as $tag)
                                     <option
@@ -81,11 +99,11 @@
                                         {{ $tag->name }}
                                     </option>
                                 @endforeach
-                            </select> --}}
+                            </select>
                             <select name="tags[]" class="form-control w-full h-9" style="pointer-events: none" readonly> <!-- .select2 multiple -->
                                 <option value="" disabled hidden selected>Available Soon</option>
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -317,7 +335,7 @@
                 </div>
             </div>
         </div>
-        <div class="card mb-6">
+        {{-- <div class="card mb-6">
             <div class="card-header noborder">
                 <div>
                     <h4 class="card-title">
@@ -376,7 +394,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- Phases / Rules --}}
         @include('backend.account_types.include.__phases')
@@ -398,8 +416,26 @@
                         <textarea class="summernote" name="description">{{ old('desc') }}</textarea>
                     </div>
                 </div>
-                <div class="grid grid-cols-12 gap-5 items-center">
-                    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+
+                <div class="input-area">
+                    <label class="form-label">{{ __('Trading Platform Title Format') }}</label>
+                    <label class="form-label" style="color: #777; cursor: default; text-transform: none">Use placeholders for a dynamic account title: 
+                        <span style="text-transform: none">
+                            <span class="title-placeholder">[account_title]</span>
+                            <span class="title-placeholder">[allotted_funds]</span>
+                            <span class="title-placeholder">[user_first_name]</span>
+                            <span class="title-placeholder">[user_last_name]</span>
+                            <span class="title-placeholder">[phase_step]</span>
+                            <span class="title-placeholder">[profit_target]</span>
+                            <span class="title-placeholder">[daily_drawdown_limit]</span>
+                            <span class="title-placeholder">[max_drawdown_limit]</span>
+                        </span> 
+                    </label>
+                    <input type="text" class="form-control" name="trading_platform_title_format" id="title_format" value="Phase [phase_step] $[allotted_funds] - [user_first_name] [user_last_name]">
+                </div>  
+                <br>
+                <div class="grid grid-cols-3 gap-5 items-center">
+                    <div class="">
                         <label for="" class="form-label">{{ __('Status') }}</label>
                         <div class="input-area">
                             <select name="status" class="form-control w-full" data-placeholder="Status">
@@ -412,67 +448,30 @@
                             </select>
                         </div>
                     </div>
-                    <div class="2xl:col-span-9 lg:col-span-8 col-span-12" style="position: relative; top: 14px">
-                        <div class="grid md:grid-cols-3 col-span-1 gap-5">
 
-                            <div class="input-area">
-                                <div class="flex items-center space-x-3 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height:0;">
-                                        <input type="hidden" name="is_trial" value="0">
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_trial" value="1" class="sr-only peer" {{ old('is_trial') ? 'checked' : '' }}>
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">Allow Trial (Auto Expire after {{ setting('auto_expire_expiry_days') }} days)</label>
-                                </div>
-                            </div>
+                    <div class="">
+                        <label for="" class="form-label">{{ __('CTA Button') }}</label>
+                        <div class="input-area">
+                            <input type="text" name="cta_button_text" value="Buy Now" class="form-control">
+                        </div>
+                    </div>
 
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height:0;">
-                                        <input type="hidden" name="is_weekend_holding" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_weekend_holding" value="1"
-                                                   class="sr-only peer" {{ old('is_weekend_holding') ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Weekend Holding') }}</label>
+                    <div class="" style="position: relative; top: 14px">
+                        <div class="input-area">
+                            <div class="flex items-center space-x-3 flex-wrap">
+                                <div class="form-switch ps-0" style="line-height:0;">
+                                    <input type="hidden" name="is_trial" value="0">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="is_trial" value="1" class="sr-only peer" {{ old('is_trial') ? 'checked' : '' }}>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height:0;">
-                                        <input type="hidden" name="is_scalable" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_scalable" value="1"
-                                                   class="sr-only peer" {{ old('is_scalable') ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Scalable') }}</label>
-                                </div>
-                            </div>
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height:0;">
-                                        <input type="hidden" name="is_refundable" value="0">
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_refundable" value="1" class="sr-only peer" {{ old('is_refundable') ? 'checked' : '' }}>
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Refundable') }}</label>
-                                </div>
+                                <label class="form-label !w-auto pt-0 !mb-0">Allow Trial (Auto Expire after {{ setting('auto_expire_expiry_days') }} days)</label>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 {{--Modal for Control Room--}}
                 <div class="mt-10 flex items-center gap-3">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submit-form">
@@ -491,6 +490,12 @@
 
 @endsection
 @section('script')
+    <script>
+        $('.title-placeholder').on('click', function() {
+            $('#title_format').val($('#title_format').val() + $(this).text())
+            $('#title_format').focus()
+        })
+    </script>
     <script>
         
         function showNotification(message, type) {

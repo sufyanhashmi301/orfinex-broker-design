@@ -6,9 +6,12 @@ use Txn;
 use URL;
 use Validator;
 use Carbon\Carbon;
+use App\Models\Offer;
 use App\Enums\TxnType;
 use App\Models\Invoice;
 use App\Enums\TxnStatus;
+use App\Models\Discount;
+use App\Models\UserOffer;
 use App\Models\Transaction;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -41,7 +44,6 @@ class DepositController extends GatewayController
 
     public function deposit(Request $request, $id = null)
     {
-
         if (!setting('user_deposit', 'permission') || !Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
@@ -61,8 +63,6 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
-
-        //        dd($request->all());
         if (!setting('user_deposit', 'permission') || !Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
@@ -93,6 +93,8 @@ class DepositController extends GatewayController
         //        dd($input);
         $targetId = get_hash($input['target_id']);
         $targetType = 'forex_deposit';
+        
+
         //        $forexAccount = ForexAccount::where('login', $targetId)->first();
         //        $targetId = 124234234;
 
@@ -130,6 +132,22 @@ class DepositController extends GatewayController
         $invoice->transaction_id = $txnInfo->id;
         $invoice->transaction_id_string = $txnInfo->tnx;
         $invoice->save();
+
+        // Update Discount
+        if(isset($invoice->coupon_code_discount['id'])) {
+            $discount = Discount::where('id', $invoice->coupon_code_discount['id'])->first();
+            $discount->used_count = $discount->used_count + 1;
+            $discount->save();
+
+            // Update User Offers
+            if($discount->purpose == 'offers') {
+                $offer = Offer::where('discount_id', $discount->id)->first();
+                $userOffer = UserOffer::where('user_id', Auth::id())->where('offer_id', $offer->id)->where('status', 'available')->first();
+                $userOffer->status = 'used';
+                $userOffer->save();
+            }
+        }
+        
 
         // send email if the payment is pending
         if ($gatewayInfo->type == 'manual') {

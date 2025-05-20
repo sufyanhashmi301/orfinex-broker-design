@@ -49,6 +49,10 @@
             </a>
         </li>
 
+        
+        
+
+
         {{-- <li>
 
             <a href="{{ route('user.wallet.index') }}" class="navItem loaderBtn {{ isActive('user.wallet*') }}">
@@ -60,10 +64,10 @@
         </li> --}}
 
         <li>
-            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index ') }} {{ isActive('user.investment.trading-stats') }}">
+            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index*') }} {{ isActive('user.investment.trading-stats') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
-                    <span>{{ __('My Accounts') }}</span>
+                    <iconify-icon class="nav-icon" icon="lucide:chart-candlestick"></iconify-icon>
+                    <span>{{ __('Accounts') }}</span>
                 </span>
             </a>
         </li>
@@ -79,14 +83,14 @@
             </li>
         @endif --}}
 
-        <li>
+        {{-- <li>
             <a href="{{route('user.account.buy')}}" class="navItem {{ isActive('user.account*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:square-plus"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
                 </span>
             </a>
-        </li>
+        </li> --}}
 
         @if (show_kyc_notice()['show'])
             <li>
@@ -206,16 +210,64 @@
             <a href="{{ route('user.affiliate-area.index') }}" class="navItem loaderBtn {{ isActive('user.affiliate-area.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:share-2"></iconify-icon>
-                    <span>{{ __('Affiliate Area') }}</span>
+                    <span>{{ __('Refer & Earn') }}</span>
                 </span>
             </a>
         </li>
+
+        <li id="jiggleText">
+            <a href="{{route('user.offers')}}" class="navItem jiggle {{ isActive('user.offers') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:tag"></iconify-icon>
+                    <span>{{ __('Offers') }}</span>
+                </span>
+                @php
+                    $user_offers_count = App\Models\UserOffer::where('user_id', Auth::id())->where('status', 'available')->count();
+                @endphp
+                @if ($user_offers_count > 0 && !isset($userOffers))
+                    <span class="badge badge-success" style="text-transform: none">
+                        {{ $user_offers_count }} Coupon(s)
+                    </span>
+                @endif
+            </a>
+        </li>
+
+        {{-- Coupon shake effect --}}
+        @if (!isset($userOffers))
+            @if ($user_offers_count > 0)
+                <style>
+                    @keyframes jiggle {
+                        0%, 100% { transform: translateX(0); }
+                        20% { transform: translateX(-5px); }
+                        40% { transform: translateX(5px); }
+                        60% { transform: translateX(-5px); }
+                        80% { transform: translateX(5px); }
+                    }
+
+                    .jiggle {
+                        animation: jiggle 0.6s ease;
+                    }
+                </style>
+                <script>
+                    const text = document.getElementById('jiggleText');
+
+                    setInterval(() => {
+                        text.classList.add('jiggle');
+
+                        // Remove the class after animation ends so it can retrigger
+                        setTimeout(() => {
+                        text.classList.remove('jiggle');
+                        }, 600); // Match duration of CSS animation
+                    }, 4000);
+                </script>
+            @endif
+        @endif
 
         <li>
             <a href="{{ route('user.ticket.index') }}" class="navItem {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:headset"></iconify-icon>
-                    <span>{{ __('Support Tickets') }}</span>
+                    <span>{{ __('Tickets') }}</span>
                 </span>
             </a>
         </li>
@@ -246,11 +298,14 @@
         </li> --}}
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
-    <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn">
-        <span class="flex items-center">
-            <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
-            <span>{{ __('Settings') }}</span>
-        </span>
+<div class="sidebar-menu mt-3 menu-open sticky px-3 py-3" style="position: relative; bottom: 30px; z-index: 99; position: relative; ">
+   <li style="">
+     
+    <a href="{{ route('user.account.buy') }}" class="navItem active" style="position: relative; height: 45px" >
+        <div style="left: 50%; position:absolute; transform: translateX(-50%);">
+            Start Challenge
+        </div>
     </a>
+     
+   </li>
 </div>

@@ -81,6 +81,10 @@ class AccountTypeInvestment extends Model
         return $this->hasMany(AccountBalanceOperation::class);
     }
 
+    public function latestTrades() {
+        return $this->hasMany(LatestTradeLog::class);
+    }
+
     /**
      * Scopes
      */

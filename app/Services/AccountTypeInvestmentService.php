@@ -24,6 +24,7 @@ use App\Enums\AccountActivityStatusEnums;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\AccountTypePhase as EnumsAccountTypePhase;
+use App\Models\LatestTradeLog;
 
 class AccountTypeInvestmentService
 {
@@ -35,13 +36,15 @@ class AccountTypeInvestmentService
   protected $matchTraderApiService;
   protected $payout;
   protected $invoice;
+  protected $offerService;
 
-  public function __construct( AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice, MatchTraderApiService $matchTraderApiService) {
+  public function __construct( AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice, MatchTraderApiService $matchTraderApiService, OfferService $offerService) {
     $this->forexApiService = $forexApiService;
     $this->matchTraderApiService = $matchTraderApiService;
     $this->investment_payment = $investment_payment;
     $this->payout = $payout;
     $this->invoice = $invoice;
+    $this->offerService = $offerService;
   }
 
   /**
@@ -160,6 +163,7 @@ class AccountTypeInvestmentService
    * Trading Objectives Evaluation
    */
   private function tradingObjectives($investment, $first_record_after_midnight) {
+   
 
     $trading_objectives = [];
 
@@ -510,11 +514,23 @@ class AccountTypeInvestmentService
       ]
     );
 
+    // Create a latest log
+    $log = new LatestTradeLog();
+    $log->account_type_investment_id = $violate_investment->id;
+    $log->balance = $violation_data['balance'];
+    $log->current_equity = $violation_data['equity'];
+    $log->trading_days = $violation_data['trading_days'];
+    $log->save();
+
     // Update account stats
     $violate_investment->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
 
     // Add the record in investment phase approvals table
     AccountActivityService::log($violate_investment, AccountActivityStatusEnums::VIOLATED);
+
+    // Offer if any
+    $this->offerService->createUserOffer('account_violation', $violate_investment->user_id);
+
 
   }
 

@@ -90,6 +90,14 @@
                 </select>
             </div>
 
+            <div class="input-area">
+                <label for="type" class="form-label">{{ __('Purpose') }}</label>
+                <select id="" name="purpose" class="form-control w-100" required>
+                    <option value="discount_codes" {{ $discount->purpose == 'discount_codes' ? 'selected' : '' }}>Discount Codes</option>
+                    <option value="offers" {{ $discount->purpose == 'offers' ? 'selected' : '' }}>Offers</option>
+                </select>
+            </div>
+
             <!-- Status -->
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto mb-0">{{ __('Status') }}</label>

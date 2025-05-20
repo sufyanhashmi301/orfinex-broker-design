@@ -12,17 +12,17 @@ class AccountTypeService
     /**
      * Resolve Custom Data
      */
-    private function resolveCustomData(array $input) 
+    private function resolveCustomData(array $input, $mode = "store", $account_type = null) 
     {
         // Customize only fields that need transformation
         $custom_data = [
             'countries' => isset($input['countries']) ? json_encode($input['countries']) : json_encode(['All']),
-            'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
-            // 'trading_days' => !empty($input['trading_days']) ? $input['trading_days'] : null,
-            'accounts_range_start' => !empty($input['accounts_range_start']) ? $input['accounts_range_start'] : null,
-            'accounts_range_end' => !empty($input['accounts_range_end']) ? $input['accounts_range_end'] : null,
             'icon' => isset($input['icon']) ? $this->imageUploadTrait($input['icon'], null, 'admin/plans') : null
         ];
+
+        if($mode == 'update') {
+            $custom_data['icon'] = isset($input['icon']) ? $this->imageUploadTrait($input['icon'], null, 'admin/plans') :  $account_type->icon;
+        }
 
         // Merge custom data with the rest of the input, and create the record
         $final_data = array_merge($input, $custom_data);
@@ -45,7 +45,7 @@ class AccountTypeService
      */
     public function updateAccountType(array $input, $account_type)
     {
-        $final_data = $this->resolveCustomData($input);
+        $final_data = $this->resolveCustomData($input, 'update', $account_type);
         // dd($final_data);
         return $account_type->update($final_data);
     }

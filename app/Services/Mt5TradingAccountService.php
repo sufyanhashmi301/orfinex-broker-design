@@ -28,24 +28,50 @@ class Mt5TradingAccountService
     }
   }
 
+  private function dynamicTitle($placeholder, $user) {
+
+    // Default values
+    $data = [
+        'account_title' => $this->accountTypeData['title'],
+        'phase_step' => $this->phaseData['phase_step'],
+        'allotted_funds' => number_format($this->ruleData['allotted_funds'], 0),
+        'user_first_name' => $user->first_name,
+        'user_last_name' => $user->last_name,
+        'profit_target' => number_format($this->ruleData['profit_target'], 0),
+        'daily_drawdown_limit' => number_format($this->ruleData['daily_drawdown_limit'], 0),
+        'max_drawdown_limit' => number_format($this->ruleData['max_drawdown_limit'], 0),
+    ];
+
+    // Replace placeholders
+    $replacedTitle = $placeholder;
+
+    foreach ($data as $key => $value) {
+        $replacedTitle = str_replace("[$key]", $value, $replacedTitle);
+    }
+
+    return $replacedTitle;
+  }
+
   /**
    * Create MT5 account Via API call using ForexApiService
    */
   public function createTradingAccount($investment) {
-
+    
     $this->accountTypeData = $investment->getAccountTypeSnapshotData();
     $this->phaseData = $investment->getPhaseSnapshotData();
     $this->ruleData = $investment->getRuleSnapshotData();
 
     $password = Str::random(11) . '$';
-   
+
+    // dd($this->dynamicTitle($this->accountTypeData['trading_platform_title_format'], $investment->user));
+
     // will replace the values by static table later
     $user_data = [
       "login" => 0,
       "group" => $investment->platform_group,
-      "firstName" => 'Phase ' . $investment->getPhaseSnapshotData()['phase_step'] . ' $' . $this->ruleData['allotted_funds'] . '-' . $investment->user->first_name,
+      "firstName" => $this->dynamicTitle($this->accountTypeData['trading_platform_title_format'], $investment->user),
       "middleName" => "",
-      "lastName" => $investment->user->last_name,
+      "lastName" => ".",
       "leverage" => (int)$this->accountTypeData['leverage'],
       "rights" => "USER_RIGHT_ENABLED,USER_RIGHT_EXPERT,USER_RIGHT_PASSWORD", // "USER_RIGHT_ALL",
       "country" => $investment->user->country,

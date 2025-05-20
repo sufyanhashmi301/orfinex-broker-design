@@ -48,6 +48,7 @@ class Discount extends Model
 		'code',
 		'scheme_type',
 		'type',
+		'purpose',
 		'applied_to',
 		'discount_levels',
 		'usage_limit',
@@ -58,4 +59,8 @@ class Discount extends Model
 		'expire_at',
 		'status'
 	];
+
+	public function offers() {
+			return $this->hasMany(Offer::class);
+	}
 }

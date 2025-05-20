@@ -2,6 +2,24 @@
 @section('title')
     {{ __('Edit Account Type') }}
 @endsection
+@section('style')
+    <style>
+        .title-placeholder {
+            padding: 4px 6px;
+            border-radius: 5px;
+            background: #eee;
+            color: #888;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 4px
+        }
+        .title-placeholder:hover {
+            background: #1a1a1a;
+            color: #fff;
+            transition: background 0.4s
+        }
+    </style>
+@endsection
 @section('content')
 
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -31,7 +49,7 @@
                                 <input type="file" name="icon" id="schema-icon" accept=".gif, .jpg, .png" />
                                 <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($account_type->icon) }})">
                                     <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('Update Avatar') }}</span>
+                                    <span>{{ __('Update Icon') }}</span>
                                 </label>
                             </div>
                         </div>
@@ -43,10 +61,10 @@
                     <div class="card-header noborder">
                         <div>
                             <h4 class="card-title">
-                                {{ __('Account Type Filter') }}
+                                {{ __('Filter Settings') }}
                             </h4>
                             <p class="card-text">
-                                {{ __('You can filter the account types based on users\' countries or tags.') }}
+                                {{ __('You can filter the account types based on users\' countries.') }}
                             </p>
                         </div>
                     </div>
@@ -67,19 +85,19 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="input-area">
+                        {{-- <div class="input-area">
                             <label class="form-label" for="">
                                 {{ __('Choose the tags where you would like this account type to be shown') }}
                             </label>
                             <select name="tags[]" class="form-control w-full h-9" style="pointer-events: none" readonly> <!-- .select2 multiple -->
                                 <option value="" disabled hidden selected>Available Soon</option>
-                                {{-- @foreach (getRiskProfileTag() as $tag)
+                                @foreach (getRiskProfileTag() as $tag)
                                     <option value="{{ $tag->name }}" @if (in_array($tag->name, json_decode($account_type->tags ?? '[]', true))) selected @endif>
                                         {{ $tag->name }}
                                     </option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -90,11 +108,11 @@
             <div class="card-header noborder">
                 <div>
                     <h4 class="card-title">
-                        {{ __('Type of Account') }}
+                        {{ __('Account Basics') }}
                     </h4>
-                    <p class="card-text">
+                    {{-- <p class="card-text">
                         {{ __('Select all specifications and limits for account types you want clients to be able to open.') }}
-                    </p>
+                    </p> --}}
                 </div>
             </div>
             <div class="card-body p-6 pt-0">
@@ -237,7 +255,7 @@
         </div>
 
         {{-- Key Features (Upto) --}}
-        <div class="card mb-6">
+        {{-- <div class="card mb-6">
             <div class="card-header noborder">
                 <div>
                     <h4 class="card-title">
@@ -272,7 +290,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Phases / Rules -->
         @include('backend.account_types.include.__phases')
@@ -292,8 +310,27 @@
                     <label for="desc" class="form-label">{{ __('Description') }}</label>
                     <textarea class="summernote" name="description">{{ $account_type->description }}</textarea>
                 </div>
-                <div class="grid grid-cols-12 gap-5 items-center">
-                    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+
+                <div class="input-area">
+                    <label class="form-label">{{ __('Trading Platform Title Format') }}</label>
+                    <label class="form-label" style="color: #777; cursor: default">Use placeholders for a dynamic account title: 
+                        <span style="text-transform: none">
+                            <span class="title-placeholder">[account_title]</span>
+                            <span class="title-placeholder">[allotted_funds]</span>
+                            <span class="title-placeholder">[user_first_name]</span>
+                            <span class="title-placeholder">[user_last_name]</span>
+                            <span class="title-placeholder">[phase_step]</span>
+                            <span class="title-placeholder">[profit_target]</span>
+                            <span class="title-placeholder">[daily_drawdown_limit]</span>
+                            <span class="title-placeholder">[max_drawdown_limit]</span>
+                        </span> 
+                    </label>
+                    <input type="text" class="form-control" name="trading_platform_title_format" id="title_format" value="{{ $account_type->trading_platform_title_format }}">
+                </div>
+                   
+                <br>
+                <div class="grid grid-cols-3 gap-5 items-center ">
+                    <div class="">
                         <label for="" class="form-label">{{ __('Status') }}</label>
                         <div class="input-area">
                             <select name="status" class="form-control w-full" data-placeholder="Status">
@@ -304,67 +341,25 @@
                             </select>
                         </div>
                     </div>
-                    <div class="2xl:col-span-9 lg:col-span-8 col-span-12" style="position: relative; top: 14px">
-                        <div class="grid md:grid-cols-3 col-span-1 gap-5">
 
-                            <div class="input-area">
-                                <div class="flex items-center space-x-3 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height:0;">
-                                        <input type="hidden" name="is_trial" value="0">
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_trial" value="1" class="sr-only peer" {{ $account_type->is_trial ? 'checked' : '' }}>
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">Allow Trial (Auto Expire after {{ setting('auto_expire_expiry_days') }} days)</label>
-                                </div>
-                            </div>
+                    <div class="">
+                        <label for="" class="form-label">{{ __('CTA Button') }}</label>
+                        <div class="input-area">
+                            <input type="text" name="cta_button_text" value="{{ $account_type->cta_button_text }}" class="form-control">
+                        </div>
+                    </div>
 
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0">
-                                        <input type="hidden" name="is_weekend_holding" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_weekend_holding" value="1"
-                                                class="sr-only peer"
-                                                {{ $account_type->is_weekend_holding ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto">{{ __('Weekend Holding') }}</label>
+                    <div class="" style="position: relative; top: 14px">
+                        <div class="input-area">
+                            <div class="flex items-center space-x-3 flex-wrap">
+                                <div class="form-switch ps-0" style="line-height:0;">
+                                    <input type="hidden" name="is_trial" value="0">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="is_trial" value="1" class="sr-only peer" {{ $account_type->is_trial ? 'checked' : '' }}>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0">
-                                        <input type="hidden" name="is_scalable" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_scalable" value="1"
-                                                class="sr-only peer" {{ $account_type->is_scalable ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto">{{ __('Scalable') }}</label>
-                                </div>
-                            </div>
-                            <div class="input-area" style="display: none">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0">
-                                        <input type="hidden" name="is_refundable" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_refundable" value="1"
-                                                class="sr-only peer" {{ $account_type->is_refundable ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                        </label>
-                                    </div>
-                                    <label class="form-label !w-auto">{{ __('Refundable') }}</label>
-                                </div>
+                                <label class="form-label !w-auto pt-0 !mb-0">Allow Trial (Auto Expire after {{ setting('auto_expire_expiry_days') }} days)</label>
                             </div>
                         </div>
                     </div>
@@ -386,6 +381,12 @@
 
 @endsection
 @section('script')
+    <script>
+        $('.title-placeholder').on('click', function() {
+            $('#title_format').val($('#title_format').val() + $(this).text())
+            $('#title_format').focus()
+        })
+    </script>
     <script>
         
         function showNotification(message, type) {

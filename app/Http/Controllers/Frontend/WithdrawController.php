@@ -31,6 +31,7 @@ use Illuminate\Contracts\View\Factory;
 use App\Http\Requests\UserWithdrawRequest;
 use Illuminate\Contracts\Foundation\Application;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Models\AffiliateRule;
 
 class WithdrawController extends Controller
 {
@@ -400,6 +401,9 @@ class WithdrawController extends Controller
             $affiliate_wallet->available_balance = $user_affiliate_row->first()->withdrawable_balance;
             $affiliate_wallet->save();
         } 
+
+        // Get the Affiliate rule
+        $affiliate_rule = AffiliateRule::first();
         
 
         // All eligible funded balances record.
@@ -413,7 +417,7 @@ class WithdrawController extends Controller
      */
     public function withdraw(Request $request)
     {
-
+        
         // if wallet is not set
         if(!isset($request->wallet)) {
             notify()->error('Please select the wallet to withdraw.');
@@ -431,6 +435,15 @@ class WithdrawController extends Controller
         if($wallet->available_balance == 0) {
             notify()->error('Insuficcient balance.');
             return redirect()->route('user.withdraw.step1');
+        }
+
+        // if wallet is affiliate and the min payout limit is not achieved
+        if($request->wallet == WalletType::AFFILIATE) {
+            $affiliate_rule = AffiliateRule::first();
+            if($wallet->available_balance < $affiliate_rule->min_payout_limit) {
+                notify()->error('Min. withdraw limit is ' . $affiliate_rule->min_payout_limit . ' ' . setting('site_currency'));
+                return redirect()->route('user.withdraw.step1');
+            }
         }
 
         // Withdraw to account:

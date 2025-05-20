@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\Offer;
 use App\Enums\TraderType;
 use App\Traits\NotifyTrait;
 use App\Models\AccountTrial;
@@ -10,9 +11,12 @@ use App\Enums\InvestmentStatus;
 use Illuminate\Console\Command;
 use App\Services\ForexApiService;
 use App\Models\AccountTypeInvestment;
+use App\Models\UserOffer;
+use App\Services\MatchTraderApiService;
 use App\Services\AccountActivityService;
 use App\Services\AccountTypeInvestmentPaymentService;
-use App\Services\MatchTraderApiService;
+use App\Services\OfferService;
+use Illuminate\Support\Facades\Auth;
 
 class TrialAccountsActiveExpire extends Command
 {
@@ -21,12 +25,14 @@ class TrialAccountsActiveExpire extends Command
     protected $account_payment;
     protected $forexApiService;
     protected $matchTraderApiService;
+    protected $offerService;
 
-    public function __construct(AccountTypeInvestmentPaymentService $account_payment, ForexApiService $forexApiService, MatchTraderApiService $matchTraderApiService) {
+    public function __construct(AccountTypeInvestmentPaymentService $account_payment, ForexApiService $forexApiService, MatchTraderApiService $matchTraderApiService, OfferService $offerService) {
         parent::__construct();
         $this->account_payment = $account_payment;
         $this->forexApiService = $forexApiService;
         $this->matchTraderApiService = $matchTraderApiService;
+        $this->offerService = $offerService;
     }
 
     /**
@@ -84,10 +90,10 @@ class TrialAccountsActiveExpire extends Command
                         $response = $this->forexApiService->balanceOperation($data);
                     } elseif($account->trader_type == TraderType::MT) {
                         $deduct_balance_data = [
-                        "systemUuid" => $account->getAccountTypeSnapshotData()['system_uuid'],
-                        "login" => $account->login,
-                        "amount" => $account->accountTypeInvestmentStat->balance,
-                        "comment" => "Trial Account Expired"
+                            "systemUuid" => $account->getAccountTypeSnapshotData()['system_uuid'],
+                            "login" => $account->login,
+                            "amount" => $account->accountTypeInvestmentStat->balance,
+                            "comment" => "Trial Account Expired"
                         ];
                     
                         $deduct_balance_response = $this->matchTraderApiService->deductBalance($deduct_balance_data);
@@ -112,6 +118,10 @@ class TrialAccountsActiveExpire extends Command
 
                     $account->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
                     AccountActivityService::log($account, 'Trial Expired');
+
+                    // Offer Creation if any
+                    $this->offerService->createUserOffer('trial_expiry', $account->user_id);
+                    
                 }
             }
 

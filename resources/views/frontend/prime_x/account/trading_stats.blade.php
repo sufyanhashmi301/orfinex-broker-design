@@ -631,8 +631,8 @@
 
                                         <tr class="item-row history-row">
                                             <td class="table-td">{{ date('h:i:s A', strtotime($log->created_at)) }}</td>
-                                            <td class="table-td">{{ number_format($log->current_equity, 0) }} {{ $currency }}</td>
-                                            <td class="table-td">{{ number_format($log->balance, 0) }} {{ $currency }}</td>
+                                            <td class="table-td">{{ number_format($log->current_equity, 2) }} {{ $currency }}</td>
+                                            <td class="table-td">{{ number_format($log->balance, 2) }} {{ $currency }}</td>
                                             <td class="table-td">{{ $log->trading_days }} <span style="text-transform: none">Day(s)</span></td>
                                             
                                         </tr>

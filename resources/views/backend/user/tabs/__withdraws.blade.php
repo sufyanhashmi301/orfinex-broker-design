@@ -60,18 +60,22 @@
                           </tbody>
                       </table>
                       <div
-                          class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
+                          class="border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
                           <div>
-                              @php
-                                  $from = $withdraws->firstItem();
-                                  $to = $withdraws->lastItem();
-                                  $total = $withdraws->total();
-                              @endphp
-                              <p class="text-sm text-gray-700 py-3">
-                                  Showing <span class="font-medium">{{ $from }}</span> to <span
-                                      class="font-medium">{{ $to }}</span> of <span
-                                      class="font-medium">{{ $total }}</span> results
-                              </p>
+                                @php
+                                    $from = $withdraws->firstItem();
+                                    $to = $withdraws->lastItem();
+                                    $total = $withdraws->total();
+                                @endphp
+                                <p class="text-sm text-gray-700 py-3">
+                                    @if ($total == 0)
+                                        <center class="text-sm">No Data Available</center>
+                                    @else
+                                        Showing <span class="font-medium">{{ $from ?? 0 }}</span> to <span
+                                        class="font-medium">{{ $to ?? 0 }}</span> of <span
+                                        class="font-medium">{{ $total }}</span> results
+                                    @endif
+                                </p>
                           </div>
                           {{ $withdraws->appends(request()->except('page'))->links() }}
                       </div>

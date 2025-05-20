@@ -182,13 +182,13 @@ class UserController extends Controller
         $accounts = AccountTypeInvestment::where('status', '!=', InvestmentStatus::PENDING_NOT_PAID)->where('status', '!=', InvestmentStatus::PENDING)->where('user_id', $id)->orderBy('id', 'DESC')->paginate(8, ['*'], 'page', ($tab === 'accounts' && isset($request->page)) ? $request->page : 1);
         
         // Fetch payments
-        $payments = Transaction::where(function ($query) {
+        $payments = Transaction::where('user_id', $id)->where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
                       ->orWhere('type', TxnType::Deposit);
             })->latest()->paginate(10, ['*'], 'page', ($tab === 'payments' && isset($request->page)) ? $request->page : 1);
         
         // Fetch withdraws
-        $withdraws = Transaction::where('type', TxnType::Withdraw)->paginate(10, ['*'], 'page', ($tab === 'withdraws' && isset($request->page)) ? $request->page : 1);
+        $withdraws = Transaction::where('user_id', $id)->where('type', TxnType::Withdraw)->paginate(10, ['*'], 'page', ($tab === 'withdraws' && isset($request->page)) ? $request->page : 1);
 
         return view('backend.user.edit', compact('user', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types', 'payments', 'withdraws'));
     }

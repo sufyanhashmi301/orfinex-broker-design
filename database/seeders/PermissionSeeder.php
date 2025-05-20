@@ -274,6 +274,7 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Website Setting', 'name' => 'theme-settings'],
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
+            ['category' => 'Website Setting', 'name' => 'company-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
             ['category' => 'Website Setting', 'name' => 'banner-settings'],
             ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],

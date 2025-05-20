@@ -17,6 +17,7 @@ class ThemeController extends Controller
     {
         $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
         $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
+         $this->middleware('permission:company-logo-settings', ['only' => ['companyLogo']]);
     }
 
     public function siteTheme()

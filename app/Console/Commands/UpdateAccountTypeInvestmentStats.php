@@ -156,10 +156,10 @@ class UpdateAccountTypeInvestmentStats extends Command
                 // Update Trading Days
                 $this->updateTradingDays($investment);
 
-                // delete old latest logs
-                $this->deleteOldLatestLogs();
             }
         }
+        // delete old latest logs
+        $this->deleteOldLatestLogs();
 
         if($hourly_shceduled) {
             $this->info('Account stats stored successfully!');

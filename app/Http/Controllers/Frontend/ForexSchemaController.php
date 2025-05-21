@@ -18,9 +18,10 @@ class ForexSchemaController extends Controller
 
         $user = auth()->user();
         $referrer = $user->referrer;
-        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
+        $isPartOfMasterIb = isset($referrer) ? user_meta('is_part_of_master_ib', null, $referrer) : false;
 
-        $globalSchemas = ForexSchema::where('is_global', true)->get();
+        $globalSchemas = ForexSchema::active()
+            ->traderType()->where('is_global', 1)->get();
 
         if ($referrer && $isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);

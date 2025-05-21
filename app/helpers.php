@@ -1068,7 +1068,7 @@ if (!function_exists('user_meta')) {
     function user_meta($metaKey, $default = null, $user = null)
     {
         $user = (blank($user)) ? auth()->user() : $user;
-//dd($user);
+        
         if (!blank($user)) {
             $userMetas = $user->user_metas->pluck('meta_value', 'meta_key');
             if (!blank($userMetas)) {

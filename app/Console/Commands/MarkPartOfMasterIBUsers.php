@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use App\Services\UserIbNetworkService;
 
 class MarkPartOfMasterIBUsers extends Command
 {
@@ -31,36 +32,24 @@ class MarkPartOfMasterIBUsers extends Command
         try {
             $this->info("Starting Part of Master IB sync...");
 
+            $service = app(UserIbNetworkService::class);
+
             $users = User::whereNotNull('ib_group_id')
                 ->where('ib_status', 'approved')
-                ->with(['user_metas', 'referrals'])
                 ->get();
 
+            $totalUpdated = 0;
+
             foreach ($users as $user) {
-                if (!$user->ib_group_id) {
-                    $this->warn("User {$user->id} skipped — no ib_group_id.");
-                    continue;
-                }
+                $count = $service->syncMeta($user, 'is_part_of_master_ib', $user->ib_group_id);
+                $totalUpdated += $count;
 
-                $user->user_metas()->updateOrCreate(
-                    ['meta_key' => 'is_part_of_master_ib'],
-                    ['meta_value' => $user->ib_group_id]
-                );
-
-                foreach ($user->referrals as $referral) {
-                    if (!$referral->ib_group_id || $referral->ib_status !== 'approved') {
-                        $this->warn("Referral {$referral->id} skipped — no ib_group_id or not approved.");
-                        continue;
-                    }
-
-                    $referral->user_metas()->updateOrCreate(
-                        ['meta_key' => 'is_part_of_master_ib'],
-                        ['meta_value' => $referral->ib_group_id]
-                    );
-                }
+                $this->info("User {$user->id} and {$count} in network updated.");
             }
 
-            $this->info("Part of Master IB sync complete.");
+            $this->info("Sync complete. Total users updated: $totalUpdated");
+
+            return Command::SUCCESS;
 
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());

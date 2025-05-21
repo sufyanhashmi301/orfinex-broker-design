@@ -17,10 +17,11 @@ class PayoutService
    * Initialize Funded Balance with empty values
    */
   public function fundedBalanceInit($investment_id) {
+    $account = AccountTypeInvestment::find($investment_id);
     $new_funded_balance = new FundedBalance();
-    $new_funded_balance->user_id = Auth::id();
+    $new_funded_balance->user_id = $account->user_id;
     $new_funded_balance->account_type_investment_id = $investment_id;
-    $new_funded_balance->user_profit_share = 100 - AccountTypeInvestment::find($investment_id)->getAccountTypeSnapshotData()['profit_share'];
+    $new_funded_balance->user_profit_share = 100 - $account->getAccountTypeSnapshotData()['profit_share'];
     $new_funded_balance->profit = 0.00;
     $new_funded_balance->last_retrieved_profit = 0.00;
     $new_funded_balance->save();

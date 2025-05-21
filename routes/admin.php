@@ -321,7 +321,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('method/{id}', 'withdrawAccount')->name('account');
         Route::post('account/store', 'accountStore')->name('account.store');
-        
+
         Route::get('notification-tune', 'notificationTune')->name('notificationTune');
     });
 
@@ -407,6 +407,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('currency', 'currencySetting')->name('currency');
         Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
         Route::get('transfers', 'transfers')->name('transfers');
+        Route::get('transfers/notification-tune', 'transfersNotificationTune')->name('transfers.notification-tune');
         Route::get('gdpr', 'gdpr')->name('gdpr');
         Route::get('dev-mode', 'devMode')->name('devMode');
         Route::get('clear-cache', 'clearCache')->name('clearCache');

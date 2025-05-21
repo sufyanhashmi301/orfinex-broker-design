@@ -629,7 +629,7 @@ class WithdrawController extends Controller
             // Send notifications
             $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
             $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
-            $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
+            $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
             $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
             if (session()->has('withdrawal_data')) {

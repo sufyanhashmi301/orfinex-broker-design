@@ -119,7 +119,7 @@
                         $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
                         $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
                     @endphp
-                    <div class="relative md:block hidden">
+                    <div class="relative md:block hidden user-notifications{{$userId}}">
                         @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
                     </div>
                 @endauth

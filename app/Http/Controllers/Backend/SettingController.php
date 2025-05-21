@@ -6,6 +6,7 @@ use Cache;
 use Exception;
 use App\Models\Setting;
 use App\Models\Country;
+use App\Models\SetTune;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
@@ -52,6 +53,7 @@ class SettingController extends Controller
         $this->middleware('permission:currency-setting', ['only' => ['currencySetting']]);
         $this->middleware('permission:collab-tools-setting', ['only' => ['slackSetting']]);
         $this->middleware('permission:customer-misc-settings', ['only' => ['customerMiscSettings']] );
+        $this->middleware('permission:transfer-notification' , ['only' => ['transfersNotificationTune']]);
 
 
 
@@ -279,6 +281,12 @@ public function update(Request $request)
     {
         $type = $request->query('type');
         return view('backend.setting.transfers.index', compact('type'));
+    }
+
+    public function transfersNotificationTune()
+    {
+        $tunes = SetTune::all();
+        return view('backend.setting.transfers.notification_tune', compact('tunes'));
     }
 
     public static function gdpr()

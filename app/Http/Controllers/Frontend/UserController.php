@@ -156,7 +156,7 @@ class UserController extends Controller
 
     public function latestNotification()
     {
-        $notifications = Notification::where('for', 'user')->where('user_id', auth()->user()->id)->latest()->take(10)->get();
+        $notifications = Notification::where('for', 'user')->where('user_id', auth()->user()->id)->latest()->take(5)->get();
         $totalUnread = Notification::where('for', 'user')->where('user_id', auth()->user()->id)->where('read', 0)->count();
         $totalCount = Notification::where('for', 'user')->where('user_id', auth()->user()->id)->get()->count();
         $lucideCall = true;

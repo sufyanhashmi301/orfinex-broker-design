@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\ProcessUserRebateJob;
 use App\Models\Level;
 use App\Models\ReferralRelationship;
 use App\Models\User;
-use App\Models\MetaDeal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 {
@@ -18,40 +19,35 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
 
     public function handle()
     {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', -1);
+
         $email = $this->argument('email');
         $startDate = Carbon::parse($this->argument('start_date'))->startOfDay();
 
         $parent = User::where('email', $email)->first();
 
         if (!$parent) {
-            $this->error("User with email $email not found.");
+            $this->error("User with email {$email} not found.");
             return 1;
         }
+
         $maxLevel = Level::max('level_order');
-//        dd($maxLevel);
-
         $network = $this->getReferralNetwork($parent->id, $maxLevel);
-//        dd(count($network));
 
-        DB::beginTransaction();
-        try {
-            foreach ($network as $childUser) {
-//                dd($childUser);
-                $this->processUserDealsFromDate($childUser, $startDate);
+        $this->info("Dispatching rebate jobs for " . count($network) . " referred users under {$parent->email}");
+
+        collect($network)->chunk(500)->each(function ($chunk, $i) use ($startDate) {
+            foreach ($chunk as $user) {
+                ProcessUserRebateJob::dispatch($user->id, $startDate->toDateTimeString());
+//                Log::info("Dispatched rebate job for user ID: {$user->id}");
             }
+            $this->info("Chunk #{$i} dispatched with " . count($chunk) . " users.");
+        });
 
-            DB::commit();
-            $this->info("Rebate distribution completed for network under $email.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('EmailBasedRebateDistribution Error: ' . $e->getMessage());
-            $this->error("Rebate distribution failed: " . $e->getMessage());
-            return 1;
-        }
-
+        $this->info("All rebate processing jobs dispatched successfully.");
         return 0;
     }
-
     protected function getReferralNetwork($parentId, $maxDepth = 0)
     {
         $result = [];
@@ -60,11 +56,11 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
         while (!empty($queue)) {
             [$currentId, $depth] = array_shift($queue);
 
-            if ($depth >= $maxDepth) {
-                continue;
-            }
+            if ($depth >= $maxDepth) continue;
 
-            $children = User::where('ref_id', $currentId)->get();
+            $children = User::select(['id', 'ref_id'])
+                ->where('ref_id', $currentId)
+                ->get();
 
             foreach ($children as $child) {
                 $result[] = $child;
@@ -75,45 +71,48 @@ class EmailBasedRebateDistribution extends MultiLevelRebateDistribution
         return $result;
     }
 
-    protected function processUserDealsFromDate($childUser, $startDate)
+    public function processUserDealsFromDate($childUser, $startDate)
     {
-        $referralRelationship = $childUser->referralRelationship;
-//        dd($childUser,$referralRelationship);
+        try {
+            $referralRelationship = $childUser->referralRelationship;
 
-        if (!$referralRelationship) {
-            return;
-        }
+            if (!$referralRelationship) return;
 
-        $validParentData = $this->getValidParent($referralRelationship->user);
-//        dd($validParentData);
+            $validParentData = $this->getValidParent($referralRelationship->user);
+            if (!$validParentData) return;
 
-        if (!$validParentData) {
-            return;
-        }
+            $notedParent = $validParentData['user'];
+            $notedLevel = $validParentData['level'];
 
-        $notedParent = $validParentData['user'];
-        $notedLevel = $validParentData['level'];
+            $forexSchemas = $notedParent->ibGroup->rebateRules()
+                ->with('forexSchemas')
+                ->get()
+                ->flatMap(fn($r) => $r->forexSchemas)
+                ->pluck('id')
+                ->unique();
 
-        $forexSchemas = $notedParent->ibGroup->rebateRules()
-            ->with('forexSchemas')
-            ->get()
-            ->flatMap(fn($rebateRule) => $rebateRule->forexSchemas)
-            ->pluck('id')
-            ->unique();
+            $realForexAccounts = \App\Models\ForexAccount::realActiveAccount($childUser->id)
+                ->whereIn('forex_schema_id', $forexSchemas)
+                ->get();
 
-        $realForexAccounts = \App\Models\ForexAccount::realActiveAccount($childUser->id)
-            ->whereIn('forex_schema_id', $forexSchemas)
-            ->get();
+            foreach ($realForexAccounts as $realForexAccount) {
+                $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
+                $deals = $this->getMT5Deals($realForexAccount->login, $startDate, $symbols);
 
-        foreach ($realForexAccounts as $realForexAccount) {
-//            if($realForexAccount->login == '')
-            $symbols = $this->getUserAssignedSymbols($notedParent, $realForexAccount);
-            $deals = $this->getMT5Deals($realForexAccount->login, $startDate, $symbols);
-//            dd($deals);
-
-            if (!$deals->isEmpty()) {
-                $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                if (!$deals->isEmpty()) {
+                    DB::beginTransaction();
+                    try {
+                        $this->saveAndDistributeDeals($deals, $childUser->id, $referralRelationship, $notedParent, $notedLevel, $realForexAccount);
+                        DB::commit();
+//                        Log::info("Deals processed for User ID: {$childUser->id}");
+                    } catch (Throwable $e) {
+                        DB::rollBack();
+                        Log::error("Failed to distribute deals for user {$childUser->id}: " . $e->getMessage());
+                    }
+                }
             }
+        } catch (Throwable $e) {
+            Log::error("Failed to process user {$childUser->id}: " . $e->getMessage());
         }
     }
 }

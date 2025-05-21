@@ -3,10 +3,21 @@
         {{-- level referral tree --}}
         @if(setting('site_referral','global') == 'level' && auth()->user()->referrals->count() > 0)
             <section class="management-hierarchy mt-5">
-                <div class="hv-container">
-                    <div class="hv-wrapper">
-                        <!-- tree component -->
-                        @include('frontend::referral.include.__tree',['levelUser' => auth()->user(),'level' => $level,'depth' => 1, 'me' => true])
+                <div class="md:block hidden desktop-screen-show">
+                    <div class="hv-container">
+                        <div class="hv-wrapper">
+                            <!-- tree component -->
+                            @include('frontend::referral.include.__tree',['levelUser' => auth()->user(),'level' => $level,'depth' => 1, 'me' => true])
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden block mobile-screen-show">
+                    <div class="mobile_treeview">
+                        <ul>
+                            <li>
+                                @include('frontend::referral.include.__mobile_tree',['levelUser' => auth()->user(),'level' => $level,'depth' => 1, 'me' => true])
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </section>

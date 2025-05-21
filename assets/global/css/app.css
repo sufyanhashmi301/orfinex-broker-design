@@ -17057,6 +17057,31 @@ ul.custom-list ul li{
   color: #fff;
 }
 
+.mobile_treeview ul li ul li {
+    padding: 50px 0px 0px 35px;
+    position: relative;
+}
+
+.mobile_treeview ul li ul li:before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 15px;
+    border-left: 2px dashed #a2a5b5;
+    width: 1px;
+    height: 100%;
+}
+
+.mobile_treeview ul li ul li:after {
+    content: "";
+    position: absolute;
+    border-top: 2px dashed #a2a5b5;
+    top: 68px;
+    left: 17px;
+    width: 35px;
+}
+
+
 
 /* single-badge */
 .single-badge {

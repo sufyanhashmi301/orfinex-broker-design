@@ -484,7 +484,7 @@ class AccountTypeInvestmentService
       // Empty the balance from account
       $data = [
         'login' => $violate_investment->login,
-        'Amount' => $violate_investment->accountTypeInvestmentStat->balance,
+        'Amount' => $violate_investment->accountTypeInvestmentStat->current_equity - 100,
         'type' => 0,
         'TransactionComments' => 'Account Violated'
       ];

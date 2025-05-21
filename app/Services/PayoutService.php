@@ -34,7 +34,7 @@ class PayoutService
   public function updateFundedBalance(AccountTypeInvestment $investment) {
 
     $total_profit = $investment->accountTypeInvestmentStat->balance - $investment->getRuleSnapshotData()['allotted_funds'];
-    $funded_balance = FundedBalance::where('user_id', Auth::id())->where('account_type_investment_id', $investment->id)->first();
+    $funded_balance = FundedBalance::where('user_id', $investment->user_id)->where('account_type_investment_id', $investment->id)->first();
 
     // Open Trades Existence Check
     $open_trades_exist = false;

@@ -189,9 +189,6 @@ class   AccountsController extends Controller
             'leverage' => 'required',
             'account_name' => 'required',
         ], [
-            'main_password.required' => __('The main password field is required.'),
-            'main_password.min' => __('The main password must be at least 8 characters long.'),
-            'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
             'account_type.required' => 'The account type is required.',
             'leverage.not_regex' => __('Kindly select a valid leverage.'),
         ]);
@@ -250,9 +247,11 @@ class   AccountsController extends Controller
 //        dd($request->all());
         $validator = Validator::make($request->all(), [
             'schema_id' => 'required',
-            'main_password' => ['required',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+            'main_password' => [
+                'required',
+                'min:8',
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
             ],
             'account_type' => [
                 'required',
@@ -280,7 +279,8 @@ class   AccountsController extends Controller
         ], [
             'main_password.required' => __('The main password field is required.'),
             'main_password.min' => __('The main password must be at least 8 characters long.'),
-            'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
+            'main_password.max' => __('The main password must not exceed 20 characters.'),
+            'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
             'account_type.required' => 'The account type is required.',
             'leverage.not_regex' => __('Kindly select a valid leverage.'),
         ]);
@@ -710,12 +710,14 @@ class   AccountsController extends Controller
             'main_password' => [
                 'sometimes',
                 'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
             ],
             'invest_password' => [
                 'sometimes',
                 'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
             ],
             'forex_schema_id' => 'sometimes|exists:forex_schemas,id',
         ]);

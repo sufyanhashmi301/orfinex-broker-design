@@ -17,7 +17,7 @@ class ThemeController extends Controller
     {
         $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
         $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
-         $this->middleware('permission:company-logo-settings', ['only' => ['companyLogo']]);
+         $this->middleware('permission:provider-logo-settings', ['only' => ['providerLogo']]);
     }
 
     public function siteTheme()
@@ -38,11 +38,11 @@ class ThemeController extends Controller
         return view('backend.setting.banner.popup');
     }
 
-    public function companyLogo(Request $request)
+    public function providerLogo(Request $request)
 {
-    return view('backend.setting.branding.company_logo', [
-        'section' => 'company_logo',
-        'fields' => config('setting.company_logo')
+    return view('backend.setting.branding.provider_logo', [
+        'section' => 'provider_logo',
+        'fields' => config('setting.provider_logo')
     ]);
 }
     public function colorsSetting(Request $request)

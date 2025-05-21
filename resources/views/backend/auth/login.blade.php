@@ -86,9 +86,9 @@
         <p class="text-sm text-gray-400">
             {{ __('Powered by') }}
         </p>
-        @if(setting('company_logo_status', 'company_logo'))
+        @if(setting('provider_logo_status', 'provider_logo'))
             <a href="{{ route('home') }}" class="inline-block">
-                <img src="{{ asset(setting('company_logo_image', 'company_logo') ?: 'backend/images/brokeret_logo.png') }}" 
+                <img src="{{ asset(setting('provider_logo_image', 'provider_logo') ?: 'backend/images/brokeret_logo.png') }}" 
                      class="h-[56px] mx-auto" 
                      alt="{{ setting('site_title', 'global') }}">
             </a>

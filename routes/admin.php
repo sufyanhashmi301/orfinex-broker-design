@@ -365,7 +365,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
 
         Route::get('popup', 'popup')->name('popup');
-        Route::get('company-logo', 'companyLogo')->name('company-logo');
+        Route::get('provider-logo', 'providerLogo')->name('provider-logo');
     });
 
     Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {

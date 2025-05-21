@@ -1,13 +1,13 @@
 @extends('backend.setting.website.index')
 @section('title')
-    {{ __('Company Logo Settings') }}
+    {{ __('Provider Logo Settings') }}
 @endsection
 @section('website-content')
     <?php
-        $section = 'company_logo';
-        $fields = config('setting.company_logo');
+        $section = 'provider_logo';
+        $fields = config('setting.provider_logo');
         $defaultLogo = 'backend/images/brokeret_logo.png';
-        $currentLogo = setting('company_logo_image', 'company_logo') ?: $defaultLogo;
+        $currentLogo = setting('provider_logo_image', 'provider_logo') ?: $defaultLogo;
     ?>
 
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -31,10 +31,10 @@
                             {{ __('Provider Logo') }}
                         </h3>
                         <div class="form-switch ps-0" style="line-height: 0;">
-                            <input type="hidden" value="0" name="company_logo_status">
+                            <input type="hidden" value="0" name="provider_logo_status">
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
-                                <input type="checkbox" name="company_logo_status" value="1" class="sr-only peer" 
-                                    @if(setting('company_logo_status', 'company_logo')) checked @endif>
+                                <input type="checkbox" name="provider_logo_status" value="1" class="sr-only peer" 
+                                    @if(setting('provider_logo_status', 'provider_logo')) checked @endif>
                                 <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                             </label>
                         </div>
@@ -50,11 +50,11 @@
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
-                                        name="company_logo_image"
-                                        id="company_logo-image"
+                                        name="provider_logo_image"
+                                        id="provider_logo-image"
                                         accept=".jpg,.jpeg,.png"
                                     />
-                                    <label for="company_logo-image" class="@if(setting('company_logo_image', 'company_logo')) file-ok @endif" style="background-image: url('{{ asset($currentLogo) }}')">
+                                    <label for="provider_logo-image" class="@if(setting('provider_logo_image', 'provider_logo')) file-ok @endif" style="background-image: url('{{ asset($currentLogo) }}')">
                                         <img
                                             class="upload-icon"
                                             src="{{ asset('global/materials/upload.svg') }}"
@@ -93,14 +93,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Preview image before upload
-            const logoInput = document.getElementById('company_logo-image');
+            const logoInput = document.getElementById('provider_logo-image');
             if (logoInput) {
                 logoInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function(event) {
-                            const label = document.querySelector('label[for="company_logo-image"]');
+                            const label = document.querySelector('label[for="provider_logo-image"]');
                             label.classList.add('file-ok');
                             label.style.backgroundImage = `url(${event.target.result})`;
                         };

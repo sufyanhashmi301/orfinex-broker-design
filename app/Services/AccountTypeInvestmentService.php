@@ -452,7 +452,7 @@ class AccountTypeInvestmentService
       // payout phase
       
       // Create Funded Balance Entry if no existing
-      $funded_balance_exists = FundedBalance::where('user_id', Auth::id())->where('account_type_investment_id', $passed_investment->id)->exists();
+      $funded_balance_exists = FundedBalance::where('user_id', $user->id)->where('account_type_investment_id', $passed_investment->id)->exists();
       if(!$funded_balance_exists) {
         $this->payout->fundedBalanceInit($passed_investment->id);
       }

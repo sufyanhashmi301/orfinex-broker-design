@@ -41,10 +41,21 @@ class MarkPartOfMasterIBUsers extends Command
             $totalUpdated = 0;
 
             foreach ($users as $user) {
-                $count = $service->syncMeta($user, 'is_part_of_master_ib', $user->ib_group_id);
-                $totalUpdated += $count;
+                if ($user->ib_group_id) {
+                    // Step 1: Set the user's own is_part_of_master_ib value
+                    $user->user_metas()->updateOrCreate(
+                        ['meta_key' => 'is_part_of_master_ib'],
+                        ['meta_value' => $user->ib_group_id]
+                    );
 
-                $this->info("User {$user->id} and {$count} in network updated.");
+                    $count = $service->syncMeta($user, 'is_part_of_master_ib', $user->ib_group_id);
+                    $totalUpdated += $count;
+
+                    $this->info("User {$user->id} tagged, and {$count} users in network updated.");
+                } else {
+                    $this->warn("User {$user->id} skipped — no ib_group_id.");
+                }
+
             }
 
             $this->info("Sync complete. Total users updated: $totalUpdated");

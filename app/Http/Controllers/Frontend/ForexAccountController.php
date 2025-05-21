@@ -48,8 +48,8 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountCreateNow(Request $request)
     {
-        if (!setting('account_creation', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level())  {
-            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+        if (!setting('account_creation', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your account creation', __('Error'));
             return redirect()->route('user.kyc');
         }
         $validator = Validator::make($request->all(), [

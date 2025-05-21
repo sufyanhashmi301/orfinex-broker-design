@@ -54,7 +54,7 @@ class SettingController extends Controller
         $this->middleware('permission:collab-tools-setting', ['only' => ['slackSetting']]);
         $this->middleware('permission:customer-misc-settings', ['only' => ['customerMiscSettings']] );
         $this->middleware('permission:transfer-notification' , ['only' => ['transfersNotificationTune']]);
-
+        $this->middleware('permission: kyc-levels-permissions' , ['only' => ['kycPermissionsSettings']]);
 
 
     }
@@ -257,9 +257,9 @@ public function update(Request $request)
     {
         return view('backend.setting.customer.misc');
     }
-    public static function kycMiscSettings()
+    public static function kycPermissionsSettings()
     {
-        return view('backend.setting.kyc_levels.misc');
+        return view('backend.setting.kyc_levels.permissions');
     }
     public static function miscSetting()
     {

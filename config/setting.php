@@ -621,7 +621,7 @@ return [
         ],
     ],
 
-    'kyc_misc' => [
+    'kyc_permissions' => [
         'title' => 'Kyc Miscellaneous',
         'elements' => [
             [

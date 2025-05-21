@@ -76,8 +76,8 @@ class SendMoneyController extends Controller
     }
 
     // Check if KYC is completed
-  if (!setting('external_transfer_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level()) {
-        notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+  if (!setting('external_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {
+        notify()->error('KYC Pending: Please complete your KYC verification to proceed with your external amount transfer', __('Error'));
         return redirect()->route('user.kyc');
     }
 
@@ -462,8 +462,8 @@ class SendMoneyController extends Controller
         abort(403, __('Send Money Disabled Now'));
     }
     // Check if KYC is completed
-    if (!setting('internal_transfer_amount', 'kyc_misc') && auth()->user()->kyc < kyc_required_completed_level()) {
-        notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+    if (!setting('internal_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {
+        notify()->error('KYC Pending: Please complete your KYC verification to proceed with your internal amount transfer', __('Error'));
         return redirect()->route('user.kyc');
     }
 

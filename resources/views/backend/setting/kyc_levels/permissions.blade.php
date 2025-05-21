@@ -4,8 +4,8 @@
 @endsection
 @section('kyc-levels-content')
     <?php
-        $section = 'kyc_misc';
-        $fields = config('setting.kyc_misc');
+        $section = 'kyc_permissions';
+        $fields = config('setting.kyc_permissions');
         //   dd($fields);
     ?>
     <div class="card">

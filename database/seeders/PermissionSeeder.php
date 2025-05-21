@@ -245,6 +245,8 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-list'],
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-edit'],
+            ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-permissions'],
+
 
             ['category' => 'User Rankings Setting', 'name' => 'ranking-list'],
             ['category' => 'User Rankings Setting', 'name' => 'ranking-create'],

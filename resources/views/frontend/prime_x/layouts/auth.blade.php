@@ -31,13 +31,13 @@
                 </div>
             </div>
             <div class="left-column bg-cover bg-no-repeat bg-center" style="background-image: url({{ asset(setting('login_bg','global')) }})">
-                <div class="flex flex-col h-full justify-center">
+                {{-- <div class="flex flex-col h-full justify-center">
                     <div class="flex-1 flex flex-col justify-center items-center">
                         <a href="{{ route('home') }}">
                             <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-14"/>
                         </a>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

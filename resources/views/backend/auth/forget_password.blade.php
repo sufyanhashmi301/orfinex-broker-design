@@ -10,11 +10,11 @@
     </div>
     <div class="flex bg-white border rounded-lg shadow-lg overflow-hidden mx-auto w-full max-w-5xl">
         <div class="hidden md:flex items-center justify-center md:w-1/2 bg-cover p-8 lg:px-16" style="background: url( {{asset( setting('login_bg','global') )}} ) no-repeat center center;">
-            <div class="2xl:mb-10 text-center space-y-3">
+            {{-- <div class="2xl:mb-10 text-center space-y-3">
                 <a href="{{ route('home') }}" class="inline-flex items-center justify-center">
                     <img src="{{asset(setting('site_logo','global') )}}" class="h-[56px]" alt="{{asset(setting('site_title','global') )}}"/>
                 </a>
-            </div>
+            </div> --}}
         </div>
         <div class="w-full p-8 md:w-1/2 lg:px-16">
             <h2 class="text-2xl font-semibold text-gray-700">

@@ -49,12 +49,12 @@ class ForexAccountController extends GatewayController
     public function forexAccountCreateNow(Request $request)
     {
 
-/$validator = Validator::make($request->all(), [
+$validator = Validator::make($request->all(), [
         'schema_id' => 'required',
         'main_password' => [
             'required',
             'min:8',
-            'max:15',
+            'max:20',
             'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
         ],
         'account_type' => [
@@ -81,8 +81,8 @@ class ForexAccountController extends GatewayController
     ], [
         'main_password.required' => __('The main password field is required.'),
         'main_password.min' => __('The main password must be at least 8 characters long.'),
-        'main_password.max' => __('The main password must not exceed 15 characters.'),
-        'main_password.regex' => __('The main password must be 8–15 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
+        'main_password.max' => __('The main password must not exceed 20 characters.'),
+        'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
         'account_type.required' => 'The account type is required.',
         'leverage.not_regex' => __('Kindly select a valid leverage.'),
     ]);
@@ -498,11 +498,14 @@ class ForexAccountController extends GatewayController
 //            'password' => 'sometimes|nullable|'.Password::min(8)->mixedCase(),
             'main_password' => ['sometimes',
                 'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
+
             ],
             'invest_password' => ['sometimes',
                 'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
             ],
         ]);
 //        dd('s');

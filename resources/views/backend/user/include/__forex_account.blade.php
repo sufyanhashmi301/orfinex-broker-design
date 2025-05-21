@@ -68,7 +68,7 @@
                         <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Main Password') }}" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
                         <ul>
                             <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
-                                {{ __('Use from 8 to 15 characters') }}
+                                {{ __('Use from 8 to 20 characters') }}
                             </li>
                             <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
                                 {{ __('Use both uppercase and lowercase letters') }}

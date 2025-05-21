@@ -1326,7 +1326,9 @@ if (!empty($filters['staff_name'])) {
         $riskProfileTags = RiskProfileTag::all();
         $kycStatus = KYCStatus::cases();
         // dd($kycstatus);
-        $staffMembers = Admin::all();
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
         return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs', 'staffMembers'));
     }
 public function store(Request $request)
@@ -1400,12 +1402,12 @@ public function store(Request $request)
         $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
 
         // Get location details (e.g., from user's profile or a service)
-        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+       $location = auth()->user()->location ?? null;
+       $location = is_object($location) ? $location : (object) ['country_code' => '', 'dial_code' => ''];
 
         // Set country and phone depending on settings and input
-        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
-        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
-
+       $country = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[0] : ($location->country_code ?? '');
+$phone = $isPhone ? (($isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '')) . ' ' . ($input['phone'] ?? '')) : ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
         // Generate a username if it’s not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 

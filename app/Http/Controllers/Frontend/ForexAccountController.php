@@ -48,45 +48,47 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountCreateNow(Request $request)
     {
-
-$validator = Validator::make($request->all(), [
-        'schema_id' => 'required',
-        'main_password' => [
-            'required',
-            'min:8',
-            'max:20',
-            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
-        ],
-        'account_type' => [
-            'required',
-            function ($attribute, $value, $fail) {
-                if (!in_array($value, ['real', 'demo'])) {
-                    $fail(__('The ' . $attribute . ' must be either real or demo.'));
-                }
-            },
-        ],
-        'is_islamic' => [
-            function ($attribute, $value, $fail) use ($request) {
-                $schema = ForexSchema::find($request->schema_id);
-                if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
-                    $fail(__('The selected schema does not support Islamic account for Real account type.'));
-                }
-                if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
-                    $fail(__('The selected schema does not support Islamic account for Demo account type.'));
-                }
-            },
-        ],
-        'leverage' => 'required',
-        'account_name' => 'required',
-    ], [
-        'main_password.required' => __('The main password field is required.'),
-        'main_password.min' => __('The main password must be at least 8 characters long.'),
-        'main_password.max' => __('The main password must not exceed 20 characters.'),
-        'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
-        'account_type.required' => 'The account type is required.',
-        'leverage.not_regex' => __('Kindly select a valid leverage.'),
-    ]);
-
+        if (!setting('account_creation', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your account creation', __('Error'));
+            return redirect()->route('user.kyc');
+        }
+        $validator = Validator::make($request->all(), [
+                'schema_id' => 'required',
+                'main_password' => [
+                    'required',
+                    'min:8',
+                    'max:20',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
+                ],
+                'account_type' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (!in_array($value, ['real', 'demo'])) {
+                            $fail(__('The ' . $attribute . ' must be either real or demo.'));
+                        }
+                    },
+                ],
+                'is_islamic' => [
+                    function ($attribute, $value, $fail) use ($request) {
+                        $schema = ForexSchema::find($request->schema_id);
+                        if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
+                            $fail(__('The selected schema does not support Islamic account for Real account type.'));
+                        }
+                        if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
+                            $fail(__('The selected schema does not support Islamic account for Demo account type.'));
+                        }
+                    },
+                ],
+                'leverage' => 'required',
+                'account_name' => 'required',
+            ], [
+                'main_password.required' => __('The main password field is required.'),
+                'main_password.min' => __('The main password must be at least 8 characters long.'),
+                'main_password.max' => __('The main password must not exceed 20 characters.'),
+                'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
+                'account_type.required' => 'The account type is required.',
+                'leverage.not_regex' => __('Kindly select a valid leverage.'),
+            ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));

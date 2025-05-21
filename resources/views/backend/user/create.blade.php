@@ -150,26 +150,6 @@
                                 <span class="error">{{ $message }}</span>
                             @enderror
                         </div>
-                        @if(auth()->user()->hasRole('Super-Admin'))
-                        <div class="input-area relative">
-                            <label class="form-label">
-                                {{ __('Assign to Staff Member') }}
-                            </label>
-                            <select name="staff_id" class="select2 form-control w-full" data-placeholder="Select Staff Member">
-                                <option value="">{{ __('No staff assignment') }}</option>
-                                @foreach($staffMembers as $staff)
-                                    <option value="{{ $staff->id }}" @if(old('staff_id') == $staff->id) selected @endif>
-                                        {{ $staff->first_name }} {{ $staff->last_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('staff_id')
-                                <span class="text-danger text-xs">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        @else
-                        <input type="hidden" name="staff_id" value="{{ auth()->id() }}">
-                        @endif
                         <div class="input-area relative lg:col-span-3">
                             <label class="form-label">
                                 {{ __('Comment') }}
@@ -182,7 +162,6 @@
                     </div>
                 </div>
             </div>
-
             <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
                 {{ __('Security') }}
             </h4>
@@ -259,6 +238,37 @@
                     </div>
                 </div>
             </div>
+             @if(auth()->user()->hasRole('Super-Admin'))
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Assign Customer to Staff Member') }}
+            </h4>
+            <div class="card">
+          <div class="card-body p-6">
+                    <div class="max-w-2xl w-full mx-auto">
+                        <div class="space-y-5">
+                        <div class="input-area relative">
+                            <label class="form-label">
+                                {{ __('Assign to Staff Member') }}
+                            </label>
+                            <select name="staff_id" class="select2 form-control w-full" data-placeholder="Select Staff Member">
+                                <option value="">{{ __('No staff assignment') }}</option>
+                                @foreach($staffMembers as $staff)
+                                    <option value="{{ $staff->id }}" @if(old('staff_id') == $staff->id) selected @endif>
+                                        {{ $staff->first_name }} {{ $staff->last_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('staff_id')
+                                <span class="text-danger text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+             @else
+                        <input type="hidden" name="staff_id" value="{{ auth()->id() }}">
+                        @endif
            <div class="card basicTable_wrapper">
                 <div class="card-header">
                     <div>

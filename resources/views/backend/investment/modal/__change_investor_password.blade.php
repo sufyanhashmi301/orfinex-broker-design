@@ -30,7 +30,7 @@
                             <input type="password" class="form-control mb-1" name="investorPass" id="update-invest-password" placeholder="{{ __('Enter your password') }}">
                             <ul>
                                 <li class="text-xs mb-1 text-danger" id="length-check-invest">
-                                    {{ __('Use from 8 to 15 characters') }}
+                                    {{ __('Use from 8 to 20 characters') }}
                                 </li>
                                 <li class="text-xs mb-1 text-danger" id="letters-check-invest">
                                     {{ __('Use both uppercase and lowercase letters') }}
@@ -39,7 +39,7 @@
                                     {{ __('At least one number') }}
                                 </li>
                                 <li class="text-xs mb-1 text-danger" id="special-check-invest">
-                                    {{ __('At least one special character(!@#$%^&*(),-.?":{}|<>)') }}
+                                    {{ __('At least one special character(!@#$%&*():{}|<>)') }}
                                 </li>
                             </ul>
                         </div>

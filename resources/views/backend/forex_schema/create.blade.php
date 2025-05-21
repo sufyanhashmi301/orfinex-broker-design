@@ -44,29 +44,58 @@
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
-                            <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
-                                <option  value="All" >
-                                    {{ __('All') }}
-                                </option>
-                                @foreach( getCountries() as $country)
-                                    <option  value="{{ $country['name'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                        {{ $country['name']  }}
-                                    </option>
-                                @endforeach
-
-                            </select>
+                        <div class="input-area flex items-center">
+                            <input class="form-check-input" type="hidden" value="0" name="is_global">
+                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                <input type="checkbox" id="globalAccountSwitch" name="is_global" value="1" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></div>
+                            </label>
+                            <div class="flex flex-col ml-5">
+                                <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
+                                    {{ __('Set as Global Account') }}
+                                </span>
+                                <span class="text-xs font-Inter font-normal text-slate-400">
+                                    {{ __('Default account will show to all users') }}
+                                </span>
+                            </div>
                         </div>
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Choose the tags where you would like this account type to be shown:') }}</label>
-                            <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
-                                @foreach( getRiskProfileTag() as $tag)
-                                    <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                        {{  $tag->name  }}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    {{ __('Select countries') }}
+                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                        {{ __('Choose countries to display this forex scheme. Select "All" to show it globally.') }}
+                                    </span>
+                                </label>
+                                <select name="country[]" id="countrySelect" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
+                                    <option value="All" >
+                                        {{ __('All') }}
                                     </option>
-                                @endforeach
-                            </select>
+                                    @foreach( getCountries() as $country)
+                                        <option  value="{{ $country['name'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $country['name']  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    {{ __('Select tags') }}
+                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                        {{ __('Choose the tags where you would like this account type to be shown') }}
+                                    </span>
+                                </label>
+                                <select name="tags[]" id="tagSelect" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
+                                    <option value="All" >
+                                        {{ __('All') }}
+                                    </option>
+                                    @foreach( getRiskProfileTag() as $tag)
+                                        <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{  $tag->name  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -686,6 +715,35 @@
     <script src="{{ asset('global/js/bootstrap-tagsinput.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            const globalSwitch = $('#globalAccountSwitch');
+            const countrySelect = $('#countrySelect');
+            const tagSelect = $('#tagSelect');
+
+            function updateFieldState() {
+                const shouldDisable = globalSwitch.is(':checked');
+
+                if (shouldDisable) {
+                    countrySelect.val(['All']).trigger("change");
+                    tagSelect.val(['All']).trigger("change");
+                }
+
+                countrySelect.prop('disabled', shouldDisable);
+                tagSelect.prop('disabled', shouldDisable);
+
+                // Optional: Refresh select2 styling if used
+                countrySelect.trigger("change.select2");
+                tagSelect.trigger("change.select2");
+            }
+
+            // Initialize state on page load
+            updateFieldState();
+
+            // Update on toggle change
+            globalSwitch.on('change', function () {
+                updateFieldState();
+            });
+
 
             var elt = $('.keyFeatureInput');
             elt.tagsinput({

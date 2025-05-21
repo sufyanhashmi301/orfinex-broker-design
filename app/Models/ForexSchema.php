@@ -74,6 +74,7 @@ class ForexSchema extends Model
 		'is_internal_transfer',
 		'is_external_transfer',
 		'is_bonus',
+        'is_global',
 		'is_cent_account',
 		'start_range',
 		'end_range',

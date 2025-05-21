@@ -7,6 +7,7 @@ use App\Models\ForexSchema;
 use App\Models\Schema;
 use App\Models\User;
 use App\Models\PlatformLink;
+use App\Models\IbGroup;
 use App\Traits\ForexApiTrait;
 
 class ForexSchemaController extends Controller
@@ -15,16 +16,40 @@ class ForexSchemaController extends Controller
     public function index()
     {
 
-//        $this->sendApiPostRequest('url','data');
-//        $this->getUserApi(554944);
         $user = auth()->user();
-        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        $referrer = $user->referrer;
+        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
 
-        $schemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
-        ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
-        ->orderBy('priority', 'asc')
-            ->get();
-//        dd($schemas);
+        $globalSchemas = ForexSchema::where('is_global', true)->get();
+
+        if ($referrer && $isPartOfMasterIb) {
+            $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
+
+            $forexSchemas = collect();
+
+            foreach ($ibGroup->rebateRules as $rule) {
+                $forexSchemas = $forexSchemas->merge($rule->forexSchemas);
+            }
+
+            // Remove duplicates and sort if needed
+            $schemas = $forexSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
+        }else{
+            // $this->sendApiPostRequest('url','data');
+            // $this->getUserApi(554944);
+
+            $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
+            $userSchemas = ForexSchema::active()
+                ->traderType()
+                ->relevantForUser($user->country, $tagNames)
+                ->get();
+
+            $schemas = $userSchemas->merge($globalSchemas)
+                ->unique('id')
+                ->sortBy('priority')
+                ->values();
+        }
+
 
         $activePlatform = setting('active_trader_type', 'features');
         $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();

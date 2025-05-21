@@ -22,7 +22,7 @@ class ProcessMasterIbBonusAdjustment extends Command
             return;
         }
 
-        $startDate = Carbon::parse('2025-04-30')->startOfDay();
+        $startDate = Carbon::parse('2024-04-30')->startOfDay();
 
         DB::beginTransaction();
         try {
@@ -140,6 +140,14 @@ class ProcessMasterIbBonusAdjustment extends Command
                     $summary['ledger_balance'] = $ledger->balance;
                 }
             }
+
+
+            $walletIds = Account::whereIn('user_id', $allUserIds)
+                ->where('balance', 'ib_wallet')
+                ->pluck('wallet_id')
+                ->toArray();
+
+            Transaction::whereIn('target_id', $walletIds)->delete();
 
             DB::commit();
 

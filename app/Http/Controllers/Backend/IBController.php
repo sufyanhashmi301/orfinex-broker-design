@@ -319,6 +319,13 @@ class IBController extends Controller
             $user->ib_group_id = $ibGroup;
             $user->save();
 
+            if ($user->ib_group_id) {
+                $user->user_metas()->updateOrCreate(
+                    ['meta_key' => 'is_part_of_master_ib'],
+                    ['meta_value' => $user->ib_group_id]
+                );
+            }
+
             // Notify the user
             $shortcodes = [
                 '[[full_name]]' => $user->full_name,

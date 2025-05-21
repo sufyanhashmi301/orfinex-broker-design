@@ -113,6 +113,13 @@ class ReferralController extends Controller
             ]);
             add_child_agent($pUser);
 
+            if ($pUser->ib_status === 'approved' && $pUser->ib_group_id) {
+                $childUser->user_metas()->updateOrCreate(
+                    ['meta_key' => 'is_part_of_master_ib'],
+                    ['meta_value' => $pUser->ib_group_id]
+                );
+            }
+
             notify()->success('Referral created successfully');
 
             return redirect()->back();

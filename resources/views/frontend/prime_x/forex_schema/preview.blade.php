@@ -103,7 +103,7 @@
                                    required>
                             <ul>
                                 <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
-                                    {{ __('Use from 8 to 15 characters') }}
+                                    {{ __('Use from 8 to 20 characters') }}
                                 </li>
                                 <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
                                     {{ __('Use both uppercase and lowercase letters') }}
@@ -112,7 +112,7 @@
                                     {{ __('At least one number') }}
                                 </li>
                                 <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-main">
-                                    {{ __('At least one special character(!@#$%^&*(),-.?":{}|<>)') }}
+                                    {{ __('At least one special character(!@#$%&*():{}|<>)') }}
                                 </li>
                             </ul>
                         </div>

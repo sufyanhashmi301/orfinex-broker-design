@@ -482,14 +482,27 @@ class AccountTypeInvestmentService
     // Violate wrt Platform/TraderType
     if($violate_investment->trader_type == TraderType::MT5) {
       // Empty the balance from account
-      $data = [
-        'login' => $violate_investment->login,
-        'Amount' => $violate_investment->accountTypeInvestmentStat->current_equity - 100,
-        'type' => 0,
-        'TransactionComments' => 'Account Violated'
-      ];
+      // $data = [
+      //   'login' => $violate_investment->login,
+      //   'Amount' => $violate_investment->accountTypeInvestmentStat->current_equity - 100,
+      //   'type' => 0,
+      //   'TransactionComments' => 'Account Violated'
+      // ];
 
-      $response = $this->forexApiService->balanceOperation($data);
+      // $response = $this->forexApiService->balanceOperation($data);
+
+      // Disable Trade
+      $response = $this->forexApiService->updateTradingActivity([
+        'login' => $violate_investment->login,
+        'tradingFlag' => 2
+      ]);
+
+      // Close all open positions
+      $response = $this->forexApiService->bulkClosePositions([
+        'login' => $violate_investment->login,
+        'flag' => 0
+      ]);
+
     } elseif($violate_investment->trader_type == TraderType::MT) {
       $deduct_balance_data = [
         "systemUuid" => $violate_investment->getAccountTypeSnapshotData()['system_uuid'],

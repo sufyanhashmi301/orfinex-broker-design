@@ -79,6 +79,13 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
+    public function bulkClosePositions($data)
+    {
+        $endpoint = 'order/bulkclose';
+        return $this->post($endpoint, $data);
+    }
+
+
     public function updateUserGroup($data)
     {
         $endpoint = 'user/updateMT5Group';

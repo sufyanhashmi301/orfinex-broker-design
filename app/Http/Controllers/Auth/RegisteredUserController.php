@@ -12,6 +12,7 @@ use App\Models\MultiLevel;
 use App\Models\Page;
 use App\Models\Ranking;
 use App\Models\User;
+use App\Models\ReferralLink;
 use App\Providers\RouteServiceProvider;
 use App\Rules\Recaptcha;
 use App\Traits\NotifyTrait;
@@ -226,6 +227,26 @@ class RegisteredUserController extends Controller
 
             \Cookie::queue(\Cookie::forget('invite'));
             return;
+        }
+
+        $referralLink = ReferralLink::where('code', $referralCode)->first();
+        if ($referralLink) {
+            $referrer = User::with('user_metas')->find($referralLink->user_id);
+
+            if ($referrer) {
+                $user->ref_id = $referrer->id;
+                $user->ib_group_id = $referrer->ib_group_id;
+                $user->save();
+
+                $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
+
+                if ($isPartOfMasterIb && $referrer->ib_group_id) {
+                    $user->user_metas()->updateOrCreate(
+                        ['meta_key' => 'is_part_of_master_ib'],
+                        ['meta_value' => $referrer->ib_group_id]
+                    );
+                }
+            }
         }
 
         // If referral code is from a regular user

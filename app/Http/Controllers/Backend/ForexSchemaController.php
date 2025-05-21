@@ -147,6 +147,7 @@ class ForexSchemaController extends Controller
             'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
             'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
             'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : null,
+            'is_global' => $input['is_global'],
         ];
 //        dd($finalData);
         ForexSchema::create($finalData);
@@ -174,7 +175,6 @@ class ForexSchemaController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'real_swap_free' => 'required_without_all:real_islamic,demo_swap_free,demo_islamic',
@@ -236,6 +236,7 @@ class ForexSchemaController extends Controller
             'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
             'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
+            'is_global' => $input['is_global'],
         ];
 
         $schema->update($finalData);

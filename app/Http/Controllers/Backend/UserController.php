@@ -655,7 +655,7 @@ if (!empty($filters['staff_name'])) {
         $referrer = $user->referrer;
         $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
 
-        $globalSchemas = ForexSchema::where('is_global', true)->get();
+        $globalSchemas = ForexSchema::where('is_global', 1)->where('status', 1)->get();
 
         if ($referrer && $isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);

@@ -152,16 +152,16 @@
         @endif
 
 {{--        @endif--}}
-
-        <li>
-            <a href="{{ route('user.ticket.index') }}" class="navItem loaderBtn {{ isActive('user.ticket*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="ix:support"></iconify-icon>
-                        <span>{{ __('Tickets') }}</span>
-                </span>
-            </a>
-        </li>
-
+        @if(setting('user_tickets_feature', 'customer_permission'))
+            <li>
+                <a href="{{ route('user.ticket.index') }}" class="navItem loaderBtn {{ isActive('user.ticket*') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="ix:support"></iconify-icon>
+                            <span>{{ __('Tickets') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endif
         <li class="block md:hidden">
             <form method="POST" action="{{ route('logout') }}" id="logout-form" class="mt-5 mb-3">
                 @csrf

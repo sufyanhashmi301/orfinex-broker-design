@@ -102,7 +102,7 @@
                                                 @can('discount-code-delete')
                                                     <a href="javascript:void(0)" class="action-btn delete-schema-btn" data-id="{{ $discount_code->id }}" data-name="{{ $discount_code->code_name }}" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal" onclick="deleteDiscount({{ $discount_code->id }}, '{{ $discount_code->code_name }}')">
                                                         <iconify-icon icon="lucide:trash"></iconify-icon>
-                                                    </a>
+                                                </a>
                                                 @endcan
                                                 
                                             </div>

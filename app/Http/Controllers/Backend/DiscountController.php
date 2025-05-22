@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Backend;
 
 use DataTables;
+use App\Models\Offer;
 use App\Models\Discount;
+use App\Models\UserOffer;
 use App\Models\AccountType;
 use Illuminate\Http\Request;
 use App\Services\DiscountService;
@@ -115,6 +117,17 @@ class DiscountController extends Controller
     // Delete method to remove a discount
     public function destroy(Discount $discount)
     {
+        if($discount->purpose == "offers") {
+            // Step 1: Get all Offer IDs for the given discount
+            $offerIds = Offer::where('discount_id', $discount->id)->pluck('id');
+
+            // Step 2: Update related UserOffer records to 'expired'
+            UserOffer::whereIn('offer_id', $offerIds)->where('status', 'available')->update(['status' => 'expired']);
+
+            // Step 3: Delete all Offers
+            Offer::whereIn('id', $offerIds)->delete();
+        }
+
         $this->discountService->delete($discount);
         notify()->success(__('Discount deleted successfully.'));
         return redirect()->route('admin.discounts.index');

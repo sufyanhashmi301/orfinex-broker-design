@@ -11,67 +11,95 @@
     </div>
     <div class="grid grid-cols-12 gap-5 mb-6">
         <div class="xl:col-span-8 col-span-12 space-y-5">
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid md:grid-cols-3 col-span-1 gap-5 h-full">
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
                             {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['monthly_referrals'] }}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Lot size') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['current_month_lots'] }}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Commission') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['current_month_ib_bonus'] }} {{$currency}}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Referrals') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative volume') }}
+                            {{ __('Lot size') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_volume'] }}
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['total_lots'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative balance of clients') }}
+                            {{ __('Commission') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_referrals_balance'] }} {{$currency}}
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['total_ib_bonus'] }} {{$currency}}
                             </h6>
-                        </div>
-{{--                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">--}}
-{{--                            {{ __('This Month') }}--}}
-{{--                        </p>--}}
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Total Rebate') }}
-                        </p>
-                        <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['monthly_rebate'] }} {{$currency}}
-                            </h6>
-{{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
-{{--                                {{ __('-52%') }}--}}
-{{--                            </span>--}}
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
@@ -196,17 +224,7 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-5 grid-cols-2 gap-5 mb-6">
-        <div class="card">
-            <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Total Referrals') }}
-                </p>
-                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_referrals'] }}
-                </h6>
-            </div>
-        </div>
+    <div class="grid lg:grid-cols-4 grid-cols-2 gap-5 mb-6">
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">

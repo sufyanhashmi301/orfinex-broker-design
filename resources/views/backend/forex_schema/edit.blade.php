@@ -618,8 +618,8 @@
                 const shouldDisable = globalSwitch.is(':checked');
 
                 if (shouldDisable) {
-                    countrySelect.val(["All"]).trigger("change");
-                    tagSelect.val(["All"]).trigger("change");
+                    countrySelect.val([]).trigger("change");
+                    tagSelect.val([]).trigger("change");
                 }
 
                 countrySelect.prop('disabled', shouldDisable);

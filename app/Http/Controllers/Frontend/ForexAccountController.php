@@ -305,42 +305,35 @@ class ForexAccountController extends GatewayController
         return redirect()->route('user.forex-account-logs');
     }
 
-    public function saveAccount($request,$schema,$mt5Login,$accountType,$user,$data,$server)
+    public function saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server)
     {
+        return DB::transaction(function () use ($request, $schema, $mt5Login, $accountType, $user, $data, $server) {
+            $exists = ForexAccount::where('login', $mt5Login)
+                ->where('trader_type', $schema->trader_type)
+                ->exists();
 
-        $accountData = $request->all();
+            if ($exists) {
+                throw new \Exception("Duplicate account creation attempt: login already exists.");
+            }
 
-        $accountData['forex_schema_id'] = $schema->id;
-        $accountData['login'] = $mt5Login;
-        $accountData['account_name'] = $request->account_name;
-        $accountData['account_type'] = $accountType;
-        $accountData['user_id'] = $user->id;
-        $accountData['currency'] = setting('site_currency', 'global');
-        $accountData['group'] = $data['group'];
-        $accountData['leverage'] = $data['leverage'];
-        $accountData['status'] = ForexAccountStatus::Ongoing;
-        $accountData['server'] = $server;
-        $accountData['created_by'] = $user->id;
-        $accountData['first_min_deposit_paid'] = 0;
-        $accountData['trader_type'] = $schema->trader_type;
-        $accountData['trading_platform'] = $schema->trader_type;
+            $accountData = $request->all();
+            $accountData['forex_schema_id'] = $schema->id;
+            $accountData['login'] = $mt5Login;
+            $accountData['account_name'] = $request->account_name;
+            $accountData['account_type'] = $accountType;
+            $accountData['user_id'] = $user->id;
+            $accountData['currency'] = setting('site_currency', 'global');
+            $accountData['group'] = $data['group'];
+            $accountData['leverage'] = $data['leverage'];
+            $accountData['status'] = ForexAccountStatus::Ongoing;
+            $accountData['server'] = $server;
+            $accountData['created_by'] = $user->id;
+            $accountData['first_min_deposit_paid'] = 0;
+            $accountData['trader_type'] = $schema->trader_type;
+            $accountData['trading_platform'] = $schema->trader_type;
 
-//        if ($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
-//            $accountData['trading_platform'] = setting('demo_server', 'platform_api');
-//        }
-
-        $forexTrading = ForexAccount::create($accountData);
-//        if ($user->ref_id) {
-//            $referrer = User::find($user->ref_id);
-//            if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
-//                $data = [
-//                    'login' => $mt5Login,
-//                    'agent' => $referrer->ib_login,
-//                ];
-////                $this->forexApiService->updateAgentAccount($data);
-//            }
-//        }
-        return true;
+            return ForexAccount::create($accountData);
+        });
     }
 
     protected function isAccountAlreadyExists($traderType,$login)

@@ -765,6 +765,14 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'user_tickets_feature', // unique name for field
+                'label' => 'Tickets Feature', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
         ]
     ],
     'customer_misc' => [

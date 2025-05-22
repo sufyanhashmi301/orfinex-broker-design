@@ -31,6 +31,10 @@ class OfferService
     $offer = Offer::where('condition', $offer_type)->where('status', '1')->orderBy('id', 'DESC')->first();
     $userOffer = UserOffer::where('user_id', $user_id)->where('on_condition', $offer_type);
 
+    if(!$offer || !$userOffer) {
+      return false;
+    }
+
     $eligible_for_offer = $this->check_elgibility($offer, $userOffer);
     
     if($eligible_for_offer) {

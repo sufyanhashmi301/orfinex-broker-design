@@ -623,7 +623,6 @@ if (!empty($filters['staff_name'])) {
                     return redirect()->back()->with('error', 'Unauthorized access to user details.');
                 }
             }
-
         }
 
         $user = User::find($id);
@@ -652,8 +651,7 @@ if (!empty($filters['staff_name'])) {
             ->where('id', '<>', $user->ref_id)
             ->get();
 
-        $referrer = $user->referrer;
-        $isPartOfMasterIb = isset($referrer) ? user_meta('is_part_of_master_ib', null, $referrer) : false;
+        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $user);
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
@@ -669,7 +667,7 @@ if (!empty($filters['staff_name'])) {
 
         $schemas = collect();
 
-        if ($referrer && $isPartOfMasterIb) {
+        if ($isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
             foreach ($ibGroup->rebateRules as $rule) {

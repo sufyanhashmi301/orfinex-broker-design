@@ -7,7 +7,9 @@
         $section = 'provider_logo';
         $fields = config('setting.provider_logo');
         $defaultLogo = 'backend/images/brokeret_logo.png';
-        $currentLogo = setting('provider_logo_image', 'provider_logo') ?: $defaultLogo;
+        $currentLogo = setting('provider_logo_image', 'provider_logo');
+$currentLogo = (!empty($currentLogo) || file_exists(public_path($currentLogo))) ? $currentLogo : $defaultLogo;
+
     ?>
 
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -54,7 +56,10 @@
                                         id="provider_logo-image"
                                         accept=".jpg,.jpeg,.png"
                                     />
-                                    <label for="provider_logo-image" class="@if(setting('provider_logo_image', 'provider_logo')) file-ok @endif" style="background-image: url('{{ asset($currentLogo) }}')">
+                                    <label for="provider_logo-image"
+    style="background-image: url('{{ asset($currentLogo) }}'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 150px;"
+    class="file-ok">
+
                                         <img
                                             class="upload-icon"
                                             src="{{ asset('global/materials/upload.svg') }}"

@@ -549,7 +549,12 @@ class WithdrawController extends Controller
                     $withdrawResponse = $this->forexApiService->balanceOperation($data);
                     if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
                         $isDeducted = true; // Deduction applied
-                        Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                        if (!$updateResult) {
+                            DB::rollBack();
+                            notify()->error('Failed to update transaction. Please try again.');
+                            return redirect()->back();
+                        }
                     } else {
                         // Mark the transaction as failed if deduction fails
                         Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, __('Insufficient Withdrawable Balance'));

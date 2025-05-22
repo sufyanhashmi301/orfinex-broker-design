@@ -86,7 +86,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return $this->hasOne(Kyc::class);
     }
 
-    public function plaformAccountCredentials() {
+    public function plaformAccountCredential() {
         return $this->hasOne(PlatformAccountCredential::class);
     }
 

@@ -39,7 +39,7 @@
                         <label class="form-label" for="">{{ __('Master Password') }}</label>
                         <div class="relative">
                             @if ($investment->trader_type == App\Enums\TraderType::MT)
-                                <input class="form-control !pr-9" value="{{ $investment->user->plaformAccountCredentials->where('platform', $investment->trader_type)->first()->password }}" id="copyModalPassword" readonly>
+                                <input class="form-control !pr-9" value="{{ $investment->user->plaformAccountCredential->password }}" id="copyModalPassword" readonly>
                             @elseif ($investment->trader_type == App\Enums\TraderType::MT5)
                                 <input class="form-control !pr-9" value="{{ $investment->main_password }}" id="copyModalPassword" readonly>
                             @endif

@@ -43,9 +43,9 @@ class MultiLevelRebateDistribution extends Command
                     foreach ($referrals as $referral) {
                         try {
                             ProcessReferralRebate::dispatch($referral->id);
-                            Log::info("Successfully dispatched referral ID: {$referral->id}");
+//                            Log::info("Successfully dispatched referral ID: {$referral->id}");
                         } catch (Throwable $e) {
-                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
+//                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
                         }
                     }
                 });

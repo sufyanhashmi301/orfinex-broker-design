@@ -841,7 +841,7 @@ return [
                 'name' => 'provider_logo_image',
                 'label' => 'Provider Logo Image',
                 'rules' => 'mimes:jpeg,jpg,png,svg|max:2048',
-                'value' => 'default/fav.png',
+                'value' => 'backend/images/brokeret_logo.png',
             ],
             [
                 'type' => 'checkbox',

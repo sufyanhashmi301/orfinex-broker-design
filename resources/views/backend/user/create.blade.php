@@ -238,48 +238,52 @@
                     </div>
                 </div>
             </div>
-             @if(auth()->user()->hasRole('Super-Admin'))
-            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-                {{ __('Assign Customer to Staff Member') }}
-            </h4>
-            <div class="card">
-          <div class="card-body p-6">
-                    <div class="max-w-2xl w-full mx-auto">
-                        <div class="space-y-5">
-                        <div class="input-area relative">
-                            <label class="form-label">
-                                {{ __('Assign to Staff Member') }}
-                            </label>
-                            <select name="staff_id" class="select2 form-control w-full" data-placeholder="Select Staff Member">
-                                <option value="">{{ __('No staff assignment') }}</option>
-                                @foreach($staffMembers as $staff)
-                                    <option value="{{ $staff->id }}" @if(old('staff_id') == $staff->id) selected @endif>
-                                        {{ $staff->first_name }} {{ $staff->last_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('staff_id')
-                                <span class="text-danger text-xs">{{ $message }}</span>
-                            @enderror
+            <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                 @if(auth()->user()->hasRole('Super-Admin'))
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h4 class="card-title">{{ __('Assign Customer to Staff Member') }}</h4>
+                                <p class="card-text">
+                                    {{ __('Assign a customer to a specific staff member for personalized service and ongoing support.') }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-body p-6">
+                            <div class="space-y-5">
+                                <div class="input-area relative">
+                                    <label class="form-label">
+                                        {{ __('Assign to Staff Member') }}
+                                    </label>
+                                    <select name="staff_id" class="select2 form-control w-full" data-placeholder="Select Staff Member">
+                                        <option value="">{{ __('No staff assignment') }}</option>
+                                        @foreach($staffMembers as $staff)
+                                            <option value="{{ $staff->id }}" @if(old('staff_id') == $staff->id) selected @endif>
+                                                {{ $staff->first_name }} {{ $staff->last_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('staff_id')
+                                    <span class="text-danger text-xs">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            </div>
-             @else
-                        <input type="hidden" name="staff_id" value="{{ auth()->id() }}">
-                        @endif
-           <div class="card basicTable_wrapper">
-                <div class="card-header">
-                    <div>
-                        <h4 class="card-title">{{ __('Customer KYC Verification') }}</h4>
-                        <p class="card-text">
-                            {{ __('Complete the customer KYC verification during account creation (optional).') }}
-                        </p>
+                @else
+                    <input type="hidden" name="staff_id" value="{{ auth()->id() }}">
+                @endif
+
+               <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h4 class="card-title">{{ __('Customer KYC Verification') }}</h4>
+                            <p class="card-text">
+                                {{ __('Complete the customer KYC verification during account creation (optional).') }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body p-6">
-                    <div class="max-w-2xl w-full mx-auto">
+                    <div class="card-body p-6">
                         <div class="space-y-5">
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('KYC Level') }}</label>
@@ -290,31 +294,31 @@
                                     <option value="5" @if(old('kyc_level') == '5') selected @endif>{{ __('Level 3') }}</option>
                                 </select>
                             </div>
-                            
+
                             <div class="input-area relative" id="verificationTypeContainer" style="display: none;">
                                 <label for="" class="form-label">{{ __('Verification Type') }}</label>
                                 <select id="kycTypeSelect" name="kyc_id" class="select2 form-control" data-placeholder="Select Type">
                                     <option value="" selected>{{ __('Select Type (Optional)') }}</option>
                                 </select>
                             </div>
-                            
+
                             @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin'))
-                            <div class="input-area relative" id="autoApproveContainer" style="display: none;">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <label class="form-label !w-auto !mb-0">
-                                        {{ __('Auto Approve') }}
-                                    </label>
-                                    <div class="form-switch" style="line-height: 0;">
-                                        <input type="hidden" name="is_auto_approve" value="0"/>
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_auto_approve" value="1" class="sr-only peer" @if(old('is_auto_approve', 1)) checked @endif>
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                <div class="input-area relative" id="autoApproveContainer" style="display: none;">
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto !mb-0">
+                                            {{ __('Auto Approve') }}
                                         </label>
+                                        <div class="form-switch" style="line-height: 0;">
+                                            <input type="hidden" name="is_auto_approve" value="0"/>
+                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="is_auto_approve" value="1" class="sr-only peer" @if(old('is_auto_approve', 1)) checked @endif>
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             @endif
-                            
+
                             <div class="kycData"></div>
                         </div>
                     </div>
@@ -359,14 +363,14 @@ $(document).ready(function() {
         var level = $(this).val();
         $('.kycData').empty();
         toggleKycFields(level);
-        
+
         if (level) {
             $('#kycTypeSelect').prop('disabled', false).empty().append('<option value="">Select Type</option>');
-            
+
             $.ajax({
                 url: '{{ route("admin.kyc.kycMethods") }}',
                 type: "GET",
-                data: { 
+                data: {
                     kyc_level: level,
                     _token: '{{ csrf_token() }}'
                 },

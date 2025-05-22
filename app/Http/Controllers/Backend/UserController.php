@@ -655,37 +655,33 @@ if (!empty($filters['staff_name'])) {
         $referrer = $user->referrer;
         $isPartOfMasterIb = isset($referrer) ? user_meta('is_part_of_master_ib', null, $referrer) : false;
 
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
         $globalSchemas = ForexSchema::active()
-            ->traderType()->where('is_global', 1)->get();
+            ->traderType()
+            ->where('is_global', 1)
+            ->get();
+
+        $userSchemas = ForexSchema::active()
+            ->traderType()
+            ->relevantForUser($user->country, $tagNames)
+            ->get();
+
+        $schemas = collect();
 
         if ($referrer && $isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
-            $forexSchemas = collect();
-
             foreach ($ibGroup->rebateRules as $rule) {
-                $forexSchemas = $forexSchemas->merge($rule->forexSchemas);
+                $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
             }
 
-            // Remove duplicates and sort if needed
-            $schemas = $forexSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
-        }else {
-            $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-            $personalSchemas = ForexSchema::where('status', true)
-                ->where(function ($query) use ($tagNames) {
-                    $query->whereJsonContains('country', auth()->user()->country)
-                        ->orWhereJsonContains('country', 'All')
-                        ->orWhere(function ($subQuery) use ($tagNames) {
-                            foreach ($tagNames as $tagName) {
-                                $subQuery->orWhereJsonContains('tags', $tagName);
-                            }
-                        });
-                })
-                ->orderBy('priority', 'asc')
-                ->get();
-
-            $schemas = $personalSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
         }
+
+        $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
+            ->unique('id')
+            ->sortBy('priority')
+            ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 

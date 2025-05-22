@@ -101,13 +101,13 @@
                         </a>
                     </li>
                     @endcanany
-                    @can('kyc-levels-list')
+                    @canany(['kyc-levels-list','kyc-levels-permissions'])
                     <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('KYC & Compliance') }}
                         </a>
                     </li>
-                    @endcan
+                    @endcanany
                     @canany(['ranking-list','ranking-create','ranking-edit'])
                         <li>
                             <a href="{{ route('admin.ranking.index') }}" class="text-sm text-slate-900 dark:text-slate-300">

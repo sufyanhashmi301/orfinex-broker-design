@@ -17,8 +17,7 @@ class ForexSchemaController extends Controller
     {
         try {
             $user = auth()->user();
-            $referrer = $user->referrer;
-            $isPartOfMasterIb = $referrer ? user_meta('is_part_of_master_ib', null, $referrer) : false;
+            $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $user);
 
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
@@ -34,7 +33,7 @@ class ForexSchemaController extends Controller
 
             $schemas = collect();
 
-            if ($referrer && $isPartOfMasterIb) {
+            if ($isPartOfMasterIb) {
                 $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
                 if ($ibGroup) {
@@ -43,7 +42,6 @@ class ForexSchemaController extends Controller
                     }
                 }
             }
-
             $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
                 ->unique('id')
                 ->sortBy('priority')

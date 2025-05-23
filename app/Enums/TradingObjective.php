@@ -6,7 +6,7 @@ namespace App\Enums;
 
 interface TradingObjective
 {
-    const PASSING = 'passing';
+    const ONGOING = 'ongoing';
     const PASSED = 'passed';
     const VIOLATED = 'violated';
     const DD_VIOLATED = 'daily_drawdown_violated';

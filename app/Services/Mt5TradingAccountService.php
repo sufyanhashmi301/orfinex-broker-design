@@ -63,13 +63,16 @@ class Mt5TradingAccountService
 
     $password = Str::random(11) . '$';
 
-    // dd($this->dynamicTitle($this->accountTypeData['trading_platform_title_format'], $investment->user));
+    $title = 'Phase ' . $this->phaseData['phase_step'] . ' $' . number_format($this->ruleData['allotted_funds'], 0) . ' - ' . $investment->user->first_name . ' ' . $investment->user->last_name;
+    if(isset($this->accountTypeData['trading_platform_title_format'])) {
+      $title = $this->dynamicTitle($this->accountTypeData['trading_platform_title_format'], $investment->user);
+    }
 
     // will replace the values by static table later
     $user_data = [
       "login" => 0,
       "group" => $investment->platform_group,
-      "firstName" => $this->dynamicTitle($this->accountTypeData['trading_platform_title_format'], $investment->user),
+      "firstName" => $title,
       "middleName" => "",
       "lastName" => ".",
       "leverage" => (int)$this->accountTypeData['leverage'],

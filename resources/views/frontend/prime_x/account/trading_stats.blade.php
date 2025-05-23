@@ -31,6 +31,49 @@
             font-weight: 600;
             text-transform: capitalize;
         }
+        .trading-badge {
+            display: inline;
+            padding: 6px 13px 8px 13px;
+            border-radius: 20px;
+        }
+        .default-badge {
+            background: #4755691b;
+            color: #333;
+        }
+
+        .default-badge .bullet {
+            background: #333333b4 !important
+        }
+
+        .default-badge .status {
+            color: #333 !important
+        }
+        .passed-badge {
+            background: #00ec4330;
+            color: #333;
+        }
+
+        .passed-badge .bullet {
+            background: #008133 !important
+        }
+
+        .passed-badge .status {
+            color: #008133 !important
+        }
+
+        .danger-badge {
+            background: #c1414130;
+            color: #333;
+        }
+
+        .danger-badge .bullet {
+            background: #C14141 !important
+        }
+
+        .danger-badge .status {
+            color: #C14141 !important
+        }
+        
     </style>
 @endpush
 @section('content')
@@ -370,14 +413,12 @@
                     {{-- Daily DrawDown --}}
                     <div class="border border-slate-100 dark:border-slate-700 p-4 rounded">
                         <div class="mb-5">
-                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                                <span
-                                    class="inline-flex h-2 w-2 {{ $trading_objectives['daily_drawdown_status'] == 'violated' ? 'bg-danger-500' : 'bg-slate-500' }} rounded-full"></span>
-                                <span
-                                    class="{{ $trading_objectives['daily_drawdown_status'] == 'violated' ? 'text-danger-500' : 'text-slate-500' }}  text-sm"
+                            <span class="flex space-x-2 rtl:space-x-reverse trading-badge {{ $trading_objectives['daily_drawdown_status'] == 'violated' ? 'danger-badge' : 'default-badge' }} items-center mb-1">
+                                <span class="inline-flex h-2 w-2 bullet rounded-full"></span>
+                                <span class="status  text-sm"
                                     style="text-transform: capitalize">{{ $trading_objectives['daily_drawdown_status'] }}</span>
                             </span>
-                            <h5 class="text-slate-900 dark:text-slate-300 text-base">
+                            <h5 class="text-slate-900 dark:text-slate-300 mt-3 text-base">
                                 {{ __('Daily Drawdown') }}
                             </h5>
                         </div>
@@ -412,14 +453,12 @@
                     {{-- Maximum DrawDown --}}
                     <div class="border border-slate-100 dark:border-slate-700 p-4 rounded">
                         <div class="mb-5">
-                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                                <span
-                                    class="inline-flex h-2 w-2 {{ $trading_objectives['max_drawdown_status'] == 'violated' ? 'bg-danger-500' : 'bg-slate-500' }} rounded-full"></span>
-                                <span
-                                    class="{{ $trading_objectives['max_drawdown_status'] == 'violated' ? 'text-danger-500' : 'text-slate-500' }}  text-sm"
+                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1 trading-badge {{ $trading_objectives['max_drawdown_status'] == 'violated' ? 'danger-badge' : 'default-badge' }}">
+                                <span class="inline-flex h-2 w-2 bullet rounded-full"></span>
+                                <span class="status  text-sm"
                                     style="text-transform: capitalize">{{ $trading_objectives['max_drawdown_status'] }}</span>
                             </span>
-                            <h5 class="text-slate-900 dark:text-slate-300 text-base">
+                            <h5 class="text-slate-900 dark:text-slate-300 mt-3 text-base">
                                 {{ __('Maximum Drawdown') }}
                             </h5>
                         </div>
@@ -465,14 +504,12 @@
                     {{-- Profit Target --}}
                     <div class="border border-slate-100 dark:border-slate-700 p-4 rounded">
                         <div class="mb-5">
-                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                                <span
-                                    class="inline-flex h-2 w-2 {{ $trading_objectives['profit_target_status'] == 'passed' ? 'bg-success-500' : 'bg-slate-500' }} rounded-full"></span>
-                                <span
-                                    class="{{ $trading_objectives['profit_target_status'] == 'passed' ? 'text-success-600' : 'text-slate-600' }}  text-sm"
+                            <span class="flex space-x-2  rtl:space-x-reverse items-center mb-1 trading-badge {{ $trading_objectives['profit_target_status'] == 'passed' ? 'passed-badge' : 'default-badge' }}">
+                                <span class="inline-flex h-2 w-2 bullet rounded-full"></span>
+                                <span class="status  text-sm"
                                     style="text-transform: capitalize">{{ $trading_objectives['profit_target_status'] }}</span>
                             </span>
-                            <h5 class="text-slate-900 dark:text-slate-300 text-base">
+                            <h5 class="text-slate-900 dark:text-slate-300 mt-3 text-base">
                                 {{ __('Profit Target') }}
                             </h5>
                         </div>
@@ -503,14 +540,11 @@
                     {{-- Trading Days --}}
                     <div class="border border-slate-100 dark:border-slate-700 p-4 rounded">
                         <div class="mb-5">
-                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                                <span
-                                    class="inline-flex h-2 w-2 {{ $trading_objectives['minimum_trading_days_status'] == 'passing' ? 'bg-slate-400' : 'bg-success-400' }} rounded-full"></span>
-                                <span
-                                    class="{{ $trading_objectives['minimum_trading_days_status'] == 'passing' ? 'text-slate-600' : 'text-success-600' }}  text-sm"
-                                    style="text-transform: capitalize">{{ $trading_objectives['minimum_trading_days_status'] }}</span>
+                            <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1 trading-badge {{ $trading_objectives['minimum_trading_days_status'] == 'ongoing' ? 'default-badge' : 'passed-badge' }}">
+                                <span class="inline-flex h-2 w-2 rounded-full bullet"></span>
+                                <span class="text-sm status" style="text-transform: capitalize">{{ $trading_objectives['minimum_trading_days_status'] }}</span>
                             </span>
-                            <h5 class="text-slate-900 dark:text-slate-300 text-base">
+                            <h5 class="text-slate-900 dark:text-slate-300 mt-3 text-base">
                                 {{ __('Minimum Trading Days') }}
                             </h5>
                         </div>

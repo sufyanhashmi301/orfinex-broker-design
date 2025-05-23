@@ -186,7 +186,7 @@ class AccountTypeInvestmentService
     $trading_objectives['total_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments - $payout_pending;
 
     // ---- Daily Drawdown Stats ----
-    $trading_objectives['daily_drawdown_status'] = TradingObjective::PASSING;
+    $trading_objectives['daily_drawdown_status'] = TradingObjective::ONGOING;
             
     $trading_objectives['daily_drawdown_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity;
     
@@ -197,7 +197,7 @@ class AccountTypeInvestmentService
     }
 
     // ---- Max Drawdown stats ----
-    $trading_objectives['max_drawdown_status'] = TradingObjective::PASSING;
+    $trading_objectives['max_drawdown_status'] = TradingObjective::ONGOING;
     $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'] + $balance_adjustments - $payout_pending;
 
     $trading_objectives['max_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['max_drawdown_limit'] + $trading_objectives['max_drawdown_pnl']);
@@ -209,7 +209,7 @@ class AccountTypeInvestmentService
     }
 
     // ---- Profit target ----
-    $trading_objectives['profit_target_status'] = TradingObjective::PASSING;
+    $trading_objectives['profit_target_status'] = TradingObjective::ONGOING;
     $trading_objectives['profit_target'] = $investment->getRuleSnapshotData()['profit_target'];
 
     // Achievied Profit
@@ -229,7 +229,7 @@ class AccountTypeInvestmentService
     }
 
     // ---- Trading Days ----
-    $trading_objectives['minimum_trading_days_status'] = TradingObjective::PASSING;
+    $trading_objectives['minimum_trading_days_status'] = TradingObjective::ONGOING;
     $trading_objectives['minimum_trading_days'] = $investment->getAccountTypeSnapshotData()['trading_days'] ?? null;
 
     // if the trading days are set at rules level
@@ -263,7 +263,7 @@ class AccountTypeInvestmentService
       return TradingObjective::PASSED;
     }
 
-    return TradingObjective::PASSING;
+    return TradingObjective::ONGOING;
 
   }
 
@@ -321,7 +321,7 @@ class AccountTypeInvestmentService
       // Initiate Violation process
       $this->violatePhase($investment, $trading_objectives_evaluation, $violation_data);
 
-    }elseif($trading_objectives_evaluation ==  TradingObjective::PASSING) {
+    }elseif($trading_objectives_evaluation ==  TradingObjective::ONGOING) {
       $investment->status = InvestmentStatus::ACTIVE;
     }elseif( $trading_objectives_evaluation ==  TradingObjective::PASSED ) {
       // Should have no active trade

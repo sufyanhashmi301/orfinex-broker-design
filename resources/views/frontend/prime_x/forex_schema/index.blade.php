@@ -71,7 +71,7 @@
                     @endif
                 </ul>
             </div>
-            <a href="{{ route('user.schema.preview', $schema->id) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
+            <a href="{{ route('user.schema.preview', the_hash($schema->id)) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
                 {{ __('Create Account') }}
             </a>
         </div>

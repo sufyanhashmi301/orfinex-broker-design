@@ -66,6 +66,7 @@ class ForexSchemaController extends Controller
 
     public function schemaPreview($id)
     {
+        $id = get_hash($id);
         $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
             ->where(function($query) use ($tagNames) {

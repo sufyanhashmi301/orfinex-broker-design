@@ -132,8 +132,7 @@ class UpdateAccountTypeInvestmentStats extends Command
                         
                         $stat = $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
                         
-                        // Delete records older than 48 hours
-                        $this->deleteOldHourlyRecords();
+                        
                     } else {
                         $stat = $investment->accountTypeInvestmentStat()->firstOrNew();
                         $stat->fill($data + ['updated_at' => CarbonImmutable::now()]);
@@ -157,6 +156,8 @@ class UpdateAccountTypeInvestmentStats extends Command
         }
         // delete old latest logs
         $this->deleteOldLatestLogs();
+        // Delete records older than 48 hours
+        $this->deleteOldHourlyRecords();
 
         if($hourly_shceduled) {
             $this->info('Account stats stored successfully!');

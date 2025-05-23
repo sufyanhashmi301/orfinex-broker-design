@@ -60,7 +60,7 @@ class PromoteOrViolateAccount extends Command
             $this->investment_service->tradingStats($account->id);
         }
 
-        $this->info('Request Completed!');
+        $this->info('Promote and Violate Request Completed!');
 
         // send emails to promoted and violated accounts accordingly
         // Artisan::call('send:promote-violate-accounts-mails');

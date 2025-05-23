@@ -154,17 +154,25 @@ class UpdateAccountTypeInvestmentStats extends Command
 
             }
         }
-        // delete old latest logs
-        $this->deleteOldLatestLogs();
-        // Delete records older than 48 hours
-        $this->deleteOldHourlyRecords();
-
+        
+        
         if($hourly_shceduled) {
             $this->info('Account stats stored successfully!');
+            // Delete records older than 48 hours
+            $this->deleteOldHourlyRecords();
+            $this->info('Old Hourly Records Deleted!');
         }else{
             $this->info('Account stats updated successfully!');
+            
+            // delete old latest logs
+            $this->deleteOldLatestLogs();
+            $this->info('Old Latest Logs Deleted!');
+
+            // Call Promote violate command
+            Artisan::call('accounts:promote-or-violate');
+            $this->info('Promote and Violate Request completed!');
         }
-        Artisan::call('accounts:promote-or-violate');
+        
         
     }
 

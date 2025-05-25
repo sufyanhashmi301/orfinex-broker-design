@@ -365,6 +365,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
 
         Route::get('popup', 'popup')->name('popup');
+        Route::get('provider-logo', 'providerLogo')->name('provider-logo');
     });
 
     Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
@@ -425,6 +426,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
         Route::get('customer/kycpermissions', 'kycPermissions')->name('customer.kycpermissions');
         Route::get('customer/misc', 'customerMiscSettings')->name('customer.misc');
+        Route::get('kyclevels/permissions', 'kycPermissionsSettings')->name('kyclevels.permissions');
 
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');

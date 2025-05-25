@@ -60,7 +60,7 @@
     </div>
 
     {{--Modal for update social login--}}
-    @can('social-login-edit')
+    @can('social-logins-action')
         @include('backend.setting.organization.social_login.__edit_modal')
     @endcan
 

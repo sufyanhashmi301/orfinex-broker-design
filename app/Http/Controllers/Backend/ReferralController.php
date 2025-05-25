@@ -113,10 +113,12 @@ class ReferralController extends Controller
             ]);
             add_child_agent($pUser);
 
-            if ($pUser->ib_status === 'approved' && $pUser->ib_group_id) {
+            $isPartOfMasterIB = user_meta('is_part_of_master_ib', null, $pUser);
+
+            if ($isPartOfMasterIB) {
                 $childUser->user_metas()->updateOrCreate(
                     ['meta_key' => 'is_part_of_master_ib'],
-                    ['meta_value' => $pUser->ib_group_id]
+                    ['meta_value' => $isPartOfMasterIB]
                 );
             }
 

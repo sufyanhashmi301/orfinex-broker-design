@@ -623,7 +623,6 @@ if (!empty($filters['staff_name'])) {
                     return redirect()->back()->with('error', 'Unauthorized access to user details.');
                 }
             }
-
         }
 
         $user = User::find($id);
@@ -652,39 +651,35 @@ if (!empty($filters['staff_name'])) {
             ->where('id', '<>', $user->ref_id)
             ->get();
 
-        $referrer = $user->referrer;
-        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
+        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $user);
 
-        $globalSchemas = ForexSchema::where('is_global', true)->get();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        if ($referrer && $isPartOfMasterIb) {
+        $globalSchemas = ForexSchema::active()
+            ->traderType()
+            ->where('is_global', 1)
+            ->get();
+
+        $userSchemas = ForexSchema::active()
+            ->traderType()
+            ->relevantForUser($user->country, $tagNames)
+            ->get();
+
+        $schemas = collect();
+
+        if ($isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
-            $forexSchemas = collect();
-
             foreach ($ibGroup->rebateRules as $rule) {
-                $forexSchemas = $forexSchemas->merge($rule->forexSchemas);
+                $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
             }
 
-            // Remove duplicates and sort if needed
-            $schemas = $forexSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
-        }else {
-            $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-            $personalSchemas = ForexSchema::where('status', true)
-                ->where(function ($query) use ($tagNames) {
-                    $query->whereJsonContains('country', auth()->user()->country)
-                        ->orWhereJsonContains('country', 'All')
-                        ->orWhere(function ($subQuery) use ($tagNames) {
-                            foreach ($tagNames as $tagName) {
-                                $subQuery->orWhereJsonContains('tags', $tagName);
-                            }
-                        });
-                })
-                ->orderBy('priority', 'asc')
-                ->get();
-
-            $schemas = $personalSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
         }
+
+        $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
+            ->unique('id')
+            ->sortBy('priority')
+            ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
@@ -1325,7 +1320,9 @@ if (!empty($filters['staff_name'])) {
         $riskProfileTags = RiskProfileTag::all();
         $kycStatus = KYCStatus::cases();
         // dd($kycstatus);
-        $staffMembers = Admin::all();
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
         return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs', 'staffMembers'));
     }
 public function store(Request $request)
@@ -1399,12 +1396,12 @@ public function store(Request $request)
         $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
 
         // Get location details (e.g., from user's profile or a service)
-        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+       $location = auth()->user()->location ?? null;
+       $location = is_object($location) ? $location : (object) ['country_code' => '', 'dial_code' => ''];
 
         // Set country and phone depending on settings and input
-        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
-        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
-
+       $country = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[0] : ($location->country_code ?? '');
+$phone = $isPhone ? (($isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '')) . ' ' . ($input['phone'] ?? '')) : ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
         // Generate a username if it’s not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 

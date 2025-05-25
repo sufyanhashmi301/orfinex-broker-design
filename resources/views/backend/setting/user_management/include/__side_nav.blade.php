@@ -23,7 +23,8 @@
         @endcanany
         @can('kyc-levels-list')
         <li>
-            <a href="{{ route('admin.kyclevels.index') }}" class="navItem {{ isActive('admin.kyclevels.index') }}">
+            <a href="{{ route('admin.kyclevels.index') }}" class="navItem {{ Route::is('admin.kyclevels*') || Route::is('admin.settings.kyclevels.permissions') ? 'active' : '' }}
+">
                 {{ __('KYC & Compliance') }}
             </a>
         </li>

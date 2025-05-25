@@ -54,8 +54,8 @@
                                 <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
                                     {{ __('Set as Global Account') }}
                                 </span>
-                                <span class="text-xs font-Inter font-normal text-slate-400">
-                                    {{ __('Default account will show to all users') }}
+                                <span class="text-xs font-Inter font-normal text-slate-600">
+                                    {{ __('This will override the country and tag restrictions and will be shown to all users.') }}
                                 </span>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                             <div class="input-area">
                                 <label class="form-label" for="">
                                     {{ __('Select countries') }}
-                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
                                         {{ __('Choose countries to display this forex scheme. Select "All" to show it globally.') }}
                                     </span>
                                 </label>
@@ -81,7 +81,7 @@
                             <div class="input-area">
                                 <label class="form-label" for="">
                                     {{ __('Select tags') }}
-                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
                                         {{ __('Choose the tags where you would like this account type to be shown') }}
                                     </span>
                                 </label>
@@ -724,8 +724,8 @@
                 const shouldDisable = globalSwitch.is(':checked');
 
                 if (shouldDisable) {
-                    countrySelect.val(['All']).trigger("change");
-                    tagSelect.val(['All']).trigger("change");
+                    countrySelect.val([]).trigger("change");
+                    tagSelect.val([]).trigger("change");
                 }
 
                 countrySelect.prop('disabled', shouldDisable);

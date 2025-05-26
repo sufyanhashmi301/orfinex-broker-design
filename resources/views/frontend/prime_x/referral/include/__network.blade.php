@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="horizontal-tree tree-view-block overflow-x-auto pt-3 hidden">
+                <div class="horizontal-tree tree-view-block pt-3 hidden">
                     <div class="mobile_treeview">
                         <ul>
                             <li>
@@ -50,7 +50,7 @@
                 // Show the selected tree view, hide others
                 $('.tree-view-block').hide();
                 $(`.${target}-tree`).show();
-            })
+            });
 
             // Hide all child containers and their .person blocks on load
             $('.hv-item-children').each(function () {

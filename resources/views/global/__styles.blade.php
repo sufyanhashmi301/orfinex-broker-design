@@ -150,7 +150,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('active_menu_color_dark')) }} / var(--tw-text-opacity));
     }
-    .grid-view-btn.active, .list-view-btn.active {
+    .grid-view-btn.active, .list-view-btn.active, .changeTree__btn.active {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
         border-color:  rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }});
         --tw-text-opacity: 1;

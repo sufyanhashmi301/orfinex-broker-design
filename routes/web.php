@@ -224,6 +224,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('/preference', 'preference')->name('preference');
         Route::post('/preference-language', 'updateLanguage')->name('preference.language');
         Route::post('/preference-theme', 'updateUserTheme')->name('preference.theme');
+
+        Route::get('/tools', 'tools')->name('tools');
     });
 });
 
@@ -296,7 +298,6 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
-
 
 Route::get('user/agreements', function () {
     $documentLinks = App\Models\DocumentLink::where('status', 1)->get();

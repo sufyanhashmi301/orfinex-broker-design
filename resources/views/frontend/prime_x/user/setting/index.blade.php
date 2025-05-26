@@ -39,6 +39,11 @@
                             {{ __('Agreements') }}
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('user.setting.tools') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.tools') }}">
+                            {{ __('Tools') }}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

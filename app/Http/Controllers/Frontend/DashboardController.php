@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\TxnType;
 use App\Jobs\AgentReferralJob;
 use App\Models\Banner;
 use App\Models\ForexAccount;
@@ -26,7 +27,7 @@ class DashboardController extends Controller
 
         $transactions = Transaction::where('user_id', $user->id);
 
-        $recentTransactions = $transactions->latest()->take(5)->get();
+        $recentTransactions = $transactions->where('type', '!=', TxnType::IbBonus)->latest()->take(5)->get();
 
         $referral = $user->getReferrals()->first();
 

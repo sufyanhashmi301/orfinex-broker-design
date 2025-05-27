@@ -32,7 +32,7 @@
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Country/Tags') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Badge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -61,7 +61,32 @@
                                         {{$schema->leverage}}
                                     </td>
                                     <td class="table-td">
-                                        @if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif
+                                        @php
+                                            $countries = $schema->country ? json_decode($schema->country, true) : [];
+                                            $tags = $schema->tags ? json_decode($schema->tags, true) : [];
+                                        @endphp
+
+                                        @if(!empty($countries))
+                                            <div>
+                                                <span class="font-medium">Countries: </span>{{ implode(', ', $countries) }}
+                                            </div>
+                                        @endif
+                                        @if(!empty($tags))
+                                            <div>
+                                                <span class="font-medium">Tags: </span>{{ implode(', ', $tags) }}
+                                            </div>
+                                        @endif
+                                        @if($schema->is_global)
+                                            <div>
+                                                {{ __('Global') }}
+                                            </div>
+                                        @endif
+                                        @if($schema->rebateRules->isNotEmpty())
+                                            <div>
+                                                <span class="font-medium">Rebate Rules: </span>
+                                                {{ implode(', ', $schema->rebateRules->pluck('title')->toArray()) }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="table-td">
                                         <div @class([

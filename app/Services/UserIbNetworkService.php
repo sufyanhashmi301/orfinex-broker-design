@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\User;
@@ -24,15 +23,23 @@ class UserIbNetworkService
      */
     protected function gatherReferralNetwork(array $parentIds): void
     {
-        $referrals = User::whereIn('ref_id', $parentIds)->pluck('id')->all();
+        $referrals = User::whereIn('ref_id', $parentIds)->get();
 
-        if (empty($referrals)) {
-            return;
+        $nextLevelParents = [];
+
+        foreach ($referrals as $referral) {
+            // Stop if the user has approved IB status and an ib_group_id
+            if ($referral->ib_status === 'approved' && !is_null($referral->ib_group_id)) {
+                continue;
+            }
+
+            $this->networkUserIds[] = $referral->id;
+            $nextLevelParents[] = $referral->id;
         }
 
-        $this->networkUserIds = array_merge($this->networkUserIds, $referrals);
-
-        $this->gatherReferralNetwork($referrals);
+        if (!empty($nextLevelParents)) {
+            $this->gatherReferralNetwork($nextLevelParents);
+        }
     }
 
     /**

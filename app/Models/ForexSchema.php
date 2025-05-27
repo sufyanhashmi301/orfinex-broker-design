@@ -86,6 +86,7 @@ class ForexSchema extends Model
 		'priority',
 		'demo_server',
 		'live_server',
+        'account_category_id',
 	];
 
     // App\Models\ForexSchema.php

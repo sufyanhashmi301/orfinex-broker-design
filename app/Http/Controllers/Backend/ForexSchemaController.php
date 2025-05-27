@@ -47,7 +47,7 @@ class ForexSchemaController extends Controller
     public function index()
     {
 
-        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->paginate(10);
+        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])->orderBy('priority','asc')->traderType()->paginate(10);
 
         return view('backend.forex_schema.index', compact('schemas'));
     }

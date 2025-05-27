@@ -64,26 +64,30 @@
                                         @php
                                             $countries = $schema->country ? json_decode($schema->country, true) : [];
                                             $tags = $schema->tags ? json_decode($schema->tags, true) : [];
+                                            $categorySlug = optional($schema->accountCategories)->slug;
                                         @endphp
 
-                                        @if(!empty($countries))
+                                        @if($categorySlug === 'country_and_tags' && !empty($countries))
                                             <div>
                                                 <span class="font-medium">{{ __('Countries: ') }}</span>
                                                 {{ implode(', ', $countries) }}
                                             </div>
                                         @endif
-                                        @if(!empty($tags))
+
+                                        @if($categorySlug === 'country_and_tags' && !empty($tags))
                                             <div>
                                                 <span class="font-medium">{{ __('Tags: ') }}</span>
                                                 {{ implode(', ', $tags) }}
                                             </div>
                                         @endif
-                                        @if($schema->is_global)
+
+                                        @if($categorySlug === 'global_account' && $schema->is_global)
                                             <div>
-                                                {{ __('Global') }}
+                                                <span class="font-medium">{{ __('Global') }}</span>
                                             </div>
                                         @endif
-                                        @if($schema->rebateRules->isNotEmpty())
+
+                                        @if($categorySlug === 'ib_rebate_rules' && $schema->rebateRules->isNotEmpty())
                                             <div>
                                                 <span class="font-medium">{{ __('IB Rebate Rules: ') }}</span>
                                                 {{ implode(', ', $schema->rebateRules->pluck('title')->toArray()) }}

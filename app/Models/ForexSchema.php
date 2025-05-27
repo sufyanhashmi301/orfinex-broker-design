@@ -105,6 +105,11 @@ class ForexSchema extends Model
         return $this->belongsTo(IbGroup::class, 'ib_group_id', 'id');
     }
 
+    public function accountCategories()
+    {
+        return $this->belongsTo(AccountTypeCategory::class, 'account_category_id', 'id');
+    }
+
 	public function bonuses(){
 			return $this->belongsToMany(Bonus::class);
 	}

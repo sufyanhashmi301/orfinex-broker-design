@@ -21,7 +21,7 @@ class UpdateForexSchemaCategory extends Command
                     $query->whereJsonContains('country', 'All')
                         ->orWhereNull('country');
                 })
-                ->update(['account_category_id' => 1]);
+                ->update(['account_category_id' => 1, 'is_global' => 1]);
 
             // Update Country & Tags where country does not contain "All"
             DB::table('forex_schemas')

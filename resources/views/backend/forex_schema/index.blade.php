@@ -68,12 +68,14 @@
 
                                         @if(!empty($countries))
                                             <div>
-                                                <span class="font-medium">Countries: </span>{{ implode(', ', $countries) }}
+                                                <span class="font-medium">{{ __('Countries: ') }}</span>
+                                                {{ implode(', ', $countries) }}
                                             </div>
                                         @endif
                                         @if(!empty($tags))
                                             <div>
-                                                <span class="font-medium">Tags: </span>{{ implode(', ', $tags) }}
+                                                <span class="font-medium">{{ __('Tags: ') }}</span>
+                                                {{ implode(', ', $tags) }}
                                             </div>
                                         @endif
                                         @if($schema->is_global)
@@ -83,7 +85,7 @@
                                         @endif
                                         @if($schema->rebateRules->isNotEmpty())
                                             <div>
-                                                <span class="font-medium">Rebate Rules: </span>
+                                                <span class="font-medium">{{ __('IB Rebate Rules: ') }}</span>
                                                 {{ implode(', ', $schema->rebateRules->pluck('title')->toArray()) }}
                                             </div>
                                         @endif

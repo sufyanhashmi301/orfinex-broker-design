@@ -80,16 +80,21 @@
         </form>
 
         <!-- Footer -->
-        @if(!setting('is_whitelabel', 'global'))
-            <div class="text-center border-t pt-6 mt-4 border-slate-200 dark:border-slate-700">
-                <p class="text-sm text-gray-400">
-                    {{ __('Powered by') }}
-                </p>
-                <a href="https://brokeret.com/" target="_blank">
-                    <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 mt-2 mx-auto" alt="Brokeret Logo">
-                </a>
-            </div>
+        <!-- Footer -->
+@if(!setting('is_whitelabel', 'global'))
+    <div class="text-center border-t pt-6 mt-4 border-slate-200 dark:border-slate-700">
+         @if(setting('provider_logo_status', 'provider_logo'))
+        <p class="text-sm text-gray-400">
+            {{ __('Powered by') }}
+        </p>
+            <a href="{{ route('home') }}" class="inline-block">
+                <img src="{{ asset(setting('provider_logo_image', 'provider_logo') ?: 'backend/images/brokeret_logo.png') }}" 
+                     class="h-[56px] mx-auto" 
+                     alt="{{ setting('site_title', 'global') }}">
+            </a>
         @endif
+    </div>
+@endif
     </div>
 @endsection
 

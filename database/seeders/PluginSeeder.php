@@ -27,9 +27,27 @@ class PluginSeeder extends Seeder
         $oneSignalExists = Plugin::where('name', 'OneSignal')->exists();
         $cleverTapExists = Plugin::where('name', 'CleverTap')->exists();
         $cloudflareTurnstileExists = Plugin::where('name', 'Cloudflare Turnstile')->exists();
+        $exchangeRateApiExists = Plugin::where('name', 'Currency Exchange API')->exists();
 
         $plugins = [];
-
+        // Add this to the $plugins array before the insert
+        if (!$exchangeRateApiExists) {
+            $plugins[] = [
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/exchangerate.webp',
+                'type' => 'system',
+                'name' => 'Currency Exchange API',
+                'description' => 'Provides currency exchange rate data for the system',
+                'data' => json_encode([
+                    'api_host' => 'currency-converter-pro1.p.rapidapi.com',
+                    'api_key' => '3eab3debf0msh7b97dbe30b9a426p1809fejsn0a7ea4674ebd',
+                    'api_url' => 'https://currency-converter-pro1.p.rapidapi.com/latest-rates',
+                    'base_currency' => 'USD'
+                ]),
+                'status' => 1, // Active by default since it's essential
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
         // Insert Custom Chat plugin if it doesn't exist
         if (!$customChatExists) {
             $plugins[] = [

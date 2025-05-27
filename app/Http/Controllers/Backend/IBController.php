@@ -16,6 +16,7 @@ use App\Models\RebateRule;
 use App\Models\User;
 use App\Models\UserIbRule;
 use App\Services\ForexApiService;
+use App\Services\UserIbNetworkService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -30,14 +31,16 @@ class IBController extends Controller
     use ForexApiTrait, NotifyTrait;
 
     protected $forexApiService;
+    protected $userIbNetworkService;
 
-    public function __construct(ForexApiService $forexApiService)
+    public function __construct(ForexApiService $forexApiService, UserIbNetworkService $userIbNetworkService)
     {
         $this->middleware('permission:ib-list|ib-action|ib-form-manage|advertisement-material-edit', ['only' => ['index', 'update', 'IbPendingList', 'IbApprovedList', 'IbRejectedList', 'IbAllList']]);
         $this->middleware('permission:ib-list', ['only' => ['IbPendingList', 'IbApprovedList', 'IbRejectedList', 'IbAllList']]);
         $this->middleware('permission:ib-form-manage', ['only' => ['saveForm']]);
         $this->middleware('permission:ib-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
+        $this->userIbNetworkService = $userIbNetworkService;
     }
 
     public function index(Request $request)
@@ -319,12 +322,11 @@ class IBController extends Controller
             $user->ib_group_id = $ibGroup;
             $user->save();
 
-            if ($user->ib_group_id) {
-                $user->user_metas()->updateOrCreate(
-                    ['meta_key' => 'is_part_of_master_ib'],
-                    ['meta_value' => $user->ib_group_id]
-                );
-            }
+            $this->userIbNetworkService->syncMeta(
+                $user,
+                'is_part_of_master_ib',
+                $user->ib_group_id
+            );
 
             // Notify the user
             $shortcodes = [
@@ -382,8 +384,8 @@ class IBController extends Controller
 
         if (!blank($user)) {
             // Update user status and IB group
-            $user->ib_status = IBStatus::DISABLED;
-            $user->save();
+            $ibUserIds = $this->userIbNetworkService->getNetworkUserIds($user);
+            User::whereIn('id', $ibUserIds)->update(['ib_status' => IBStatus::DISABLED]);
 
             // Notify the user
             $shortcodes = [
@@ -696,6 +698,12 @@ class IBController extends Controller
             $user->ib_status = IBStatus::REJECTED;
             $user->ib_group_id = null;
             $user->save();
+
+            $this->userIbNetworkService->syncMeta(
+                $user,
+                'is_part_of_master_ib',
+                $user->ib_group_id
+            );
 
             $ibGroup = null;
             $this->manageUserRebateRules($user, $ibGroup);

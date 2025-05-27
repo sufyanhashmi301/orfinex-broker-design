@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enums\AccountBalanceType;
 use App\Enums\MultiLevelType;
+use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexSchema;
@@ -13,6 +14,7 @@ use App\Models\MetaDeal;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\UserIbRule;
+use App\Models\Transaction;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -47,6 +49,16 @@ class MultiLevelIBController extends Controller
         $affiliateBalance = $account->amount;
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
+        $totalIbBonus = Transaction::where('type', TxnType::IbBonus)
+            ->where('user_id', $user_id)
+            ->sum('amount');
+
+        $currentMonthIbBonus = Transaction::where('type', TxnType::IbBonus)
+            ->where('user_id', $user_id)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('amount');
+
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
         ->orderBy('priority', 'asc')
@@ -73,6 +85,10 @@ class MultiLevelIBController extends Controller
             'monthly_rebate' =>  $user->totalRebate(30),
             'net_rebate' =>  $user->totalRebate(),
             'net_referrals_volume' =>  $this->getReferralsNetVolume($user),
+            'total_ib_bonus' => $totalIbBonus,
+            'current_month_ib_bonus' => $currentMonthIbBonus,
+            'total_lots' => $this->getReferralsLotShare($user)['total'],
+            'current_month_lots' => $this->getReferralsLotShare($user)['current_month'],
         ];
 
         return view('frontend::partner.dashboard', get_defined_vars());
@@ -115,6 +131,24 @@ class MultiLevelIBController extends Controller
         $netVolume = $netVolume->sum('volume');
 
         return  round($netVolume/10000, 2);
+    }
+
+    public function getReferralsLotShare($user)
+    {
+        $referrals = $user->referrals()->pluck('id');
+
+        $totalLotShare = MetaDeal::whereIn('user_id', $referrals)->sum('lot_share');
+
+        $currentMonthLotShareQuery = MetaDeal::whereIn('user_id', $referrals)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year);
+
+        $currentMonthLotShare = $currentMonthLotShareQuery->sum('lot_share');
+
+        return [
+            'total' => $totalLotShare,
+            'current_month' => $currentMonthLotShare,
+        ];
     }
 
 // Ensure this function is part of a class where `mt5_total_balance` is defined.

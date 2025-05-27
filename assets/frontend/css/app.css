@@ -6973,6 +6973,9 @@ textarea.form-control.is-invalid{
 .pr-14{
   padding-right: 3.5rem;
 }
+.\!pr-20{
+  padding-right: 5rem !important;
+}
 .\!pr-24{
   padding-right: 6rem !important;
 }
@@ -16944,11 +16947,9 @@ ul.custom-list ul li{
 
 .hv-item-parent p {
   font-weight: bold;
-  color: #de5454;
 }
 
 .management-hierarchy {
-  overflow-x: auto;
   margin-bottom: 20px;
 }
 
@@ -16982,30 +16983,25 @@ ul.custom-list ul li{
 }
 
 .management-hierarchy .person>p.name {
-  background-color: #0f172a;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 12px;
   font-weight: normal;
-  color: #fff;
   margin: 0;
   position: relative;
-}
-
-.management-hierarchy .person>p.name b {
-  color: #fff;
+  text-wrap: nowrap;
 }
 
 .mobile_treeview ul li ul li {
-    padding: 50px 0px 0px 35px;
+    padding: 50px 0px 0px 50px;
     position: relative;
 }
 
 .mobile_treeview ul li ul li:before {
     content: "";
     position: absolute;
-    top: -15px;
-    left: 15px;
+    top: -28px;
+    left: 22px;
     border-left: 2px dashed #a2a5b5;
     width: 1px;
     height: 100%;
@@ -17016,7 +17012,7 @@ ul.custom-list ul li{
     position: absolute;
     border-top: 2px dashed #a2a5b5;
     top: 68px;
-    left: 17px;
+    left: 22px;
     width: 35px;
 }
 

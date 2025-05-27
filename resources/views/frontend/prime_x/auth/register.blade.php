@@ -17,7 +17,7 @@
         }
 
         // Retrieve the invite from the cookie for use in the form
-        $inviteCode = \Cookie::get('invite');
+        $inviteCode = $invite ?? \Cookie::get('invite');
     @endphp
 
     <div class="max-h-[calc(100vh-150px)] overflow-y-auto shadow-xl rounded-xl border p-8">
@@ -131,9 +131,11 @@
                     <div class="formGroup">
                         <div class="flex items-center justify-between">
                             <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
-                            <a href="javascript:;" class="btn-link referralToggle">{{ __('Show') }}</a>
+                            <a href="javascript:;" class="btn-link referralToggle">
+                                {{ ($inviteCode || old('invite')) ? 'Hide' : 'Show' }}
+                            </a>
                         </div>
-                        <div class="relative hidden" id="referral-input">
+                        <div class="relative {{ ($inviteCode || old('invite')) ? '' : 'hidden' }}" id="referral-input">
                             <input
                                 class="form-control py-2 h-[48px]"
                                 type="text"

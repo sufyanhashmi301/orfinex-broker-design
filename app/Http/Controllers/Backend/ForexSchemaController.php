@@ -60,7 +60,7 @@ class ForexSchemaController extends Controller
     public function create()
     {
         $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
-        $accountTypeCategories = AccountTypeCategory::where('status', true)->orderBy('title', 'asc')->get();
+        $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
         return view('backend.forex_schema.create', compact('accountTypeCategories', 'rebateRules'));
     }
 
@@ -176,7 +176,7 @@ class ForexSchemaController extends Controller
         $schema = ForexSchema::find($id);
         $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
         $attachedRebateRules = $schema->rebateRules->pluck('id')->toArray();
-        $accountTypeCategories = AccountTypeCategory::where('status', true)->orderBy('title', 'asc')->get();
+        $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
         return view('backend.forex_schema.edit', compact('schema', 'accountTypeCategories', 'rebateRules', 'attachedRebateRules'));
     }
 

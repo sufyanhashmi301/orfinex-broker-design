@@ -242,4 +242,9 @@ class SettingController extends Controller
         notify()->success(__('Your theme has been updated successfully.'));
         return redirect()->back();
     }
+
+    public function tools()
+    {
+        return view('frontend::user.setting.tools');
+    }
 }

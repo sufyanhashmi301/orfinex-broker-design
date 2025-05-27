@@ -30,12 +30,14 @@
         </div>
         <span class="text-sm">{{ __('Verification') }}</span>
     </a>
-    <a href="{{ route('user.ticket.index') }}" class="card rounded-md p-4 px-2 text-center dark:text-white">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="heroicons-outline:support"></iconify-icon>
-        </div>
-        <span class="text-sm">{{ __('Support') }}</span>
-    </a>
+    @if(setting('user_tickets_feature', 'customer_permission'))
+        <a href="{{ route('user.ticket.index') }}" class="card rounded-md p-4 px-2 text-center dark:text-white">
+            <div class="mx-auto text-2xl">
+                <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+            </div>
+            <span class="text-sm">{{ __('Support') }}</span>
+        </a>
+    @endif
 </div>
 
 <!-- Recent Transactions -->

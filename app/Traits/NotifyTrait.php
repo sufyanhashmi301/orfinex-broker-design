@@ -21,7 +21,7 @@ trait NotifyTrait
     protected function mailNotify($email, $code, $shortcodes = null)
     {
 
-//        try {
+        try {
             $template = EmailTemplate::where('status', true)->where('code', $code)->first();
 //        dd($template);
             if ($template) {
@@ -60,11 +60,11 @@ trait NotifyTrait
 
                 return Mail::to($email)->send(new MailSend($details));
             }
-//        } catch (Exception $e) {
+        } catch (Exception $e) {
 //            notify()->error('SMTP connection failed', 'Error');
-//
-//            return false;
-//        }
+
+            return false;
+        }
     }
 
     //============================= push notification template helper ===================================================

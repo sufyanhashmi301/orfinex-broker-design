@@ -96,6 +96,7 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
         $input = $request->all();
+        $input['schema_id'] = get_hash($input['schema_id']);
         $user = Auth::user();
         $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);

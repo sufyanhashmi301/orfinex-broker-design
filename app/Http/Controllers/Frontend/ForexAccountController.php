@@ -70,7 +70,7 @@ class ForexAccountController extends GatewayController
                 ],
                 'is_islamic' => [
                     function ($attribute, $value, $fail) use ($request) {
-                        $schema = ForexSchema::find($request->schema_id);
+                        $schema = ForexSchema::find(get_hash($request->schema_id));
                         if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
                             $fail(__('The selected schema does not support Islamic account for Real account type.'));
                         }
@@ -96,6 +96,7 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
         $input = $request->all();
+        $input['schema_id'] = get_hash($input['schema_id']);
         $user = Auth::user();
         $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);

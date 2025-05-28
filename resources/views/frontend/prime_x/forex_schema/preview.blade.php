@@ -48,7 +48,7 @@
                             <label class="form-label" for="">
                                 {{ __('Account Type:') }}
                             </label>
-                            <input type="hidden" class="form-control py-2 h-[48px]" value="{{$schema->id}}"
+                            <input type="hidden" class="form-control py-2 h-[48px]" value="{{the_hash($schema->id)}}"
                                    aria-label="{{ __('Nickname') }}" name="schema_id" id="select-schema" aria-describedby="basic-addon1"
                                    data-is_real_islamic="{{$schema->is_real_islamic}}"
                                    data-is_demo_islamic="{{$schema->is_demo_islamic}}"

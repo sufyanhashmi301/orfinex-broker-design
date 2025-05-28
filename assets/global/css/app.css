@@ -16945,6 +16945,10 @@ ul.custom-list ul li{
   display: flex;
   justify-content: center;
 }
+.hv-wrapper .hv-item .hv-item-parent .level-summary {
+  bottom: -40px;
+  z-index: 1;
+}
 
 .hv-wrapper .hv-item .hv-item-parent:after {
   position: absolute;

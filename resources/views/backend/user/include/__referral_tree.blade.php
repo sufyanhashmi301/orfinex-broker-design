@@ -66,6 +66,7 @@
                 $(this).hide();
                 $(this).find('.person').hide();
                 $(this).siblings('.hv-item-parent').addClass('hide-line');
+                $(this).closest('.hv-item').find('.level-summary').hide();
             });
 
             // Add toggle button to each parent with children
@@ -88,6 +89,7 @@
                         $children.toggle();
                         $children.find('.person').toggle(!isVisible);
                         $parent.toggleClass('hide-line', isVisible);
+                        $parent.find('.level-summary').toggle(!isVisible);
 
                         // Change the icon accordingly
                         var $icon = $(this).find('iconify-icon');

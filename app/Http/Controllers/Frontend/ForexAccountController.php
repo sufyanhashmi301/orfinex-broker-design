@@ -301,7 +301,7 @@ class ForexAccountController extends GatewayController
             }
         }
         notify()->error(__('Some error occurred! please try again'), __('Error'));
-        return redirect()->route('user.schema.preview', $schema->id);
+        return redirect()->route('user.schema.preview', the_hash($schema->id));
 
         return redirect()->route('user.forex-account-logs');
     }

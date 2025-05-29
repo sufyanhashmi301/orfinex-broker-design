@@ -1853,3 +1853,68 @@ if (!function_exists('get_recursive_equity_details')) {
         return $result;
     }
 }
+if (!function_exists('getAccessibleUserIds')) {
+    function getAccessibleUserIds(array $filters = []): \Illuminate\Database\Eloquent\Builder
+    {
+        $loggedInUser = auth()->user();
+
+        // Case 1: Super Admin or has permission to view all
+        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+            return User::applyFilters($filters);
+        }
+
+        $finalUserIds = collect();
+
+        // Add directly attached users
+        $attachedUserIds = $loggedInUser->users->pluck('id');
+        $finalUserIds = $finalUserIds->merge($attachedUserIds);
+
+        // Merge users from child staff (team members)
+        if ($loggedInUser->relationLoaded('teamMembers') || method_exists($loggedInUser, 'teamMembers')) {
+            foreach ($loggedInUser->teamMembers as $teamMember) {
+                if ($teamMember->can('show-all-users-by-default-to-staff')) {
+                    // If any child staff has permission, include all users
+                    return User::applyFilters($filters);
+                }
+
+                // Otherwise, merge their attached users
+                $childAttachedUserIds = $teamMember->users->pluck('id');
+                $finalUserIds = $finalUserIds->merge($childAttachedUserIds);
+            }
+        }
+
+        // If we collected user IDs, return them with filters
+        if ($finalUserIds->isNotEmpty()) {
+            return User::whereIn('id', $finalUserIds->unique())->applyFilters($filters);
+        }
+
+        // Otherwise, return empty result
+        return User::where('id', -1); // Always false condition
+    }
+}
+if (!function_exists('applyStaffNameFilter')) {
+    function applyStaffNameFilter(\Illuminate\Database\Eloquent\Builder $query, string $staffName): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->whereHas('staff', function ($query) use ($staffName) {
+            if (str_contains($staffName, ' ')) {
+                $nameParts = explode(' ', $staffName, 2);
+
+                $query->where(function ($subQuery) use ($nameParts) {
+                    $subQuery->where(function ($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%' . $nameParts[0] . '%')
+                          ->where('last_name', 'like', '%' . $nameParts[1] . '%');
+                    })->orWhere(function ($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%' . $nameParts[1] . '%')
+                          ->where('last_name', 'like', '%' . $nameParts[0] . '%');
+                    });
+                });
+            } else {
+                $query->where(function ($q) use ($staffName) {
+                    $q->where('first_name', 'like', '%' . $staffName . '%')
+                      ->orWhere('last_name', 'like', '%' . $staffName . '%')
+                      ->orWhere('email', 'like', '%' . $staffName . '%');
+                });
+            }
+        });
+    }
+}

@@ -197,7 +197,7 @@ class DashboardController extends Controller
     $user = new User();
     $admin = new Admin();
 
-    $attachedUserIds = $showAllUsers ? null : $loggedInUser->users->pluck('id');
+$attachedUserIds = $showAllUsers ? null : getAccessibleUserIds()->pluck('id')->toArray();
 
     if (!$showAllUsers) {
         $user = $user->whereIn('id', $attachedUserIds);

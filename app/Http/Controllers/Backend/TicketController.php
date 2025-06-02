@@ -31,63 +31,60 @@ class TicketController extends Controller
 
     }
 
-    public function index(Request $request, $id = null)
-    {
-        $loggedInUser = auth()->user();
-        $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
+   public function index(Request $request, $id = null)
+{
+    $loggedInUser = auth()->user();
+    $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
 
-        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $totalTickets = Ticket::count();
-            $closedTickets = Ticket::closed()->count();
-            $openTickets = Ticket::opened()->count();
-            $resolvedTickets = Ticket::resolved()->count();
-        }else{
-            $totalTickets = Ticket::where('assigned_to', $loggedInUser->id)->count();
-            $closedTickets = Ticket::where('assigned_to', $loggedInUser->id)->closed()->count();
-            $openTickets = Ticket::where('assigned_to', $loggedInUser->id)->opened()->count();
-            $resolvedTickets = Ticket::where('assigned_to', $loggedInUser->id)->resolved()->count();
-        }
+    // Ticket counts
+    $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
-        if ($request->ajax()) {
-
-            if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
-                if ($request->status == 'resolved'){
-                    $ticketQuery->where('is_resolved', true);
-                }else{
-                    $ticketQuery->where('status', $request->status);
-                }
-            }
-
-            if ($loggedInUser->hasRole('Super-Admin')|| $loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = $ticketQuery->get();
-            } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = $ticketQuery->where('assigned_to', auth()->user()->id);
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = $ticketQuery->get();
-                }
-            }
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('uuid', 'backend.ticket.include.__uuid')
-                ->addColumn('title', 'backend.ticket.include.__title')
-                ->addColumn('user', 'backend.ticket.include.__user')
-                ->addColumn('assigned_to', function($ticket) {
-                    return $ticket->assignedToUser ? $ticket->assignedToUser->first_name.' '.$ticket->assignedToUser->last_name : 'Not assigned';
-                })
-                ->addColumn('status', 'backend.ticket.include.__status')
-                ->addColumn('action', 'backend.ticket.include.__action')
-                ->rawColumns(['uuid', 'title', 'user', 'assigned_to', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.ticket.all', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets'));
+    if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+        $totalTickets = Ticket::count();
+        $closedTickets = Ticket::closed()->count();
+        $openTickets = Ticket::opened()->count();
+        $resolvedTickets = Ticket::resolved()->count();
+    } else {
+        $totalTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->count();
+        $closedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->closed()->count();
+        $openTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->opened()->count();
+        $resolvedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->resolved()->count();
     }
+
+    // Ajax call
+    if ($request->ajax()) {
+        if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
+            if ($request->status === 'resolved') {
+                $ticketQuery->where('is_resolved', true);
+            } else {
+                $ticketQuery->where('status', $request->status);
+            }
+        }
+
+        // Apply user accessibility filter to ticket query
+        if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $ticketQuery->whereIn('assigned_to', $accessibleUserIds);
+        }
+
+        $data = $ticketQuery->get();
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('uuid', 'backend.ticket.include.__uuid')
+            ->addColumn('title', 'backend.ticket.include.__title')
+            ->addColumn('user', 'backend.ticket.include.__user')
+            ->addColumn('assigned_to', function($ticket) {
+                return $ticket->assignedToUser ? $ticket->assignedToUser->first_name.' '.$ticket->assignedToUser->last_name : 'Not assigned';
+            })
+            ->addColumn('status', 'backend.ticket.include.__status')
+            ->addColumn('action', 'backend.ticket.include.__action')
+            ->rawColumns(['uuid', 'title', 'user', 'assigned_to', 'status', 'action'])
+            ->make(true);
+    }
+
+    return view('backend.ticket.all', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets'));
+}
+
 
     public function create()
     {

@@ -98,6 +98,9 @@ class PermissionSeeder extends Seeder
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-list'],
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-create'],
             ['category' => 'Staff Management', 'name' => 'staff-attach-users-delete'],
+             ['category' => 'Staff Management', 'name' => 'staff-team-list'],
+            ['category' => 'Staff Management', 'name' => 'staff-team-create'],
+            ['category' => 'Staff Management', 'name' => 'staff-team-delete'],
 
             ['category' => 'Account Type Management', 'name' => 'account-type-list'],
             ['category' => 'Account Type Management', 'name' => 'account-type-create'],

@@ -52,104 +52,101 @@ class   AccountsController extends Controller
      *
      * @throws Exception
      */
-    public function forexAccounts(Request $request, $type = 'real', $id = null)
-    {
-//        dd($type);
-        $loggedInUser = auth()->user(); // Get the logged-in admin or user
+   public function forexAccounts(Request $request, $type = 'real', $id = null)
+{
+    $loggedInUser = auth()->user(); // Get the logged-in user
 
-        // Determine if the user should see all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+    // Check permission to view all users
+    $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
 
-        // Get attached user IDs for non-Super-Admin users without permission
-        $attachedUserIds = $canViewAllUsers ? collect([]) : $loggedInUser->users->pluck('id');
+    // Get accessible user IDs using the helper
+    $attachedUserIds = $canViewAllUsers ? [] : getAccessibleUserIds()->pluck('id')->toArray();
 
-        // Query for Forex Accounts
-        $data = ForexAccount::query()
-            ->with('schema')
-            ->where('account_type', $type);
+    // Start Forex Account query
+    $data = ForexAccount::query()
+        ->with('schema')
+        ->where('account_type', $type);
 
-        if (!$canViewAllUsers && $attachedUserIds->isNotEmpty()) {
-            // Apply attached user filter for non-Super-Admin users without permission
-            $data->whereIn('user_id', $attachedUserIds);
-        }
-
-        if ($id) {
-            $data->where('user_id', $id);
-        }
-
-
-        // Apply additional filters
-        $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
-        $data->applyFilters($filters);
-//        dd($type,$data->get());
-
-        // If request is Ajax, return data in Datatables format
-        if ($request->ajax()) {
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('ib_number', 'backend.user.include.__ib_number')
-                ->addColumn('username', 'backend.transaction.include.__user')
-                 ->addColumn('balance', 'backend.investment.include.__balance_mt5')
-                 ->addColumn('equity', 'backend.investment.include.__equity_mt5')
-                 ->addColumn('credit', 'backend.investment.include.__credit_mt5')
-                ->addColumn('schema', 'backend.investment.include.__invest_schema')
-                ->addColumn('status', 'backend.investment.include.__status')
-                ->addColumn('action', 'backend.investment.include.__action')
-                ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
-                ->make(true);
-        }
-
-        // Calculate balance-related statistics
-        $realForexAccounts = $data->pluck('login');
-
-        $withBalance = 0.0;
-        $withoutBalance = 0.0;
-
-        try {
-            if ($realForexAccounts->isNotEmpty()) {
-                $withBalance = DB::connection('mt5_db')
-                    ->table('mt5_accounts')
-                    ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', '>', 0)
-                    ->count();
-            }
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-        }
-
-        try {
-            if ($realForexAccounts->isNotEmpty()) {
-                $withoutBalance = DB::connection('mt5_db')
-                    ->table('mt5_accounts')
-                    ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', '<=', 0)
-                    ->count();
-            }
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-        }
-
-        // Count inactive accounts
-        $unActiveAccounts = ForexAccount::where('account_type', $type)
-            ->where('status', '!=', ForexAccountStatus::Ongoing);
-
-        if (!$loggedInUser->hasRole('Super-Admin')) {
-            // Apply attached user filter for non-Super-Admin
-            $unActiveAccounts->whereIn('user_id', $attachedUserIds);
-        }
-
-        $unActiveAccounts = $unActiveAccounts->count();
-
-        // Prepare final data to pass to the view
-        $data = [
-            'TotalAccounts' => $data->count(),
-            'withBalance' => $withBalance,
-            'withoutBalance' => $withoutBalance,
-            'unActiveAccounts' => $unActiveAccounts,
-        ];
-
-        return view('backend.investment.index', compact('data', 'type'));
+    // Filter by accessible users (if not super-admin)
+    if (!$canViewAllUsers && !empty($attachedUserIds)) {
+        $data->whereIn('user_id', $attachedUserIds);
     }
+
+    // Apply individual user filter (if ID passed)
+    if ($id) {
+        $data->where('user_id', $id);
+    }
+
+    // Apply additional filters
+    $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
+    $data->applyFilters($filters);
+
+    // Return Datatables if Ajax
+    if ($request->ajax()) {
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('ib_number', 'backend.user.include.__ib_number')
+            ->addColumn('username', 'backend.transaction.include.__user')
+            ->addColumn('balance', 'backend.investment.include.__balance_mt5')
+            ->addColumn('equity', 'backend.investment.include.__equity_mt5')
+            ->addColumn('credit', 'backend.investment.include.__credit_mt5')
+            ->addColumn('schema', 'backend.investment.include.__invest_schema')
+            ->addColumn('status', 'backend.investment.include.__status')
+            ->addColumn('action', 'backend.investment.include.__action')
+            ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
+            ->make(true);
+    }
+
+    // Gather login IDs for MT5 DB balance stats
+    $realForexAccounts = $data->pluck('login');
+
+    $withBalance = 0.0;
+    $withoutBalance = 0.0;
+
+    try {
+        if ($realForexAccounts->isNotEmpty()) {
+            $withBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '>', 0)
+                ->count();
+        }
+    } catch (\Exception $e) {
+        \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+    }
+
+    try {
+        if ($realForexAccounts->isNotEmpty()) {
+            $withoutBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '<=', 0)
+                ->count();
+        }
+    } catch (\Exception $e) {
+        \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+    }
+
+    // Count inactive accounts
+    $unActiveAccountsQuery = ForexAccount::where('account_type', $type)
+        ->where('status', '!=', ForexAccountStatus::Ongoing);
+
+    if (!$canViewAllUsers && !empty($attachedUserIds)) {
+        $unActiveAccountsQuery->whereIn('user_id', $attachedUserIds);
+    }
+
+    $unActiveAccounts = $unActiveAccountsQuery->count();
+
+    // Return to view
+    $data = [
+        'TotalAccounts' => $data->count(),
+        'withBalance' => $withBalance,
+        'withoutBalance' => $withoutBalance,
+        'unActiveAccounts' => $unActiveAccounts,
+    ];
+
+    return view('backend.investment.index', compact('data', 'type'));
+}
 
 
     public function export(Request $request, $type)
@@ -523,27 +520,16 @@ class   AccountsController extends Controller
 
     public function pendingLeverage(Request $request)
 {
-    $loggedInUser = auth()->user();
+    $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-    if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
-        // Super-Admin and staff with permission can view all leverage updates
+    if ($accessibleUserIds->isNotEmpty()) {
         $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
             ->where('status', 0)
+            ->whereIn('user_id', $accessibleUserIds)
             ->get();
     } else {
-        // Get attached user IDs for non-Super-Admin users without the permission
-        $attachedUserIds = $loggedInUser->users->pluck('id');
-
-        if ($attachedUserIds->isNotEmpty()) {
-            // Show leverage updates for attached users only
-            $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-                ->where('status', 0)
-                ->whereIn('user_id', $attachedUserIds)
-                ->get();
-        } else {
-            // If no users are attached, return an empty collection
-            $leverageUpdates = collect(); // Returns an empty collection
-        }
+        // No accessible users, return empty collection
+        $leverageUpdates = collect();
     }
 
     return view('backend.investment.leverage.pending', compact('leverageUpdates'));
@@ -613,34 +599,24 @@ class   AccountsController extends Controller
         return response()->json(['message' => $message]);
     }
 
-    public function allLeverage(Request $request)
+   public function allLeverage(Request $request)
 {
-    $loggedInUser = auth()->user();
+    $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-    // Check if the user can view all users
-    $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-    // Initialize query with necessary relationships
     $query = LeverageUpdate::with('user', 'forexAccount');
 
-    if (!$canViewAllUsers) {
-        // Get attached user IDs for non-Super-Admins without permission
-        $attachedUserIds = $loggedInUser->users->pluck('id');
-
-        if ($attachedUserIds->isNotEmpty()) {
-            $query->whereIn('user_id', $attachedUserIds);
-        } else {
-            // If no attached users, return an empty collection
-            $leverageUpdates = collect([]);
-            return view('backend.investment.leverage.all', compact('leverageUpdates'));
-        }
+    if ($accessibleUserIds->isNotEmpty()) {
+        $query->whereIn('user_id', $accessibleUserIds);
+    } else {
+        $leverageUpdates = collect([]);
+        return view('backend.investment.leverage.all', compact('leverageUpdates'));
     }
 
-    // Execute query
     $leverageUpdates = $query->get();
 
     return view('backend.investment.leverage.all', compact('leverageUpdates'));
 }
+
 
 
     public

@@ -229,27 +229,15 @@ class DepositController extends Controller
 
     if ($request->ajax()) {
         $filters = $request->only(['email', 'status', 'created_at']);
+ // ✅ Use helper to get allowed user IDs
+        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        // Check if the user can view all transactions
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-        // Initialize query
+        // ✅ Build the base query
         $data = Transaction::query()
             ->where('status', 'pending')
             ->where('type', TxnType::ManualDeposit)
+            ->whereIn('user_id', $accessibleUserIds)
             ->latest();
-
-        if (!$canViewAllUsers) {
-            // Get attached user IDs for non-Super-Admins without permission
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                $data->whereIn('user_id', $attachedUserIds);
-            } else {
-                // If no attached users, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
-        }
 
         // Apply additional filters
         $data->applyFilters($filters);
@@ -279,29 +267,19 @@ class DepositController extends Controller
     $filters = $request->only(['email', 'status', 'created_at']);
 
     if ($request->ajax()) {
-        // Check if the user can view all transactions
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+        // ✅ Get accessible user IDs using the helper
+        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        // Initialize query
+        // ✅ Base query: only deposits and manual deposits
         $data = Transaction::query()
             ->where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Deposit);
-            })->latest();
+            })
+            ->whereIn('user_id', $accessibleUserIds)
+            ->latest();
 
-        if (!$canViewAllUsers) {
-            // Get attached user IDs for non-Super-Admins without permission
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                $data->whereIn('user_id', $attachedUserIds);
-            } else {
-                // If no attached users, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
-        }
-
-        // Apply additional filters
+        // ✅ Apply filters (if any)
         $data->applyFilters($filters);
 
         return Datatables::of($data)
@@ -470,28 +448,29 @@ class DepositController extends Controller
         }
     }
 
-    public function addDeposit()
-    {
-        $gateways = DepositMethod::where('status', 1)->get();
+   public function addDeposit()
+{
+    $gateways = DepositMethod::where('status', 1)->get();
         $loggedInUser = auth()->user();
 
-        // Fetch users based on the logged-in user's role
-        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
-            // If Super-Admin, show all users
-            $users = User::where('status', 1)->get();
-        } else {
-            // If not Super-Admin, show only assigned users
-            $users = $loggedInUser->users()->where('status', 1)->get();
-        }
+    // ✅ Get accessible user IDs using the helper
+    $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        $forexAccounts = ForexAccount::with('schema')->traderType()
-            ->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)
-            ->orderBy('id', 'desc')
-            ->get();
+    // ✅ Fetch only users with 'status = 1' and within accessible IDs
+    $users = User::where('status', 1)
+        ->whereIn('id', $accessibleUserIds)
+        ->get();
 
-        return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
-    }
+    $forexAccounts = ForexAccount::with('schema')
+        ->traderType()
+        ->where('account_type', 'real')
+        ->where('status', ForexAccountStatus::Ongoing)
+        ->orderBy('id', 'desc')
+        ->get();
+
+    return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
+}
+
     public function getUserAccounts($userId)
     {
         $userId = get_hash($userId);

@@ -9,69 +9,170 @@
             {{ __('Account Details') }}
         </h4>
     </div>
+    <div class="md:hidden block mb-6">
+        <div class="card">
+            <div class="card-body p-6">
+                <div class="flex justify-between flex-wrap items-center mb-3">
+                    <h4 class="card-title">{{ __('Signup') }}</h4>
+                    <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button class="btn btn-outline-light btn-sm inline-flex items-center justify-center" type="button" id="shareDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
+                                    {{ __('Share') }}
+                                </button>
+                                <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
+                                    <li>
+                                        <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/email-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Email') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_sms text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/sms-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('SMS') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_whatsapp text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/whatsapp-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Whatsapp') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_facebook text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/facebook-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Facebook') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_twitter text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/twitter-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Twitter') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-light btn-sm inline-flex items-center justify-center">
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:share-2"></iconify-icon>
+                            {{ __('Invite') }}
+                        </button>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <div class="relative">
+                        <input type="text" class="form-control !pr-20" id="referral-input-mobile" value="{{ $getReferral->link }}" readonly>
+                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                            <a href="javascript:;" class="copy-button text-sm" type="button" data-target="#referral-input-mobile">{{ __('Copy Link') }}</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="grid grid-cols-12 gap-5 mb-6">
         <div class="xl:col-span-8 col-span-12 space-y-5">
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid md:grid-cols-3 grid-cols-2 gap-5 h-full">
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
                             {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['monthly_referrals'] }}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Lot size') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['current_month_lots'] }}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Commission') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['current_month_ib_bonus'] }} {{$currency}}
+                            </h6>
+                        </div>
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                            {{ __('This Month') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body p-6">
+                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                            {{ __('Referrals') }}
+                        </p>
+                        <div class="flex items-end space-x-3 mb-2">
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative volume') }}
+                            {{ __('Lot size') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_volume'] }}
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['total_lots'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Cumulative balance of clients') }}
+                            {{ __('Commission') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_referrals_balance'] }} {{$currency}}
+                            <h6 class="block text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                                {{ $dataCount['total_ib_bonus'] }} {{$currency}}
                             </h6>
-                        </div>
-{{--                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">--}}
-{{--                            {{ __('This Month') }}--}}
-{{--                        </p>--}}
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Total Rebate') }}
-                        </p>
-                        <div class="flex items-end space-x-3 mb-2">
-                            <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['monthly_rebate'] }} {{$currency}}
-                            </h6>
-{{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
-{{--                                {{ __('-52%') }}--}}
-{{--                            </span>--}}
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
+                            {{ __('Total') }}
                         </p>
                     </div>
                 </div>
@@ -109,73 +210,75 @@
                             {{ __('Withdraw') }}
                         </a>
                     </div>
-                    <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-3">
-                        <div class="flex justify-between flex-wrap items-center mb-3">
-                            <h4 class="card-title">{{ __('Signup') }}</h4>
-                            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                                <div class="relative">
-                                    <div class="dropdown relative">
-                                        <button class="btn btn-outline-light btn-sm inline-flex items-center justify-center" type="button" id="shareDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
-                                            {{ __('Share') }}
-                                        </button>
-                                        <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
-                                            <li>
-                                                <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                                <span class="flex items-center gap-2">
-                                                    <img src="{{ asset('frontend/images/logo/email-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                    {{ __('Email') }}
-                                                </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="a2a_button_sms text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                                <span class="flex items-center gap-2">
-                                                    <img src="{{ asset('frontend/images/logo/sms-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                    {{ __('SMS') }}
-                                                </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="a2a_button_whatsapp text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                                <span class="flex items-center gap-2">
-                                                    <img src="{{ asset('frontend/images/logo/whatsapp-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                    {{ __('Whatsapp') }}
-                                                </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="a2a_button_facebook text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                                <span class="flex items-center gap-2">
-                                                    <img src="{{ asset('frontend/images/logo/facebook-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                    {{ __('Facebook') }}
-                                                </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="a2a_button_twitter text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                                <span class="flex items-center gap-2">
-                                                    <img src="{{ asset('frontend/images/logo/twitter-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                    {{ __('Twitter') }}
-                                                </span>
-                                                </a>
-                                            </li>
-                                        </ul>
+                    <div class="md:block hidden">
+                        <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-3">
+                            <div class="flex justify-between flex-wrap items-center mb-3">
+                                <h4 class="card-title">{{ __('Signup') }}</h4>
+                                <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                                    <div class="relative">
+                                        <div class="dropdown relative">
+                                            <button class="btn btn-outline-light btn-sm inline-flex items-center justify-center" type="button" id="shareDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
+                                                {{ __('Share') }}
+                                            </button>
+                                            <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
+                                                <li>
+                                                    <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    <span class="flex items-center gap-2">
+                                                        <img src="{{ asset('frontend/images/logo/email-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                        {{ __('Email') }}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="a2a_button_sms text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    <span class="flex items-center gap-2">
+                                                        <img src="{{ asset('frontend/images/logo/sms-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                        {{ __('SMS') }}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="a2a_button_whatsapp text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    <span class="flex items-center gap-2">
+                                                        <img src="{{ asset('frontend/images/logo/whatsapp-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                        {{ __('Whatsapp') }}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="a2a_button_facebook text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    <span class="flex items-center gap-2">
+                                                        <img src="{{ asset('frontend/images/logo/facebook-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                        {{ __('Facebook') }}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="a2a_button_twitter text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    <span class="flex items-center gap-2">
+                                                        <img src="{{ asset('frontend/images/logo/twitter-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                        {{ __('Twitter') }}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <button type="button" class="btn btn-outline-light btn-sm inline-flex items-center justify-center">
+                                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:share-2"></iconify-icon>
+                                        {{ __('Invite') }}
+                                    </button>
                                 </div>
-                                <button type="button" class="btn btn-outline-light btn-sm inline-flex items-center justify-center">
-                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:share-2"></iconify-icon>
-                                    {{ __('Invite') }}
-                                </button>
                             </div>
-                        </div>
-                        <div class="input-area">
-                            <div class="relative">
-                                <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $getReferral->link }}" readonly>
-                                <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
-                                </span>
+                            <div class="input-area">
+                                <div class="relative">
+                                    <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $getReferral->link }}" readonly>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                        <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
+                                    </span>
 
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -196,17 +299,7 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-5 grid-cols-2 gap-5 mb-6">
-        <div class="card">
-            <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Total Referrals') }}
-                </p>
-                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_referrals'] }}
-                </h6>
-            </div>
-        </div>
+    <div class="grid lg:grid-cols-4 grid-cols-2 gap-5 mb-6">
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">

@@ -11,6 +11,7 @@ use App\Models\MultiLevel;
 use App\Models\IbGroup;
 use App\Models\SwapFreeAccount;
 use App\Models\PlatformGroup;
+use App\Models\AccountTypeCategory;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -46,7 +47,7 @@ class ForexSchemaController extends Controller
     public function index()
     {
 
-        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->paginate(10);
+        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])->orderBy('priority','asc')->traderType()->paginate(10);
 
         return view('backend.forex_schema.index', compact('schemas'));
     }
@@ -58,7 +59,9 @@ class ForexSchemaController extends Controller
      */
     public function create()
     {
-        return view('backend.forex_schema.create');
+        $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
+        $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
+        return view('backend.forex_schema.create', compact('accountTypeCategories', 'rebateRules'));
     }
 
     public function manageLevel()
@@ -136,7 +139,8 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'account_category_id' => $input['account_category_id'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
             'is_withdraw' => $input['is_withdraw'],
             'is_internal_transfer' => $input['is_internal_transfer'],
@@ -150,7 +154,13 @@ class ForexSchemaController extends Controller
             'is_global' => $input['is_global'],
         ];
 //        dd($finalData);
-        ForexSchema::create($finalData);
+        $schema = ForexSchema::create($finalData);
+
+        // Attach rebate rules if provided
+        if (!empty($input['rebate_rules'])) {
+            $schema->rebateRules()->sync($input['rebate_rules']);
+        }
+
         notify()->success('schema created successfully');
         return redirect()->route('admin.accountType.index');
     }
@@ -164,7 +174,10 @@ class ForexSchemaController extends Controller
     public function edit($id)
     {
         $schema = ForexSchema::find($id);
-        return view('backend.forex_schema.edit', compact('schema'));
+        $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
+        $attachedRebateRules = $schema->rebateRules->pluck('id')->toArray();
+        $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
+        return view('backend.forex_schema.edit', compact('schema', 'accountTypeCategories', 'rebateRules', 'attachedRebateRules'));
     }
 
     /**
@@ -225,7 +238,8 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'account_category_id' => $input['account_category_id'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
             'is_withdraw' => $input['is_withdraw'],
             'is_internal_transfer' => $input['is_internal_transfer'],
@@ -240,6 +254,8 @@ class ForexSchemaController extends Controller
         ];
 
         $schema->update($finalData);
+
+        $schema->rebateRules()->sync($input['rebate_rules'] ?? []);
 
         notify()->success('schema Update successfully');
 

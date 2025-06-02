@@ -1,38 +1,36 @@
 <div class="hv-item">
     <div class="hv-item-parent">
-        <div class="person">
-            <img src="{{ getFilteredPath($levelUser->avatar, 'fallback/user.png') }}" class="inline-flex" alt="">
-            <p class="name">
+        <div class="person flex flex-col items-center">
+            <div class="w-12 h-12 rounded-[100%] bg-white border border-slate-100 dark:bg-slate-800 dark:border-slate-700">
+                <img src="{{ getFilteredPath($levelUser->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+            </div>
+            <div class="text-center inline-flex flex-col rounded border border-slate-100 dark:border-slate-700 p-2 my-1">
                 @if($me)
-                    {{ __("It's Me") }}( {{ $levelUser->full_name }} )
+                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                        {{ __("It's Me") }}( {{ $levelUser->full_name }} )
+                    </h4>
                 @else
-                    <b>{{ $levelUser->full_name }} <br>
-{{--                        @if(setting('deposit_level'))--}}
-                            {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
-{{--                        @endif--}
-{{--                        {{dd($levelUser->id)}}--}}
-{{--                        @if(setting('profit_level'))--}}
-                            {{ __('Accounts Balance') }} {{ mt5_total_balance($levelUser->id) }}
-{{--                        @endif--}}
-                    </b>
+                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                        {{ $levelUser->full_name }}
+                    </h4>
+                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 !text-nowrap">
+                        {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
+                        {{ __('Accounts Balance') }} {{ mt5_total_balance($levelUser->id) }}
+                    </div>
                 @endif
-            </p>
+            </div>
         </div>
     </div>
 
     @if($depth && $level > $depth && $levelUser->referrals->count() > 0)
-
         <div class="hv-item-children">
-
             @foreach($levelUser->referrals as $levelUser)
                 <div class="hv-item-child">
                     <!-- Key component -->
                     @include('frontend::referral.include.__tree',['levelUser' => $levelUser,'level' => $level,'depth' => $depth + 1,'me' => false])
                 </div>
             @endforeach
-
         </div>
-
     @endif
 
 </div>

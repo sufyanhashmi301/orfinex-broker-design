@@ -430,6 +430,10 @@ class WithdrawController extends Controller
                 if ($txn) {
                     $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
                     notify()->success('Approve successfully');
+                }else{
+                    notify()->error('Failed to update transaction. Please try again.');
+                    return redirect()->back();
+
                 }
             } elseif (isset($input['reject'])) {
                 $manualFieldData = json_decode($transaction->manual_field_data, true);
@@ -454,10 +458,18 @@ class WithdrawController extends Controller
                     $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                     if ($txn) {
                         $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+                    }else{
+                        notify()->error('Failed to update transaction. Please try again.');
+                        return redirect()->back();
+
                     }
                 }
 
-                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                $updateResult =  Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                if (!$updateResult) {
+                    notify()->error('Failed to update transaction. Please try again.');
+                    return redirect()->back();
+                }
                 notify()->success('Reject successfully');
             }
             $transaction->action_by = auth()->user()->id;
@@ -836,7 +848,13 @@ class WithdrawController extends Controller
                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
                 if ($withdrawResponse['success']  && $withdrawResponse['result']['responseCode'] == 10009) {
                     $isDeducted = true; // Deduction applied
-                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, $approvalCause);
+                    $updateResult =  Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, $approvalCause);
+                    if (!$updateResult) {
+                        $data['type'] = 1;
+                        $reverseWithdrawResponse = $this->forexApiService->balanceOperation($data);
+                        notify()->error('Failed to update transaction. Please try again.');
+                        return redirect()->back();
+                    }
                 } else {
                     // Mark the transaction as failed if deduction fails
                     Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, $approvalCause);

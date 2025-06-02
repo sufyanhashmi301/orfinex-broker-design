@@ -14,6 +14,8 @@
             @yield('title')
         </h4>
     </div>
+        @include('backend.setting.branding.include.__tabs_nav')
+
     <div class="card">
         <div class="card-body p-6">
             <div class="space-y-5">

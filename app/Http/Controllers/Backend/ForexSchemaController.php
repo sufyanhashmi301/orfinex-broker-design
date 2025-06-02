@@ -105,6 +105,7 @@ class ForexSchemaController extends Controller
             'account_limit' => 'required|integer|min:1|max:50',
             'min_amount' => 'nullable|integer|min:0|max:500000',
             'priority' => 'required|integer',
+            'demo_deposit_amount' => 'nullable|numeric|min:0|max:50000000',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
         ], [
@@ -119,7 +120,7 @@ class ForexSchemaController extends Controller
         }
 
         $input = $request->all();
-
+        $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         $finalData = [
@@ -139,6 +140,7 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
+            'demo_deposit_amount' => $input['demo_deposit_amount'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
@@ -203,6 +205,7 @@ class ForexSchemaController extends Controller
             'account_limit' => 'required|integer|min:1|max:50',
             'min_amount' => 'required|integer|min:0|max:500000',
             'priority' => 'required|integer',
+            'demo_deposit_amount' => 'nullable|numeric|min:0',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
 
@@ -219,6 +222,7 @@ class ForexSchemaController extends Controller
 //        dd($request->all());
         $schema = ForexSchema::find($id);
         $input = $request->all();
+        $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
 
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
@@ -238,6 +242,7 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
+            'demo_deposit_amount' => $input['demo_deposit_amount'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,

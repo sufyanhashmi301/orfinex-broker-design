@@ -571,7 +571,20 @@
                                 <input type="text" class="form-control" name="x9_name" placeholder="Trading Server Demo" value="{{ setting('x9_name','x9_api') }}" readonly>
                             </div>
                         @endif
-
+ <div class="input-area mt-4">
+            <label class="form-label" for="">{{ __('Fixed Deposit Amount (Islamic Demo):') }}</label>
+            <input
+                type="number"
+                step="0.01"
+                name="demo_deposit_amount"
+                class="form-control"
+                placeholder="Enter fixed deposit amount"
+            />
+            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo type of account</span>
+            @error('demo_deposit_amount')
+                <span class="error">{{ $message }}</span>
+            @enderror
+        </div>
                     </div>
                 </div>
             </div>

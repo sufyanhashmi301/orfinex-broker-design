@@ -246,7 +246,14 @@ class ForexAccountController extends GatewayController
                     // Save account in DB
                     $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
                     $this->sendNotification($user,$mt5Login,$password,$schema,$server);
-
+if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
+    $this->forexApiService->balanceOperationDemo([
+        'login' => $mt5Login,
+        'Amount' => $schema->demo_deposit_amount,
+        'type' => 1, // deposit
+        'TransactionComments' => 'auto/demo/deposit/'.time()
+    ]);
+}
                     notify()->success(__('Successfully Created Account'), 'success');
                     return redirect()->route('user.forex-account-logs');
                 }
@@ -294,7 +301,14 @@ class ForexAccountController extends GatewayController
                 $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
                 $this->sendNotification($user,$mt5Login,$password,$schema,$server);
-
+                if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
+                    (new x9ApiService())->balanceOperationDemo([
+                        'login' => $mt5Login,
+                        'Amount' => $schema->demo_deposit_amount,
+                        'type' => 1, // deposit
+                        'TransactionComments' => 'auto/demo/deposit/'.time()
+                    ]);
+                }
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');
             }

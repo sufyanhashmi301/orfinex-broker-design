@@ -2193,5 +2193,27 @@ return [
             ],
         ],
     ],
-
+    'user_dashboard' => [
+        'title' => 'User Dashboard',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'is_desktop_dashboard_quick_link',
+                'label' => 'Enable Desktop Dashboard Quick Links',
+                'description' => 'Show or hide quick links section on the dashboard',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'is_mobile_dashboard_quick_link',
+                'label' => 'Enable Mobile Dashboard Quick Links',
+                'description' => 'Show or hide quick links section on the dashboard',
+                'rules' => 'required',
+                'value' => true,
+            ],
+        ],
+    ],
 ];

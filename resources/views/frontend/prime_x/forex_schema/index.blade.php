@@ -27,8 +27,16 @@
                         </p>
                     @endif
                 </div>
+                @php
+                    $countries = json_decode($schema->country, true);
+                @endphp
                 <p class="text-sm text-success mb-2">
-                    {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->country, true)) }}
+                    {{ __('Available in countries: ') }}
+                    @if(!empty($countries) && is_array($countries))
+                        {{ implode(', ', $countries) }}
+                    @elseif($schema->is_global)
+                        {{ __('Global') }}
+                    @endif
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{!! $schema->desc !!}</p>
             </div>
@@ -63,7 +71,7 @@
                     @endif
                 </ul>
             </div>
-            <a href="{{ route('user.schema.preview', $schema->id) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
+            <a href="{{ route('user.schema.preview', the_hash($schema->id)) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
                 {{ __('Create Account') }}
             </a>
         </div>

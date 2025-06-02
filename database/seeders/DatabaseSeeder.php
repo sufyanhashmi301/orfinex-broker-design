@@ -52,5 +52,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ForexSchemasTableSeeder::class);
 
 
+        $this->call(ThemesTableSeeder::class);
+        $this->call(LanguagesTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
+        $this->call(CustomCssTableSeeder::class);
     }
 }

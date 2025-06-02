@@ -48,45 +48,47 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountCreateNow(Request $request)
     {
-
-$validator = Validator::make($request->all(), [
-        'schema_id' => 'required',
-        'main_password' => [
-            'required',
-            'min:8',
-            'max:20',
-            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
-        ],
-        'account_type' => [
-            'required',
-            function ($attribute, $value, $fail) {
-                if (!in_array($value, ['real', 'demo'])) {
-                    $fail(__('The ' . $attribute . ' must be either real or demo.'));
-                }
-            },
-        ],
-        'is_islamic' => [
-            function ($attribute, $value, $fail) use ($request) {
-                $schema = ForexSchema::find($request->schema_id);
-                if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
-                    $fail(__('The selected schema does not support Islamic account for Real account type.'));
-                }
-                if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
-                    $fail(__('The selected schema does not support Islamic account for Demo account type.'));
-                }
-            },
-        ],
-        'leverage' => 'required',
-        'account_name' => 'required',
-    ], [
-        'main_password.required' => __('The main password field is required.'),
-        'main_password.min' => __('The main password must be at least 8 characters long.'),
-        'main_password.max' => __('The main password must not exceed 20 characters.'),
-        'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
-        'account_type.required' => 'The account type is required.',
-        'leverage.not_regex' => __('Kindly select a valid leverage.'),
-    ]);
-
+        if (!setting('account_creation', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your account creation', __('Error'));
+            return redirect()->route('user.kyc');
+        }
+        $validator = Validator::make($request->all(), [
+                'schema_id' => 'required',
+                'main_password' => [
+                    'required',
+                    'min:8',
+                    'max:20',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/',
+                ],
+                'account_type' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (!in_array($value, ['real', 'demo'])) {
+                            $fail(__('The ' . $attribute . ' must be either real or demo.'));
+                        }
+                    },
+                ],
+                'is_islamic' => [
+                    function ($attribute, $value, $fail) use ($request) {
+                        $schema = ForexSchema::find(get_hash($request->schema_id));
+                        if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
+                            $fail(__('The selected schema does not support Islamic account for Real account type.'));
+                        }
+                        if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
+                            $fail(__('The selected schema does not support Islamic account for Demo account type.'));
+                        }
+                    },
+                ],
+                'leverage' => 'required',
+                'account_name' => 'required',
+            ], [
+                'main_password.required' => __('The main password field is required.'),
+                'main_password.min' => __('The main password must be at least 8 characters long.'),
+                'main_password.max' => __('The main password must not exceed 20 characters.'),
+                'main_password.regex' => __('The main password must be 8–20 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character from the following: ! @ # $ % & * ( ) : { } | < >'),
+                'account_type.required' => 'The account type is required.',
+                'leverage.not_regex' => __('Kindly select a valid leverage.'),
+            ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));
@@ -94,6 +96,7 @@ $validator = Validator::make($request->all(), [
             return redirect()->back();
         }
         $input = $request->all();
+        $input['schema_id'] = get_hash($input['schema_id']);
         $user = Auth::user();
         $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);
@@ -298,47 +301,40 @@ $validator = Validator::make($request->all(), [
             }
         }
         notify()->error(__('Some error occurred! please try again'), __('Error'));
-        return redirect()->route('user.schema.preview', $schema->id);
+        return redirect()->route('user.schema.preview', the_hash($schema->id));
 
         return redirect()->route('user.forex-account-logs');
     }
 
-    public function saveAccount($request,$schema,$mt5Login,$accountType,$user,$data,$server)
+    public function saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server)
     {
+        return DB::transaction(function () use ($request, $schema, $mt5Login, $accountType, $user, $data, $server) {
+            $exists = ForexAccount::where('login', $mt5Login)
+                ->where('trader_type', $schema->trader_type)
+                ->exists();
 
-        $accountData = $request->all();
+            if ($exists) {
+                throw new \Exception("Duplicate account creation attempt: login already exists.");
+            }
 
-        $accountData['forex_schema_id'] = $schema->id;
-        $accountData['login'] = $mt5Login;
-        $accountData['account_name'] = $request->account_name;
-        $accountData['account_type'] = $accountType;
-        $accountData['user_id'] = $user->id;
-        $accountData['currency'] = setting('site_currency', 'global');
-        $accountData['group'] = $data['group'];
-        $accountData['leverage'] = $data['leverage'];
-        $accountData['status'] = ForexAccountStatus::Ongoing;
-        $accountData['server'] = $server;
-        $accountData['created_by'] = $user->id;
-        $accountData['first_min_deposit_paid'] = 0;
-        $accountData['trader_type'] = $schema->trader_type;
-        $accountData['trading_platform'] = $schema->trader_type;
+            $accountData = $request->all();
+            $accountData['forex_schema_id'] = $schema->id;
+            $accountData['login'] = $mt5Login;
+            $accountData['account_name'] = $request->account_name;
+            $accountData['account_type'] = $accountType;
+            $accountData['user_id'] = $user->id;
+            $accountData['currency'] = setting('site_currency', 'global');
+            $accountData['group'] = $data['group'];
+            $accountData['leverage'] = $data['leverage'];
+            $accountData['status'] = ForexAccountStatus::Ongoing;
+            $accountData['server'] = $server;
+            $accountData['created_by'] = $user->id;
+            $accountData['first_min_deposit_paid'] = 0;
+            $accountData['trader_type'] = $schema->trader_type;
+            $accountData['trading_platform'] = $schema->trader_type;
 
-//        if ($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
-//            $accountData['trading_platform'] = setting('demo_server', 'platform_api');
-//        }
-
-        $forexTrading = ForexAccount::create($accountData);
-//        if ($user->ref_id) {
-//            $referrer = User::find($user->ref_id);
-//            if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
-//                $data = [
-//                    'login' => $mt5Login,
-//                    'agent' => $referrer->ib_login,
-//                ];
-////                $this->forexApiService->updateAgentAccount($data);
-//            }
-//        }
-        return true;
+            return ForexAccount::create($accountData);
+        });
     }
 
     protected function isAccountAlreadyExists($traderType,$login)

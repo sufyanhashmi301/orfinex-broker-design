@@ -94,7 +94,7 @@
                 </div>
                 <div class="input-area">
                     <label for="" class="form-label">{{ __('Gender:') }}</label>
-                    <select name="status" class="select2 form-control w-full">
+                    <select name="gender" class="select2 form-control w-full">
                         <option value="male">{{ __('Male') }}</option>
                         <option value="female">{{ __('Female') }}</option>
                         <option value="other">{{ __('Other') }}</option>

@@ -86,6 +86,7 @@ class ForexSchema extends Model
 		'priority',
 		'demo_server',
 		'live_server',
+        'account_category_id',
 	];
 
     // App\Models\ForexSchema.php
@@ -102,6 +103,11 @@ class ForexSchema extends Model
     public function ibGroup()
     {
         return $this->belongsTo(IbGroup::class, 'ib_group_id', 'id');
+    }
+
+    public function accountCategories()
+    {
+        return $this->belongsTo(AccountTypeCategory::class, 'account_category_id', 'id');
     }
 
 	public function bonuses(){

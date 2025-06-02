@@ -15,50 +15,58 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-
-        $user = auth()->user();
-        $referrer = $user->referrer;
-        $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
-
-        $globalSchemas = ForexSchema::where('is_global', true)->get();
-
-        if ($referrer && $isPartOfMasterIb) {
-            $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
-
-            $forexSchemas = collect();
-
-            foreach ($ibGroup->rebateRules as $rule) {
-                $forexSchemas = $forexSchemas->merge($rule->forexSchemas);
-            }
-
-            // Remove duplicates and sort if needed
-            $schemas = $forexSchemas->merge($globalSchemas)->unique('id')->sortBy('priority')->values();
-        }else{
-            // $this->sendApiPostRequest('url','data');
-            // $this->getUserApi(554944);
+        try {
+            $user = auth()->user();
+            $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $user);
 
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
+            $globalSchemas = ForexSchema::active()
+                ->traderType()
+                ->where('is_global', 1)
+                ->get();
 
             $userSchemas = ForexSchema::active()
                 ->traderType()
                 ->relevantForUser($user->country, $tagNames)
                 ->get();
 
-            $schemas = $userSchemas->merge($globalSchemas)
+            $schemas = collect();
+
+            if ($isPartOfMasterIb) {
+                $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
+
+                if ($ibGroup) {
+                    foreach ($ibGroup->rebateRules as $rule) {
+                        $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+                    }
+                }
+            }
+            $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
                 ->unique('id')
                 ->sortBy('priority')
                 ->values();
+
+            $activePlatform = setting('active_trader_type', 'features');
+            $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
+
+            return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
+
+        } catch (\Exception $e) {
+            // Log the error with detailed context
+            \Log::error('Error in ForexSchemaController@index', [
+                'user_id' => auth()->id(),
+                'message' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
         }
-
-
-        $activePlatform = setting('active_trader_type', 'features');
-        $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
-
-        return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     }
+
 
     public function schemaPreview($id)
     {
+        $id = get_hash($id);
         $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
             ->where(function($query) use ($tagNames) {

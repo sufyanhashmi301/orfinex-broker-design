@@ -32,7 +32,7 @@
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Country/Tags') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Badge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -61,7 +61,38 @@
                                         {{$schema->leverage}}
                                     </td>
                                     <td class="table-td">
-                                        @if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif
+                                        @php
+                                            $countries = $schema->country ? json_decode($schema->country, true) : [];
+                                            $tags = $schema->tags ? json_decode($schema->tags, true) : [];
+                                            $categorySlug = optional($schema->accountCategories)->slug;
+                                        @endphp
+
+                                        @if($categorySlug === 'country_and_tags' && !empty($countries))
+                                            <div>
+                                                <span class="font-medium">{{ __('Countries: ') }}</span>
+                                                {{ implode(', ', $countries) }}
+                                            </div>
+                                        @endif
+
+                                        @if($categorySlug === 'country_and_tags' && !empty($tags))
+                                            <div>
+                                                <span class="font-medium">{{ __('Tags: ') }}</span>
+                                                {{ implode(', ', $tags) }}
+                                            </div>
+                                        @endif
+
+                                        @if($categorySlug === 'global_account' && $schema->is_global)
+                                            <div>
+                                                <span class="font-medium">{{ __('Global') }}</span>
+                                            </div>
+                                        @endif
+
+                                        @if($categorySlug === 'ib_rebate_rules' && $schema->rebateRules->isNotEmpty())
+                                            <div>
+                                                <span class="font-medium">{{ __('IB Rebate Rules: ') }}</span>
+                                                {{ implode(', ', $schema->rebateRules->pluck('title')->toArray()) }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="table-td">
                                         <div @class([

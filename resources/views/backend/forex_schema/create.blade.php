@@ -44,26 +44,60 @@
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area flex items-center">
+                        <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    {{ __('Account Type Category') }}
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
+                                        {{ __('Choose how this account type should be categorized.') }}
+                                    </span>
+                                </label>
+                                <select name="account_category_id" id="accountTypeCategory" class="form-control w-full" data-placeholder="Select Account Type Category">
+                                    @foreach($accountTypeCategories as $category)
+                                        <option value="{{ $category->id }}" data-slug="{{ $category->slug }}" data-description="{{ $category->description }}">
+                                            {{ $category->title }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div id="global_account" class="input-area flex items-center hidden">
                             <input class="form-check-input" type="hidden" value="0" name="is_global">
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="checkbox" id="globalAccountSwitch" name="is_global" value="1" class="sr-only peer">
+                                <input type="radio" id="isGlobalInput" name="is_global" value="1" class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></div>
                             </label>
                             <div class="flex flex-col ml-5">
                                 <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
-                                    {{ __('Set as Global Account') }}
+                                    {{ __('Global Account') }}
                                 </span>
-                                <span class="text-xs font-Inter font-normal text-slate-400">
-                                    {{ __('Default account will show to all users') }}
+                                <span class="text-xs font-Inter font-normal text-slate-600">
+                                    {{ __('This will override the country and tag restrictions and will be shown to all users.') }}
                                 </span>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div id="ib_rebate_rules" class="hidden">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    {{ __('Select rebate rules') }}
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
+                                        {{ __('Visible to users based on IB Group rebate rule configuration.') }}
+                                    </span>
+                                </label>
+                                <select name="rebate_rules[]" id="rebateRuleSelect" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
+                                    @foreach( $rebateRules as $rule)
+                                        <option  value="{{ $rule['id'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $rule['title']  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div id="country_and_tags" class="grid grid-cols-1 md:grid-cols-2 gap-5 hidden">
                             <div class="input-area">
                                 <label class="form-label" for="">
                                     {{ __('Select countries') }}
-                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
                                         {{ __('Choose countries to display this forex scheme. Select "All" to show it globally.') }}
                                     </span>
                                 </label>
@@ -81,14 +115,11 @@
                             <div class="input-area">
                                 <label class="form-label" for="">
                                     {{ __('Select tags') }}
-                                    <span class="text-xs font-Inter font-normal text-slate-400 block">
+                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
                                         {{ __('Choose the tags where you would like this account type to be shown') }}
                                     </span>
                                 </label>
                                 <select name="tags[]" id="tagSelect" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
-                                    <option value="All" >
-                                        {{ __('All') }}
-                                    </option>
                                     @foreach( getRiskProfileTag() as $tag)
                                         <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
                                             {{  $tag->name  }}
@@ -716,34 +747,59 @@
     <script>
         $(document).ready(function() {
 
-            const globalSwitch = $('#globalAccountSwitch');
-            const countrySelect = $('#countrySelect');
-            const tagSelect = $('#tagSelect');
-
-            function updateFieldState() {
-                const shouldDisable = globalSwitch.is(':checked');
-
-                if (shouldDisable) {
-                    countrySelect.val(['All']).trigger("change");
-                    tagSelect.val(['All']).trigger("change");
+            function formatState(state) {
+                if (!state.id) {
+                    return state.text;
                 }
 
-                countrySelect.prop('disabled', shouldDisable);
-                tagSelect.prop('disabled', shouldDisable);
+                const description = $(state.element).data('description') || '';
+                const text = state.text || '';
 
-                // Optional: Refresh select2 styling if used
-                countrySelect.trigger("change.select2");
-                tagSelect.trigger("change.select2");
+                return $(`
+                    <span class="leading-none">
+                        <span class="block">${text}</span>
+                        <span class="text-xs font-Inter font-normal text-slate-600">${description}</span>
+                    </span>
+                `);
             }
 
-            // Initialize state on page load
-            updateFieldState();
-
-            // Update on toggle change
-            globalSwitch.on('change', function () {
-                updateFieldState();
+            $("#accountTypeCategory").select2({
+                templateResult: formatState
             });
 
+            const categorySelect = $('#accountTypeCategory');
+            const countrySelect = $('#countrySelect');
+            const tagSelect = $('#tagSelect');
+            const rebateRuleSelect = $('#rebateRuleSelect');
+            const globalToggle = $('#isGlobalInput');
+            const allCategoryBlocks = ['#global_account', '#ib_rebate_rules', '#country_and_tags'];
+            function updateAccountTypeCategory(selectedValue) {
+                const isGlobal = selectedValue === 'global_account';
+                // Hide all blocks
+                allCategoryBlocks.forEach(selector => $(selector).addClass('hidden'));
+
+                globalToggle.prop('checked', isGlobal);
+                // Show the selected block
+                const selectedBlock = `#${selectedValue}`;
+                if (allCategoryBlocks.includes(selectedBlock)) {
+                    $(selectedBlock).removeClass('hidden');
+                }
+            }
+
+            // Initial show/hide on page load (without reset)
+            updateAccountTypeCategory(categorySelect.find('option:selected').data('slug'));
+
+            // Add change listener
+            categorySelect.on('change', function () {
+                const slug = $(this).find('option:selected').data('slug');
+                // Reset field values only on change
+                countrySelect.val(null).trigger('change');
+                tagSelect.val(null).trigger('change');
+                rebateRuleSelect.val(null).trigger('change');
+
+                // Then update visible block
+                updateAccountTypeCategory(slug);
+            });
 
             var elt = $('.keyFeatureInput');
             elt.tagsinput({

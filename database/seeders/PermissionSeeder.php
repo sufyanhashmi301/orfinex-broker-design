@@ -245,6 +245,8 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-list'],
             ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-edit'],
+            ['category' => 'KYC and Compliance Setting', 'name' => 'kyc-levels-permissions'],
+
 
             ['category' => 'User Rankings Setting', 'name' => 'ranking-list'],
             ['category' => 'User Rankings Setting', 'name' => 'ranking-create'],
@@ -274,6 +276,7 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Website Setting', 'name' => 'theme-settings'],
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
+            ['category' => 'Website Setting', 'name' => 'provider-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
             ['category' => 'Website Setting', 'name' => 'banner-settings'],
             ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],

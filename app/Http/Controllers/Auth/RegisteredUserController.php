@@ -235,15 +235,14 @@ class RegisteredUserController extends Controller
 
             if ($referrer) {
                 $user->ref_id = $referrer->id;
-                $user->ib_group_id = $referrer->ib_group_id;
                 $user->save();
 
                 $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
 
-                if ($isPartOfMasterIb && $referrer->ib_group_id) {
+                if ($isPartOfMasterIb) {
                     $user->user_metas()->updateOrCreate(
                         ['meta_key' => 'is_part_of_master_ib'],
-                        ['meta_value' => $referrer->ib_group_id]
+                        ['meta_value' => $isPartOfMasterIb]
                     );
                 }
             }

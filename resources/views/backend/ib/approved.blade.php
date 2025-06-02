@@ -199,7 +199,20 @@
             $('#global_search').keyup(function() {
                 table.draw();
             });
+            // Edit Button Click Event
+            $('#dataTable').on('click', '.edit-btn', function() {
+                let userId = $(this).data('user-id');
+                let fullName = $(this).data('full-name');
+                let ibGroupId = $(this).data('ib-group-id');
 
+                // Populate Modal Fields
+                $('#modalUserName').text(fullName);
+                $('#modalUserId').val(userId);
+                $('#ibGroupIDSelect').val(ibGroupId).change();
+
+                // Show the Modal
+                $('#addIBModal').modal('show');
+            });
             $('#dataTable').on('click', '.detail-btn', function () {
                 console.log('view');
                 let userId = $(this).data('user-id');

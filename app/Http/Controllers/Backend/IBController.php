@@ -120,26 +120,19 @@ class IBController extends Controller
 {
     if ($request->ajax()) {
         $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-        $loggedInUser = auth()->user();
+       
+        // Get accessible user IDs using your helper
+        $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
-        // Check if the user can view all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-        if ($canViewAllUsers) {
-            // Fetch all pending IB users
-            $data = User::where('ib_status', IBStatus::PENDING)->latest();
-        } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                // Fetch pending IB users for attached user IDs only
-                $data = User::where('ib_status', IBStatus::PENDING)->whereIn('id', $attachedUserIds)->latest();
-            } else {
-                // If no users are attached, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
+        // Return empty collection if no accessible users
+        if ($accessibleUserIds->isEmpty()) {
+            return Datatables::of(collect([]))->make(true);
         }
+
+        // Fetch only pending IB users from the accessible users
+        $data = User::where('ib_status', IBStatus::PENDING)
+            ->whereIn('id', $accessibleUserIds)
+            ->latest();
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -162,26 +155,20 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
+            
+        // Use your helper to get accessible user IDs
+        $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
-            // Check if the user can view all users
-            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+        // Return empty datatable if no accessible users
+        if ($accessibleUserIds->isEmpty()) {
+            return Datatables::of(collect([]))->make(true);
+        }
 
-            // Initialize query
-            $data = User::with('ibGroup')->where('ib_status', IBStatus::APPROVED)->latest();
-
-            if (!$canViewAllUsers) {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data->whereIn('id', $attachedUserIds);
-                } else {
-                    // If no users are attached, return an empty collection
-                    return Datatables::of(collect([]))->make(true);
-                }
-            }
-
+        // Initialize query with accessible users + ib_status filter
+        $data = User::with('ibGroup')
+            ->where('ib_status', IBStatus::APPROVED)
+            ->whereIn('id', $accessibleUserIds)
+            ->latest();
             // Apply additional filters
             $data->applyFilters($filters);
 
@@ -212,7 +199,18 @@ class IBController extends Controller
         if ($request->ajax()) {
 
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('ib_status', IBStatus::REJECTED)->latest();
+            // Get accessible user IDs using the helper
+        $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
+
+        // Return empty datatable if no accessible users
+        if ($accessibleUserIds->isEmpty()) {
+            return Datatables::of(collect([]))->make(true);
+        }
+
+        // Query rejected IB users from accessible users
+        $data = User::where('ib_status', IBStatus::REJECTED)
+            ->whereIn('id', $accessibleUserIds)
+            ->latest();
             $data->applyFilters($filters);
 //            dd($data);
 
@@ -242,26 +240,16 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $loggedInUser = auth()->user();
+             // Get accessible user IDs using the helper
+        $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
-            // Check if the user can view all users
-            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+        // If no accessible users, return empty dataset
+        if ($accessibleUserIds->isEmpty()) {
+            return Datatables::of(collect([]))->make(true);
+        }
 
-            // Initialize query
-            $data = User::query()->latest();
-
-            if (!$canViewAllUsers) {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data->whereIn('id', $attachedUserIds);
-                } else {
-                    // If no users are attached, return an empty collection
-                    return Datatables::of(collect([]))->make(true);
-                }
-            }
-
+        // Initialize query with accessible users
+        $data = User::whereIn('id', $accessibleUserIds)->latest();
             // Apply additional filters
             $data->applyFilters($filters);
 

@@ -78,8 +78,7 @@ use App\Http\Controllers\Backend\LeadPipelineController;
 use App\Http\Controllers\Backend\DealController;
 use App\Http\Controllers\Backend\DealNoteController;
 use App\Http\Controllers\Backend\UserAttachmentController;
-
-
+use App\Http\Controllers\Backend\TeamController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -438,7 +437,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
     Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
-
+Route::prefix('team')->group(function() {
+    Route::get('/manage/{staff}', [TeamController::class, 'manage'])->name('team.manage');
+    Route::post('/attach/{staff}', [TeamController::class, 'attach'])->name('team.attach');
+    Route::delete('/detach/{staff}/{member}', [TeamController::class, 'detach'])->name('team.detach');
+    Route::post('/bulk-detach/{staff}', [TeamController::class, 'bulkDetach'])->name('team.bulkDetach');
+});
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
         Route::get('all-sections', 'allSections')->name('all-sections');

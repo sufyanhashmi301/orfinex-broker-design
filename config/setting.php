@@ -664,6 +664,14 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'master_ib_request', // unique name for field
+                'label' => 'Master IB Request', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
         ],
     ],
     'customer_permission' => [
@@ -2185,5 +2193,27 @@ return [
             ],
         ],
     ],
-
+    'user_dashboard' => [
+        'title' => 'User Dashboard',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'is_desktop_dashboard_quick_link',
+                'label' => 'Enable Desktop Dashboard Quick Links',
+                'description' => 'Show or hide quick links section on the dashboard',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'is_mobile_dashboard_quick_link',
+                'label' => 'Enable Mobile Dashboard Quick Links',
+                'description' => 'Show or hide quick links section on the dashboard',
+                'rules' => 'required',
+                'value' => true,
+            ],
+        ],
+    ],
 ];

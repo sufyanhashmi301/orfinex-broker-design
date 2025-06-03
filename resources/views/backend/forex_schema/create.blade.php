@@ -572,7 +572,7 @@
                             </div>
                         @endif
  <div class="input-area mt-4">
-            <label class="form-label" for="">{{ __('Fixed Deposit Amount (Islamic Demo):') }}</label>
+            <label class="form-label" for="">{{ __('Deposit Amount (For Demo):') }}</label>
             <input
                 type="number"
                 step="0.01"
@@ -580,7 +580,7 @@
                 class="form-control"
                 placeholder="Enter fixed deposit amount"
             />
-            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo type of account</span>
+            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo account.</span>
             @error('demo_deposit_amount')
                 <span class="error">{{ $message }}</span>
             @enderror

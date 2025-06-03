@@ -42,30 +42,29 @@ class TransactionController extends Controller
     if ($request->ajax()) {
         $filters = $request->only(['email', 'status', 'type', 'created_at']);
 
-        // Check if user is Super Admin or has permission to view all transactions
-        $canViewAll = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+       
+        // Get accessible users using helper function
+        $accessibleUsersQuery = getAccessibleUserIds();
+        $accessibleUserIds = $accessibleUsersQuery->pluck('id');
 
-        if ($canViewAll) {
-            if ($id) {
-                $data = Transaction::where('user_id', $id)->latest();
+        // Base query for transactions
+        $data = Transaction::query()->latest();
+
+        // If specific user ID is given, filter by it, but ensure user is accessible
+        if ($id) {
+            if ($accessibleUserIds->contains($id)) {
+                $data->where('user_id', $id);
             } else {
-                $data = Transaction::query()->latest();
+                // If user ID is not accessible, return empty result
+                $data->whereNull('id');
             }
         } else {
-            // Only show transactions of attached users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                if ($id) {
-                    $data = Transaction::where('user_id', $id)
-                        ->whereIn('user_id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
-                }
+            // If no specific user ID, filter by accessible users only
+            if ($accessibleUserIds->isNotEmpty()) {
+                $data->whereIn('user_id', $accessibleUserIds);
             } else {
-                // No attached users, return empty result if ID is not allowed
-                $data = Transaction::whereNull('id'); // Will return no results
+                // No accessible users at all
+                $data->whereNull('id');
             }
         }
 

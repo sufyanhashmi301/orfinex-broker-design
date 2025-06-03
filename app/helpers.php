@@ -1068,7 +1068,7 @@ if (!function_exists('user_meta')) {
     function user_meta($metaKey, $default = null, $user = null)
     {
         $user = (blank($user)) ? auth()->user() : $user;
-        
+
         if (!blank($user)) {
             $userMetas = $user->user_metas->pluck('meta_value', 'meta_key');
             if (!blank($userMetas)) {
@@ -1470,68 +1470,6 @@ if (!function_exists('mt5_total_equity')) {
     }
 }
 
-if (!function_exists('get_recursive_equity_details')) {
-    /**
-     * Get detailed recursive equity information for a user and their downline
-     * 
-     * @param User $user The user to calculate equity for
-     * @return array Returns an array containing:
-     *               - personal_equity: User's own equity
-     *               - direct_referral_equity: Total equity of direct referrals
-     *               - total_downline_equity: Total equity of entire downline (all levels)
-     *               - total_equity: Sum of personal + downline equity
-     *               - referral_count: Total number of referrals in downline
-     *               - levels_data: Array of equity data per level
-     */
-    function get_recursive_equity_details($user) {
-        $result = [
-            'personal_equity' => mt5_total_equity($user->id),
-            'direct_referral_equity' => 0,
-            'total_downline_equity' => 0,
-            'total_equity' => 0,
-            'referral_count' => 0,
-            'levels_data' => []
-        ];
-
-        // Calculate direct referral equity
-        foreach ($user->referrals as $directRef) {
-            $result['direct_referral_equity'] += mt5_total_equity($directRef->id);
-        }
-
-        // Function to recursively process levels
-        $processLevel = function($currentUser, $level = 1) use (&$processLevel, &$result) {
-            if (!isset($result['levels_data'][$level])) {
-                $result['levels_data'][$level] = [
-                    'level_equity' => 0,
-                    'referral_count' => 0
-                ];
-            }
-
-            foreach ($currentUser->referrals as $referral) {
-                // Add to level totals
-                $referralEquity = mt5_total_equity($referral->id);
-                $result['levels_data'][$level]['level_equity'] += $referralEquity;
-                $result['levels_data'][$level]['referral_count']++;
-                
-                // Add to overall totals
-                $result['total_downline_equity'] += $referralEquity;
-                $result['referral_count']++;
-
-                // Process next level
-                $processLevel($referral, $level + 1);
-            }
-        };
-
-        // Start processing from level 1
-        $processLevel($user);
-
-        // Calculate total equity
-        $result['total_equity'] = $result['personal_equity'] + $result['total_downline_equity'];
-
-        return $result;
-    }
-}
-
 if (!function_exists('mt5_total_credit')) {
     /**
      * Calculates the total credit for a user's ongoing real forex accounts.
@@ -1791,3 +1729,133 @@ if (! function_exists('getFilteredPath')) {
         return config('app.r2_asset_url') . '/' . ltrim($fallback, '/');
     }
 }
+
+if (!function_exists('get_recursive_equity_details')) {
+    /**
+     * Get detailed recursive equity information for a user and their downline
+     *
+     * @param User $user The user to calculate equity for
+     * @return array Returns an array containing:
+     *               - personal_equity: User's own equity
+     *               - direct_referral_equity: Total equity of direct referrals
+     *               - total_downline_equity: Total equity of entire downline (all levels)
+     *               - total_equity: Sum of personal + downline equity
+     *               - referral_count: Total number of referrals in downline
+     *               - levels_data: Array of equity data per level
+     */
+    function get_recursive_equity_details($user) {
+        $result = [
+            'personal_equity' => mt5_total_equity($user->id),
+            'direct_referral_equity' => 0,
+            'total_downline_equity' => 0,
+            'total_equity' => 0,
+            'referral_count' => 0,
+            'levels_data' => []
+        ];
+
+        // Calculate direct referral equity
+        foreach ($user->referrals as $directRef) {
+            $result['direct_referral_equity'] += mt5_total_equity($directRef->id);
+        }
+
+        // Function to recursively process levels
+        $processLevel = function($currentUser, $level = 1) use (&$processLevel, &$result) {
+            if (!isset($result['levels_data'][$level])) {
+                $result['levels_data'][$level] = [
+                    'level_equity' => 0,
+                    'referral_count' => 0
+                ];
+            }
+
+            foreach ($currentUser->referrals as $referral) {
+                // Add to level totals
+                $referralEquity = mt5_total_equity($referral->id);
+                $result['levels_data'][$level]['level_equity'] += $referralEquity;
+                $result['levels_data'][$level]['referral_count']++;
+
+                // Add to overall totals
+                $result['total_downline_equity'] += $referralEquity;
+                $result['referral_count']++;
+
+                // Process next level
+                $processLevel($referral, $level + 1);
+            }
+        };
+
+        // Start processing from level 1
+        $processLevel($user);
+
+        // Calculate total equity
+        $result['total_equity'] = $result['personal_equity'] + $result['total_downline_equity'];
+
+        return $result;
+    }
+}
+
+if (!function_exists('getAccessibleUserIds')) {
+    function getAccessibleUserIds(array $filters = []): \Illuminate\Database\Eloquent\Builder
+    {
+        $loggedInUser = auth()->user();
+
+        // Case 1: Super Admin or has permission to view all
+        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+            return User::applyFilters($filters);
+        }
+
+        $finalUserIds = collect();
+
+        // Add directly attached users
+        $attachedUserIds = $loggedInUser->users->pluck('id');
+        $finalUserIds = $finalUserIds->merge($attachedUserIds);
+
+        // Merge users from child staff (team members)
+        if ($loggedInUser->relationLoaded('teamMembers') || method_exists($loggedInUser, 'teamMembers')) {
+            foreach ($loggedInUser->teamMembers as $teamMember) {
+                if ($teamMember->can('show-all-users-by-default-to-staff')) {
+                    // If any child staff has permission, include all users
+                    return User::applyFilters($filters);
+                }
+
+                // Otherwise, merge their attached users
+                $childAttachedUserIds = $teamMember->users->pluck('id');
+                $finalUserIds = $finalUserIds->merge($childAttachedUserIds);
+            }
+        }
+
+        // If we collected user IDs, return them with filters
+        if ($finalUserIds->isNotEmpty()) {
+            return User::whereIn('id', $finalUserIds->unique())->applyFilters($filters);
+        }
+
+        // Otherwise, return empty result
+        return User::where('id', -1); // Always false condition
+    }
+}
+
+if (!function_exists('applyStaffNameFilter')) {
+    function applyStaffNameFilter(\Illuminate\Database\Eloquent\Builder $query, string $staffName): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->whereHas('staff', function ($query) use ($staffName) {
+            if (str_contains($staffName, ' ')) {
+                $nameParts = explode(' ', $staffName, 2);
+
+                $query->where(function ($subQuery) use ($nameParts) {
+                    $subQuery->where(function ($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%' . $nameParts[0] . '%')
+                          ->where('last_name', 'like', '%' . $nameParts[1] . '%');
+                    })->orWhere(function ($q) use ($nameParts) {
+                        $q->where('first_name', 'like', '%' . $nameParts[1] . '%')
+                          ->where('last_name', 'like', '%' . $nameParts[0] . '%');
+                    });
+                });
+            } else {
+                $query->where(function ($q) use ($staffName) {
+                    $q->where('first_name', 'like', '%' . $staffName . '%')
+                      ->orWhere('last_name', 'like', '%' . $staffName . '%')
+                      ->orWhere('email', 'like', '%' . $staffName . '%');
+                });
+            }
+        });
+    }
+}
+

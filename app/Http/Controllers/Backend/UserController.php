@@ -92,81 +92,39 @@ class UserController extends Controller
      *
      * @throws Exception
      */
-    public function index(Request $request)
-    {
-        $loggedInUser = auth()->user();
-        $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+public function index(Request $request)
+{
+    $loggedInUser = auth()->user();
+    $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
 
-        if ($request->ajax()) {
-         // Check if the logged-in user is a Super-Admin
-         if ($loggedInUser->hasRole('Super-Admin')) {
-            $data = User::applyFilters($filters);
-        }
-        // Check if the user has the "show-all-users-by-default-to-staff" permission
-        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $data = User::applyFilters($filters);
-        }
-        else {
-            // Get the attached users if the user is not a Super-Admin
-            $attachedUserIds = $loggedInUser->users->pluck('id');
+    if ($request->ajax()) {
+       $data = getAccessibleUserIds($filters);
 
-            if ($attachedUserIds->isNotEmpty()) {
-                // Show only attached users
-                $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
-            } else {
-                // If no users are attached, show nothing (empty dataset)
-                $data = User::where('id', -1); // Return an empty result set
-            }
-        }
- // Apply staff name filter if present
- if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
+     if (!empty($filters['staff_name'])) {
+         $data = applyStaffNameFilter($data, $filters['staff_name']);
+     }
 
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
-        }
-    });
-}
-        $data->applyFilters($filters);
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', function ($row) {
-                    return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('staff_name', function ($row) {
-                    return view('backend.user.include.__staff')->with('staff', $row->staff);
-                })
-
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.user.all');
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })
+            ->editColumn('kyc', 'backend.user.include.__kyc')
+            ->editColumn('status', 'backend.user.include.__status')
+            ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+            ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+            ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('staff_name', function ($row) {
+                return view('backend.user.include.__staff')->with('staff', $row->staff);
+            })
+            ->addColumn('action', 'backend.user.include.__action')
+            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+            ->make(true);
     }
+
+    return view('backend.user.all');
+}
+
 
     public function export(Request $request, $type = null)
 {
@@ -229,61 +187,13 @@ class UserController extends Controller
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
+         $filters['status'] = 1;
         if ($request->ajax()) {
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::where('status', 1)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::where('status', 1)->latest();
-            }
-            // Otherwise, show only attached users
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::where('status', 1)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
-// Apply staff name filter if present
-if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
+            $data = getAccessibleUserIds($filters);
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
         }
-    });
-}
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -315,58 +225,11 @@ if (!empty($filters['staff_name'])) {
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
-
-             // Super-Admin sees all disabled users
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            $data = User::where('status', 0)->latest();
-        }
-        // If user has permission "show-all-users-by-default-to-staff", show all disabled users
-        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $data = User::where('status', 0)->latest();
-        }
-        // Otherwise, show only attached disabled users
-        else {
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                $data = User::where('status', 0)
-                    ->whereIn('id', $attachedUserIds)
-                    ->latest();
-            } else {
-                // No attached users = No results
-                $data = User::where('id', -1); // Returns an empty dataset
-            }
-        }
-        // Apply staff name filter if present
- if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
-        }
-    });
-}
-            $data->applyFilters($filters);
-
+            $filters['status'] = 0;
+         $data = getAccessibleUserIds($filters);
+         if (!empty($filters['staff_name'])) {
+              $data = applyStaffNameFilter($data, $filters['staff_name']);
+          }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -392,35 +255,22 @@ if (!empty($filters['staff_name'])) {
         $loggedInUser = auth()->user();
         $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
-            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
-            $forexAccountIds = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', '>', 0)
-                ->pluck('Login');
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+           $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-            // Super-Admin sees all users with balance
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users with balance
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // Otherwise, show only attached users with balance
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+        $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '>', 0)
+            ->pluck('Login');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::whereIn('id', $userIds)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
+        $userIdsWithBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+
+        // Step 2: Get all accessible users (Super Admin, permission-based, or attached)
+        $accessibleUsersQuery = getAccessibleUserIds();
+
+        // Step 3: Apply balance-based filtering on the accessible user query
+        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance)->latest();
+
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -450,35 +300,21 @@ if (!empty($filters['staff_name'])) {
         $loggedInUser = auth()->user();
         $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
-            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
-            $forexAccountIds = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', '<=', 0)
-                ->pluck('Login');
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+           $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-            // Super-Admin sees all users without balance
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users without balance
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // Otherwise, show only attached users without balance
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+        $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '<=', 0)
+            ->pluck('Login');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::whereIn('id', $userIds)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
+        $userIdsWithoutBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+
+        // ✅ Apply the helper here:
+        $accessibleUsersQuery = getAccessibleUserIds();
+
+        // ✅ Filter by users without balance
+        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithoutBalance)->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -509,61 +345,18 @@ if (!empty($filters['staff_name'])) {
 //        dd($request->all());
         if ($request->ajax()) {
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                    ->where('in_grace_period', true)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                    ->where('in_grace_period', true)->latest();
-            }
-            // Otherwise, show only attached users
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+            // ✅ Use helper to get accessible user query
+        $accessibleUsersQuery = getAccessibleUserIds();
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                        ->where('in_grace_period', true)->where('status', 1)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
-// Apply staff name filter if present
-if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
+        // ✅ Remove global scope and filter grace period
+        $data = $accessibleUsersQuery
+            ->withoutGlobalScope(ExcludeGracePeriodScope::class)
+            ->where('in_grace_period', true)
+            ->latest();
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
         }
-    });
-}
 
-            // Apply additional filters if any
-            $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

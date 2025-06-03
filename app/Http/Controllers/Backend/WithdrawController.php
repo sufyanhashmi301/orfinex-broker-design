@@ -251,38 +251,13 @@ class WithdrawController extends Controller
     $filters = $request->only(['email', 'created_at']);
 
     if ($request->ajax()) {
-        // Check if the logged-in user is a Super-Admin
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            $data = Transaction::where(function ($query) {
-                $query->where('type', TxnType::Withdraw)
-                    ->where('status', 'pending');
-            })->latest();
-        } else {
-            // Apply permission: If the admin has "show-all-users-by-default-to-staff", allow access to all transactions
-            if ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = Transaction::where(function ($query) {
-                    $query->where('type', TxnType::Withdraw)
-                        ->where('status', 'pending');
-                })->latest();
-            } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Show transactions for attached users only
-                    $data = Transaction::whereIn('user_id', $attachedUserIds)
-                        ->where(function ($query) {
-                            $query->where('type', TxnType::Withdraw)
-                                ->where('status', 'pending');
-                        })->latest();
-                } else {
-                    $data = Transaction::where(function ($query) {
-                        $query->where('type', TxnType::Withdraw)
-                            ->where('status', 'pending');
-                    })->latest();
-                }
-            }
-        }
+        // ✅ Base query for pending withdrawals
+        $data = Transaction::where('type', TxnType::Withdraw)
+            ->where('status', 'pending')
+            ->whereIn('user_id', $accessibleUserIds)
+            ->latest();
 
         // Apply additional filters if any
         $data = $data->applyFilters($filters);
@@ -317,38 +292,18 @@ class WithdrawController extends Controller
         $filters = $request->only(['email', 'status', 'created_at']);
 
         if ($request->ajax()) {
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = Transaction::where(function ($query) {
-                    $query->where('type', TxnType::Withdraw)
-                        ->orWhere('type', TxnType::WithdrawAuto);
-                })->latest();
-            } else {
-                // Apply permission: If the admin has "show-all-users-by-default-to-staff", allow access to all transactions
-                if ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                    $data = Transaction::where(function ($query) {
-                        $query->where('type', TxnType::Withdraw)
-                            ->orWhere('type', TxnType::WithdrawAuto);
-                    })->latest();
-                } else {
-                    // Get attached user IDs for non-Super-Admin users
-                    $attachedUserIds = $loggedInUser->users->pluck('id');
+            $userIds = getAccessibleUserIds()->pluck('id');
 
-                    if ($attachedUserIds->isNotEmpty()) {
-                        // Show transactions for attached users only
-                        $data = Transaction::whereIn('user_id', $attachedUserIds)
-                            ->where(function ($query) {
-                                $query->where('type', TxnType::Withdraw)
-                                    ->orWhere('type', TxnType::WithdrawAuto);
-                            })->latest();
-                    } else {
-                        $data = Transaction::where(function ($query) {
-                            $query->where('type', TxnType::Withdraw)
-                                ->orWhere('type', TxnType::WithdrawAuto);
-                        })->latest();
-                    }
-                }
-            }
+        // Build base query
+        $data = Transaction::query()
+            ->where(function ($query) {
+                $query->where('type', TxnType::Withdraw)
+                      ->orWhere('type', TxnType::WithdrawAuto);
+            })
+            ->when($userIds !== 'all', function ($query) use ($userIds) {
+                $query->whereIn('user_id', $userIds);
+            })
+            ->latest();
 
 
             // Apply additional filters if any
@@ -581,25 +536,27 @@ class WithdrawController extends Controller
     }
 
     public function addWithdraw()
-    {
+{
+    $loggedInUser = auth()->user();
 
-        $loggedInUser = auth()->user();
+    // ✅ Use the helper to get accessible users
+    $userIds = getAccessibleUserIds()->pluck('id');
 
-        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
-            // If Super-Admin or has permission, show all users
-            $users = User::where('status', 1)->get();
-        } else {
-            // If not Super-Admin and no permission, show only assigned users
-            $users = $loggedInUser->users()->where('status', 1)->get();
-        }
-        $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function($query) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All');
-            })->get();
+    // ✅ Fetch only active users from accessible IDs
+    $users = User::whereIn('id', $userIds)
+        ->where('status', 1)
+        ->get();
 
-        return view('backend.withdraw.add_withdraw', compact('users', 'withdrawMethods'));
-    }
+    // ✅ Filter withdraw methods by country or "All"
+    $withdrawMethods = WithdrawMethod::where('status', true)
+        ->where(function ($query) use ($loggedInUser) {
+            $query->whereJsonContains('country', $loggedInUser->country)
+                ->orWhereJsonContains('country', 'All');
+        })->get();
+
+    return view('backend.withdraw.add_withdraw', compact('users', 'withdrawMethods'));
+}
+
 
     public function withdrawAccount($id)
     {

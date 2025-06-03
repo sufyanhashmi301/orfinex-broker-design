@@ -57,6 +57,14 @@
                                 {{ __('Attached Users') }}
                             </a>
                         @endcanany
+
+                        @canany(['staff-team-create','staff-team-list'])
+                        <a href="{{ route('admin.team.manage', $staff->id) }}"
+   class="inline-flex items-center text-sm font-normal text-slate-800 hover:underline">
+    <iconify-icon class="ltr:mr-2 rtl:ml-2" icon="heroicons:user-group"></iconify-icon>
+    Manage Team
+</a>
+@endcanany
                     @endif
                 </div>
             </div>

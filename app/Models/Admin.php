@@ -110,4 +110,48 @@ class Admin extends Authenticatable
     {
         $this->referral_code = Str::random(setting('referral_code_limit', 'global'));
     }
+    // app/Models/Admin.php
+
+// Add these to your existing Admin model
+public function teamMembers()
+{
+    return $this->belongsToMany(Admin::class, 'staff_team', 'manager_id', 'member_id')
+        ->withTimestamps();
+}
+
+public function managingStaff()
+{
+    return $this->belongsToMany(Admin::class, 'staff_team', 'member_id', 'manager_id')
+        ->withTimestamps();
+}
+
+// Helper methods
+public function isTeamManagerOf(Admin $staff)
+{
+    return $this->teamMembers()->where('member_id', $staff->id)->exists();
+}
+public function getAllAttachedUsers()
+{
+    // Get directly attached users
+    $directUsers = $this->users;
+    
+    // Get users from team members (recursively)
+    $teamUsers = $this->teamMembers->flatMap(function($member) {
+        return $member->getAllAttachedUsers();
+    });
+    
+    return $directUsers->merge($teamUsers)->unique('id');
+}
+public function getTeamHierarchy($level = 0, $maxLevel = 3)
+{
+    if ($level >= $maxLevel) return collect();
+    
+    return $this->teamMembers()->with(['roles', 'teamMembers' => function($q) use ($level, $maxLevel) {
+        $q->with(['roles', 'teamMembers' => function($q) use ($level, $maxLevel) {
+            if ($level < $maxLevel - 2) {
+                $q->with('teamMembers');
+            }
+        }]);
+    }])->get();
+}
 }

@@ -10,7 +10,7 @@
 
         @can('branding-settings')
         <li>
-            <a href="{{ route('admin.theme.global') }}" class="navItem {{ isActive('admin.theme*') }}">
+            <a href="{{ route('admin.theme.global') }}" class="navItem {{ isActive('admin.theme.global') }}">
                 {{ __('Branding')}}
             </a>
         </li>

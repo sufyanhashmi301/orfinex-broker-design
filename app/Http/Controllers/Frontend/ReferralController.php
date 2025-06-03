@@ -32,6 +32,10 @@ class ReferralController extends Controller
         if (! setting('sign_up_referral', 'permission')) {
             abort('404');
         }
+         if (!setting('master_ib_request', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+                notify()->error('KYC Pending: Please complete your KYC verification to proceed with your master ib request', __('Error'));
+               return redirect()->route('user.kyc');
+            }
         $user = auth()->user();
 
         $getReferral = $user->getReferrals()->first();

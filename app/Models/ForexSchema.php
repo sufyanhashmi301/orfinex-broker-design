@@ -87,6 +87,7 @@ class ForexSchema extends Model
 		'demo_server',
 		'live_server',
         'account_category_id',
+		'demo_deposit_amount',
 	];
 
     // App\Models\ForexSchema.php

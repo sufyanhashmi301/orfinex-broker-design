@@ -217,30 +217,10 @@ class KycController extends Controller
     if ($request->ajax()) {
         $filters = $request->only(['global_search', 'status', 'created_at']);
 
-        // Check if the user can view all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-        if ($canViewAllUsers) {
-            // Fetch all KYC pending users
-            $data = User::where('kyc', KYCStatus::Pending->value)
-                ->latest('updated_at')
-                ->applyFilters($filters);
-        } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                // Fetch KYC pending users for attached user IDs only
-                $data = User::where('kyc', KYCStatus::Pending->value)
-                    ->whereIn('id', $attachedUserIds)
-                    ->latest('updated_at')
-                    ->applyFilters($filters);
-            } else {
-                // If no users are attached, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
-        }
-
+        // Use the helper to get the accessible users with filters
+        $data = getAccessibleUserIds($filters)
+            ->where('kyc', KYCStatus::Pending->value)
+            ->latest('updated_at');
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('time', 'backend.kyc.include.__time')
@@ -261,32 +241,11 @@ class KycController extends Controller
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'status', 'created_at']);
-
-            // Check if the user can view all users
-            $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-            if ($canViewAllUsers) {
-                // Fetch all Level 3 KYC pending users
-                $data = User::whereNotNull('kyc_level3_credential')
-                    ->where('kyc', KYCStatus::PendingLevel3->value)
-                    ->latest('updated_at')
-                    ->applyFilters($filters);
-            } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    // Fetch Level 3 KYC pending users for attached user IDs only
-                    $data = User::whereNotNull('kyc_level3_credential')
-                        ->where('kyc', KYCStatus::PendingLevel3->value)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest('updated_at')
-                        ->applyFilters($filters);
-                } else {
-                    // If no users are attached, return an empty collection
-                    return Datatables::of(collect([]))->make(true);
-                }
-            }
+ // Get users the logged-in user is allowed to access (based on roles/permissions/attachment)
+        $data = getAccessibleUserIds($filters)
+            ->whereNotNull('kyc_level3_credential')
+            ->where('kyc', KYCStatus::PendingLevel3->value)
+            ->latest('updated_at');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -319,26 +278,9 @@ class KycController extends Controller
     if ($request->ajax()) {
         $filters = $request->only(['global_search', 'status', 'created_at']);
 
-        // Check if the user can view all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-        if ($canViewAllUsers) {
-            // Fetch all users with rejected KYC
-            $data = User::where('kyc', KYCStatus::Rejected->value)->applyFilters($filters);
-        } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                // Fetch rejected KYC users for attached user IDs only
-                $data = User::where('kyc', KYCStatus::Rejected->value)
-                    ->whereIn('id', $attachedUserIds)
-                    ->applyFilters($filters);
-            } else {
-                // If no users are attached, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
-        }
+       // Use the helper to get users based on role/permissions/attachment
+        $data = getAccessibleUserIds($filters)
+            ->where('kyc', KYCStatus::Rejected->value);
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -564,26 +506,10 @@ public function actionLevel3Now(Request $request)
 {
     if ($request->ajax()) {
         $filters = $request->only(['global_search', 'status', 'created_at']);
-        $loggedInUser = auth()->user();
-
-        // Check if the user can view all users
-        $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-        if ($canViewAllUsers) {
-            // Fetch all users with KYC credentials
-            $data = User::whereNotNull('kyc_credential')->applyFilters($filters);
-        } else {
-            // Get attached user IDs for non-Super-Admin users
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                // Fetch only attached users with KYC credentials
-                $data = User::whereIn('id', $attachedUserIds)->whereNotNull('kyc_credential')->applyFilters($filters);
-            } else {
-                // If no users are attached, return an empty collection
-                return Datatables::of(collect([]))->make(true);
-            }
-        }
+      
+        // Use helper to get the accessible users based on roles/permissions/attachments
+        $data = getAccessibleUserIds($filters)
+            ->whereNotNull('kyc_credential');
 
         return Datatables::of($data)
             ->addIndexColumn()

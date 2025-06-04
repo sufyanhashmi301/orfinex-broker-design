@@ -195,28 +195,35 @@
                 </div>
                 <div class="flex justify-between">
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox"
-                               name="i_agree"
-                               class="hiddens mr-2"
-                               value="yes"
-                               required
-                        >
+                        <input type="checkbox" name="i_agree" class="hiddens mr-2" required>
                         <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
                             {{ __('I agree with') }}
+
                             @php
+                                $privacyPolicyShow = getPageSetting('privacy_policy_show');
+                                $clientAgreementShow = getPageSetting('client_agreement_show');
                                 $privacyPolicyLink = document_link_by_slug('privacy_policy');
-                            @endphp
-                            <a href="{{ $privacyPolicyLink ? $privacyPolicyLink->link : '#' }}" class="btn-link" target="_blank">
-                                {{ __('Privacy & Policy') }}
-                            </a>
-                            {{ __('and') }}
-                            @php
                                 $clientAgreementLink = document_link_by_slug('client_agreement');
+                                $privacyPolicyTitle = trim(getPageSetting('privacy_policy_title')) ?: __('Privacy & Policy');
+                                $clientAgreementTitle = trim(getPageSetting('client_agreement_title')) ?: __('Client Agreement');
                             @endphp
-                            <a href="{{ $clientAgreementLink ? $clientAgreementLink->link : '#' }}" class="btn-link" target="_blank">
-                                {{ __('Client Agreement') }}
-                            </a>
-                          </span>
+
+                            @if($privacyPolicyShow)
+                                <a href="{{ $privacyPolicyLink ? $privacyPolicyLink->link : '#' }}" class="btn-link" target="_blank">
+                                    {{ $privacyPolicyTitle }}
+                                </a>
+                            @endif
+
+                            @if($privacyPolicyShow && $clientAgreementShow)
+                                {{ __(' and ') }}
+                            @endif
+
+                            @if($clientAgreementShow)
+                                <a href="{{ $clientAgreementLink ? $clientAgreementLink->link : '#' }}" class="btn-link" target="_blank">
+                                    {{ $clientAgreementTitle }}
+                                </a>
+                            @endif
+                        </span>
                     </label>
                 </div>
                 <button type="submit" class="btn btn-primary block w-full text-center">

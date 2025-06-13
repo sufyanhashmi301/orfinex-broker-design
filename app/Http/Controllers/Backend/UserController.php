@@ -1026,22 +1026,23 @@ public function ibBonus($id, Request $request)
         $data = Transaction::where('user_id', $id)
             ->where('type', TxnType::IbBonus->value);
 
-        // Date Range Filter (for manual date picker)
+        $dateRanges = [];
+
+        // 1. Process Created At range filter if specified
         if (!empty($request->created_at)) {
             $dates = explode(' to ', $request->created_at);
             if (count($dates) == 2) {
                 $start = Carbon::parse($dates[0])->startOfDay();
                 $end = Carbon::parse($dates[1])->endOfDay();
-                $data->where(function ($query) use ($start, $end) {
-                    $query->where(function ($q) use ($start, $end) {
-                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
-                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
-                    })->orWhereBetween('created_at', [$start, $end]);
-                });
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
             }
         }
 
-        // Date Filter (for predefined date ranges)
+        // 2. Process Select Days filter if specified
         if ($request->date_filter) {
             $filter = $request->date_filter;
             $dateRange = match ($filter) {
@@ -1054,16 +1055,31 @@ public function ibBonus($id, Request $request)
             };
 
             if ($dateRange) {
-                $data->where(function ($query) use ($dateRange) {
-                    $start = $dateRange[0]->toDateTimeString();
-                    $end = $dateRange[1]->toDateTimeString();
-
-                    $query->where(function ($q) use ($start, $end) {
-                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
-                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
-                    })->orWhereBetween('created_at', [$start, $end]);
-                });
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
             }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            // Find the range with the fewest days
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            
+            $data->where(function ($query) use ($shortestRange) {
+                $query->where(function ($q) use ($shortestRange) {
+                    $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
+                        ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [
+                            $shortestRange['start'],
+                            $shortestRange['end']
+                        ]);
+                })->orWhereBetween('created_at', [
+                    $shortestRange['start'],
+                    $shortestRange['end']
+                ]);
+            });
         }
 
         // Field filters

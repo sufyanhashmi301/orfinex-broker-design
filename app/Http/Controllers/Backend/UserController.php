@@ -162,17 +162,26 @@ public function index(Request $request)
             $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
             return Excel::download(new TransactionsUsersExport($userId), $fileName);
         case 'ibtransaction':
-                // Only for transaction exports we need user_id
-                $userId = $request->user_id;
-                if (!$userId) {
-                    return back()->with('error', 'User ID is required for transaction export');
-                }
-                $user = User::find($userId);
-                if (!$user) {
-                    return back()->with('error', 'User not found');
-                }
-                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
-                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);
+            $userId = $request->user_id;
+            if (!$userId) {
+                return back()->with('error', 'User ID is required for transaction export');
+            }
+            $user = User::find($userId);
+            if (!$user) {
+                return back()->with('error', 'User not found');
+            }
+            
+            // Get filter parameters
+            $filters = [
+                'login' => $request->login,
+                'deal' => $request->deal,
+                'symbol' => $request->symbol,
+                'date_filter' => $request->date_filter,
+                'created_at' => $request->created_at,
+            ];
+            
+            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
+            return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
         default:
             return Excel::download(new UsersExport($request), 'users.xlsx');
     }
@@ -1011,34 +1020,72 @@ public function index(Request $request)
                 ->make(true);
         }
     }
+public function ibBonus($id, Request $request)
+{
+    if ($request->ajax()) {
+        $data = Transaction::where('user_id', $id)
+            ->where('type', TxnType::IbBonus->value);
 
-    public function ibBonus($id, Request $request)
-    {
-        if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)
-                ->where('type', TxnType::IbBonus->value);
+        $dateRanges = [];
 
-        // Date Range Filter
+        // 1. Process Created At range filter if specified
         if (!empty($request->created_at)) {
             $dates = explode(' to ', $request->created_at);
             if (count($dates) == 2) {
                 $start = Carbon::parse($dates[0])->startOfDay();
                 $end = Carbon::parse($dates[1])->endOfDay();
-                $data->where(function ($query) use ($start, $end) {
-                    $query->where(function ($q) use ($start, $end) {
-                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
-                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
-                    })->orWhereBetween('created_at', [$start, $end]);
-                });
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
             }
         }
 
+        // 2. Process Select Days filter if specified
+        if ($request->date_filter) {
+            $filter = $request->date_filter;
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
+            }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            // Find the range with the fewest days
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            
+            $data->where(function ($query) use ($shortestRange) {
+                $query->where(function ($q) use ($shortestRange) {
+                    $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
+                        ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [
+                            $shortestRange['start'],
+                            $shortestRange['end']
+                        ]);
+                })->orWhereBetween('created_at', [
+                    $shortestRange['start'],
+                    $shortestRange['end']
+                ]);
+            });
+        }
 
         // Field filters
         foreach (['login', 'deal', 'order', 'symbol'] as $field) {
             if (!empty($request->$field)) {
                 $value = $request->$field;
-//                dd($value);
 
                 if (in_array($field, ['login', 'deal', 'order'])) {
                     $data->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) AS UNSIGNED) = ?", [$value]);
@@ -1072,8 +1119,7 @@ public function index(Request $request)
             ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
             ->make(true);
     }
-    }
-
+}
     public function ibInfo($id, Request $request)
     {
         //dd($id);

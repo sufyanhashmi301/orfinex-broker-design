@@ -29,6 +29,10 @@ class DeleteStaleUsers extends Command
      */
     public function handle()
     {
+         if (!setting('grace_period', 'customer_misc', false)) {
+        $this->info('Grace period is disabled in system settings. Skipping stale user cleanup.');
+        return 0;
+    }
         User::withoutGlobalScope(ExcludeGracePeriodScope::class)
             ->where('in_grace_period', true)
             ->whereNotNull('email_verified_at')

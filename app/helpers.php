@@ -521,7 +521,8 @@ if (!function_exists('getPageSetting')) {
 
     function getPageSetting($key)
     {
-        return \App\Models\PageSetting::where('key', $key)->first()->value;
+        $setting = \App\Models\PageSetting::where('key', $key)->first();
+        return $setting ? $setting->value : null;
     }
 }
 

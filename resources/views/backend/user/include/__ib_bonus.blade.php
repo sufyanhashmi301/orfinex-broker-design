@@ -42,6 +42,16 @@
                     <div class="flex-1 input-area relative">
                         <input type="text" id="ib-bonus-symbol" class="form-control h-full" placeholder="Symbol">
                     </div>
+                     <div class="flex-1 input-area relative">
+                        <select id="ib-bonus-date-filter" class="form-control">
+                            <option value="">{{ __('Select Days') }}</option>
+                            <option value="3_days">{{ __('Last 3 Days') }}</option>
+                            <option value="5_days">{{ __('Last 5 Days') }}</option>
+                            <option value="15_days">{{ __('Last 15 Days') }}</option>
+                            <option value="1_month">{{ __('Last 1 Month') }}</option>
+                            <option value="3_months">{{ __('Last 3 Months') }}</option>
+                        </select>
+                    </div>
                     <div class="flex-1 input-area relative">
                         <input type="text" id="ib-bonus-created-at" class="form-control flatpickr-created-at h-full w-full" placeholder="Created At Range" readonly>
                     </div>
@@ -53,15 +63,20 @@
                     </div>
                 </form>
                 @can('customer-ib-bonus-export')
-                    <form method="POST" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
-                        @csrf
-                        <div class="input-area relative mb-1">
-                            <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                                {{ __('Export') }}
-                            </button>
-                        </div>
-                    </form>
+                   <form method="POST" id="ib-bonus-export-form" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
+    @csrf
+    <input type="hidden" name="login" id="export-ib-bonus-login">
+    <input type="hidden" name="deal" id="export-ib-bonus-deal">
+    <input type="hidden" name="symbol" id="export-ib-bonus-symbol">
+    <input type="hidden" name="date_filter" id="export-ib-bonus-date-filter">
+    <input type="hidden" name="created_at" id="export-ib-bonus-created-at">
+    <div class="input-area relative mb-1">
+        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+            {{ __('Export') }}
+        </button>
+    </div>
+</form>
                 @endcan
             </div>
         </div>
@@ -142,6 +157,7 @@
                         d.order = $('#ib-bonus-order').val();
                         d.symbol = $('#ib-bonus-symbol').val();
                         d.created_at = $('#ib-bonus-created-at').val();
+                        d.date_filter = $('#ib-bonus-date-filter').val(); 
                     }
                 }
                 ,
@@ -162,7 +178,13 @@
             $('#ib-bonus-filter-btn').on('click', function () {
                 table.ajax.reload();
             });
-
+$('#ib-bonus-export-form').on('submit', function() {
+        $('#export-ib-bonus-login').val($('#ib-bonus-login').val());
+        $('#export-ib-bonus-deal').val($('#ib-bonus-deal').val());
+        $('#export-ib-bonus-symbol').val($('#ib-bonus-symbol').val());
+        $('#export-ib-bonus-date-filter').val($('#ib-bonus-date-filter').val());
+        $('#export-ib-bonus-created-at').val($('#ib-bonus-created-at').val());
+    });
             // 👁️ Modal action
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();

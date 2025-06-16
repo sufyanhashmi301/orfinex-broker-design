@@ -57,6 +57,30 @@
                             </label>
                         </div>
                     </div>
+                    <div class="relative">
+                        <input type="text" name="privacy_policy_title" class="form-control h-[42px] !pr-14" placeholder=" Privacy & Policy" value="{{ getPageSetting('privacy_policy_title') }}">
+                        <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                            <div class="form-switch ps-0 leading-[0]">
+                                <input class="form-check-input" type="hidden" value="0" name="privacy_policy_show"/>
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <input type="checkbox" name="privacy_policy_show" value="1" class="sr-only peer" @checked( getPageSetting('privacy_policy_show'))>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="text" name="client_agreement_title" class="form-control h-[42px] !pr-14" placeholder="Client Agreement" value="{{ getPageSetting('client_agreement_title') }}">
+                        <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                            <div class="form-switch ps-0 leading-[0]">
+                                <input class="form-check-input" type="hidden" value="0" name="client_agreement_show"/>
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <input type="checkbox" name="client_agreement_show" value="1" class="sr-only peer" @checked( getPageSetting('client_agreement_show'))>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

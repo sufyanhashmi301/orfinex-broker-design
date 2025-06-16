@@ -801,7 +801,7 @@ return [
                 'name' => 'grace_period',
                 'label' => 'Grace Period ',
                 'rules' => 'required',
-                'value' => 0, // default value
+                'value' => 1, // default value
             ],
         ],
     ],

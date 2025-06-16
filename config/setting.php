@@ -795,6 +795,14 @@ return [
                 'rules' => 'required|integer|min:1|max:365',
                 'value' => 30, // default value
             ],
+             [
+                'type' => 'checkbox',
+                'data' => 'int',
+                'name' => 'grace_period',
+                'label' => 'Grace Period ',
+                'rules' => 'required',
+                'value' => 1, // default value
+            ],
         ],
     ],
 

@@ -706,5 +706,7 @@ Route::prefix('team')->group(function() {
         return view('backend.lead.index', compact('tags'));
     })->name('customerLead');
 
+    Route::resource('deposit-vouchers', \App\Http\Controllers\Backend\DepositVoucherController::class);
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

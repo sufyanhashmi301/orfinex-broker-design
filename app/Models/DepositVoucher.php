@@ -11,6 +11,7 @@ class DepositVoucher extends Model
 
     protected $fillable = [
         'title',
+        'code',
         'amount',
         'expiry_date',
         'description',

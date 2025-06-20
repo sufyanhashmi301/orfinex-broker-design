@@ -25,6 +25,7 @@ enum TxnType: string
     case IbBonus = 'ib_bonus';
     case MultiIB = 'multi_ib';
     case IB = 'ib';
+    case VoucherDeposit = 'voucher_deposit';
 
     public function label(): string
     {
@@ -50,6 +51,7 @@ enum TxnType: string
             self::MultiIB => 'Multi IB',
             self::IB => 'IB',
             self::IbBonus => 'IB Bonus',
+            self::VoucherDeposit => 'Voucher Deposit',
         };
     }
 }

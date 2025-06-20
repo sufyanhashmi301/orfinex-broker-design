@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('deposit_vouchers', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('code')->unique();
             $table->double('amount', 15, 2);
             $table->dateTime('expiry_date');
             $table->text('description')->nullable();

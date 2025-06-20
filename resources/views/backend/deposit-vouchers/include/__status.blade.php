@@ -1,11 +1,11 @@
 @php
     $statusClass = [
         'active' => 'success',
-        'used' => 'info',
+        'used' => 'secondary',
         'expired' => 'danger'
     ][$status] ?? 'secondary';
 @endphp
 
-<span class="badge bg-{{ $statusClass }}">
+<span class="badge badge-{{ $statusClass }}">
     {{ ucfirst($status) }}
 </span> 

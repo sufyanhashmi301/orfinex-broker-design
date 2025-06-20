@@ -7,6 +7,7 @@ use App\Models\DepositVoucher;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class DepositVoucherController extends Controller
 {
@@ -33,11 +34,9 @@ class DepositVoucherController extends Controller
                     return $voucher->expiry_date->format('Y-m-d H:i');
                 })
                 ->addColumn('status', 'backend.deposit-vouchers.include.__status')
-                ->addColumn('used_by', function ($voucher) {
-                    return $voucher->user ? $voucher->user->name : 'N/A';
-                })
+                ->addColumn('used_by', 'backend.deposit-vouchers.include.__user')
                 ->addColumn('action', 'backend.deposit-vouchers.include.__action')
-                ->rawColumns(['title', 'status', 'action'])
+                ->rawColumns(['title', 'status', 'used_by', 'action'])
                 ->make(true);
         }
 
@@ -63,9 +62,27 @@ class DepositVoucherController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        DepositVoucher::create($request->all());
-        notify()->success(__('Deposit voucher created successfully.'));
-        return redirect()->route('admin.deposit-vouchers.index');
+        try {
+            // Generate a unique 6-digit code
+            do {
+                $code = Str::upper(Str::random(6));
+            } while (DepositVoucher::where('code', $code)->exists());
+    
+            DepositVoucher::create([
+                'title' => $request->title,
+                'code' => $code,
+                'amount' => $request->amount,
+                'expiry_date' => $request->expiry_date,
+                'description' => $request->description,
+                'modal' => $request->modal,
+            ]);
+    
+            notify()->success(__('Deposit voucher created successfully.'));
+            return redirect()->route('admin.deposit-vouchers.index');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong while creating the voucher.');
+        }
     }
 
     public function show(DepositVoucher $depositVoucher)

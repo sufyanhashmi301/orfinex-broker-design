@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
 use App\Models\DepositMethod;
@@ -36,80 +37,83 @@ class TransactionController extends Controller
      * @throws \Exception
      */
     public function transactions(Request $request, $id = null)
-{
-    $loggedInUser = auth()->user();
+    {
+        $loggedInUser = auth()->user();
 
-    if ($request->ajax()) {
-        $filters = $request->only(['email', 'status', 'type', 'created_at']);
+        if ($request->ajax()) {
+            $filters = $request->only(['email', 'status', 'type', 'created_at']);
+        
+            // Get accessible users using helper function
+            $accessibleUsersQuery = getAccessibleUserIds();
+            $accessibleUserIds = $accessibleUsersQuery->pluck('id');
 
-       
-        // Get accessible users using helper function
-        $accessibleUsersQuery = getAccessibleUserIds();
-        $accessibleUserIds = $accessibleUsersQuery->pluck('id');
+            // Base query (without order) for summary
+            $baseQuery = Transaction::query();
 
-        // Base query for transactions
-        $data = Transaction::query()->latest();
-
-        // If specific user ID is given, filter by it, but ensure user is accessible
-        if ($id) {
-            if ($accessibleUserIds->contains($id)) {
-                $data->where('user_id', $id);
+            if ($id && $accessibleUserIds->contains($id)) {
+                $baseQuery->where('user_id', $id);
+            } elseif (!$id && $accessibleUserIds->isNotEmpty()) {
+                $baseQuery->whereIn('user_id', $accessibleUserIds);
             } else {
-                // If user ID is not accessible, return empty result
-                $data->whereNull('id');
+                $baseQuery->whereNull('id');
             }
-        } else {
-            // If no specific user ID, filter by accessible users only
-            if ($accessibleUserIds->isNotEmpty()) {
-                $data->whereIn('user_id', $accessibleUserIds);
-            } else {
-                // No accessible users at all
-                $data->whereNull('id');
-            }
+
+            // Apply filters (email, status, etc.)
+            $baseQuery->applyFilters($filters);
+            $data = (clone $baseQuery)->latest();
+            $summaryQuery = clone $baseQuery;
+            $total = (clone $summaryQuery)->sum('amount');
+            
+            $statusSums = (clone $summaryQuery)
+            ->select('status', DB::raw('SUM(amount) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->editColumn('status', 'backend.transaction.include.__txn_status')
+                ->editColumn('type', 'backend.transaction.include.__txn_type')
+                ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
+                ->editColumn('charge', function ($request) {
+                    return $request->charge . ' ' . setting('site_currency', 'global');
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->editColumn('created_at', function ($row) {
+                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                        $manualData = json_decode($row->manual_field_data, true);
+                        if (is_array($manualData) && isset($manualData['time'])) {
+                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                        }
+                    }
+                    return $row->created_at;
+                })
+                ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
+                ->with([
+                    'summary' => [
+                        'total' => round($total, 2),
+                        'success' => round($statusSums['success'] ?? 0, 2),
+                        'pending' => round($statusSums['pending'] ?? 0, 2),
+                        'rejected' => round($statusSums['rejected'] ?? 0, 2),
+                    ]
+                ])
+                ->make(true);
         }
 
-        // Apply additional filters
-        $data->applyFilters($filters);
-
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('created_at', function ($row) {
-                return '<span class="text-nowrap">' . $row->created_at . '</span>';
-            })
-            ->addColumn('action_by', function ($row) {
-                return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
-            })
-            ->editColumn('status', 'backend.transaction.include.__txn_status')
-            ->editColumn('type', 'backend.transaction.include.__txn_type')
-            ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
-            ->editColumn('charge', function ($request) {
-                return $request->charge . ' ' . setting('site_currency', 'global');
-            })
-            ->addColumn('username', 'backend.transaction.include.__user')
-            ->addColumn('action', 'backend.transaction.include.__action')
-            ->editColumn('created_at', function ($row) {
-                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
-                    $manualData = json_decode($row->manual_field_data, true);
-                    if (is_array($manualData) && isset($manualData['time'])) {
-                        return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
-                    }
-                }
-                return $row->created_at;
-            })
-            ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
-            ->make(true);
+        return view('backend.transaction.index');
     }
-
-    return view('backend.transaction.index');
-}
-
-
 
     public function export(Request $request)
     {
-
         return Excel::download(new TransactionsExport($request), 'transactions.xlsx');
     }
+
     public function view($id)
     {
         $data = Transaction::find($id);
@@ -123,8 +127,8 @@ class TransactionController extends Controller
             return view('backend.transaction.modals.view', compact('data', 'id'))->render();
         }
 
-
     }
+
     public function gateway($code)
     {
         $gateway = DepositMethod::code($code)->first();

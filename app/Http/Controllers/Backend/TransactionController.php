@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\GatewayType;
 use App\Enums\TxnType;
+use App\Enums\TxnStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use DataTables;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -42,7 +44,7 @@ class TransactionController extends Controller
 
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
-        
+
             // Get accessible users using helper function
             $accessibleUsersQuery = getAccessibleUserIds();
             $accessibleUserIds = $accessibleUsersQuery->pluck('id');
@@ -63,7 +65,7 @@ class TransactionController extends Controller
             $data = (clone $baseQuery)->latest();
             $summaryQuery = clone $baseQuery;
             $total = (clone $summaryQuery)->sum('amount');
-            
+
             $statusSums = (clone $summaryQuery)
             ->select('status', DB::raw('SUM(amount) as total'))
             ->groupBy('status')
@@ -143,6 +145,75 @@ class TransactionController extends Controller
             }
             return $gateway;
         }
+    }
+
+    public function report()
+    {
+        return view('backend.transaction.report');
+    }
+
+    public function userTransactionSummary(Request $request)
+    {
+        $email = $request->input('email');
+        $date = $request->input('created_at');
+
+        $user = \App\Models\User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'html' => '<p class="text-center text-slate-400">User not found.</p>'
+            ]);
+        }
+
+        // Build the query
+        $query = Transaction::where('user_id', $user->id)
+            ->select(['type', 'status', DB::raw('SUM(amount) as total')])
+            ->groupBy('type', 'status');
+
+        // Date range support
+        if (!empty($date)) {
+            $dates = explode(' to ', $date);
+            if (count($dates) === 2) {
+                $startDate = Carbon::parse($dates[0])->startOfDay();
+                $endDate = Carbon::parse($dates[1])->endOfDay();
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereDate('created_at', Carbon::parse($date));
+            }
+        }
+
+        $results = $query->get()->groupBy(function ($item) {
+            return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
+        });
+
+        $summary = [];
+
+        foreach (getFilteredTxnTypes() as $type) {
+            $key = $type->value;
+
+            $records = $results->get($key, collect());
+
+            $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
+            $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
+            $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
+            $none = round($records->filter(fn ($r) => $r->status === TxnStatus::None)->sum('total'), 2);
+
+            $total_amount = $records->sum('total');
+
+            $summary[] = [
+                'type' => $type->label(),
+                'desc' => $type->description(),
+                'success' => $success,
+                'pending' => $pending,
+                'rejected' => $rejected,
+                'none' => $none,
+                'total' => $total_amount,
+            ];
+        }
+
+        return response()->json([
+            'html' => view('backend.transaction.include.__report_table', compact('summary'))->render()
+        ]);
     }
 
 }

@@ -54,5 +54,33 @@ enum TxnType: string
             self::VoucherDeposit => 'Voucher Deposit',
         };
     }
+
+    public function description(): string
+    {
+        return match($this) {
+            self::Deposit => 'Funds deposited into the user\'s account.',
+            self::DemoDeposit => 'Virtual funds added in a demo account.',
+            self::Subtract => 'Manual subtraction of funds by admin.',
+            self::ManualDeposit => 'Manual deposit approved by admin or operator.',
+            self::SendMoney => 'Money sent to an external user or account.',
+            self::ReceiveMoney => 'Money received from an external user or account.',
+            self::SendMoneyInternal => 'Transfer sent to another user within the platform.',
+            self::ReceiveMoneyInternal => 'Transfer received from another user within the platform.',
+            self::Exchange => 'Currency exchanged between wallets or accounts.',
+            self::Referral => 'Commission earned from a referral action.',
+            self::SignupBonus => 'Bonus given on new account registration.',
+            self::Bonus => 'General-purpose bonus added to account.',
+            self::BonusSubtract => 'Reversal or deduction of a previously granted bonus.',
+            self::BonusRefund => 'Refund issued from a bonus reversal or adjustment.',
+            self::Withdraw => 'User-initiated withdrawal request.',
+            self::WithdrawAuto => 'Automatically processed withdrawal.',
+            self::Interest => 'Interest credited from an investment or deposit.',
+            self::Refund => 'Return of funds to the user due to cancellation or error.',
+            self::IbBonus => 'Bonus for introducing broker (IB) activity.',
+            self::MultiIB => 'Commission payout from multiple IB levels.',
+            self::IB => 'Commission earned by an introducing broker.',
+            self::VoucherDeposit => 'Funds added using a deposit voucher or code.',
+        };
+    }
 }
 

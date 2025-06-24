@@ -242,6 +242,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
 
     //===============================  Transactions ==================================
+    Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+    Route::get('transactions/user-summary', [TransactionController::class, 'userTransactionSummary'])->name('transactions.user-summary');
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');

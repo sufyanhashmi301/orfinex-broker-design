@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
 use App\Models\DepositMethod;
+use App\Models\User;
 
 class TransactionController extends Controller
 {
@@ -149,7 +150,70 @@ class TransactionController extends Controller
 
     public function report()
     {
-        return view('backend.transaction.report');
+        $users = User::all();
+        // Build the query
+        $query = Transaction::select(['type', 'status', DB::raw('SUM(amount) as total')])->groupBy('type', 'status');
+
+        $results = $query->get()->groupBy(function ($item) {
+            return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
+        });
+
+        $incomingTypes = [
+            'deposit',
+            'manual_deposit',
+            'demo_deposit',
+            'receive_money',
+            'receive_money_internal',
+            'referral',
+            'signup_bonus',
+            'bonus',
+            'bonus_refund',
+            'ib_bonus',
+            'voucher_deposit',
+            'refund',
+        ];
+        $outgoingTypes = [
+            'withdraw',
+            'withdraw_auto',
+            'send_money',
+            'send_money_internal',
+            'subtract',
+            'bonus_subtract',
+        ];
+
+        $incomingSummary = [];
+        $outgoingSummary = [];
+
+        foreach (getFilteredTxnTypes() as $type) {
+            $key = $type->value;
+
+            $records = $results->get($key, collect());
+
+            $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
+            $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
+            $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
+            $none = round($records->filter(fn ($r) => $r->status === TxnStatus::None)->sum('total'), 2);
+
+            $total_amount = $records->sum('total');
+
+            $row = [
+                'type' => $type->label(),
+                'desc' => $type->description(),
+                'success' => $success,
+                'pending' => $pending,
+                'rejected' => $rejected,
+                'none' => $none,
+                'total' => $total_amount,
+            ];
+
+            if (in_array($type->value, $incomingTypes)) {
+                $incomingSummary[] = $row;
+            } elseif (in_array($type->value, $outgoingTypes)) {
+                $outgoingSummary[] = $row;
+            }
+        }
+
+        return view('backend.transaction.report', compact('incomingSummary', 'outgoingSummary', 'users'));
     }
 
     public function userTransactionSummary(Request $request)
@@ -157,18 +221,14 @@ class TransactionController extends Controller
         $email = $request->input('email');
         $date = $request->input('created_at');
 
-        $user = \App\Models\User::where('email', $email)->first();
-
-        if (!$user) {
-            return response()->json([
-                'html' => '<p class="text-center text-slate-400">User not found.</p>'
-            ]);
-        }
-
         // Build the query
-        $query = Transaction::where('user_id', $user->id)
+        $query = Transaction::query()
             ->select(['type', 'status', DB::raw('SUM(amount) as total')])
             ->groupBy('type', 'status');
+
+        if (!empty($email)) {
+            $query->where('user_id', $email);
+        }
 
         // Date range support
         if (!empty($date)) {
@@ -186,7 +246,31 @@ class TransactionController extends Controller
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
         });
 
-        $summary = [];
+        $incomingTypes = [
+            'deposit',
+            'manual_deposit',
+            'demo_deposit',
+            'receive_money',
+            'receive_money_internal',
+            'referral',
+            'signup_bonus',
+            'bonus',
+            'bonus_refund',
+            'ib_bonus',
+            'voucher_deposit',
+            'refund',
+        ];
+        $outgoingTypes = [
+            'withdraw',
+            'withdraw_auto',
+            'send_money',
+            'send_money_internal',
+            'subtract',
+            'bonus_subtract',
+        ];
+
+        $incomingSummary = [];
+        $outgoingSummary = [];
 
         foreach (getFilteredTxnTypes() as $type) {
             $key = $type->value;
@@ -200,7 +284,7 @@ class TransactionController extends Controller
 
             $total_amount = $records->sum('total');
 
-            $summary[] = [
+            $row = [
                 'type' => $type->label(),
                 'desc' => $type->description(),
                 'success' => $success,
@@ -209,10 +293,19 @@ class TransactionController extends Controller
                 'none' => $none,
                 'total' => $total_amount,
             ];
+
+            if (in_array($type->value, $incomingTypes)) {
+                $incomingSummary[] = $row;
+            } elseif (in_array($type->value, $outgoingTypes)) {
+                $outgoingSummary[] = $row;
+            }
         }
 
         return response()->json([
-            'html' => view('backend.transaction.include.__report_table', compact('summary'))->render()
+            'html' => view('backend.transaction.include.__report_table', [
+                'incomingSummary' => $incomingSummary,
+                'outgoingSummary' => $outgoingSummary,
+            ])->render()
         ]);
     }
 

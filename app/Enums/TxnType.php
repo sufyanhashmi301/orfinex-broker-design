@@ -5,9 +5,13 @@ namespace App\Enums;
 enum TxnType: string
 {
     case Deposit = 'deposit';
-    case DemoDeposit = 'demo_deposit';
-    case Subtract = 'subtract';
     case ManualDeposit = 'manual_deposit';
+    case VoucherDeposit = 'voucher_deposit';
+    case IbBonus = 'ib_bonus';
+    case DemoDeposit = 'demo_deposit';
+    case Withdraw = 'withdraw';
+    case WithdrawAuto = 'withdraw_auto';
+    case Subtract = 'subtract';
     case SendMoney = 'send_money';
     case ReceiveMoney = 'receive_money';
     case SendMoneyInternal = 'send_money_internal';
@@ -18,14 +22,10 @@ enum TxnType: string
     case Bonus = 'bonus';
     case BonusSubtract = 'bonus_subtract';
     case BonusRefund = 'bonus_refund';
-    case Withdraw = 'withdraw';
-    case WithdrawAuto = 'withdraw_auto';
     case Interest = 'interest';
     case Refund = 'refund';
-    case IbBonus = 'ib_bonus';
     case MultiIB = 'multi_ib';
     case IB = 'ib';
-    case VoucherDeposit = 'voucher_deposit';
 
     public function label(): string
     {
@@ -64,8 +64,8 @@ enum TxnType: string
             self::ManualDeposit => 'Manual deposit approved by admin or operator.',
             self::SendMoney => 'Money sent to an external user or account.',
             self::ReceiveMoney => 'Money received from an external user or account.',
-            self::SendMoneyInternal => 'Transfer sent to another user within the platform.',
-            self::ReceiveMoneyInternal => 'Transfer received from another user within the platform.',
+            self::SendMoneyInternal => 'Transfer sent into one of the user\'s own accounts.',
+            self::ReceiveMoneyInternal => 'Transfer received into one of the user\'s own accounts.',
             self::Exchange => 'Currency exchanged between wallets or accounts.',
             self::Referral => 'Commission earned from a referral action.',
             self::SignupBonus => 'Bonus given on new account registration.',

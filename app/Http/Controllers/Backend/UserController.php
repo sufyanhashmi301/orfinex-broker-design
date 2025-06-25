@@ -170,7 +170,7 @@ public function index(Request $request)
             if (!$user) {
                 return back()->with('error', 'User not found');
             }
-            
+
             // Get filter parameters
             $filters = [
                 'login' => $request->login,
@@ -179,7 +179,7 @@ public function index(Request $request)
                 'date_filter' => $request->date_filter,
                 'created_at' => $request->created_at,
             ];
-            
+
             $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
             return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
         default:
@@ -1067,7 +1067,7 @@ public function ibBonus($id, Request $request)
         if (count($dateRanges) > 0) {
             // Find the range with the fewest days
             $shortestRange = collect($dateRanges)->sortBy('days')->first();
-            
+
             $data->where(function ($query) use ($shortestRange) {
                 $query->where(function ($q) use ($shortestRange) {
                     $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
@@ -1497,16 +1497,20 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
     public function searchUsers(Request $request)
     {
-        $search = $request->get('q');
+        $search = $request->get('q', $request->get('term')); // safe fallback
 
-        // Fetch users based on the search query, ordered by first name
-        $users = User::where('first_name', 'LIKE', "%{$search}%")
-            ->orWhere('last_name', 'LIKE', "%{$search}%")
-            ->orWhere('email', 'LIKE', "%{$search}%")
-            ->limit(10)
-            ->get();
+        $query = User::query();
 
-        // Format the response for Select2
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $users = $query->limit(10)->get();
+
         return response()->json([
             'results' => $users->map(function($user) {
                 return [
@@ -1518,6 +1522,7 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             })
         ]);
     }
+
     public function runMasterIbDistribution(Request $request, $userId)
     {
         $request->validate([

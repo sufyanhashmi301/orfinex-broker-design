@@ -471,7 +471,7 @@ class Txn
         $user = User::find($uId);
 
         try {
-            if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
+            if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB || $transaction->type == TxnType::VoucherDeposit)) {
                 if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexDeposit->value) {
 
                     $amount = apply_cent_account_adjustment($transaction->target_id, $transaction->amount);
@@ -507,7 +507,7 @@ class Txn
                     $this->applyBonusToForexAccount($transaction, $user, $uId);
                     first_min_deposit($transaction->target_id);
 
-                } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB)) {
+                } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::IB || $transaction->type == TxnType::VoucherDeposit)) {
                     $userAccount = get_user_account_by_wallet_id($transaction->target_id);
 
                     $wallet = new WalletService();

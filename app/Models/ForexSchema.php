@@ -88,6 +88,7 @@ class ForexSchema extends Model
 		'live_server',
         'account_category_id',
 		'demo_deposit_amount',
+		'is_update_trading_password',
 	];
 
     // App\Models\ForexSchema.php

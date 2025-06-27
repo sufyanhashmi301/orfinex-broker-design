@@ -15,8 +15,13 @@
                 if (null != $gateway->gateway_id && $gateway->icon == ''){
                     $icon = $gateway->gateway->logo;
                 }
+
+                // Determine link route
+                $isVoucher = $gateway->gateway_code === 'voucher';
+                $route = $isVoucher ? route('user.deposit.redeem.voucher', ['gateway_code' => the_hash($gateway->gateway_code)]) : route('user.deposit.amount', ['gateway_code' => the_hash($gateway->gateway_code)]);
+
             @endphp
-            <a href="{{ route('user.deposit.amount', ['gateway_code' => the_hash($gateway->gateway_code)]) }}" class="card border hover:shadow-lg">
+            <a href="{{ $route }}" class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img src="{{ isset($gateway->gateway_id) ? $gateway->gateway->logo : asset($icon) }}" class="h-10" alt="{{ $gateway->name }}" />
                     <span class="badge badge-secondary capitalize rounded-3xl py-1">

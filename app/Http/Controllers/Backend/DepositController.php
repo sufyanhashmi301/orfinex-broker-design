@@ -35,6 +35,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use App\Models\DepositVoucher;
 
 class DepositController extends Controller
 {
@@ -505,18 +506,21 @@ class DepositController extends Controller
     public function depositNow(Request $request)
     {
         // Validate input
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'user_id'       => ['required'],
             'target_id'     => ['required'],
             'gateway_code'  => 'required',
             'amount'        => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
-        ], [
-            'target_id.required' => __('Kindly select an account for deposit'),
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        if ($request->input('gateway_code') === 'voucher') {
+            $rules['manual_data.voucher code'] = 'required';
         }
+
+        $validator = Validator::make($request->all(), $rules, [
+            'target_id.required' => __('Kindly select an account for deposit'),
+            'manual_data.voucher code.required' => __('Voucher code is required'),
+        ]);
 
         try {
             DB::beginTransaction();
@@ -527,6 +531,21 @@ class DepositController extends Controller
 
             $gateway = DepositMethod::code($input['gateway_code'])->firstOrFail();
             $amount = (float)$input['amount'];
+
+            // Voucher logic
+            if ($input['gateway_code'] === 'voucher') {
+                $voucherCode = $input['manual_data']['voucher code'] ?? null;
+                $voucher = DepositVoucher::where('code', $voucherCode)->first();
+
+                if (!$voucher || $voucher->status !== 'active' || $voucher->expiry_date < now()) {
+                    $msg = !$voucher ? __('Invalid voucher code.') : ($voucher->status !== 'active' ? __('Voucher is not active.') : __('Voucher has expired.'));
+                    notify()->error($msg, __('Error'));
+                    return redirect()->back();
+                }
+
+                $amount = $voucher->amount;
+                $request->merge(['is_auto_approve' => true]);
+            }
 
             // Validate deposit limits
             if ($amount < $gateway->minimum_deposit || $amount > $gateway->maximum_deposit) {
@@ -597,6 +616,15 @@ class DepositController extends Controller
                 return redirect()->back();
             }
 
+            if ($input['gateway_code'] === 'voucher' && isset($voucher) && $voucher->status !== 'used') {
+                $voucher->update([
+                    'status'     => 'used',
+                    'used_by'    => $txn->user_id,
+                    'used_date'  => now(),
+                    'modal'      => $txn->from_model,
+                ]);
+            }
+
             $this->mailNotify($txn->user->email, 'user_manual_deposit_approve', $shortcodes);
             notify()->success(__('Approve successfully'));
         } else {
@@ -605,6 +633,7 @@ class DepositController extends Controller
             $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id, 'deposit');
             notify()->success(__('Successfully added pending deposit request'));
         }
+
         DB::commit();
 
         return redirect()->back();
@@ -614,6 +643,40 @@ class DepositController extends Controller
             notify()->error(__('An unexpected error occurred. Please try again.'));
             return redirect()->back()->withInput();
         }
+    }
+
+    public function getVoucher(Request $request)
+    {
+        $request->validate(['code' => 'required|string']);
+
+        $voucher = DepositVoucher::where('code', $request->code)->first();
+
+        if (!$voucher) {
+            return response()->json(['success' => false, 'message' => 'Invalid voucher code.']);
+        }
+
+        if ($voucher->status === 'used') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This voucher has already been used.'
+            ]);
+        }
+
+        if ($voucher->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This voucher is not active.'
+            ]);
+        }
+
+        if ($voucher->expiry_date < now()) {
+            return response()->json(['success' => false, 'message' => 'Voucher has expired.']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'amount' => $voucher->amount,
+        ]);
     }
 
     public function notificationTune()

@@ -1,7 +1,7 @@
 @extends('frontend::deposit.index')
 @section('deposit_content')
     <div class="progress-steps-form mb-6">
-        <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('user.deposit.redeem.now') }}" method="post" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="gateway_code" value="{{ $gatewayCode }}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
@@ -9,7 +9,6 @@
                     <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details:') }}
                     </h4>
-
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="input-area relative">
@@ -22,31 +21,22 @@
                                         @endforeach
                                         {{--mail wallet--}}
                                         @include('frontend::wallet.include.__specific-wallet-dropdown', ['target_id_name' => 'target_id', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
-
                                     </select>
                                 </div>
                             </div>
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
-                                <div class="relative">
-                                    <input type="text" name="amount" class="form-control !text-lg"
-                                        oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
-                                        aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
-                                </div>
-                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
+                                <label for="" class="form-label">{{ __('Enter Code:') }}</label>
+                                <input type="text" name="code" class="form-control !text-lg" id="voucher-code">
+                                <div class="font-Inter text-xs text-danger inline-block invalid-code hidden"></div>
                             </div>
-                            <div class="input-area relative conversion hidden">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                            <div class="input-area relative">
+                                <label for="" class="form-label">{{ __('Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text"  class="form-control !text-lg"
-                                        oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
-                                        aria-describedby="basic-addon2">
+                                    <input type="text" name="amount" class="form-control !text-lg" id="voucher-amount" readonly>
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
-                                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
-                            <div class="manual-row"></div>
+                            <div class="manual-row space-y-5 hidden"></div>
                         </div>
                     </div>
                 </div>
@@ -60,11 +50,19 @@
                                 <tbody>
                                     <tr>
                                         <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                            <strong>{{ __('Payment Method') }}</strong>
+                                        </td>
+                                        <td id="logo">
+                                            <img src="" class="payment-method" alt="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                             <strong>{{ __('Amount') }}</strong>
                                         </td>
                                         <td class="dark:text-slate-300">
                                             <span class="amount"></span>
-                                            <span class="currency"></span>
+                                            <span class="currency">{{ $currency }}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -72,14 +70,6 @@
                                             <strong>{{ __('Charge') }}</strong>
                                         </td>
                                         <td class="charge2 dark:text-slate-300"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
-                                            <strong>{{ __('Payment Method') }}</strong>
-                                        </td>
-                                        <td id="logo">
-                                            <img src="" class="payment-method" alt="">
-                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
@@ -99,10 +89,16 @@
                                         </td>
                                         <td class="pay-amount dark:text-slate-300"></td>
                                     </tr>
+                                    <tr>
+                                        <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                            <strong>{{ __('Expires At') }}</strong>
+                                        </td>
+                                        <td class="expires-at dark:text-slate-300"></td>
+                                    </tr>
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary proceed-btn">
                                     {{ __('Proceed to Payment') }}
                                 </button>
                             </div>
@@ -150,23 +146,13 @@
             var code = $("input[name='gateway_code']").val();
             var url = '{{ route("user.deposit.gateway",":code") }}';
             url = url.replace(':code', code);
-
             $.get(url, function (data) {
 
                 globalData = data;
-                if (data.currency === currency){
-                    $('.conversion').addClass('hidden');
-                }else {
-                    $('.conversion').removeClass('hidden');
-                    $('#basic-addon2').text(globalData.currency);
-                    $('#amount').trigger('keyup')
-                }
 
                 $('.charge').text('Charge ' + data.charge + ' ' + (data.charge_type === 'percentage' ? ' % ' : currency))
                 $('.conversion-rate').text('1' +' '+ currency + ' = ' + data.rate +' '+ data.currency)
 
-
-                $('.min-max').text('Minimum ' + data.minimum_deposit + ' ' + currency + ' and ' + 'Maximum ' + data.maximum_deposit + ' ' + currency)
                 $('#logo').html(`<img class="payment-method h-12" src='${assetPath + data.logo}'>`);
                 var amount = $('#amount').val()
 
@@ -178,48 +164,75 @@
                 }
 
                 if (data.credentials !== undefined) {
-                    console.log(data.credentials,'data.credentials')
                     $('.manual-row').append(data.credentials)
                     imagePreview()
                 }
 
             });
 
-            $('#amount').on('keyup', function (e) {
-                "use strict"
-                var amount = $(this).val()
-                $('.amount').text((Number(amount)))
+            function updateVoucherCalculation(amount) {
+                if (!globalData) return;
+
+                amount = parseFloat(amount);
+
+                $('.amount').text((Number(amount.toFixed(2))))
                 $('.currency').text(currency)
 
                 var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
-                $('.charge2').text(charge + ' ' + currency)
+                $('.charge2').text(charge.toFixed(2) + ' ' + currency)
 
-                var total = (Number(amount) + Number(charge));
+                var total = (Number(amount) - Number(charge));
 
-                $('.total').text(total + ' ' + currency)
+                $('.total').text(total.toFixed(2) + ' ' + currency)
 
                 $('.pay-amount').text(parseFloat((total * globalData.rate).toFixed(4)).toString() +' '+ globalData.currency)
 
                 $('#converted-amount').val(parseFloat((total * globalData.rate).toFixed(4)).toString())
-            });
+            }
 
-            $('#converted-amount').on('keyup', function (e) {
-                "use strict"
-                var converted_amount = $(this).val();
-                var amount = parseFloat((converted_amount / globalData.rate).toFixed(4)).toString();
-                $('#amount').val(amount);
-                $('.amount').text((Number(amount)))
-                $('.currency').text(currency)
+            $('#voucher-code').on('input', function () {
+                var code = $(this).val().trim();
 
-                var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
-                $('.charge2').text(charge + ' ' + currency)
+                if (code.length < 16) {
+                    $('#voucher-amount').val('');
+                    $('.title, .code, .amount, .expires-at').text('');
+                    $('.invalid-code').addClass('hidden').text('');
+                    return;
+                }
 
-                var total = (Number(amount) + Number(charge));
+                $.ajax({
+                    url: "{{ route('user.deposit.get.voucher') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        code: code
+                    },
+                    success: function (response) {
+                        if (response.success) {
 
-                $('.total').text(total + ' ' + currency)
+                            updateVoucherCalculation(response.amount);
 
-                $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
+                            $('#voucher-amount').val(response.amount);
+                            $('.title').text(response.title);
+                            $('.code').text(response.code);
+                            $('#voucher_code').val(response.code);
+                            $('.expires-at').text(response.expires_at);
 
+                            // Hide any previous error
+                            $('.invalid-code').addClass('hidden').text('');
+                            $('.proceed-btn').removeAttr('disabled').removeClass('cursor-not-allowed');
+                        }else{
+
+                            updateVoucherCalculation(response.amount);
+                            $('.invalid-code').removeClass('hidden').text(response.message);
+
+                            // Optionally clear previous data
+                            $('#voucher-amount').val('');
+                            $('.title, .code, #voucher_code, .amount, .expires-at').text('');
+                            $('.proceed-btn').attr('disabled', true).addClass('cursor-not-allowed');
+                        }
+                    }
+                })
             });
 
         });

@@ -292,6 +292,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
 
         Route::get('notification-tune', 'notificationTune')->name('notificationTune');
+
+        Route::post('get-voucher', 'getVoucher')->name('get.voucher');
     });
 
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {

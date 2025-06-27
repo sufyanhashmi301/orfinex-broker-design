@@ -7,7 +7,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
-                        {{ __('Enter your deposit details.') }}
+                        {{ __('Enter your deposit details:') }}
                     </h4>
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
@@ -149,7 +149,7 @@
             $.get(url, function (data) {
 
                 globalData = data;
-                
+
                 $('.charge').text('Charge ' + data.charge + ' ' + (data.charge_type === 'percentage' ? ' % ' : currency))
                 $('.conversion-rate').text('1' +' '+ currency + ' = ' + data.rate +' '+ data.currency)
 
@@ -193,13 +193,13 @@
             $('#voucher-code').on('input', function () {
                 var code = $(this).val().trim();
 
-                if (code.length < 6) {
+                if (code.length < 16) {
                     $('#voucher-amount').val('');
                     $('.title, .code, .amount, .expires-at').text('');
                     $('.invalid-code').addClass('hidden').text('');
                     return;
                 }
-                
+
                 $.ajax({
                     url: "{{ route('user.deposit.get.voucher') }}",
                     type: "POST",

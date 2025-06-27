@@ -33,7 +33,9 @@ class DepositVoucherController extends Controller
                 ->addColumn('expiry_date', function ($voucher) {
                     return $voucher->expiry_date->format('Y-m-d H:i');
                 })
-                ->addColumn('status', 'backend.deposit-vouchers.include.__status')
+                ->addColumn('status', fn($voucher) =>
+                    view('backend.deposit-vouchers.include.__status', compact('voucher'))->render()
+                )
                 ->addColumn('used_by', 'backend.deposit-vouchers.include.__user')
                 ->addColumn('action', 'backend.deposit-vouchers.include.__action')
                 ->rawColumns(['title', 'status', 'used_by', 'action'])
@@ -63,11 +65,11 @@ class DepositVoucherController extends Controller
         }
 
         try {
-            // Generate a unique 6-digit code
+            // Generate a unique 16-digit code
             do {
-                $code = Str::upper(Str::random(6));
+                $code = Str::upper(Str::random(16));
             } while (DepositVoucher::where('code', $code)->exists());
-    
+
             DepositVoucher::create([
                 'title' => $request->title,
                 'code' => $code,
@@ -76,7 +78,7 @@ class DepositVoucherController extends Controller
                 'description' => $request->description,
                 'modal' => $request->modal,
             ]);
-    
+
             notify()->success(__('Deposit voucher created successfully.'));
             return redirect()->route('admin.deposit-vouchers.index');
         } catch (\Exception $e) {
@@ -102,7 +104,6 @@ class DepositVoucherController extends Controller
             'amount' => 'required|numeric|min:0',
             'expiry_date' => 'required|date',
             'description' => 'nullable|string',
-            'status' => 'required|in:active,used,expired',
             'modal' => 'nullable|string|max:255',
         ]);
 
@@ -126,4 +127,4 @@ class DepositVoucherController extends Controller
         notify()->success(__('Deposit voucher deleted successfully.'));
         return redirect()->route('admin.deposit-vouchers.index');
     }
-} 
+}

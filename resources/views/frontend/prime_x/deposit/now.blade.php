@@ -7,7 +7,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
-                        {{ __('Enter your deposit details.') }}
+                        {{ __('Enter your deposit details:') }}
                     </h4>
 
                     <div class="card">
@@ -150,6 +150,7 @@
             var code = $("input[name='gateway_code']").val();
             var url = '{{ route("user.deposit.gateway",":code") }}';
             url = url.replace(':code', code);
+
             $.get(url, function (data) {
 
                 globalData = data;
@@ -200,7 +201,8 @@
                 $('.pay-amount').text(parseFloat((total * globalData.rate).toFixed(4)).toString() +' '+ globalData.currency)
 
                 $('#converted-amount').val(parseFloat((total * globalData.rate).toFixed(4)).toString())
-            })
+            });
+
             $('#converted-amount').on('keyup', function (e) {
                 "use strict"
                 var converted_amount = $(this).val();
@@ -218,7 +220,7 @@
 
                 $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
 
-            })
+            });
 
         });
     </script>

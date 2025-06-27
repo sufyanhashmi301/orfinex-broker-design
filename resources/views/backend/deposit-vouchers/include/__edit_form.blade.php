@@ -24,17 +24,6 @@
             <div class="invalid-feedback" id="expiry_date_error"></div>
         </div>
         <div class="input-area">
-            <label for="edit_status" class="form-label">
-                @lang('Status')
-            </label>
-            <select class="select2 form-control @error('status') is-invalid @enderror" id="edit_status" name="status" required>
-                <option value="active" {{ $depositVoucher->status === 'active' ? 'selected' : '' }}>@lang('Active')</option>
-                <option value="used" {{ $depositVoucher->status === 'used' ? 'selected' : '' }}>@lang('Used')</option>
-                <option value="expired" {{ $depositVoucher->status === 'expired' ? 'selected' : '' }}>@lang('Expired')</option>
-            </select>
-            <div class="invalid-feedback" id="status_error"></div>
-        </div>
-        <div class="input-area">
             <label for="edit_description" class="form-label">
                 @lang('Description')
             </label>

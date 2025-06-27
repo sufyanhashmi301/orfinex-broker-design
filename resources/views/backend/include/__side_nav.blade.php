@@ -133,6 +133,12 @@
                                     {{ __('Deposit History') }}
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ route('admin.deposit-vouchers.index') }}"
+                                   class="{{ isActive('admin.deposit-vouchers*') }}">
+                                    {{ __('Deposit Vouchers') }}
+                                </a>
+                            </li>
                         @endcanany
                     </ul>
                 </li>

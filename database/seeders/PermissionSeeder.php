@@ -375,6 +375,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-create'],
             ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-edit'],
             ['category' => 'Support Center Ticket Category Setting', 'name' => 'ticket-category-delete'],
+
+            // Deposit Voucher Permissions
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-list'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-create'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-edit'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-delete'],
      ];
 
         foreach ($permissions as $permission) {

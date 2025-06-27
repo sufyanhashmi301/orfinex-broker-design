@@ -106,8 +106,13 @@
                                     @endforeach
                                 </select>
                                 @error('gateway_code')
-                                <span class="error">{{ $message }}</span>
+                                    <span class="error">{{ $message }}</span>
                                 @enderror
+                            </div>
+                            <div id="voucher-code-input" class="input-area hidden">
+                                <label for="" class="form-label">{{ __('Enter Code') }}</label>
+                                <input type="text" name="manual_data[voucher code]" class="form-control" id="voucher-code">
+                                <div class="font-Inter text-xs text-danger inline-block invalid-code hidden"></div>
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -120,7 +125,7 @@
                                         id="basic-addon1">{{ $currency }}</span>
                                 </div>
                                 @error('amount')
-                                <span class="error">{{ $message }}</span>
+                                    <span class="error">{{ $message }}</span>
                                 @enderror
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
@@ -216,7 +221,7 @@
             </div>
         </div>
     </div>
-  
+
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
              id="deposit-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
@@ -311,53 +316,65 @@
         var globalData;
         var currency = @json($currency)
 
-            // When the user dropdown changes
-            $('select[name="user_id"]').on('change', function () {
-                var userId = $(this).val();
+        // When the user dropdown changes
+        $('select[name="user_id"]').on('change', function () {
+            var userId = $(this).val();
+            $('select[name="target_id"]').empty();
+            if (userId) {
+                // Use Laravel's route helper to generate the URL
+                var url = '{{ route("admin.deposit.get.user.accounts", ":userId") }}';
+                url = url.replace(':userId', userId);
+
+                // Make an AJAX call to fetch the user's forex accounts and wallets
+                $.ajax({
+                    url: url, // URL generated from the route helper
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // Clear the current options in Account / Wallet dropdown (now target_id)
+                        $('select[name="target_id"]').empty();
+
+                        // Populate forex accounts
+                        $.each(data.forexAccounts, function (key, account) {
+                            $('select[name="target_id"]').append('<option value="' + account.login + '" data-type="forex">' + account.login + ' - ' + account.account_name + ' (' + account.equity + ' USD)</option>');
+                        });
+
+                        // Populate wallets
+                        $.each(data.wallets, function (key, wallet) {
+                            $('select[name="target_id"]').append('<option value="' + wallet.wallet_id + '" data-type="wallet">' + wallet.wallet_name + ' (' + wallet.amount + ' USD)</option>');
+                        });
+
+                    }
+                });
+            } else {
+                // If no user selected, clear the Account / Wallet dropdown (now target_id)
                 $('select[name="target_id"]').empty();
-                if (userId) {
-                    // Use Laravel's route helper to generate the URL
-                    var url = '{{ route("admin.deposit.get.user.accounts", ":userId") }}';
-                    url = url.replace(':userId', userId);
-
-                    // Make an AJAX call to fetch the user's forex accounts and wallets
-                    $.ajax({
-                        url: url, // URL generated from the route helper
-                        type: "GET",
-                        dataType: "json",
-                        success: function (data) {
-                            // Clear the current options in Account / Wallet dropdown (now target_id)
-                            $('select[name="target_id"]').empty();
-
-                            // Populate forex accounts
-                            $.each(data.forexAccounts, function (key, account) {
-                                $('select[name="target_id"]').append('<option value="' + account.login + '" data-type="forex">' + account.login + ' - ' + account.account_name + ' (' + account.equity + ' USD)</option>');
-                            });
-
-                            // Populate wallets
-                            $.each(data.wallets, function (key, wallet) {
-                                $('select[name="target_id"]').append('<option value="' + wallet.wallet_id + '" data-type="wallet">' + wallet.wallet_name + ' (' + wallet.amount + ' USD)</option>');
-                            });
-
-                        }
-                    });
-                } else {
-                    // If no user selected, clear the Account / Wallet dropdown (now target_id)
-                    $('select[name="target_id"]').empty();
-                }
-            });
+            }
+        });
 
         $("#gatewaySelect").on('change', function (e) {
             "use strict"
             e.preventDefault();
             $('.manual-row').empty();
-            var code = $(this).val()
+            var code = $(this).val();
+
+            if(code === 'voucher'){
+                $('#voucher-code-input').removeClass('hidden');
+                $('#amount').prop('readonly', true);
+
+                $('input[name="is_auto_approve"]').prop('checked', true).prop('readonly', true);
+            }else{
+                $('#voucher-code-input').addClass('hidden');
+                $('#amount').prop('readonly', false);
+
+                $('input[name="is_auto_approve"]').prop('checked', false).prop('readonly', false);
+            }
+
             var url = '{{ route("admin.deposit.gateway",":code") }}';
             url = url.replace(':code', code);
             $.get(url, function (data) {
 
                 globalData = data;
-                console.log(data, 'data')
                 if (data.currency === currency) {
                     $('.conversion').addClass('hidden');
                 } else {
@@ -405,7 +422,8 @@
                 $('.pay-amount').text(parseFloat((total * globalData.rate).toFixed(4)).toString() + ' ' + globalData.currency)
 
                 $('#converted-amount').val(parseFloat((total * globalData.rate).toFixed(4)).toString())
-            })
+            });
+
             $('#converted-amount').on('keyup', function (e) {
                 "use strict"
                 var converted_amount = $(this).val();
@@ -423,8 +441,42 @@
 
                 $('.pay-amount').text(parseFloat((total * globalData.rate + ' ' + globalData.currency).toFixed(4)).toString());
 
+            });
 
-            })
+            $('#voucher-code').on('input', function () {
+                var code = $(this).val().trim();
+
+                if (code.length < 16) {
+                    $('#amount').text('');
+                    $('.invalid-code').addClass('hidden').text('');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('admin.deposit.get.voucher') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        code: code
+                    },
+                    success: function (response) {
+                        if (response.success) {
+
+                            $('#amount').val(response.amount);
+
+                            // Hide any previous error
+                            $('.invalid-code').addClass('hidden').text('');
+                            $('.proceed-btn').removeAttr('disabled').removeClass('cursor-not-allowed');
+                        }else{
+                            $('.invalid-code').removeClass('hidden').text(response.message);
+
+                            // Optionally clear previous data
+                            $('#amount').val('');
+                            $('.proceed-btn').attr('disabled', true).addClass('cursor-not-allowed');
+                        }
+                    }
+                })
+            });
 
         });
         $(document).ready(function () {

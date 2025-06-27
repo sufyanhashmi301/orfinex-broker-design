@@ -127,6 +127,10 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
         Route::post('log/export', [DepositController::class, 'export'])->name('log.export');
 
+        Route::get('redeem-voucher', [DepositController::class, 'redeemVoucher'])->name('redeem.voucher');
+        Route::post('get-voucher', [DepositController::class, 'getVoucher'])->name('get.voucher');
+        Route::post('redeem-now', [DepositController::class, 'redeemNow'])->name('redeem.now');
+
     });
 
     // Multi Level

@@ -707,18 +707,37 @@
                 </div>
                 <br>
                 <div class="grid grid-cols-12 gap-5 items-center">
-                    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-                        <div class="input-area">
-                            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                                <option value="1">{{ __('Active') }}</option>
-                                <option value="0">{{ __('Deactivate') }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-
+    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+        <div class="input-area">
+            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
+                <option value="1">{{ __('Active') }}</option>
+                <option value="0">{{ __('Deactivate') }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+        <div class="input-area">
+            <div class="flex items-center space-x-7 flex-wrap">
+                <label class="form-label !w-auto pt-0 !mb-0">
+                    {{ __('Update Trading Password') }}
+                </label>
+                <div class="form-switch ps-0" style="line-height:0;">
+                    <input type="hidden" name="is_update_trading_password" value="0">
+                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            name="is_update_trading_password"
+                            value="1"
+                            class="sr-only peer"
+                            {{ old('is_update_trading_password') ? 'checked' : '' }}
+                        >
+                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                    </label>
                 </div>
-                <div class="mt-10">
+            </div>
+        </div>
+    </div>
+</div>                <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Add New') }}

@@ -7,6 +7,12 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('All Transactions') }}
         </h4>
+        <div class="sm:space-x-4 space-x-2 rtl:space-x-reverse">
+            <a href="{{ route('admin.transactions.report') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="iconoir:stats-report"></iconify-icon>
+                {{ __('Detailed Report') }}
+            </a>
+        </div>
     </div>
 
     <div class="innerMenu card p-6 mb-5">
@@ -72,6 +78,37 @@
                 </div>
             </div>
         </form>
+        <div class="flex justify-end">
+            <div id="txn-summary" class="flex flex-wrap flex-1 max-w-[516px] gap-3 mt-8 hidden">
+                <div class="flex-1 bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+                    <h4 class="block text-sm text-slate-600 font-medium dark:text-white mb-1">
+                        {{ __('Total') }}
+                    </h4>
+                    <div class="block text-xl text-slate-900 dark:text-white font-medium">
+                        {{ $currencySymbol }}
+                        <span id="summary-total">0</span>
+                    </div>
+                </div>
+                <div class="flex-1 bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+                    <h4 class="block text-sm text-slate-600 font-medium dark:text-white mb-1">
+                        {{ __('Completed') }}
+                    </h4>
+                    <div class="block text-xl text-slate-900 dark:text-white font-medium">
+                        {{ $currencySymbol }}
+                        <span id="summary-success">0</span>
+                    </div>
+                </div>
+                <div class="flex-1 bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+                    <h4 class="block text-sm text-slate-600 font-medium dark:text-white mb-1">
+                        {{ __('Pending') }}
+                    </h4>
+                    <div class="block text-xl text-slate-900 dark:text-white font-medium">
+                        {{ $currencySymbol }}
+                        <span id="summary-pending">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card">
         <div class="card-body relative px-6 pt-3">
@@ -111,7 +148,7 @@
     </div>
     @can('transaction-action')
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
                         <div class="popup-body-text deposit-action">
@@ -157,6 +194,15 @@
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
 
+                    },
+                    dataSrc: function (json) {
+                        if (json.summary) {
+                            $('#summary-total').text(json.summary.total ?? 0);
+                            $('#summary-success').text(json.summary.success ?? 0);
+                            $('#summary-pending').text(json.summary.pending ?? 0);
+                            $('#txn-summary').removeClass('hidden');
+                        }
+                        return json.data;
                     }
                 },
                 columns: [
@@ -195,6 +241,11 @@
                         $('.deposit-action').append(response);
                         imagePreview();
                         $('#transaction-action-modal').modal('show');
+
+                        tippy(".shift-Away", {
+                            placement: "top",
+                            animation: "shift-away"
+                        });
 
                     }
                 });

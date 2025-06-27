@@ -242,6 +242,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
 
     //===============================  Transactions ==================================
+    Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+    Route::post('transactions/user-summary', [TransactionController::class, 'userTransactionSummary'])->name('transactions.user-summary');
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
@@ -290,6 +292,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
 
         Route::get('notification-tune', 'notificationTune')->name('notificationTune');
+
+        Route::post('get-voucher', 'getVoucher')->name('get.voucher');
     });
 
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
@@ -705,6 +709,8 @@ Route::prefix('team')->group(function() {
         $tags = App\Models\RiskProfileTag::where('status', true)->get();
         return view('backend.lead.index', compact('tags'));
     })->name('customerLead');
+
+    Route::resource('deposit-vouchers', \App\Http\Controllers\Backend\DepositVoucherController::class);
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

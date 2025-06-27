@@ -35,10 +35,14 @@
         </div>
     @else
         <div class="input-area">
-            <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
+            <label for="{{ str_replace(' ', '_', $field['name']) }}" class="form-label">
+                {{ $field['name'] }}
+            </label>
             <input type="text" name="manual_data[{{ $field['name'] }}]"
-                   @if($field['validation'] == 'required') required @endif class="form-control"
-                   aria-label="{{ __('Amount') }}" id="amount" aria-describedby="basic-addon1">
+                @if($field['validation'] == 'required') required @endif class="form-control !text-lg"
+                aria-label="{{ str_replace(' ', '_', $field['name']) }}"
+                id="{{ str_replace(' ', '_', $field['name']) }}"
+                aria-describedby="basic-addon1">
         </div>
     @endif
 

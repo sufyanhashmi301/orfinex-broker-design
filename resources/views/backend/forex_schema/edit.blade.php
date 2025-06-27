@@ -505,7 +505,7 @@
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-12 lg:col-span-12 col-span-12">
-                        <div class="grid md:grid-cols-4 col-span-1 gap-5">
+                        <div class="grid md:grid-cols-5 col-span-1 gap-5">
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
@@ -606,21 +606,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                 <div class="grid grid-cols-12 gap-5 items-center">
-    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-        <div class="input-area">
-            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                <option value="1" @if($schema->status == 1) selected @endif>{{ __('Active') }}</option>
-                <option value="0" @if($schema->status == 0) selected @endif>{{ __('Deactivate') }}</option>
-            </select>
-        </div>
-    </div>
-    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-        <div class="input-area">
+                            <div class="input-area">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0 !mb-0">
                     {{ __('Update Trading Password') }}
@@ -645,7 +631,20 @@
                 </div>
             </div>
         </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                 <div class="grid grid-cols-12 gap-5 items-center">
+    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+        <div class="input-area">
+            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
+                <option value="1" @if($schema->status == 1) selected @endif>{{ __('Active') }}</option>
+                <option value="0" @if($schema->status == 0) selected @endif>{{ __('Deactivate') }}</option>
+            </select>
+        </div>
     </div>
+   
 </div>
                 <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

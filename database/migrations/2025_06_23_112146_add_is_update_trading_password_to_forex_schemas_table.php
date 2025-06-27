@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->boolean('is_update_trading_password')->default(false)->after('is_cent_account');
+            $table->boolean('is_update_trading_password')->default(true)->after('is_cent_account');
         });
     }
 

@@ -74,6 +74,7 @@
           data-bs-target="#accountRename" data-login="{{$account->login}}"
           data-account_name="{{$account->account_name}}">{{ __('Rename account') }}</a>
       </li>
+       @if($account->schema->is_update_trading_password)
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-password"
           href=""
@@ -83,6 +84,7 @@
           data-main_password="{{$account->main_password}}"
           data-invest_password="{{$account->invest_password}}">{{ __('Change trading password') }}</a>
       </li>
+      @endif
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-password"
           href=""

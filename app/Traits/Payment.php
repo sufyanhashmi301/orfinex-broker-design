@@ -212,4 +212,32 @@ trait Payment
         return false;
 
     }
+
+    protected function notifyOnVoucherRedeem(Transaction $txn)
+    {
+        $status = ucfirst($txn->status->value);
+        $symbol = setting('currency_symbol', 'global');
+
+        $titleText = match (strtolower($status)) {
+            'success' => 'Successfully',
+            'pending' => 'Pending',
+            default   => ucfirst($status)
+        };
+
+        $notify = [
+            'card-header' => "$status - Voucher Deposit",
+            'title'       => "$symbol {$txn->amount} Deposit $titleText",
+            'p'           => "The amount has been $titleText added to your account using a voucher.",
+            'strong'      => 'Transaction ID: ' . $txn->tnx,
+            'action'      => route('user.history.transactions'),
+            'a'           => 'View Transactions',
+            'view_name'   => 'deposit',
+        ];
+
+        $isStepOne = 'current';
+        $isStepTwo = 'current';
+        Session::put('user_notify', $notify);
+        return redirect()->route('user.notify');
+    }
+
 }

@@ -33,7 +33,7 @@
                                             {{$country->currency_code}}
                                         </td>
                                         <td class="table-td">
-                                            {{$country->rate}}
+                                            {{$country->rate->rate}}
                                         </td>
                                     </tr>
                                 @endforeach

@@ -28,7 +28,7 @@
         </button>
     @endcan
     @can('transaction-list')
-        <a href="{{ route('admin.transactions.user-summary', $id) }}" class="shift-Away action-btn" data-tippy-content="User transactions report">
+        <a href="{{ route('admin.transactions.user-summary', $id) }}" class="shift-Away action-btn" data-tippy-content="User's Stats">
             <iconify-icon icon="lucide:chart-pie"></iconify-icon>
         </a>
     @endcan

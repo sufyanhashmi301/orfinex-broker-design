@@ -218,7 +218,9 @@ class TransactionController extends Controller
 
     public function userTransactionSummary(Request $request)
     {
-        $email = $request->input('email');
+        $users = User::all();
+
+        $userId = $request->route('user_id') ?? $request->input('user_id');
         $date = $request->input('created_at');
 
         // Build the query
@@ -226,8 +228,8 @@ class TransactionController extends Controller
             ->select(['type', 'status', DB::raw('SUM(amount) as total')])
             ->groupBy('type', 'status');
 
-        if (!empty($email)) {
-            $query->where('user_id', $email);
+        if (!empty($userId)) {
+            $query->where('user_id', $userId);
         }
 
         // Date range support
@@ -301,12 +303,17 @@ class TransactionController extends Controller
             }
         }
 
-        return response()->json([
-            'html' => view('backend.transaction.include.__report_table', [
-                'incomingSummary' => $incomingSummary,
-                'outgoingSummary' => $outgoingSummary,
-            ])->render()
-        ]);
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('backend.transaction.include.__report_table', [
+                    'incomingSummary' => $incomingSummary,
+                    'outgoingSummary' => $outgoingSummary,
+                ])->render()
+            ]);
+        }
+
+        return view('backend.transaction.report', compact('incomingSummary', 'outgoingSummary', 'users'));
+
     }
 
 }

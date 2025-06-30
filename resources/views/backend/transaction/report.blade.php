@@ -15,7 +15,7 @@
             <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-stretch gap-3">
                 <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area">
-                        <select name="email" id="email" class="form-control w-full"></select>
+                        <select name="user_id" id="userId" class="form-control w-full"></select>
                     </div>
                     <div class="flex-1 input-area">
                         <select id="rangeSelect" class="form-control h-full">
@@ -113,7 +113,7 @@
         });
 
         var users = @json($users);
-        $('#email').select2({
+        $('#userId').select2({
             minimumInputLength: 1,
 
             data: users.map(function(user) {
@@ -156,7 +156,7 @@
                 url: '{{ route("admin.transactions.user-summary") }}',
                 method: 'POST',
                 data: {
-                    email: $('#email').val(),
+                    user_id: $('#userId').val(),
                     created_at: $('#created_at').val(),
                     _token: '{{ csrf_token() }}'
                 },

@@ -122,6 +122,26 @@
             $('.title').html(title);
             $('#deleteVoucher').modal('show');
         });
+
+        $(document).on('click', '.copy-btn', function () {
+            const $button = $(this);
+            const code = $button.data('code');
+
+            // Create a temporary input element
+            const $tempInput = $('<input>');
+            $('body').append($tempInput);
+            $tempInput.val(code).select();
+            document.execCommand('copy');
+            $tempInput.remove();
+
+            $button.addClass('text-success border-success');
+
+            // Revert changes after delay
+            setTimeout(() => {
+                $button.removeClass('text-success border-success');
+            }, 2000); // 2 seconds
+        });
+
     });
 </script>
-@endsection 
+@endsection

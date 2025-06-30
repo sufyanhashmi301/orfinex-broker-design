@@ -931,71 +931,122 @@ public function index(Request $request)
     /**
      * @return Application|Factory|View
      */
-    public function mailSendAll()
-    {
-        return view('backend.user.mail_send_all');
-    }
-
+   public function mailSendAll()
+{
+    $ibGroups = IbGroup::where('status', 1)->get();
+    $forexSchemas = ForexSchema::where('status', 1)->orderBy('title')->get();
+    $users = User::where('status', 1)->get(['id', 'first_name', 'last_name', 'email']);
+    
+    return view('backend.user.mail_send_all', compact('ibGroups', 'forexSchemas', 'users'));
+}
     /**
      * @return RedirectResponse
      */
-    public function mailSend(Request $request)
-    {
-        $message = $request->input('message');
+   public function mailSend(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'subject' => 'required',
+        'message' => 'required',
+    ]);
 
-        $validator = Validator::make($request->all(), [
-            'subject' => 'required',
-            'message' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
-        }
-
-        try {
-
-            $input = [
-                'subject' => $request->subject,
-                'message' => str_replace(['{', '}'], ['<', '>'], $message),
-            ];
-
-            $shortcodes = [
-                '[[subject]]' => $input['subject'],
-                '[[message]]' => $input['message'],
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-            ];
-
-            if (isset($request->id)) {
-                $user = User::find($request->id);
-
-                $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
-
-                $this->mailNotify($user->email, 'user_mail', $shortcodes);
-            } else {
-                $users = User::where('status', 1)->get();
-
-                foreach ($users as $user) {
-                    $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
-
-                    $this->mailNotify($user->email, 'user_mail', $shortcodes);
-                }
-            }
-            $status = 'success';
-            $message = __('Mail Send Successfully');
-        } catch (Exception $e) {
-
-            $status = 'warning';
-            $message = __('something is wrong');
-        }
-
-        notify()->$status($message, $status);
-
+    if ($validator->fails()) {
+        notify()->error($validator->errors()->first(), 'Error');
         return redirect()->back();
     }
 
+    try {
+        // Prepare email content
+        $input = [
+            'subject' => $request->subject,
+            'message' => str_replace(['{', '}'], ['<', '>'], $request->message),
+        ];
+
+        $shortcodes = [
+            '[[subject]]' => $input['subject'],
+            '[[message]]' => $input['message'],
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        // Handle single user case (from user list action)
+        if (isset($request->id)) {
+            $user = User::find($request->id);
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
+            $this->mailNotify($user->email, 'user_mail', $shortcodes);
+            
+            notify()->success(__('Email sent successfully to :name', ['name' => $user->full_name]));
+            return redirect()->back();
+        }
+
+        // Bulk email case
+        $ibGroups = $request->input('ib_groups', []);
+        $accountTypes = $request->input('account_types', []);
+        $selectedUsers = $request->input('users', []);
+
+        // Start building the query
+        $query = User::where('status', 1);
+
+        // If specific users are selected
+        if (!empty($selectedUsers)) {
+            if (!in_array('all', $selectedUsers)) {
+                $query->whereIn('id', $selectedUsers);
+            }
+        } 
+        // Apply IB group and account type filters
+        else {
+            // Filter by IB groups (including network)
+            if (!empty($ibGroups) && !in_array('all', $ibGroups)) {
+                $query->where(function($q) use ($ibGroups) {
+                    // Direct IB group members
+                    $q->whereHas('ibGroup', function($q) use ($ibGroups) {
+                        $q->whereIn('id', $ibGroups);
+                    })
+                    // OR part of the network (via user_metas)
+                    ->orWhereHas('user_metas', function($q) use ($ibGroups) {
+                        $q->where('meta_key', 'is_part_of_master_ib')
+                          ->whereIn('meta_value', $ibGroups);
+                    });
+                });
+            }
+
+            // Filter by account types
+            if (!empty($accountTypes) && !in_array('all', $accountTypes)) {
+                $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
+                    $q->whereIn('forex_schema_id', $accountTypes);
+                });
+            }
+        }
+
+        // Get users and send emails
+        $users = $query->get();
+        $sentCount = 0;
+
+        foreach ($users as $user) {
+            try {
+                $userShortcodes = array_merge($shortcodes, [
+                    '[[full_name]]' => $user->full_name
+                ]);
+                
+                $this->mailNotify($user->email, 'user_mail', $userShortcodes);
+                $sentCount++;
+            } catch (\Exception $e) {
+                \Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+            }
+        }
+
+        notify()->success(__('Emails sent successfully to :count recipients', ['count' => $sentCount]));
+
+    } catch (\Exception $e) {
+        \Log::error('Mail sending failed: ' . $e->getMessage());
+        notify()->error(__('Failed to send emails: :error', ['error' => $e->getMessage()]));
+    }
+
+    return redirect()->back();
+}
     /**
      * @return JsonResponse|void
      *

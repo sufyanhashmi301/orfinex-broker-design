@@ -192,18 +192,24 @@
 
                             <div class="addOptions md:col-span-2">
                                 @foreach(json_decode($method->field_options,true) as $key => $value)
+
+                                    @php
+                                        $isVoucherCode = ($method->gateway_code === 'voucher' && strtolower($value['name']) === 'voucher code');
+                                    @endphp
+
                                     <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
                                         <div class="xl:col-span-4 md:col-span-6 col-span-12">
                                             <div class="input-area">
                                                 <input name="field_options[{{$key}}][name]" class="form-control"
                                                        type="text" value="{{$value['name']}}" required
+                                                       {{ $isVoucherCode ? 'readonly' : '' }}
                                                        placeholder="Field Name">
                                             </div>
                                         </div>
 
                                         <div class="xl:col-span-4 md:col-span-6 col-span-12">
                                             <div class="input-area">
-                                                <select name="field_options[{{$key}}][type]" class="form-control w-100">
+                                                <select name="field_options[{{$key}}][type]" class="form-control w-100" {{ $isVoucherCode ? 'disabled' : '' }}>
                                                     <option value="text"
                                                             @if($value['type'] == 'text') selected @endif>Input
                                                         Text
@@ -217,11 +223,14 @@
                                                         upload
                                                     </option>
                                                 </select>
+                                                @if($isVoucherCode)
+                                                    <input type="hidden" name="field_options[{{$key}}][type]" value="{{ $value['type'] }}">
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="xl:col-span-3 md:col-span-6 col-span-12">
                                             <div class="input-area mb-0">
-                                                <select name="field_options[{{ $key }}][validation]" class="form-control w-100">
+                                                <select name="field_options[{{ $key }}][validation]" class="form-control w-100" {{ $isVoucherCode ? 'disabled' : '' }}>
                                                     <option value="required"
                                                             @if($value['validation'] == 'required') selected @endif>
                                                         Required
@@ -231,14 +240,19 @@
                                                         Optional
                                                     </option>
                                                 </select>
+                                                @if($isVoucherCode)
+                                                    <input type="hidden" name="field_options[{{ $key }}][validation]" value="{{ $value['validation'] }}">
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="xl:col-span-1 md:col-span-6 col-span-12">
-                                            <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                                    <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-                                                </svg>
-                                            </button>
+                                            @unless($isVoucherCode)
+                                                <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
+                                                    </svg>
+                                                </button>
+                                            @endunless
                                         </div>
                                     </div>
                                 @endforeach

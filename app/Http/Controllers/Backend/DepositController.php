@@ -578,7 +578,12 @@ class DepositController extends Controller
 
         $finalAmount = $amount - $charge;
         $payAmount = $finalAmount * $gateway->rate;
-        $depositType = TxnType::ManualDeposit;
+
+        if ($input['gateway_code'] === 'voucher') {
+            $depositType = TxnType::VoucherDeposit;
+        }else {
+            $depositType = TxnType::ManualDeposit;
+        }
 
         // Handle manual data (e.g., file uploads)
         $manualData = [];

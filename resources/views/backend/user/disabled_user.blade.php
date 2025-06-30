@@ -165,7 +165,13 @@
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
+                ],
+                drawCallback: function (settings) {
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
+                }
             });
               // Function to generate a random password
               function generateRandomPassword(length = 12) {

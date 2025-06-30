@@ -41,20 +41,13 @@
                         </button>
                         <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none lrt:origin-top-right ">
                             <li>
-                                @if($method->gateway_code !== 'voucher')
-                                    <a href="{{ route('admin.deposit.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                        <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                                        {{ __('Upadte') }}
-                                    </a>
-                                @else
-                                    <a href="javascript:;" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                        <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                                        {{ __('Upadte') }}
-                                    </a>
-                                @endif
+                                <a href="{{ route('admin.deposit.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                    <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    {{ __('Upadte') }}
+                                </a>
                             </li>
                             <li>
-                                <a href="javascript:void(0);" class="delete-method text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+                                <a href="javascript:void(0);" class="{{ $method->gateway_code === 'voucher' ? 'disabled' : 'delete-method' }} text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
                                    data-id="{{ $method->id }}" data-name="{{ $method->name }}" >
                                     <iconify-icon icon="lucide:trash" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
                                     {{ __('Delete') }}

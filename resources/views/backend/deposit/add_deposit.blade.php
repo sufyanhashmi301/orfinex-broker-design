@@ -362,12 +362,12 @@
                 $('#voucher-code-input').removeClass('hidden');
                 $('#amount').prop('readonly', true);
 
-                $('input[name="is_auto_approve"]').prop('checked', true).prop('readonly', true);
+                $('input[name="is_auto_approve"]').prop('checked', true);
             }else{
                 $('#voucher-code-input').addClass('hidden');
                 $('#amount').prop('readonly', false);
 
-                $('input[name="is_auto_approve"]').prop('checked', false).prop('readonly', false);
+                $('input[name="is_auto_approve"]').prop('checked', false);
             }
 
             var url = '{{ route("admin.deposit.gateway",":code") }}';

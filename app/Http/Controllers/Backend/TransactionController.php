@@ -223,6 +223,8 @@ class TransactionController extends Controller
         $userId = $request->route('user_id') ?? $request->input('user_id');
         $date = $request->input('created_at');
 
+        $selectedUser = $userId ? User::find($userId) : null;
+
         // Build the query
         $query = Transaction::query()
             ->select(['type', 'status', DB::raw('SUM(amount) as total')])
@@ -312,7 +314,7 @@ class TransactionController extends Controller
             ]);
         }
 
-        return view('backend.transaction.report', compact('incomingSummary', 'outgoingSummary', 'users'));
+        return view('backend.transaction.report', compact('incomingSummary', 'outgoingSummary', 'users', 'selectedUser'));
 
     }
 

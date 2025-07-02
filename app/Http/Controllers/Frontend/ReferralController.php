@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -122,7 +123,10 @@ class ReferralController extends Controller
 
     public function history()
     {
-        $query = Transaction::where('user_id', auth()->user()->id)->where('type', '=', 'ib_bonus');;
+        $year = Carbon::now()->year;
+        $table = 'ib_transactions_'.$year;
+
+        $query = DB::table($table)->where('user_id', auth()->user()->id);
 
         if (request('transaction_date')) {
             $filter = request('transaction_date');
@@ -157,10 +161,11 @@ class ReferralController extends Controller
         }
 
         $transactions = $query->orderBy('created_at', 'desc')->paginate(10)->appends(request()->query());
-
+        
         if (request()->ajax()) {
             return response()->json([
-                'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
+                'html' => view('frontend::referral.include.__ib_transaction_row', compact('transactions'))->render(),  
+                'html_mobile' => view('frontend::referral.include.__mobile_ib_transaction_row', compact('transactions'))->render(),
                 'pagination' => (string) $transactions->links(),
                 'total' => $transactions->total(),
             ]);

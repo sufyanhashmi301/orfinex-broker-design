@@ -241,7 +241,7 @@ class DepositController extends Controller
             ->latest();
 
         // Apply additional filters
-        // $data->applyFilters($filters);
+        $data->applyFilters($filters);
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -265,7 +265,7 @@ class DepositController extends Controller
     public function history(Request $request)
 {
 
-    // dd('s');
+    // dd($request->all());
     $loggedInUser = auth()->user();
     $filters = $request->only(['email', 'status', 'created_at']);
 
@@ -283,7 +283,7 @@ class DepositController extends Controller
             ->latest();
 
         // ✅ Apply filters (if any)
-        // $data->applyFilters($filters);
+        $data->applyFilters($filters);
 
         return Datatables::of($data)
             ->addIndexColumn()

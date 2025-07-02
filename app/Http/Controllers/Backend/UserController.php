@@ -999,25 +999,36 @@ public function index(Request $request)
         // Apply IB group and account type filters
         else {
             // Filter by IB groups (including network)
-            if (!empty($ibGroups) && !in_array('all', $ibGroups)) {
-                $query->where(function($q) use ($ibGroups) {
-                    // Direct IB group members
-                    $q->whereHas('ibGroup', function($q) use ($ibGroups) {
-                        $q->whereIn('id', $ibGroups);
-                    })
-                    // OR part of the network (via user_metas)
-                    ->orWhereHas('user_metas', function($q) use ($ibGroups) {
-                        $q->where('meta_key', 'is_part_of_master_ib')
-                          ->whereIn('meta_value', $ibGroups);
+            if (!empty($ibGroups)) {
+                if (in_array('all', $ibGroups)) {
+                    $query->where(function($q) {
+                        $q->whereHas('ibGroup')
+                          ->orWhereHas('user_metas', function($q) {
+                              $q->where('meta_key', 'is_part_of_master_ib');
+                          });
                     });
-                });
+                } else {
+                    $query->where(function($q) use ($ibGroups) {
+                        $q->whereHas('ibGroup', function($q) use ($ibGroups) {
+                            $q->whereIn('id', $ibGroups);
+                        })
+                        ->orWhereHas('user_metas', function($q) use ($ibGroups) {
+                            $q->where('meta_key', 'is_part_of_master_ib')
+                              ->whereIn('meta_value', $ibGroups);
+                        });
+                    });
+                }
             }
 
             // Filter by account types
-            if (!empty($accountTypes) && !in_array('all', $accountTypes)) {
-                $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
-                    $q->whereIn('forex_schema_id', $accountTypes);
-                });
+           if (!empty($accountTypes)) {
+                if (in_array('all', $accountTypes)) {
+                    $query->whereHas('forexAccounts');
+                } else {
+                    $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
+                        $q->whereIn('forex_schema_id', $accountTypes);
+                    });
+                }
             }
         }
 

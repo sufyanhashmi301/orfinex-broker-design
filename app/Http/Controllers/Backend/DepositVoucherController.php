@@ -27,6 +27,7 @@ class DepositVoucherController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('title', 'backend.deposit-vouchers.include.__title')
+                ->addColumn('code', 'backend.deposit-vouchers.include.__code')
                 ->addColumn('amount', function ($voucher) {
                     return number_format($voucher->amount, 2);
                 })
@@ -38,7 +39,7 @@ class DepositVoucherController extends Controller
                 )
                 ->addColumn('used_by', 'backend.deposit-vouchers.include.__user')
                 ->addColumn('action', 'backend.deposit-vouchers.include.__action')
-                ->rawColumns(['title', 'status', 'used_by', 'action'])
+                ->rawColumns(['title', 'code', 'status', 'used_by', 'action'])
                 ->make(true);
         }
 

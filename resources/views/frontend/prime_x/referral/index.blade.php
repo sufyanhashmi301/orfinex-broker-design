@@ -256,12 +256,15 @@
                     },
                     beforeSend: function () {
                         $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
+                        $('#transaction-mobile-body').html('<p class="text-center p-4">Loading...</p>');
                     },
                     success: function (response) {
                         if (response.html.trim() === "") {
                             $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">No transactions found</td></tr>');
+                            $('#transaction-mobile-body').html('<p class="text-center p-4">No transactions found</p>');
                         } else {
                             $('#transaction-table-body').html(response.html);
+                            $('#transaction-mobile-body').html(response.html_mobile);
                         }
                         $('.pagination-container').html(response.pagination);
                         $('#total-records').html(`

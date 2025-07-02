@@ -10,7 +10,7 @@ use App\Console\Commands\MultiLevelRebateDistribution;
 use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
-
+use App\Console\Commands\CreateIBTransactionsTableYearly;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 
 use Illuminate\Console\Scheduling\Schedule;
@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
+        $schedule->command('ib:create-transactions-table')->yearlyOn(12, 31, '23:59');
 
     }
 
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateTokenRates::class,
         SyncForexAccountsViaEmail::class,
         MultiLevelRebateDistribution::class,
+        CreateIBTransactionsTableYearly::class,
 
     ];
 }

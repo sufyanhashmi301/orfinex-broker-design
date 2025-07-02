@@ -57,7 +57,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="transaction-table-body">
-                                    @include('frontend::user.transaction.include.__transaction_row', ['transactions' => $transactions])
+                                    @include('frontend::referral.include.__ib_transaction_row', ['transactions' => $transactions])
                                 </tbody>
                             </table>
                             <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
@@ -108,44 +108,8 @@
                 <h4 class="card-title">{{ __('All Transactions') }}</h4>
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
-                <div class="contents space-y-3">
-                    @foreach($transactions as $transaction)
-                        <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
-                            <div class="transaction-left w-3/4">
-                                <div class="transaction-des">
-                                    <div class="transaction-title font-semibold dark:text-white mb-1">
-                                        {{ $transaction->description }}
-                                    </div>
-                                    <div class="transaction-id dark:text-white mb-1">
-                                        {{ $transaction->tnx }}
-                                    </div>
-                                    <div class="transaction-date dark:text-white mb-1">
-                                        {{ $transaction->display_time->format('M d, Y h:i A') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="transaction-right text-right">
-                                <div class="transaction-amount font-semibold dark:text-white mb-1">
-                                    {{ txn_type($transaction->type->value, ['+','-']) }}{{ number_format($transaction->amount, 2) }} {{ $currency }}
-                                </div>
-                                <div class="transaction-fee dark:text-white mb-1">
-                                    -{{ number_format($transaction->charge, 2) }} {{ $currency }}
-                                </div>
-                                <div class="transaction-gateway dark:text-white mb-1">
-                                    {{ $transaction->method ?? '-' }}
-                                </div>
-                                <div class="transaction-status">
-                                    @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
-                                        <span class="badge badge-warning">{{ __('Pending') }}</span>
-                                    @elseif($transaction->status->value == App\Enums\TxnStatus::Success->value)
-                                        <span class="badge badge-success">{{ __('Success') }}</span>
-                                    @elseif($transaction->status->value == App\Enums\TxnStatus::Failed->value)
-                                        <span class="badge badge-danger">{{ __('Canceled') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                <div id="transaction-mobile-body" class="contents space-y-3">
+                    @include('frontend::referral.include.__mobile_ib_transaction_row', ['transactions' => $transactions])
                 </div>
                 {{ $transactions->onEachSide(1)->links() }}
             </div>

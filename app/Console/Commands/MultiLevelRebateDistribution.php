@@ -27,7 +27,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use Txn;
+use App\Services\IBTransactionService;
 
 class MultiLevelRebateDistribution extends Command
 {
@@ -150,9 +150,11 @@ class MultiLevelRebateDistribution extends Command
             $walletId = $account->wallet_id;
             $description = "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login} of {$childUser->full_name}";
 
-            if (Transaction::isDuplicateIbBonus($userId, $childUserId, $description, $amount)) continue;
+            // Check for duplicates
+            if (IBTransactionService::isDuplicate($userId, $childUserId, $description, $amount)) continue;
 
-            $transaction = Txn::new(
+            // Create transaction
+            $transaction = IBTransactionService::new(
                 $amount, 0, $amount, 'system',
                 $description,
                 TxnType::IbBonus, TxnStatus::Success, base_currency(),

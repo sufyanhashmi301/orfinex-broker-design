@@ -241,7 +241,7 @@ class DepositController extends Controller
             ->latest();
 
         // Apply additional filters
-        $data->applyFilters($filters);
+        // $data->applyFilters($filters);
 
         return Datatables::of($data)
             ->addIndexColumn()

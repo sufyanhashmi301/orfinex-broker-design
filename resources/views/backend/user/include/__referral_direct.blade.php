@@ -89,45 +89,38 @@
             });
         })(jQuery);
 
-        var users = @json($users);
-        $('#countrySelect').select2({
-            dropdownParent: $('#addReferralModal'),
-            placeholder: 'Select User',
-            minimumInputLength: 1,
-
-            data: users.map(function(user) {
-                return {
-                    id: user.id,
-                    text: user.full_name,
-                    email: user.email
-                };
-            }),
-
-            matcher: function(params, data) {
-                if ($.trim(params.term) === '') {
-                    return null;
+        function initUserSelect(selector, dropdownParent = null) {
+            $(selector).select2({
+                ajax: {
+                    url: '{{ route("admin.user.search") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data.results.map(function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text + ' (' + item.email + ')',
+                                    email: item.email
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                dropdownParent: dropdownParent,
+                placeholder: 'Select User',
+                minimumInputLength: 1,
+                templateResult: function(data) {
+                    return $('<span>' + data.text + '</span>');
+                },
+                templateSelection: function(data) {
+                    return data.text;
                 }
+            });
+        }
 
-                const term = params.term.toLowerCase();
-                const nameMatch = data.text.toLowerCase().includes(term);
-                const emailMatch = data.email.toLowerCase().includes(term);
-
-                if (nameMatch || emailMatch) {
-                    return data;
-                }
-
-                return null;
-            },
-
-            templateResult: function(data) {
-                if (data.loading) return data.text;
-                return $('<span>' + data.text + ' - <small>' + data.email + '</small></span>');
-            },
-
-            templateSelection: function(data) {
-                return data.text + ' (' + data.email + ')';
-            }
-        });
+        initUserSelect('#countrySelect', $('#addReferralModal'));
 
     </script>
 @endpush

@@ -429,6 +429,8 @@ public function index(Request $request)
 
         $user = User::find($id);
 
+        $referrals = $this->getAllReferrals($user);
+
         // If user not found, redirect back with an error message
         if (!$user) {
             return redirect()->back()->with('error', 'User not found.');
@@ -498,7 +500,8 @@ public function index(Request $request)
             'kycLevels',
             'kycStatus',
             'bonuses',
-            'ibGroups'
+            'ibGroups',
+            'referrals'
         ));
     }
 
@@ -936,7 +939,7 @@ public function index(Request $request)
     $ibGroups = IbGroup::where('status', 1)->get();
     $forexSchemas = ForexSchema::where('status', 1)->orderBy('title')->get();
     $users = User::where('status', 1)->get(['id', 'first_name', 'last_name', 'email']);
-    
+
     return view('backend.user.mail_send_all', compact('ibGroups', 'forexSchemas', 'users'));
 }
     /**
@@ -977,7 +980,7 @@ public function index(Request $request)
 
             $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
             $this->mailNotify($user->email, 'user_mail', $shortcodes);
-            
+
             notify()->success(__('Email sent successfully to :name', ['name' => $user->full_name]));
             return redirect()->back();
         }
@@ -995,29 +998,40 @@ public function index(Request $request)
             if (!in_array('all', $selectedUsers)) {
                 $query->whereIn('id', $selectedUsers);
             }
-        } 
+        }
         // Apply IB group and account type filters
         else {
             // Filter by IB groups (including network)
-            if (!empty($ibGroups) && !in_array('all', $ibGroups)) {
-                $query->where(function($q) use ($ibGroups) {
-                    // Direct IB group members
-                    $q->whereHas('ibGroup', function($q) use ($ibGroups) {
-                        $q->whereIn('id', $ibGroups);
-                    })
-                    // OR part of the network (via user_metas)
-                    ->orWhereHas('user_metas', function($q) use ($ibGroups) {
-                        $q->where('meta_key', 'is_part_of_master_ib')
-                          ->whereIn('meta_value', $ibGroups);
+            if (!empty($ibGroups)) {
+                if (in_array('all', $ibGroups)) {
+                    $query->where(function($q) {
+                        $q->whereHas('ibGroup')
+                          ->orWhereHas('user_metas', function($q) {
+                              $q->where('meta_key', 'is_part_of_master_ib');
+                          });
                     });
-                });
+                } else {
+                    $query->where(function($q) use ($ibGroups) {
+                        $q->whereHas('ibGroup', function($q) use ($ibGroups) {
+                            $q->whereIn('id', $ibGroups);
+                        })
+                        ->orWhereHas('user_metas', function($q) use ($ibGroups) {
+                            $q->where('meta_key', 'is_part_of_master_ib')
+                              ->whereIn('meta_value', $ibGroups);
+                        });
+                    });
+                }
             }
 
             // Filter by account types
-            if (!empty($accountTypes) && !in_array('all', $accountTypes)) {
-                $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
-                    $q->whereIn('forex_schema_id', $accountTypes);
-                });
+           if (!empty($accountTypes)) {
+                if (in_array('all', $accountTypes)) {
+                    $query->whereHas('forexAccounts');
+                } else {
+                    $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
+                        $q->whereIn('forex_schema_id', $accountTypes);
+                    });
+                }
             }
         }
 
@@ -1030,7 +1044,7 @@ public function index(Request $request)
                 $userShortcodes = array_merge($shortcodes, [
                     '[[full_name]]' => $user->full_name
                 ]);
-                
+
                 $this->mailNotify($user->email, 'user_mail', $userShortcodes);
                 $sentCount++;
             } catch (\Exception $e) {
@@ -1071,106 +1085,116 @@ public function index(Request $request)
                 ->make(true);
         }
     }
-public function ibBonus($id, Request $request)
-{
-    if ($request->ajax()) {
-        $data = Transaction::where('user_id', $id)
-            ->where('type', TxnType::IbBonus->value);
 
-        $dateRanges = [];
+    public function ibBonus($id, Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Transaction::where('user_id', $id)
+                ->where('type', TxnType::IbBonus->value);
 
-        // 1. Process Created At range filter if specified
-        if (!empty($request->created_at)) {
-            $dates = explode(' to ', $request->created_at);
-            if (count($dates) == 2) {
-                $start = Carbon::parse($dates[0])->startOfDay();
-                $end = Carbon::parse($dates[1])->endOfDay();
-                $dateRanges[] = [
-                    'start' => $start,
-                    'end' => $end,
-                    'days' => $start->diffInDays($end)
-                ];
-            }
-        }
+            $dateRanges = [];
 
-        // 2. Process Select Days filter if specified
-        if ($request->date_filter) {
-            $filter = $request->date_filter;
-            $dateRange = match ($filter) {
-                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
-                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
-                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
-                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
-                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
-                default => null,
-            };
-
-            if ($dateRange) {
-                $dateRanges[] = [
-                    'start' => $dateRange[0],
-                    'end' => $dateRange[1],
-                    'days' => $dateRange[0]->diffInDays($dateRange[1])
-                ];
-            }
-        }
-
-        // 3. Apply the shortest date range if multiple exist
-        if (count($dateRanges) > 0) {
-            // Find the range with the fewest days
-            $shortestRange = collect($dateRanges)->sortBy('days')->first();
-
-            $data->where(function ($query) use ($shortestRange) {
-                $query->where(function ($q) use ($shortestRange) {
-                    $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
-                        ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [
-                            $shortestRange['start'],
-                            $shortestRange['end']
-                        ]);
-                })->orWhereBetween('created_at', [
-                    $shortestRange['start'],
-                    $shortestRange['end']
-                ]);
-            });
-        }
-
-        // Field filters
-        foreach (['login', 'deal', 'order', 'symbol'] as $field) {
-            if (!empty($request->$field)) {
-                $value = $request->$field;
-
-                if (in_array($field, ['login', 'deal', 'order'])) {
-                    $data->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) AS UNSIGNED) = ?", [$value]);
-                } else {
-                    $data->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) LIKE ?", ["%$value%"]);
+            // 1. Process Created At range filter if specified
+            if (!empty($request->created_at)) {
+                $dates = explode(' to ', $request->created_at);
+                if (count($dates) == 2) {
+                    $start = Carbon::parse($dates[0])->startOfDay();
+                    $end = Carbon::parse($dates[1])->endOfDay();
+                    $dateRanges[] = [
+                        'start' => $start,
+                        'end' => $end,
+                        'days' => $start->diffInDays($end)
+                    ];
                 }
             }
-        }
 
-        return Datatables::of($data->latest())
-            ->addIndexColumn()
-            ->editColumn('status', 'backend.user.include.__txn_status')
-            ->editColumn('type', 'backend.user.include.__txn_type')
-            ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-            ->editColumn('created_at', function ($row) {
-                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
-                    $manualData = json_decode($row->manual_field_data, true);
-                    if (is_array($manualData) && isset($manualData['time'])) {
-                        return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+            // 2. Process Select Days filter if specified
+            if ($request->date_filter) {
+                $filter = $request->date_filter;
+                $dateRange = match ($filter) {
+                    '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                    '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                    '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                    '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                    '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                    default => null,
+                };
+
+                if ($dateRange) {
+                    $dateRanges[] = [
+                        'start' => $dateRange[0],
+                        'end' => $dateRange[1],
+                        'days' => $dateRange[0]->diffInDays($dateRange[1])
+                    ];
+                }
+            }
+
+            // 3. Apply the shortest date range if multiple exist
+            if (count($dateRanges) > 0) {
+                // Find the range with the fewest days
+                $shortestRange = collect($dateRanges)->sortBy('days')->first();
+
+                $data->where(function ($query) use ($shortestRange) {
+                    $query->where(function ($q) use ($shortestRange) {
+                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
+                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [
+                                $shortestRange['start'],
+                                $shortestRange['end']
+                            ]);
+                    })->orWhereBetween('created_at', [
+                        $shortestRange['start'],
+                        $shortestRange['end']
+                    ]);
+                });
+            }
+
+            // Field filters
+            foreach (['login', 'deal', 'order', 'symbol'] as $field) {
+                if (!empty($request->$field)) {
+                    $value = $request->$field;
+                    $column = "JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"'))";
+
+                    if (in_array($field, ['login', 'deal', 'order'])) {
+                        $data->whereRaw("CAST($column AS UNSIGNED) = ?", [$value]);
+                    } else {
+                        $data->whereRaw("$column LIKE ?", ["%$value%"]);
                     }
                 }
-                return $row->created_at;
-            })
-            ->addColumn('action', function ($row) {
-                return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                            <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
-                                <iconify-icon icon="lucide:eye"></iconify-icon>
-                            </button>
-                        </span>';
-            })
-            ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
-            ->make(true);
+            }
+
+            // Specific referral filter (optional from dropdown)
+            if ($request->filled('from_user_id')) {
+                $data->where('from_user_id', $request->from_user_id);
+            }
+
+            $totalBonus = (clone $data)->sum('final_amount');
+
+            return Datatables::of($data->latest())
+                ->addIndexColumn()
+                ->editColumn('status', 'backend.user.include.__txn_status')
+                ->editColumn('type', 'backend.user.include.__txn_type')
+                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->editColumn('created_at', function ($row) {
+                    if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                        $manualData = json_decode($row->manual_field_data, true);
+                        if (is_array($manualData) && isset($manualData['time'])) {
+                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                        }
+                    }
+                    return $row->created_at;
+                })
+                ->addColumn('action', function ($row) {
+                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </span>';
+                })
+                ->with('total_bonus', $totalBonus)
+                ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
+                ->make(true);
+        }
     }
-}
     public function ibInfo($id, Request $request)
     {
         //dd($id);
@@ -1620,4 +1644,17 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             return redirect()->back();
         }
     }
+
+    public function getAllReferrals(User $user)
+    {
+        $all = collect();
+
+        foreach ($user->referrals as $referral) {
+            $all->push($referral);
+            $all = $all->merge($this->getAllReferrals($referral));
+        }
+
+        return $all;
+    }
+
 }

@@ -30,9 +30,19 @@
                     </div>
                 @endcanany
             </div>
-            <div class="flex flex-col sm:flex-row sm:items-center w-full gap-3">
+            <div class="flex flex-col w-full gap-3">
                 <!-- Filter Inputs -->
                 <form id="filter-form" class="w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                    <div class="flex-1 input-area relative">
+                        <select name="user" id="user" class="form-control select2 h-full" data-placeholder="Select User">
+                            <option value="">{{ __('Select User') }}</option>
+                            @foreach($referrals->unique('id') as $ref)
+                                <option value="{{ $ref->id }}">
+                                    {{ $ref->full_name }} ({{ $ref->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="flex-1 input-area relative">
                         <input type="text" id="ib-bonus-login" class="form-control h-full" placeholder="Login">
                     </div>
@@ -43,7 +53,7 @@
                         <input type="text" id="ib-bonus-symbol" class="form-control h-full" placeholder="Symbol">
                     </div>
                      <div class="flex-1 input-area relative">
-                        <select id="ib-bonus-date-filter" class="form-control">
+                        <select id="ib-bonus-date-filter" class="form-control h-full">
                             <option value="">{{ __('Select Days') }}</option>
                             <option value="3_days">{{ __('Last 3 Days') }}</option>
                             <option value="5_days">{{ __('Last 5 Days') }}</option>
@@ -55,29 +65,34 @@
                     <div class="flex-1 input-area relative">
                         <input type="text" id="ib-bonus-created-at" class="form-control flatpickr-created-at h-full w-full" placeholder="Created At Range" readonly>
                     </div>
+                </form>
+                <div class="flex sm:space-x-4 space-x-2 sm:justify-between items-center rtl:space-x-reverse">
+                    <div class="text-sm mr-auto">
+                        {{ __('Total IB Bonus:') }} <strong id="total-ib-bonus">0.00 USD</strong>
+                    </div>
                     <div class="input-area relative">
                         <button type="button" id="ib-bonus-filter-btn" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                             {{ __('Filter') }}
                         </button>
                     </div>
-                </form>
-                @can('customer-ib-bonus-export')
-                   <form method="POST" id="ib-bonus-export-form" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
-    @csrf
-    <input type="hidden" name="login" id="export-ib-bonus-login">
-    <input type="hidden" name="deal" id="export-ib-bonus-deal">
-    <input type="hidden" name="symbol" id="export-ib-bonus-symbol">
-    <input type="hidden" name="date_filter" id="export-ib-bonus-date-filter">
-    <input type="hidden" name="created_at" id="export-ib-bonus-created-at">
-    <div class="input-area relative mb-1">
-        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-            {{ __('Export') }}
-        </button>
-    </div>
-</form>
-                @endcan
+                    @can('customer-ib-bonus-export')
+                        <form method="POST" id="ib-bonus-export-form" action="{{ route('admin.user.export', ['type' => 'ibtransaction', 'user_id' => $user->id]) }}">
+                            @csrf
+                            <input type="hidden" name="login" id="export-ib-bonus-login">
+                            <input type="hidden" name="deal" id="export-ib-bonus-deal">
+                            <input type="hidden" name="symbol" id="export-ib-bonus-symbol">
+                            <input type="hidden" name="date_filter" id="export-ib-bonus-date-filter">
+                            <input type="hidden" name="created_at" id="export-ib-bonus-created-at">
+                            <div class="input-area relative">
+                                <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                    {{ __('Export') }}
+                                </button>
+                            </div>
+                        </form>
+                    @endcan
+                </div>
             </div>
         </div>
         <div class="card-body px-6 pt-3">
@@ -152,12 +167,13 @@
                 ajax: {
                     url: "{{ route('admin.user.ib_bonus', $user->id) }}",
                     data: function (d) {
+                        d.from_user_id = $('#user').val();
                         d.login = $('#ib-bonus-login').val();
                         d.deal = $('#ib-bonus-deal').val();
                         d.order = $('#ib-bonus-order').val();
                         d.symbol = $('#ib-bonus-symbol').val();
                         d.created_at = $('#ib-bonus-created-at').val();
-                        d.date_filter = $('#ib-bonus-date-filter').val(); 
+                        d.date_filter = $('#ib-bonus-date-filter').val();
                     }
                 }
                 ,
@@ -174,17 +190,24 @@
                 ]
             });
 
-
             $('#ib-bonus-filter-btn').on('click', function () {
                 table.ajax.reload();
             });
-$('#ib-bonus-export-form').on('submit', function() {
-        $('#export-ib-bonus-login').val($('#ib-bonus-login').val());
-        $('#export-ib-bonus-deal').val($('#ib-bonus-deal').val());
-        $('#export-ib-bonus-symbol').val($('#ib-bonus-symbol').val());
-        $('#export-ib-bonus-date-filter').val($('#ib-bonus-date-filter').val());
-        $('#export-ib-bonus-created-at').val($('#ib-bonus-created-at').val());
-    });
+
+            table.on('xhr.dt', function (e, settings, json, xhr) {
+                if (json.total_bonus !== undefined) {
+                    $('#total-ib-bonus').text(parseFloat(json.total_bonus).toFixed(2) + ' USD');
+                }
+            });
+
+            $('#ib-bonus-export-form').on('submit', function() {
+                $('#export-ib-bonus-login').val($('#ib-bonus-login').val());
+                $('#export-ib-bonus-deal').val($('#ib-bonus-deal').val());
+                $('#export-ib-bonus-symbol').val($('#ib-bonus-symbol').val());
+                $('#export-ib-bonus-date-filter').val($('#ib-bonus-date-filter').val());
+                $('#export-ib-bonus-created-at').val($('#ib-bonus-created-at').val());
+            });
+
             // 👁️ Modal action
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();

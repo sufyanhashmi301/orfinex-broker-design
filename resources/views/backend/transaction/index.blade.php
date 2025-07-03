@@ -208,7 +208,6 @@
                         d.type = $('#type').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
-
                     },
                     dataSrc: function (json) {
                         if (json.summary) {

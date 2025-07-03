@@ -8,10 +8,11 @@ use App\Traits\ImageUpload;
 use DataTables;
 use Illuminate\Http\Request;
 use Validator;
+use App\Traits\NotifyTrait;
 
 class EmailTemplateController extends Controller
 {
-    use ImageUpload;
+    use ImageUpload, NotifyTrait;
 
     public function __construct()
     {
@@ -128,4 +129,37 @@ class EmailTemplateController extends Controller
     public function templateSetting(){
         return view('backend.email.settings');
     }
+    public function testTemplate(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'template_id' => 'required|exists:email_templates,id'
+    ]);
+
+    $template = EmailTemplate::find($request->template_id);
+    
+    // Prepare shortcodes with test data
+    $shortcodes = [];
+    foreach (json_decode($template->short_codes) as $code) {
+        $cleanCode = str_replace(['[[', ']]'], '', $code);
+        $shortcodes[$code] = 'Test ' . str_replace('_', ' ', $cleanCode);
+    }
+    
+    // Add some common shortcodes
+    $shortcodes = array_merge($shortcodes, [
+        '[[site_title]]' => setting('site_title', 'global'),
+        '[[site_url]]' => route('home'),
+    ]);
+
+    try {
+        // Use your mailNotify function to send the test email
+        $this->mailNotify($request->email, $template->code, $shortcodes);
+
+        notify()->success(__('Test email sent successfully!'));
+        return redirect()->back();
+    } catch (\Exception $e) {
+        notify()->error(__('Failed to send test email: ') . $e->getMessage());
+        return redirect()->back();
+    }
+}
 }

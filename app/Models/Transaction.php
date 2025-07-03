@@ -213,23 +213,23 @@ class Transaction extends Model
             }
         }
 
-        if (!empty($filters['created_at'])) {
-            $dateRange = explode(' to ', $filters['created_at']);
-            if (count($dateRange) === 2) {
-                $startDate = Carbon::parse($dateRange[0])->startOfDay()->toDateTimeString();
-                $endDate = Carbon::parse($dateRange[1])->addDay()->endOfDay()->toDateTimeString();
-            } else {
-                $startDate = Carbon::parse($dateRange[0])->startOfDay()->toDateTimeString();
-                $endDate = Carbon::parse($dateRange[0])->endOfDay()->toDateTimeString();
-            }
+         if (!empty($filters['created_at'])) {
+             $dateRange = explode(' to ', $filters['created_at']);
+             if (count($dateRange) === 2) {
+                 $startDate = Carbon::parse($dateRange[0])->startOfDay()->toDateTimeString();
+                 $endDate = Carbon::parse($dateRange[1])->addDay()->endOfDay()->toDateTimeString();
+             } else {
+                 $startDate = Carbon::parse($dateRange[0])->startOfDay()->toDateTimeString();
+                 $endDate = Carbon::parse($dateRange[0])->endOfDay()->toDateTimeString();
+             }
 
-            $query->whereRaw("
-                COALESCE(
-                    NULLIF(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), ''),
-                    created_at
-                ) BETWEEN ? AND ?
-            ", [$startDate, $endDate]);
-        }
+             $query->whereRaw("
+                 COALESCE(
+                     NULLIF(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), ''),
+                     created_at
+                 ) BETWEEN ? AND ?
+             ", [$startDate, $endDate]);
+         }
 
         return $query;
     }

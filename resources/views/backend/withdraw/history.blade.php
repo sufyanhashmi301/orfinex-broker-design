@@ -12,45 +12,47 @@
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.withdraw.export') }}">
         @csrf
-        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
             <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
+                    <input type="text" name="email" id="email" class="form-control" placeholder="Search User By Email">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <select name="status" class="form-control h-full" id="status">
+                    <select name="status" class="form-control" id="status" style="min-height: 38px;">
                         <option value="">Status</option>
                         <option value="success">Success</option>
                         <option value="pending">Pending</option>
                         <option value="failed">Cancelled</option>
                     </select>
                 </div>
-
-                <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                <div class="flex-1 input-area">
+                    <div class="relative">
+                        <input type="date" name="created_at" id="created_at" class="form-control" data-mode="range" placeholder="Created At">
+                        <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
+                            <iconify-icon icon="mdi:window-close"></iconify-icon>
+                        </button>
+                    </div>
+                    <span class="text-xs font-light dark:text-slate-200">
+                        {{ __('Double click for a single date') }}
+                    </span>
                 </div>
 
             </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end rtl:space-x-reverse">
                 <div class="input-area relative">
-                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                         {{ __('Apply Filter') }}
                     </button>
                 </div>
                 @can('withdraw-export')
                 <div class="input-area relative">
-                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
                 </div>
                 @endcan
-                <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
-                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
-                    </button>
-                </div>
             </div>
         </div>
     </form>
@@ -156,6 +158,7 @@
                     {data: 'action', name: 'action'},
                 ]
             });
+
             $('#filter-form').on('keypress', function(e) {
                 if (e.which === 13) { // 13 is the Enter key code
                     e.preventDefault(); // Prevent form submission
@@ -163,9 +166,25 @@
                     return false;
                 }
             });
+
+            const input = document.getElementById("created_at");
+            const clearBtn = document.getElementById("clearBtn");
+
+            const fp = flatpickr(input, {
+                altInput: false,
+                dateFormat: "Y-m-d",
+                allowInput: false,
+            });
+
+            // Clear button logic
+            clearBtn.addEventListener("click", () => {
+                fp.clear();
+            });
+
             $('#filter').click(function () {
                 table.draw();
             });
+
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
 

@@ -472,6 +472,7 @@ Route::prefix('team')->group(function() {
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
     Route::get('email-template/setting', [EmailTemplateController::class, 'templateSetting'])->name('email-template.setting');
+    Route::post('email-template/test', [EmailTemplateController::class, 'testTemplate'])->name('email-template.test');
 
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {

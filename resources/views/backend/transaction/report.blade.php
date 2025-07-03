@@ -12,13 +12,19 @@
     <div class="innerMenu card p-6 mb-5">
         <form id="filter-form">
             @csrf
-            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-stretch gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between flex-wrap gap-3">
                 <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area">
-                        <select name="email" id="email" class="form-control w-full"></select>
+                        <select name="user_id" id="userId" class="form-control w-full">
+                            @if(request('user_id') && isset($selectedUser))
+                                <option value="{{ $selectedUser->id }}" selected>
+                                    {{ $selectedUser->full_name }} ({{ $selectedUser->email }})
+                                </option>
+                            @endif
+                        </select>
                     </div>
                     <div class="flex-1 input-area">
-                        <select id="rangeSelect" class="form-control h-full">
+                        <select id="rangeSelect" class="form-control">
                             <option value="">{{ __('-- Select Range --') }}</option>
                             <option value="today">{{ __('Today') }}</option>
                             <option value="yesterday">{{ __('Yesterday') }}</option>
@@ -31,16 +37,19 @@
                         </select>
                     </div>
                     <div class="flex-1 input-area">
-                        <div class="relative h-full">
-                            <input type="date" name="created_at" id="created_at" class="form-control h-full !pr-12" data-mode="range" placeholder="Created At">
+                        <div class="relative">
+                            <input type="date" name="created_at" id="created_at" class="form-control" data-mode="range" placeholder="Created At" style="height: 37px;">
                             <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
                                 <iconify-icon icon="mdi:window-close"></iconify-icon>
                             </button>
                         </div>
+                        <span class="text-xs font-light dark:text-slate-200">
+                            {{ __('Double click for a single date') }}
+                        </span>
                     </div>
                 </div>
-                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
-                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max h-full bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 34px;">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                         {{ __('Apply Filter') }}
                     </button>
@@ -58,6 +67,13 @@
             <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
         </div>
     </div>
+@endsection
+@section('style')
+    <style>
+        .select2-container .select2-selection--single {
+            height: 37px;
+        }
+    </style>
 @endsection
 @section('script')
     <script !src="">
@@ -112,41 +128,36 @@
             fp.clear();
         });
 
-        var users = @json($users);
-        $('#email').select2({
+        $('#userId').select2({
+            placeholder: 'Search user by name or email',
             minimumInputLength: 1,
-
-            data: users.map(function(user) {
-                return {
-                    id: user.id,
-                    text: user.full_name,
-                    email: user.email
-                };
-            }),
-
-            matcher: function(params, data) {
-                if ($.trim(params.term) === '') {
-                    return null;
-                }
-
-                const term = params.term.toLowerCase();
-                const nameMatch = data.text.toLowerCase().includes(term);
-                const emailMatch = data.email.toLowerCase().includes(term);
-
-                if (nameMatch || emailMatch) {
-                    return data;
-                }
-
-                return null;
+            ajax: {
+                url: '{{ route("admin.user.search") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
             },
+            templateResult: function (user) {
+                if (user.loading) return user.text;
 
-            templateResult: function(data) {
-                if (data.loading) return data.text;
-                return $('<span>' + data.text + ' - <small>' + data.email + '</small></span>');
+                const avatar = user.avatar ? `<img src="${user.avatar}" class="w-5 h-5 rounded-full mr-2 inline-block align-middle">` : '';
+                return $(`<span>${avatar}${user.text} <small class="text-muted">(${user.email})</small></span>`);
             },
+            templateSelection: function (user) {
+                if (!user || typeof user !== 'object') return '';
 
-            templateSelection: function(data) {
-                return data.text + ' (' + data.email + ')';
+                const name = user.text || '';
+                const email = user.email || '';
+
+                return email ? `${name} (${email})` : name;
             }
         });
 
@@ -156,7 +167,7 @@
                 url: '{{ route("admin.transactions.user-summary") }}',
                 method: 'POST',
                 data: {
-                    email: $('#email').val(),
+                    user_id: $('#userId').val(),
                     created_at: $('#created_at').val(),
                     _token: '{{ csrf_token() }}'
                 },

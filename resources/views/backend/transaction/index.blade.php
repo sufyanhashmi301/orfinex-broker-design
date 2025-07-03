@@ -18,13 +18,13 @@
     <div class="innerMenu card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.transactions.export') }}">
             @csrf
-            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
                 <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area relative">
-                        <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
+                        <input type="text" name="email" id="email" class="form-control" placeholder="Search User By Email">
                     </div>
                     <div class="flex-1 input-area relative">
-                        <select name="status" class="form-control h-full" id="status">
+                        <select name="status" class="form-control" id="status">
                             <option value="">{{ __('Status') }}</option>
                             <option value="success">{{ __('Success') }}</option>
                             <option value="pending">{{ __('Pending') }}</option>
@@ -32,23 +32,43 @@
                         </select>
                     </div>
                     <div class="flex-1 input-area relative">
-                        <select name="type" class="form-control h-full" id="type">
-                            <option value="">Transaction Type</option>
+                        <select name="type" class="form-control" id="type">
+                            <option value="">{{ __('Transaction Type') }}</option>
                             @foreach (getFilteredTxnTypes() as $txnType)
                                 <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
                             @endforeach
                         </select>
 
                     </div>
-
-                    <div class="flex-1 input-area relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                    <div class="flex-1 input-area">
+                        <select id="rangeSelect" class="form-control">
+                            <option value="">{{ __('-- Select Range --') }}</option>
+                            <option value="today">{{ __('Today') }}</option>
+                            <option value="yesterday">{{ __('Yesterday') }}</option>
+                            <option value="last30">{{ __('Last 30 Days') }}</option>
+                            <option value="thisMonth">{{ __('This Month') }}</option>
+                            <option value="lastMonth">{{ __('Last Month') }}</option>
+                            <option value="ytd">{{ __('Year to Date') }}</option>
+                            <option value="lastYear">{{ __('Last Year') }}</option>
+                            <option value="custom">{{ __('Custom Range') }}</option>
+                        </select>
+                    </div>
+                    <div class="flex-1 input-area">
+                        <div class="relative">
+                            <input type="date" name="created_at" id="created_at" class="form-control h-full !pr-12" data-mode="range" placeholder="Created At">
+                            <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
+                                <iconify-icon icon="mdi:window-close"></iconify-icon>
+                            </button>
+                        </div>
+                        <span class="text-xs font-light dark:text-slate-200">
+                            {{ __('Double click for a single date') }}
+                        </span>
                     </div>
 
                 </div>
-                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end">
                     <div class="input-area relative">
-                        <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 34px;">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                             {{ __('Apply Filter') }}
                         </button>
@@ -62,7 +82,7 @@
                             <input type="hidden" name="status" value="{{ request('transaction_status') }}">
                             <input type="hidden" name="type" value="{{ request('transaction_type') }}">
                             <input type="hidden" name="forex_account" value="{{ request('forex_account') }}">
-                            <button type="submit" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
+                            <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 34px;">
                                 <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                                 {{ __('Export') }}
                             </button>
@@ -70,11 +90,6 @@
 
                     </div>
                     {{-- @endcan --}}
-                    <div class="input-area relative">
-                        <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
-                            <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
-                        </button>
-                    </div>
                 </div>
             </div>
         </form>
@@ -113,10 +128,10 @@
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8  hidden"></span>
-                <span class="  col-span-4 hidden"></span>
+                <span class="col-span-8 hidden"></span>
+                <span class="col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
+                    <div class="overflow-hidden">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
@@ -193,7 +208,6 @@
                         d.type = $('#type').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
-
                     },
                     dataSrc: function (json) {
                         if (json.summary) {
@@ -223,6 +237,57 @@
             $('#filter').click(function () {
                 table.draw();
             });
+
+            const input = document.getElementById("created_at");
+            const clearBtn = document.getElementById("clearBtn");
+            const rangeSelect = document.getElementById("rangeSelect");
+
+            const fp = flatpickr(input, {
+                altInput: false,
+                dateFormat: "Y-m-d",
+                allowInput: false,
+            });
+
+            // Define range presets
+            function getDateRanges() {
+                const today = new Date();
+                const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                const startOfYear = new Date(today.getFullYear(), 0, 1);
+                const endOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
+                const startOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
+
+                return {
+                    today: [today, today],
+                    yesterday: [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)],
+                    last30: [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29), today],
+                    thisMonth: [startOfMonth, endOfMonth],
+                    lastMonth: [startOfLastMonth, endOfLastMonth],
+                    ytd: [startOfYear, today],
+                    lastYear: [startOfLastYear, endOfLastYear]
+                };
+            }
+
+            // Set range on selection
+            rangeSelect.addEventListener("change", function () {
+                const selected = this.value;
+                const ranges = getDateRanges();
+
+                if (selected === 'custom') {
+                    fp.clear();
+                    fp.open();
+                } else if (ranges[selected]) {
+                    fp.setDate(ranges[selected], true); // second param triggers `onChange`
+                }
+            });
+
+            // Clear button logic
+            clearBtn.addEventListener("click", () => {
+                fp.clear();
+            });
+
             $('#filter-form').on('keypress', function(e) {
                 if (e.which === 13) { // 13 is the Enter key code
                     e.preventDefault(); // Prevent form submission
@@ -230,6 +295,7 @@
                     return false;
                 }
             });
+
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
 

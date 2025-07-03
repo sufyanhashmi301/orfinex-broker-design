@@ -13,18 +13,13 @@
                     @csrf
                     
                     <!-- Recipient Selection Section -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="input-area">
-                           <label for="users" class="form-label">{{ __('Users') }}</label>
-                           <select name="users[]" id="users" class="form-control select2" multiple>
-                               <option value="all">{{ __('All Users') }}</option>
-                               @foreach($users as $user)
-                                   <option value="{{ $user->id }}">
-                                       {{ $user->full_name }} ({{ $user->email }})
-                                   </option>
-                               @endforeach
-                           </select>
-                          <small class="text-muted">{{ __('Select specific users or leave empty for filtered selection') }}</small>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="input-area">
+                            <label for="users" class="form-label">{{ __('Users') }}</label>
+                            <select name="users[]" id="users" class="form-control" multiple>
+                                <option value="all">{{ __('All Users') }}</option>
+                            </select>
+                            <small class="text-muted">{{ __('Start typing to search users') }}</small>
                         </div>
                         <!-- IB Groups Dropdown -->
                         <div class="input-area">
@@ -75,14 +70,56 @@
     </div>
 @endsection
 
-@push('scripts')
+@section('script')
 <script>
     $(document).ready(function() {
-        // Initialize Select2 for both dropdowns
-        $('.select2').select2({
-            placeholder: "Select options",
-            allowClear: true
-        });
+        const allUsersOption = {
+        id: 'all',
+        text: 'All Users',
+        email: '',
+        avatar: ''
+    };
+
+    $('#users').select2({
+        placeholder: 'Search user by name or email',
+        minimumInputLength: 1,
+        ajax: {
+            url: '{{ route("admin.user.search") }}',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return { q: params.term };
+            },
+            processResults: function (data) {
+                // Prepend "All Users" as the first option
+                return {
+                    results: [allUsersOption, ...data.results]
+                };
+            },
+            cache: true
+        },
+        templateResult: function (user) {
+            if (user.loading) return user.text;
+            if (user.id === 'all') {
+                return $(`<span><strong>${user.text}</strong></span>`);
+            }
+            const avatar = user.avatar ? `<img src="${user.avatar}" class="w-5 h-5 rounded-full mr-2 inline-block align-middle">` : '';
+            return $(`<span>${avatar}${user.text} <small class="text-muted">(${user.email})</small></span>`);
+        },
+        templateSelection: function (user) {
+            if (!user || typeof user !== 'object') return user;
+            if (user.id === 'all') return 'All Users';
+            const name = user.text || '';
+            const email = user.email || '';
+            return email ? `${name} (${email})` : name;
+        }
+    });
+        
+        // Initialize other Select2 dropdowns
+        // $('.select2').select2({
+        //     placeholder: "Select options",
+        //     allowClear: true
+        // });
         
         // Initialize Summernote
         $('.summernote').summernote({
@@ -102,4 +139,4 @@
         });
     });
 </script>
-@endpush
+@endsection

@@ -16,11 +16,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="input-area">
                             <label for="users" class="form-label">{{ __('Users') }}</label>
-                            <select name="users[]" id="users" class="form-control" multiple>
-                                <option value="all">{{ __('All Users') }}</option>
-                            </select>
+                            <select name="users[]" id="users" class="form-control" multiple></select>
                             <small class="text-muted">{{ __('Start typing to search users') }}</small>
                         </div>
+
                         <!-- IB Groups Dropdown -->
                         <div class="input-area">
                             <label for="ib_groups" class="form-label">{{ __('IB Groups') }}</label>
@@ -73,68 +72,77 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        const allUsersOption = {
-        id: 'all',
-        text: 'All Users',
-        email: '',
-        avatar: ''
-    };
+        // Initialize Select2 for users
+        $('#users').select2({
+            placeholder: 'Search user by name or email',
+            minimumInputLength: 0, // allow triggering without typing
+            ajax: {
+                url: '{{ route("admin.user.search") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term || ''
+                    };
+                },
+              processResults: function (data, params) {
+    let results = [];
 
-    $('#users').select2({
-        placeholder: 'Search user by name or email',
-        minimumInputLength: 1,
-        ajax: {
-            url: '{{ route("admin.user.search") }}',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return { q: params.term };
+    // If no search term, only show "All Users"
+    if (!params.term || params.term.trim() === '') {
+        results.push({
+            id: 'all',
+            text: 'All Users',
+            email: '',
+            avatar: ''
+        });
+    } else {
+        results = data.results;
+    }
+
+    return {
+        results: results
+    };
+},
+
+                cache: true
             },
-            processResults: function (data) {
-                // Prepend "All Users" as the first option
-                return {
-                    results: [allUsersOption, ...data.results]
-                };
+            templateResult: function (user) {
+                if (user.loading) return user.text;
+
+                if (user.id === 'all') {
+                    return $('<span><i class="fas fa-users mr-2"></i> All Users</span>');
+                }
+
+                
+                return $(`<span>${user.text} <small class="text-muted">(${user.email})</small></span>`);
             },
-            cache: true
-        },
-        templateResult: function (user) {
-            if (user.loading) return user.text;
-            if (user.id === 'all') {
-                return $(`<span><strong>${user.text}</strong></span>`);
+            templateSelection: function (user) {
+                if (user.id === 'all') {
+                    return 'All Users';
+                }
+
+                if (!user || typeof user !== 'object') return '';
+
+                const name = user.text || '';
+                const email = user.email || '';
+
+                return email ? `${name} (${email})` : name;
             }
-            const avatar = user.avatar ? `<img src="${user.avatar}" class="w-5 h-5 rounded-full mr-2 inline-block align-middle">` : '';
-            return $(`<span>${avatar}${user.text} <small class="text-muted">(${user.email})</small></span>`);
-        },
-        templateSelection: function (user) {
-            if (!user || typeof user !== 'object') return user;
-            if (user.id === 'all') return 'All Users';
-            const name = user.text || '';
-            const email = user.email || '';
-            return email ? `${name} (${email})` : name;
-        }
-    });
-        
-        // Initialize other Select2 dropdowns
-        // $('.select2').select2({
-        //     placeholder: "Select options",
-        //     allowClear: true
-        // });
-        
+        });
+
         // Initialize Summernote
         $('.summernote').summernote({
             height: 300,
             callbacks: {
                 onChange: function(contents, $editable) {
-                    // Update hidden input with sanitized content
                     $('#message').val(contents);
                 }
             }
         });
-        
-        // Handle form submission
+
+        // Ensure hidden message input is updated on form submit
         $('form').on('submit', function(e) {
-            // Ensure the hidden message field has the latest content
             $('#message').val($('#summernote').summernote('code'));
         });
     });

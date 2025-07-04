@@ -422,6 +422,27 @@
             </li>
         @endcan
 
+        <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.transactions.report','admin.referral-network.report']) }}">
+            <a href="javascript:void(0);" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="mdi:file-report-outline"></iconify-icon>
+                    <span>{{ __('Reports') }}</span>
+                </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{route('admin.transactions.report')}}" class="{{ isActive('admin.transactions.report') }}">
+                        {{ __('Transactions') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('admin.referral-network.report')}}" class="{{ isActive('admin.referral-network.report') }}">
+                        {{ __('Referral Network') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])

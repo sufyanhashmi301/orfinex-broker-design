@@ -243,6 +243,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     //===============================  Transactions ==================================
     Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+    Route::get('referral-network/report', [TransactionController::class, 'referralNetworkReport'])->name('referral-network.report');
     Route::match(['get', 'post'], 'transactions/user-summary/{user_id?}', [TransactionController::class, 'userTransactionSummary'])->name('transactions.user-summary');
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');

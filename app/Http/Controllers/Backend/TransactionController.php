@@ -14,12 +14,14 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
 use App\Models\DepositMethod;
 use App\Models\User;
+use App\Models\LevelReferral;
 
 class TransactionController extends Controller
 {
@@ -316,6 +318,104 @@ class TransactionController extends Controller
 
         return view('backend.transaction.report', compact('incomingSummary', 'outgoingSummary', 'users', 'selectedUser'));
 
+    }
+
+    public function referralNetworkReport(Request $request)
+    {
+        if ($request->ajax()) {
+            if (!$request->filled('email')) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'Search by email to view referral network and transactions.'
+                ]);
+            }
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'User not found.'
+                ]);
+            }
+
+            $referralTree = $this->getAllReferralsWithLevel($user);
+            $referralIds = $referralTree->pluck('user.id');
+
+            $deposits = Transaction::whereIn('user_id', $referralIds)
+                ->where('type', TxnType::Deposit->value)
+            ->groupBy('user_id')
+                ->selectRaw('user_id, SUM(amount) as total')
+                ->pluck('total', 'user_id');
+
+            $withdraws = Transaction::whereIn('user_id', $referralIds)
+                ->where('type', TxnType::Withdraw->value)
+                ->groupBy('user_id')
+                    ->selectRaw('user_id, SUM(amount) as total')
+                    ->pluck('total', 'user_id');
+
+            $ibBonuses = Transaction::where('user_id', $user->id)
+                ->whereIn('from_user_id', $referralIds)
+                ->where('type', TxnType::IbBonus->value)
+                ->groupBy('from_user_id')
+                    ->selectRaw('from_user_id, SUM(final_amount) as total')
+                    ->pluck('total', 'from_user_id');
+
+            $data = $referralTree->map(function ($item) use ($deposits, $withdraws, $ibBonuses) {
+                $ref = $item['user'];
+                return [
+                    'level' => $item['level'],
+                    'user' => $ref,
+                    'deposit' => $deposits->get($ref->id, 0),
+                    'withdraw' => $withdraws->get($ref->id, 0),
+                    'ib_bonus' => $ibBonuses->get($ref->id, 0),
+                    'currency' => setting('site_currency', 'global'),
+                ];
+            });
+
+            $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
+
+            $treeHtml = view('backend.transaction.include.__tree_wrapper', [
+                'user' => $user,
+                'level' => $level
+            ])->render();
+
+            return DataTables::of($data)
+                ->editColumn('user', function ($row) {
+                    return view('backend.transaction.include.__user', [
+                        'user' => $row['user'],
+                        'user_id' => $row['user']['id'],
+                    ])->render();
+                })
+                ->editColumn('deposit', function($row) {
+                    return number_format($row['deposit'], 2).' '. $row['currency'];
+                })
+                ->editColumn('withdraw', function($row) {
+                    return number_format($row['withdraw'], 2).' '. $row['currency'];
+                })
+                ->editColumn('ib_bonus', function($row) {
+                    return number_format($row['ib_bonus'], 2).' '. $row['currency'];
+                })
+                ->rawColumns(['user', 'deposit', 'withdraw', 'ib_bonus'])
+                ->with('tree_html', $treeHtml)
+                ->make(true);
+        }
+
+        // Handle normal GET request (view)
+        return view('backend.transaction.referral_network_report');
+    }
+
+    public function getAllReferralsWithLevel(User $user, $level = 1, &$result = [])
+    {
+        foreach ($user->referrals()->with('referrals')->get() as $referral) {
+            $result[] = [
+                'user' => $referral,
+                'level' => $level
+            ];
+
+            $this->getAllReferralsWithLevel($referral, $level + 1, $result);
+        }
+
+        return collect($result);
     }
 
 }

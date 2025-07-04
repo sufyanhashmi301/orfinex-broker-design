@@ -71,6 +71,10 @@
             var minHeight = 'calc(100vh - ' + totalHeight + 'px)';
 
             $('.dataTables_wrapper, .basicTable_wrapper').css('min-height', minHeight);
+
+            document.documentElement.style.setProperty('--title-height', titleHeight + 'px');
+            document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
+            document.documentElement.style.setProperty('--footer-height', footerHeight + 'px');
         }
 
         // Run the function on page load and window resize

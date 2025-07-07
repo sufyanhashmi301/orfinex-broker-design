@@ -240,7 +240,7 @@ class DepositController extends GatewayController
             'login' => $targetId
         ]);
         if(!$response['success']){
-            return response()->json(['error' => __('Your Account is Deactivated, please contact: ').setting('support_email', 'global'), 'reload' => false]);
+            return response()->json(['error' => __('Your account has been disabled. You are currently not permitted to access the platform. please contact: ').setting('support_email', 'global'), 'reload' => false]);
 
         }
 

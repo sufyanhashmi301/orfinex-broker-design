@@ -189,23 +189,30 @@ class DashboardController extends Controller
 
     public function staffDashboard()
 {
-    $loggedInUser = auth()->user();
-    // Add permission check at the start (only change made)
+       $loggedInUser = auth()->user();
     $showAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
     
     $transaction = new Transaction();
     $user = new User();
     $admin = new Admin();
 
-$attachedUserIds = $showAllUsers ? null : getAccessibleUserIds()->pluck('id')->toArray();
+    // Get the query builder first
+    $userQuery = getAccessibleUserIds();
+    
+    // Check if we should show all users or if there are any accessible users
+    $hasAccessibleUsers = $showAllUsers || $userQuery->exists();
+    
+    // Get the user IDs only if we're not showing all users and there are accessible users
+    $attachedUserIds = $showAllUsers ? null : ($hasAccessibleUsers ? $userQuery->pluck('id')->toArray() : [-1]);
 
     if (!$showAllUsers) {
         $user = $user->whereIn('id', $attachedUserIds);
         $transaction = $transaction->whereIn('user_id', $attachedUserIds);
     }
 
+    // Update all your queries to use this pattern:
     $totalDeposit = (new Transaction)->totalDeposit()
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
+        ->when(!$showAllUsers, function ($query) use ($attachedUserIds) {
             $query->whereIn('user_id', $attachedUserIds);
         })
         ->sum('amount');

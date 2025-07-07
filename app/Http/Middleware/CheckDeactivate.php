@@ -23,7 +23,7 @@ class CheckDeactivate
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')->withErrors(['msg' => 'Your Account is Deactivated, please contact: '.setting('support_email', 'global')]);
+            return redirect()->route('login')->withErrors(['msg' => 'Your account has been disabled. You are currently not permitted to access the platform. please contact: '.setting('support_email', 'global')]);
         }
 
         return $next($request);

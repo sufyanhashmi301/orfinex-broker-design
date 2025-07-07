@@ -77,6 +77,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Deposit Management', 'name' => 'deposit-reject'],
             ['category' => 'Deposit Management', 'name' => 'deposit-auto-approve'],
             ['category' => 'Deposit Management', 'name' => 'deposit-export'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-list'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-create'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-edit'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-voucher-delete'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-add'],

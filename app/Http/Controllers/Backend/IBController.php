@@ -24,6 +24,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class IBController extends Controller
@@ -116,10 +118,10 @@ class IBController extends Controller
     }
 
 
-    public function IbPendingList(Request $request)
+  public function IbPendingList(Request $request)
 {
     if ($request->ajax()) {
-        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag', 'date_filter', 'ib_group']);
        
         // Get accessible user IDs using your helper
         $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
@@ -129,77 +131,185 @@ class IBController extends Controller
             return Datatables::of(collect([]))->make(true);
         }
 
-        // Fetch only pending IB users from the accessible users
-        $data = User::where('ib_status', IBStatus::PENDING)
+        // Initialize query
+        $data = User::with('ibGroup')
+            ->where('ib_status', IBStatus::PENDING)
             ->whereIn('id', $accessibleUserIds)
             ->latest();
+
+        // Apply IB Group filter if specified
+        if (!empty($request->ib_group)) {
+            $data->where('ib_group_id', $request->ib_group);
+        }
+
+        // Process date range filters
+        $dateRanges = [];
+
+        // 1. Created_at custom range
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
+            }
+        }
+
+        // 2. Predefined range
+        if ($request->date_filter) {
+            $filter = $request->date_filter;
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
+            }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            $data->whereBetween('created_at', [
+                $shortestRange['start'],
+                $shortestRange['end']
+            ]);
+        }
+
+        // Apply other filters
+        $data->applyFilters($filters);
 
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('username', function ($row) {
                 return view('backend.user.include.__user', compact('row'))->render();
-            })             ->addColumn('email', 'backend.user.include.__email')
+            })
+            ->addColumn('email', 'backend.user.include.__email')
+            ->addColumn('ib_group_name', function ($row) {
+                return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
+            })
             ->editColumn('ib_status', 'backend.ib.include.__ib_status')
             ->addColumn('action', function ($user) {
                 return view('backend.ib.include.__action', ['user' => $user]);
             })
-            ->rawColumns(['username', 'email', 'ib_status', 'action'])
+            ->rawColumns(['username', 'email', 'ib_group_name', 'ib_status', 'action'])
             ->make(true);
     }
 
     $ibGroups = IbGroup::where('status', 1)->get();
     return view('backend.ib.pending', compact('ibGroups'));
 }
+   public function IbApprovedList(Request $request)
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'ib_group', 'date_filter', 'status', 'created_at', 'tag']);
 
-    public function IbApprovedList(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            
-        // Use your helper to get accessible user IDs
+        // Get accessible user IDs
         $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
-        // Return empty datatable if no accessible users
         if ($accessibleUserIds->isEmpty()) {
             return Datatables::of(collect([]))->make(true);
         }
 
-        // Initialize query with accessible users + ib_status filter
+        // Initialize query
         $data = User::with('ibGroup')
             ->where('ib_status', IBStatus::APPROVED)
             ->whereIn('id', $accessibleUserIds)
             ->latest();
-            // Apply additional filters
-            $data->applyFilters($filters);
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', function ($row) {
-                    return view('backend.user.include.__user', compact('row'))->render();
-                })
-                ->addColumn('email', 'backend.user.include.__email')
-                ->addColumn('ib_group_name', function ($row) {
-                    return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
-                })
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_group_name', 'ib_status', 'action'])
-                ->make(true);
+        // Apply IB Group filter if specified
+        if (!empty($request->ib_group)) {
+            $data->where('ib_group_id', $request->ib_group);
         }
 
-        $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.approved', compact('ibGroups'));
+        // Process date range filters
+        $dateRanges = [];
+
+        // 1. Created_at custom range
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
+            }
+        }
+
+        // 2. Predefined range
+        if ($request->date_filter) {
+            $filter = $request->date_filter;
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
+            }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            $data->whereBetween('created_at', [
+                $shortestRange['start'],
+                $shortestRange['end']
+            ]);
+        }
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })
+            ->addColumn('email', 'backend.user.include.__email')
+            ->addColumn('ib_group_name', function ($row) {
+                return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
+            })
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'email', 'ib_group_name', 'ib_status', 'action'])
+            ->make(true);
     }
 
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.approved', compact('ibGroups'));
+}
 
-    public function IbRejectedList(Request $request)
-    {
-        if ($request->ajax()) {
 
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            // Get accessible user IDs using the helper
+   public function IbRejectedList(Request $request)
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'ib_group', 'phone', 'country', 'status', 'created_at', 'tag', 'date_filter']);
+        
+        // Get accessible user IDs using the helper
         $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
         // Return empty datatable if no accessible users
@@ -207,40 +317,99 @@ class IBController extends Controller
             return Datatables::of(collect([]))->make(true);
         }
 
-        // Query rejected IB users from accessible users
-        $data = User::where('ib_status', IBStatus::REJECTED)
+        // Initialize query
+        $data = User::with('ibGroup')
+            ->where('ib_status', IBStatus::REJECTED)
             ->whereIn('id', $accessibleUserIds)
             ->latest();
-            $data->applyFilters($filters);
-//            dd($data);
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', function ($row) {
-                    return view('backend.user.include.__user', compact('row'))->render();
-                })                 ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'email', 'ib_status', 'action'])
-                ->make(true);
+        // Apply IB Group filter if specified
+        if (!empty($request->ib_group)) {
+            $data->where('ib_group_id', $request->ib_group);
         }
-        $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.rejected', compact('ibGroups'));
+
+        // Process date range filters
+        $dateRanges = [];
+
+        // 1. Created_at custom range
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
+            }
+        }
+
+        // 2. Predefined range
+        if ($request->date_filter) {
+            $filter = $request->date_filter;
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
+            }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            $data->whereBetween('created_at', [
+                $shortestRange['start'],
+                $shortestRange['end']
+            ]);
+        }
+
+        // Apply other filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })
+            ->addColumn('ib_group_name', function ($row) {
+                return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
+            })
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->editColumn('email', function ($request) {
+                return safe($request->email);
+            })
+            ->editColumn('username', function ($request) {
+                return safe($request->username);
+            })
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'ib_group_name', 'ib_status', 'action'])
+            ->make(true);
     }
 
-    public function IbAllList(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-             // Get accessible user IDs using the helper
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.rejected', compact('ibGroups'));
+}
+
+   public function IbAllList(Request $request)
+{
+    if ($request->ajax()) {
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag', 'date_filter', 'ib_group']);
+        
+        // Get accessible user IDs using the helper
         $accessibleUserIds = getAccessibleUserIds($filters)->pluck('id');
 
         // If no accessible users, return empty dataset
@@ -249,26 +418,84 @@ class IBController extends Controller
         }
 
         // Initialize query with accessible users
-        $data = User::whereIn('id', $accessibleUserIds)->latest();
-            // Apply additional filters
-            $data->applyFilters($filters);
+        $data = User::with('ibGroup')
+            ->whereIn('id', $accessibleUserIds)
+            ->latest();
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', function ($row) {
-                    return view('backend.user.include.__user', compact('row'))->render();
-                })                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->addColumn('action', function ($user) {
-                    return view('backend.ib.include.__action', ['user' => $user]);
-                })
-                ->rawColumns(['username', 'ib_status', 'action'])
-                ->make(true);
+        // Apply IB Group filter if specified
+        if (!empty($request->ib_group)) {
+            $data->where('ib_group_id', $request->ib_group);
         }
 
-        $ibGroups = IbGroup::where('status', 1)->get();
-        return view('backend.ib.all', compact('ibGroups'));
+        // Process date range filters
+        $dateRanges = [];
+
+        // 1. Created_at custom range
+        if (!empty($request->created_at)) {
+            $dates = explode(' to ', $request->created_at);
+            if (count($dates) == 2) {
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end = Carbon::parse($dates[1])->endOfDay();
+                $dateRanges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'days' => $start->diffInDays($end)
+                ];
+            }
+        }
+
+        // 2. Predefined range
+        if ($request->date_filter) {
+            $filter = $request->date_filter;
+            $dateRange = match ($filter) {
+                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
+                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
+                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
+                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
+                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
+                default => null,
+            };
+
+            if ($dateRange) {
+                $dateRanges[] = [
+                    'start' => $dateRange[0],
+                    'end' => $dateRange[1],
+                    'days' => $dateRange[0]->diffInDays($dateRange[1])
+                ];
+            }
+        }
+
+        // 3. Apply the shortest date range if multiple exist
+        if (count($dateRanges) > 0) {
+            $shortestRange = collect($dateRanges)->sortBy('days')->first();
+            $data->whereBetween('created_at', [
+                $shortestRange['start'],
+                $shortestRange['end']
+            ]);
+        }
+
+        // Apply additional filters
+        $data->applyFilters($filters);
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })
+            ->addColumn('ib_group_name', function ($row) {
+                return '<span class="normal-case">' . ($row->ibGroup->name ?? 'N/A') . '</span>';
+            })
+            ->editColumn('ib_status', 'backend.ib.include.__ib_status')
+            ->addColumn('action', function ($user) {
+                return view('backend.ib.include.__action', ['user' => $user]);
+            })
+            ->rawColumns(['username', 'ib_group_name', 'ib_status', 'action'])
+            ->make(true);
     }
 
+    $ibGroups = IbGroup::where('status', 1)->get();
+    return view('backend.ib.all', compact('ibGroups'));
+}
 
     public function answerView(User $user)
     {

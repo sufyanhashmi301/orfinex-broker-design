@@ -46,15 +46,33 @@
             <li class="block text-sm py-[8px]">
                 {{ __('Method: ') . $data->method }}
             </li>
-            @foreach( json_decode($data->manual_field_data) as $key => $value)
+            @php
+                $manualData = json_decode($data->manual_field_data, true);
+            @endphp
+
+            @foreach($manualData as $key => $value)
                 <li class="block py-[8px]">
-                    <label for="" class="form-label">{{ $key }}:</label>
-                    @if($value != new stdClass())
-                        @if( file_exists('assets/'.$value))
-                            <img src="{{ asset($value) }}" alt=""/>
+                    <label class="form-label">{{ $key }}:</label>
+                    @if(is_array($value))
+                        @if(isset($value['value']))
+                            <strong>{{ $value['value'] }}</strong>
                         @else
-                            <strong>{{ $value }}</strong>
+                            <ul>
+                                @foreach($value as $subKey => $subValue)
+                                    @if(is_array($subValue))
+                                        <li>
+                                            @foreach($subValue as $deepKey => $deepValue)
+                                                <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
+                                            @endforeach
+                                        </li>
+                                    @else
+                                        <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         @endif
+                    @else
+                        <strong>{{ $value }}</strong>
                     @endif
                 </li>
             @endforeach
@@ -63,9 +81,10 @@
         <div class="input-area">
             <label for="" class="form-label">{{ __('Detail Message') }}</label>
             <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
+            <div class="text-xs text-info mt-1">{{ __('Note: This message will be sent to the user on any action you take.') }}</div>
         </div>
 
-    @if($data->status->value=='pending')
+    @if($data->status->value=='pending' || $data->status->value=='review')
         <div class="action-btns text-right">
             @can('deposit-approve')
             <button type="submit" name="approve" value="yes" class="btn btn-dark inline-flex items-center justify-center mr-2">

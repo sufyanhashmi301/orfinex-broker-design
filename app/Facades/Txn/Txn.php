@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Str;
+use Illuminate\Support\Str;
 
 class Txn
 {
@@ -462,6 +462,22 @@ class Txn
         }
     }
 
+    /**
+     * Set transaction status to Review and update approval cause with a message.
+     */
+    private function setReviewStatus($transaction, $approvalCause = '')
+    {
+        $reason = 'MT5 API balance has not updated. Balance has been deducted from user but not sent to MT5 account. Please review this request.';
+        $transaction->status = TxnStatus::Review;
+        if (!empty($approvalCause)) {
+            $transaction->approval_cause = $approvalCause . ' | ' . $reason;
+        } else {
+            $transaction->approval_cause = $reason;
+        }
+        $transaction->save();
+        return $transaction;
+    }
+
 
     public function update($tnx, $status, $userId = null, $approvalCause = 'none')
     {
@@ -497,6 +513,10 @@ class Txn
                             $transaction->manual_field_data = json_encode($manualData);
                             $transaction->save();
                         } else {
+                            Log::error("MT5 deposit failed at API level for tnx {$tnx}");
+                            if ($transaction->type == TxnType::Deposit && $status == TxnStatus::Success) {
+                                return $this->setReviewStatus($transaction, $approvalCause);
+                            }
                             throw new \Exception('MT5 deposit failed at API level');
                         }
                     } elseif ($traderType == \App\Enums\TraderType::X9) {

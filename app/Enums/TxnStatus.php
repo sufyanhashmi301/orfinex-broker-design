@@ -8,6 +8,9 @@ enum TxnStatus: string
     case Success = 'success';
     case Pending = 'pending';
     case Failed = 'failed';
+    case Review = 'review';
+
+    
 
     public function label(): string
     {
@@ -16,6 +19,7 @@ enum TxnStatus: string
             self::Success => 'Success',
             self::Pending => 'Pending',
             self::Failed => 'Failed',
+            self::Review => 'Review',
         };
     }
 }

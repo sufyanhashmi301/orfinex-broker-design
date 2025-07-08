@@ -19,6 +19,19 @@
                     </div>
                 </div>
                 <div class="flex-1 input-area">
+                    <select id="rangeSelect" class="form-control">
+                        <option value="">{{ __('-- Select Range --') }}</option>
+                        <option value="today">{{ __('Today') }}</option>
+                        <option value="yesterday">{{ __('Yesterday') }}</option>
+                        <option value="last30">{{ __('Last 30 Days') }}</option>
+                        <option value="thisMonth">{{ __('This Month') }}</option>
+                        <option value="lastMonth">{{ __('Last Month') }}</option>
+                        <option value="ytd">{{ __('Year to Date') }}</option>
+                        <option value="lastYear">{{ __('Last Year') }}</option>
+                        <option value="custom">{{ __('Custom Range') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 input-area">
                     <div class="relative">
                         <input type="date" name="created_at" id="created_at" class="form-control h-9 !pr-9" data-mode="range" placeholder="Created At">
                         <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
@@ -117,6 +130,41 @@
             altInput: false,
             dateFormat: "Y-m-d",
             allowInput: false,
+        });
+
+        // Define range presets
+        function getDateRanges() {
+            const today = new Date();
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            const endOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
+            const startOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
+
+            return {
+                today: [today, today],
+                yesterday: [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)],
+                last30: [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29), today],
+                thisMonth: [startOfMonth, endOfMonth],
+                lastMonth: [startOfLastMonth, endOfLastMonth],
+                ytd: [startOfYear, today],
+                lastYear: [startOfLastYear, endOfLastYear]
+            };
+        }
+
+        // Set range on selection
+        rangeSelect.addEventListener("change", function () {
+            const selected = this.value;
+            const ranges = getDateRanges();
+
+            if (selected === 'custom') {
+                fp.clear();
+                fp.open();
+            } else if (ranges[selected]) {
+                fp.setDate(ranges[selected], true); // second param triggers `onChange`
+            }
         });
 
         // Clear button logic

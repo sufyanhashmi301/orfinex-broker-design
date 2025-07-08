@@ -46,11 +46,45 @@
             <li class="block text-sm py-[8px]">
                 {{ __('Method: ') . $data->method }}
             </li>
-            @foreach( json_decode($data->manual_field_data) as $key => $value)
+            @php
+                $manualData = json_decode($data->manual_field_data, true);
+            @endphp
+
+            @foreach($manualData as $key => $value)
                 <li class="block py-[8px]">
-                    <label for="" class="form-label">{{ $key }}:</label>
-                    @if($value != new stdClass())
-                        @if( file_exists('assets/'.$value))
+                    <label class="form-label">{{ $key }}:</label>
+                    @if(is_array($value))
+                        @if(isset($value['value']))
+                            @if(is_string($value['value']) && file_exists('assets/'.$value['value']))
+                                <img src="{{ asset($value['value']) }}" alt=""/>
+                            @else
+                                <strong>{{ $value['value'] }}</strong>
+                            @endif
+                        @else
+                            <ul>
+                                @foreach($value as $subKey => $subValue)
+                                    @if(is_array($subValue))
+                                        <li>
+                                            @foreach($subValue as $deepKey => $deepValue)
+                                                @if(is_string($deepValue) && file_exists('assets/'.$deepValue))
+                                                    <span class="block"><strong>{{ $deepKey }}:</strong> <img src="{{ asset($deepValue) }}" alt=""/></span>
+                                                @else
+                                                    <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
+                                                @endif
+                                            @endforeach
+                                        </li>
+                                    @else
+                                        @if(is_string($subValue) && file_exists('assets/'.$subValue))
+                                            <li><strong>{{ $subKey }}:</strong> <img src="{{ asset($subValue) }}" alt=""/></li>
+                                        @else
+                                            <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </ul>
+                        @endif
+                    @else
+                        @if(is_string($value) && file_exists('assets/'.$value))
                             <img src="{{ asset($value) }}" alt=""/>
                         @else
                             <strong>{{ $value }}</strong>
@@ -63,9 +97,10 @@
         <div class="input-area">
             <label for="" class="form-label">{{ __('Detail Message') }}</label>
             <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
+            <div class="text-xs text-info mt-1">{{ __('Note: This message will be sent to the user on any action you take.') }}</div>
         </div>
 
-    @if($data->status->value=='pending')
+    @if($data->status->value=='pending' || $data->status->value=='review')
         <div class="action-btns text-right">
             @can('deposit-approve')
             <button type="submit" name="approve" value="yes" class="btn btn-dark inline-flex items-center justify-center mr-2">

@@ -235,8 +235,8 @@ class DepositController extends Controller
 
         // ✅ Build the base query
         $data = Transaction::query()
-            ->where('status', 'pending')
-            ->where('type', TxnType::ManualDeposit)
+            ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
+            ->whereIn('type', [TxnType::ManualDeposit,TxnType::Deposit])
             ->whereIn('user_id', $accessibleUserIds)
             ->latest();
 
@@ -349,12 +349,13 @@ class DepositController extends Controller
         DB::beginTransaction();
         try {
             $existingTransaction = Transaction::where('id', $id)->lockForUpdate()->first();
-            if ($existingTransaction->status != TxnStatus::Pending) {
+            // dd($existingTransaction->status);
+
+            if ($existingTransaction->status != TxnStatus::Pending && $existingTransaction->status != TxnStatus::Review) {
                 notify()->warning('This transaction has already been processed.');
                 DB::rollBack();
                 return redirect()->back();
             }
-
             $shortcodes = [
                 '[[full_name]]' => $transaction->user->full_name,
                 '[[txn]]' => $transaction->tnx,

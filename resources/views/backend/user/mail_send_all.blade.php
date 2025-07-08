@@ -16,7 +16,21 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="input-area">
                             <label for="users" class="form-label">{{ __('Users') }}</label>
-                            <select name="users[]" id="users" class="form-control" multiple></select>
+                            <select name="users[]" id="users" class="form-control" multiple>
+                                @if(old('users'))
+                                    @foreach(old('users') as $userId)
+                                        @php $user = App\Models\User::find($userId); @endphp
+                                        @if($user)
+                                            <option value="{{ $user->id }}" selected>
+                                                {{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('users')
+                                <span class="text-danger text-xs">{{ $message }}</span>
+                            @enderror
                             <small class="text-muted">{{ __('Start typing to search users') }}</small>
                         </div>
 
@@ -24,11 +38,16 @@
                         <div class="input-area">
                             <label for="ib_groups" class="form-label">{{ __('IB Groups') }}</label>
                             <select name="ib_groups[]" id="ib_groups" class="form-control select2" multiple>
-                                <option value="all">{{ __('All IB Groups') }}</option>
+                                <option value="all" @if(old('ib_groups') && in_array('all', old('ib_groups'))) selected @endif>{{ __('All IB Groups') }}</option>
                                 @foreach($ibGroups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                    <option value="{{ $group->id }}" @if(old('ib_groups') && in_array($group->id, old('ib_groups'))) selected @endif>
+                                        {{ $group->name }}
+                                    </option>
                                 @endforeach
                             </select>
+                            @error('ib_groups')
+                                <span class="text-danger text-xs">{{ $message }}</span>
+                            @enderror
                             <small class="text-muted">{{ __('Select one or multiple IB groups') }}</small>
                         </div>
                         
@@ -36,11 +55,16 @@
                         <div class="input-area">
                             <label for="account_types" class="form-label">{{ __('Account Types') }}</label>
                             <select name="account_types[]" id="account_types" class="form-control select2" multiple>
-                                <option value="all">{{ __('All Account Types') }}</option>
+                                <option value="all" @if(old('account_types') && in_array('all', old('account_types'))) selected @endif>{{ __('All Account Types') }}</option>
                                 @foreach($forexSchemas as $schema)
-                                    <option value="{{ $schema->id }}">{{ $schema->title }}</option>
+                                    <option value="{{ $schema->id }}" @if(old('account_types') && in_array($schema->id, old('account_types'))) selected @endif>
+                                        {{ $schema->title }}
+                                    </option>
                                 @endforeach
                             </select>
+                            @error('account_types')
+                                <span class="text-danger text-xs">{{ $message }}</span>
+                            @enderror
                             <small class="text-muted">{{ __('Select one or multiple account types') }}</small>
                         </div>
                     </div>
@@ -48,13 +72,19 @@
                     <!-- Email Content Section -->
                     <div class="input-area">
                         <label for="subject" class="form-label">{{ __('Subject:') }}</label>
-                        <input type="text" name="subject" class="form-control mb-0" required/>
+                        <input type="text" name="subject" class="form-control mb-0" value="{{ old('subject') }}" />
+                        @error('subject')
+                            <span class="text-danger text-xs">{{ $message }}</span>
+                        @enderror
                     </div>
                     
                     <div class="input-area">
                         <label for="message" class="form-label">{{ __('Email Details') }}</label>
-                        <textarea id="summernote" class="summernote form-control mb-0" rows="7"></textarea>
-                        <input type="hidden" name="message" id="message">
+                        <textarea id="summernote" class="summernote form-control mb-0" rows="7">{{ old('message') }}</textarea>
+                        <input type="hidden" name="message" id="message" value="{{ old('message') }}">
+                        @error('message')
+                            <span class="text-danger text-xs">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="action-btns text-right">
@@ -85,26 +115,25 @@
                         q: params.term || ''
                     };
                 },
-              processResults: function (data, params) {
-    let results = [];
+                processResults: function (data, params) {
+                    let results = [];
 
-    // If no search term, only show "All Users"
-    if (!params.term || params.term.trim() === '') {
-        results.push({
-            id: 'all',
-            text: 'All Users',
-            email: '',
-            avatar: ''
-        });
-    } else {
-        results = data.results;
-    }
+                    // If no search term, only show "All Users"
+                    if (!params.term || params.term.trim() === '') {
+                        results.push({
+                            id: 'all',
+                            text: 'All Users',
+                            email: '',
+                            avatar: ''
+                        });
+                    } else {
+                        results = data.results;
+                    }
 
-    return {
-        results: results
-    };
-},
-
+                    return {
+                        results: results
+                    };
+                },
                 cache: true
             },
             templateResult: function (user) {
@@ -114,7 +143,6 @@
                     return $('<span><i class="fas fa-users mr-2"></i> All Users</span>');
                 }
 
-                
                 return $(`<span>${user.text} <small class="text-muted">(${user.email})</small></span>`);
             },
             templateSelection: function (user) {
@@ -131,12 +159,21 @@
             }
         });
 
+        // Initialize Select2 for other multi-select fields
+        $('#ib_groups, #account_types').select2();
+
         // Initialize Summernote
         $('.summernote').summernote({
             height: 300,
             callbacks: {
                 onChange: function(contents, $editable) {
                     $('#message').val(contents);
+                },
+                onInit: function() {
+                    // Set initial content if there's old input
+                    @if(old('message'))
+                        $('.summernote').summernote('code', '{!! old('message') !!}');
+                    @endif
                 }
             }
         });

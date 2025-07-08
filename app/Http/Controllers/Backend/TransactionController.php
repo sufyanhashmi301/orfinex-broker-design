@@ -22,6 +22,7 @@ use App\Exports\TransactionsExport;
 use App\Models\DepositMethod;
 use App\Models\User;
 use App\Models\LevelReferral;
+use App\Helpers\TxnTypeGroup;
 
 class TransactionController extends Controller
 {
@@ -160,28 +161,8 @@ class TransactionController extends Controller
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
         });
 
-        $incomingTypes = [
-            'deposit',
-            'manual_deposit',
-            'demo_deposit',
-            'receive_money',
-            'receive_money_internal',
-            'referral',
-            'signup_bonus',
-            'bonus',
-            'bonus_refund',
-            'ib_bonus',
-            'voucher_deposit',
-            'refund',
-        ];
-        $outgoingTypes = [
-            'withdraw',
-            'withdraw_auto',
-            'send_money',
-            'send_money_internal',
-            'subtract',
-            'bonus_subtract',
-        ];
+        $incomingTypes = TxnTypeGroup::incoming();
+        $outgoingTypes = TxnTypeGroup::outgoing();
 
         $incomingSummary = [];
         $outgoingSummary = [];
@@ -252,28 +233,8 @@ class TransactionController extends Controller
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
         });
 
-        $incomingTypes = [
-            'deposit',
-            'manual_deposit',
-            'demo_deposit',
-            'receive_money',
-            'receive_money_internal',
-            'referral',
-            'signup_bonus',
-            'bonus',
-            'bonus_refund',
-            'ib_bonus',
-            'voucher_deposit',
-            'refund',
-        ];
-        $outgoingTypes = [
-            'withdraw',
-            'withdraw_auto',
-            'send_money',
-            'send_money_internal',
-            'subtract',
-            'bonus_subtract',
-        ];
+        $incomingTypes = TxnTypeGroup::incoming();
+        $outgoingTypes = TxnTypeGroup::outgoing();
 
         $incomingSummary = [];
         $outgoingSummary = [];
@@ -323,6 +284,8 @@ class TransactionController extends Controller
     public function referralNetworkReport(Request $request)
     {
         if ($request->ajax()) {
+            $date = $request->input('created_at');
+
             if (!$request->filled('email')) {
                 return response()->json([
                     'data' => [],
@@ -331,6 +294,7 @@ class TransactionController extends Controller
             }
 
             $user = User::where('email', $request->email)->first();
+
             if (!$user) {
                 return response()->json([
                     'data' => [],
@@ -339,38 +303,169 @@ class TransactionController extends Controller
             }
 
             $referralTree = $this->getAllReferralsWithLevel($user);
-            $referralIds = $referralTree->pluck('user.id');
+            $allUsers = collect([
+                ['user' => $user, 'level' => 0]
+            ])->merge($referralTree);
 
-            $deposits = Transaction::whereIn('user_id', $referralIds)
-                ->where('type', TxnType::Deposit->value)
-            ->groupBy('user_id')
-                ->selectRaw('user_id, SUM(amount) as total')
-                ->pluck('total', 'user_id');
+            $userIds = $allUsers->pluck('user.id')->toArray();
+            $currency = setting('site_currency', 'global');
 
-            $withdraws = Transaction::whereIn('user_id', $referralIds)
-                ->where('type', TxnType::Withdraw->value)
-                ->groupBy('user_id')
-                    ->selectRaw('user_id, SUM(amount) as total')
-                    ->pluck('total', 'user_id');
+            // Build base transaction query
+            $txnQuery = Transaction::query()
+                ->select(['user_id', 'type', 'status', DB::raw('SUM(amount) as total')])
+                ->whereIn('user_id', $userIds)
+                ->groupBy('user_id', 'type', 'status');
 
-            $ibBonuses = Transaction::where('user_id', $user->id)
-                ->whereIn('from_user_id', $referralIds)
-                ->where('type', TxnType::IbBonus->value)
-                ->groupBy('from_user_id')
-                    ->selectRaw('from_user_id, SUM(final_amount) as total')
-                    ->pluck('total', 'from_user_id');
+            // Apply optional date filter
+            if (!empty($date)) {
+                $dates = explode(' to ', $date);
+                if (count($dates) === 2) {
+                    $startDate = Carbon::parse($dates[0])->startOfDay();
+                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $txnQuery->whereBetween('created_at', [$startDate, $endDate]);
+                } else {
+                    $txnQuery->whereDate('created_at', Carbon::parse($date));
+                }
+            }
 
-            $data = $referralTree->map(function ($item) use ($deposits, $withdraws, $ibBonuses) {
+            $allTransactions = $txnQuery->get()->groupBy('user_id');
+
+            $incomingTypes = TxnTypeGroup::incoming();
+            $outgoingTypes = TxnTypeGroup::outgoing();
+            $listedTypes   = TxnTypeGroup::listed();
+
+            // Prepare DataTable data
+            $data = $allUsers->map(function ($item) use ($allTransactions, $incomingTypes, $outgoingTypes, $currency) {
                 $ref = $item['user'];
+                $level = $item['level'];
+
+                $grouped = $allTransactions->get(
+                    $ref->id, collect())->groupBy(fn($txn) => $txn->type instanceof TxnType ? $txn->type->value : $txn->type);
+
+                $incomingSummary = [];
+                $outgoingSummary = [];
+
+                foreach (getFilteredTxnTypes() as $type) {
+                    $key = $type->value;
+                    $records = $grouped->get($key, collect());
+
+                    $row = [
+                        'key' => $key, // raw enum value e.g., 'ib_bonus'
+                        'type' => $type->label(), // e.g., 'IB Bonus'
+                        'desc' => $type->description(),
+                        'success' => round($records->where('status', TxnStatus::Success)->sum('total'), 2),
+                        'pending' => round($records->where('status', TxnStatus::Pending)->sum('total'), 2),
+                        'rejected' => round($records->where('status', TxnStatus::Failed)->sum('total'), 2),
+                        'none' => round($records->where('status', TxnStatus::None)->sum('total'), 2),
+                        'total' => round($records->sum('total'), 2),
+                    ];
+
+                    if (in_array($key, $incomingTypes)) {
+                        $incomingSummary[] = $row;
+                    } elseif (in_array($key, $outgoingTypes)) {
+                        $outgoingSummary[] = $row;
+                    }
+                }
+
+                $summary = [
+                    'incoming' => $incomingSummary,
+                    'outgoing' => $outgoingSummary
+                ];
+
                 return [
-                    'level' => $item['level'],
                     'user' => $ref,
-                    'deposit' => $deposits->get($ref->id, 0),
-                    'withdraw' => $withdraws->get($ref->id, 0),
-                    'ib_bonus' => $ibBonuses->get($ref->id, 0),
-                    'currency' => setting('site_currency', 'global'),
+                    'level' => $level,
+                    'currency' => $currency,
+                    'summary' => $summary,
+                    'details' => view('backend.transaction.include.__txn_summary', [
+                        'summary' => $summary,
+                        'user' => $ref
+                    ])->render(),
                 ];
             });
+
+            // Flatten all transactions from all users
+            $flatTxn = $data->flatMap(fn($row) =>
+            collect($row['summary']['incoming'])->merge($row['summary']['outgoing'])
+            );
+
+            // Separate key totals
+            $demoDeposit = $flatTxn->firstWhere('key', 'demo_deposit') ?? [
+                    'type' => 'Demo Deposit',
+                    'total' => 0,
+                    'success' => 0,
+                    'pending' => 0,
+                    'rejected' => 0,
+                ];
+
+            $ibBonus = $flatTxn->firstWhere('key', 'ib_bonus') ?? [
+                    'type' => 'IB Bonus',
+                    'total' => 0,
+                    'success' => 0,
+                    'pending' => 0,
+                    'rejected' => 0,
+                ];
+
+            // Incoming total (excluding ib_bonus and demo_deposit)
+            $incomingTotal = $flatTxn
+                ->filter(fn($item) =>
+                    in_array($item['key'], $incomingTypes)
+                    && !in_array($item['key'], ['ib_bonus', 'demo_deposit'])
+                )
+                ->reduce(function ($carry, $item) {
+                    $carry['total'] += $item['total'];
+                    $carry['success'] += $item['success'];
+                    $carry['pending'] += $item['pending'];
+                    $carry['rejected'] += $item['rejected'];
+                    return $carry;
+                }, [
+                    'type' => 'Incoming Total',
+                    'desc' => 'All incoming except IB Bonus and Demo Deposit',
+                    'total' => 0,
+                    'success' => 0,
+                    'pending' => 0,
+                    'rejected' => 0,
+                ]);
+
+            // Outgoing total
+            $outgoingTotal = $flatTxn
+                ->filter(fn($item) => in_array($item['key'], $outgoingTypes))
+                ->reduce(function ($carry, $item) {
+                    $carry['total'] += $item['total'];
+                    $carry['success'] += $item['success'];
+                    $carry['pending'] += $item['pending'];
+                    $carry['rejected'] += $item['rejected'];
+                    return $carry;
+                }, [
+                    'type' => 'Outgoing Total',
+                    'desc' => 'All outgoing transactions',
+                    'total' => 0,
+                    'success' => 0,
+                    'pending' => 0,
+                    'rejected' => 0,
+                ]);
+
+            // Final totals list
+            $networkTotals = collect([
+                $incomingTotal,
+                $outgoingTotal,
+                [
+                    'type' => 'Demo Deposit',
+                    'desc' => 'Virtual funds added in demo accounts',
+                    'total' => $demoDeposit['total'],
+                    'success' => $demoDeposit['success'],
+                    'pending' => $demoDeposit['pending'],
+                    'rejected' => $demoDeposit['rejected'],
+                ],
+                [
+                    'type' => 'IB Bonus',
+                    'desc' => 'Commission for introducing brokers',
+                    'total' => $ibBonus['total'],
+                    'success' => $ibBonus['success'],
+                    'pending' => $ibBonus['pending'],
+                    'rejected' => $ibBonus['rejected'],
+                ],
+            ]);
 
             $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
 
@@ -386,17 +481,33 @@ class TransactionController extends Controller
                         'user_id' => $row['user']['id'],
                     ])->render();
                 })
-                ->editColumn('deposit', function($row) {
-                    return number_format($row['deposit'], 2).' '. $row['currency'];
+                ->addColumn('incoming', function ($row) {
+                    $total = collect($row['summary']['incoming'] ?? [])
+                        ->reject(fn($txn) => strtolower($txn['key'] ?? '') === 'ib_bonus')
+                        ->sum('total');
+
+                    return number_format($total, 2).' '.$row['currency'];
                 })
-                ->editColumn('withdraw', function($row) {
-                    return number_format($row['withdraw'], 2).' '. $row['currency'];
+                ->addColumn('outgoing', function ($row) {
+                    $total = collect($row['summary']['outgoing'] ?? [])
+                        ->sum('total');
+
+                    return number_format($total, 2).' '.$row['currency'];
                 })
-                ->editColumn('ib_bonus', function($row) {
-                    return number_format($row['ib_bonus'], 2).' '. $row['currency'];
+                ->addColumn('ib_bonus', function ($row) {
+                    $bonus = collect($row['summary']['incoming'] ?? [])
+                            ->firstWhere('key', 'ib_bonus')['total'] ?? 0;
+
+                    return number_format($bonus, 2).' '.$row['currency'];
                 })
-                ->rawColumns(['user', 'deposit', 'withdraw', 'ib_bonus'])
-                ->with('tree_html', $treeHtml)
+                ->addColumn('action', function () {
+                    return '<button class="action-btn toggle-details">+</button>';
+                })
+                ->rawColumns(['user', 'incoming', 'outgoing', 'ib_bonus', 'action', 'details'])
+                ->with([
+                    'tree_html' => $treeHtml,
+                    'network_totals' => $networkTotals
+                ])
                 ->make(true);
         }
 
@@ -404,15 +515,26 @@ class TransactionController extends Controller
         return view('backend.transaction.referral_network_report');
     }
 
-    public function getAllReferralsWithLevel(User $user, $level = 1, &$result = [])
+    public function getAllReferralsWithLevel(User $user, int $level = 1, array &$result = [], array &$visited = [])
     {
-        foreach ($user->referrals()->with('referrals')->get() as $referral) {
+        // Prevent cyclic references or duplicates
+        if (in_array($user->id, $visited)) {
+            return collect($result);
+        }
+
+        $visited[] = $user->id;
+
+        // Get direct referrals once
+        $referrals = $user->referrals;
+
+        foreach ($referrals as $referral) {
             $result[] = [
                 'user' => $referral,
                 'level' => $level
             ];
 
-            $this->getAllReferralsWithLevel($referral, $level + 1, $result);
+            // Recurse
+            $this->getAllReferralsWithLevel($referral, $level + 1, $result, $visited);
         }
 
         return collect($result);

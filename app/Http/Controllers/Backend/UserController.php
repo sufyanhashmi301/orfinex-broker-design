@@ -952,9 +952,10 @@ public function index(Request $request)
         'message' => 'required',
     ]);
 
-    if ($validator->fails()) {
-        notify()->error($validator->errors()->first(), 'Error');
-        return redirect()->back();
+     if ($validator->fails()) {
+        // Flash all input including the Select2 values
+        $request->flash();
+        return redirect()->back()->withErrors($validator);
     }
 
     try {

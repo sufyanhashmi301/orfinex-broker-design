@@ -15,7 +15,7 @@
         </div>
         @break
     @case('review')
-        <div class="badge badge-info capitalize">
+        <div class="badge badge-secondary capitalize">
             {{ __('Review') }}
         </div>
         @break

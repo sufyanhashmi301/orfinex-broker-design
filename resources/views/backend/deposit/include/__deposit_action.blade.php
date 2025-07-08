@@ -55,24 +55,40 @@
                     <label class="form-label">{{ $key }}:</label>
                     @if(is_array($value))
                         @if(isset($value['value']))
-                            <strong>{{ $value['value'] }}</strong>
+                            @if(is_string($value['value']) && file_exists('assets/'.$value['value']))
+                                <img src="{{ asset($value['value']) }}" alt=""/>
+                            @else
+                                <strong>{{ $value['value'] }}</strong>
+                            @endif
                         @else
                             <ul>
                                 @foreach($value as $subKey => $subValue)
                                     @if(is_array($subValue))
                                         <li>
                                             @foreach($subValue as $deepKey => $deepValue)
-                                                <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
+                                                @if(is_string($deepValue) && file_exists('assets/'.$deepValue))
+                                                    <span class="block"><strong>{{ $deepKey }}:</strong> <img src="{{ asset($deepValue) }}" alt=""/></span>
+                                                @else
+                                                    <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
+                                                @endif
                                             @endforeach
                                         </li>
                                     @else
-                                        <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
+                                        @if(is_string($subValue) && file_exists('assets/'.$subValue))
+                                            <li><strong>{{ $subKey }}:</strong> <img src="{{ asset($subValue) }}" alt=""/></li>
+                                        @else
+                                            <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
+                                        @endif
                                     @endif
                                 @endforeach
                             </ul>
                         @endif
                     @else
-                        <strong>{{ $value }}</strong>
+                        @if(is_string($value) && file_exists('assets/'.$value))
+                            <img src="{{ asset($value) }}" alt=""/>
+                        @else
+                            <strong>{{ $value }}</strong>
+                        @endif
                     @endif
                 </li>
             @endforeach

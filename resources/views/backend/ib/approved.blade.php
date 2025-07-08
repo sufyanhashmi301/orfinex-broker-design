@@ -14,22 +14,25 @@
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
-                        <option value="" selected>
-                            {{ __('country') }}
-                        </option>
-                        @foreach( getCountries() as $country)
-                            <option value="{{ $country['name'] }}">
-                                {{ $country['name']  }}
-                            </option>
+                    <select name="ib_group" id="ib_group" class="form-control h-full select2" data-placeholder="{{ __('Select IB Group') }}">
+                        <option value="">{{ __('All Groups') }}</option>
+                        @foreach($ibGroups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                    <select id="ib-bonus-date-filter" name="date_filter" class="form-control h-full">
+                        <option value="">{{ __('Select Days') }}</option>
+                        <option value="3_days">{{ __('Last 3 Days') }}</option>
+                        <option value="5_days">{{ __('Last 5 Days') }}</option>
+                        <option value="15_days">{{ __('Last 15 Days') }}</option>
+                        <option value="1_month">{{ __('Last 1 Month') }}</option>
+                        <option value="3_months">{{ __('Last 3 Months') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="created_at" id="ib-bonus-created-at" class="form-control flatpickr-created-at h-full w-full" placeholder="Created At Range" readonly>
                 </div>
                 <div class="flex-1 input-area relative">
                     <select name="tag" id="tag" class="select2 form-control w-full h-full" data-placeholder="{{ __('Select a tag') }}">
@@ -67,8 +70,8 @@
             </div>
         </div>
     </form>
-
 @endsection
+
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -89,43 +92,26 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-{{--                                    <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
-{{--                                    <th scope="col" class="table-th">{{ __('IB') }}</th>--}}
-{{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('IB Group') }}</th>
                                     <th scope="col" class="table-th">{{ __('IB Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div id="processingIndicator" class="text-center">
-                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
                 <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
         </div>
     </div>
 
-    <!-- Modal for confirm IB -->
-    {{--@can('customer-mail-send')--}}
     @include('backend.ib.modal.__ib_confirm')
-    {{--@endcan--}}
-    <!-- Modal for confirm IB -->
-    <!-- Modal for reject IB -->
-    {{--@can('customer-mail-send')--}}
     @include('backend.ib.modal.__ib_reject')
-    {{--@endcan--}}
-    <!-- Modal for reject IB-->
-    <!-- Modal for view IB Detail-->
-    {{--@can('customer-mail-send')--}}
     @include('backend.ib.modal.__ib_detail')
-    {{--@endcan--}}
-    <!-- Modal for view IB Detail-->
 @endsection
 
 @section('script')
@@ -134,6 +120,12 @@
             "use strict";
             var table = $('#dataTable').DataTable();
             table.destroy();
+            
+            flatpickr(".flatpickr-created-at", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
 
             var table = $('#dataTable')
             .on('processing.dt', function (e, settings, processing) {
@@ -156,48 +148,57 @@
                 },
                 serverSide: true,
                 autoWidth: false,
-
                 ajax: {
                     url: "{{ route('admin.ib.approved.list') }}",
                     data: function (d) {
                         d.global_search = $('#global_search').val();
-                        d.phone = $('#phone').val();
-                        d.country = $('#country').val();
-                        d.status = $('#status').val();
-                        d.created_at = $('#created_at').val();
+                        d.ib_group = $('#ib_group').val();
+                        d.date_filter = $('#ib-bonus-date-filter').val();
+                        d.created_at = $('#ib-bonus-created-at').val();
                         d.tag = $('#tag').val();
                     }
                 },
                 columns: [
                     {data: 'username', name: 'username'},
-                    // {data: 'email', name: 'email'},
-                    // {data: 'ib_login', name: 'ib_login'},
-                    // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_group_name', name: 'ib_group_name'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
-            $('#country').select2({
-                placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
 
+            // Initialize select2 dropdowns
+            $('#ib_group').select2({
+                placeholder: $('#ib_group').data('placeholder'),
             });
+            
             $('#tag').select2({
-                placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
-
+                placeholder: $('#tag').data('placeholder'),
             });
+
+            // Filter button click event
             $('#filter').click(function () {
                 table.draw();
             });
+
+            // Filter form submit prevention
             $('#filter-form').on('keypress', function(e) {
-                if (e.which === 13) { // 13 is the Enter key code
-                    e.preventDefault(); // Prevent form submission
-                    table.draw(); // Trigger filtering only
+                if (e.which === 13) {
+                    e.preventDefault();
+                    table.draw();
                     return false;
                 }
             });
-            $('#global_search').keyup(function() {
+
+            // Input field change events
+            $('#global_search, #ib_group, #ib-bonus-date-filter').on('change keyup', function() {
                 table.draw();
+            });
+
+            // Set export form values before submission
+            $('#filter-form').on('submit', function() {
+                $('#export-ib-group').val($('#ib_group').val());
+                $('#export-date-filter').val($('#ib-bonus-date-filter').val());
+                $('#export-created-at').val($('#ib-bonus-created-at').val());
             });
             // Edit Button Click Event
             $('#dataTable').on('click', '.edit-btn', function() {

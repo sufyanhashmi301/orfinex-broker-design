@@ -8,12 +8,20 @@
         <div class="card-header">
             <h4 class="card-title">{{ __('Referral Tree') }}</h4>
             <div class="flex items-center space-x-2 sm:rtl:space-x-reverse">
-                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center changeTree__btn active" data-target="vertical" style="min-width: auto;">
-                    <iconify-icon class="text-lg" icon="iconoir:network-reverse"></iconify-icon>
-                </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center changeTree__btn" data-target="horizontal" style="min-width: auto;">
-                    <iconify-icon class="text-lg" icon="iconoir:network-right"></iconify-icon>
-                </button>
+                <a href="{{ route('admin.referral-network.report', ['email' => $user->email]) }}" target="_blank" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:network"></iconify-icon>
+                    <span>{{ __('Network stats') }}</span>
+                </a>
+                <div class="outline-buttons">
+                    <div class="groupButtons">
+                        <button type="button" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center changeTree__btn active" data-target="vertical" style="min-width: auto;">
+                            <iconify-icon class="text-lg" icon="iconoir:network-reverse"></iconify-icon>
+                        </button>
+                        <button type="button" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center changeTree__btn" data-target="horizontal" style="min-width: auto;">
+                            <iconify-icon class="text-lg" icon="iconoir:network-right"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-body table-responsive p-6">

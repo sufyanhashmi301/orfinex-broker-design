@@ -16,6 +16,7 @@
                 <div class="flex-1 input-area relative">
                     <select name="ib_group" id="ib_group" class="form-control h-full select2" data-placeholder="{{ __('Select IB Group') }}">
                         <option value="">{{ __('All Groups') }}</option>
+                        <option value="no_filter">{{ __('Select IB Group') }}</option> <!-- Add this line -->
                         @foreach($ibGroups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }}</option>
                         @endforeach
@@ -152,7 +153,10 @@
                     url: "{{ route('admin.ib.approved.list') }}",
                     data: function (d) {
                         d.global_search = $('#global_search').val();
-                        d.ib_group = $('#ib_group').val();
+                        const ibGroup = $('#ib_group').val();
+                        if (ibGroup && ibGroup !== 'no_filter') {
+                            d.ib_group = ibGroup;
+                        }
                         d.date_filter = $('#ib-bonus-date-filter').val();
                         d.created_at = $('#ib-bonus-created-at').val();
                         d.tag = $('#tag').val();

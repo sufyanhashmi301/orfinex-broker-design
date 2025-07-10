@@ -1,6 +1,6 @@
 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 flex flex-col gap-4">
     <div class="text-lg font-medium dark:text-white text-slate-900">
-        {{ __('Incoming Transactions') }}
+        {{ __('Incoming Payments') }}
     </div>
     <div class="grid md:grid-cols-4 grid-cols-2 gap-3">
         @foreach($summary['incoming'] as $item)
@@ -15,7 +15,7 @@
         @endforeach
     </div>
     <div class="text-lg font-medium dark:text-white text-slate-900">
-        {{ __('Outgoing Transactions') }}
+        {{ __('Outgoing Payments') }}
     </div>
     <div class="grid md:grid-cols-4 grid-cols-2 gap-3">
         @foreach($summary['outgoing'] as $item)

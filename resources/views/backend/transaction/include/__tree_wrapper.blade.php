@@ -1,5 +1,5 @@
 @if(setting('site_referral','global') == 'level' && $user->referrals->count() > 0)
-    <div class="management-hierarchy">
+    <div class="management-hierarchy" style="overflow: auto;">
         <div class="vertical-tree tree-view-block">
             <div class="hv-container">
                 <div class="hv-wrapper">

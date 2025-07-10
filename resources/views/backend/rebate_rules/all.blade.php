@@ -173,25 +173,35 @@
          });
 
 
-         $('#editSymbolGroupModal').on('submit', '#editRebateRuleForm', function(e) {
-             e.preventDefault();
-             var form = $(this);
-             var actionUrl = form.attr('action');
+        
+        $('#editSymbolGroupModal').on('submit', '#editRebateRuleForm', function(e) {
+    e.preventDefault();
+    var form = $(this);
+    var actionUrl = form.attr('action');
+    var table = $('#rebate-rules-dataTable').DataTable();
+    var currentPage = table.page();
+    
+    $.ajax({
+        url: actionUrl,
+        method: 'POST',
+        data: form.serialize(),
+        success: function(response) {
+            $('#editSymbolGroupModal').modal('hide');
+            // Reload table but maintain page
+            table.ajax.reload(null, false); // false means don't reset pagination
+            // Restore the page
+            table.page(currentPage).draw('page');
+            tNotify('success', 'Rebate Rule updated successfully');
 
-             $.ajax({
-                 url: actionUrl,
-                 method: 'POST',
-                 data: form.serialize(),
-                 success: function(response) {
-                     $('#editSymbolGroupModal').modal('hide');
-                     location.reload(); // Reload the page to reflect changes
-                 },
-                 error: function(xhr, status, error) {
-                     console.error(xhr.responseText);
-                     // Handle validation errors and display them
-                 }
-             });
-         });
+        },
+        error: function(xhr) {
+            let errors = xhr.responseJSON.errors;
+            if (errors) {
+                displayErrors(errors);
+            }
+        }
+    });
+});
 
 
          $(document).on('click', '.deleteRebateRule', function(event) {
@@ -206,39 +216,43 @@
             $('#deleteRebateRule').modal('show');
         });
 
-        $(document).on('click', '.status-checkbox', function(event) {
-
-             "use strict";
-             event.preventDefault();
-             var checkbox = $(this);
-             var itemId = checkbox.data('id');
-             var status = checkbox.is(':checked') ? 1 : 0;
-
-             $.ajax({
-                 url: '{{ route('admin.rebateRules.updateStatus') }}',
-                 type: 'POST',
-                 data: {
-                     id: itemId,
-                     status: status,
-                     _token: '{{ csrf_token() }}'
-                 },
-                 success: function(response) {
-                     if (response.success) {
-                         window.location.reload();
-                     } else {
-                         window.location.reload();
-                     }
-                 },
-                 error: function(xhr, status, error) {
-                     // Handle any general errors
-                     console.error('AJAX Error:', status, error); // Log the error
-                     alert('An unexpected error occurred.');
-                     // Optionally revert the checkbox to its previous state if needed
-                     checkbox.prop('checked', !status); // Revert checkbox state if needed
-                 }
-             });
-        });
-
+       $(document).on('click', '.status-checkbox', function(event) {
+    "use strict";
+    event.preventDefault();
+    var checkbox = $(this);
+    var itemId = checkbox.data('id');
+    var status = checkbox.is(':checked') ? 1 : 0;
+    
+    // Save current page
+    var table = $('#rebate-rules-dataTable').DataTable();
+    var currentPage = table.page();
+    
+    $.ajax({
+        url: '{{ route('admin.rebateRules.updateStatus') }}',
+        type: 'POST',
+        data: {
+            id: itemId,
+            status: status,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Reload table but maintain page
+                table.ajax.reload(null, false); // false means don't reset pagination
+                // Restore the page
+                table.page(currentPage).draw('page');
+                tNotify('success', 'Rebate Rule updated successfully');
+            } else {
+                // Revert checkbox if failed
+                checkbox.prop('checked', !status);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            checkbox.prop('checked', !status);
+        }
+    });
+});
     </script>
 @endsection
 

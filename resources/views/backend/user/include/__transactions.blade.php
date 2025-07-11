@@ -8,10 +8,12 @@
         <div class="card-header">
             <h4 class="card-title">{{ __('Transactions') }}</h4>
             <div class="flex items-center space-x-2 sm:rtl:space-x-reverse">
-                <a href="{{ route('admin.transactions.user-summary', $user->id) }}" target="_blank" class="btn btn-sm btn-dark inline-flex items-center justify-center">
-                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:chart-pie"></iconify-icon>
-                    <span>{{ __('Payment stats') }}</span>
-                </a>
+                @can('customer-transactions-stats')
+                    <a href="{{ route('admin.transactions.user-summary', $user->id) }}" target="_blank" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:chart-pie"></iconify-icon>
+                        <span>{{ __('Payment stats') }}</span>
+                    </a>
+                @endcan
                 @can('customer-transactions-export')
                     <form method="POST" action="{{ route('admin.user.export', ['type' => 'transaction', 'user_id' => $user->id]) }}">
                         @csrf

@@ -8,10 +8,12 @@
         <div class="card-header">
             <h4 class="card-title">{{ __('Referral Tree') }}</h4>
             <div class="flex items-center space-x-2 sm:rtl:space-x-reverse">
-                <a href="{{ route('admin.referral-network.report', ['email' => $user->email]) }}" target="_blank" class="btn btn-sm btn-dark inline-flex items-center justify-center">
-                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:network"></iconify-icon>
-                    <span>{{ __('Network stats') }}</span>
-                </a>
+                @can('customer-network-stats')
+                    <a href="{{ route('admin.referral-network.report', ['email' => $user->email]) }}" target="_blank" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:network"></iconify-icon>
+                        <span>{{ __('Network stats') }}</span>
+                    </a>
+                @endcan
                 <div class="outline-buttons">
                     <div class="groupButtons">
                         <button type="button" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center changeTree__btn active" data-target="vertical" style="min-width: auto;">

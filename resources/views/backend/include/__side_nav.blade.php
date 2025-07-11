@@ -411,38 +411,40 @@
 
         {{-- *************************************************************  Transactions *********************************************************--}}
 
-        @can('transaction-list')
-            <li class="">
-                <a href="{{route('admin.transactions')}}" class="navItem {{ isActive('admin.transactions') }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:cast"></iconify-icon>
-                            <span>{{ __('Transactions') }}</span>
-                        </span>
+        @canany(['transaction-list','customer-transactions-stats','customer-network-stats'])
+            <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.transactions.report','admin.referral-network.report']) }}">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="mdi:file-report-outline"></iconify-icon>
+                        <span>{{ __('Reports') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
+                <ul class="sidebar-submenu">
+                    @can('transaction-list')
+                        <li class="">
+                            <a href="{{route('admin.transactions')}}" class="{{ isActive('admin.transactions') }}">
+                                {{ __('Transactions') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('customer-transactions-stats')
+                        <li>
+                            <a href="{{route('admin.transactions.report')}}" class="{{ isActive('admin.transactions.report') }}">
+                                {{ __('Payment Overview') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('customer-network-stats')
+                        <li>
+                            <a href="{{route('admin.referral-network.report')}}" class="{{ isActive('admin.referral-network.report') }}">
+                                {{ __('Referral Network Stats') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
             </li>
-        @endcan
-
-        <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.transactions.report','admin.referral-network.report']) }}">
-            <a href="javascript:void(0);" class="navItem">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:file-report-outline"></iconify-icon>
-                    <span>{{ __('Reports') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{route('admin.transactions.report')}}" class="{{ isActive('admin.transactions.report') }}">
-                        {{ __('Transactions') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('admin.referral-network.report')}}" class="{{ isActive('admin.referral-network.report') }}">
-                        {{ __('Referral Network') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @endcanany
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])

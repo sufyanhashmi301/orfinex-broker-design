@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="flex-1 input-area">
-                    <select id="rangeSelect" class="form-control">
+                    <select id="rangeSelect" class="form-control h-9">
                         <option value="">{{ __('-- Select Range --') }}</option>
                         <option value="today">{{ __('Today') }}</option>
                         <option value="yesterday">{{ __('Yesterday') }}</option>
@@ -59,7 +59,7 @@
                 <path d="M25.988 37.5417H26.0075" stroke="rgba(220 0 0)" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 my-3">
-                {{ __('Search by email to view referral network and transactions.') }}
+                {{ __('Search by email to view the referral network and their payments.') }}
             </p>
         </div>
         <div class="request_loader absolute text-center hidden" style="top: calc(50% - 27px); left: calc(50% - 27px);">
@@ -103,17 +103,19 @@
             <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
                 {{ __('Referral Network Tree') }}
             </h4>
-            <div class="flex items-center space-x-2 sm:rtl:space-x-reverse">
-                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center changeTree__btn active" data-target="vertical" style="min-width: fit-content;">
-                    <iconify-icon class="text-lg" icon="iconoir:network-reverse"></iconify-icon>
-                </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center changeTree__btn" data-target="horizontal" style="min-width: fit-content;">
-                    <iconify-icon class="text-lg" icon="iconoir:network-right"></iconify-icon>
-                </button>
+            <div class="outline-buttons">
+                <div class="groupButtons">
+                    <button type="button" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center changeTree__btn active" data-target="vertical" style="min-width: fit-content;">
+                        <iconify-icon class="text-lg" icon="iconoir:network-reverse"></iconify-icon>
+                    </button>
+                    <button type="button" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center changeTree__btn" data-target="horizontal" style="min-width: fit-content;">
+                        <iconify-icon class="text-lg" icon="iconoir:network-right"></iconify-icon>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card">
-            <div id="tree__container" class="card-body p-6" style="max-height: calc(100vh - var(--title-height) - var(--header-height) - var(--footer-height) - 73px); overflow: auto;">
+            <div id="tree__container" class="card-body p-6">
 
             </div>
         </div>
@@ -121,6 +123,79 @@
 @endsection
 @section('script')
     <script>
+
+        const table = $('#network-report-dataTable')
+        .on('processing.dt', function (e, settings, processing) {
+            $('#processingIndicator').css('display', processing ? 'block' : 'none');
+        }).DataTable({
+            dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'ip>",
+            paging: true,
+            ordering: true,
+            info: true,
+            searching: true,
+            lengthChange: true,
+            lengthMenu: [10, 25, 50, 100],
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                },
+                search: "Search:"
+            },
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            ajax: {
+                url: "{{ route('admin.referral-network.report') }}",
+                data: function (d) {
+                    const emailInput = $('#email').val();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const emailParam = urlParams.get('email');
+
+                    d.email = emailInput || emailParam;
+                    d.created_at = $('#created_at').val();
+                },
+                dataSrc: function (json) {
+                    $('#tree__container').html(
+                        json.tree_html || '<p class="text-sm text-center text-slate-600 dark:text-slate-100">No referral tree found.</p>'
+                    );
+
+                    if (json && json.network_totals) {
+                        renderNetworkTotals(json.network_totals);
+
+                        tippy(".shift-Away", {
+                            placement: "top",
+                            animation: "shift-away"
+                        });
+                    }
+
+                    const hasData = json.data && json.data.length > 0;
+
+                    $('#empty__container').toggleClass('hidden', hasData);
+                    $('#data__container').toggleClass('hidden', !hasData);
+                    $('.request_loader').addClass('hidden');
+
+                    if (!hasData) {
+                        $('#empty__container p').text(json.message || 'No referral data available.');
+                    }
+
+                    initVerticalTree();
+                    initHorizontalTree();
+
+                    return json.data;
+                }
+            },
+            columns: [
+                { data: 'user', name: 'user' },
+                { data: 'level', name: 'level' },
+                { data: 'incoming', name: 'incoming' },
+                { data: 'outgoing', name: 'outgoing' },
+                { data: 'ib_bonus', name: 'ib_bonus' },
+                { data: 'action', name: 'action' },
+            ]
+        });
 
         const input = document.getElementById("created_at");
         const clearBtn = document.getElementById("clearBtn");
@@ -171,72 +246,6 @@
         clearBtn.addEventListener("click", () => {
             fp.clear();
         });
-
-        const table = $('#network-report-dataTable')
-            .on('processing.dt', function (e, settings, processing) {
-                $('#processingIndicator').css('display', processing ? 'block' : 'none');
-            }).DataTable({
-            dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-            searching: false,
-            lengthChange: false,
-            info: true,
-            language: {
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                },
-            },
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: "{{ route('admin.referral-network.report') }}",
-                data: function (d) {
-                    d.email = $('#email').val();
-                    d.created_at = $('#created_at').val();
-                },
-                dataSrc: function (json) {
-                    $('#tree__container').html(
-                        json.tree_html || '<p class="text-sm text-center text-slate-600 dark:text-slate-100">No referral tree found.</p>'
-                    );
-
-                    if (json && json.network_totals) {
-                        renderNetworkTotals(json.network_totals);
-
-                        tippy(".shift-Away", {
-                            placement: "top",
-                            animation: "shift-away"
-                        });
-                    }
-
-                    const hasData = json.data && json.data.length > 0;
-
-                    $('#empty__container').toggleClass('hidden', hasData);
-                    $('#data__container').toggleClass('hidden', !hasData);
-                    $('.request_loader').addClass('hidden');
-
-                    if (!hasData) {
-                        $('#empty__container p').text(json.message || 'No referral data available.');
-                    }
-
-                    initVerticalTree();
-                    initHorizontalTree();
-
-                    return json.data;
-                }
-            },
-            columns: [
-                { data: 'user', name: 'user' },
-                { data: 'level', name: 'level' },
-                { data: 'incoming', name: 'incoming' },
-                { data: 'outgoing', name: 'outgoing' },
-                { data: 'ib_bonus', name: 'ib_bonus' },
-                { data: 'action', name: 'action' },
-            ]
-        });
-
 
         // Toggle child row
         $('#network-report-dataTable tbody').on('click', 'button.toggle-details', function () {
@@ -294,6 +303,17 @@
             table.ajax.reload();
         });
 
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailParam = urlParams.get('email');
+
+            if (emailParam) {
+                $('#email').val(emailParam);
+                $('.request_loader').removeClass('hidden');
+                table.ajax.reload();
+            }
+        });
+
         $('.changeTree__btn').on('click', function () {
             const target = $(this).data('target');
 
@@ -346,7 +366,6 @@
             });
         }
 
-        initHorizontalTree();
         function initHorizontalTree() {
             $('.treeview__level').each(function () {
                 const $level = $(this);

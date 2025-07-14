@@ -23,14 +23,21 @@
                     <div class="flex-1 input-area relative">
                         <input type="text" name="email" id="email" class="form-control" placeholder="Search User By Email">
                     </div>
+                    @php
+                        use App\Enums\TxnStatus;
+                    @endphp
+                    
                     <div class="flex-1 input-area relative">
                         <select name="status" class="form-control" id="status">
                             <option value="">{{ __('Status') }}</option>
-                            <option value="success">{{ __('Success') }}</option>
-                            <option value="pending">{{ __('Pending') }}</option>
-                            <option value="failed">{{ __('Cancelled') }}</option>
+                            @foreach (TxnStatus::cases() as $status)
+                                <option value="{{ $status->value }}">
+                                    {{ __($status->label()) }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
+
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control" id="type">
                             <option value="">{{ __('Transaction Type') }}</option>

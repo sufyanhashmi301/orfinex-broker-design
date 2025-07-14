@@ -34,6 +34,8 @@ class TransactionController extends Controller
     public function __construct()
     {
         $this->middleware('permission:transaction-list');
+        $this->middleware('permission:customer-transactions-stats', ['only' => ['report', 'userTransactionSummary']]);
+        $this->middleware('permission:customer-network-stats', ['only' => ['referralNetworkReport']]);
 
     }
 
@@ -283,17 +285,18 @@ class TransactionController extends Controller
 
     public function referralNetworkReport(Request $request)
     {
+        $email = $request->input('email');
         if ($request->ajax()) {
             $date = $request->input('created_at');
 
-            if (!$request->filled('email')) {
+            if (!$email) {
                 return response()->json([
                     'data' => [],
-                    'message' => 'Search by email to view referral network and transactions.'
+                    'message' => 'Search by email to view the referral network and their payments.'
                 ]);
             }
 
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $email)->first();
 
             if (!$user) {
                 return response()->json([
@@ -420,7 +423,7 @@ class TransactionController extends Controller
                     return $carry;
                 }, [
                     'type' => 'Incoming Total',
-                    'desc' => 'All incoming except IB Bonus and Demo Deposit',
+                    'desc' => 'All incoming payments except IB Bonus and Demo Deposit',
                     'total' => 0,
                     'success' => 0,
                     'pending' => 0,
@@ -438,7 +441,7 @@ class TransactionController extends Controller
                     return $carry;
                 }, [
                     'type' => 'Outgoing Total',
-                    'desc' => 'All outgoing transactions',
+                    'desc' => 'All outgoing payments',
                     'total' => 0,
                     'success' => 0,
                     'pending' => 0,

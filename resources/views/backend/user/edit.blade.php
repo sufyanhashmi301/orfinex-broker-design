@@ -57,7 +57,7 @@
                         <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
                         </a>
-                        <button type="button" class="btn btKYC Leveln-sm btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
+                        <button type="button" class="btn btn-sm btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
                             <iconify-icon class="text-base" icon="lucide:refresh-cw"></iconify-icon>
                         </button>
                     </div>

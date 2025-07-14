@@ -236,7 +236,7 @@ class DepositController extends Controller
         // ✅ Build the base query
         $data = Transaction::query()
             ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
-            ->whereIn('type', [TxnType::ManualDeposit,TxnType::Deposit])
+            ->whereIn('type', [TxnType::ManualDeposit])
             ->whereIn('user_id', $accessibleUserIds)
             ->latest();
 

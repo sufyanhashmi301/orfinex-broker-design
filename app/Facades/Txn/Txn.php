@@ -660,7 +660,9 @@ class Txn
         $forexApiService = new ForexApiService();
         $withdrawResponse = $forexApiService->balanceOperation($data);
 //        dd($withdrawResponse);
-        if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
+        if ($withdrawResponse['success'] && 
+            ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+        ) {
             // Mark deduction as applied
             $manualFieldData = json_decode($transaction->manual_field_data, true);
             $manualFieldData['Deduction Status'] = [

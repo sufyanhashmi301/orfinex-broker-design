@@ -33,7 +33,7 @@ class TransactionController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:transaction-list');
+        $this->middleware('permission:transaction-list', ['only' => ['transactions']]);
         $this->middleware('permission:customer-transactions-stats', ['only' => ['report', 'userTransactionSummary']]);
         $this->middleware('permission:customer-network-stats', ['only' => ['referralNetworkReport']]);
 

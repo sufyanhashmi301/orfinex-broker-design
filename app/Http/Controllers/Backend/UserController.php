@@ -95,8 +95,16 @@ class UserController extends Controller
 public function index(Request $request)
 {
     $loggedInUser = auth()->user();
-    $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
-
+    $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+        if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
+        }
+    }
+$staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
     if ($request->ajax()) {
        $data = getAccessibleUserIds($filters);
 
@@ -122,9 +130,8 @@ public function index(Request $request)
             ->make(true);
     }
 
-    return view('backend.user.all');
+    return view('backend.user.all', compact('staffMembers'));
 }
-
 
     public function export(Request $request, $type = null)
 {
@@ -196,6 +203,12 @@ public function index(Request $request)
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
+        if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
+        }
+    }
          $filters['status'] = 1;
         if ($request->ajax()) {
 
@@ -219,8 +232,10 @@ public function index(Request $request)
                 ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
-
-        return view('backend.user.active_user');
+ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
+        return view('backend.user.active_user', compact('staffMembers'));
     }
 
     /**
@@ -234,6 +249,12 @@ public function index(Request $request)
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+              if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
+        }
+    }
             $filters['status'] = 0;
          $data = getAccessibleUserIds($filters);
          if (!empty($filters['staff_name'])) {
@@ -255,16 +276,27 @@ public function index(Request $request)
                 ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
                 ->make(true);
         }
-
-        return view('backend.user.disabled_user');
+$staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
+        return view('backend.user.disabled_user', compact('staffMembers'));
     }
 
-    public function withBalance(Request $request)
-    {
-        $loggedInUser = auth()->user();
-        $riskProfileTags = RiskProfileTag::all();
-        if ($request->ajax()) {
-           $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+  public function withBalance(Request $request)
+{
+    $loggedInUser = auth()->user();
+    $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+    
+    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+        $query->where('name', 'Super-Admin');
+    })->get();
+    
+    $riskProfileTags = RiskProfileTag::all();
+
+    if ($request->ajax()) {
+        // Handle phone number detection in global search
+
+        $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
         $forexAccountIds = DB::connection('mt5_db')
             ->table('mt5_accounts')
@@ -274,39 +306,57 @@ public function index(Request $request)
 
         $userIdsWithBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-        // Step 2: Get all accessible users (Super Admin, permission-based, or attached)
-        $accessibleUsersQuery = getAccessibleUserIds();
+        $accessibleUsersQuery = getAccessibleUserIds($filters);
 
-        // Step 3: Apply balance-based filtering on the accessible user query
-        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance)->latest();
+        // Apply filters
+        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance);
 
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('username', function ($row) {
-                    return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('staff_name', function ($row) {
-                    return view('backend.user.include.__staff')->with('staff', $row->staff);
-                })
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
-                ->make(true);
+          if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+            });
         }
 
-        return view('backend.user.with_balance', [
-            'riskProfileTags' => $riskProfileTags
-        ]);
+        // Handle staff filter
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
+        }
+
+        return Datatables::of($data->latest())
+            ->addIndexColumn()
+            ->addColumn('username', function ($row) {
+                return view('backend.user.include.__user', compact('row'))->render();
+            })
+            ->editColumn('kyc', 'backend.user.include.__kyc')
+            ->editColumn('status', 'backend.user.include.__status')
+            ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+            ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+            ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('staff_name', function ($row) {
+                return view('backend.user.include.__staff')->with('staff', $row->staff);
+            })
+            ->addColumn('action', 'backend.user.include.__action')
+            ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+            ->make(true);
     }
+
+    return view('backend.user.with_balance', [
+        'riskProfileTags' => $riskProfileTags
+    ], compact('staffMembers'));
+}
 
 
     public function withOutBalance(Request $request)
     {
         $loggedInUser = auth()->user();
+            $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+    
+    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+        $query->where('name', 'Super-Admin');
+    })->get();
         $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
@@ -316,7 +366,7 @@ public function index(Request $request)
             ->whereIn('Login', $realForexAccounts)
             ->where('Balance', '<=', 0)
             ->pluck('Login');
-
+            
         $userIdsWithoutBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
         // ✅ Apply the helper here:
@@ -324,6 +374,19 @@ public function index(Request $request)
 
         // ✅ Filter by users without balance
         $data = $accessibleUsersQuery->whereIn('id', $userIdsWithoutBalance)->latest();
+         if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+            });
+        }
+
+// Handle staff filter
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
+        }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -344,13 +407,16 @@ public function index(Request $request)
 
         return view('backend.user.without_balance', [
             'riskProfileTags' => $riskProfileTags
-        ]);
+        ], compact('staffMembers'));
     }
 
     public function gracePeriodUsers(Request $request)
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+$staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
 //        dd($request->all());
         if ($request->ajax()) {
 
@@ -362,10 +428,17 @@ public function index(Request $request)
             ->withoutGlobalScope(ExcludeGracePeriodScope::class)
             ->where('in_grace_period', true)
             ->latest();
+            if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+            });
+        }
         if (!empty($filters['staff_name'])) {
             $data = applyStaffNameFilter($data, $filters['staff_name']);
         }
-
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -385,7 +458,7 @@ public function index(Request $request)
                 ->make(true);
         }
 
-        return view('backend.user.grace_users');
+        return view('backend.user.grace_users', compact('staffMembers'));
     }
     public function updateGracePeriod(Request $request)
 {

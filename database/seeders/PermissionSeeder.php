@@ -136,6 +136,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'IB Management', 'name' => 'ib-export'],
             ['category' => 'IB Management', 'name' => 'ib-form-manage'],
             ['category' => 'IB Management', 'name' => 'advertisement-material-edit'],
+            ['category' => 'IB Management', 'name' => 'ib-leaderboard-list'],
 
             ['category' => 'Transaction Management', 'name' => 'transaction-list'],
             ['category' => 'Transaction Management', 'name' => 'transaction-action'],

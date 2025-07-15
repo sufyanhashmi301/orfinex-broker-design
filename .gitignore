@@ -18,5 +18,5 @@ yarn-error.log
 /.vscode
 /node_modules
 /composer.lock
-
+/docs
 

@@ -34,6 +34,15 @@
                 datasets: [{
                     label: 'Total Deposit '+symbol+sumArrayValues(deposit_data),
                     data: deposit_data,
+                    backgroundColor: '#2a9d8f',
+                    borderColor: '#ffffff',
+                    borderWidth: 0,
+                    borderRadius: 90,
+                    tension: 0.1
+                },
+                {
+                    label: 'Total Withdraw '+symbol+sumArrayValues(withdraw_data),
+                    data:  withdraw_data,
                     backgroundColor: '#ef476f',
                     borderColor: '#ffffff',
                     borderWidth: 0,
@@ -41,7 +50,7 @@
                     tension: 0.1
                 },
                 {
-                    label: 'Total Investment '+symbol+sumArrayValues(invest_data),
+                    label: 'Total Demo Deposit '+symbol+sumArrayValues(invest_data),
                     data:  invest_data,
                     backgroundColor: '#5e3fc9',
                     borderColor: '#ffffff',
@@ -50,16 +59,7 @@
                     tension: 1
                 },
                 {
-                    label: 'Total Withdraw '+symbol+sumArrayValues(withdraw_data),
-                    data:  withdraw_data,
-                    backgroundColor: '#2a9d8f',
-                    borderColor: '#ffffff',
-                    borderWidth: 0,
-                    borderRadius: 90,
-                    tension: 0.1
-                },
-                {
-                    label: 'Total Profit '+symbol+sumArrayValues(profit_data),
+                    label: 'Total IB Bonus '+symbol+sumArrayValues(profit_data),
                     data:  profit_data,
                     backgroundColor: '#003566',
                     borderColor: '#ffffff',
@@ -121,7 +121,7 @@
         var data = {
             labels: invest_label,
             datasets: [{
-                label: 'Total Investment',
+                label: 'Total Deposit',
                 data: invest_data,
                 backgroundColor: [
                     '#5e3fc9',

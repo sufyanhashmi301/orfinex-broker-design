@@ -56,5 +56,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LanguagesTableSeeder::class);
         $this->call(SettingsTableSeeder::class);
         $this->call(CustomCssTableSeeder::class);
+        $this->call(DepositMethodSeeder::class);
     }
 }

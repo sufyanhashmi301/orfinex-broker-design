@@ -10,12 +10,14 @@
                 <div class="flex-1 input-area relative">
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="staff_name" id="staff_name" class="form-control h-full" placeholder="Staff Name">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
-                </div>
+                 <div class="flex-1 input-area relative">
+    <select name="staff_name" id="staff_name" class="select2 form-control h-full w-full" data-placeholder="{{ __('Search Staff...') }}">
+        <option value="">{{ __('All Staff') }}</option>
+        @foreach($staffMembers as $staff)
+            <option value="{{ $staff->name }}">{{ $staff->name }}</option>
+        @endforeach
+    </select>
+</div>
                 <div class="flex-1 input-area relative">
                     <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
                         <option value="" selected>
@@ -203,7 +205,24 @@
             $('#filter').click(function () {
                 table.draw();
             });
-            $('#staff_name').keyup(function() {
+           // Initialize select2 with search for staff dropdown
+$('#staff_name').select2({
+    placeholder: $('#staff_name').data('placeholder'),
+    width: '100%',
+    minimumInputLength: 1, // Minimum characters to start searching
+    allowClear: true,
+    language: {
+        noResults: function() {
+            return "No staff found";
+        },
+        searching: function() {
+            return "Searching...";
+        }
+    }
+});
+
+// Handle staff filter change
+$('#staff_name').on('change', function() {
     table.draw();
 });
 
@@ -219,7 +238,13 @@
             $('#global_search').keyup(function() {
                 table.draw();
             });
-
+  // Handle staff filter change
+        $('#staff_name').on('change', function() {
+            if ($(this).val() === 'clear_filter') {
+                $(this).val('').trigger('change');
+                table.draw();
+            }
+        });
             //send mail modal form open
             $('body').on('click', '.send-mail', function () {
                 var id = $(this).data('id');

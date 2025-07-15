@@ -49,7 +49,7 @@ class TransactionController extends Controller
         $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['email', 'status', 'type', 'created_at']);
+            $filters = $request->only(['global_search', 'status', 'type', 'created_at']);
 
             // Get accessible users using helper function
             $accessibleUsersQuery = getAccessibleUserIds();
@@ -65,6 +65,24 @@ class TransactionController extends Controller
             } else {
                 $baseQuery->whereNull('id');
             }
+
+        // Apply global search filter
+        if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $baseQuery->where(function($query) use ($searchTerm) {
+                // Search user-related fields
+                $query->whereHas('user', function($q) use ($searchTerm) {
+                    $q->where('email', 'like', "%$searchTerm%")
+                      ->orWhere('username', 'like', "%$searchTerm%")
+                      ->orWhere('first_name', 'like', "%$searchTerm%")
+                      ->orWhere('last_name', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+                })
+                // Search transaction fields
+                ->orWhere('tnx', 'like', "%$searchTerm%")
+                ->orWhere('target_id', 'like', "%$searchTerm%");
+            });
+        }
 
             // Apply filters (email, status, etc.)
             $baseQuery->applyFilters($filters);

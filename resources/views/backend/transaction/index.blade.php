@@ -21,8 +21,8 @@
             <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
                 <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area relative">
-                        <input type="text" name="email" id="email" class="form-control" placeholder="Search User By Email">
-                    </div>
+    <input type="text" name="global_search" id="global_search" class="form-control" placeholder="Search by Email, Username, Name, Phone, Txn ID or Account">
+</div>
                     @php
                         use App\Enums\TxnStatus;
                     @endphp
@@ -210,7 +210,7 @@
                 ajax: {
                     url: "{{ route('admin.transactions') }}",
                     data: function (d) {
-                        d.email = $('#email').val();
+                        d.global_search = $('#global_search').val();
                         d.status = $('#status').val();
                         d.type = $('#type').val();
                         d.status = $('#status').val();
@@ -302,6 +302,13 @@
                     return false;
                 }
             });
+            var searchTimer;
+             $('#global_search').on('input', function() {
+                 clearTimeout(searchTimer);
+                 searchTimer = setTimeout(function() {
+                     table.draw();
+                 }, 500);
+             });
 
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();

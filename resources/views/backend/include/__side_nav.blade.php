@@ -411,7 +411,7 @@
 
         {{-- *************************************************************  Transactions *********************************************************--}}
 
-        @canany(['transaction-list','customer-transactions-stats','customer-network-stats'])
+        @canany(['transaction-list','customer-transactions-stats','customer-network-stats', 'ib-leaderboard-list'])
             <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.transactions.report','admin.referral-network.report']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -425,6 +425,13 @@
                         <li class="">
                             <a href="{{route('admin.transactions')}}" class="{{ isActive('admin.transactions') }}">
                                 {{ __('Transactions') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('ib-leaderboard-list')
+                        <li class="">
+                            <a href="{{route('admin.leaderboard.index')}}" class="{{ isActive('admin.leaderboard.index') }}">
+                                {{ __('Leaderboard') }}
                             </a>
                         </li>
                     @endcan

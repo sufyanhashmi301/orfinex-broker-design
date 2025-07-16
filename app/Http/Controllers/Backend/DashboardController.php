@@ -68,6 +68,8 @@ class DashboardController extends Controller
             return $group->count();
         })->toArray();
 
+        $totalDepositStatistics = $totalDeposit->select('type', DB::raw('SUM(amount) as total'))->groupBy('type')->pluck('total', 'type')->toArray();
+        
         $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
         $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();
         $dateArray = array_fill_keys(generate_date_range_array($startDate, $endDate), 0);
@@ -97,6 +99,16 @@ class DashboardController extends Controller
             return $group->sum('amount');
         })->toArray();
         $profitStatistics = array_replace($dateArray, $profitStatistics);
+        
+        $ibBonusStatistics = $transaction->totalIbBonus()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $ibBonusStatistics = array_replace($dateArray, $ibBonusStatistics);
+
+        $demoDepositStatistics = $transaction->totalDemoDeposit()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $demoDepositStatistics = array_replace($dateArray, $demoDepositStatistics);
 
         // ============================= End dashboard statistics =============================================
 
@@ -147,11 +159,14 @@ class DashboardController extends Controller
             'invest_statistics' => $investStatistics,
             'withdraw_statistics' => $withdrawStatistics,
             'profit_statistics' => $profitStatistics,
+            'ib_bonus_statistics' => $ibBonusStatistics,
+            'demo_deposit_statistics' => $demoDepositStatistics,
 
             'start_date' => isset(request()->start_date) ? $startDate : $startDate->addDays(1)->format('m/d/Y'),
             'end_date' => isset(request()->end_date) ? $endDate : $endDate->subDays(1)->format('m/d/Y'),
 
             'scheme_statistics' => $schemeStatistics,
+            'total_deposit_statistics' => $totalDepositStatistics,
             'deposit_bonus' => $transaction->totalDepositBonus(),
             'investment_bonus' => $transaction->totalInvestBonus(),
             'total_gateway' => $totalGateway,
@@ -176,9 +191,9 @@ class DashboardController extends Controller
             $date = [
                 'date_label' => $dateArray,
                 'deposit_statistics' => $depositStatistics,
-                'invest_statistics' => $investStatistics,
+                'demo_deposit_statistics' => $demoDepositStatistics,
                 'withdraw_statistics' => $withdrawStatistics,
-                'profit_statistics' => $profitStatistics,
+                'ib_bonus_statistics' => $ibBonusStatistics,
                 'symbol' => $symbol,
             ];
             return response()->json($date);

@@ -67,8 +67,13 @@ class DashboardController extends Controller
         $schemeStatistics = Invest::whereNot('status', 'canceled')->get()->groupBy('schema.name')->map(function ($group) {
             return $group->count();
         })->toArray();
-
-        $totalDepositStatistics = $totalDeposit->select('type', DB::raw('SUM(amount) as total'))->groupBy('type')->pluck('total', 'type')->toArray();
+        
+        $totalDepositStatistics = Transaction::select('type', DB::raw('SUM(amount) as total'))
+        ->whereIn('type', [
+            TxnType::Deposit,
+            TxnType::DemoDeposit,
+            TxnType::VoucherDeposit,
+        ])->where('status', TxnStatus::Success)->groupBy('type')->pluck('total', 'type')->toArray();
         
         $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
         $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();

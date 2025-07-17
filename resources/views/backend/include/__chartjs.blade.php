@@ -4,16 +4,26 @@
 
         //site chart
         let chart;
-        $('input[name="daterange"]').flatpickr({
-            opens: 'left'
-        }, function(start,end) {
+
+        $('#transactions_statistics_filter').on('submit', function (e) {
+            e.preventDefault();
+
+            const dateRangeStr = $('input[name="daterange"]').val();
+
+            if (!dateRangeStr || !dateRangeStr.includes(' to ')) {
+                alert('Please select a valid date range.');
+                return;
+            }
+
+            const [startDate, endDate] = dateRangeStr.split(' to ');
 
             $.get('{{ route('admin.dashboard') }}', {
-                start_date: start.format('YYYY-MM-DD'),
-                end_date: end.format('YYYY-MM-DD')
-            }, function (chartData) {
-
-                chart.destroy()
+                start_date: startDate,
+                end_date: endDate
+            }, function(chartData) {    
+                if (typeof chart !== 'undefined' && chart !== null) {
+                    chart.destroy();
+                }
                 chart_show(chartData);
             });
         });
@@ -22,9 +32,9 @@
         function chart_show(chartData){
             var date_label =  Object.keys(chartData['date_label']);
             var deposit_data = Object.values(chartData['deposit_statistics']);
-            var invest_data = Object.values(chartData['invest_statistics']);
+            var invest_data = Object.values(chartData['demo_deposit_statistics']);
             var withdraw_data = Object.values(chartData['withdraw_statistics']);
-            var profit_data = Object.values(chartData['profit_statistics']);
+            var profit_data = Object.values(chartData['ib_bonus_statistics']);
             var symbol = chartData['symbol'];
 
 
@@ -105,18 +115,20 @@
         var chartData = {
             'date_label': @json($data['date_label']),
             'deposit_statistics': @json($data['deposit_statistics']),
-            'invest_statistics': @json($data['invest_statistics']),
+            'demo_deposit_statistics': @json($data['demo_deposit_statistics']),
             'withdraw_statistics': @json($data['withdraw_statistics']),
-            'profit_statistics': @json($data['profit_statistics']),
+            'ib_bonus_statistics': @json($data['ib_bonus_statistics']),
             'symbol': @json($data['symbol']),
         }
         chart_show(chartData);
 
 
         //Plan chart
-        var schema = @json($data['scheme_statistics']);
+        var schema = @json($data['total_deposit_statistics']);
         var invest_data = Object.values(schema);
-        var invest_label = Object.keys(schema);
+        var invest_label = Object.keys(schema).map(function(key) {
+            return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+        });
         // Bar Chart
         var data = {
             labels: invest_label,

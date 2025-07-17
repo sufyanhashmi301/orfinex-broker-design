@@ -22,16 +22,21 @@ class DepositMethodSeeder extends Seeder
         // Get available gateways
         $gateways = Gateway::where('status', true)->get();
 
-        // Create automatic deposit methods
+        // Create automatic deposit methods - only BridgerPay
         $this->createAutomaticMethods($gateways);
 
-        // Create manual deposit methods
+        // Create manual deposit methods - only Bank Transfer
         $this->createManualMethods();
     }
 
     protected function createAutomaticMethods($gateways)
     {
         foreach ($gateways as $gateway) {
+            // Only create for BridgerPay
+            if ($gateway->gateway_code !== 'bridgerpay') {
+                continue;
+            }
+
             // Get the first supported currency for this gateway
             $supportedCurrencies = json_decode($gateway->supported_currencies, true);
             $currency = $supportedCurrencies[0] ?? 'USD';
@@ -70,6 +75,8 @@ class DepositMethodSeeder extends Seeder
                 'minimum_deposit' => 50,
                 'maximum_deposit' => 10000,
             ],
+            /*
+            // Keeping these commented for future reference
             [
                 'name' => 'Cash Deposit',
                 'method_code' => 'cash_deposit',
@@ -88,6 +95,7 @@ class DepositMethodSeeder extends Seeder
                 'minimum_deposit' => 5,
                 'maximum_deposit' => 1000,
             ],
+            */
         ];
 
         foreach ($manualMethods as $method) {
@@ -152,6 +160,8 @@ class DepositMethodSeeder extends Seeder
                     'validation' => 'required'
                 ]
             ],
+            /*
+            // Keeping these commented for future reference
             'cash_deposit' => [
                 [
                     'name' => 'Deposit Location',
@@ -171,6 +181,7 @@ class DepositMethodSeeder extends Seeder
                     'validation' => 'required'
                 ]
             ]
+            */
         ];
 
         return json_encode($options[$methodCode] ?? []);
@@ -180,8 +191,11 @@ class DepositMethodSeeder extends Seeder
     {
         $details = [
             'bank_transfer' => '<p>Please make your payment directly into our bank account. Please use your Transaction ID as the payment reference. Your deposit won\'t be processed until the funds have cleared in our account.</p>',
+            /*
+            // Keeping these commented for future reference
             'cash_deposit' => '<p>Visit any of our authorized cash deposit locations to make your payment. Please bring your Transaction ID with you.</p>',
             'voucher' => '<p>Enter your voucher code to redeem the deposit amount. Vouchers can only be used once.</p>'
+            */
         ];
 
         return $details[$methodCode] ?? '<p>Please follow the instructions for this payment method.</p>';

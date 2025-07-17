@@ -803,7 +803,9 @@ class WithdrawController extends Controller
 
                 // Simulate balance operation via Forex API
                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                if ($withdrawResponse['success']  && $withdrawResponse['result']['responseCode'] == 10009) {
+                if ($withdrawResponse['success'] && 
+                    ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                ) {
                     $isDeducted = true; // Deduction applied
                     $updateResult =  Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, $approvalCause);
                     if (!$updateResult) {

@@ -503,8 +503,10 @@ class Txn
                     if ($traderType == \App\Enums\TraderType::MT5) {
                         $forexApiService = new ForexApiService();
                         $response = $forexApiService->balanceOperation($data);
-
-                        if ($response['success'] && $response['result']['responseCode'] == 10009) {
+                        
+                        if ($response['success'] && 
+                            ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                        ) {
                             $manualData = json_decode($transaction->manual_field_data, true);
                             if (!is_array($manualData) || array_values($manualData) === $manualData) {
                                 $manualData = [];
@@ -658,7 +660,9 @@ class Txn
         $forexApiService = new ForexApiService();
         $withdrawResponse = $forexApiService->balanceOperation($data);
 //        dd($withdrawResponse);
-        if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
+        if ($withdrawResponse['success'] && 
+            ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+        ) {
             // Mark deduction as applied
             $manualFieldData = json_decode($transaction->manual_field_data, true);
             $manualFieldData['Deduction Status'] = [

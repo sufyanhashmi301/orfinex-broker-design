@@ -453,6 +453,7 @@ class WithdrawController extends Controller
 
             $scaledAmount = apply_cent_account_adjustment($targetId, $amount);
             $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+            
 
             if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
                 notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
@@ -547,7 +548,9 @@ class WithdrawController extends Controller
 
                     // Simulate balance operation via Forex API
                     $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                    if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
+                    if ($withdrawResponse['success'] && 
+                    ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                ) {
                         $isDeducted = true; // Deduction applied
                         $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
                         if (!$updateResult) {

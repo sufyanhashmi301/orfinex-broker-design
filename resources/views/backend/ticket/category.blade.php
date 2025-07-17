@@ -102,6 +102,10 @@
 
                     $('#editCategoryModal').modal('show');
                     $('#edit-category-body').append(data);
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
 
                 })
             })

@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editSymbolGroupModal" tabindex="-1" aria-labelledby="editSymbolGroupModalLabel" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
         <div class="modal-body popup-body">
             <div class="flex items-start justify-between gap-3 p-5">
@@ -18,23 +18,39 @@
                 </div>
                 <div class="p-6 pt-3">
                     <form id="editSymbolGroupForm" method="post" action="">
-                    @method('put')
+                        @method('put')
                         @csrf
-
-                        <div class="mb-3">
-                            <label for="groupName" class="form-label">Group Name</label>
-                            <input type="text" class="form-control" id="groupName" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="symbols" class="form-label">Select Symbols</label>
-                            <select id="symbols" name="symbols[]" class="form-control" multiple="multiple" required>
-                                <!-- Options will be populated by JavaScript -->
-                            </select>
+                        <div class="space-y-5">
+                            <div class="input-area">
+                                <label for="groupName" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the symbol group">
+                                        {{ __('Symbol Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="text" class="form-control" id="groupName" name="name" required>
+                            </div>
+                            <div class="input-area">
+                                <label for="symbols" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose one or more symbols to include">
+                                        {{ __('Select Symbols') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <select id="symbols" name="symbols[]" class="form-control" multiple="multiple" required>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                            </div>
                         </div>
                         <div class="text-right mt-10">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Update Group') }}
                             </button>
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Close') }}
+                            </a>
                         </div>
                     </form>
                 </div>

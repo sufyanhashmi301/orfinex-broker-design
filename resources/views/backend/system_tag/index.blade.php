@@ -97,23 +97,25 @@
     <script>
         // Edit system tag
        // Edit system tag
-$('body').on('click', '.edit-system-tag', function (event) { // Use the class selector here
-    event.preventDefault();
-    $('#edit-tag-body').empty();
-    var id = $(this).data('id'); // Get the ID from the clicked button
+        $('body').on('click', '.edit-system-tag', function (event) { // Use the class selector here
+            event.preventDefault();
+            $('#edit-tag-body').empty();
+            var id = $(this).data('id'); // Get the ID from the clicked button
 
-    var url = '{{ route("admin.system-tag.edit", ":id") }}'; // Use the correct route name
-    url = url.replace(':id', id);
+            var url = '{{ route("admin.system-tag.edit", ":id") }}'; // Use the correct route name
+            url = url.replace(':id', id);
 
-    $.get(url, function (data) {
-        $('#edit-tag-body').append(data);
-        $('#editSystemTagModal').modal('show'); // Correct modal ID
-    }).fail(function () {
-        alert('Error loading the edit form.'); // Error handling
-    });
-});
-
-
+            $.get(url, function (data) {
+                $('#edit-tag-body').append(data);
+                $('#editSystemTagModal').modal('show'); // Correct modal ID
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
+            }).fail(function () {
+                alert('Error loading the edit form.'); // Error handling
+            });
+        });
 
         // Delete system tag
         $('.deletesystemTag').on('click', function (e) {

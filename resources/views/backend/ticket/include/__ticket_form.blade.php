@@ -3,7 +3,10 @@
     <div class="space-y-4">
         <div class="input-area relative">
             <label for="title" class="form-label">
-                {{ __('Ticket Client') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the client this ticket is for">
+                    {{ __('Ticket Client') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <select name="user_id" id="client_input" class="form-control">
                 <option value="">{{ __('Select Client') }}</option>
@@ -16,7 +19,10 @@
         <!-- Ticket Title -->
         <div class="input-area relative">
             <label for="title" class="form-label">
-                {{ __('Ticket Title') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a brief subject for the ticket">
+                    {{ __('Ticket Title') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <input
                 type="text"
@@ -33,7 +39,10 @@
         <!-- Ticket Type -->
         <div class="input-area">
             <label for="" class="form-label">
-                {{ __('Ticket Type') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the type of issue or request">
+                    {{ __('Ticket Type') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <select name="label" class="select2 form-control">
                 <option value="">{{ __('Select Type') }}</option>
@@ -49,7 +58,10 @@
         <!-- Ticket Priority -->
         <div class="input-area">
             <label for="" class="form-label">
-                {{ __('Ticket Priority') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set the urgency level of the ticket">
+                    {{ __('Ticket Priority') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <select name="priority" class="select2 form-control">
                 <option value="">{{ __('Select Priority') }}</option>
@@ -65,7 +77,12 @@
         </div>
 
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Agent') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Assign the ticket to a support agent">
+                    {{ __('Agent') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="assigned_to" id="assigned_to" class="form-control">
                 <option value="">{{ __('Select Agent') }}</option>
                 @foreach($staff as $staff)
@@ -84,7 +101,10 @@
 
         <div class="input-area">
             <label for="" class="form-label">
-                {{ __('Attach Image') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload a file or screenshot if needed">
+                    {{ __('Attach Image') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <div class="filegroup">
                 <label>
@@ -102,7 +122,10 @@
         <!-- Ticket Descriptions -->
         <div class="input-area relative">
             <label for="message" class="form-label">
-                {{ __('Ticket Descriptions') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add details about the issue or request">
+                    {{ __('Ticket Descriptions') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <textarea
                 class="form-control textarea"

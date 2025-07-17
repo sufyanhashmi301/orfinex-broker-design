@@ -5,7 +5,7 @@
      aria-labelledby="addIBModalLabel"
      aria-hidden="true"
 >
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div
             class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body p-6 py-8 text-center space-y-5">
@@ -23,7 +23,12 @@
                     <div class="row">
                         <div class="col-span-12">
                             <div class="site-input-groups relative text-left">
-                                <label class="form-label" for="">{{ __('IB Group:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="IB group for the user">
+                                        {{ __('IB Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
                                     <option value="">{{__('Select IB Group')}}</option>
                                     @foreach($ibGroups as $ibGroup)
@@ -35,9 +40,7 @@
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="action-btns text-center">
-
+                    <div class="action-btns text-center mt-10">
                         <!-- Other form fields go here -->
                         <input type="hidden" name="user_id" value="{{$user->id}}">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">

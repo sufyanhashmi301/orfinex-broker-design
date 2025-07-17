@@ -9,42 +9,57 @@
                 <div class="grid grid-cols-12 gap-5 mb-5">
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="largeInput" class="form-label !flex items-center">
-                                <span>Max Retries</span>
-                                <span class="toolTip onTop leading-[0]" data-tippy-content="minimum Payout will be 50$" data-tippy-theme="dark">
-                                    <i icon-name="info"></i>
+                            <label for="largeInput" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Maximum number of failed login attempts allowed before triggering a lockout">
+                                    {{ __('Max Retries') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" name="max_retries" class="form-control">
+                            <input type="text" name="max_retries" class="form-control" placeholder="e.g. 5">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="inputEmail4" class="form-label">Lockout Time (in minutes)</label>
-                            <input type="text" name="lockout_time" class="form-control">
-                        </div>
-                    </div>
-                    <div class="lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <label for="inputEmail4" class="form-label">Max Lockouts</label>
-                            <input type="text" name="max_lockouts" class="form-control">
-                        </div>
-                    </div>
-                    <div class="lg:col-span-6 col-span-12">
-                        <div class="input-area">
-                            <label for="inputEmail4" class="form-label !flex items-center">
-                                <span>Extend Lockout (in hours)</span>
-                                <span class="toolTip onTop leading-[0]" data-tippy-content="minimum Payout will be 50$" data-tippy-theme="dark">
-                                    <i icon-name="info"></i>
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Duration (in minutes) the user remains locked out after reaching max retries">
+                                    {{ __('Lockout Time (in minutes)') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" name="extend_lockouts" class="form-control">
+                            <input type="text" name="lockout_time" class="form-control" placeholder="e.g. 15">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="inputEmail4" class="form-label">Reset Retries (in hours)</label>
-                            <input type="text" name="reset_retries" class="form-control">
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Total number of lockouts allowed before permanent or extended lock is enforced">
+                                    {{ __('Max Lockouts') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" name="max_lockouts" class="form-control" placeholder="e.g. 3">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-6 col-span-12">
+                        <div class="input-area">
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Additional time to lock a user after reaching max lockouts">
+                                    {{ __('Extend Lockout (in hours)') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" name="extend_lockouts" class="form-control" placeholder="e.g. 24">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-6 col-span-12">
+                        <div class="input-area">
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Time window (in hours) after which failed attempt counter resets">
+                                    {{ __('Reset Retries (in hours)') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" name="reset_retries" class="form-control" placeholder="e.g. 1">
                         </div>
                     </div>
                 </div>
@@ -52,25 +67,33 @@
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="inputEmail4" class="form-label !flex items-center">
-                                <span>Email Notifications</span>
-                                <span class="toolTip onTop leading-[0]" data-tippy-content="minimum Payout will be 50$" data-tippy-theme="dark">
-                                    <i icon-name="info"></i>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter one or more email addresses to receive security alerts">
+                                    {{ __('Email Notifications') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" name="email_notification" class="form-control">
+                            <input type="text" name="email_notification" class="form-control" placeholder="e.g. admin@yourdomain.com">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control">
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Address where critical security notifications will be sent">
+                                    {{ __('Email') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="email" name="email" class="form-control" placeholder="e.g. alerts@yourdomain.com">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label d-block mb-4">
-                                Send Email Notifications if login from different IP Address ?
-                                <span class="text-danger ml-1">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to receive alerts when a user logs in from an unknown IP address">
+                                    {{ __('Send Email Notifications if login from different IP Address ?') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-danger">*</span>
+                                </span>
                             </label>
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <div class="basicRadio">
@@ -96,13 +119,19 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="inputEmail4" class="form-label">IP</label>
-                            <input type="text" name="ip" class="form-control">
+                            <label for="inputEmail4" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add IP addresses that are trusted or to be excluded from notifications">
+                                    {{ __('IP') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" name="ip" class="form-control" placeholder="e.g. 192.168.1.100">
                         </div>
                     </div>
                 </div>
-                <div class="text-right">
+                <div class="text-right mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         Save Changes
                     </button>
                 </div>

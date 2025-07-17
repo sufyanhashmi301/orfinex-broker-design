@@ -22,7 +22,12 @@
                         <input type="hidden" name="account_type" id="account_type" value="{{ old('account_type') }}">
                         <div class="space-y-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('User') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The user who is withdrawing the funds">
+                                        {{ __('User') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User" required>
                                     <option value="">{{ __('Select User') }}</option>
                                     @foreach($users as $user)
@@ -36,7 +41,12 @@
                                 @enderror
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account or wallet from which the funds will be withdrawn">
+                                        {{ __('Account / Wallet') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="target_id" id="tradingAccount" class="select2 form-control w-full" data-placeholder="Select Account" required>
                                     <option value="">{{__('Select Account')}}</option>
                                 </select>
@@ -48,7 +58,10 @@
                             <div class="input-area">
                                 <label for="" class="form-label">
                                     <span class="flex justify-between">
-                                        {{ __('Withdraw Account') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account or wallet from which the funds will be withdrawn">
+                                            {{ __('Withdraw Account') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                         <a href="javascript:;" class="inline-flex items-center btn-link withdraw_account_btn hidden">
                                             <iconify-icon icon="lucide:plus" class="text-base ltr:mr-1 rtl:ml-1 font-light"></iconify-icon>
                                             {{ __('Add New') }}
@@ -61,7 +74,12 @@
                                 @enderror
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Amount') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The amount of funds to be withdrawn">
+                                        {{ __('Amount') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount"
                                         oninput="this.value = validateDouble(this.value)"
@@ -80,7 +98,12 @@
                                 @enderror
                             </div>
                             <div class="input-area conversion hidden">
-                                <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
+                                <label for="exampleFormControlInput1" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The amount of funds to be withdrawn">
+                                        {{ __('Amount') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="relative">
                                     <input
                                         type="text"
@@ -111,7 +134,12 @@
                                 </table>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Comments') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The comments of the withdrawal">
+                                        {{ __('Comments') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <textarea class="form-control" name="approval_cause" rows="5"></textarea>
                             </div>
                             @can('withdraw-auto-approve')
@@ -119,7 +147,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
-                                        {{ __('Auto Approve') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The auto approve of the withdrawal">
+                                            {{ __('Auto Approve') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
                                         <input class="form-check-input" type="hidden" value="0" name="is_auto_approve"/>
@@ -183,7 +214,7 @@
         </div>
     </div>
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
                         <div class="popup-body-text deposit-action">
@@ -274,6 +305,10 @@
                     success: function(response) {
                         $('.deposit-action').append(response)
                         imagePreview();
+                        tippy(".shift-Away", {
+                            placement: "top",
+                            animation: "shift-away"
+                        });
                         $('#transaction-action-modal').modal('show');
 
                     }

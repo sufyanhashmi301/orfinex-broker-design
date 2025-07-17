@@ -20,7 +20,12 @@
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area">
-                                <label class="form-label">{{ __('IB Groups:') }}</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select an IB Group to link selected users with">
+                                        {{ __('IB Groups') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="ib_groups[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
                                     <option value="all" @if(in_array('all', $staff->ib_groups ?? [])) selected @endif>
                                         {{ __('All') }}
@@ -34,7 +39,12 @@
                                 </select>
                             </div>
                             <div class="input-area">
-                                <label class="form-label">{{ __('Account Types:') }}</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account type to assign to the users">
+                                        {{ __('Account Types') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="account_types[]" class="select2 form-control w-full" data-placeholder="Select Options" multiple>
                                     <option value="all" @if(in_array('all', $staff->account_types ?? [])) selected @endif>
                                         {{ __('All') }}
@@ -48,7 +58,12 @@
                                 </select>
                             </div>
                             <div class="input-area">
-                                <label class="form-label">{{ __('Attach Users:') }}</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose one or more users to attach">
+                                        {{ __('Attach Users') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="user_ids[]" id="users_input" class="form-control w-full" data-placeholder="Select Options" multiple></select>
                             </div>
                         </div>
@@ -65,19 +80,24 @@
         @endcan
         <div class="lg:col-span-7 col-span-12">
             <div class="card h-full">
-                <div class="card-body relative px-6">
-                    <div class="mb-4 flex justify-between items-center">
-                        <div>
-                            <input type="checkbox" id="select_all_users" class="mr-2">
-                            <label for="select_all_users">{{ __('Select All') }}</label>
+                <div class="card-header noborder">
+                    <h4 class="card-title">{{ __('Attached Users') }}</h4>
+                    @can('staff-attach-users-delete')
+                    <div class="flex items-stretch gap-3">
+                        <div class="flex items-center justify-center border rounded px-3">
+                            <label class="flex items-center text-sm font-medium mb-0">
+                                <input type="checkbox" id="select_all_users" class="mr-2">
+                                {{ __('All Users') }}
+                            </label>
                         </div>
-                        @can('staff-attach-users-delete')
-                        <button class="btn btn-danger inline-flex items-center justify-center" id="bulkDetachBtn" type="button" disabled>
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:trash-2"></iconify-icon>
+                        <button class="btn btn-danger btn-sm inline-flex items-center justify-center" id="bulkDetachBtn" type="button" disabled>
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:trash-2"></iconify-icon>
                             {{ __('Detach Selected') }}
                         </button>
-                        @endcan
                     </div>
+                    @endcan
+                </div>
+                <div class="card-body relative px-6">
                     <div class="overflow-x-auto -mx-6 dashcode-data-table">
                         <div class="inline-block min-w-full align-middle">
                             <div class="overflow-hidden">
@@ -108,8 +128,8 @@
 
     {{-- Single Detach User Modal --}}
     @can('staff-attach-users-delete')
-    @include('backend.staff.modal.__detach_user')
-    @include('backend.staff.modal.__selected_detach_users')
+        @include('backend.staff.modal.__detach_user')
+        @include('backend.staff.modal.__selected_detach_users')
     @endcan
 @endsection
 
@@ -207,14 +227,15 @@
         });
 
         // Bulk detach form submission
-// Bulk detach form submission
-$('#bulkDetachForm').on('submit', function(e) {
-e.preventDefault();
-var form = $(this);
+        // Bulk detach form submission
+        $('#bulkDetachForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
 
-// Submit the form normally (not via AJAX)
-form.off('submit').submit();
-});
+            // Submit the form normally (not via AJAX)
+            form.off('submit').submit();
+        });
+
         $('#users_input').select2({
             ajax: {
                 url: '{{ route("admin.user.search") }}',
@@ -241,19 +262,18 @@ form.off('submit').submit();
             }
         });
 
-    // Fix single detach button click handler
-$('body').on('click', '.userDetachBtn', function(e) {
-    e.preventDefault();
-    let userId = $(this).data('user-id');
-    let staffId = $(this).data('staff-id');
-    var name = $(this).data('name');
+        // Fix single detach button click handler
+        $('body').on('click', '.userDetachBtn', function(e) {
+            e.preventDefault();
+            let userId = $(this).data('user-id');
+            let staffId = $(this).data('staff-id');
+            var name = $(this).data('name');
 
-    $('#detachUserForm').attr('action', '{{ route("admin.staff.detachUser", $staff->id) }}');
-    $('#userIdInput').val(userId);
-    $('.name').html(name);
-    $('#detachUserModal').modal('show');
-});
-
+            $('#detachUserForm').attr('action', '{{ route("admin.staff.detachUser", $staff->id) }}');
+            $('#userIdInput').val(userId);
+            $('.name').html(name);
+            $('#detachUserModal').modal('show');
+        });
 
     })(jQuery);
 </script>

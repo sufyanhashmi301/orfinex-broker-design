@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="master-ib-modal" tabindex="-1" aria-labelledby="master-ib-modal-label" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <form id="master-ib-form" action="{{ route('admin.user.run-master-ib-distribution', $user->id) }}" method="POST">
                 @csrf
@@ -10,9 +10,12 @@
                     <button type="button" class="btn-close text-2xl" data-bs-dismiss="modal" aria-label="{{ __('Close') }}">&times;</button>
                 </div>
                 <div class="modal-body p-6">
-                    <div class="flex flex-col space-y-2">
-                        <label for="master-ib-date" class="text-sm font-medium text-slate-600 dark:text-slate-300">
-                            {{ __('Select Date') }}
+                    <div class="input-area">
+                        <label for="master-ib-date" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the date to run the distribution for">
+                                {{ __('Select Date') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="relative">
                             <input 
@@ -35,15 +38,20 @@
                             <li>{{ __('Please make sure your IB network is set up correctly before continuing.') }}</li>
                         </ul>
                     </div>
-                </div>
-                
-                <div class="modal-footer flex justify-end p-4 border-t">
-                    <button type="submit" class="btn btn-dark" id="run-master-ib-btn">
-                        {{ __('Run Distribution') }}
-                    </button>
-                    <button type="button" class="btn btn-outline-dark ml-2" data-bs-dismiss="modal">
-                        {{ __('Cancel') }}
-                    </button>
+                    <div class="flex justify-end items-center mt-10">
+                        <button type="submit" class="btn btn-dark mr-2" id="run-master-ib-btn">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Run Distribution') }}
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

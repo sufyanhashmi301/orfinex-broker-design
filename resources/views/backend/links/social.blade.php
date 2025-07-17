@@ -80,6 +80,10 @@
             $.get(url, function (response) {
                 $('#editSocialLinkModal').modal('show');
                 $('#edit-social-link-body').append(response);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             });
         });
     </script>

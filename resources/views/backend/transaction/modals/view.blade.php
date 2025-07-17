@@ -20,7 +20,12 @@
             </li>
         </ul>
         <div class="input-area">
-            <label class="form-label" for="">{{ __('Transaction Amount:') }}</label>
+            <label class="form-label" for="">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The amount of the transaction">
+                    {{ __('Transaction Amount') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <div class="joint-input relative">
                 <input type="text" name="final_amount" id="amount"  value="{{$data->final_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency">
@@ -30,21 +35,26 @@
         </div>
         @if($data->pay_currency != $currency)
             <div class="input-area">
-                <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
+                <label class="form-label" for="">
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The amount of the transaction after currency conversion">
+                        {{ __('Conversion Amount') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
+                </label>
                 <div class="joint-input relative">
                     <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="converted-currency">
                         {{$data->pay_currency}}
                     </span>
                 </div>
-                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
+                <!-- <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div> -->
             </div>
         @endif
-
-        <ul class="list-group mb-4">
-            @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
+        
+        @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
+            <ul class="list-group border border-slate-100 dark:border-slate-700">
                 @foreach( json_decode($data->manual_field_data) as $key => $value)
-                    <li class="list-group-item dark:text-slate-300 py-1 px-2 rounded border">
+                    <li class="list-group-item dark:text-slate-300 py-1 px-2 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
                         <label for="" class="form-label">{{ $key }}:</label>
                         @if($value != new stdClass())
                             @if( file_exists('assets/'.$value))
@@ -55,25 +65,31 @@
                         @endif
                     </li>
                 @endforeach
-            @endif
-        </ul>
+            </ul>
+        @endif
+
     {{--    {{dd($data->type->value,App\Enums\TxnType::Withdraw->value)}}--}}
-        <ul class="list-group mb-4">
-            @if($data->type->value == App\Enums\TxnType::Withdraw->value || $data->type->value==App\Enums\TxnType::WithdrawAuto->value)
-                @foreach( json_decode($data->manual_field_data,true) as $name => $field_data)
-                    <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-                        {{ $name }}: @if( $field_data['type'] == 'file' )
-                            <img src="{{ asset($field_data['value']) }}" alt=""/>
-                        @else
-                            <strong>{{ $field_data['value'] }}</strong>
-                        @endif
-                    </li>
-                @endforeach
-            @endif
+    @if($data->type->value == App\Enums\TxnType::Withdraw->value || $data->type->value==App\Enums\TxnType::WithdrawAuto->value)
+        <ul class="list-group border border-slate-100 dark:border-slate-700">
+            @foreach( json_decode($data->manual_field_data,true) as $name => $field_data)
+                <li class="list-group-item dark:text-slate-300 block py-2 px-3 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
+                    {{ $name }}: @if( $field_data['type'] == 'file' )
+                        <img src="{{ asset($field_data['value']) }}" alt=""/>
+                    @else
+                        <strong>{{ $field_data['value'] }}</strong>
+                    @endif
+                </li>
+            @endforeach
         </ul>
+    @endif
 
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Detail Message') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail message of the transaction">
+                    {{ __('Detail Message') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <textarea name="message" class="summernote form-control mb-0" rows="6" placeholder="">{{ $data->approval_cause}}</textarea>
         </div>
     </form>

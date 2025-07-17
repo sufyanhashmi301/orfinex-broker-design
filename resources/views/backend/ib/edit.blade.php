@@ -21,7 +21,12 @@
                     @method('PUT')
                     @csrf
                     <div class="site-input-groups">
-                        <label class="form-label" for="">{{ __('Name:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the name of the IB form">
+                                {{ __('Name') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" name="name" value="{{ old('name',$kyc->name) }}" class="form-control" placeholder="IB Type Name" required/>
                     </div>
                     <div>
@@ -103,7 +108,10 @@
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto">
-                                    {{ __('Status:') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this IB form">
+                                        {{ __('Status') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="status">

@@ -9,18 +9,28 @@
                     @csrf
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('New Password:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the new password">
+                                    {{ __('New Password') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="password" name="new_password" class="form-control" required="">
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Confirm Password:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the confirm password">
+                                    {{ __('Confirm Password') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="password" name="new_confirm_password" class="form-control" required="">
                         </div>
-                        <div class="input-area text-right lg:col-span-2">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                {{ __('Change Password') }}
-                            </button>
-                        </div>
+                    </div>
+                    <div class="input-area text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            {{ __('Change Password') }}
+                        </button>
                     </div>
                 </form>
 

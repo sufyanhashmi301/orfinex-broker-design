@@ -5,7 +5,12 @@
 
     <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
         <div class="input-area">
-            <label for="title" class="form-label">{{ __('Title') }}</label>
+            <label for="title" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The title of the swap based account">
+                    {{ __('Title') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input
                 type="text"
                 name="title"
@@ -17,7 +22,12 @@
         </div>
         <input type="hidden" name="forex_scheme_id" value="{{ $multiLevelAccount->forex_scheme_id }}">
         <div class="input-area">
-            <label for="level_order" class="form-label">{{ __('Level Order') }}</label>
+            <label for="level_order" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The level order of the swap based account">
+                    {{ __('Level Order') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input
                 type="text"
                 name="level_order"
@@ -28,7 +38,12 @@
             />
         </div>
         <div class="lg:col-span-2 input-area">
-            <label for="group_tag" class="form-label">{{ __('Group Tag') }}</label>
+            <label for="group_tag" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The group tag of the swap based account">
+                    {{ __('Group Tag') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="group_tag" class="select2 form-control w-full">
                 @foreach($platformGroups as $platformGroup)
                     <option value="{{ $platformGroup->group }}">
@@ -38,7 +53,12 @@
             </select>
         </div>
         <div class="lg:col-span-2 input-area">
-            <label for="rebate_rules" class="form-label">{{ __('Select Rebate Rules') }}</label>
+            <label for="rebate_rules" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The rebate rules of the swap based account">
+                    {{ __('Select Rebate Rules') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
                 @foreach($rebateRules as $rebateRule)
                     <option value="{{ $rebateRule->id }}"
@@ -49,7 +69,12 @@
             </select>
         </div>
         <div class="lg:col-span-2 input-area">
-            <label for="ib_group_id" class="form-label">{{ __('Select IB Group') }}</label>
+            <label for="ib_group_id" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The ib group of the swap based account">
+                    {{ __('Select IB Group') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="ib_group_id[]" class="select2 form-control w-full" multiple="multiple">
                 @foreach($ibGroups as $ibGroup)
                     <option value="{{ $ibGroup->id }}"
@@ -61,7 +86,12 @@
         </div>
 
         <div class="lg:col-span-2 input-area">
-            <label for="description" class="form-label">{{ __('Short Description') }}</label>
+            <label for="description" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The short description of the swap based account">
+                    {{ __('Short Description') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <textarea
                 name="description"
                 class="form-control mb-0"
@@ -70,7 +100,12 @@
             >{{ $multiLevelAccount->description }}</textarea>
         </div>
         <div class="lg:col-span-2 input-area">
-            <label for="status" class="form-label">{{ __('Status') }}</label>
+            <label for="status" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The status of the swap based account">
+                    {{ __('Status') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="status" class="form-control w-full">
                 <option value="1" {{ $multiLevelAccount->status == 1 ? 'selected' : '' }}>{{ __('Enable') }}</option>
                 <option value="0" {{ $multiLevelAccount->status == 0 ? 'selected' : '' }}>{{ __('Disable') }}</option>

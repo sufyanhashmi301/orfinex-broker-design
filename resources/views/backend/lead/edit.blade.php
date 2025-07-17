@@ -20,8 +20,11 @@
                     <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Salutation:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the salutation">
+                                    {{ __('Salutation') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <select name="salutation" class="select2 form-control">
                                 <option value="mr" @if($lead->salutation == 'mr') selected @endif>{{ __('Mr') }}</option>
@@ -34,8 +37,11 @@
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('First Name:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the first name">
+                                    {{ __('First Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input
                                 type="text"
@@ -44,13 +50,16 @@
                                 value="{{ old('first_name', $lead->first_name) }}"
                             />
                             @error('first_name')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Last Name:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the last name">
+                                    {{ __('Last Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input
                                 type="text"
@@ -59,13 +68,16 @@
                                 value="{{ old('last_name', $lead->last_name) }}"
                             />
                             @error('last_name')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Email:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the email">
+                                    {{ __('Email') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input
                                 type="email"
@@ -74,13 +86,16 @@
                                 value="{{ old('client_email', $lead->client_email) }}"
                             />
                             @error('client_email')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Phone:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the phone">
+                                    {{ __('Phone') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input
                                 type="text"
@@ -89,13 +104,16 @@
                                 value="{{ old('phone', $lead->phone) }}"
                             />
                             @error('phone')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Lead Source:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the lead source">
+                                    {{ __('Lead Source') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <select name="source_id" class="select2 form-control">
                                 @foreach($sources as $source)
@@ -105,13 +123,16 @@
                                 @endforeach
                             </select>
                             @error('source_id')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Lead Owner:') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the lead owner">
+                                    {{ __('Lead Owner') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <select name="lead_owner" id="leadOwner" class="form-control">
                                 @foreach($staff as $staff)
@@ -128,7 +149,7 @@
                         </div>
                     </div>
                 </div>
-            </div>s
+            </div>
 
             <div class="card">
                 <div class="card-header">
@@ -137,7 +158,12 @@
                 <div class="card-body p-6">
                     <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Company Name:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the company name">
+                                    {{ __('Company Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="company_name"
@@ -146,7 +172,12 @@
                                 placeholder="e.g. Acme Corporation">
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Website:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the website">
+                                    {{ __('Website') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="website"
@@ -155,7 +186,12 @@
                                 placeholder="e.g. https://www.example.com">
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Office Phone Number:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the office phone number">
+                                    {{ __('Office Phone Number') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="tel"
                                 name="office_phone_number"
@@ -164,7 +200,12 @@
                                 placeholder="e.g. 1234567890">
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Country:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the country">
+                                    {{ __('Country') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <select name="country" class="select2 form-control" data-placeholder="Select Country">
                                 <option value="" disabled selected>Select Country</option>
                                 @foreach( getCountries() as $country)
@@ -175,7 +216,12 @@
                             </select>
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('State:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the state">
+                                    {{ __('State') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="state"
@@ -184,7 +230,12 @@
                                 placeholder="e.g. California, Rajasthan, Dubai">
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('City:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the city">
+                                    {{ __('City') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="city"
@@ -193,7 +244,12 @@
                                 placeholder="e.g. New York, Jaipur, Dubai">
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Postal code:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the postal code">
+                                    {{ __('Postal code') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="postal_code"
@@ -203,7 +259,12 @@
                         </div>
                         <div class="lg:col-span-3">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Address:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the address">
+                                        {{ __('Address') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <textarea
                                     name="address"
                                     class="form-control"

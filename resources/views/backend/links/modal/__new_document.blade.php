@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="newDocumentModal" tabindex="-1" aria-labelledby="newDocumentModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between p-5">
@@ -13,23 +13,36 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6">
+                <div class="p-6 pt-3">
                     <form action="{{ route('admin.links.document.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="is_deleteable" value="1">
                         <div class="space-y-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Title') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the document title">
+                                        {{ __('Title') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" name="title" class="form-control" placeholder="Document Title">
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Link') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the full document URL">
+                                        {{ __('Link') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="url" name="link" class="form-control" placeholder="Document link">
                             </div>
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0">
-                                        {{ __('Status') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this document link">
+                                            {{ __('Status') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0">
                                         <input class="form-check-input" type="hidden" value="0" name="status">

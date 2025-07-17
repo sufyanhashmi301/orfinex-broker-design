@@ -16,7 +16,10 @@
                     @if($field['type'] == 'checkbox')
                         <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                             <label class="form-label !mb-0">
-                                {{ __($field['label']) }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="form-switch ps-0 leading-[0]">
                                 <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
@@ -29,7 +32,10 @@
                     @else
                         <div class="input-area">
                             <label class="form-label">
-                                {{ __($field['label']) }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="relative">
                                 <input type="{{$field['type']}}" name="{{ $field['name'] }}"

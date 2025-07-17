@@ -76,7 +76,12 @@
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('User') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the user who is making the deposit">
+                                        {{ __('User') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="user_id" class="select2 form-control w-full" data-placeholder="Select User">
                                     <option value="">{{ __('Select User') }}</option>
                                     @foreach($users as $user)
@@ -90,14 +95,24 @@
                                 @enderror
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account or wallet from which the deposit will be made">
+                                        {{ __('Account / Wallet') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="target_id" class="select2 form-control w-full" data-placeholder="Select Account"></select>
                                 @error('target_id')
                                 <span class="error">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Payment Method') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the payment method for the deposit">
+                                        {{ __('Payment Method') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="gateway_code" id="gatewaySelect" class="select2 form-control w-full"
                                         data-placeholder="Select Option">
                                     @foreach($gateways as $gateway)
@@ -115,7 +130,12 @@
                                 <div class="font-Inter text-xs text-danger inline-block invalid-code hidden"></div>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the amount of the deposit">
+                                        {{ __('Enter Amount:') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="relative">
                                     <input type="text" name="amount" class="form-control !pr-12"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount"
@@ -130,7 +150,12 @@
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
                             <div class="input-area conversion hidden">
-                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the amount of the deposit in the currency of the payment method">
+                                        {{ __('Enter Amount:') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="relative">
                                     <input type="text" class="form-control !pr-12"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount"
@@ -144,7 +169,12 @@
                             </div>
                             {{--                            <div class="manual-row"></div>--}}
                             <div class="input-area">
-                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
+                                <label for="approval_cause" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the comments for the deposit">
+                                        {{ __('Comments') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <textarea class="form-control summernote" rows="5"></textarea>
                                 <input type="hidden" name="approval_cause">
                             </div>

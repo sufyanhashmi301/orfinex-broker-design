@@ -24,7 +24,10 @@
                         @if($field['type'] == 'switch')
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="success-radio">
@@ -64,11 +67,17 @@
                         @elseif($field['type'] == 'checkbox')
                             <div class="input-area">
                                 <label for="" class="form-label invisible">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0">
-                                        {{ __($field['label']) }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                            {{ __($field['label']) }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0">
                                         <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
@@ -88,7 +97,10 @@
                         @elseif($field['type'] == 'dropdown')
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 @if($field['name'] == 'site_currency')
                                     <div class="currency-fiat">
@@ -112,7 +124,10 @@
                         @else
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <input
                                     type="{{$field['type']}}"

@@ -14,25 +14,34 @@
             <!-- Grace Period Settings Section -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
                 <!-- Grace Period Toggle -->
-                <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
-                    <label class="form-label !mb-0">
+                <div class="input-area">
+                    <label class="form-label invisible" for="">
                         {{ __('Grace Period') }}
                     </label>
-                    <div class="form-switch ps-0 leading-[0]">
-                        <input type="hidden" name="grace_period" value="0">
-                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                            <input type="checkbox" name="grace_period" value="1" 
-                                @if(oldSetting('grace_period', $section)) checked @endif 
-                                class="sr-only peer">
-                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                        </label>
+                    <div class="flex items-center space-x-7 flex-wrap">
+                        <div class="form-label !w-auto !mb-0">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable temporary holding for unverified users">
+                                {{ __('Grace Period') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </div>
+                        <div class="form-switch leading-none ps-0">
+                            <input type="hidden" value="0" name="grace_period"/>
+                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                <input type="checkbox" name="grace_period" value="1" @if(oldSetting('grace_period', $section)) checked @endif class="sr-only peer">
+                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Grace Period Days Setting -->
                 <div class="input-area">
                     <label class="form-label">
-                        {{ __('User Removal Grace Period (Days)') }}
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Days before unverified users are removed">
+                            {{ __('User Removal Grace Period (Days)') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
                     </label>
                     <div class="relative">
                         <input type="number" name="user_removal_grace_period" 
@@ -82,7 +91,7 @@
             <!-- Consolidated Professional Note -->
             <div class="mt-6 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
                 <h4 class="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">{{ __('Note:') }}</h4>
-                <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-5">
+                <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside pl-5">
                     <li>{{ __('When enabled, new unverified users will be placed in grace period') }}</li>
                     <li>{{ __('Users automatically exit grace period upon email verification or activity') }}</li>
                     <li>{{ __('Removal grace period defines how many days grace period users remain before deletion') }}</li>

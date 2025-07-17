@@ -4,35 +4,36 @@
      tabindex="-1"
      aria-labelledby="addIBModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-            <div class="modal-body p-6 py-8 text-center space-y-5">
-                <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-primary text-primary bg-opacity-30">
-                    <iconify-icon class="text-4xl" icon="lucide:user-plus"></iconify-icon>
+            <div class="modal-body px-6 py-10">
+                <div class="text-center space-y-3 mb-3">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-primary text-primary bg-opacity-30">
+                        <iconify-icon class="text-4xl" icon="lucide:user-plus"></iconify-icon>
+                    </div>
+                    <div class="title">
+                        <h4 class="text-2xl font-medium dark:text-white capitalize">
+                            {{ __('Convert to IB Member') }} <span id="modalUserName"></span>
+                        </h4>
+                    </div>
                 </div>
-                <div class="title">
-                    <h4 class="text-xl font-medium dark:text-white capitalize">
-                        {{ __('Convert to IB Member') }} <span id="modalUserName"></span>
-                    </h4>
-                </div>
-
                 <form id="addIBModalForm" action="{{ route('admin.ib.approve') }}" method="POST">
                     @csrf
-                    <div class="row">
-                        <div class="col-span-12">
-                            <div class="site-input-groups relative">
-                                <label class="form-label" for="ibGroupIDSelect">{{ __('IB Group:') }}</label>
-                                <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
-                                    <option value="">{{__('Select IB Group')}}</option>
-                                    @foreach($ibGroups as $ibGroup)
-                                        <option value="{{$ibGroup->id}}">{{$ibGroup->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                    <div class="input-area relative">
+                        <label class="form-label" for="ibGroupIDSelect">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select IB group for the user">
+                                {{ __('IB Group') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
+                        <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
+                            <option value="">{{__('Select IB Group')}}</option>
+                            @foreach($ibGroups as $ibGroup)
+                                <option value="{{$ibGroup->id}}">{{$ibGroup->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <br>
-                    <div class="action-btns text-center">
+                    <div class="action-btns text-center mt-10">
                         <input type="hidden" name="user_id" id="modalUserId" value="">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

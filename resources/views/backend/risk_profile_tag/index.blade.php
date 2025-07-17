@@ -125,6 +125,10 @@
 
                 $('#editModal').modal('show');
                 $('#edit-tag-body').append(data);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
 
             })
         });

@@ -19,7 +19,12 @@
             <form action="{{route('admin.roles.store')}}" method="post" class="space-y-4">
                 @csrf
                 <div class="input-area">
-                    <label for="" class="form-label">{{ __('Role Name') }}</label>
+                    <label for="" class="form-label">
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the user role">
+                            {{ __('Role Name') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
+                    </label>
                     <input type="text" class="form-control" required="" name="name"/>
                 </div>
                 <div class="card border dark:border-slate-700">

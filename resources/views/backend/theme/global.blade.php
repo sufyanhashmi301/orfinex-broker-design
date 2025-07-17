@@ -52,7 +52,10 @@
                                 <div class="lg:col-span-3">
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            {{ __($field['label']) }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                                {{ __($field['label']) }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="relative">
                                             <input type="" name="" class="form-control" value="{{ oldSetting($field['name'],$section) }}">
@@ -70,7 +73,10 @@
                                 <div class="lg:col-span-6">
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            {{ __($field['label']) }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                                {{ __($field['label']) }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <input
                                             type="{{$field['type']}}"

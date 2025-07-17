@@ -25,7 +25,10 @@
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
@@ -39,7 +42,10 @@
                     @elseif($field['type'] == 'textarea')
                         <div class="input-area">
                             <label class="form-label pt-0">
-                                {{ __($field['label']) }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif">
                                 {{ br2nl(oldSetting($field['name'],$section)) }}
@@ -50,7 +56,10 @@
                     @else
                         <div class="input-area">
                             <label class="form-label pt-0">
-                                {{ __($field['label']) }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
                                class="form-control @if($errors->has($field['name'])) has-error @endif"

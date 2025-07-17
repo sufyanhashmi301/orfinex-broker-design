@@ -211,6 +211,10 @@
                 $('.color-input-group').each(function() {
                     syncGroupInputs(this);
                 });
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
 
             })
         });
@@ -271,6 +275,10 @@
                 $('.select2').select2({
                     dropdownParent: $('#newDealStageModal'),
                 });
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             });
         });
 
@@ -286,6 +294,10 @@
                 $('#edit-stage-body').append(data);
                 $('.select2').select2({
                     dropdownParent: $('#editStageModal'),
+                });
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
                 });
 
             })

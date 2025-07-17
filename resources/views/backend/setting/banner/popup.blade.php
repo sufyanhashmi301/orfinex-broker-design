@@ -46,8 +46,10 @@
                                     $popupImage = setting('popup_image', 'popup');
                                 @endphp
                                 <label for="" class="form-label flex items-center !w-auto">
-                                    {{ __('Image') }}
-                                    <iconify-icon class="toolTip onTop relative top-[2px]" icon="lucide:info" data-tippy-content="Tip: Use high-quality visuals to attract more attention!"></iconify-icon>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Tip: Use high-quality visuals to attract more attention!">
+                                        {{ __('Image') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="wrap-custom-file">
                                     <input
@@ -68,11 +70,21 @@
                                 <span class="text-xs font-medium">{{ __('Recommended size: 700x700 px for best fit.') }}</span>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Button Text') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Text shown on the popup button (e.g., Learn More, Get Started)">
+                                        {{ __('Button Text') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" name="popup_btn_text" class="form-control" value="{{ setting('popup_btn_text', 'popup') }}" placeholder="e.g., Read More, Learn More, Explore">
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Button Link') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="URL the button redirects to">
+                                        {{ __('Button Link') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" name="popup_btn_link" class="form-control" value="{{ setting('popup_btn_link', 'popup') }}" placeholder="e.g., https://example.com">
                             </div>
                             <div class="input-area">

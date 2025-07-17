@@ -34,16 +34,31 @@
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Close Date') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the close date">
+                                            {{ __('Close Date') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input type="text" class="form-control flatpickr flatpickr-input">
                                 </div>
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Deal Stage') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the deal stage">
+                                            {{ __('Deal Stage') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input type="text" id="dealStageInput" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Remark') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the remark">
+                                        {{ __('Remark') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <textarea name="details" rows="5" class="form-control block w-full bg-transparent dark:text-white resize-none"></textarea>
                             </div>
                         </div>

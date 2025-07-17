@@ -183,7 +183,11 @@
             url = url.replace(':id', id);
             $.get(url, function (data) {
                 $('#kyc-action-data').append(data)
-                imagePreview()
+                imagePreview();
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             })
 
 

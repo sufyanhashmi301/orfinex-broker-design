@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="changeAccountPass" tabindex="-1" aria-labelledby="changeAccountPass" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
@@ -19,12 +19,16 @@
                         <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-4">
+                <div class="p-6">
                     <form action="" method="post">
                         @csrf
-                        <input type="hidden" name="login" id="update-password-modal-login"
-                               class="form-control update-password-modal-login">
-                        <label class="form-label" for="">{{ __('Main Password:') }}</label>
+                        <input type="hidden" name="login" id="update-password-modal-login" class="form-control update-password-modal-login">
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Main login password for full access">
+                                {{ __('Main Password') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <div class="input-form-group">
                             <input type="password" class="form-control mb-1" name="nickname" id="update-main-password" placeholder="{{ __('Enter your password') }}">
                             <ul>
@@ -42,12 +46,18 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="action-btns mt-4">
+                        <div class="action-btns text-right mt-10">
                             <button type="button" class="btn btn-primary inline-flex items-center justify-center mr-2" id="submit-password" disabled>
-                                {{ __('Change Password') }}
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Change Password') }}
+                                </span>
                             </button>
-                            <a href="#" class="btn btn-outline-dark inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
-                                {{ __('Close') }}
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Close') }}
+                                </span>
                             </a>
                         </div>
                     </form>

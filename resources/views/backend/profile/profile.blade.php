@@ -84,8 +84,11 @@
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('First Name:') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's given name">
+                                        {{ __('First Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <input
                                     type="text"
@@ -98,8 +101,11 @@
                             </div>
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('Last Name:') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's family name">
+                                        {{ __('Last Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <input
                                     type="text"
@@ -113,8 +119,11 @@
                             </div>
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
-                                    {{ __('Nick Name:') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Role or display name in the system">
+                                        {{ __('Nick Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <input
                                     type="text"
@@ -127,8 +136,11 @@
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __('Email:') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's email (not editable)">
+                                        {{ __('Email') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <input
                                     type="email"
@@ -200,12 +212,22 @@
                     <div class="card-body p-6">
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's birth date">
+                                        {{ __('Date Of Birth') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" name="date_of_birth" class="form-control dateOfBirth" placeholder="2006-12-19" readonly>
                             </div>
 
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Gender:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select user's gender">
+                                        {{ __('Gender') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="status" class="select2 form-control w-full">
                                     <option value="male" @selected($staff->gender === 'male')>{{ __('Male') }}</option>
                                     <option value="female" @selected($staff->gender === 'female')>{{ __('Female') }}</option>
@@ -213,7 +235,12 @@
                                 </select>
                             </div>
                             <div class="input-area phone-input-wrapper">
-                                <label for="" class="form-label">{{ __('Work Phone Number:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's business contact number">
+                                        {{ __('Work Phone Number') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="tel"
                                     name="work_phone"
@@ -224,7 +251,12 @@
                                 >
                             </div>
                             <div class="input-area phone-input-wrapper">
-                                <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's personal mobile number">
+                                        {{ __('Personal Phone Number') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="tel"
                                     name="phone"
@@ -235,7 +267,12 @@
                                 >
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Marital Status:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's current marital status">
+                                        {{ __('Marital Status') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="flex items-center space-x-7 flex-wrap pt-2">
                                     <div class="basicRadio">
                                         <label class="flex items-center cursor-pointer">

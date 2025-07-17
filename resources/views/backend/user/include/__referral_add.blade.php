@@ -4,7 +4,7 @@
     aria-labelledby="addReferralModal"
     aria-hidden="true"
 >
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative rounded-lg shadow">
                 <div class="flex items-center justify-between p-5">
@@ -19,17 +19,22 @@
                     </button>
                 </div>
                 <div class="modal-body p-6 pt-0">
-                    <form action="{{ route('admin.referral.direct.add') }}" method="post" class="space-y-5">
+                    <form action="{{ route('admin.referral.direct.add') }}" method="post">
                         @csrf
-
                         <input type="hidden" name="ref_id" value="{{$user->id}}">
                         <div class="input-area">
-                            <label class="block capitalize form-label">{{ __('Select User*') }}</label>
+                            <label class="block capitalize form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select a user to add as a referral">
+                                    {{ __('Select User') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
+                            </label>
                             <div class="relative ">
                                 <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2" data-placeholder="Select User"></select>
                             </div>
                         </div>
-                        <div class="action-btns text-right">
+                        <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"></iconify-icon>
                                 {{ __('Add Referral') }}

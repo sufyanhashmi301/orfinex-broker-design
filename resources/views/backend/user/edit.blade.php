@@ -45,7 +45,6 @@
             <!-- User Status Update End-->
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
-
                 <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
                     @can('customer-add-tag')
                     <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
@@ -53,7 +52,7 @@
                         {{ __('Add Tag') }}
                     </a>
                     @endcan
-                    <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                    <div class="flex space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                         <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
                         </a>

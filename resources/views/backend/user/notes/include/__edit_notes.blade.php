@@ -1,7 +1,7 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editNotesModal" tabindex="-1" aria-labelledby="editNotesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-            <div class="flex items-start justify-between gap-3 p-5">
+            <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-700">
                 <div>
                     <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
                         {{ __('Edit Note') }}
@@ -17,13 +17,18 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <div class="modal-body p-6 pt-0">
+            <div class="modal-body p-6">
                 <form id="edit-note-form" method="POST">
                     @csrf
                     @method('PUT')
-                    <div class="mb-3">
-                        <label for="edit_notes" class="form-label">{{ __('Note Description') }}</label>
-                        <textarea name="notes" class="form-control basicTinymce" id="edit_notes" rows="4" required></textarea>
+                    <div class="mb-5">
+                        <label for="edit_notes" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the note description">
+                                {{ __('Note Description') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
+                        <textarea name="notes" class="form-control basicTinymce" id="edit_notes" rows="6" required></textarea>
                         <!-- Error Display -->
                         <div class="text-danger">
                             @error('notes')
@@ -31,7 +36,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="action-btns text-right">
+                    <div class="action-btns text-right mt-10">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Update Note') }}

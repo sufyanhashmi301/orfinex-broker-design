@@ -96,9 +96,17 @@
                 <div class="lg:col-span-8 col-span-12">
                     <div class="card h-full">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Site Statistics') }}</h3>
+                            <h3 class="card-title">{{ __('Payment Statistics') }}</h3>
                             <div class="card-header-links">
-                                <input class="form-control !py-1" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
+                                <form id="transactions_statistics_filter" action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center gap-3">
+                                    <div class="input-area relative">
+                                        <input class="form-control flatpickr h-[32px] !py-1" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
+                                    </div>
+                                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                                        {{ __('Filter') }}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         <div class="card-body p-6">
@@ -109,7 +117,7 @@
                 <div class="lg:col-span-4 col-span-12">
                     <div class="card h-full">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Scheme Statistics') }}</h3>
+                            <h3 class="card-title">{{ __('Deposit Statistics') }}</h3>
                         </div>
                         <div class="card-body p-6">
                             <canvas id="schemeChart"></canvas>

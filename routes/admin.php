@@ -79,6 +79,7 @@ use App\Http\Controllers\Backend\DealController;
 use App\Http\Controllers\Backend\DealNoteController;
 use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
+use App\Http\Controllers\Backend\LeaderboardController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -666,6 +667,8 @@ Route::prefix('team')->group(function() {
         Route::resource('pipeline', LeadPipelineController::class);
         Route::get('pipeline-status-update/{statusId}', [LeadPipelineController::class, 'statusUpdate'])->name('pipeline.statusUpdate');
     });
+
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
     Route::group(['prefix' => 'deal', 'as' => 'deal.', 'controller' => DealController::class], function () {
         Route::get('/', 'index')->name('index');

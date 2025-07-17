@@ -122,7 +122,8 @@ class Transaction extends Model
     {
         return $this->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::ManualDeposit)
-                ->orWhere('type', TxnType::Deposit);
+                ->orWhere('type', TxnType::Deposit)
+                ->orWhere('type', TxnType::VoucherDeposit);
         });
     }
 
@@ -163,6 +164,13 @@ class Transaction extends Model
                 ->where('target_type', 'deposit')
                 ->where('type', TxnType::Referral);
         })->sum('amount');
+    }
+
+    public function totalDemoDeposit()
+    {
+        return $this->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::DemoDeposit);
+        });
     }
 
     public function totalInvestBonus()

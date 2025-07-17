@@ -290,7 +290,9 @@ class SendMoneyController extends Controller
             'TransactionComments' => $comment
         ];
         $withdrawResponse = $api->balanceOperation($withdrawData);
-        if (!$withdrawResponse['success'] || $withdrawResponse['result']['responseCode'] != 10009) {
+        if (!$withdrawResponse['success'] || 
+                !($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            ) {
             throw new \Exception(__('Forex Deduction Failed'));
         }
 
@@ -302,7 +304,9 @@ class SendMoneyController extends Controller
             'TransactionComments' => $comment
         ];
         $depositResponse = $api->balanceOperation($depositData);
-        if (!$depositResponse['success'] || $depositResponse['result']['responseCode'] != 10009) {
+        if (!$depositResponse['success'] || 
+                !($depositResponse['result']['responseCode'] == 10009 || $depositResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            ) {
             throw new \Exception(__('Forex Deposit Failed'));
         }
     }
@@ -345,7 +349,9 @@ class SendMoneyController extends Controller
             $depositResponse = $this->forexApiService->balanceOperation($depositData);
 //dd($depositResponse);
             // Check if the Forex deposit operation was successful
-            if (!$depositResponse['success'] || $depositResponse['result']['responseCode'] != 10009) {
+            if (!$depositResponse['success'] || 
+                !($depositResponse['result']['responseCode'] == 10009 || $depositResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            ) {
                 $responseMessage = $depositResponse['messages'][0] ?? __('Forex Deposit Failed');
                 throw new \Exception(__('Forex Deposit Failed: ') . $responseMessage);
             }

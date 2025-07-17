@@ -882,7 +882,9 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                     ];
                     $response = $this->forexApiService->balanceOperation($data);
 
-                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                    if (!($response['success'] && 
+                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            )) {
                         throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
 
@@ -902,7 +904,9 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                     ];
                     $response = $this->forexApiService->balanceOperation($data);
 
-                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                    if (!($response['success'] && 
+                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            )) {
                         throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }

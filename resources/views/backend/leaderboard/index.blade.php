@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Leaderboard') }}
+    {{ __('IB Leaderboard') }}
 @endsection
 @section('content')
     <div class="pageTitle flex flex-col justify-between sm:flex-row gap-3 mb-6">

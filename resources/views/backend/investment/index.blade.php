@@ -343,17 +343,17 @@
 
         })(jQuery);
         $(document).ready(function() {
-                    $('.filter-toggle-btn').click(function() {
-                        const $content = $('#filters_div');
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
 
-                        if ($content.hasClass('hidden')) {
-                            $content.removeClass('hidden').slideDown();
-                        } else {
-                            $content.slideUp(function() {
-                                $content.addClass('hidden');
-                            });
-                        }
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
                     });
-                });
+                }
+            });
+        });
     </script>
 @endsection

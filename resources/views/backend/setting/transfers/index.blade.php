@@ -23,19 +23,34 @@
                 @if($section == 'transfer_internal')
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Min Amount:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum value a user can transfer internally">
+                                    {{ __('Min Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="text" class="form-control" name="internal_min_send" value="{{ oldSetting('internal_min_send','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Max Amount:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The maximum value allowed for a single internal transfer">
+                                    {{ __('Max Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="number" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Fee applied on each transfer (in % or fixed amount)">
+                                    {{ __('Transfer Charge') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="relative">
                                 <input type="number" class="form-control" value="{{ oldSetting('internal_send_charge','global') }}" name="internal_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
@@ -52,7 +67,12 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Internal transactions daily limit') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Maximum number of internal transfers allowed per user per day">
+                                    {{ __('Internal transactions daily limit') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="number" class="form-control" name="internal_send_daily_limit" value="{{ oldSetting('internal_send_daily_limit','transfer_internal') }}">
                         </div>
                     </div>
@@ -67,7 +87,10 @@
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Enable Transfer') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate internal transfer functionality">
+                                        {{ __('Enable Transfer') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -77,19 +100,34 @@
 
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Min Amount:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Minimum value allowed for an external transfer">
+                                    {{ __('Min Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="number" class="form-control" name="external_min_send" value="{{ oldSetting('external_min_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Max Amount:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Maximum amount a user can send via external transfer">
+                                    {{ __('Max Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="number" class="form-control" name="external_max_send" value="{{ oldSetting('external_max_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Fee for each transfer (percentage or fixed)">
+                                    {{ __('Transfer Charge') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="relative">
                                 <input type="number" class="form-control" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
@@ -106,7 +144,12 @@
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('External transactions daily limit') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Max number of external transfers allowed per user daily">
+                                    {{ __('External transactions daily limit') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="number" class="form-control" name="external_send_daily_limit" value="{{ oldSetting('external_send_daily_limit','transfer_external') }}">
                         </div>
                     </div>
@@ -121,7 +164,10 @@
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Enable Transfer') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate the external transfer module">
+                                        {{ __('Enable Transfer') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -137,7 +183,10 @@
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Automatic Approve') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="If enabled, transfer requests are approved automatically without manual review">
+                                        {{ __('Automatic Approve') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -153,7 +202,10 @@
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Transfer Purpose') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="When enabled, users must provide a reason for the transfer">
+                                        {{ __('Transfer Purpose') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -217,7 +269,7 @@
                 @endif
             </div>
             @can('transfers-action')
-            @include('backend.setting.site_setting.include.form.__close_action')
+                @include('backend.setting.site_setting.include.form.__close_action')
             @endcan
 
         </div>

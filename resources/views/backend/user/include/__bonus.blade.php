@@ -1,12 +1,17 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
     id="addSubBonus" tabindex="-1" aria-labelledby="addSubBonusModalLabel" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div
             class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
-                <h3 class="text-xl font-medium dark:text-white capitalize" id="addSubBonusLabel">
-                    {{ __('Bonus Add or Subtract') }}
-                </h3>
+                <div>
+                    <h3 class="text-xl font-medium dark:text-white capitalize" id="addSubBonusLabel">
+                        {{ __('Bonus Add or Subtract') }}
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        {{ __('Add or subtract bonus from the user') }}
+                    </p>
+                </div>
                 <button type="button"
                     class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
                             dark:hover:bg-slate-600 dark:hover:text-white"
@@ -20,73 +25,80 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.bonus.add', $user->id) }}" method="post" class="space-y-5" id="bonus-form">
+            <div class="modal-body p-6">
+                <form action="{{ route('admin.bonus.add', $user->id) }}" method="post" id="bonus-form">
                     @csrf
                     <input type="hidden" name="target_type" id="selectedAccountType_bonus" value="">
+                    <div class="space-y-5">
+                        <div class="input-area">
+                            <div class="switch-field flex overflow-hidden">
+                                <input type="radio" id="bonus-type" name="bonus_type" value="add" checked />
+                                <label for="bonus-type" class="dark:text-white">{{ __('Add') }}</label>
+                                <input type="radio" id="bonus-type2" name="bonus_type" value="subtract" />
+                                <label for="bonus-type2" class="dark:text-white">{{ __('Subtract') }}</label>
+                            </div>
+                        </div>
 
-                    <div class="input-area">
-                        <div class="switch-field flex overflow-hidden">
-                            <input type="radio" id="bonus-type" name="bonus_type" value="add" checked />
-                            <label for="bonus-type" class="dark:text-white">{{ __('Add') }}</label>
-                            <input type="radio" id="bonus-type2" name="bonus_type" value="subtract" />
-                            <label for="bonus-type2" class="dark:text-white">{{ __('Subtract') }}</label>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account to add or subtract bonus from">
+                                    {{ __('Select Account') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <select class="select2 form-control w-100" name="target_id" id="tradingAccount_bonus">
+                                <option value="">Select Account</option>
+                                @foreach ($realForexAccounts as $forexAccount)
+                                    <option value="{{ $forexAccount->login }}" data-type="forex">
+                                        {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                        ({{ get_mt5_account_equity($forexAccount->login) }} {{ $forexAccount->currency }})
+                                    </option>
+                                @endforeach
+                                @if ($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
+                                    <option value="{{ $user->ib_login }}" data-type="forex" data-type="forex">
+                                        {{ $user->ib_login }}
+                                        - {{ __('IB') }} ({{ $user->ib_balance }} {{ $currency }})
+                                    </option>
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the amount to add or subtract from the account">
+                                    {{ __('Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <div class="joint-input relative">
+                                <span class="absolute text-sm left-0 top-1/2 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center px-2">
+                                    {{ setting('site_currency', 'global') }}
+                                </span>
+                                <input type="text" placeholder="Enter Amount" name="amount" oninput="this.value = validateDouble(this.value)" class="form-control !pl-12">
+                            </div>
+                        </div>
+
+                        <div class="input-area">
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a comment message for the transaction">
+                                    {{ __('Comment Message') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <textarea name="comment" class="form-control mb-0" placeholder="Comment Message" rows="6"></textarea>
                         </div>
                     </div>
-
-                    <div class="input-area">
-                        <select class="form-control w-100" name="target_id" id="tradingAccount_bonus">
-                            <option value="">Select Account</option>
-                            @foreach ($realForexAccounts as $forexAccount)
-                                <option value="{{ $forexAccount->login }}" data-type="forex">
-                                    {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                    ({{ get_mt5_account_equity($forexAccount->login) }} {{ $forexAccount->currency }})
-                                </option>
-                            @endforeach
-                            @if ($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
-                                <option value="{{ $user->ib_login }}" data-type="forex" data-type="forex">
-                                    {{ $user->ib_login }}
-                                    - {{ __('IB') }} ({{ $user->ib_balance }} {{ $currency }})
-                                </option>
-                            @endif
-                        </select>
-
-                    </div>
-
-
-                    {{-- Select Bonus --}}
-                    {{-- <div class="input-area">
-                        <select class="form-control w-100" name="bonus_id" id="">
-                            <option value="">Select Bonus</option>
-                            @foreach ($bonuses as $bonus)
-                                <option value="{{ $bonus->id }}" >{{ $bonus->bonus_name }} (Type: {{ $bonus->type == 'fixed' ? 'Amount' : 'Percentage' }})</option>
-                            @endforeach
-                        </select>
-
-                    </div> --}}
-                    {{-- Select Bonus --}}
-
-                    <div class="input-area">
-                        <div class="joint-input relative">
-                            <span class="absolute text-sm left-0 top-1/2 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center px-2">
-                                {{ setting('site_currency', 'global') }}
-                            </span>
-                            <input type="text" placeholder="Enter Amount" name="amount" oninput="this.value = validateDouble(this.value)" class="form-control !pl-12">
-                        </div>
-                    </div>
-
-                    <div class="input-area">
-                        <label for="" class="form-label">{{ __('Comment Message') }}</label>
-                        <textarea name="comment" class="form-control mb-0" placeholder="Comment Message" rows="6"></textarea>
-                    </div>
-
-                    <div class="input-area text-right">
-
+                    <div class="input-area text-right mt-10">
                         <button type="submit" class="btn bonus-apply-now btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Apply Now') }}
                         </button>
-
+                        <a href="#" data-bs-dismiss="modal" class="btn inline-flex justify-center btn-danger">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </span>
+                        </a>
                         <style>
                             .bonus-apply-now:disabled {
                                 opacity: 0.6;

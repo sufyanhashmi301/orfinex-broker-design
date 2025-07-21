@@ -43,31 +43,46 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-5">
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Database Host') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The IP address or domain where the database server is hosted (e.g., 127.0.0.1 for localhost)">
+                                {{ __('Database Host') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input type="text" name="database_host" class=" form-control " value="{{ setting('database_host','mt5_db_credentials') }}" placeholder="Database Host">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Database Port') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Port number used to connect to the selected database type (e.g., 3306 for MySQL)">
+                                {{ __('Database Port') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input type="text" name="database_port" class=" form-control " value="{{ setting('database_port','mt5_db_credentials') }}" placeholder="3306">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Database Name') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The name of the specific database to sync data with">
+                                {{ __('Database Name') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input type="text" name="database_name" class=" form-control " value="{{ setting('database_name','mt5_db_credentials') }}" placeholder="Database Name">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Database Username') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Username credential used to authenticate database access">
+                                {{ __('Database Username') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input type="text" name="database_username" class=" form-control " value="{{ setting('database_username','mt5_db_credentials') }}" placeholder="Database Username">
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Database Password') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Password for the above database username">
+                                {{ __('Database Password') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input type="password" name="database_password" class=" form-control " value="{{ setting('database_password','mt5_db_credentials') }}" placeholder="********">
                     </div>

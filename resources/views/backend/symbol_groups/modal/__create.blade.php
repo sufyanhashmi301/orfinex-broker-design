@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="symbolGroupModal" tabindex="-1" aria-labelledby="symbolGroupModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between gap-3 p-5">
@@ -23,19 +23,27 @@
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Symbol Group:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the symbol group">
+                                        {{ __('Symbol Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="text"
                                     name="name"
                                     class="form-control mb-0"
-                                    placeholder="New York"
+                                    placeholder="Symbol Group"
 
                                 />
                                 <div class="invalid-feedback" id="name-error" style="display: none;"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">
-                                    {{ __('Select Symbols') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose one or more symbols to include">
+                                        {{ __('Select Symbols') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <select name="symbols[]" class="select2 form-control w-full" multiple="multiple">
                                     @foreach($symbols as $symbol)

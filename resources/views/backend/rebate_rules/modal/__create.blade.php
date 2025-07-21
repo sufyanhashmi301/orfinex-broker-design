@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addRebateRuleModal" tabindex="-1" aria-labelledby="addRebateRuleModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between gap-3 p-5">
@@ -22,7 +22,12 @@
                             @csrf
                             <div class="space-y-5">
                                 <div class="input-area relative">
-                                    <label for="" class="form-label">{{ __('Title:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the rebate rule">
+                                            {{ __('Title') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input
                                         type="text"
                                         name="title"
@@ -35,7 +40,10 @@
 
                                 <div class="input-area relative">
                                     <label for="" class="form-label">
-                                        {{ __('Select Symbol Groups') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the symbol groups this rule applies to">
+                                            {{ __('Select Symbol Groups') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <select name="symbol_groups[]" class="select2 form-control w-full" multiple="multiple">
 
@@ -43,7 +51,12 @@
                                     <div class="invalid-feedback" id="symbol-groups-error" style="display: none;"></div>
                                 </div>
                                 <div class="input-area relative">
-                                    <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
+                                    <label for="forex_schemas" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account types eligible for rebate">
+                                            {{ __('Select Account Types') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
                                         @foreach($forexSchemas as $id => $title)
                                             <option value="{{ $id }}">{{ $title }}</option>
@@ -63,7 +76,12 @@
     {{--                            </div>--}}
 
                                 <div class="input-area relative">
-                                    <label for="" class="form-label">{{ __('Rule Type:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose how the rebate is calculated">
+                                            {{ __('Rule Type') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <select name="rule_type_id" class="form-control">
                                         <option value="">----</option>
                                         <option value="1">Per Lot</option>
@@ -71,7 +89,12 @@
                                     <div class="invalid-feedback" id="rule-type-id-error" style="display: none;"></div>
                                 </div>
                                 <div class="input-area relative">
-                                    <label for="" class="form-label">{{ __('Rebate Amount:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set the amount to rebate">
+                                            {{ __('Rebate Amount') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input
                                         type="text"
                                         name="rebate_amount"
@@ -82,7 +105,12 @@
                                     <div class="invalid-feedback" id="rebate-amount-error" style="display: none;"></div>
                                 </div>
                                 <div class="input-area relative">
-                                    <label for="" class="form-label">{{ __('Per Lot:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Number of lots the rebate applies to">
+                                            {{ __('Per Lot') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input
                                         type="text"
                                         name="per_lot"
@@ -95,7 +123,10 @@
                                 <div class="input-area relative">
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <label class="form-label !w-auto pt-0">
-                                            {{ __('Status:') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this rule">
+                                                {{ __('Status') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="form-switch ps-0">
                                             <input type="hidden" value="0" name="status">

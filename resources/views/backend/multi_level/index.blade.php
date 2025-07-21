@@ -14,7 +14,10 @@
                 <div class="h-full">
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Platform Group (Default)') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group (Default)">
+                                {{ __('Platform Group (Default)') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <input
                             type="text"
@@ -30,7 +33,10 @@
                 <div class="h-full space-y-5">
                     <div class="input-area relative">
                         <label for="" class="form-label">
-                            {{ __('Trading Server (Live) ') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server (Live)">
+                                {{ __('Trading Server (Live) ') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <select name="" class="select2 form-control w-full">
                             <option value="{{ setting('live_server','platform_api') }}">{{ setting('live_server','platform_api') }}</option>
@@ -51,13 +57,21 @@
                                 </label>
                             </div>
                             <label class="form-label !w-auto pt-0 !mb-0">
-                                {{ __('Enable Separate Swap-Free (Islamic)') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The enable separate swap-free (Islamic)">
+                                    {{ __('Enable Separate Swap-Free (Islamic)') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                         </div>
                     </div>
                     <div id="live-islamic-group" class="@if(!$schema->is_real_islamic) hidden @endif">
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Platform Group - Swap Free') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group - swap free">
+                                    {{ __('Platform Group - Swap Free') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 name="real_islamic"
@@ -76,7 +90,10 @@
         <div>
             <div class="flex justify-between flex-wrap items-center mb-5">
                 <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-                    {{ __('Swap Based Accounts') }}
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The swap based accounts">
+                        {{ __('Swap Based Accounts') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
                 </h4>
                 <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                     <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addSwapBasedLevelModal">
@@ -244,6 +261,10 @@
                     $('#editSwapBasedModal').modal('show');
                     $('#edit-swap-based-body').append(data);
                     $('.select2').select2();
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
                 });
             })
             $('body').on('click', '.deleteSwapBased', function (event) {

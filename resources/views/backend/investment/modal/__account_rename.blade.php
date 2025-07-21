@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="accountRename" tabindex="-1" aria-labelledby="accountRename" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
@@ -19,21 +19,34 @@
                         <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-4">
+                <div class="p-6">
                     <input type="hidden" name="login" id="update-name-modal-login"  class="form-control update-name-modal-login"  >
                     <form action="" method="post">
                         @csrf
-                        <label class="form-label" for="">{{ __('New nickname:') }}</label>
-                        <div class="input-form-group">
-                            <input type="text" class="form-control" name="nickname" id="update-name-modal-name" >
-                            <small class="dark:text-slate-300 mt-1">{{ __('The name you want to update to remember.') }}</small>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the new nickname for this account.">
+                                    {{ __('New nickname:') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <div class="input-form-group">
+                                <input type="text" class="form-control" name="nickname" id="update-name-modal-name" >
+                                <small class="dark:text-slate-300 mt-1">{{ __('The name you want to update to remember.') }}</small>
+                            </div>
                         </div>
-                        <div class="action-btns mt-4">
+                        <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-primary inline-flex items-center justify-center mr-2" id="submit-name">
-                                {{ __('Rename Account') }}
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Rename Account') }}
+                                </span>
                             </button>
-                            <a href="#" class="btn btn-outline-dark inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
-                                {{ __('Close') }}
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Close') }}
+                                </span>
                             </a>
                         </div>
                         <div class="divider border-b dark:border-slate-700 my-5"></div>

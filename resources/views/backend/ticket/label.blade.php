@@ -102,6 +102,10 @@
 
                     $('#editLabelModal').modal('show');
                     $('#edit-label-body').append(data);
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
 
                 })
             })

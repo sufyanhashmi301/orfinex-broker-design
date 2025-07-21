@@ -25,28 +25,48 @@
                     <div class="grid grid-cols-12 gap-5">
                         <div class="col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Bonus Name:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Title to identify the bonus (e.g., '$200 on first deposit')">
+                                        {{ __('Bonus Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" class="form-control" name="bonus_name" id="" placeholder="$200 on first desposit" value="{{ old('bonus_name', $bonus->bonus_name ?? '') }}">
                                 <small><span class="" style="color: red;">{{ $errors->first('bonus_name') }}</span></small>
                             </div>
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Start Date:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Define the active date range of the bonus">
+                                        {{ __('Start Date') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="date" class="form-control" name="start_date" id="" value="{{ old('start_date', $bonus->start_date ?? '') }}">
                                 <small><span class="" style="color: red;">{{ $errors->first('start_date') }}</span></small>
                             </div>
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Last Date:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Define the active date range of the bonus">
+                                        {{ __('Last Date') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="date" class="form-control" name="last_date" id="" value="{{ old('last_date', $bonus->last_date ?? '') }}">
                                 <small><span class="" style="color: red;">{{ $errors->first('last_date') }}</span></small>
                             </div>
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Type:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose whether the bonus is in percentage or fixed value">
+                                        {{ __('Type') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="type" class="form-control w-100" id="bonus-type">
                                     <option value="percentage" {{ old('type', $bonus->type ?? '' ) == 'percentage' ? 'selected' : '' }}>In Percentage</option>
                                     <option value="fixed" {{ old('type', $bonus->type ?? '') == 'fixed' ? 'selected' : '' }}>In Amount</option>
@@ -56,14 +76,24 @@
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="" id="bonus-type-value-label">{{ __('Bonus Value:') }}</label>
+                                <label class="form-label" for="" id="bonus-type-value-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the amount or percentage of the bonus">
+                                        {{ __('Bonus Value') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" class="form-control" name="amount" id="" value="{{ old('amount', $bonus->amount ?? '') }}">
                             </div>
                             <small><span class="" style="color: red;">{{ $errors->first('amount') }}</span></small>
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Process:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="When the bonus is applied (e.g., on deposit)">
+                                        {{ __('Process') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="process" class="form-control w-100" id="process">
                                     <option value="deposit" {{ old('process', $bonus->process ?? '') == 'deposit' ? 'selected' : '' }}>On Deposit</option>
                                     <option value="birthday" {{ old('process', $bonus->process ?? '') == 'birthday' ? 'selected' : '' }}>On Birthday (Soon)</option>
@@ -74,7 +104,12 @@
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Applicable by:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set whether users get the bonus automatically or manually">
+                                        {{ __('Applicable by') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="applicable_by" class="form-control w-100" id="applicable_by">
                                     <option value="auto" {{ old('applicable_by', $bonus->applicable_by ?? '') == 'auto' ? 'selected' : '' }}>Auto Apply</option>
                                     <option value="client" {{ old('applicable_by', $bonus->applicable_by ?? '') == 'client' ? 'selected' : '' }}>Client Apply</option>
@@ -86,7 +121,12 @@
 
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Bonus Removal:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select how the bonus should be removed (if needed)">
+                                        {{ __('Bonus Removal') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="bonus_removal_type" class="form-control w-100" id="bonus-removal-type-value">
                                     <option value="percentage" {{ old('bonus_removal_type', $bonus->bonus_removal_type ?? '') == 'percentage' ? 'selected' : '' }}>In Percentage</option>
                                     <option value="amount" {{ old('bonus_removal_type', $bonus->bonus_removal_type ?? '') == 'amount' ? 'selected' : '' }}>In Amount</option>
@@ -98,7 +138,12 @@
 
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="" id="bonus-removal-type-value-label">{{ __('Bonus Removal Value:') }}</label>
+                                <label class="form-label" for="" id="bonus-removal-type-value-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Amount or percentage to deduct when removing the bonus">
+                                        {{ __('Bonus Removal Value') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input {{ old('bonus_removal_type', $bonus->bonus_removal ?? '') == 'full_bonus' ? 'readonly' : '' }} type="text" class="form-control bonus_removal_amount" name="bonus_removal_amount"  id="" value="{{ old('bonus_removal_amount', $bonus->bonus_removal_amount ?? '') }}">
                             </div>
                             <small><span class="" style="color: red;">{{ $errors->first('bonus_removal_amount') }}</span></small>
@@ -107,7 +152,12 @@
                         {{-- Account Types: Currently getting forex accounts only --}}
                         <div class="lg:col-span-12 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select Forex Account Types:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose which trading account types are eligible">
+                                        {{ __('Select Forex Account Types') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="forex_account_types[]" class="select2 update-disabled form-control w-100 h-9" multiple>
                                     @foreach($forex_account_types as $type)
                                         <option value="{{ $type->id }}"
@@ -124,7 +174,12 @@
 
                         <div class="col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Description:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Detailed explanation or terms of the bonus">
+                                        {{ __('Description') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <textarea class="form-control summernote" rows="6">{{ old('description', $bonus->description ?? '') }}</textarea>
                                 <input type="hidden" name="description">
                             </div>
@@ -132,14 +187,24 @@
                         </div>
                         <div class="col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Terms & Condition Link:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="URL linking to the detailed bonus terms">
+                                        {{ __('Terms & Condition Link') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="url" name="terms_link" class="form-control" value="{{ old('terms_link', $bonus->terms_link ?? '') }}">
                             </div>
                             <small><span class="" style="color: red;">{{ $errors->first('terms_link') }}</span></small>
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('KYC Verified Upto:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Minimum KYC level required to receive the bonus">
+                                        {{ __('KYC Verified Upto') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="kyc_slug" class="form-control w-full">
                                     @foreach ($kyc_levels as $kyc_level)
                                         <option value="{{ $kyc_level->slug }}" {{ old('kyc_slug') == $kyc_level->slug ? 'selected' : (isset($bonus) && $bonus->kyc_slug == $kyc_level->slug ? 'selected' : ($kyc_level->slug == 'level1' ? 'selected' : '')) }}>
@@ -152,7 +217,12 @@
                         </div>
                         <div class="lg:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Deposit Terms:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Specify when the bonus applies (e.g., on first or every deposit)">
+                                        {{ __('Deposit Terms') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="first_or_every_deposit" class="form-control w-full">
                                     <option value="first" {{ old('first_or_every_deposit', $bonus->first_or_every_deposit ?? 'first') == 'first' ? 'selected' : '' }}>
                                         {{ __('On First Deposit') }}
@@ -168,7 +238,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
-                                        {{ __('Status:') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable the bonus">
+                                            {{ __('Status') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
                                         <input class="form-check-input" type="hidden" value="0" name="status"/>

@@ -14,14 +14,24 @@
                 <form action="{{ route('admin.mail.send.subscriber.now') }}" method="post" class="space-y-5">
                     @csrf
                     <div class="input-area">
-                        <label for="" class="form-label">{{ __('Subject:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the subject of the email">
+                                {{ __('Subject') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" name="subject" class="form-control mb-0" />
                         @error('subject')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label for="" class="form-label">{{ __('Email Details') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the full message you want to send">
+                                {{ __('Email Details') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <textarea class="form-control summernote" rows="6"></textarea>
                         <input type="hidden" name="message">
                         @error('message')

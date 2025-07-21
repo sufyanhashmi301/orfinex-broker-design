@@ -3,13 +3,21 @@
     @csrf
     <div class="space-y-5">
         <div class="input-area">
-            <label class="form-label" for="">{{ __('Type Title:') }}</label>
+            <label class="form-label" for="">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content='Enter the name of the ticket type (e.g., "Bug", "Feature Request", "General Query")'>
+                    {{ __('Type Title') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input type="text" name="name" value="{{ old('name', $label->name) }}" class="form-control" required/>
         </div>
         <div class="input-area">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0 !mb-0">
-                    {{ __('Visible') }}
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to show or hide this ticket type in the user-facing interface">
+                        {{ __('Visible') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
                 </label>
                 <div class="form-switch ps-0" style="line-height:0;">
                     <input type="hidden" value="0" name="is_visible">

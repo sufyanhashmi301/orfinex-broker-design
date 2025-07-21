@@ -20,50 +20,65 @@
                 @method('PUT')
                 @csrf
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Name:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the full name of the language to be added (e.g., English, Spanish, French)">
+                            {{ __('Language Name') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
+                    </label>
                     <div class="md:col-span-9 col-span-12">
                         <input type="text" class="form-control" required name="name" @if($language->locale == 'en') readonly @endif
                         value="{{ $language->name }}"/>
                     </div>
                 </div>
                 <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Code:') }}</label>
+                    <label for="" class="md:col-span-3 col-span-12 form-label">
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Provide the ISO 639-1 language code (e.g., en for English, es for Spanish)">
+                            {{ __('Language Code') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
+                    </label>
                     <div class="md:col-span-9 col-span-12">
                         <input type="text" class="form-control" name="code" value="{{ $language->locale }}" @if($language->locale == 'en') readonly @endif
                         placeholder="Eg: en" required/>
-                    </div>
-                </div>
 
-                <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Default Language:') }}</label>
-                    <div class="md:col-span-9 col-span-12">
-                        <div class="input-area">
-                            <div class="form-switch ps-0">
-                                <input type="hidden" value="0" name="is_default">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="is_default" value="1" class="sr-only peer" @if($language->is_default) checked @endif>
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-5 mt-6">
+                            <div class="flex items-center space-x-7 flex-wrap">
+                                <label class="form-label !w-auto pt-0">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle this on if this should be the system’s default language for all users">
+                                        {{ __('Default Language') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="is_default">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="is_default" value="1" class="sr-only peer" @if($language->is_default) checked @endif>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-7 flex-wrap">
+                                <label class="form-label !w-auto pt-0">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this language in the application">
+                                        {{ __('Language Status') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="status">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="status" value="1" class="sr-only peer" @if($language->status) checked @endif>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="input-area grid grid-cols-12 gap-5">
-                    <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Status:') }}</label>
-                    <div class="md:col-span-9 col-span-12">
-                        <div class="input-area">
-                            <div class="form-switch ps-0">
-                                <input type="hidden" value="0" name="status">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="status" value="1" class="sr-only peer" @if($language->status) checked @endif>
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-right">
+                <div class="text-right mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Update Language') }}
                     </button>
                 </div>

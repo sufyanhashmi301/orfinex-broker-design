@@ -2,7 +2,12 @@
     @csrf
     <div class="space-y-5">
         <div class="input-area !mt-0">
-            <label for="" class="form-label">{{ __('Assign To:') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the agent for this ticket">
+                    {{ __('Assign To') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <select name="assigned_to" id="assigned_to_select" class="form-control">
                 @foreach($staff as $staff)
                     <option

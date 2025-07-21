@@ -146,7 +146,12 @@
             <div class="card-body p-6 pt-0">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="input-area">
-                        <label class="form-label">{{ __('Active Trader Type') }}</label>
+                        <label class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The active trader type">
+                                {{ __('Active Trader Type') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="trader_type"
@@ -160,7 +165,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Title:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The title of the account type">
+                                {{ __('Title') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="title"
@@ -172,7 +182,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type badge">
+                                {{ __('Account Type Badge') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             class="form-control"
@@ -181,7 +196,12 @@
                         />
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Priority:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The priority of the account type">
+                                {{ __('Priority') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="priority"
@@ -194,7 +214,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account creation limit of the account type">
+                                {{ __('Account Creation Limit') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="account_limit"
@@ -208,7 +233,12 @@
                         @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range Start(Min 5 digits):') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The range start of the account type (Min 5 digits)">
+                                {{ __('Range Start') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="start_range"
@@ -222,7 +252,12 @@
                         @enderror
                     </div>
                     <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
-                        <label class="form-label" for="">{{ __('Range End(Min 5 digits):') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The range end of the account type (Min 5 digits)">
+                                {{ __('Range End') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="end_range"
@@ -245,7 +280,12 @@
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Type Spread:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type spread">
+                                {{ __('Account Type Spread') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             class="form-control keyFeatureInput"
@@ -257,7 +297,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type commission">
+                                {{ __('Account Type Commission') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             class="form-control"
@@ -269,7 +314,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Leverage:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The leverage of the account type">
+                                {{ __('Leverage') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="leverage"
@@ -281,7 +331,12 @@
                         @enderror
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The first minimum deposit of the account type">
+                                {{ __('First Min Deposit') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="first_min_deposit"
@@ -292,7 +347,12 @@
                         />
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum amount in wallet (On Creation)">
+                                {{ __('Min Amount in wallet') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="text"
                             name="min_amount"
@@ -318,7 +378,12 @@
                     <div class="card-body p-6 space-y-5">
                         @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                        {{ __('Platform Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
                                     <option value="">{{ __('Select Group')}}</option>
                                     @foreach(\App\Models\PlatformGroup::all() as $group)
@@ -331,7 +396,12 @@
                             </div>
                         @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                             <div class="input-area">
-                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                        {{ __('Platform Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="real_swap_free" class="select2 form-control w-full">
                                     <option
                                         value="" >
@@ -400,7 +470,12 @@
                                 </div>
                             @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                                 <div class="input-area">
-                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <label class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                            {{ __('Platform Group') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <select name="real_islamic" class="select2 form-control w-full">
                                         <option
                                             value="" >
@@ -422,14 +497,20 @@
                             @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                                 <div class="input-area relative">
                                     <label for="" class="form-label">
-                                        {{ __('Trading Server') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server">
+                                            {{ __('Trading Server') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('live_server','platform_api') }}" readonly>
                                 </div>
                             @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                                 <div class="input-area relative">
                                     <label for="" class="form-label">
-                                        {{ __('Trading Server') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server">
+                                            {{ __('Trading Server') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('x9_name','x9_api') }}" readonly>
                                 </div>
@@ -461,7 +542,12 @@
 {{--                        </div>--}}
                         @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                        {{ __('Platform Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
                                     <option value="">{{ __('Select Group')}}</option>
 
@@ -475,7 +561,12 @@
                             </div>
                         @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                             <div class="input-area">
-                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                        {{ __('Platform Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="demo_swap_free" class="select2 form-control w-full">
                                     <option
                                         value="" >
@@ -523,7 +614,12 @@
 {{--                            </div>--}}
                             @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                                 <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                    <label class="form-label" for="">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                            {{ __('Platform Group') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <select name="demo_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
                                         <option value="">{{ __('Select Group')}}</option>
 
@@ -537,7 +633,12 @@
                                 </div>
                             @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                                 <div class="input-area">
-                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <label class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                            {{ __('Platform Group') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <select name="demo_islamic" class="select2 form-control w-full">
                                         <option
                                             value="" >
@@ -559,32 +660,43 @@
                         @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
                             <div class="input-area relative">
                                 <label for="" class="form-label">
-                                    {{ __('Trading Server (Demo) ') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server (Demo)">
+                                        {{ __('Trading Server') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
                             </div>
                         @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
                             <div class="input-area relative">
                                 <label for="" class="form-label">
-                                    {{ __('Trading Server (Demo) ') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server (Demo)">
+                                        {{ __('Trading Server') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <input type="text" class="form-control" name="x9_name" placeholder="Trading Server Demo" value="{{ setting('x9_name','x9_api') }}" readonly>
                             </div>
                         @endif
- <div class="input-area mt-4">
-            <label class="form-label" for="">{{ __('Deposit Amount (For Demo):') }}</label>
-            <input
-                type="number"
-                step="0.01"
-                name="demo_deposit_amount"
-                class="form-control"
-                placeholder="Enter fixed deposit amount"
-            />
-            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo account.</span>
-            @error('demo_deposit_amount')
-                <span class="error">{{ $message }}</span>
-            @enderror
-        </div>
+                        <div class="input-area mt-4">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The deposit amount (For Demo)">
+                                    {{ __('Deposit Amount') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                name="demo_deposit_amount"
+                                class="form-control"
+                                placeholder="Enter fixed deposit amount"
+                            />
+                            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo account.</span>
+                            @error('demo_deposit_amount')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>
@@ -596,7 +708,12 @@
         <div class="card">
             <div class="card-body p-6">
                 <div class="input-area mb-5">
-                    <label for="" class="form-label">{{ __('Detail:') }}</label>
+                    <label for="" class="form-label">
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail of the account type">
+                            {{ __('Detail') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
+                    </label>
                     <div class="site-editor">
                         <textarea class="summernote"></textarea>
                     </div>
@@ -608,7 +725,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Withdraw') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The withdraw of the account type">
+                                            {{ __('Withdraw') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input
@@ -632,7 +752,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Internal Transfer') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The internal transfer of the account type">
+                                            {{ __('Internal Transfer') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input
@@ -656,7 +779,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('External Transfer') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The external transfer of the account type">
+                                            {{ __('External Transfer') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input
@@ -680,7 +806,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Cent Account') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The cent account of the account type">
+                                            {{ __('Cent Account') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input

@@ -25,14 +25,11 @@
                         {!! $template->message_body !!}
                     </div>
                     <div class="input-area grid grid-cols-12 gap-5">
-                        <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Message Body') }}
-                            <iconify-icon
-                                class="toolTip onTop"
-                                icon="lucide:info"
-                                data-tippy-theme="dark"
-                                title=""
-                                data-tippy-content="Write the main Messages here">
-                            </iconify-icon>
+                        <label for="" class="md:col-span-3 col-span-12 form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the main Messages here">
+                                {{ __('Message Body') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="md:col-span-9 col-span-12">
                             <textarea class="form-control summernote" cols="30" rows="8">
@@ -49,13 +46,10 @@
 
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label pt-0">
-                            {{ __('Template Status') }}
-                            <iconify-icon
-                                class="toolTip onTop"
-                                icon="lucide:info"
-                                data-tippy-theme="dark" title=""
-                                data-tippy-content="Template Status">
-                            </iconify-icon>
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this template">
+                                {{ __('Template Status') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="md:col-span-9 col-span-12">
                             <div class="input-area">
@@ -69,9 +63,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
+                    <div class="text-right mt-10">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                            {{ __('Save Changes') }}
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Save Changes') }}
+                            </span>
                         </button>
                     </div>
                 </form>

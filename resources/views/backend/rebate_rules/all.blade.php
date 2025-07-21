@@ -165,6 +165,10 @@
                      $('#edit_rebate_rule').html(response);
                      $('#editSymbolGroupModal').modal('show');
                      $('.select2').select2();
+                     tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
                  },
                  error: function(xhr, status, error) {
                      console.error(xhr.responseText);

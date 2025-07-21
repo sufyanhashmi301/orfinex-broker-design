@@ -97,6 +97,10 @@
             $.get(url, function (response) {
                 $('#editPlatformLinkModal').modal('show');
                 $('#edit-platform-body').append(response);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             });
         });
 

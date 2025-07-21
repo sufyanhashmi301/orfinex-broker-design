@@ -87,7 +87,7 @@
     <!-- Modal for Pending Deposit Approval -->
 {{--    @can('transaction-action')--}}
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
                         <div class="popup-body-text deposit-action">
@@ -159,7 +159,10 @@
                 $.get(url, function (data) {
                     $('.withdraw-action').append(data);
                     imagePreview();
-
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
                 })
                 $('#deposit-action-modal').modal('toggle');
 

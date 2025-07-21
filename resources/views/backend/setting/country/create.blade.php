@@ -24,9 +24,15 @@
                     @csrf
                     <div class="space-y-5">
                         <div class="formGroup">
-                            <label class="block capitalize form-label">{{ __('Select Country*') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select a country to blacklist">
+                                    {{ __('Select Country') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
+                            </label>
                             <div class="relative">
-                                <select name="name" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
+                                <select name="name" id="countrySelect" class="select2 form-control py-2 h-[48px] w-full mt-2">
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}"
                                                 class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
@@ -36,31 +42,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                {{ __('Add New') }}
-                            </button>
-                        </div>
+                    </div>
+                    <div class="text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Add New') }}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-@endsection
-@section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
-    <script>
-
-        (function ($) {
-            'use strict';
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:20
-        });
-
-        })(jQuery)
-    </script>
 @endsection

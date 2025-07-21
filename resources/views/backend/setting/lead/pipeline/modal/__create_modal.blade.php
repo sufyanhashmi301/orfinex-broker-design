@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="newPipelineModal" tabindex="-1" aria-labelledby="newPipelineModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between rounded-t p-5">
@@ -18,11 +18,21 @@
                         @csrf
                         <div class="space-y-4">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Name:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the pipeline (e.g., Sales, Onboarding)">
+                                        {{ __('Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" class="form-control" name="name" placeholder="Enter name" required>
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Label Color') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose a color to visually represent this pipeline">
+                                        {{ __('Label Color') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="color-input-group relative">
                                     <input type="" name="" class="form-control text-input" value="#000000">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">

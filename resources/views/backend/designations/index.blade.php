@@ -130,6 +130,10 @@
 
                 $('#editDesignationModal').modal('show');
                 $('#edit-designation-body').append(data);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
 
             })
         })

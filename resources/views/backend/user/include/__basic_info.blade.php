@@ -7,23 +7,37 @@
     @can('customer-edit')
     <div class="card">
         <div class="card-body p-5">
-            <form action="{{route('admin.user.update',$user->id)}}" method="post">
+            <form action="{{ route('admin.user.update',$user->id) }}" method="post">
                 @method('PUT')
                 @csrf
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('First Name:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's first name if needed">
+                                {{ __('First Name') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" value="{{$user->first_name}}"
                                name="first_name" required="">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Last Name:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's last name if needed">
+                                {{ __('Last Name') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" value="{{$user->last_name}}" required=""
                                name="last_name">
                     </div>
                     <div class="input-area relative">
-
-                        <label for="" class="form-label">{{ __('Country:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Change the country if the user has relocated">
+                                {{ __('Country') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <select class="select2 form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
@@ -32,66 +46,112 @@
                     </div>
 
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Phone:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Edit the user's phone number">
+                                {{ __('Phone') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Username:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Modify the username (used for login)">
+                                {{ __('Username') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" name="username" value="{{ safe($user->username) }}"
                                required="">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Email:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the email address for notifications and login">
+                                {{ __('Email') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="email" name="email" class="form-control" value="{{ safe($user->email) }}" >
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Gender:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Edit the gender selection">
+                                {{ __('Gender') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <select name="gender" class="select2 form-control w-full" required>
                             @foreach(['male','female','other'] as $gender)
                                 <option @if($user->gender == $gender) selected @endif value="{{$gender}}">{{$gender}}</option>
                             @endforeach
                         </select>
                     </div>
-{{--                    <div class="input-area">--}}
-{{--                        <label for="" class="form-label">{{ __('Gender:') }}</label>--}}
-{{--                        <input type="text" class="form-control" value="{{$user->gender}}" required=""--}}
-{{--                               >--}}
-{{--                    </div>--}}
-{{--                    <div class="input-area">--}}
-{{--                        <label for="" class="form-label">{{ __('Date of Birth:') }}</label>--}}
-{{--                        <input type="text"  name="date_of_birth" class="form-control" value="{{$user->date_of_birth}}" >--}}
-{{--                    </div>--}}
                     <div class="input-area relative">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('Date of Birth') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's date of birth">
+                                {{ __('Date of Birth') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="date" name="date_of_birth" class="form-control " value="{{safe($user->date_of_birth) }}">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('City:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's city">
+                                {{ __('City') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" name="city" class="form-control" value="{{safe($user->city)}}">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Zip Code:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's zip code">
+                                {{ __('Zip Code') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" name="zip_code" value="{{$user->zip_code}}">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Address:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's address">
+                                {{ __('Address') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" name="address" value="{{$user->address}}">
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Joining Date:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's joining date">
+                                {{ __('Joining Date') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control"
                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                required="" disabled>
                     </div>
                     @if($user->notes)
                         <div class="input-area relative lg:col-span-3">
-                            <label for="" class="form-label">{{ __('Notes:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's notes">
+                                    {{ __('Notes') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <textarea type="text"  name="notes" class="form-control"
                             > {{ $user->notes }}</textarea>
                         </div>
                     @endif
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Assign Group:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's group">
+                                {{ __('Assign Group') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <select name="group_id" class="form-control">
                             <option value="">Select</option>
                             @foreach($customerGroups as $group)
@@ -102,7 +162,12 @@
                         </select>
                     </div>
                     <div class="input-area relative">
-                        <label for="risk_profile_tags" class="form-label">{{ __('Risk Profile Tags:') }}</label>
+                        <label for="risk_profile_tags" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's risk profile tags">
+                                {{ __('Risk Profile Tags') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple="multiple" data-placeholder="Select Tags" id="riskProfileTagsSelect">
                             @foreach($riskProfileTags as $tag)
                                 <option value="{{ $tag->id }}"
@@ -115,17 +180,32 @@
                         </select>
                     </div>
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Lead Campaign:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's lead campaign">
+                                {{ __('Lead Campaign') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" name="lead_campaign" value="">
                     </div>
 
                     <div class="input-area relative">
-                        <label for="" class="form-label">{{ __('Lead Source:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's lead source">
+                                {{ __('Lead Source') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input type="text" class="form-control" name="lead_source" value="">
                     </div>
 
                     <div class="input-area relative lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Comment:') }}</label>
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Update the user's comment">
+                                {{ __('Comment') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <textarea type="text"  name="comment" class="form-control basicTinymce" rows="5"> {{ $user->comment }}</textarea>
                     </div>
                     @can('customer-overview-update')

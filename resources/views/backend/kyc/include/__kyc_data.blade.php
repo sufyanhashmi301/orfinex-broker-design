@@ -10,9 +10,9 @@
     </button>
 </div>
 <div class="p-6 pt-0">
-    <ul class="grid md:grid-cold-2 grid-cols-2 gap-5">
+    <ul class="grid md:grid-cold-2 grid-cols-2 gap-5 mb-5">
         @foreach( $kycCredential as $key => $value)
-            <li class="dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
+            <li class="dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 pb-3">
                 <span class="block mb-2">{{ $key }}:</span>
                 @if(file_exists('assets/'.$value))
                     <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 mb-2" style="background-image: url('{{ asset($value) }}')"></div>
@@ -24,15 +24,20 @@
             </li>
         @endforeach
     </ul>
-    <form action="{{ route('admin.kyc.action.now') }}" method="post" class="space-y-5">
+    <form action="{{ route('admin.kyc.action.now') }}" method="post">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Detail Message') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail message of the KYC">
+                    {{ __('Detail Message') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input type="text" name="message" class="form-control mb-0" placeholder="Details Message">
         </div>
     
-        <div class="action-btns text-right">
+        <div class="action-btns text-right mt-10">
             @if($kycStatus < \App\Enums\KYCStatus::Level2->value)
             <button type="submit" name="approve" value="1" class="btn btn-dark inline-flex items-center justify-center mr-2">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

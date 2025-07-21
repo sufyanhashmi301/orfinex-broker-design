@@ -1,8 +1,8 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.communication.index')
 @section('title')
-    {{ __('Edit Email Template') }}
+    {{ __('Edit Notification Template') }}
 @endsection
-@section('content')
+@section('communication-content')
     <div class="max-w-5xl mx-auto">
         <div class="flex justify-between flex-wrap items-center mb-6">
             <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -23,12 +23,10 @@
 
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Title') }}
-                            <iconify-icon class="toolTip onTop" icon="lucide:info"
-                                data-tippy-theme="dark"
-                                title="Leave it blank if you don't need the title"
-                                data-tippy-content="Leave it blank if you don't need the title">
-                            </iconify-icon>
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Leave it blank if you don't need the title">
+                                {{ __('Title') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="md:col-span-9 col-span-12">
                             <input type="text" name="title" class="form-control" value="{{ $template->title }}"
@@ -37,18 +35,16 @@
                     </div>
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Message Body') }}
-                            <iconify-icon class="toolTip onTop" icon="lucide:info"
-                                data-tippy-theme="dark"
-                                title=""
-                                data-tippy-content="Write the main Messages here">
-                            </iconify-icon>
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the main Messages here">
+                                {{ __('Message Body') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="md:col-span-9 col-span-12">
                             <textarea class="form-control summernote" cols="30" rows="8">
                                 {{ br2nl($template->message_body) }}
                             </textarea>
-                            <input type="hidden"  name="message_body" value="{{ str_replace(['<', '>'], ['{', '}'], $template->message_body) }}>
+                            <input type="hidden"  name="message_body" value="{{ str_replace(['<', '>'], ['{', '}'], $template->message_body) }}">
                             <p class="paragraph text-sm mb-0 mt-2">
                                 <iconify-icon icon="lucide:alert-triangle"></iconify-icon>{{ __('The Shortcuts you can use') }}
                                 <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
@@ -57,10 +53,10 @@
                     </div>
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label pt-0">
-                            {{ __('Template Status') }}
-                            <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title=""
-                                data-tippy-content="Template Status">
-                            </iconify-icon>
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this template">
+                                {{ __('Template Status') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="md:col-span-9 col-span-12">
                             <div class="form-switch ps-0">

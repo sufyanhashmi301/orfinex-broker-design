@@ -23,7 +23,12 @@
                         <div class="col-span-2">
                             <div class="max-w-xs">
                                 <div class="site-input-groups">
-                                    <label class="form-label" for="">{{ __('Upload Image:') }}</label>
+                                    <label class="form-label" for="">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload the promotional image">
+                                            {{ __('Upload Image') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="wrap-custom-file">
                                         <input
                                             type="file"
@@ -48,7 +53,12 @@
                         </div>
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select Language') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the language for this material">
+                                        {{ __('Select Language') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select  name="language" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                     @foreach($languages as $language)
                                         <option value="{{$language->name}}">{{$language->name}}</option>
@@ -61,7 +71,12 @@
                         </div>
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select Type') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the type of advertisement">
+                                        {{ __('Select Type') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="type" class="select2 form-control w-full" placeholder="Manage Type" multiple>
 
                                     {{--@foreach( getCountries() as $country)--}}
@@ -85,7 +100,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto">
-                                        {{ __('Status:') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this advertisement material">
+                                            {{ __('Status') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0">
                                         <input type="hidden" value="0" name="status">
@@ -99,6 +117,7 @@
                         </div>
                         <div class="col-span-2 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Add New') }}
                             </button>
                         </div>

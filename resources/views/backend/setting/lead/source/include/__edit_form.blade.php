@@ -2,7 +2,12 @@
     @method('put')
     @csrf
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Name:') }}</label>
+        <label class="form-label" for="">
+            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for the lead source">
+                {{ __('Name') }}
+                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+            </span>
+        </label>
         <input type="text" name="name" value="{{ old('name', $source->name) }}" class="form-control" required/>
     </div>
     <div class="action-btns text-right mt-10">

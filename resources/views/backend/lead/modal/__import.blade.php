@@ -29,7 +29,10 @@
                         @csrf
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Upload File:') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload the lead import file">
+                                    {{ __('Upload File') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="wrap-custom-file h-full">
                                 <input

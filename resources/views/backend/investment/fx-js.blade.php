@@ -19,6 +19,12 @@
                     // if(res.reload) {
                     //     setTimeout(function(){ location.reload(); }, 900);
                     // }
+
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
+
                 } else if (res.error) {
                     tNotify('warning', res.error);
                     btn.prop('disabled', false);
@@ -259,6 +265,13 @@ function view_forex_schema_modal(formData, btn, url) {
             if (res) {
                 btn.prop('disabled', false);
                 $('#view_forex_schema_form').html(res);
+                $('.select2').select2();
+
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
+
             } else if (res.error) {
                 // Ensure res.error is a string
                 const errorMessage = Array.isArray(res.error) ? res.error.join(', ') : res.error;
@@ -300,6 +313,7 @@ $('body').on('click', '.dropdown-update-type', function () {
     var url = $(this).data('action');
     console.log(url);
     view_forex_schema_modal(formData, btn, url);
+
 });
 
 $('body').on('click', '#submit-forex-schema', function () {

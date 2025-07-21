@@ -18,26 +18,38 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-0 space-y-5">
-                    <form action="{{route('admin.user.mail-send')}}" method="post" id="send-mail-form" class="space-y-4">
+                <div class="p-6">
+                    <form action="{{route('admin.user.mail-send')}}" method="post" id="send-mail-form">
                         @csrf
                         <input type="hidden" name="id" value="{{ $id ?? 0}}" id="userId">
-                        <div class="site-input-area relative">
-                            <label for="" class="form-label">{{ __('Subject:') }}</label>
-                            <input
-                                type="text"
-                                name="subject"
-                                class="form-control"
-                                required=""
-                            />
-                        </div>
-                        <div class="site-input-area relative">
-                            <label for="" class="form-label">{{ __('Email Details') }}</label>
-                            <textarea name="message" class="form-control basicTinymce" rows="5"></textarea>
+                        <div class="space-y-5">
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the subject of the email">
+                                        {{ __('Subject:') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="subject"
+                                    class="form-control"
+                                    required=""
+                                />
+                            </div>
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the full message you want to send">
+                                        {{ __('Email Details') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <textarea name="message" class="form-control basicTinymce" rows="5"></textarea>
+                            </div>
                         </div>
 
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn inline-flex justify-center btn-dark me-2">
+                        <div class="input-area text-right mt-10">
+                            <button type="submit" class="btn inline-flex justify-center btn-dark mr-2">
                                 <span class="flex items-center">
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"></iconify-icon>
                                     <span>{{ __('Send Email') }}</span>

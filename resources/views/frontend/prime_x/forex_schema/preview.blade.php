@@ -29,7 +29,7 @@
             @endif
         </ul>
 
-        <p class="card-text">
+        <p class="card-text" id="account-description">
             {{ __('Risk-Free Account: Trade using virtual money') }}
         </p>
     </div>
@@ -201,6 +201,20 @@
                 $('#account-type-tabs .nav-link').removeClass('active');
                 $('#' + selectedAccountType + '-tab').addClass('active');
                 $('#account-type').val(selectedAccountType);
+                
+                // Update the description text based on account type
+                updateAccountDescription(selectedAccountType);
+            }
+
+            // Function to update account description text
+            function updateAccountDescription(accountType) {
+                var descriptionText = '';
+                if (accountType === 'demo') {
+                    descriptionText = '{{ __("Risk-Free Account: Trade using virtual money") }}';
+                } else {
+                    descriptionText = '{{ __("Live Account: Trade with real money and real profits") }}';
+                }
+                $('#account-description').text(descriptionText);
             }
 
             // Call the function to update account type based on the values
@@ -212,6 +226,9 @@
                 $(this).addClass('active');
                 var accountType = $(this).data('type');
                 $('#account-type').val(accountType);
+                
+                // Update the description text when switching tabs
+                updateAccountDescription(accountType);
             });
 
             function updateLeverageAndDeposit(result) {
@@ -234,11 +251,6 @@
                 var selectedOption = select_plan_id.val();
                 var isRealIslamic = select_plan_id.data('is_real_islamic');
                 var isDemoIslamic = select_plan_id.data('is_demo_islamic');
-                console.log(selectedOption, 'selectedOption');
-                console.log(isRealIslamic, 'isRealIslamic');
-                console.log(isDemoIslamic, 'isDemoIslamic');
-
-                console.log(accountType, 'accountType');
 
                 var isIslamic = false;
                 if (accountType === 'real' && isRealIslamic == 1) {
@@ -246,7 +258,7 @@
                 } else if (accountType === 'demo' && isDemoIslamic == 1) {
                     isIslamic = true;
                 }
-                console.log(isIslamic, 'isIslamic');
+                
                 if (isIslamic) {
                     $('#islamic-checkbox').closest('.input-area').show();
                 } else {
@@ -262,6 +274,9 @@
 
                 $('#islamic-checkbox').prop('checked', false);
                 updateIslamicCheckboxState();
+                
+                // Update the description text when switching tabs
+                updateAccountDescription(accountType);
             });
 
             {{--$("#select-schema").on('change', function (e) {--}}

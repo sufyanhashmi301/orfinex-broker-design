@@ -224,7 +224,12 @@
                                 @method('PATCH')
                                 <div class="space-y-4">
                                     <div class="input-area">
-                                        <label for="" class="form-label">{{ __('status') }}</label>
+                                        <label for="" class="form-label">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the current status of the ticket">
+                                                {{ __('status') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
                                         <select name="status" class="select2 form-control">
                                             @foreach(\Coderflex\LaravelTicket\Enums\Status::cases() as $status)
                                                 <option value="{{ $status->value }}" @selected(old('status', $ticket->status) == $status->value)>
@@ -234,7 +239,12 @@
                                         </select>
                                     </div>
                                     <div class="input-area">
-                                        <label for="" class="form-label">{{ __('Priority') }}</label>
+                                        <label for="" class="form-label">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the priority of the ticket">
+                                                {{ __('Priority') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
                                         <select name="priority" class="select2 form-control">
                                             @foreach(\Coderflex\LaravelTicket\Enums\Priority::cases() as $priority)
                                                 <option value="{{ $priority->value }}" @selected(old('priority', $ticket->priority) == $priority->value)>
@@ -244,7 +254,12 @@
                                         </select>
                                     </div>
                                     <div class="input-area">
-                                        <label for="" class="form-label">{{ __('Ticket Type') }}</label>
+                                        <label for="" class="form-label">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the type of the ticket">
+                                                {{ __('Ticket Type') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
                                         <select name="label" class="select2 form-control">
                                             @foreach($labels as $id => $name)
                                                 <option value="{{ $id }}">{{ $name }}</option>
@@ -252,7 +267,12 @@
                                         </select>
                                     </div>
                                     <div class="input-area">
-                                        <label for="" class="form-label">{{ __('Agent') }}</label>
+                                        <label for="" class="form-label">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the agent assigned to the ticket">
+                                                {{ __('Agent') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
                                         <select name="assigned_to" id="assigned_to" class="form-control" data-placeholder="Select Agent">
                                             <option value="">{{ __('Select Agent') }}</option>
                                             @foreach($staff as $staff)

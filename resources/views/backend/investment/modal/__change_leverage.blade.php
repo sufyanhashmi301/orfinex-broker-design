@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="changeLeverage" tabindex="-1" aria-labelledby="changeLeverage" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
@@ -19,7 +19,7 @@
                         <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-4">
+                <div class="p-6">
                     <div id="view_leverage_form"></div>
                 </div>
             </div>

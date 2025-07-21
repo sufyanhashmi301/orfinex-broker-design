@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addDesignation" tabindex="-1" aria-labelledby="addDepartmentModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize">Add Designation</h3>
@@ -11,24 +11,40 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.designations.store') }}" method="post" class="space-y-4">
+                <form action="{{ route('admin.designations.store') }}" method="post">
                     @csrf
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Name:') }}</label>
-                        <input type="text" name="name" class="form-control" placeholder="Designation Name" required/>
-                    </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Parent:') }}</label>
-                        <select name="parent_id" class="form-control">
-                            <option value="">This is Parent</option>
-                        </select>
+                    <div class="space-y-5">
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the designation name">
+                                    {{ __('Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" name="name" class="form-control" placeholder="Designation Name" required/>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select a parent designation, if applicable">
+                                    {{ __('Parent') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <select name="parent_id" class="form-control">
+                                <option value="">{{ __('This is Parent') }}</option>
+                            </select>
+                        </div>
                     </div>
 
-
-                    <div class="input-area text-right">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                    <div class="input-area text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Save Changes') }}
                         </button>
+                        <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Cancel') }}
+                        </a>
                     </div>
                 </form>
             </div>

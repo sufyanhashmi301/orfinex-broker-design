@@ -19,7 +19,12 @@
                     <input type="hidden" name="mailing_driver" value="{{ setting('mailing_driver','mail') }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="input-area">
-                            <label for="" class="form-label form-label">{{ __('Email From Name') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="This name will appear as the sender in outgoing emails">
+                                    {{ __('Email From Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -29,7 +34,12 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label form-label">{{ __('Email From Address') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The email address from which messages will be sent. Must be verified">
+                                    {{ __('Email From Address') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="email"
                                 class="form-control"
@@ -39,7 +49,12 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Mail Username') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Your SMTP provider login name or API key used for authentication">
+                                    {{ __('Mail Username') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -49,7 +64,12 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Mail Password') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The password or secret key for your SMTP account">
+                                    {{ __('Mail Password') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="password"
                                 class="form-control"
@@ -59,7 +79,12 @@
                             />
                         </div>
                         <div class="md:col-span-2 input-area">
-                            <label for="" class="form-label">{{ __('SMTP Host') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The hostname or IP address of your SMTP server (e.g., smtp.mail.com)">
+                                    {{ __('SMTP Host') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -69,7 +94,12 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('SMTP Port') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Port used for email delivery (usually 587 for TLS, 465 for SSL)">
+                                    {{ __('SMTP Port') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -79,7 +109,12 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('SMTP Secure') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Type of encryption used: select ‘tls’ or ‘ssl’ based on your SMTP provider">
+                                    {{ __('SMTP Secure') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -88,12 +123,19 @@
                                 required=""
                             />
                         </div>
-
-                        <div class="col-span-2 text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                {{ __(' Save Changes') }}
-                            </button>
-                        </div>
+                    </div>
+                    <div class="action-btns text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __(' Save Changes') }}
+                        </button>
+                        <a href="#"
+                           class="btn btn-danger inline-flex items-center justify-center"
+                           data-bs-dismiss="modal"
+                           aria-label="Close">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Close') }}
+                        </a>
                     </div>
                 </form>
             </div>

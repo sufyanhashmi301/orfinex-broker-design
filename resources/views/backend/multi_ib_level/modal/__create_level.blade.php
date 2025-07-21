@@ -1,6 +1,6 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" 
      id="levelModal" tabindex="-1" aria-labelledby="levelModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-center justify-between p-5">
@@ -15,17 +15,27 @@
                     </button>
                 </div>
                 <div class="p-6 pt-0">
-                    <form action="{{ route('admin.multi-ib-level.store') }}" method="post" class="space-y-4">
+                    <form action="{{ route('admin.multi-ib-level.store') }}" method="post">
                         @csrf
                         <div class="input-area">
-                            <label class="form-label">{{ __('Title:') }}</label>
+                            <label class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the name of the level">
+                                    {{ __('Title') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="text" name="title" value="{{ old('title') }}" class="form-control" placeholder="Enter Level Title" required/>
                         </div>
 
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <div class="input-area text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Save Level') }}
                             </button>
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Close') }}
+                            </a>
                         </div>
                     </form>
                 </div>

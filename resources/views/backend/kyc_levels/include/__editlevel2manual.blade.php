@@ -13,30 +13,44 @@
                     </button>
                 </div>
                 <div class="popup-body-text p-6 pt-3 ">
-                    <form id="editKycForm" class="space-y-4">
+                    <form id="editKycForm">
                         <!-- Method and CSRF token will be dynamically added via JS -->
-                        <div class="input-area">
-                            <label class="form-label" for="name">{{ __('Name:') }}</label>
-                            <input type="text" name="name" id="kycName" class="form-control" placeholder="KYC Type Name" required/>
-                        </div>
-                        <div class="">
-                            <a href="javascript:void(0)" id="generate" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
-                                {{ __('Add Field option') }}
-                            </a>
-                        </div>
-                        <div class="addOptions"></div>
-
-                        <div class="max-w-xs">
+                         <div class="space-y-5">
                             <div class="input-area">
-                                <label class="form-label" for="status">{{ __('Status:') }}</label>
-                                <div class="switch-field flex mb-3 overflow-hidden">
-                                    <input type="radio" id="active-status-1" name="status" value="1"/>
-                                    <label for="active-status-1" class="dark:text-white">{{ __('Active') }}</label>
-                                    <input type="radio" id="deactivate-status-1" name="status" value="0"/>
-                                    <label for="deactivate-status-1" class="dark:text-white">{{ __('Deactivate') }}</label>
+                                <label class="form-label" for="name">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for this KYC form (e.g., Personal Info, Identity Check)">
+                                        {{ __('Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="text" name="name" id="kycName" class="form-control" placeholder="KYC Type Name" required/>
+                            </div>
+                            <div class="">
+                                <a href="javascript:void(0)" id="generate" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
+                                    {{ __('Add Field option') }}
+                                </a>
+                            </div>
+                            <div class="addOptions"></div>
+
+                            <div class="input-area mb-5">
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <label class="form-label !w-auto pt-0">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this form for user access">
+                                            {{ __('Status') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="status">
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="status" value="1" class="sr-only peer">
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="input-area text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2" id="submitBtn">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

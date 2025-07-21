@@ -428,13 +428,6 @@
                             </a>
                         </li>
                     @endcan
-                    @can('ib-leaderboard-list')
-                        <li class="">
-                            <a href="{{route('admin.leaderboard.index')}}" class="{{ isActive('admin.leaderboard.index') }}">
-                                {{ __('Leaderboard') }}
-                            </a>
-                        </li>
-                    @endcan
                     @can('customer-transactions-stats')
                         <li>
                             <a href="{{route('admin.transactions.report')}}" class="{{ isActive('admin.transactions.report') }}">
@@ -446,6 +439,13 @@
                         <li>
                             <a href="{{route('admin.referral-network.report')}}" class="{{ isActive('admin.referral-network.report') }}">
                                 {{ __('Referral Network Stats') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('ib-leaderboard-list')
+                        <li class="">
+                            <a href="{{route('admin.leaderboard.index')}}" class="{{ isActive('admin.leaderboard.index') }}">
+                                {{ __('IB Leaderboard') }}
                             </a>
                         </li>
                     @endcan

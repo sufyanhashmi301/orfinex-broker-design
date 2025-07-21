@@ -57,6 +57,29 @@
         }
     });
 
+    (function($) {
+        const originalSelect2 = $.fn.select2;
+
+        $.fn.select2 = function(options) {
+        this.each(function() {
+            const $this = $(this);
+
+            // Detect closest modal (works with Bootstrap and similar)
+            const $modal = $this.closest('.modal');
+            const dropdownParent = $modal.length ? $modal : $('body');
+
+            // Merge existing options with dropdownParent
+            const finalOptions = $.extend({}, options, {
+            dropdownParent: dropdownParent
+            });
+
+            // Initialize Select2 with modified options
+            originalSelect2.call($this, finalOptions);
+        });
+
+        return this;
+        };
+    })(jQuery);
 
     $(document).ready(function () {
         function calculateHeights() {

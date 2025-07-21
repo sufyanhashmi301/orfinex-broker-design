@@ -17,7 +17,10 @@
                         <div class="input-area md:col-span-2">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
@@ -31,7 +34,10 @@
                     @elseif($field['type'] == 'textarea')
                         <div class="input-area md:col-span-2">
                             <label class="form-label pt-0">
-                                {{ __($field['label']) }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
                                 {{oldSetting($field['name'],$section)}}
@@ -40,12 +46,12 @@
 
                     @else
                         <div class="input-area">
-                            <div class="lg:col-span-4 col-span-12 form-label pt-0">
-                                {{ __($field['label']) }}
-                                @if($field['name'] == 'secret_key')
-                                @endif
-                                <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Remember the Secret Key. Use domain/secret-key to trun back the website live"></iconify-icon>
-                            </div>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
                                class="form-control @if($errors->has($field['name'])) has-error @endif"
                                placeholder="Label"

@@ -20,15 +20,30 @@
                 <div class="webform-data">
                     <div class="webform-data-wrapper space-y-5">
                         <div class="web-form-field full-field">
-                            <label class="mandatory-field form-label">Issue Name</label>
+                            <label class="mandatory-field form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="A short and clear title for the issue being reported">
+                                    {{ __('Issue Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="text" id="title" class="form-control" name="subject" value="" />
                         </div>
                         <div class="web-form-field full-field">
-                            <label class="form-label">Issue Description</label>
+                            <label class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Provide detailed steps to reproduce the issue and any error messages">
+                                    {{ __('Issue Description') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <textarea id="description" class="form-control" name="desc" rows="4" style="height: 80px"></textarea>
                         </div>
                         <div class="web-form-field full-field">
-                            <label class="form-label">Attach File</label>
+                            <label class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload screenshots, logs, or documents to help explain the issue">
+                                    {{ __('Attach File') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="attachment-title form-control">
                                 <span class="attachment-msg">Drop files or add attachments here...</span>
                                 <input type="file" id="uploadfile" name="uploadfile" onchange="addAttachment();" class="attachment-input" />
@@ -39,11 +54,21 @@
                         </div>
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                             <div class="web-form-field half-field">
-                                <label class="mandatory-field form-label">Email Address</label>
+                                <label class="mandatory-field form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Used to identify the reporter. You won’t get account access via this email">
+                                        {{ __('Email Address') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input type="text" class="form-control" name="email" />
                             </div>
                             <div class="web-form-field half-field">
-                                <label class="form-label">Severity</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Indicate how critical the issue is: Low, Medium, High, or Urgent">
+                                        {{ __('Severity') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="webform-select-style">
                                     <select name="Severity" class="form-control w-full" data-mand="false">
                                         <option value="projects-8b616883638e771dde3a7ea04553c0bad04c473f87f169be1a8e6ba11e1fa3d6">
@@ -65,7 +90,12 @@
                                 </div>
                             </div>
                             <div class="web-form-field half-field">
-                                <label class="form-label">Classification</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Categorize the type of issue: UI Bug, Backend Error, Data Issue, etc">
+                                        {{ __('Classification') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="webform-select-style">
                                     <select name="Classification" class="form-control w-full" data-mand="false">
                                         <option value="projects-8b616883638e771dde3a7ea04553c0ba0f0f3a526ec3cade540a2d6f4448629e">
@@ -99,7 +129,12 @@
                                 </div>
                             </div>
                             <div class="web-form-field half-field">
-                                <label class="form-label">Reproducible</label>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Specify whether the issue can be consistently reproduced">
+                                        {{ __('Reproducible') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="webform-select-style">
                                     <select name="Is it Reproducible" class="form-control" data-mand="false">
                                         <option value="projects-8b616883638e771dde3a7ea04553c0ba27f167697983ef8da98d7f19cd2c629e">
@@ -129,17 +164,19 @@
                         </div>
                         <div class="web-form-field full-field mt-1">
                             <div class="text-sm text-danger">
-                                Note: Email ID is used to know the reporter of this bug. Submitting
-                                your email ID will not add you as a user or give you access to
-                                portal data.
+                                {{ __('Note: Email ID is used to know the reporter of this bug. Submitting your email ID will not add you as a user or give you access to portal data.') }}
                             </div>
                         </div>
                         <div>
                             <div class="flex items-center mt-10">
-                                <button type="submit" value="Save" title="Save" class="btn btn-dark inline-flex itemms-center justify-center primary-button mr-1">
+                                <button type="submit" value="Save" title="Save" class="btn btn-dark inline-flex items-center justify-center primary-button mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                     {{ __('Save') }}
                                 </button>
-                                <input type="reset" value="Cancel" title="Cancel" class="btn btn-outline-dark inline-flex items-center justify-center secondary-button"/>
+                                <button type="reset" title="Cancel" class="btn btn-danger inline-flex items-center justify-center secondary-button">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Cancel') }}
+                                </button>
                             </div>
                         </div>
                     </div>

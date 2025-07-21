@@ -20,7 +20,7 @@ class CategoryController extends Controller
          $this->middleware('permission:ticket-category-create', ['only' => ['store']]);
          $this->middleware('permission:ticket-category-edit', ['only' => ['update']]);
          $this->middleware('permission:ticket-category-delete', ['only' => ['destroy']]);
-        
+
      }
     public function index()
     {
@@ -47,7 +47,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         Category::create($request->validated());
-        return to_route('admin.ticket.categories.index');
+        return to_route('admin.ticket.category.index');
     }
 
     /**

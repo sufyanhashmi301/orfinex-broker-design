@@ -309,6 +309,12 @@
                     templateResult: formatUser,
                     templateSelection: formatUser,
                 });
+
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
+
             });
         });
 
@@ -328,6 +334,10 @@
                 $('#assigned_to_select').select2({
                     templateResult: formatUser,
                     templateSelection: formatUser,
+                });
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
                 });
             });
 

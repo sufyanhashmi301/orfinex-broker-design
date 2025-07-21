@@ -43,9 +43,10 @@
                             <div class="lg:col-span-2">
                                 <div class="input-area">
                                     <label class="form-label">
-                                        <div class="flex items-center">
-                                            {!! __($field['label']) !!}
-                                        </div>
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                            {{ __($field['label']) }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="wrap-custom-file {{ $errors->has($field['name']) ? 'has-error' : '' }}">
                                         <input
@@ -73,9 +74,11 @@
                         @elseif($field['type'] == 'color')
                             <div class="lg:col-span-3">
                                 <div class="input-area">
-                                    <label for="" class="form-label !flex items-center">
-                                        {{ __($field['label']) }}
-                                        <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                            {{ __($field['label']) }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="color-input-group relative">
                                         <input type="" name="" class="form-control text-input" value="{{ oldSetting($field['name'],$section) }}">
@@ -92,9 +95,11 @@
                             </div>
                         @elseif($field['name'] == 'font_family')
                             <div class="lg:col-span-6 md:col-span-3 sm:col-span-2">
-                                <label for="" class="form-label !flex items-center">
-                                    {{ __($field['label']) }}
-                                    <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 {{--<hr class="dark:border-slate-700 my-6">--}}
                                 <ul class="space-y-3">
@@ -124,8 +129,10 @@
                             <div class="lg:col-span-6">
                                 <div class="input-area">
                                     <label for="" class="form-label !flex items-center">
-                                        {{ __($field['label']) }}
-                                        <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                            {{ __($field['label']) }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <input
                                         type="{{$field['type']}}"

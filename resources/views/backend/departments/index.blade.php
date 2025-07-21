@@ -154,6 +154,10 @@
 
                 $('#editDepartmentModal').modal('show');
                 $('#edit-department-body').append(data);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
 
             })
         })

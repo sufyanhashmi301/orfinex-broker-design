@@ -116,6 +116,10 @@
                     dateFormat: "d.m.Y",
                     maxDate: "15.12.2017"
                 });
+                tippy('.shift-Away', {
+                    placement: "top",
+                    animation: "shift-away"
+                });
 
             });
 
@@ -153,6 +157,10 @@
                 $(".dateOfBirth").flatpickr({
                     dateFormat: "d.m.Y",
                     maxDate: "15.12.2017"
+                });
+                tippy('.shift-Away', {
+                    placement: "top",
+                    animation: "shift-away"
                 });
 
             });

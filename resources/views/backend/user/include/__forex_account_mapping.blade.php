@@ -4,7 +4,7 @@
      aria-labelledby="addForexAccountModalLabel"
      aria-hidden="true"
 >
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize" id="addForexAccountLabel">
@@ -18,71 +18,106 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form class="space-y-5" action="{{route('admin.forex-account-map')}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('admin.forex-account-map')}}" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="user_id" value="{{$user->id}}">
                     @csrf
 
                     {{-- New Input Field for Account Number --}}
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Number:') }}</label>
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Account Number') }}" aria-label="Account Number" name="account_number" id="enter-account-number" aria-describedby="basic-addon1" required>
-                    </div>
+                    <div class="space-y-5">
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the account number">
+                                    {{ __('Account Number') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Account Number') }}" aria-label="Account Number" name="account_number" id="enter-account-number" aria-describedby="basic-addon1" required>
+                        </div>
 
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Select Account schema:') }}</label>
-                        <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-schema" name="schema_id" required>
-                            <option value="">
-                                {{__('Select')}}
-                            </option>
-                            @foreach($schemas as $plans)
-                                <option value="{{$plans->id}}"
-                                        data-is-real-islamic="{{$plans->is_real_islamic}}"
-                                        data-is-demo-islamic="{{$plans->is_demo_islamic}}"
-                                        data-first-min-deposit="{{$plans->first_min_deposit}}"
-                                        data-leverage="{{$plans->leverage}}">
-                                    {{$plans->title}}
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account schema">
+                                    {{ __('Select Account Schema') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-schema" name="schema_id" required>
+                                <option value="">
+                                    {{__('Select')}}
                                 </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Select Account Type:') }}</label>
-                        <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-type" name="account_type" required>
-                            <option value="">{{__('Select')}}</option>
-                            <option value="real">{{__('Real')}}</option>
-                            <option value="demo">{{__('Demo')}}</option>
-                        </select>
-                    </div>
-                    <div class="input-area">
-                        <div class="flex items-center space-x-5 flex-wrap">
-                            <div class="form-switch ps-0" style="line-height:0;">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                    <input type="checkbox" name="is_islamic" value="1" class="sr-only peer" id="islamic-checkbox">
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                @foreach($schemas as $plans)
+                                    <option value="{{$plans->id}}"
+                                            data-is-real-islamic="{{$plans->is_real_islamic}}"
+                                            data-is-demo-islamic="{{$plans->is_demo_islamic}}"
+                                            data-first-min-deposit="{{$plans->first_min_deposit}}"
+                                            data-leverage="{{$plans->leverage}}">
+                                        {{$plans->title}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account type">
+                                    {{ __('Select Account Type') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-type" name="account_type" required>
+                                <option value="">{{__('Select')}}</option>
+                                <option value="real">{{__('Real')}}</option>
+                                <option value="demo">{{__('Demo')}}</option>
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <div class="flex items-center space-x-5 flex-wrap">
+                                <div class="form-switch ps-0" style="line-height:0;">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
+                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer" id="islamic-checkbox">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                                <label class="form-label pt-0 !mb-0" style="width:auto">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Request swap-free option for Islamic account">
+                                        {{ __('Request Swap-Free Option (Islamic Account)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                             </div>
-                            <label class="form-label pt-0 !mb-0" style="width:auto">
-                                {{ __('Request Swap-Free Option (Islamic Account)') }}
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the leverage">
+                                    {{ __('Select Leverage') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
+                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-leverage" name="leverage" required>
+                                <option value="">{{ __('Select Leverage') }}</option>
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the nickname for the account">
+                                    {{ __('Account Nickname') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Select Leverage:') }}</label>
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-leverage" name="leverage" required>
-                            <option value="">{{ __('Select Leverage') }}</option>
-                        </select>
-                    </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Nickname:') }}</label>
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="Nickname" name="account_name" aria-describedby="basic-addon1" required>
-                    </div>
-
-                    <div class="mt-4">
-                        <button type="submit" class="btn inline-flex justify-center btn-dark me-3">
-                            {{ __('Map Account') }}
+                    <div class="text-right mt-10">
+                        <button type="submit" class="btn inline-flex justify-center btn-dark mr-2">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Map Account') }}
+                            </span>
                         </button>
-                        <button type="button" class="btn inline-flex justify-center btn-outline-dark" data-bs-dismiss="modal">
-                            {{ __('Cancel') }}
+                        <button type="button" class="btn inline-flex justify-center btn-danger" data-bs-dismiss="modal">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </span>
                         </button>
                     </div>
                 </form>

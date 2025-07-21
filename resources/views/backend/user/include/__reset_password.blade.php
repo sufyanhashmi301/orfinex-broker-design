@@ -4,7 +4,7 @@
      aria-labelledby="resetPasswordModalLabel"
      aria-hidden="true"
 >
-    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-md top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative rounded-lg shadow">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-700">
@@ -18,30 +18,45 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-0 space-y-5">
-                    <form action="{{route('admin.user.reset-password')}}" method="post" id="reset-password-form" class="space-y-4">
+                <div class="p-6">
+                    <form action="{{route('admin.user.reset-password')}}" method="post" id="reset-password-form">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ $id ?? 0 }}" id="resetUserId">
-                        <input
-                            type="text"
-                            name="password"
-                            id="resetUserEmail"
-                            class="form-control"
-                            readonly
-                        />
-                        <div class="site-input-area relative">
-                            <label for="generatedPassword" class="form-label">{{ __('Generated Password:') }}</label>
-                            <input
-                                type="text"
-                                name="password"
-                                id="generatedPassword"
-                                class="form-control"
-                            />
+                        <div class="space-y-5">
+                            <div class="input-area relative">
+                                <label for="resetUserEmail" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="User's email address for reset the password">
+                                        {{ __('Email') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="password"
+                                    id="resetUserEmail"
+                                    class="form-control"
+                                    readonly
+                                />
+                            </div>
+                            <div class="site-input-area relative">
+                                <label for="generatedPassword" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Generated password for the user">
+                                        {{ __('Generated Password') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="password"
+                                    id="generatedPassword"
+                                    class="form-control"
+                                />
+                            </div>
                         </div>
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn inline-flex justify-center btn-dark me-2">
+                        <div class="input-area text-right mt-10">
+                            <button type="submit" class="btn inline-flex justify-center btn-dark mr-2">
                                 <span class="flex items-center">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"></iconify-icon>
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                     <span>{{ __('Update Password') }}</span>
                                 </span>
                             </button>

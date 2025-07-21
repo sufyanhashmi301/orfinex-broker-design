@@ -33,13 +33,21 @@
                             </div>
                         </div>
                         <div class="input-area mb-5">
-                            <label for="name" class="form-label">{{ __('Name') }}</label>
+                            <label for="name" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a name for this KYC level (e.g., Level 1, Basic Verification)">
+                                    {{ __('Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="text" class="form-control" required="" name="name" value="{{ $kycLevel->name }}"/>
                         </div>
                         <div class="input-area mb-5">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Status:') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this KYC level for use in the system">
+                                        {{ __('Status') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="status">

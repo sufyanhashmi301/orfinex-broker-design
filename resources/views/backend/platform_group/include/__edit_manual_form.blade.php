@@ -4,13 +4,19 @@
     <div class="space-y-5">
         <div class="input-area relative">
             <label for="" class="form-label">
-                {{ __('Group Name') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The name identifier for this platform group (e.g., real\test)">
+                    {{ __('Group Name') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <input type="text" name="group" class="form-control" value="{{ $group->group }}">
         </div>
         <div class="input-area relative">
             <label for="" class="form-label">
-                {{ __('Currency') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the default trading currency for accounts under this group (e.g., USD, EUR)">
+                    {{ __('Currency') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <select name="currency" class="form-control">
                 <option value="USD" @selected($group->currency == 'USD')>{{ __('USD') }}</option>
@@ -22,7 +28,10 @@
         </div>
         <div class="input-area relative">
             <label for="" class="form-label">
-                {{ __('Currency Digits') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the number of decimal places to be used for this currency">
+                    {{ __('Currency Digits') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             <select name="currencyDigits" class="form-control">
                 <option value="1" @selected($group->currencyDigits == 1)>{{ __('1') }}</option>
@@ -34,7 +43,10 @@
         </div>
         <div class="input-area relative">
             <label for="" class="form-label">
-                {{ __('Platform') }}
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the trading platform this group applies to (e.g., MT5, MT4, etc.)">
+                    {{ __('Platform') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
             </label>
             @php
                 $traderTypes = [
@@ -53,7 +65,10 @@
         <div class="input-area relative">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0">
-                    {{ __('Status:') }}
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable the platform group">
+                        {{ __('Status') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
                 </label>
                 <div class="form-switch ps-0">
                     <input type="hidden" value="0" name="status">

@@ -22,7 +22,12 @@
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                             <div class="col-span-2">
                                 <div class="input-area lg:w-1/2 max-w-full">
-                                    <label class="form-label" for="">{{ __('Ranking Icon:') }}</label>
+                                    <label class="form-label" for="">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload an icon to visually represent this user rank">
+                                            {{ __('Ranking Icon') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="wrap-custom-file">
                                         <input type="file" name="icon" id="image6" accept=".gif, .jpg, .png"/>
                                         <label for="image6" id="image-old">
@@ -34,19 +39,34 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Ranking:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the rank number (e.g., 1, 2, 3…)">
+                                            {{ __('Ranking') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input type="text" name="ranking" class="form-control mb-0 ranking" required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Ranking Name:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Provide a name for this rank (e.g., Silver, Gold, Platinum)">
+                                            {{ __('Ranking Name') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input type="text" name="ranking_name" class="form-control mb-0 ranking-name" required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Deposit:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Required deposit amount to qualify for this rank">
+                                            {{ __('Minimum Deposit') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-deposit" name="minimum_deposit" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -57,7 +77,12 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Invest:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Minimum investment required for the rank">
+                                            {{ __('Minimum Invest') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-invest" name="minimum_invest" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -68,14 +93,24 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Required number of referred users">
+                                            {{ __('Minimum Referral') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <input type="text" name="minimum_referral" value="{{ old('minimum_referral') }}" oninput="this.value = validateDouble(this.value)"
                                         class="form-control minimum-referral mb-0 " placeholder="Minimum Referral" required=""/>
                                 </div>
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral Deposit:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Combined deposits made by referred users">
+                                            {{ __('Minimum Referral Deposit') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-referral-deposit" name="minimum_referral_deposit" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -86,7 +121,12 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Referral Invest:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Total investment from referred users">
+                                            {{ __('Minimum Referral Invest') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-referral-invest" name="minimum_referral_invest" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -97,7 +137,12 @@
                             </div>
                             <div class="md:col-span-1 col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Minimum Earning:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Minimum earnings needed for the rank">
+                                            {{ __('Minimum Earning') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-earnings" name="minimum_earnings" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -108,7 +153,12 @@
                             </div>
                             <div class="col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Bonus:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Any bonus value this rank grants">
+                                            {{ __('Bonus') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="joint-input relative">
                                         <input type="text" class="form-control bonus" name="bonus" oninput="this.value = validateDouble(this.value)">
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1">
@@ -119,7 +169,12 @@
                             </div>
                             <div class="col-span-2">
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Description:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add extra details or benefits about this rank">
+                                            {{ __('Description') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <textarea class="form-control summernote description" rows="5"></textarea>
                                     <input type="hidden" class="description" name="description">
                                 </div>
@@ -128,7 +183,10 @@
                                 <div class="input-area">
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <label class="form-label !w-auto pt-0">
-                                            {{ __('Status:') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable this ranking level">
+                                                {{ __('Status') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="form-switch ps-0">
                                             <input type="hidden" value="0" name="status">

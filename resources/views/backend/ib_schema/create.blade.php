@@ -25,7 +25,12 @@
                     <div class="grid grid-cols-2 gap-5">
                         <div class="lg:col-span-1 col-span-2 schema-name">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Title:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the name of the IB account type">
+                                        {{ __('Title') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="text"
                                     name="title"
@@ -39,7 +44,12 @@
                         </div>
                         <div class="lg:col-span-1 col-span-2 schema-badge">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The IB account type badge">
+                                        {{ __('Account Type Badge') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -53,7 +63,12 @@
                         </div>
                         <div class="lg:col-span-1 col-span-2 ">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select IB Type:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose IB category">
+                                        {{ __('Select IB Type') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="type" id="" class="form-control w-100">
                                     <option value="ib">{{__("IB")}}</option>
                                     <option value="multi_ib">{{__("Multi IB")}}</option>
@@ -66,7 +81,12 @@
                         </div>
                         <div class="lg:col-span-1 col-span-2 ">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Group:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The IB account type group">
+                                        {{ __('Group') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="text"
                                     name="group"
@@ -80,7 +100,12 @@
                         </div>
                         <div class="col-span-2">
                             <div class="input-area fw-normal">
-                                <label for="" class="form-label">{{ __('Detail:') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Describe the IB account type">
+                                        {{ __('Detail') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="site-editor">
                                     <textarea class="summernote"></textarea>
                                 </div>
@@ -92,7 +117,10 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto">
-                                        {{ __('Status:') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this IB account type">
+                                            {{ __('Status') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch ps-0">
                                         <input type="hidden" value="0" name="status">
@@ -106,6 +134,7 @@
                         </div>
                         <div class="col-span-2 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Add New') }}
                             </button>
                         </div>

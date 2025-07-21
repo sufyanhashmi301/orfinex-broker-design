@@ -19,9 +19,11 @@
                     @if($field['type'] == 'checkbox')
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
-                                <label class="form-label !w-auto !flex items-center">
-                                    {{ __($field['label']) }}
-                                    <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                                <label class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
@@ -34,9 +36,11 @@
                         </div>
                     @elseif($field['type'] == 'select')
                         <div class="input-area">
-                            <label class="form-label !w-auto !flex items-center">
-                                {{ __($field['label']) }}
-                                <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                            <label class="form-label !w-auto">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <select name="{{ $field['name'] }}" class="form-control">
                                 @foreach ($field['options'] as $value => $label)
@@ -46,9 +50,11 @@
                         </div>
                     @elseif($field['type'] == 'textarea')
                         <div class="input-area">
-                            <label class="form-label !flex items-center">
-                                {{ __($field['label']) }}
-                                <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                            <label class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
                                 {{oldSetting($field['name'],$section)}}
@@ -57,9 +63,11 @@
 
                     @else
                         <div class="input-area">
-                            <label class="form-label !flex items-center">
-                                {{ __($field['label']) }}
-                                <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
+                            <label class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                    {{ __($field['label']) }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="relative">
                                 <input type="{{$field['type']}}" name="{{ $field['name'] }}"

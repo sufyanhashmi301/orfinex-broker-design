@@ -14,30 +14,39 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('First Name') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter your legal first name">
+                                    {{ __('First Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input type="text" name="first_name" class="form-control" placeholder="e.g. John" value="{{ old('first_name') }}">
                             @error('first_name')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Last Name') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter your legal last name">
+                                    {{ __('Last Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input type="text" name="last_name" class="form-control" placeholder="e.g. Doe" value="{{ old('last_name') }}">
                             @error('last_name')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
 
                         @if(getPageSetting('country_show'))
                             <div class="input-area relative">
                                 <label class="form-label">
-                                    {{ __('Country') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select your country of residence">
+                                        {{ __('Country') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <select name="country" id="countrySelect" class="select2 form-control w-full" data-placeholder="Select Country">
@@ -52,42 +61,54 @@
                                     </select>
                                 </div>
                                 @error('country')
-                                    <span class="error">{{ $message }}</span>
+                                    <span class="error" role="alert">{{ $message }}</span>
                                 @enderror
                             </div>
                         @endif
 
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Username') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose a unique username for login">
+                                    {{ __('Username') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="text" name="username" class="form-control" placeholder="e.g. johndoe" value="{{ old('username') }}">
                             @error('username')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Phone') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add your mobile number for contact and verification">
+                                    {{ __('Phone') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="text" name="phone" class="form-control" placeholder="e.g. 1234567890" value="{{ old('phone') }}">
                             @error('phone')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Email') }}
-                                <span class="text-xs text-danger">*</span>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a valid email for login and notifications">
+                                    {{ __('Email') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <span class="text-xs text-danger">*</span>
+                                </span>
                             </label>
                             <input type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="e.g. johndoe@example.com">
                             @error('email')
-                                <small class="text-danger">{{ $message }}</small>
+                                <small class="error" role="alert">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Gender') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select your gender (optional)">
+                                    {{ __('Gender') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <select name="gender" class="select2 form-control w-full" data-placeholder="Select Gender">
                                 <option value="">{{ __('Select Gender') }}</option>
@@ -96,50 +117,65 @@
                                 <option value="other" @if(old('gender') == 'other') selected @endif>{{ __('Other') }}</option>
                             </select>
                             @error('gender')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Date Of Birth') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Your birth date for age and identity verification">
+                                    {{ __('Date Of Birth') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth') }}">
                             @error('date_of_birth')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('City') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the city where you live">
+                                    {{ __('City') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="text" name="city" class="form-control" placeholder="e.g. New York, Jaipur, Dubai" value="{{ old('city') }}">
                             @error('city')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Zip Code') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter your area's postal/ZIP code">
+                                    {{ __('Zip Code') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="text" name="zip_code" class="form-control" placeholder="e.g. 90250" value="{{ old('zip_code') }}">
                             @error('zip_code')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Address') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Provide your full home address">
+                                    {{ __('Address') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <input type="text" name="address" class="form-control" placeholder="e.g. 132, My Street, Kingston, New York 12401" value="{{ old('address') }}">
                             @error('address')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
-                                {{ __('Attach to Risk Profile') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Attach your account to a risk profile">
+                                    {{ __('Attach to Risk Profile') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple="multiple" data-placeholder="Select Tags">
                                 @foreach($riskProfileTags as $tag)
@@ -147,16 +183,19 @@
                                 @endforeach
                             </select>
                             @error('risk_profile_tags')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-area relative lg:col-span-3">
                             <label class="form-label">
-                                {{ __('Comment') }}
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add any additional info or notes (optional)">
+                                    {{ __('Comment') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <textarea name="comment" class="form-control" rows="3">{{ old('comment') }}</textarea>
                             @error('comment')
-                                <span class="error">{{ $message }}</span>
+                                <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
@@ -171,12 +210,15 @@
                         <div class="lg:col-span-4 col-span-12">
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __('Password') }}
-                                    <span class="text-xs text-danger">*</span>
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Create a secure password for your account">
+                                        {{ __('Password') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <span class="text-xs text-danger">*</span>
+                                    </span>
                                 </label>
                                 <input type="password" name="password" class="form-control" placeholder="********">
                                 @error('password')
-                                    <span class="error">{{ $message }}</span>
+                                    <span class="error" role="alert">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -195,7 +237,10 @@
                                             </label>
                                         </div>
                                         <label class="form-label !w-auto pt-0 !mb-0">
-                                            {{ __('Email Verified') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle if your email is verified">
+                                                {{ __('Email Verified') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
@@ -212,7 +257,10 @@
                                             </label>
                                         </div>
                                         <label class="form-label !w-auto pt-0 !mb-0">
-                                            {{ __('Phone Verified') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle if your phone number is verified">
+                                                {{ __('Phone Verified') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
@@ -229,7 +277,10 @@
                                             </label>
                                         </div>
                                         <label class="form-label !w-auto pt-0 !mb-0">
-                                            {{ __('Temporary Password') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Use this if setting a one-time password for the first login">
+                                                {{ __('Temporary Password') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
@@ -253,7 +304,10 @@
                             <div class="space-y-5">
                                 <div class="input-area relative">
                                     <label class="form-label">
-                                        {{ __('Assign to Staff Member') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Assign your account to a support or relationship manager">
+                                            {{ __('Assign to Staff Member') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <select name="staff_id" class="select2 form-control w-full" data-placeholder="Select Staff Member">
                                         <option value="">{{ __('No staff assignment') }}</option>
@@ -264,7 +318,7 @@
                                         @endforeach
                                     </select>
                                     @error('staff_id')
-                                    <span class="text-danger text-xs">{{ $message }}</span>
+                                        <span class="error" role="alert">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
@@ -286,7 +340,12 @@
                     <div class="card-body p-6">
                         <div class="space-y-5">
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('KYC Level') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the verification level completed for your accoun">
+                                        {{ __('KYC Level') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="kyc_level" id="kycLevelSelect" class="select2 form-control w-full" data-placeholder="Select Level">
                                     <option value="" selected>{{ __('Select Level (Optional)') }}</option>
                                     <option value="1" @if(old('kyc_level') == '1') selected @endif>{{ __('Level 1') }}</option>
@@ -296,7 +355,12 @@
                             </div>
 
                             <div class="input-area relative" id="verificationTypeContainer" style="display: none;">
-                                <label for="" class="form-label">{{ __('Verification Type') }}</label>
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the verification type completed for your account">
+                                        {{ __('Verification Type') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select id="kycTypeSelect" name="kyc_id" class="select2 form-control" data-placeholder="Select Type">
                                     <option value="" selected>{{ __('Select Type (Optional)') }}</option>
                                 </select>
@@ -328,7 +392,10 @@
 
         <div class="mt-10">
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                {{ __('Add New Customer') }}
+                <span class="flex items-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    {{ __('Add New Customer') }}
+                </span>
             </button>
         </div>
     </form>

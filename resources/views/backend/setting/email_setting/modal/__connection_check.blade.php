@@ -15,21 +15,35 @@
                 </button>
             </div>
             <div class="modal-body p-6">
-                <form action="{{ route('admin.settings.mail.connection.test') }}" method="post" class="space-y-4">
+                <form action="{{ route('admin.settings.mail.connection.test') }}" method="post">
                     @csrf
-                    <div class="input-area !mt-0">
-                        <label for="" class="form-label">{{ __('Your Email:') }}</label>
+                    <div class="input-area">
+                        <label for="" class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the email address you want to test the SMTP configuration with">
+                                {{ __('Your Email') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <input
                             type="email"
                             name="email"
                             class="form-control mb-0"
+                            placeholder="e.g. user@example.com"
                             required=""
                         />
                     </div>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                    <div class="action-btns text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Check Now') }}
                         </button>
+                        <a href="#"
+                           class="btn btn-danger inline-flex items-center justify-center"
+                           data-bs-dismiss="modal"
+                           aria-label="Close">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Close') }}
+                        </a>
                     </div>
                 </form>
             </div>

@@ -4,7 +4,7 @@
     aria-labelledby="addTagsModalLabel"
     aria-hidden="true"
 >
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-center justify-between p-5">
                 <h3 class="text-xl font-medium dark:text-white capitalize" id="addTagsLabel">
@@ -20,22 +20,35 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.risk-profile-tag.tag.update',$user->id) }}" method="post" class="space-y-5">
+                <form action="{{ route('admin.risk-profile-tag.tag.update',$user->id) }}" method="post">
                     @csrf
-                    <div class="inout-area">
-                        <label class="form-label" for="">{{ __('Risk Profile Tags:') }}</label>
-                        <select class="form-control w-full" name="risk_profile_tag_id" data-placeholder="Tags">
-                            <option value="">{{__('Select Tag')}}</option>
-                            @foreach( $tags as $tag)
-                                <option value="{{$tag->id}}">{{$tag->name}}</option>
-                            @endforeach
-                        </select>
+                    <div class="space-y-5">
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Categorize clients by risk level based on behavior, verification, or history">
+                                    {{ __('Risk Profile Tags') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <select class="select2 form-control w-full" name="risk_profile_tag_id" data-placeholder="Tags">
+                                <option value="">{{__('Select Tag')}}</option>
+                                @foreach( $tags as $tag)
+                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="action-btns text-right">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                    <div class="action-btns text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Add Tag') }}
                         </button>
+                        <a href="#" data-bs-dismiss="modal" class="btn inline-flex justify-center btn-danger">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </span>
+                        </a>
                     </div>
                 </form>
             </div>

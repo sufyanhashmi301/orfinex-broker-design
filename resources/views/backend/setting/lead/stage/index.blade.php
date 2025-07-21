@@ -131,6 +131,10 @@
 
                     $('#editStageModal').modal('show');
                     $('#edit-stage-body').append(data);
+                    tippy(".shift-Away", {
+                        placement: "top",
+                        animation: "shift-away"
+                    });
 
                 })
             });

@@ -82,6 +82,7 @@
                                 </div>
                                 <div class="col-xl-12">
                                     <button type="submit" class="site-btn primary-btn w-100">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                         {{ __('Save Changes') }}
                                     </button>
                                 </div>

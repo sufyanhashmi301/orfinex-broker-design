@@ -97,9 +97,9 @@
         aria-labelledby="kyc-action-modal"
         aria-hidden="true"
     >
-        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-                <div class="modal-body p-6 py-8 text-center space-y-5" id="kyc-action-data">
+                <div class="modal-body space-y-5" id="kyc-action-data">
 
                 </div>
             </div>
@@ -178,6 +178,10 @@
             $.get(url, function (data) {
                 $('#kyc-action-data').append(data)
                 imagePreview()
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             })
 
             $('#kyc-action-modal').modal('toggle')

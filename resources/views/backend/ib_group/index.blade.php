@@ -23,6 +23,7 @@
                                 <th scope="col" class="table-th">{{ __('Group Name') }}</th>
 {{--                                <th scope="col" class="table-th">{{ __('Schema') }}</th>--}}
                                 <th scope="col" class="table-th">{{ __('Rebate Rules') }}</th>
+                                <th scope="col" class="table-th">{{ __('Global Account Type') }}</th>
                                 <th scope="col" class="table-th">{{ __('Status') }}</th>
                                 <th scope="col" class="table-th">{{ __('Action') }}</th>
 
@@ -56,6 +57,13 @@
                                             </ul>
                                         @else
                                             <span>{{ __('N/A') }}</span>
+                                        @endif
+                                    </td>
+                                     <td class="table-td">
+                                        @if($ibGroup->is_global_account)
+                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Active') }}</div>
+                                        @else
+                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
                                         @endif
                                     </td>
                                     <td class="table-td">

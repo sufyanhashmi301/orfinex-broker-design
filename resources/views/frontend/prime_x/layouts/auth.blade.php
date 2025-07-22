@@ -6,7 +6,7 @@
         <div class="loginwrapper">
             <div class="lg-inner-column">
                 <div class="left-column relative">
-                    <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
+                    <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center" style="background-image:url('{{ getFilteredPath(setting('login_bg', 'theme'), 'default/auth-bg.jpg') }}')">
                         <div class="mx-auto max-w-xs text-center">
                             <a href="{{ route('home')}}" class="">
                                 <img src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" class="h-[56px]" alt="{{ __('Logo') }}">

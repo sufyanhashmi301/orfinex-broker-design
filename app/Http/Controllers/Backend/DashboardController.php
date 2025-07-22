@@ -44,7 +44,7 @@ class DashboardController extends Controller
             ->get();
 
         // Get ticket statistics with eager loading
-        $tickets = Ticket::with(['user', 'categories', 'labels', 'assignedToUser', 'department'])
+        $tickets = Ticket::with(['user', 'assignedToUser', 'categories', 'labels'])
             ->latest()
             ->take(5)
             ->get();

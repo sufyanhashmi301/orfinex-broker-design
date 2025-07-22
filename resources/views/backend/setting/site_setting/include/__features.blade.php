@@ -106,7 +106,30 @@
                                     </div>
                                 @endforeach
                             </div>
-                        @else
+                     @elseif($field['name'] == 'ib_distribution_time')
+                            <div class="input-area">
+                                <input 
+                                    type="text" 
+                                    name="{{$field['name']}}" 
+                                    id="{{$field['name']}}" 
+                                    class="form-control" 
+                                    value="{{ oldSetting($field['name'], $section) ?? $field['value'] ?? '' }}"
+                                    inputmode="numeric"
+                                    pattern="[0-9]*"
+                                    oninput="this.value = this.value.replace(/[^1-9]/g, '')"
+                                    placeholder="{{ __('Enter minutes') }}"
+                                    @if(isset($field['attributes']))
+                                        @foreach($field['attributes'] as $attr => $val)
+                                            {{ $attr }}="{{ $val }}"
+                                        @endforeach
+                                    @endif
+                                >
+                                @if(isset($field['help_text']))
+                                    <span class="text-xs text-slate-400 dark:text-slate-300 mt-1">{{ __($field['help_text']) }}</span>
+                                @endif
+                            </div>
+                        @else  
+                     
                         <div class="input-area">
                             <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
                             <div class="flex items-center flex-wrap gap-3 md:gap-7">

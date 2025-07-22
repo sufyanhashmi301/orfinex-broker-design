@@ -1590,6 +1590,20 @@ return [
                     'by_admin' => 'By admin',
                 ],
             ],
+            [
+                'type' => 'text',  // Using text type with numeric restrictions
+                'data' => 'integer',  
+                'name' => 'ib_distribution_time',
+                'label' => 'IB Distribution Time (in minutes)',
+                'rules' => 'required|integer|min:1',  // Validation rules
+                'value' => 1,  // Default value (1 minutes)
+                'attributes' => [
+                    'inputmode' => 'numeric',  // Shows numeric keyboard on mobile
+                    'pattern' => '[1-9]*',     // HTML5 pattern for numbers only
+                    'oninput' => 'this.value = this.value.replace(/[^1-9]/g, "")', // JS to prevent non-numbers
+                    'placeholder' => 'Enter minutes',
+                ],
+            ],
 //            [
 //                'type' => 'radio', // Change type to 'radio'
 //                'data' => 'string',

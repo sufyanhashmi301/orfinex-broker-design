@@ -18,7 +18,8 @@ class IbGroup extends Model
     protected $fillable = [
         'name', // Fillable attributes
         'desc',
-        'status'
+        'status',
+        'is_global_account'
     ];
 
     /**

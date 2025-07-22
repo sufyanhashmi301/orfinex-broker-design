@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\PlatformLink;
 use App\Models\IbGroup;
 use App\Traits\ForexApiTrait;
-
+use App\Models\UserMeta;
 class ForexSchemaController extends Controller
 {
     use ForexApiTrait;
@@ -17,52 +17,95 @@ class ForexSchemaController extends Controller
     {
         try {
             $user = auth()->user();
-            $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $user);
-
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-
-            $globalSchemas = ForexSchema::active()
-                ->traderType()
-                ->where('is_global', 1)
-                ->get();
-
-            $userSchemas = ForexSchema::active()
-                ->traderType()
+    
+            // Get user's master IB status
+            $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
+                ->where('meta_key', 'is_part_of_master_ib')
+                ->value('meta_value');
+    
+            // Base query for all schemas
+            $baseQuery = ForexSchema::active()->traderType();
+    
+            // If user is NOT part of master IB, show ALL accounts immediately
+            if (!$isPartOfMasterIb) {
+                $schemas = $baseQuery->get()
+                    ->unique('id')
+                    ->sortBy('priority')
+                    ->values();
+    
+                $activePlatform = setting('active_trader_type', 'features');
+                $platformLinks = PlatformLink::where('platform', $activePlatform)
+                    ->where('status', 1)
+                    ->get();
+    
+                return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
+            }
+    
+            // Initialize collections
+            $userSchemas = $baseQuery->clone()
+                ->where('account_category_id', '!=', 1)
                 ->relevantForUser($user->country, $tagNames)
                 ->get();
-
+    
             $schemas = collect();
-
-            if ($isPartOfMasterIb) {
-                $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
-
+            $globalSchemasFromRules = collect(); // For global accounts from rebate rules
+            $globalSchemasFromSetting = collect(); // For global accounts from IB group setting
+    
+            if ($user->ib_group_id) {
+                $ibGroup = IbGroup::with(['rebateRules.forexSchemas'])->find($user->ib_group_id);
+    
                 if ($ibGroup) {
+                    // Get ALL schemas from rebate rules (including global accounts)
                     foreach ($ibGroup->rebateRules as $rule) {
-                        $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+                        $ruleSchemas = $rule->forexSchemas()
+                            ->where('status', true)
+                            ->get();
+                        
+                        $schemas = $schemas->merge($ruleSchemas);
+                        
+                        // Collect global accounts from rebate rules
+                        $globalSchemasFromRules = $globalSchemasFromRules->merge(
+                            $ruleSchemas->where('account_category_id', 1)
+                        );
+                    }
+    
+                    // Include additional global schemas if IB group has global access enabled
+                    if ($ibGroup->is_global_account) {
+                        $globalSchemasFromSetting = $baseQuery->clone()
+                            ->where('account_category_id', 1)
+                            ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
+                            ->get();
                     }
                 }
             }
-            $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
+    
+            // Merge all schemas:
+            // 1. Schemas from rebate rules (including global accounts)
+            // 2. User-specific schemas
+            // 3. Additional global schemas if enabled
+            $schemas = $schemas->merge($userSchemas)
+                ->merge($globalSchemasFromSetting)
                 ->unique('id')
                 ->sortBy('priority')
                 ->values();
-
+    
             $activePlatform = setting('active_trader_type', 'features');
-            $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
-
+            $platformLinks = PlatformLink::where('platform', $activePlatform)
+                ->where('status', 1)
+                ->get();
+    
             return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
-
+    
         } catch (\Exception $e) {
-            // Log the error with detailed context
             \Log::error('Error in ForexSchemaController@index', [
                 'user_id' => auth()->id(),
                 'message' => $e->getMessage(),
             ]);
-
+    
             return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
         }
     }
-
 
     public function schemaPreview($id)
     {

@@ -65,6 +65,7 @@ class IBGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name',
             'status' => 'required|boolean',
+            'is_global_account' => 'required|boolean',
             'rebate_rule_id.*' => 'nullable|exists:rebate_rules,id',
         ]);
 
@@ -78,8 +79,7 @@ class IBGroupController extends Controller
         $request['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         // Create the IB Group
-        $ibGroup = IbGroup::create($request->only(['name', 'desc']) + ['status' => $request->input('status', 1)]);
-
+        $ibGroup = IbGroup::create($request->only(['name', 'desc', 'is_global_account']) + ['status' => $request->input('status', 1)]);
         // Attach Rebate Rules
         $ibGroup->rebateRules()->sync($rebateRuleIds);
 
@@ -127,6 +127,7 @@ class IBGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name,' . $id,
             'status' => 'required|boolean',
+            'is_global_account' => 'required|boolean',
             'rebate_rule_id.*' => 'nullable|exists:rebate_rules,id',
         ]);
 
@@ -146,8 +147,7 @@ class IBGroupController extends Controller
         $request['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         // Update IB Group details
-        $ibGroup->update($request->only(['name', 'desc', 'status']));
-
+        $ibGroup->update($request->only(['name', 'desc', 'status', 'is_global_account']));
         // Attach Rebate Rules
         $ibGroup->rebateRules()->sync($rebateRuleIds);
 

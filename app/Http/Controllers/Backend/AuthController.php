@@ -98,12 +98,13 @@ class AuthController extends Controller
 //            dd($loggedInUser);
 
 //            if ($loggedInUser->hasRole('Super-Admin')) {
-                return redirect()->route('admin.dashboard');
+//                return redirect()->route('admin.dashboard');
 //            }else{
 //                return redirect()->route('admin.staff.dashboard');
 //            }
 
-
+            // Temporarily redirect to users page
+            return redirect()->route('admin.user.index');
         }
 
         notify()->warning('The provided credentials do not match our records.');

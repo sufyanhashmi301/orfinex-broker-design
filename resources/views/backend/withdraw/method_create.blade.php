@@ -18,7 +18,12 @@
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
                     <div class="input-area relative max-w-xs mb-5">
-                        <label class="form-label" for="">{{ __('Add Withdraw Logo:') }}</label>
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload an image to visually identify this withdraw method">
+                                {{ __('Add Method Logo') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         <div class="wrap-custom-file">
                             <input
                                 type="file"
@@ -40,10 +45,13 @@
 
                         @if($type == 'auto')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
-                                <select name="gateway_id"
-                                        class="form-control w-100"
-                                        id="gateway-select">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the payment gateway (e.g., Stripe, PayPal) for automatic processing">
+                                        {{ __('Automatic Gateway') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <select name="gateway_id" class="form-control w-100" id="gateway-select">
                                     <option>{{ __('Select Gateway') }}</option>
                                     @foreach($gateways as $gateway)
                                         <option data-currencies="{{ $gateway->supported_currencies }}"
@@ -53,8 +61,12 @@
                                 </select>
                             </div>
                             <div class="input-area relative">
-                                <label class="form-label"
-                                       for="">{{ __('Gateway Supported Currency:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The currency used by the selected gateway (e.g., USD, EUR)">
+                                        {{ __('Gateway Supported Currency') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="currency" class="form-control w-100" id="currency">
 
                                 </select>
@@ -62,7 +74,12 @@
                         @endif
 
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Name:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a user-friendly name for this method">
+                                    {{ __('Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -72,7 +89,12 @@
 
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Currency:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the currency in which withdrawal method will be accepted">
+                                        {{ __('Currency') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 {{-- <input
                                     type="text"
                                     class="form-control"
@@ -91,7 +113,12 @@
                         @endif
 
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Convention Rate:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Define the conversion from 1 {{ $currency }} to the target currency">
+                                    {{ __('Convention Rate') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{'1 '.' '.$currency. ' ='}}
@@ -102,7 +129,12 @@
                         </div>
 
                         <div class="input-area relative position-relative">
-                            <label class="form-label" for="">{{ __('Charges:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set the transaction fee as a percentage or fixed amount">
+                                    {{ __('Charges') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="relative">
                                 <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="charge"/>
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -114,7 +146,12 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum withdraw allowed using this method">
+                                    {{ __('Minimum Withdraw') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="min_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -123,7 +160,12 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Maximum Withdraw:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The maximum withdraw limit for this method">
+                                    {{ __('Maximum Withdraw') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="max_withdraw"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -134,7 +176,12 @@
 
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Processing Time:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Specify the expected time to process a withdraw (e.g., 1-2 hours)">
+                                        {{ __('Processing Time') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="relative">
                                     <input type="text" name="required_time" class="form-control mb-0"/>
                                     <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -148,7 +195,12 @@
                             </div>
                         @endif
                         <div class="input-area relative md:col-span-2">
-                            <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select ‘All’ to make this payment method available in all countries">
+                                    {{ __('Select Countries Authorized to Use') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <select name="country[]" class="select2 form-control" placeholder="Manage Country" multiple>
                                 @foreach( getCountries() as $country)
                                     <option  value="{{ $country['name'] }}">
@@ -174,10 +226,14 @@
 {{--                                </select>--}}
 {{--                            </div>--}}
                         <div class="input-area relative flex items-center space-x-7">
-                            <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
+                            <label class="form-label !w-auto" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable the method for users">
+                                    {{ __('Status') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="form-switch ps-0">
                                 <input
-                                    class="form-check-input"
                                     type="hidden"
                                     value="0"
                                     name="status"

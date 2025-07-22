@@ -4,17 +4,30 @@
     <input type="hidden" name="id" value="{{ $socialLink->id }}">
     <div class="space-y-5">
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Title') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the social link title">
+                    {{ __('Title') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input type="text" name="title" class="form-control" value="{{ $socialLink->title }}" readonly>
         </div>
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Link') }}</label>
+            <label for="" class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the full social URL">
+                    {{ __('Link') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
             <input type="url" name="link" class="form-control" value="{{ $socialLink->link }}">
         </div>
         <div class="input-area">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0">
-                    {{ __('Status') }}
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable or disable this link">
+                        {{ __('Status') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
                 </label>
                 <div class="form-switch ps-0">
                     <input class="form-check-input" type="hidden" value="0" name="status">

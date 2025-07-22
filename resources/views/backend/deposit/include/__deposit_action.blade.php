@@ -10,98 +10,113 @@
     </button>
 </div>
 <div class="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
-    <form action="{{ route('admin.deposit.action.now') }}" method="post" class="space-y-5">
+    <form action="{{ route('admin.deposit.action.now') }}" method="post">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
     {{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
-
-    <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
-        <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-            {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
-        </li>
-    </ul>
-        <div class="input-area">
-            <label class="form-label" for="">{{ __('Deposited Amount:') }}</label>
-            <div class="joint-input relative">
-                <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
-                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="currency">
-                    {{$currency}}
-                </span>
-            </div>
-        </div>
-        @if($data->pay_currency != $currency)
+        <div class="space-y-5">
+            <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded">
+                <li class="list-group-item dark:text-slate-300 block py-2 px-3">
+                    {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
+                </li>
+            </ul>
             <div class="input-area">
-                <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
+                <label class="form-label" for="">
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Amount deposited by the user">
+                        {{ __('Deposited Amount') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
+                </label>
                 <div class="joint-input relative">
-                    <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
-                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="converted-currency">
-                        {{$data->pay_currency}}
+                    <input type="text" name="final_amount" id="amount"  value="{{$data->amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
+                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="currency">
+                        {{$currency}}
                     </span>
                 </div>
-                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
             </div>
-        @endif
+            @if($data->pay_currency != $currency)
+                <div class="input-area">
+                    <label class="form-label" for="">
+                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Amount deposited by the user in the currency of the payment method">
+                            {{ __('Conversion Amount') }}
+                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                        </span>
+                    </label>
+                    <div class="joint-input relative">
+                        <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control !pr-12"/>
+                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1" id="converted-currency">
+                            {{$data->pay_currency}}
+                        </span>
+                    </div>
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
+                </div>
+            @endif
 
-        <ul class="rounded border dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700 px-3 mb-4">
-            <li class="block text-sm py-[8px]">
-                {{ __('Method: ') . $data->method }}
-            </li>
-            @php
-                $manualData = json_decode($data->manual_field_data, true);
-            @endphp
+            <ul class="rounded border dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700 px-3">
+                <li class="block text-sm py-[8px]">
+                    {{ __('Method: ') . $data->method }}
+                </li>
+                @php
+                    $manualData = json_decode($data->manual_field_data, true);
+                @endphp
 
-            @foreach($manualData as $key => $value)
-                <li class="block py-[8px]">
-                    <label class="form-label">{{ $key }}:</label>
-                    @if(is_array($value))
-                        @if(isset($value['value']))
-                            @if(is_string($value['value']) && file_exists('assets/'.$value['value']))
-                                <img src="{{ asset($value['value']) }}" alt=""/>
+                @foreach($manualData as $key => $value)
+                    <li class="block py-[8px]">
+                        <label class="form-label">{{ $key }}:</label>
+                        @if(is_array($value))
+                            @if(isset($value['value']))
+                                @if(is_string($value['value']) && file_exists('assets/'.$value['value']))
+                                    <img src="{{ asset($value['value']) }}" alt=""/>
+                                @else
+                                    <strong>{{ $value['value'] }}</strong>
+                                @endif
                             @else
-                                <strong>{{ $value['value'] }}</strong>
+                                <ul>
+                                    @foreach($value as $subKey => $subValue)
+                                        @if(is_array($subValue))
+                                            <li>
+                                                @foreach($subValue as $deepKey => $deepValue)
+                                                    @if(is_string($deepValue) && file_exists('assets/'.$deepValue))
+                                                        <span class="block"><strong>{{ $deepKey }}:</strong> <img src="{{ asset($deepValue) }}" alt=""/></span>
+                                                    @else
+                                                        <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
+                                                    @endif
+                                                @endforeach
+                                            </li>
+                                        @else
+                                            @if(is_string($subValue) && file_exists('assets/'.$subValue))
+                                                <li><strong>{{ $subKey }}:</strong> <img src="{{ asset($subValue) }}" alt=""/></li>
+                                            @else
+                                                <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </ul>
                             @endif
                         @else
-                            <ul>
-                                @foreach($value as $subKey => $subValue)
-                                    @if(is_array($subValue))
-                                        <li>
-                                            @foreach($subValue as $deepKey => $deepValue)
-                                                @if(is_string($deepValue) && file_exists('assets/'.$deepValue))
-                                                    <span class="block"><strong>{{ $deepKey }}:</strong> <img src="{{ asset($deepValue) }}" alt=""/></span>
-                                                @else
-                                                    <span class="block"><strong>{{ $deepKey }}:</strong> {{ $deepValue }}</span>
-                                                @endif
-                                            @endforeach
-                                        </li>
-                                    @else
-                                        @if(is_string($subValue) && file_exists('assets/'.$subValue))
-                                            <li><strong>{{ $subKey }}:</strong> <img src="{{ asset($subValue) }}" alt=""/></li>
-                                        @else
-                                            <li><strong>{{ $subKey }}:</strong> {{ $subValue }}</li>
-                                        @endif
-                                    @endif
-                                @endforeach
-                            </ul>
+                            @if(is_string($value) && file_exists('assets/'.$value))
+                                <img src="{{ asset($value) }}" alt=""/>
+                            @else
+                                <strong>{{ $value }}</strong>
+                            @endif
                         @endif
-                    @else
-                        @if(is_string($value) && file_exists('assets/'.$value))
-                            <img src="{{ asset($value) }}" alt=""/>
-                        @else
-                            <strong>{{ $value }}</strong>
-                        @endif
-                    @endif
-                </li>
-            @endforeach
-        </ul>
+                    </li>
+                @endforeach
+            </ul>
 
-        <div class="input-area">
-            <label for="" class="form-label">{{ __('Detail Message') }}</label>
-            <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
-            <div class="text-xs text-info mt-1">{{ __('Note: This message will be sent to the user on any action you take.') }}</div>
+            <div class="input-area">
+                <label for="" class="form-label">
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the details of the deposit">
+                        {{ __('Detail Message') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
+                </label>
+                <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
+                <div class="text-xs text-info mt-1">{{ __('Note: This message will be sent to the user on any action you take.') }}</div>
+            </div>
         </div>
-
     @if($data->status->value=='pending' || $data->status->value=='review')
-        <div class="action-btns text-right">
+        <div class="action-btns text-right mt-10">
             @can('deposit-approve')
             <button type="submit" name="approve" value="yes" class="btn btn-dark inline-flex items-center justify-center mr-2">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

@@ -77,7 +77,7 @@
     </div>
     <!-- Modal for Edit Language Key-->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editKeyword" tabindex="-1" aria-labelledby="editKeyword" aria-hidden="true">
-        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                 <div class="flex items-center justify-between p-5">
                     <h3 class="text-xl font-medium dark:text-white capitalize">
@@ -103,16 +103,16 @@
                                 <input type="hidden" class="form-control key-group" name="group">
                                 <input type="hidden" class="form-control key-language" name="language">
                             </div>
-                            <div class="action-btns text-right">
-                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                    {{ __('Save Changes') }}
-                                </button>
-                                <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button" data-bs-dismiss="modal" aria-label="Close">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                    Close
-                                </a>
-                            </div>
+                        </div>
+                        <div class="action-btns text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Save Changes') }}
+                            </button>
+                            <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Close') }}
+                            </a>
                         </div>
                     </form>
 

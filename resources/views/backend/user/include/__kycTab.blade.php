@@ -22,7 +22,12 @@
                     @csrf
                     <div class="space-y-5">
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('KYC Level') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="KYC level for the user">
+                                    {{ __('KYC Level') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <select name="kyc_level" id="kycLevelSelect" class="select2 form-control w-full" data-placeholder="Select Level">
                                 <option value="">{{ __('Select Level') }}</option>
                                 <option value="1">{{ __('Level 1') }}</option>
@@ -31,7 +36,12 @@
                             </select>
                         </div>
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('Verification Type') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Verification type for the user">
+                                    {{ __('Verification Type') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <select id="kycTypeSelect" name="kyc_id" class="select2 form-control" data-placeholder="Select Type">
                                 <option value="">{{ __('Select Type') }}</option>
                             </select>
@@ -40,7 +50,10 @@
                             <div class="input-area relative">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
-                                        {{ __('Auto Approve') }}
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Auto approve the user's KYC">
+                                            {{ __('Auto Approve') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
                                         <input class="form-check-input" type="hidden" value="0" name="is_auto_approve"/>
@@ -56,7 +69,10 @@
                     </div>
                     <div class="input-area relative text-right mt-10">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                            {{ __('Save Changes') }}
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Save Changes') }}
+                            </span>
                         </button>
                     </div>
                 </form>

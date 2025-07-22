@@ -160,6 +160,10 @@
                     }
                 });
                 $('#rebate_rule_id_edit').select2();
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             }).fail(function () {
                 alert('Error loading the edit form.');
             });

@@ -7,20 +7,22 @@
 >
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-            <div class="modal-body p-6 py-8 text-center space-y-5">
-                <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
-                    <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
+            <div class="modal-body p-6 py-10 text-center">
+                <div class="space-y-3">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
+                        <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
+                    </div>
+                    <div class="title">
+                        <h4 class="text-xl font-medium dark:text-white capitalize" id="deleteReferralConfirmationModalLabel">
+                            {{ __('Are you sure?') }}
+                        </h4>
+                    </div>
+                    <p class="dark:text-slate-300">
+                        Are you sure you want to remove referral of
+                        <strong><span id="referralName"></span></strong>?
+                    </p>
                 </div>
-                <div class="title">
-                    <h4 class="text-xl font-medium dark:text-white capitalize" id="deleteReferralConfirmationModalLabel">
-                        {{ __('Are you sure?') }}
-                    </h4>
-                </div>
-                <p class="dark:text-slate-300">
-                    Are you sure you want to remove referral of
-                    <strong><span id="referralName"></span></strong>?
-                </p>
-                <div class="action-btns">
+                <div class="action-btns mt-10">
                     <form id="deleteDirectReferral" action="{{route('admin.referral.direct.delete')}}" method="POST" style="display: inline;">
                         <input type="hidden" name="id"  id="referralId">
 

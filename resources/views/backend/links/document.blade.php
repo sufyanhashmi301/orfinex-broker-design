@@ -96,6 +96,10 @@
             $.get(url, function (response) {
                 $('#editDocumentModal').modal('show');
                 $('#edit-document-body').append(response);
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             });
         });
 

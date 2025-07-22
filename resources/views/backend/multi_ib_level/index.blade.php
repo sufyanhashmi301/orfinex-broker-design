@@ -97,6 +97,10 @@
             $.get(url, function (data) {
                 $('#edit-level-body').append(data);
                 $('#editLevelModal').modal('show'); // Correct modal ID
+                tippy(".shift-Away", {
+                    placement: "top",
+                    animation: "shift-away"
+                });
             }).fail(function () {
                 alert('Error loading the edit form.'); // Error handling
             });

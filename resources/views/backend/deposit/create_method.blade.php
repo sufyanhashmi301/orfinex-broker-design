@@ -19,7 +19,12 @@
                     <div class="grid md:grid-cols-2 grid-cols-1 gap-7">
                         <div class="md:col-span-2">
                             <div class="input-area relative max-w-xs">
-                                <label class="form-label" for="">{{ __('Add Method Logo:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload an image to visually identify this deposit method">
+                                        {{ __('Add Method Logo') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -40,7 +45,12 @@
                         </div>
                         @if($type == 'auto')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the payment gateway (e.g., Stripe, PayPal) for automatic processing">
+                                        {{ __('Automatic Gateway') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="gateway_id"
                                         class="form-control w-100"
                                         id="gateway-select">
@@ -53,8 +63,12 @@
                                 </select>
                             </div>
                             <div class="input-area relative">
-                                <label class="form-label"
-                                       for="">{{ __('Gateway Supported Currency:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The currency used by the selected gateway (e.g., USD, EUR)">
+                                        {{ __('Gateway Supported Currency') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <select name="currency" class="form-control w-100" id="currency">
 
                                 </select>
@@ -62,7 +76,12 @@
                         @endif
 
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Name:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a user-friendly name for this deposit method">
+                                    {{ __('Name') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -71,7 +90,12 @@
                         </div>
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Code Name:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Internal short identifier for this method (e.g., BANK_WIRE)">
+                                        {{ __('Code Name') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -82,7 +106,12 @@
 
                         @if($type == 'manual')
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Currency:') }}</label>
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the currency in which deposits will be accepted">
+                                        {{ __('Currency') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
                                 {{-- <input
                                     type="text"
                                     class="form-control"
@@ -100,7 +129,12 @@
                             </div>
                         @endif
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Currency Symbol:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
+                                    {{ __('Currency Symbol') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control currency-symbol"
@@ -109,7 +143,12 @@
                             />
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Define the conversion from 1 {{ $currency }} to the target currency">
+                                    {{ __('Conversion Rate') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{'1 '.' ' . $currency. ' ='}}
@@ -119,7 +158,12 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Charges:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set the transaction fee as a percentage or fixed amount">
+                                    {{ __('Charges') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="relative">
                                 <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="charge"/>
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
@@ -131,7 +175,12 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum deposit allowed using this method">
+                                    {{ __('Minimum Deposit') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <input type="text" name="minimum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -141,7 +190,12 @@
 
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The maximum deposit limit for this method">
+                                    {{ __('Maximum Deposit') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <div class="joint-input relative">
                                 <input type="text" name="maximum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -150,14 +204,19 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Processing Time:') }}</label>
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Specify the expected time to process a deposit (e.g., 1-2 hours)">
+                                    {{ __('Processing Time') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="text" name="processing_time" class="form-control"/>
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="flex items-center">
-                                    {{ __('Select Countries Authorized to Use:') }}
-                                    <iconify-icon class="toolTip onTop text-base ml-1" icon="lucide:info" data-tippy-content="Select ‘All’ to make this payment method available in all countries."></iconify-icon>
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select ‘All’ to make this payment method available in all countries">
+                                    {{ __('Select Countries Authorized to Use') }}
+                                    <iconify-icon class="text-[16px]" icon="mdi:information-slab-circle-outline"></iconify-icon>
                                 </span>
                             </label>
                             <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
@@ -181,7 +240,12 @@
                             </div>
                             <div class="md:col-span-2">
                                 <div class="input-area relative fw-normal">
-                                    <label for="" class="form-label">{{ __('Payment Details:') }}</label>
+                                    <label for="" class="form-label">
+                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable this ranking level">
+                                            {{ __('Payment Details') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
                                     <div class="site-editor">
                                         <textarea class="summernote"></textarea>
                                     </div>
@@ -193,7 +257,10 @@
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    {{ __('Status:') }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable the method for users">
+                                        {{ __('Status') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="status">

@@ -9,7 +9,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 @foreach($fields['elements'] as $key => $field)
                     <div class="site-input-groups row">
-                        <label class="form-label">{{ __($field['label']) }}</label>
+                        <label class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                {{ __($field['label']) }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
                         {{--{{dd($field['name'])}}--}}
                         @if($field['name'] == 'withdraw_deduction')
                         <div class="input-area">

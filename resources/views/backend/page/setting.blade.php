@@ -11,7 +11,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Username:') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Show or require a username field">
+                                {{ __('Username') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="username_show"/>
@@ -23,7 +26,10 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Phone Number:') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable phone number entry during signup">
+                                {{ __('Phone Number') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="phone_show"/>
@@ -35,7 +41,10 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Country:') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Show or require country selection">
+                                {{ __('Country') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="country_show"/>
@@ -47,7 +56,10 @@
                     </div>
                     <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
                         <label class="form-label !mb-0">
-                            {{ __('Referral Code:') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Allow users to enter a referral code">
+                                {{ __('Referral Code') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
                         <div class="form-switch ps-0 leading-[0]">
                             <input class="form-check-input" type="hidden" value="0" name="referral_code_show"/>
@@ -57,27 +69,43 @@
                             </label>
                         </div>
                     </div>
-                    <div class="relative">
-                        <input type="text" name="privacy_policy_title" class="form-control h-[42px] !pr-14" placeholder=" Privacy & Policy" value="{{ getPageSetting('privacy_policy_title') }}">
-                        <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
-                            <div class="form-switch ps-0 leading-[0]">
-                                <input class="form-check-input" type="hidden" value="0" name="privacy_policy_show"/>
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="privacy_policy_show" value="1" class="sr-only peer" @checked( getPageSetting('privacy_policy_show'))>
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
+                    <div class="input-area">
+                        <label class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to show/hide the link. Edit the title shown to users">
+                                {{ __('Privacy & Policy') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="privacy_policy_title" class="form-control h-[42px] !pr-14" placeholder="Privacy & Policy" value="{{ getPageSetting('privacy_policy_title') }}">
+                            <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                                <div class="form-switch ps-0 leading-[0]">
+                                    <input class="form-check-input" type="hidden" value="0" name="privacy_policy_show"/>
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="privacy_policy_show" value="1" class="sr-only peer" @checked( getPageSetting('privacy_policy_show'))>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="relative">
-                        <input type="text" name="client_agreement_title" class="form-control h-[42px] !pr-14" placeholder="Client Agreement" value="{{ getPageSetting('client_agreement_title') }}">
-                        <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
-                            <div class="form-switch ps-0 leading-[0]">
-                                <input class="form-check-input" type="hidden" value="0" name="client_agreement_show"/>
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="client_agreement_show" value="1" class="sr-only peer" @checked( getPageSetting('client_agreement_show'))>
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
+                    <div class="input-area">
+                        <label class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to show/hide the link. Edit the title shown to users">
+                                {{ __('Client Agreement') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="client_agreement_title" class="form-control h-[42px] !pr-14" placeholder="Client Agreement" value="{{ getPageSetting('client_agreement_title') }}">
+                            <div class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                                <div class="form-switch ps-0 leading-[0]">
+                                    <input class="form-check-input" type="hidden" value="0" name="client_agreement_show"/>
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="client_agreement_show" value="1" class="sr-only peer" @checked( getPageSetting('client_agreement_show'))>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

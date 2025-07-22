@@ -1,11 +1,16 @@
-<form action="{{ route('admin.multi-ib-level.update', $level->id) }}" method="post" class="space-y-4">
+<form action="{{ route('admin.multi-ib-level.update', $level->id) }}" method="post">
     @csrf
     @method('PUT')
-
-    <div class="input-area">
-        <label class="form-label">{{ __('Title:') }}</label>
-        <input type="text" name="title" value="{{ old('title', $level->title) }}" class="form-control" placeholder="Level Title" required/>
-    </div>
+    <div class="space-y-5">
+        <div class="input-area">
+            <label class="form-label">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the name of the level">
+                    {{ __('Title') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
+            <input type="text" name="title" value="{{ old('title', $level->title) }}" class="form-control" placeholder="Level Title" required/>
+        </div>
 
 {{--    <div class="input-area">--}}
 {{--        <label class="form-label">{{ __('Level Order:') }}</label>--}}
@@ -24,10 +29,15 @@
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
-
-    <div class="input-area text-right">
-        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+    </div>
+    <div class="input-area text-right mt-10">
+        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
             {{ __('Save Changes') }}
         </button>
+        <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+            {{ __('Close') }}
+        </a>
     </div>
 </form>

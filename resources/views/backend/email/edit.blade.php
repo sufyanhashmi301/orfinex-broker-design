@@ -63,11 +63,11 @@
                         <input type="hidden" name="page" value="{{ request('page') }}">
                         <input type="hidden" name="id" value="{{ $template->id }}">
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Email Type') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info"
-                                              data-tippy-theme="dark" title="Leave it blank if you don't need the title"
-                                              data-tippy-content="Leave it blank if you don't need the title"></iconify-icon>
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Leave it blank if you don't need the title">
+                                    {{ __('Email Type') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="md:col-span-9 col-span-12">
                                 <input type="text" name="title" class="form-control" value="{{ $template->title }}"
@@ -75,11 +75,11 @@
                             </div>
                         </div>
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Email Subject') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info"
-                                              data-tippy-theme="dark" title=""
-                                              data-tippy-content="Here the Email Subject will come"></iconify-icon>
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Here the Email Subject will come">
+                                    {{ __('Email Subject') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="md:col-span-9 col-span-12">
                                 <input type="text" name="subject" class="form-control" value="{{ $template->subject }}"
@@ -87,11 +87,11 @@
                             </div>
                         </div>
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Message Body') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info"
-                                              data-tippy-theme="dark" title=""
-                                              data-tippy-content="Write the main Messages here"></iconify-icon>
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the main Messages here">
+                                    {{ __('Message Body') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="md:col-span-9 col-span-12">
                                 {{--                       <textarea name="message_body" class="form-control basicTinymce" cols="30">--}}
@@ -106,11 +106,11 @@
                             </div>
                         </div>
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Button') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info"
-                                              data-tippy-theme="dark" title=""
-                                              data-tippy-content="Leave it blank if you don't need the button"></iconify-icon>
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Leave it blank if you don't need the button">
+                                    {{ __('Button') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="md:col-span-4 col-span-12">
                                 <input type="text" name="button_level" class="form-control"
@@ -122,11 +122,11 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-12 gap-5 mb-6">
-                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
-                                {{ __('Secondary Message Body') }}
-                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info"
-                                              data-tippy-theme="dark" title=""
-                                              data-tippy-content="Newslatter Bottom Status"></iconify-icon>
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Newslatter Bottom Status">
+                                    {{ __('Secondary Message Body') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
                             </label>
                             <div class="md:col-span-9 col-span-12">
                                 <div class="input-area mb-5">
@@ -153,7 +153,10 @@
                                 <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <label class="form-label !w-auto pt-0">
-                                            {{ __('Template Status') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this template">
+                                                {{ __('Template Status') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="form-switch ps-0">
                                             <input type="hidden" value="0" name="status">
@@ -168,7 +171,10 @@
                                     </div>
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <label class="form-label !w-auto pt-0">
-                                            {{ __('Disclaimer') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a disclaimer message to the email">
+                                                {{ __('Disclaimer') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="form-switch ps-0">
                                             <input type="hidden" value="0" name="is_disclaimer">
@@ -176,14 +182,16 @@
                                                 class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                                 <input type="checkbox" name="is_disclaimer" value="1"
                                                        class="sr-only peer" @checked($template->is_disclaimer)>
-                                                <span
-                                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                             </label>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <label class="form-label !w-auto pt-0">
-                                            {{ __('Risk Warning') }}
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a risk-related note to the email footer">
+                                                {{ __('Risk Warning') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                         <div class="form-switch ps-0">
                                             <input type="hidden" value="0" name="is_risk_warning">
@@ -201,7 +209,10 @@
                         </div>
                         <div class="text-right mt-10">
                             <button type="button" class="btn btn-dark inline-flex items-center justify-center email-template-form">
-                                {{ __('Save Changes') }}
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Save Changes') }}
+                                </span>
                             </button>
                         </div>
                     </form>

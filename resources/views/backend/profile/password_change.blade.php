@@ -16,22 +16,36 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="md:col-span-2">
                             <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Old Password:') }}</label>
-                                <input type="password" name="current_password" class="form-control"
-                                    required="">
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter your current password">
+                                        {{ __('Old Password') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="password" name="current_password" class="form-control" required="">
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('New Password:') }}</label>
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a new secure password">
+                                    {{ __('New Password') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
                             <input type="password" name="new_password" class="form-control" required="">
                         </div>
                         <div class="input-area relative">
-                            <label for="" class="form-label">{{ __('Confirm Password:') }}</label>
-                            <input type="password" name="new_confirm_password" class="form-control"
-                                required="">
+                            <label for="" class="form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Re-enter the new password to confirm">
+                                    {{ __('Confirm Password') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="password" name="new_confirm_password" class="form-control" required="">
                         </div>
                         <div class="md:col-span-2 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Change Password') }}
                             </button>
                         </div>

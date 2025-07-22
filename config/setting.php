@@ -9,7 +9,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_title', // unique name for field
                 'label' => 'Site Title', // you know what label it is
-                'description' => '',
+                'description' => 'The main title of your platform, displayed in browser tabs and site headers',
                 'rules' => 'required|min:2|max:50', // validation rule of laravel
                 'value' => 'CRM', // default value if you want
             ],
@@ -400,6 +400,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_title', // unique name for field
                 'label' => 'Site Title', // you know what label it is
+                'description' => 'Displayed name of your site or portal',
                 'rules' => 'required|min:2|max:50', // validation rule of laravel
                 'value' => 'Brokeret', // default value if you want
             ],
@@ -408,6 +409,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_email', // unique name for field
                 'label' => 'Site Email', // you know what label it is
+                'description' => 'Default email used for system notifications',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'admin@tdevs.co', // default value if you want
             ],
@@ -416,6 +418,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'support_email', // unique name for field
                 'label' => 'Support Email', // you know what label it is
+                'description' => 'Email address for customer support inquiries',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'support@tdevs.co', // default value if you want
             ],
@@ -424,6 +427,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'company_website', // unique name for field
                 'label' => 'Company Website', // you know what label it is
+                'description' => 'Public URL of the company website',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'https://company.com', // default value if you want
             ],
@@ -432,6 +436,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'company_phone', // unique name for field
                 'label' => 'Company Phone', // you know what label it is
+                'description' => 'Official contact number for the company',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '123456789', // default value if you want
             ],
@@ -440,6 +445,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'registered_address', // unique name for field
                 'label' => 'Registered Address', // you know what label it is
+                'description' => "Company's legal registration number",
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'United State', // default value if you want
             ],
@@ -448,6 +454,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'registered_number', // unique name for field
                 'label' => 'Registered Number', // you know what label it is
+                'description' => 'Official address used for registration',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '123456789', // default value if you want
             ],
@@ -456,6 +463,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'copyright_text', // unique name for field
                 'label' => 'Copyright Text', // you know what label it is
+                'description' => 'Footer text for copyright or legal notice',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'All rights reserved @tdevs 2022', // default value if you want
             ],
@@ -503,6 +511,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_admin_prefix', // unique name for field
                 'label' => 'Site Admin Prefix', // you know what label it is
+                'description' => 'Custom URL path to access the admin panel (e.g., yourdomain.com/backoffice)',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'admin', // default value if you want
             ],
@@ -511,6 +520,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_timezone', // unique name for field
                 'label' => 'Site Timezone', // you know what label it is
+                'description' => 'Sets the default timezone for all system timestamps and activities',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
                 'options' => [
@@ -522,6 +532,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'session_expiry', // unique name for field
                 'label' => 'Session Expiry', // you know what label it is
+                'description' => 'Defines how long a user remains logged in without activity',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '60', // default value if you want
                 'options' => [
@@ -537,6 +548,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_whitelabel', // unique name for field
                 'label' => 'White Label', // you know what label it is
+                'description' => 'Toggle to hide branding and white-label the platform interface',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -551,6 +563,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'new_trading_accounts', // unique name for field
                 'label' => 'New Trading Accounts', // you know what label it is
+                'description' => 'Allow creation of new accounts',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -559,6 +572,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => '90_days_in_activity_trade_disable', // unique name for field
                 'label' => '90 Days In-Activity Trade Disable', // you know what label it is
+                'description' => 'Disable trading after 90 days of no activity',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -567,6 +581,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'delete_archived_accounts', // unique name for field
                 'label' => 'Delete Archived Accounts', // you know what label it is
+                'description' => 'Enable deletion of archived accounts',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -575,6 +590,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'automatic_withdrawals', // unique name for field
                 'label' => 'Automatic Withdrawals', // you know what label it is
+                'description' => 'Enable automatic withdrawal handling',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -583,6 +599,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'automatic_deposits', // unique name for field
                 'label' => 'Automatic Deposits', // you know what label it is
+                'description' => 'Enable auto-processing of deposits',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -591,6 +608,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'disable_trading', // unique name for field
                 'label' => 'Disable Trading (No Balance)', // you know what label it is
+                'description' => 'Block trading when balance is zero',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -599,6 +617,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'user_ranking', // unique name for field
                 'label' => 'User Ranking (show/hide)', // you know what label it is
+                'description' => 'Show or hide user performance ranking',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -607,6 +626,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_forex_group_range', // unique name for field
                 'label' => 'Forex Group Range', // you know what label it is
+                'description' => 'Enable control over allowed groups',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
@@ -615,6 +635,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
                 'label' => 'Forex Account Limit', // you know what label it is
+                'description' => 'Set max number of accounts per user',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
             ],
@@ -682,6 +703,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_name_edit', // unique name for field
                 'label' => 'Edit Name', // you know what label it is
+                'description' => 'Allow customers to edit their name',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -690,6 +712,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_phone_edit', // unique name for field
                 'label' => 'Edit Phone', // you know what label it is
+                'description' => 'Allow customers to edit their phone number',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -698,6 +721,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_username_edit', // unique name for field
                 'label' => 'Edit Username', // you know what label it is
+                'description' => 'Allow changing the username',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -706,6 +730,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_email_edit', // unique name for field
                 'label' => 'Edit Email', // you know what label it is
+                'description' => 'Allow email address changes',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -714,6 +739,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_country_edit', // unique name for field
                 'label' => 'Edit Country', // you know what label it is
+                'description' => 'Enable country field editing',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -722,6 +748,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'customer_dob_edit', // unique name for field
                 'label' => 'Edit Date Of Birth', // you know what label it is
+                'description' => 'Allow updating birth date info',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -730,6 +757,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'account_creation', // unique name for field
                 'label' => 'Account Creation', // you know what label it is
+                'description' => 'Permit creation of new accounts',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -738,6 +766,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'email_verification', // unique name for field
                 'label' => 'Email Verification', // you know what label it is
+                'description' => 'Require email verification',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -746,6 +775,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'kyc_verification', // unique name for field
                 'label' => 'KYC Verification', // you know what label it is
+                'description' => 'Require KYC verification',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -754,6 +784,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'fa_verification', // unique name for field
                 'label' => '2FA Verification', // you know what label it is
+                'description' => 'Enable two-factor authentication',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -762,6 +793,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'user_deposit', // unique name for field
                 'label' => 'Deposit', // you know what label it is
+                'description' => 'Allow customer to deposit funds',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -770,6 +802,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'user_withdraw', // unique name for field
                 'label' => 'Withdraw', // you know what label it is
+                'description' => 'Allow customer to withdraw funds',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -778,6 +811,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'user_tickets_feature', // unique name for field
                 'label' => 'Tickets Feature', // you know what label it is
+                'description' => 'Enable support ticket functionality',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1174,6 +1208,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'copy_trading_follower_access', // unique name for field
                 'label' => 'Copy Trading Follower Access(iframe)', // you know what label it is
+                'description' => 'URL (Iframe) for followers to sign up or access copy trading as subscribers',
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
@@ -1182,6 +1217,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'copy_trading_provider_access', // unique name for field
                 'label' => 'Copy Trading Provider Access(iframe)', // you know what label it is
+                'description' => 'URL (Iframe) for traders who want to register and provide strategies.',
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
@@ -1190,6 +1226,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'copy_trading_ratings', // unique name for field
                 'label' => 'Copy Trading Rating(iframe)', // you know what label it is
+                'description' => 'Embedded Iframe showing trader performance ratings on the platform',
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
@@ -1198,6 +1235,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'copy_trading_ratings_js', // unique name for field
                 'label' => 'Copy Trading Rating(Js)', // you know what label it is
+                'description' => 'JavaScript-based rating widget link, ideal for external websites or dynamic UI',
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
@@ -1206,6 +1244,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_copy_trading', // unique name for field
                 'label' => 'Status', // you know what label it is
+                'description' => 'Toggle to enable or disable the copy trading feature',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1322,6 +1361,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_internal_transfer', // unique name for field
                 'label' => 'Status', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1330,6 +1370,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'internal_min_send', // unique name for field
                 'label' => 'Internal Minimum Transfer', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1338,6 +1379,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'internal_max_send', // unique name for field
                 'label' => 'Internal Maximum Transfer', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1346,6 +1388,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'internal_send_charge_type', // unique name for field
                 'label' => 'Internal Transfer Type', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1354,6 +1397,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'internal_send_charge', // unique name for field
                 'label' => 'Internal Transfer Charge', // you know what label it is
+                'description' => '',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1362,6 +1406,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'internal_send_daily_limit', // unique name for field
                 'label' => 'Transfers Per Day', // you know what label it is
+                'description' => '',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 6, // default value if you want
             ],
@@ -1375,6 +1420,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'external_min_send', // unique name for field
                 'label' => 'External Minimum Transfer', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1383,6 +1429,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'external_max_send', // unique name for field
                 'label' => 'External Maximum Transfer', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1391,6 +1438,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'external_send_charge', // unique name for field
                 'label' => 'External Transfer Charge', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1399,6 +1447,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'external_send_charge_type', // unique name for field
                 'label' => 'External Transfer Type', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1407,6 +1456,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'external_send_daily_limit', // unique name for field
                 'label' => 'Transfers Per Day', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 6, // default value if you want
             ],
@@ -1415,6 +1465,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_external_transfer', // unique name for field
                 'label' => 'Status', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1423,6 +1474,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_external_transfer_auto_approve', // unique name for field
                 'label' => 'Status', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1431,6 +1483,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'is_external_transfer_purpose', // unique name for field
                 'label' => 'Status', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1444,6 +1497,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'wallet_exchange_charge_type', // unique name for field
                 'label' => 'Wallet Exchange Charge Type', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1452,6 +1506,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'wallet_exchange_charge', // unique name for field
                 'label' => 'Wallet Exchange Charge', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
@@ -1460,6 +1515,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'wallet_exchange_day_limit', // unique name for field
                 'label' => 'Wallet Exchange Limit', // you know what label it is
+                'description' => '',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
             ],
@@ -1468,6 +1524,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'withdraw_day_limit', // unique name for field
                 'label' => 'Withdraw Day Limit', // you know what label it is
+                'description' => '',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 11, // default value if you want
             ],
@@ -1476,6 +1533,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'investment_cancellation_daily_limit', // unique name for field
                 'label' => 'Investment Cancellation Daily Limit', // you know what label it is
+                'description' => '',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 6, // default value if you want
             ],
@@ -1490,6 +1548,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'pending_deposit_limit', // unique name for field
                 'label' => 'Pending Deposit Limit', // you know what label it is
+                'description' => 'Max pending deposits allowed per user',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
             ]
@@ -1503,6 +1562,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'pending_withdraw_limit', // unique name for field
                 'label' => 'Pending Withdraw Limit', // you know what label it is
+                'description' => 'Maximum number of withdrawal requests allowed to remain pending at a time',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
             ],
@@ -1511,6 +1571,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'min_ib_wallet_withdraw_limit', // unique name for field
                 'label' => 'Min IB Wallet Withdraw Limit', // you know what label it is
+                'description' => 'Minimum amount an IB user must have to withdraw from their wallet',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 100, // default value if you want
             ],
@@ -1519,6 +1580,7 @@ return [
                 'data' => 'int', // data type, string, int, boolean
                 'name' => 'withdraw_otp_expires', // unique name for field
                 'label' => 'Withdraw OTP Expires(In Minutes)', // you know what label it is
+                'description' => 'Time (in minutes) before the OTP for withdrawals becomes invalid',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 5, // default value if you want
             ],
@@ -1527,6 +1589,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'withdraw_otp', // unique name for field
                 'label' => 'Withdraw OTP', // you know what label it is
+                'description' => 'Enable this to require an OTP (One-Time Password) for withdrawals',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ]
@@ -1553,6 +1616,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'withdraw_deduction', // unique name for field
                 'label' => 'Withdraw Deduction', // you know what label it is
+                'description' => 'Choose if withdrawals are deducted immediately (On Request) or after approval (On Approval)',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1561,6 +1625,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'copy_trading', // unique name for field
                 'label' => 'Copy Trading', // you know what label it is
+                'description' => 'Enable or disable the Copy Trading feature for users',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1569,6 +1634,7 @@ return [
                 'data' => 'string',
                 'name' => 'active_trader_type',
                 'label' => 'Trader Type',
+                'description' => 'Specify which trading platform types are supported (e.g., MT5, X9, C_Trader, or All)',
                 'rules' => 'required', // Include options
                 'value' => \App\Enums\TraderType::MT5, // Default value
                 'options' => [
@@ -1583,6 +1649,7 @@ return [
                 'data' => 'string',
                 'name' => 'leverage_approval',
                 'label' => 'Leverage Approval',
+                'description' => 'Set leverage changes to be handled automatically or require admin approval',
                 'rules' => 'required', // Include options
                 'value' => 'auto', // Default value
                 'options' => [
@@ -1609,6 +1676,7 @@ return [
 //                'data' => 'string',
 //                'name' => 'active_data_sync_way',
 //                'label' => 'Trader Type',
+//                'description' =>> '',
 //                'rules' => 'required', // Include options
 //                'value' => \App\Enums\TraderType::MT5, // Default value
 //                'options' => [
@@ -1897,6 +1965,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'maintenance_mode', // unique name for field
                 'label' => 'Maintenance Mode', // you know what label it is
+                'description' => 'Do not enable it unless you want the site need to be under Maintenance',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1905,6 +1974,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'secret_key', // unique name for field
                 'label' => 'Secret Key', // you know what label it is
+                'description' => 'Remember the Secret Key. Use domain/secret-key to trun back the website live',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'secret', // default value if you want
             ],
@@ -1913,6 +1983,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'maintenance_title', // unique name for field
                 'label' => 'Title', // you know what label it is
+                'description' => 'Headline shown to users during maintenance',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'Site is not under maintenance', // default value if you want
             ],
@@ -1921,6 +1992,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'maintenance_text', // unique name for field
                 'label' => 'Maintenance Text', // you know what label it is
+                'description' => 'Custom message displayed to inform users of downtime',
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => 'Sorry for interrupt! Site will live soon.', // default value if you want
             ],
@@ -1934,6 +2006,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'gdpr_status', // unique name for field
                 'label' => 'GDPR Status', // you know what label it is
+                'description' => 'Toggle to enable or disable the GDPR notice on the site',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
@@ -1942,6 +2015,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'gdpr_button_label', // unique name for field
                 'label' => 'Button Label', // you know what label it is
+                'description' => 'Text shown on the GDPR button (e.g., Learn More)',
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => 'Learn More', // default value if you want
             ],
@@ -1950,6 +2024,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'gdpr_button_url', // unique name for field
                 'label' => 'Button URL', // you know what label it is
+                'description' => 'Link to your privacy policy or related page',
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => '/privacy-policy', // default value if you want
             ],
@@ -1958,6 +2033,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'gdpr_text', // unique name for field
                 'label' => 'GDPR Text', // you know what label it is
+                'description' => 'Message explaining your data collection purpose',
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
@@ -1997,6 +2073,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'disclaimer', // unique name for field
                 'label' => 'Disclaimer', // you know what label it is
+                'description' => 'General disclaimer shown on client-facing interfaces',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2005,6 +2082,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'risk_warning', // unique name for field
                 'label' => 'Risk Warning', // you know what label it is
+                'description' => 'Important risk disclosure for users',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2013,6 +2091,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'footer_content', // unique name for field
                 'label' => 'Footer', // you know what label it is
+                'description' => 'Text displayed at the bottom of public pages',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2135,6 +2214,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_disclaimer', // unique name for field
                 'label' => 'Disclaimer', // you know what label it is
+                'description' => 'Add a general disclaimer message that will appear at the end of each email',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2143,6 +2223,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_risk_warning', // unique name for field
                 'label' => 'Risk Warning', // you know what label it is
+                'description' => 'Include a cautionary statement to alert users of potential financial risks',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2151,6 +2232,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_footer', // unique name for field
                 'label' => 'Footer', // you know what label it is
+                'description' => 'Set the default email closing text',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -2165,6 +2247,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'referral_bonus', // unique name for field
                 'label' => 'Referral Bonus', // you know what label it is
+                'description' => 'Amount awarded to a user for referring a new customer',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 20, // default value if you want
             ],
@@ -2173,6 +2256,7 @@ return [
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'signup_bonus', // unique name for field
                 'label' => 'Sign Up Bonus', // you know what label it is
+                'description' => 'Bonus credited to users upon successful registration',
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 20, // default value if you want
             ],

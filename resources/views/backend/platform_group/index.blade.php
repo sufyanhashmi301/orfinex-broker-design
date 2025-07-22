@@ -42,15 +42,15 @@
 
     <!-- Modal for create manual group -->
     @can('manual-group-create')
-    @include('backend.platform_group.modal.__create_manual_group')
+        @include('backend.platform_group.modal.__create_manual_group')
     @endcan
 
     <!-- Modal for update manual group -->
     @can('manual-group-edit')
-    @include('backend.platform_group.modal.__edit_manual_group')
+        @include('backend.platform_group.modal.__edit_manual_group')
     @endcan
     <!-- Modal for delete manual group -->
     @can('manual-group-delete')
-    @include('backend.platform_group.modal.__delete')
+        @include('backend.platform_group.modal.__delete')
     @endcan
 @endsection

@@ -16,7 +16,10 @@
                         @if($field['type'] == 'url')
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <input
@@ -33,7 +36,10 @@
                         @else
                             <div class="input-area">
                                 <label for="" class="form-label">
-                                    {{ __($field['label']) }}
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                        {{ __($field['label']) }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
                                 </label>
                                 <input
                                     type="{{$field['type']}}"

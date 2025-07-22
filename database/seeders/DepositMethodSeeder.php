@@ -56,7 +56,7 @@ class DepositMethodSeeder extends Seeder
                 'maximum_deposit' => 5000,
                 'processing_time' => 'Instant',
                 'country' => ['All'],
-                'status' => true,
+                'status' => false,
                 'field_options' => null,
                 'payment_details' => null,
             ]);

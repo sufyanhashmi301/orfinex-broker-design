@@ -40,7 +40,7 @@ class KYCLevelSeeder extends Seeder
             ],
             [
                 'name' => 'Level 3',
-                'status' => true,
+                'status' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
                 'slug' => KycLevelSlug::LEVEL3,

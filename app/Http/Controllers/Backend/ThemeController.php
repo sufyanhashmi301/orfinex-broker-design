@@ -18,7 +18,6 @@ class ThemeController extends Controller
         $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
         $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
          $this->middleware('permission:provider-logo-settings', ['only' => ['providerLogo']]);
-         $this->middleware('permission:auth-covers-settings', ['only' => ['authCovers']]);
     }
 
     public function siteTheme()
@@ -44,24 +43,6 @@ class ThemeController extends Controller
     return view('backend.setting.branding.provider_logo', [
         'section' => 'provider_logo',
         'fields' => config('setting.provider_logo')
-    ]);
-}
-public function authCovers(Request $request)
-{
-    $defaultCover = 'fallback/branding/admin-login-cover.png';
-
-    // Get uploaded covers from settings, or use an empty array if none
-    $uploadedCovers = setting('uploaded_covers', 'theme') ?? [];
-
-    // Get the selected cover, or use the default if not set
-    $selectedCover = setting('selected_cover', 'theme') ?? $defaultCover;
-
-    return view('backend.setting.branding.auth_covers', [
-        'section' => 'theme',
-        'fields' => config('setting.theme'),
-        'defaultCover' => $defaultCover,
-        'uploadedCovers' => $uploadedCovers,
-        'selectedCover' => $selectedCover,
     ]);
 }
     public function colorsSetting(Request $request)

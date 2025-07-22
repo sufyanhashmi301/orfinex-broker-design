@@ -67,7 +67,7 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'login_bg', // unique name for field
-                'label' => 'User login/signup Cover', // you know what label it is
+                'label' => 'Admin Login Cover', // you know what label it is
                 'description' => 'Recommended Size 935 x 920',
                 'example_logo' => 'fallback/branding/admin-login-cover.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel

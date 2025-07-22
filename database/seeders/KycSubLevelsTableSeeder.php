@@ -22,8 +22,8 @@ class KycSubLevelsTableSeeder extends Seeder
 
         // Default values for Level 1
         $defaultValuesLevel1 = [
-            ['name' => KycType::PHONE, 'description' => 'Phone verification sub-level', 'status' => false], // set status false
-            ['name' => KycType::EMAIL, 'description' => 'Email verification sub-level', 'status' => true],  // keep email enabled
+            ['name' => KycType::PHONE, 'description' => 'Phone verification sub-level'],
+            ['name' => KycType::EMAIL, 'description' => 'Email verification sub-level'],
         ];
 
         // Default values for Level 2
@@ -43,7 +43,7 @@ class KycSubLevelsTableSeeder extends Seeder
                 'kyc_level_id' => $level1,
                 'name' => $subLevel['name'],
                 'description' => $subLevel['description'],
-                'status' => $subLevel['status'],
+                'status' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

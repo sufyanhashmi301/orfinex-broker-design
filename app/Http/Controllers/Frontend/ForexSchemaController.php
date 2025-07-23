@@ -50,7 +50,6 @@ class ForexSchemaController extends Controller
             $userSchemas = $baseQuery->clone()
                 ->relevantForUser($user->country, $tagNames)
                 ->get();
-                dd($userSchemas);
     
             $schemas = collect();
             $globalSchemasFromRules = collect(); // For global accounts from rebate rules

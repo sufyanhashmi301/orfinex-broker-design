@@ -15,7 +15,7 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-        // try {
+        try {
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
     
@@ -100,14 +100,14 @@ class ForexSchemaController extends Controller
     
             return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     
-        // } catch (\Exception $e) {
-        //     \Log::error('Error in ForexSchemaController@index', [
-        //         'user_id' => auth()->id(),
-        //         'message' => $e->getMessage(),
-        //     ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in ForexSchemaController@index', [
+                'user_id' => auth()->id(),
+                'message' => $e->getMessage(),
+            ]);
     
-        //     return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
-        // }
+            return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
+        }
     }
 
     public function schemaPreview($id)

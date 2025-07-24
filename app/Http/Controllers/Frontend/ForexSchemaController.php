@@ -15,7 +15,7 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-        try {
+        // try {
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
     
@@ -47,9 +47,9 @@ class ForexSchemaController extends Controller
             }
     
             // Initialize collections
-            $userSchemas = $baseQuery->clone()
-                ->relevantForUser($user->country, $tagNames)
-                ->get();
+            // $userSchemas = $baseQuery->clone()
+            //     ->relevantForUser($user->country, $tagNames)
+            //     ->get();
     
             $schemas = collect();
             $globalSchemasFromRules = collect(); // For global accounts from rebate rules
@@ -87,8 +87,7 @@ class ForexSchemaController extends Controller
             // 1. Schemas from rebate rules (including global accounts)
             // 2. User-specific schemas
             // 3. Additional global schemas if enabled
-            $schemas = $schemas->merge($userSchemas)
-                ->merge($globalSchemasFromSetting)
+            $schemas = $schemas->merge($globalSchemasFromSetting)
                 ->unique('id')
                 ->sortBy('priority')
                 ->values();
@@ -100,14 +99,14 @@ class ForexSchemaController extends Controller
     
             return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     
-        } catch (\Exception $e) {
-            \Log::error('Error in ForexSchemaController@index', [
-                'user_id' => auth()->id(),
-                'message' => $e->getMessage(),
-            ]);
+        // } catch (\Exception $e) {
+        //     \Log::error('Error in ForexSchemaController@index', [
+        //         'user_id' => auth()->id(),
+        //         'message' => $e->getMessage(),
+        //     ]);
     
-            return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
-        }
+        //     return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
+        // }
     }
 
     public function schemaPreview($id)

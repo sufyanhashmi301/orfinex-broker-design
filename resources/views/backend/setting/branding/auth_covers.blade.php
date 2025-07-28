@@ -47,22 +47,30 @@
                         </div>
 
                         <!-- Uploaded login/signup cover Option -->
-                        <div class="border rounded-lg p-4 {{ ($currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' && $currentLoginBg !== $defaultLoginBg && $currentLoginBg !== 'default/auth-bg.jpg' && !empty($currentLoginBg)) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
+                        <div class="border rounded-lg p-4 {{ (
+                            $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
+                            && $currentLoginBg !== $defaultLoginBg
+                            && $currentLoginBg !== 'default/auth-bg.jpg'
+                            && !empty($currentLoginBg)
+                        ) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex flex-col h-full">
                                 <div class="flex-1">
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         {{ __('Custom login/signup cover') }}
                                     </label>
-                                    
+                                    @if(
+                                        $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
+                                        && $currentLoginBg !== $defaultLoginBg
+                                        && $currentLoginBg !== 'default/auth-bg.jpg'
+                                        && !empty($currentLoginBg)
+                                    )
                                     <!-- Current Uploaded Image Preview -->
-                                    @if($currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' && $currentLoginBg !== $defaultLoginBg && $currentLoginBg !== 'default/auth-bg.jpg' && !empty($currentLoginBg))
-                                        <div class="mb-3">
-                                            <img src="{{ getFilteredPath($currentLoginBg, 'default/auth-bg.jpg') }}" 
-                                                 alt="Current Uploaded login/signup cover" 
-                                                 class="w-full h-48 object-cover rounded-lg">
-                                        </div>
+                                    <div class="mb-3">
+                                        <img src="{{ getFilteredPath($currentLoginBg, 'default/auth-bg.jpg') }}" 
+                                             alt="Current Uploaded login/signup cover" 
+                                             class="w-full h-48 object-cover rounded-lg">
+                                    </div>
                                     @endif
-                                    
                                     <!-- File Upload Input -->
                                     <div class="mb-3">
                                         <input type="file" 
@@ -82,7 +90,12 @@
                                                name="login_bg_choice" 
                                                value="uploaded" 
                                                id="uploaded_bg"
-                                               {{ ($currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' && $currentLoginBg !== $defaultLoginBg && $currentLoginBg !== 'default/auth-bg.jpg' && !empty($currentLoginBg)) ? 'checked' : '' }}
+                                               {{ (
+                                                   $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
+                                                   && $currentLoginBg !== $defaultLoginBg
+                                                   && $currentLoginBg !== 'default/auth-bg.jpg'
+                                                   && !empty($currentLoginBg)
+                                               ) ? 'checked' : '' }}
                                                class="w-5 h-5 text-primary border-slate-300 focus:ring-primary">
                                         <label for="uploaded_bg" class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                             {{ __('Select Custom login/signup cover') }}

@@ -53,9 +53,13 @@ class ThemeController extends Controller
 
     public function authCovers()
     {
+        $currentLoginBg = setting('login_bg', 'theme', 'https://cdn.brokeret.com/crm-assets/login-image/c19.png');
+        if (empty($currentLoginBg)) {
+            $currentLoginBg = 'https://cdn.brokeret.com/crm-assets/login-image/c19.png';
+        }
         return view('backend.setting.branding.auth_covers', [
             'section' => 'theme',
-            'currentLoginBg' => setting('login_bg', 'theme', 'default/auth-bg.jpg'),
+            'currentLoginBg' => $currentLoginBg,
             'defaultLoginBg' => 'default/auth-bg.jpg'
         ]);
     }

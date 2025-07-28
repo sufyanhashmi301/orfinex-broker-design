@@ -32,11 +32,11 @@
                                 <!-- Radio button at bottom -->
                                 <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
                                     <div class="flex items-center space-x-3">
-                                        <input type="radio" 
-                                               name="login_bg_choice" 
-                                               value="default" 
+                                        <input type="radio"
+                                               name="login_bg_choice"
+                                               value="default"
                                                id="default_bg"
-                                               {{ ($currentLoginBg === 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' || $currentLoginBg === $defaultLoginBg || $currentLoginBg === 'default/auth-bg.jpg' || empty($currentLoginBg)) ? 'checked' : '' }}
+                                               checked
                                                class="w-5 h-5 text-primary border-slate-300 focus:ring-primary">
                                         <label for="default_bg" class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                             {{ __('Select Default login/signup cover') }}

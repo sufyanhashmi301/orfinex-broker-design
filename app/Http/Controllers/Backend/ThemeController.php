@@ -64,21 +64,22 @@ class ThemeController extends Controller
     {
         $request->validate([
             'login_bg_choice' => 'required|in:uploaded,default',
-            'login_bg' => 'required_if:login_bg_choice,uploaded|mimes:jpeg,jpg,png|max:2000'
+            'login_bg' => 'nullable|mimes:jpeg,jpg,png|max:2000',
+            'show_login_logo' => 'nullable|boolean'
         ]);
 
         try {
             if ($request->login_bg_choice === 'default') {
                 // Set to default
-                Setting::add('login_bg', 'default/auth-bg.jpg', 'string');
-            } else {
-                // Handle uploaded file
-                if ($request->hasFile('login_bg')) {
-                    $oldImage = Setting::get('login_bg', 'theme');
-                    $uploadedPath = $this->imageUploadTrait($request->file('login_bg'), $oldImage);
-                    Setting::add('login_bg', $uploadedPath, 'string');
-                }
+                Setting::add('login_bg', 'https://cdn.brokeret.com/crm-assets/login-image/c19.png', 'string');
+            } elseif ($request->login_bg_choice === 'uploaded' && $request->hasFile('login_bg')) {
+                // Only set custom cover if a file is uploaded
+                $oldImage = Setting::get('login_bg', 'theme');
+                $uploadedPath = $this->imageUploadTrait($request->file('login_bg'), $oldImage);
+                Setting::add('login_bg', $uploadedPath, 'string');
             }
+            // Always update the logo toggle
+            Setting::add('show_login_logo', $request->boolean('show_login_logo'), 'boolean');
 
             notify()->success(__('Login background updated successfully'));
             return redirect()->back();

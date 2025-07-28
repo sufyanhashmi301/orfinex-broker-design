@@ -9,15 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
+use App\Models\Setting;
+use Exception;
+use App\Traits\ImageUpload;
+
 class ThemeController extends Controller
 {
-
+    use ImageUpload;
 
     public function __construct()
     {
         $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
         $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
-         $this->middleware('permission:provider-logo-settings', ['only' => ['providerLogo']]);
+        $this->middleware('permission:provider-logo-settings', ['only' => ['providerLogo']]);
+        $this->middleware('permission:auth-covers-settings', ['only' => ['authCovers']]);
     }
 
     public function siteTheme()
@@ -45,6 +50,44 @@ class ThemeController extends Controller
         'fields' => config('setting.provider_logo')
     ]);
 }
+
+    public function authCovers()
+    {
+        return view('backend.setting.branding.auth_covers', [
+            'section' => 'theme',
+            'currentLoginBg' => setting('login_bg', 'theme', 'default/auth-bg.jpg'),
+            'defaultLoginBg' => 'default/auth-bg.jpg'
+        ]);
+    }
+
+    public function updateAuthCovers(Request $request)
+    {
+        $request->validate([
+            'login_bg_choice' => 'required|in:uploaded,default',
+            'login_bg' => 'required_if:login_bg_choice,uploaded|mimes:jpeg,jpg,png|max:2000'
+        ]);
+
+        try {
+            if ($request->login_bg_choice === 'default') {
+                // Set to default
+                Setting::add('login_bg', 'default/auth-bg.jpg', 'string');
+            } else {
+                // Handle uploaded file
+                if ($request->hasFile('login_bg')) {
+                    $oldImage = Setting::get('login_bg', 'theme');
+                    $uploadedPath = $this->imageUploadTrait($request->file('login_bg'), $oldImage);
+                    Setting::add('login_bg', $uploadedPath, 'string');
+                }
+            }
+
+            notify()->success(__('Login background updated successfully'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            notify()->error('Failed to update login background: ' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
     public function colorsSetting(Request $request)
     {
         // Retrieve the 'type' query parameter from the request

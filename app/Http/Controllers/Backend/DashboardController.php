@@ -131,7 +131,7 @@ class DashboardController extends Controller
         $userStats = User::select(
             DB::raw('COUNT(*) as total_users'),
             DB::raw('COUNT(CASE WHEN status = 1 THEN 1 END) as active_users'),
-            DB::raw('COUNT(CASE WHEN kyc = "pending" THEN 1 END) as kyc_count')
+            DB::raw('COUNT(CASE WHEN kyc = ' . KYCStatus::Pending->value . ' THEN 1 END) as kyc_count')
         )->first();
 
         // Get latest investments with eager loading

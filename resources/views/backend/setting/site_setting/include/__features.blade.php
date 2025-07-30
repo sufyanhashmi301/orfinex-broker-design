@@ -9,10 +9,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 @foreach($fields['elements'] as $key => $field)
                     <div class="site-input-groups row">
-                        <label class="form-label">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                      <label class="form-label">
+                            <span class="shift-Away inline-flex items-center gap-1" @if(isset($field['description'])) data-tippy-content="{{ __($field['description']) }}" @endif>
                                 {{ __($field['label']) }}
+                                @if(isset($field['description']))
                                 <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                @endif
                             </span>
                         </label>
                         {{--{{dd($field['name'])}}--}}

@@ -371,6 +371,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('popup', 'popup')->name('popup');
         Route::get('provider-logo', 'providerLogo')->name('provider-logo');
+        Route::get('auth-covers', 'authCovers')->name('auth-covers');
+        Route::post('update-auth-covers', 'updateAuthCovers')->name('update-auth-covers');
     });
 
     Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {

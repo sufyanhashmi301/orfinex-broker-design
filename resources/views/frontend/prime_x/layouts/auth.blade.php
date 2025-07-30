@@ -7,7 +7,7 @@
             <div class="lg-inner-column">
                 <div class="left-column relative">
                     <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center"
-                         style="background-image:url('{{ getFilteredPath(setting('login_bg', 'theme', 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'), 'https://cdn.brokeret.com/crm-assets/login-image/c19.png') }}')">
+                         style="background-image:url('{{ setting('login_bg_choice', 'theme', 'default') === 'uploaded' ? getFilteredPath(setting('login_bg', 'theme'), 'https://cdn.brokeret.com/crm-assets/login-image/c19.png') : 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' }}')">
                         <div class="mx-auto max-w-xs text-center">
                             @if(setting('show_login_logo', 'theme', 1))
                                 <a href="{{ route('home')}}" class="">

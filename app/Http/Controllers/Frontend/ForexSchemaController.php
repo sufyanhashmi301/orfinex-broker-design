@@ -15,7 +15,7 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-        try {
+        // try {
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
     
@@ -23,13 +23,17 @@ class ForexSchemaController extends Controller
             $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
                 ->where('meta_key', 'is_part_of_master_ib')
                 ->value('meta_value');
+                // dd($isPartOfMasterIb);  
     
             // Base query for all schemas
             $baseQuery = ForexSchema::active()->traderType();
     
             // If user is NOT part of master IB, show ALL accounts immediately
             if (!$isPartOfMasterIb) {
-                $schemas = $baseQuery->get()
+                $schemas = $baseQuery
+                ->relevantForUser($user->country, $tagNames)
+                ->orWhere('account_category_id', 1)
+                ->get()
                     ->unique('id')
                     ->sortBy('priority')
                     ->values();
@@ -43,17 +47,16 @@ class ForexSchemaController extends Controller
             }
     
             // Initialize collections
-            $userSchemas = $baseQuery->clone()
-                ->where('account_category_id', '!=', 1)
-                ->relevantForUser($user->country, $tagNames)
-                ->get();
+            // $userSchemas = $baseQuery->clone()
+            //     ->relevantForUser($user->country, $tagNames)
+            //     ->get();
     
             $schemas = collect();
             $globalSchemasFromRules = collect(); // For global accounts from rebate rules
             $globalSchemasFromSetting = collect(); // For global accounts from IB group setting
     
-            if ($user->ib_group_id) {
-                $ibGroup = IbGroup::with(['rebateRules.forexSchemas'])->find($user->ib_group_id);
+            if ($isPartOfMasterIb) {
+                $ibGroup = IbGroup::with(['rebateRules.forexSchemas'])->find($isPartOfMasterIb);
     
                 if ($ibGroup) {
                     // Get ALL schemas from rebate rules (including global accounts)
@@ -84,8 +87,7 @@ class ForexSchemaController extends Controller
             // 1. Schemas from rebate rules (including global accounts)
             // 2. User-specific schemas
             // 3. Additional global schemas if enabled
-            $schemas = $schemas->merge($userSchemas)
-                ->merge($globalSchemasFromSetting)
+            $schemas = $schemas->merge($globalSchemasFromSetting)
                 ->unique('id')
                 ->sortBy('priority')
                 ->values();
@@ -97,14 +99,14 @@ class ForexSchemaController extends Controller
     
             return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     
-        } catch (\Exception $e) {
-            \Log::error('Error in ForexSchemaController@index', [
-                'user_id' => auth()->id(),
-                'message' => $e->getMessage(),
-            ]);
+        // } catch (\Exception $e) {
+        //     \Log::error('Error in ForexSchemaController@index', [
+        //         'user_id' => auth()->id(),
+        //         'message' => $e->getMessage(),
+        //     ]);
     
-            return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
-        }
+        //     return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
+        // }
     }
 
     public function schemaPreview($id)

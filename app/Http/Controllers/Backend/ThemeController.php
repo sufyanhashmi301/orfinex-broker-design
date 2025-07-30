@@ -12,6 +12,7 @@ use ZipArchive;
 use App\Models\Setting;
 use Exception;
 use App\Traits\ImageUpload;
+use Illuminate\Support\Facades\Artisan;
 
 class ThemeController extends Controller
 {
@@ -53,44 +54,95 @@ class ThemeController extends Controller
 
     public function authCovers()
     {
-        $currentLoginBg = setting('login_bg', 'theme', 'https://cdn.brokeret.com/crm-assets/login-image/c19.png');
-        if (empty($currentLoginBg)) {
-            $currentLoginBg = 'https://cdn.brokeret.com/crm-assets/login-image/c19.png';
-        }
-        return view('backend.setting.branding.auth_covers', [
-            'section' => 'theme',
-            'currentLoginBg' => $currentLoginBg,
-            'defaultLoginBg' => 'default/auth-bg.jpg'
-        ]);
+        $currentLoginBg = setting('login_bg', 'theme');
+        $defaultLoginBg = 'https://cdn.brokeret.com/crm-assets/login-image/c19.png';
+        $currentChoice = setting('login_bg_choice', 'theme', 'default');
+        
+        // Check if there's a custom cover uploaded (not default URLs)
+        $hasCustomCover = !empty($currentLoginBg) && 
+                         $currentLoginBg !== $defaultLoginBg && 
+                         $currentLoginBg !== 'default/auth-bg.jpg' &&
+                         $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png';
+        
+        return view('backend.setting.branding.auth_covers', compact('currentLoginBg', 'defaultLoginBg', 'hasCustomCover', 'currentChoice'));
     }
 
     public function updateAuthCovers(Request $request)
     {
         $request->validate([
-            'login_bg_choice' => 'required|in:uploaded,default',
-            'login_bg' => 'nullable|mimes:jpeg,jpg,png|max:2000',
-            'show_login_logo' => 'nullable|boolean'
+            'login_bg_choice' => 'required|in:default,uploaded',
+            'show_login_logo' => 'boolean',
+            'login_bg' => 'nullable|image|mimes:jpeg,jpg,png|max:2048'
         ]);
 
-        try {
-            if ($request->login_bg_choice === 'default') {
-                // Set to default
-                Setting::add('login_bg', 'https://cdn.brokeret.com/crm-assets/login-image/c19.png', 'string');
-            } elseif ($request->login_bg_choice === 'uploaded' && $request->hasFile('login_bg')) {
-                // Only set custom cover if a file is uploaded
-                $oldImage = Setting::get('login_bg', 'theme');
-                $uploadedPath = $this->imageUploadTrait($request->file('login_bg'), $oldImage);
-                Setting::add('login_bg', $uploadedPath, 'string');
+        // Additional validation for custom cover upload
+        if ($request->login_bg_choice === 'uploaded') {
+            // Check if there's already a custom cover
+            $existingCustomCover = setting('login_bg', 'theme');
+            $defaultUrls = ['https://cdn.brokeret.com/crm-assets/login-image/c19.png', 'default/auth-bg.jpg'];
+            $hasExistingCustomCover = !empty($existingCustomCover) && !in_array($existingCustomCover, $defaultUrls);
+            
+            // Only require file upload if no existing custom cover
+            if (!$hasExistingCustomCover) {
+                $request->validate([
+                    'login_bg' => 'required|image|mimes:jpeg,jpg,png|max:2048'
+                ], [
+                    'login_bg.required' => __('Please upload a custom cover image when selecting custom cover option.'),
+                    'login_bg.image' => __('The uploaded file must be an image.'),
+                    'login_bg.mimes' => __('The image must be a JPEG, JPG, or PNG file.'),
+                    'login_bg.max' => __('The image size must not exceed 2MB.')
+                ]);
+            } else {
+                // If existing custom cover, file upload is optional
+                $request->validate([
+                    'login_bg' => 'nullable|image|mimes:jpeg,jpg,png|max:2048'
+                ], [
+                    'login_bg.image' => __('The uploaded file must be an image.'),
+                    'login_bg.mimes' => __('The image must be a JPEG, JPG, or PNG file.'),
+                    'login_bg.max' => __('The image size must not exceed 2MB.')
+                ]);
             }
-            // Always update the logo toggle
-            Setting::add('show_login_logo', $request->boolean('show_login_logo'), 'boolean');
-
-            notify()->success(__('Login background updated successfully'));
-            return redirect()->back();
-        } catch (Exception $e) {
-            notify()->error('Failed to update login background: ' . $e->getMessage());
-            return redirect()->back();
         }
+
+        // Handle show_login_logo setting
+        $showLoginLogo = $request->has('show_login_logo') && $request->show_login_logo == '1' ? 1 : 0;
+        Setting::add('show_login_logo', $showLoginLogo, 'theme');
+
+        // Store the current choice
+        Setting::add('login_bg_choice', $request->login_bg_choice, 'theme');
+
+        // Handle login background choice
+        if ($request->login_bg_choice === 'default') {
+            // Keep the custom cover in database, just change the choice
+            // The frontend will handle showing default based on the choice
+        } elseif ($request->login_bg_choice === 'uploaded') {
+            // Handle file upload if provided
+            if ($request->hasFile('login_bg')) {
+                $file = $request->file('login_bg');
+                $oldImage = setting('login_bg', 'theme');
+                $path = $this->imageUploadTrait($file, $oldImage);
+                Setting::add('login_bg', $path, 'theme');
+            } else {
+                // If no file uploaded but custom is selected, use existing custom cover
+                $existingCustomCover = setting('login_bg', 'theme');
+                $defaultUrls = ['https://cdn.brokeret.com/crm-assets/login-image/c19.png', 'default/auth-bg.jpg'];
+                
+                if (!empty($existingCustomCover) && !in_array($existingCustomCover, $defaultUrls)) {
+                    // Keep existing custom cover
+                    Setting::add('login_bg', $existingCustomCover, 'theme');
+                } else {
+                    // No custom cover available, remove setting (will show default)
+                    Setting::where('key', 'login_bg')->where('group', 'theme')->delete();
+                }
+            }
+        }
+
+        // Clear cache for immediate reflection
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+
+        notify()->success(__('Auth covers updated successfully!'));
+        return redirect()->back();
     }
 
     public function colorsSetting(Request $request)

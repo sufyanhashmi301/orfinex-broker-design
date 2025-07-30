@@ -17,7 +17,7 @@
                     
                     <div class="grid lg:grid-cols-2 gap-6">
                         <!-- Default login/signup cover Option -->
-                        <div class="border rounded-lg p-4 {{ ($currentLoginBg === 'https://cdn.brokeret.com/crm-assets/login-image/c19.png' || $currentLoginBg === $defaultLoginBg || $currentLoginBg === 'default/auth-bg.jpg' || empty($currentLoginBg)) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
+                        <div class="border rounded-lg p-4 {{ ($currentChoice === 'default' || !$hasCustomCover) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex flex-col h-full">
                                 <div class="flex-1">
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -36,7 +36,7 @@
                                                name="login_bg_choice"
                                                value="default"
                                                id="default_bg"
-                                               checked
+                                               {{ ($currentChoice === 'default' || !$hasCustomCover) ? 'checked' : '' }}
                                                class="w-5 h-5 text-primary border-slate-300 focus:ring-primary">
                                         <label for="default_bg" class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                             {{ __('Select Default login/signup cover') }}
@@ -47,23 +47,13 @@
                         </div>
 
                         <!-- Uploaded login/signup cover Option -->
-                        <div class="border rounded-lg p-4 {{ (
-                            $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
-                            && $currentLoginBg !== $defaultLoginBg
-                            && $currentLoginBg !== 'default/auth-bg.jpg'
-                            && !empty($currentLoginBg)
-                        ) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
+                        <div class="border rounded-lg p-4 {{ ($currentChoice === 'uploaded' && $hasCustomCover) ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex flex-col h-full">
                                 <div class="flex-1">
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         {{ __('Custom login/signup cover') }}
                                     </label>
-                                    @if(
-                                        $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
-                                        && $currentLoginBg !== $defaultLoginBg
-                                        && $currentLoginBg !== 'default/auth-bg.jpg'
-                                        && !empty($currentLoginBg)
-                                    )
+                                    @if($hasCustomCover && $currentLoginBg)
                                     <!-- Current Uploaded Image Preview -->
                                     <div class="mb-3">
                                         <img src="{{ getFilteredPath($currentLoginBg, 'default/auth-bg.jpg') }}" 
@@ -90,12 +80,7 @@
                                                name="login_bg_choice" 
                                                value="uploaded" 
                                                id="uploaded_bg"
-                                               {{ (
-                                                   $currentLoginBg !== 'https://cdn.brokeret.com/crm-assets/login-image/c19.png'
-                                                   && $currentLoginBg !== $defaultLoginBg
-                                                   && $currentLoginBg !== 'default/auth-bg.jpg'
-                                                   && !empty($currentLoginBg)
-                                               ) ? 'checked' : '' }}
+                                               {{ ($currentChoice === 'uploaded' && $hasCustomCover) ? 'checked' : '' }}
                                                class="w-5 h-5 text-primary border-slate-300 focus:ring-primary">
                                         <label for="uploaded_bg" class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                             {{ __('Select Custom login/signup cover') }}
@@ -114,7 +99,7 @@
                         <div class="form-switch ps-0">
                             <input class="form-check-input" type="hidden" value="0" name="show_login_logo">
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="checkbox" name="show_login_logo" value="1" class="sr-only peer" {{ old('show_login_logo', setting('show_login_logo', 'theme', 1)) ? 'checked' : '' }}>
+                                <input type="checkbox" name="show_login_logo" value="1" class="sr-only peer" {{ setting('show_login_logo', 'theme', 1) ? 'checked' : '' }}>
                                 <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                             </label>
                         </div>
@@ -138,6 +123,9 @@
 @section('website-script')
     <script>
         $(document).ready(function() {
+            // PHP variable to check if custom cover exists
+            var hasCustomCover = {{ $hasCustomCover ? 'true' : 'false' }};
+            
             // Handle radio button changes
             $('input[name="login_bg_choice"]').change(function() {
                 // Remove active styling from all containers
@@ -146,9 +134,14 @@
                 // Add active styling to selected container
                 $(this).closest('.border').removeClass('border-slate-200 dark:border-slate-700').addClass('border-primary bg-primary/5');
                 
-                // Show/hide file input based on selection
+                // Handle file input required validation
                 if ($(this).val() === 'uploaded') {
-                    $('#login_bg_file').prop('required', true);
+                    // Only require file upload if no existing custom cover
+                    if (!hasCustomCover) {
+                        $('#login_bg_file').prop('required', true);
+                    } else {
+                        $('#login_bg_file').prop('required', false);
+                    }
                 } else {
                     $('#login_bg_file').prop('required', false);
                 }
@@ -172,6 +165,18 @@
                     reader.readAsDataURL(this.files[0]);
                 }
             });
+
+            // Set initial required state based on current selection
+            if ($('#uploaded_bg').is(':checked')) {
+                // Only require file upload if no existing custom cover
+                if (!hasCustomCover) {
+                    $('#login_bg_file').prop('required', true);
+                } else {
+                    $('#login_bg_file').prop('required', false);
+                }
+            } else {
+                $('#login_bg_file').prop('required', false);
+            }
         });
     </script>
 @endsection 

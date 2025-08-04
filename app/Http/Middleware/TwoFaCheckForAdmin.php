@@ -20,36 +20,31 @@ class TwoFaCheckForAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-//        dd($authenticator->isAuthenticated());
-//        $guard = Auth::guard();
-//        dd(Auth::guard('web')->check());
-//        dd($request->user());
+        // Check if email-based 2FA is enabled globally
+        $admin2faEnabled = setting('admin_2fa_enabled', 'global');
+        
+        // Fallback: check directly from database if helper function returns empty
+        if (empty($admin2faEnabled)) {
+            $setting = \App\Models\Setting::where('name', 'admin_2fa_enabled')->first();
+            $admin2faEnabled = $setting ? $setting->val : false;
+        }
+        
+        if ($admin2faEnabled) {
+            // If email-based 2FA is enabled, completely skip Google 2FA check
+            return $next($request);
+        }
+
+        // Original Google 2FA logic - only run if email-based 2FA is disabled
         if (! $request->user()->two_fa) {
             return $next($request);
         }
-//        $user = Auth::user(); // Retrieve the authenticated user
-//dd($user->google2fa_secret, $request->input('one_time_password'),$request->all());
-//        $isValid = Google2FA::verifyKey($user->google2fa_secret, $request->input('one_time_password'));
 
         $authenticator = app(Authenticator::class)->boot($request);
-//dd($authenticator->isAuthenticated(),$request->all());
+        
         if ($authenticator->isAuthenticated()) {
             return $next($request);
         }
-//        $adminAuthenticator = app(Authenticator::class)->guard('admin')->boot($request);
-//        $webAuthenticator = app(Authenticator::class)->guard('web')->boot($request);
-//
-//        if ($adminAuthenticator->isAuthenticated() || $webAuthenticator->isAuthenticated()) {
-//            // User is authenticated with either admin or web guard
-//            return $next($request);
-//        }
-//dd(Auth::guard('web')->check());
-//dd(Auth::guard('admin')->check());
-//        dd(Auth::guard('admin')->check());
-//        if(Auth::guard('admin')->check()){
-//        dd(redirect()->route('admin.staff.2fa.pin'));
-        return  redirect()->route('admin.staff.2fa.pin');
-//        }
-//        return $authenticator->makeRequestOneTimePasswordResponse();
+
+        return redirect()->route('admin.staff.2fa.pin');
     }
 }

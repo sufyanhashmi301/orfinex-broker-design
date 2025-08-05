@@ -465,12 +465,12 @@ class IpnController extends Controller
         }
     }
 
-    public function uniwireIpn(Request $request)
-{
-    $payload = $request->all();
-    Log::info('payload: '.$payload );
+        public function uniwireIpn(Request $request)
+    {
+        $payload = $request->all();
+        Log::info('Uniwire IPN payload: ' . json_encode($payload));
 
-    $gatewayInfo = gateway_info('uniwire');
+        $gatewayInfo = gateway_info('uniwire');
 
     // Verify callback signature
     $signature = $payload['signature'] ?? null;

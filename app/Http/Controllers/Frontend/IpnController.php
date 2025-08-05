@@ -7,16 +7,18 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Traits\Payment;
 use Binance\API;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Modules\Payment\Monnify\Monnify;
 use Mollie\Laravel\Facades\Mollie;
 use Payment\Securionpay\SecurionpayTxn;
 use Paystack;
-use Session;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Txn;
 
@@ -462,4 +464,110 @@ class IpnController extends Controller
           $this->paymentSuccess( $request->li_0_product_id);
         }
     }
+
+    public function uniwireIpn(Request $request)
+{
+    $payload = $request->all();
+    Log::info('payload: '.$payload );
+
+    $gatewayInfo = gateway_info('uniwire');
+
+    // Verify callback signature
+    $signature = $payload['signature'] ?? null;
+    $callbackId = $payload['callback_id'] ?? null;
+    $expectedSignature = hash_hmac('sha256', $callbackId, $gatewayInfo->callback_token);
+
+    if (!$signature || !$callbackId || $signature !== $expectedSignature) {
+        Log::error('Invalid Uniwire signature', $payload);
+        return response()->json(['error' => 'Invalid signature'], 400);
+    }
+
+    // Extract transaction ID from passthrough
+    $passthrough = json_decode($payload['passthrough'] ?? '{}', true);
+    $txn = $passthrough['transaction_id'] ?? null;
+
+    if (!$txn) {
+        Log::error('Transaction ID not found in passthrough', $payload);
+        return response()->json(['error' => 'Transaction ID not found'], 400);
+    }
+
+    $txnInfo = Transaction::tnx($txn);
+    if (!$txnInfo) {
+        Log::error('Transaction not found', ['txn' => $txn]);
+        return response()->json(['error' => 'Transaction not found'], 404);
+    }
+
+    // Process callback by status
+    switch ($payload['status']) {
+        case 'invoice_pending':
+        case 'transaction_pending':
+        case 'payout_pending':
+            $txnInfo->update([
+                'status' => TxnStatus::Pending,
+                'approval_cause' => 'Pending',
+                'manual_field_data' => json_encode([
+                    'txid' => $payload['txid'] ?? null,
+                    'confirmations' => $payload['confirmations'] ?? 0
+                ])
+            ]);
+            break;
+
+        case 'invoice_confirmed':
+        case 'transaction_confirmed':
+        case 'payout_confirmed':
+            $txnInfo->update([
+                'status' => TxnStatus::Pending,
+                'approval_cause' => 'Confirmed',
+                'manual_field_data' => json_encode([
+                    'txid' => $payload['txid'] ?? null,
+                    'confirmations' => $payload['confirmations'] ?? 1
+                ])
+            ]);
+            break;
+
+        case 'invoice_complete':
+        case 'transaction_complete':
+        case 'payout_complete':
+            $txnInfo->update([
+                'amount' => $payload['amount']['requested']['amount'] ?? null,
+                'pay_amount' => $payload['amount']['paid']['amount'] ?? null,
+                'pay_currency' => $payload['amount']['paid']['currency'] ?? null,
+                'manual_field_data' => json_encode([
+                    'txid' => $payload['txid'] ?? null,
+                    'confirmations' => $payload['confirmations'] ?? 6
+                ]),
+                'approval_cause' => 'Payment complete'
+            ]);
+            return self::paymentSuccess($txn);
+
+        case 'invoice_incomplete':
+            $txnInfo->update([
+                'status' => TxnStatus::Failed,
+                'approval_cause' => 'Invoice paid less than expected'
+            ]);
+            break;
+
+        case 'transaction_failed':
+        case 'payout_failed':
+        case 'payout_rejected':
+        case 'transaction_quarantined':
+            $txnInfo->update([
+                'status' => TxnStatus::Failed,
+                'approval_cause' => $payload['error'] ?? 'Callback reported failure'
+            ]);
+            // Optional: refund user
+            $user = User::find($txnInfo->user_id);
+            if ($user) {
+                $user->increment('balance', $txnInfo->final_amount);
+            }
+            break;
+
+        default:
+            Log::warning('Unhandled Uniwire callback status', ['status' => $payload['status']]);
+            return response()->json(['warning' => 'Unhandled status'], 200);
+    }
+
+    return response()->json(['status' => 'success']);
+}
+
 }

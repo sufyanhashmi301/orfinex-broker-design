@@ -253,6 +253,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
     Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
     Route::post('match2pay', 'match2payIpn')->name('match2pay');
+    Route::post('uniwire', 'uniwireIpn')->name('uniwire');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');
@@ -404,3 +405,7 @@ Route::view('register-2', 'frontend::auth.register-2');
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
 Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');
+
+
+
+

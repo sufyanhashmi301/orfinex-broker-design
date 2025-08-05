@@ -11,7 +11,7 @@ class UniwireGatewaySeeder extends Seeder
     public function run(): void
     {
         DB::table('gateways')->insert([
-            'logo' => 'https://cdn.brokeret.com/crm-assets/admin/pg/bridgerpay.webp',
+            'logo' => 'https://cdn.brokeret.com/crm-assets/admin/pg/uniwire.png',
             'name' => 'Uniwire',
             'gateway_code' => 'uniwire',
             'supported_currencies' => json_encode([

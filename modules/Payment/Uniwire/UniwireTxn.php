@@ -18,6 +18,7 @@ class UniwireTxn extends BaseTxn
     protected $profile_id;
     protected $client;
     protected $txnInfo;
+    protected $profiles = null;
 
 
     public function __construct($txnInfo)
@@ -104,45 +105,88 @@ class UniwireTxn extends BaseTxn
         }
     }
 
+    protected function getProfiles()
+    {
+        if ($this->profiles === null) {
+            $response = $this->makeRequest('profiles', [], 'GET');
+            $this->profiles = $response['result'] ?? [];
+        }
+        return $this->profiles;
+    }
+
+    protected function findProfileForCurrency($currency)
+    {
+        $kind = $this->getKindForCurrency($currency);
+        $profiles = $this->getProfiles();
+
+        foreach ($profiles as $profile) {
+            // Check if profile has currencies configured
+            if (!isset($profile['currencies']) || !is_array($profile['currencies'])) {
+                continue;
+            }
+
+            // Check if currency kind is supported in this profile
+            foreach ($profile['currencies'] as $supportedCurrency) {
+                if ($supportedCurrency['kind'] === $kind) {
+                    return [
+                        'profile_id' => $profile['id'],
+                        'currency_config' => $supportedCurrency
+                    ];
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function deposit()
     {
-
-        // $invoice = $this->makeRequest('profiles');
-        // dd($invoice);
-        // dd('ss');
         try {
             // Get supported currencies from config
             $supportedCurrencies = $this->getSupportedCurrencies();
             
-            // Validate currency is supported
+            // Validate currency is supported by Uniwire
             if (!in_array($this->currency, $supportedCurrencies)) {
-                throw new \Exception("Currency {$this->currency} is not supported");
+                throw new \Exception("Currency {$this->currency} is not supported by Uniwire");
             }
+
+            // Find profile that supports this currency
+            $profileData = $this->findProfileForCurrency($this->currency);
+            if (!$profileData) {
+                throw new \Exception("No profile found supporting {$this->currency} ({$this->getKindForCurrency($this->currency)})");
+            }
+
             // Create invoice with exact parameters from documentation
             $invoice = $this->makeRequest('invoices', [
-                'profile_id' => $this->profile_id,
+                'profile_id' => $profileData['profile_id'], // Use matched profile ID
                 'amount' => $this->final_amount,
                 'currency' => base_currency(),
                 'kind' => $this->getKindForCurrency($this->currency),
                 'pricing_type' => 'fixed_price',
                 'passthrough' => json_encode([
                     'transaction_id' => $this->txn,
-                    'user_id' => $this->userId
+                    'user_id' => $this->userId,
+                    'currency_config' => $profileData['currency_config'] // Store currency config for reference
                 ])
             ], 'POST');
 
-// Get invoice ID and construct URL
+            // Get invoice ID and construct URL
             $invoiceId = $invoice['result']['id'];
             $invoiceUrl = "https://uniwire.com/invoice/{$invoiceId}";
+
             // Store invoice data
             $this->txnInfo->update([
                 'status' => TxnStatus::Pending,
                 'approval_cause' => json_encode($invoice),
                 'manual_field_data' => json_encode($invoice['result'])
             ]);
-
             
-            return redirect()->away($invoiceUrl);
+            // Return view with invoice URL
+            return view('gateway.uniwire', [
+                'data' => [
+                    'invoice_url' => $invoiceUrl
+                ]
+            ]);
 
         } catch (\Exception $e) {
             $this->txnInfo->update([

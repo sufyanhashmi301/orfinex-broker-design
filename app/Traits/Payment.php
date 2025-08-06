@@ -36,6 +36,7 @@ use Payment\Razorpay\RazorpayTxn;
 use Payment\Securionpay\SecurionpayTxn;
 use Payment\Stripe\StripeTxn;
 use Payment\Twocheckout\TwocheckoutTxn;
+use Payment\Uniwire\UniwireTxn;
 use Session;
 use Txn;
 use URL;
@@ -48,10 +49,10 @@ trait Payment
         $txn = $txnInfo->tnx;
         Session::put('deposit_tnx', $txn);
         $gateway = DepositMethod::code($gateway)->first()->gateway->gateway_code ?? 'none';
-//        dd($gateway);
+    //    dd($gateway);
 
         $gatewayTxn = self::gatewayMap($gateway, $txnInfo);
-//        dd($txnInfo,$gatewayTxn);
+    //    dd($txnInfo,$gatewayTxn);
         if ($gatewayTxn) {
             return $gatewayTxn->deposit();
         }
@@ -202,9 +203,11 @@ trait Payment
             'razorpay' => RazorpayTxn::class,
             'twocheckout' => TwocheckoutTxn::class,
             'bridgerpay' => BridgerpayTxn::class,
-            'match2pay' => Match2payTxn::class,
+            'match2pay' => Match2payTxn::class,     
+            'uniwire' => UniwireTxn::class,
+
         ];
-//dd($gateway,$gatewayMap,$txnInfo);
+// dd($gateway,$gatewayMap,$txnInfo);
         if (array_key_exists($gateway, $gatewayMap)) {
             return app($gatewayMap[$gateway], ['txnInfo' => $txnInfo]);
         }

@@ -150,7 +150,7 @@ class AuthController extends Controller
                 // Logout temporarily and show 2FA form
                 $this->guard()->logout();
                 notify()->success('Verification code sent to your email.');
-                return redirect()->route('admin.2fa.verify');
+                return redirect()->route('admin.2fa.verifylogin');
             }
             
             // If 2FA not enabled, proceed with normal login

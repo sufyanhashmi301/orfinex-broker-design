@@ -82,7 +82,7 @@ Route::group(['prefix' => 'backoffice', 'as' => 'admin.'], function () {
     Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
     // Two-Factor Authentication
-    Route::get('2fa/verify', [AuthController::class, 'show2FAVerification'])->name('2fa.verify');
+    Route::get('2fa/verify-login', [AuthController::class, 'show2FAVerification'])->name('2fa.verifylogin');
     Route::post('2fa/resend', [AuthController::class, 'resend2FA'])->name('2fa.resend');
 
     // Forget Password

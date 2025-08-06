@@ -497,14 +497,26 @@ class IpnController extends Controller
 
             Log::info('Uniwire IPN payload: ' . $rawContent);
 
-            // Extract transaction ID from passthrough
-            $passthrough = json_decode($payload['transaction']['invoice']['passthrough'] ?? '{}', true);
-            $txn = $passthrough['transaction_id'] ?? null;
+            // Extract transaction ID based on callback type
+            $txn = null;
+            $passthrough = null;
 
-            if (!$txn) {
+            if ($payload['callback_status'] === 'invoice_complete') {
+                if (isset($payload['invoice']['passthrough'])) {
+                    $passthrough = json_decode($payload['invoice']['passthrough'], true);
+                }
+            } elseif ($payload['callback_status'] === 'transaction_complete') {
+                if (isset($payload['transaction']['invoice']['passthrough'])) {
+                    $passthrough = json_decode($payload['transaction']['invoice']['passthrough'], true);
+                }
+            }
+
+            if (!$passthrough || !isset($passthrough['transaction_id'])) {
                 Log::error('Transaction ID not found in passthrough', ['payload' => $payload]);
                 return response()->json(['error' => 'Transaction ID not found'], 400);
             }
+
+            $txn = $passthrough['transaction_id'];
 
             // Start database transaction with row locking
             return DB::transaction(function() use ($txn, $payload) {
@@ -523,7 +535,7 @@ class IpnController extends Controller
                 }
 
                 // Process transaction based on status
-                $status = $payload['callback_status'] ?? null;
+                $status = $payload['callback_status'];
                 switch ($status) {
                     case 'transaction_pending':
                         $txnInfo->update([
@@ -537,14 +549,24 @@ class IpnController extends Controller
                         break;
 
                     case 'transaction_complete':
+                    case 'invoice_complete':
+                        // Get transaction data based on callback type
+                        $transactionData = $status === 'transaction_complete' ? 
+                            $payload['transaction'] : 
+                            (isset($payload['invoice']['transactions'][0]) ? $payload['invoice']['transactions'][0] : null);
+
+                        if (!$transactionData) {
+                            Log::error('No transaction data found', ['payload' => $payload]);
+                            return response()->json(['error' => 'No transaction data found'], 400);
+                        }
+
                         $txnInfo->update([
-                            'pay_amount' => $payload['transaction']['amount']['paid']['quotes']['USD'] ?? 0,
-                            'pay_amount' => $payload['transaction']['amount']['paid']['amount'] ?? 0,
-                            'pay_currency' => $payload['transaction']['amount']['paid']['currency'] ?? 'USD',
+                            'pay_amount' => $transactionData['amount'] ?? 0,
+                            'pay_currency' => $transactionData['currency'] ?? 'USDT-TRX',
                             'manual_field_data' => json_encode([
-                                'txid' => $payload['transaction']['txid'] ?? null,
-                                'confirmations' => $payload['transaction']['confirmations'] ?? 0,
-                                'network' => $payload['transaction']['network'] ?? null,
+                                'txid' => $transactionData['txid'] ?? null,
+                                'confirmations' => $transactionData['confirmations'] ?? 0,
+                                'network' => $payload['transaction']['network'] ?? 'mainnet',
                                 'risk_level' => $payload['transaction']['risk_level'] ?? null
                             ]),
                             'approval_cause' => 'Payment complete'

@@ -18,15 +18,15 @@ use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use App\Exports\DepositsHistoryExport;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
-
-use Txn;
-use Validator;
 
 class DepositController extends GatewayController
 {
@@ -74,7 +74,7 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
-        try {
+        // try {
             DB::beginTransaction();
             if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
                 abort('403', __('Deposit Disabled Now'));
@@ -196,11 +196,11 @@ class DepositController extends GatewayController
 
             }
             return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
-        }
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
+        //     return redirect()->back()->withInput();
+        // }
     }
 
 
@@ -609,7 +609,8 @@ class DepositController extends GatewayController
             // Return content without X-Frame-Options header
             return response($content)
                 ->header('Content-Type', $contentType ?: 'text/html')
-                ->header('X-Frame-Options', 'ALLOWALL') // Override Uniwire's restriction
+                ->header('X-Frame-Options', 'SAMEORIGIN') // Allow embedding from same origin
+                ->header('Content-Security-Policy', 'frame-ancestors \'self\' https://*.knightmarkets.com;') // Allow embedding
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                 ->header('Pragma', 'no-cache')
                 ->header('Expires', '0');
@@ -694,6 +695,12 @@ class DepositController extends GatewayController
         }
         </script>
         ';
+        
+        // Add mobile viewport if not present
+        if (strpos($content, '<meta name="viewport"') === false) {
+            $viewportMeta = '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">';
+            $content = preg_replace('/(<head[^>]*>)/i', '$1' . $viewportMeta, $content);
+        }
         
         // Insert compatibility script before closing </body> tag
         $content = str_replace('</body>', $compatScript . '</body>', $content);

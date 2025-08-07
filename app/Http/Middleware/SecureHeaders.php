@@ -27,23 +27,20 @@ class SecureHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
         
-        // Allow iframes for payment gateway routes and specific pages that need iframe support
+        // Routes that should allow iframe embedding
         $allowIframeRoutes = [
             'user/deposit/crypto-chill',
-            'gateway/uniwire', 
-            'gateway/',
-            'status/',
-            'user/copy-trading',
-            'user/terminal',
-            'user/webterminal',
-            'admin/documentation'
+            'gateway/uniwire',
+            'gateway/coinpayments',
+            'gateway/perfectmoney',
+            'gateway/paypal',
+            'gateway/stripe',
+            'user/deposit/uniwire/proxy', // Allow proxy route to be embedded
         ];
-        
-        $currentPath = $request->path();
+
         $allowIframe = false;
-        
         foreach ($allowIframeRoutes as $route) {
-            if (str_starts_with($currentPath, $route)) {
+            if (strpos($request->getPathInfo(), $route) !== false) {
                 $allowIframe = true;
                 break;
             }

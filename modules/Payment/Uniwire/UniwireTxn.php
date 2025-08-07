@@ -183,7 +183,7 @@ class UniwireTxn extends BaseTxn
                 'manual_field_data' => json_encode($invoice['result'])
             ]);
             
-            // Return modal view that keeps user on the site while handling payment
+            // Return iframe-based view with Mac compatibility and fallbacks
             return view('gateway.uniwire', [
                 'data' => [
                     'invoice_url' => $invoiceUrl,
@@ -194,7 +194,9 @@ class UniwireTxn extends BaseTxn
                     'currency' => $this->currency, // Selected payment currency
                     'base_currency' => base_currency(), // Base currency
                     'method' => $this->txnInfo->method, // Payment method name
-                    'invoice_id' => $invoiceId
+                    'invoice_id' => $invoiceId,
+                    'use_iframe' => true, // Enable iframe-based payment
+                    'auto_redirect' => false // Disable auto-redirect, use iframe instead
                 ]
             ]);
 

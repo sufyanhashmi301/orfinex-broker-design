@@ -13,7 +13,7 @@
             @php
                 // Priority 1: Check if $gateway->logo is set and file exists
                 $icon = null;
-                if (!empty($gateway->logo) && file_exists(public_path($gateway->logo))) {
+                if (!empty($gateway->logo)) {
                     $icon = asset($gateway->logo);
                 }
                 // Priority 2: Fallback to gateway->logo if gateway_id exists

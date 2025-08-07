@@ -174,7 +174,12 @@ class UniwireTxn extends BaseTxn
 
             // Get invoice ID and construct URL
             $invoiceId = $invoice['result']['id'];
-            $invoiceUrl = $invoice['result']['url'];
+            
+            // Construct invoice URL based on environment
+            $baseUrl = $this->api_url === 'https://testnet-api.uniwire.com' 
+                ? 'https://testnet.uniwire.com' 
+                : 'https://uniwire.com';
+            $invoiceUrl = "{$baseUrl}/invoice/{$invoiceId}";
             
             // Store invoice URL in session for proxy access
             session()->put("uniwire_invoice_url_{$this->txn}", $invoiceUrl);
@@ -183,7 +188,7 @@ class UniwireTxn extends BaseTxn
             return view('gateway.uniwire', [
                 'data' => [
                     'invoice_url' => $invoiceUrl,
-                    'proxy_url' => route('gateway.uniwire.proxy', ['txn' => $this->txn]), // Use proxy route
+                    'proxy_url' => route('user.deposit.uniwire.proxy', ['txn' => $this->txn]), // Use proxy route
                     'txn' => $this->txn,
                     'original_amount' => $this->txnInfo->amount, // Original amount in base currency
                     'final_amount' => $this->final_amount, // Final amount in base currency (with charges)

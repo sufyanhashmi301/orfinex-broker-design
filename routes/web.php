@@ -130,9 +130,6 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('redeem-voucher', [DepositController::class, 'redeemVoucher'])->name('redeem.voucher');
         Route::post('get-voucher', [DepositController::class, 'getVoucher'])->name('get.voucher');
         Route::post('redeem-now', [DepositController::class, 'redeemNow'])->name('redeem.now');
-        
-        // Gateway proxy route for Uniwire iframe
-        Route::get('uniwire/proxy', [DepositController::class, 'uniwireProxy'])->name('uniwire.proxy');
 
     });
 

@@ -119,8 +119,6 @@
 
 <script>
 let paymentPopup = null;
-let statusCheckInterval = null;
-let autoOpenTimeout = null;
 
 // Auto-open popup payment on page load
 function autoOpenPayment() {
@@ -310,96 +308,14 @@ function monitorPopup() {
     }, 1000);
 }
 
-// Start checking payment status
-function startPaymentStatusCheck() {
-    // Disabled: Do not track payment statuses in CRM view
-    console.log('Payment status tracking disabled');
-    return;
-    
-    if (statusCheckInterval) {
-        clearInterval(statusCheckInterval);
-    }
-    
-    statusCheckInterval = setInterval(function() {
-        checkPaymentStatus();
-    }, 3000); // Check every 3 seconds
-}
-
-// Check payment status via AJAX
-function checkPaymentStatus() {
-    // Disabled: Do not track payment statuses in CRM view
-    return;
-    
-    fetch('{{ route("user.deposit.payment.status") }}?txn={{ $data["txn"] }}', {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error('Payment status error:', data.error);
-            return;
-        }
-        
-        console.log('Payment status:', data.status);
-        
-        // Check transaction status
-        if (data.status === 'success' || data.status === 'completed') {
-            handlePaymentSuccess();
-        } else if (data.status === 'failed' || data.status === 'cancelled') {
-            handlePaymentFailure();
-        }
-        // For 'pending' status, continue checking
-    })
-    .catch(error => {
-        console.error('Error checking payment status:', error);
-    });
-}
-
-// Handle payment success
-function handlePaymentSuccess() {
-    // Disabled: Do not auto-redirect on payment success
-    console.log('Payment success detected - but auto-redirect disabled');
-    return;
-    
-    clearInterval(statusCheckInterval);
-    if (paymentPopup) {
-        paymentPopup.close();
-    }
-    
-    // Show success message and redirect
-    alert('{{ __("Payment completed successfully!") }}');
-    window.location.href = '{{ route("status.success", ["txn" => $data["txn"]]) }}';
-}
-
-// Handle payment failure
-function handlePaymentFailure() {
-    // Disabled: Do not auto-redirect on payment failure
-    console.log('Payment failure detected - but auto-redirect disabled');
-    return;
-    
-    clearInterval(statusCheckInterval);
-    if (paymentPopup) {
-        paymentPopup.close();
-    }
-    
-    // Show error message and redirect
-    alert('{{ __("Payment failed or was cancelled.") }}');
-    window.location.href = '{{ route("status.cancel", ["txn" => $data["txn"]]) }}';
-}
+// Payment status tracking functions removed - no longer needed in current system
 
 // Cancel payment
 function cancelPayment() {
-    if (statusCheckInterval) {
-        clearInterval(statusCheckInterval);
-    }
     if (paymentPopup) {
         paymentPopup.close();
     }
-    
+
     window.location.href = '{{ route("status.cancel", ["txn" => $data["txn"]]) }}';
 }
 
@@ -481,9 +397,6 @@ window.addEventListener('message', function(event) {
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', function() {
-    if (statusCheckInterval) {
-        clearInterval(statusCheckInterval);
-    }
     if (paymentPopup && !paymentPopup.closed) {
         paymentPopup.close();
     }

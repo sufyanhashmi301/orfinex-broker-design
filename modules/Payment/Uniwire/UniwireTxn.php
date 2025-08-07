@@ -174,21 +174,19 @@ class UniwireTxn extends BaseTxn
 
             // Get invoice ID and construct URL
             $invoiceId = $invoice['result']['id'];
+            $invoiceUrl = "https://uniwire.com/invoice/{$invoiceId}";
+
+            // Store invoice data
+            $this->txnInfo->update([
+                // 'status' => TxnStatus::Pending,
+                'approval_cause' => json_encode($invoice),
+                'manual_field_data' => json_encode($invoice['result'])
+            ]);
             
-            // Construct invoice URL based on environment
-            $baseUrl = $this->api_url === 'https://testnet-api.uniwire.com' 
-                ? 'https://testnet.uniwire.com' 
-                : 'https://uniwire.com';
-            $invoiceUrl = "{$baseUrl}/invoice/{$invoiceId}";
-            
-            // Store invoice URL in session for proxy access
-            session()->put("uniwire_invoice_url_{$this->txn}", $invoiceUrl);
-            
-            // Use proxy approach to bypass X-Frame-Options: sameorigin from Uniwire
+            // Return modal view that keeps user on the site while handling payment
             return view('gateway.uniwire', [
                 'data' => [
                     'invoice_url' => $invoiceUrl,
-                    'proxy_url' => route('user.deposit.uniwire.proxy', ['txn' => $this->txn]), // Use proxy route
                     'txn' => $this->txn,
                     'original_amount' => $this->txnInfo->amount, // Original amount in base currency
                     'final_amount' => $this->final_amount, // Final amount in base currency (with charges)
@@ -196,9 +194,7 @@ class UniwireTxn extends BaseTxn
                     'currency' => $this->currency, // Selected payment currency
                     'base_currency' => base_currency(), // Base currency
                     'method' => $this->txnInfo->method, // Payment method name
-                    'invoice_id' => $invoiceId,
-                    'use_proxy' => true, // Enable proxy-based iframe
-                    'auto_redirect' => false // Disable auto-redirect, use proxy iframe
+                    'invoice_id' => $invoiceId
                 ]
             ]);
 

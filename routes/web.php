@@ -130,8 +130,14 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('redeem-voucher', [DepositController::class, 'redeemVoucher'])->name('redeem.voucher');
         Route::post('get-voucher', [DepositController::class, 'getVoucher'])->name('get.voucher');
         Route::post('redeem-now', [DepositController::class, 'redeemNow'])->name('redeem.now');
+        Route::post('uniwire', [DepositController::class, 'uniwire'])->name('uniwire');
 
     });
+
+// Gateway proxy routes (outside auth group to avoid middleware conflicts)
+Route::get('gateway/uniwire/proxy', [DepositController::class, 'uniwireProxy'])
+    ->name('gateway.uniwire.proxy')
+    ->middleware(['auth', 'XSS']);
 
     // Multi Level
     Route::group(['middleware' => 'IB','prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {

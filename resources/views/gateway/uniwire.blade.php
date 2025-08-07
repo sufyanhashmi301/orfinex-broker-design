@@ -83,10 +83,10 @@
     <!-- Primary iframe (modern browsers) -->
     <iframe 
         id="payment-iframe"
-        src="{{ $data['invoice_url'] }}"
+        src="{{ isset($data['use_proxy']) && $data['use_proxy'] ? $data['proxy_url'] : $data['invoice_url'] }}"
         class="w-full h-full border-0"
         style="min-height: 100vh;"
-        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation allow-top-navigation-by-user-activation"
         referrerpolicy="strict-origin-when-cross-origin"
         onload="handleIframeLoad()"
         onerror="handleIframeError()">
@@ -95,14 +95,14 @@
     <!-- Object fallback for Mac Safari -->
     <object 
         id="payment-object"
-        data="{{ $data['invoice_url'] }}"
+        data="{{ isset($data['use_proxy']) && $data['use_proxy'] ? $data['proxy_url'] : $data['invoice_url'] }}"
         type="text/html"
         class="w-full h-full"
         style="min-height: 100vh; display: none;">
-        <param name="src" value="{{ $data['invoice_url'] }}">
+        <param name="src" value="{{ isset($data['use_proxy']) && $data['use_proxy'] ? $data['proxy_url'] : $data['invoice_url'] }}">
         <!-- Embed fallback -->
         <embed 
-            src="{{ $data['invoice_url'] }}"
+            src="{{ isset($data['use_proxy']) && $data['use_proxy'] ? $data['proxy_url'] : $data['invoice_url'] }}"
             type="text/html"
             class="w-full h-full"
             style="min-height: 100vh;">

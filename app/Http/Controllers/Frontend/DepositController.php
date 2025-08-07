@@ -519,4 +519,185 @@ class DepositController extends GatewayController
             return false;
         }
     }
+
+    public function checkPaymentStatus(Request $request)
+    {
+        try {
+            $txn = $request->get('txn');
+            if (!$txn) {
+                return response()->json(['error' => 'Transaction ID required'], 400);
+            }
+
+            $transaction = Transaction::where('tnx', $txn)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if (!$transaction) {
+                return response()->json(['error' => 'Transaction not found'], 404);
+            }
+
+            return response()->json([
+                'status' => $transaction->status->value,
+                'txn' => $transaction->tnx,
+                'amount' => $transaction->amount,
+                'final_amount' => $transaction->final_amount,
+                'currency' => $transaction->currency,
+                'method' => $transaction->method,
+                'approval_cause' => $transaction->approval_cause,
+                'created_at' => $transaction->created_at->toDateTimeString()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error checking payment status'], 500);
+        }
+    }
+
+    /**
+     * Proxy Uniwire payment content to bypass X-Frame-Options
+     */
+    public function uniwireProxy(Request $request)
+    {
+        try {
+            $txn = $request->get('txn');
+            if (!$txn) {
+                return response('Transaction ID required', 400);
+            }
+
+            // Get the transaction and verify ownership
+            $transaction = Transaction::where('tnx', $txn)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if (!$transaction) {
+                return response('Transaction not found', 404);
+            }
+
+            // Get the original invoice URL from session or regenerate
+            $invoiceUrl = session("uniwire_invoice_url_{$txn}");
+            
+            if (!$invoiceUrl) {
+                // If not in session, we need to regenerate - redirect to payment creation
+                return redirect()->route('user.deposit.gateway', ['code' => $transaction->method]);
+            }
+
+            // Fetch the content from Uniwire
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $invoiceUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_USERAGENT, $request->header('User-Agent'));
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            // Forward cookies if any
+            if ($request->header('Cookie')) {
+                curl_setopt($ch, CURLOPT_COOKIE, $request->header('Cookie'));
+            }
+
+            $content = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            curl_close($ch);
+
+            if ($content === false || $httpCode !== 200) {
+                return response('Failed to load payment gateway', $httpCode ?: 500);
+            }
+
+            // Modify the content to fix relative URLs and add base tag
+            $content = $this->processUniwireContent($content, $invoiceUrl);
+
+            // Return content without X-Frame-Options header
+            return response($content)
+                ->header('Content-Type', $contentType ?: 'text/html')
+                ->header('X-Frame-Options', 'ALLOWALL') // Override Uniwire's restriction
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            \Log::error('Uniwire proxy error', [
+                'message' => $e->getMessage(),
+                'txn' => $txn ?? 'unknown'
+            ]);
+            
+            return response('Error loading payment gateway', 500);
+        }
+    }
+
+    /**
+     * Process Uniwire content to fix relative URLs and add compatibility
+     */
+    private function processUniwireContent($content, $baseUrl)
+    {
+        // Parse the base URL
+        $parsed = parse_url($baseUrl);
+        $baseScheme = $parsed['scheme'] ?? 'https';
+        $baseHost = $parsed['host'] ?? 'uniwire.com';
+        $basePath = dirname($parsed['path'] ?? '/');
+        
+        // Create absolute base URL
+        $absoluteBase = $baseScheme . '://' . $baseHost;
+        $pathBase = $absoluteBase . ($basePath !== '/' ? $basePath : '');
+
+        // Add base tag to fix relative URLs
+        $baseTag = '<base href="' . $absoluteBase . '/">';
+        
+        // Insert base tag after <head> tag
+        $content = preg_replace('/(<head[^>]*>)/i', '$1' . $baseTag, $content);
+
+        // Fix relative URLs in src, href, action attributes
+        $content = preg_replace_callback('/\b(src|href|action)\s*=\s*["\']([^"\']+)["\']/i', function($matches) use ($absoluteBase, $pathBase) {
+            $attr = $matches[1];
+            $url = $matches[2];
+            
+            // Skip if already absolute
+            if (preg_match('/^https?:\/\//', $url) || preg_match('/^\/\//', $url)) {
+                return $matches[0];
+            }
+            
+            // Handle relative URLs
+            if (strpos($url, '/') === 0) {
+                // Absolute path - prepend domain
+                $newUrl = $absoluteBase . $url;
+            } else {
+                // Relative path - prepend base path
+                $newUrl = $pathBase . '/' . $url;
+            }
+            
+            return $attr . '="' . $newUrl . '"';
+        }, $content);
+
+        // Add iframe compatibility script
+        $compatScript = '
+        <script>
+        // Iframe compatibility fixes
+        if (window.parent !== window) {
+            // We are in an iframe
+            console.log("Running in iframe mode");
+            
+            // Allow form submissions in iframe
+            document.addEventListener("DOMContentLoaded", function() {
+                var forms = document.querySelectorAll("form");
+                forms.forEach(function(form) {
+                    if (!form.target) {
+                        form.target = "_parent";
+                    }
+                });
+            });
+            
+            // Handle payment completion messages
+            window.addEventListener("beforeunload", function() {
+                if (window.parent) {
+                    window.parent.postMessage({type: "payment_closing"}, "*");
+                }
+            });
+        }
+        </script>
+        ';
+        
+        // Insert compatibility script before closing </body> tag
+        $content = str_replace('</body>', $compatScript . '</body>', $content);
+
+        return $content;
+    }
 }

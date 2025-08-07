@@ -174,19 +174,16 @@ class UniwireTxn extends BaseTxn
 
             // Get invoice ID and construct URL
             $invoiceId = $invoice['result']['id'];
-            $invoiceUrl = "https://uniwire.com/invoice/{$invoiceId}";
-
-            // Store invoice data
-            $this->txnInfo->update([
-                // 'status' => TxnStatus::Pending,
-                'approval_cause' => json_encode($invoice),
-                'manual_field_data' => json_encode($invoice['result'])
-            ]);
+            $invoiceUrl = $invoice['result']['url'];
             
-            // Return iframe-based view with Mac compatibility and fallbacks
+            // Store invoice URL in session for proxy access
+            session()->put("uniwire_invoice_url_{$this->txn}", $invoiceUrl);
+            
+            // Use proxy approach to bypass X-Frame-Options: sameorigin from Uniwire
             return view('gateway.uniwire', [
                 'data' => [
                     'invoice_url' => $invoiceUrl,
+                    'proxy_url' => route('gateway.uniwire.proxy', ['txn' => $this->txn]), // Use proxy route
                     'txn' => $this->txn,
                     'original_amount' => $this->txnInfo->amount, // Original amount in base currency
                     'final_amount' => $this->final_amount, // Final amount in base currency (with charges)
@@ -195,8 +192,8 @@ class UniwireTxn extends BaseTxn
                     'base_currency' => base_currency(), // Base currency
                     'method' => $this->txnInfo->method, // Payment method name
                     'invoice_id' => $invoiceId,
-                    'use_iframe' => true, // Enable iframe-based payment
-                    'auto_redirect' => false // Disable auto-redirect, use iframe instead
+                    'use_proxy' => true, // Enable proxy-based iframe
+                    'auto_redirect' => false // Disable auto-redirect, use proxy iframe
                 ]
             ]);
 

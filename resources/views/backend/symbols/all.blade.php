@@ -38,6 +38,7 @@
                         {{ __('Filter') }}
                     </button>
                 </div>
+                @can('symbols-export')
                 <div class="input-area relative">
                     <button id="export-button" 
                             class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
@@ -46,6 +47,7 @@
                         {{ __('Export') }}
                     </button>
                 </div>
+                @endcan
             </form>
         
         
@@ -124,11 +126,28 @@
             </div>
         </div>
     </div>
+    <div class="card-body relative px-6 pt-3">
+    <div id="processingIndicator" class="text-center" style="display: none;">
+        <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+    </div>
+</div>
 @endsection
 
-@section('symbol-groups-script')
+@section('script')
     <script>
         $(document).ready(function () {
+            // Filter toggle functionality
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+                
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
 
             $("#filter-form").submit(function (event) {
                 event.preventDefault();
@@ -179,23 +198,44 @@
             }
         });
     });
-            function fetchSymbols(page = 1) {
-                var formData = $("#filter-form").serialize(); // Serialize form data
-                $.ajax({
-                    url: "{{ route('admin.symbols.index') }}?page=" + page, // Append page number
-                    type: "GET",
-                    data: formData, // Send filters along with request
-                    success: function (response) {
-                        $("#symbolTableBody").html(response.table); // Update table only
-                        $("#paginationLinks").html(response.pagination); // Update pagination
-                    },
-                    error: function (xhr, status, error) {
-                        tNotify('warning', "Error fetching symbols.");
-                        console.error("Error:", error);
-                    }
-                });
-            }
+      const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('global_search') || urlParams.has('contact_size') || urlParams.has('path') || urlParams.has('status')) {
+        const $filtersDiv = $('#filters_div');
+        if ($filtersDiv.hasClass('hidden')) {
+            $filtersDiv.removeClass('hidden').show(); // Use .show() for instant visibility or .slideDown() for an animated effect
+        }
+    }
+           function fetchSymbols(page = 1) {
+    // Show the loading indicator
+    $('#processingIndicator').show();
 
+    var formData = $("#filter-form").serialize();
+    $.ajax({
+        url: "{{ route('admin.symbols.index') }}?page=" + page,
+        type: "GET",
+        data: formData,
+        success: function(response) {
+            $("#symbolTableBody").html(response.table);
+            $("#paginationLinks").html(response.pagination);
+        },
+        error: function(xhr, status, error) {
+            tNotify('warning', "Error fetching symbols.");
+            console.error("Error:", error);
+        },
+        complete: function() {
+            // Hide the loading indicator when the request is complete
+            $('#processingIndicator').hide();
+        }
+    });
+}
+ $('#global_search, #contact_size, #path').on('keyup', function(e) {
+                // Prevent form submission on 'Enter' keypress
+                if (e.which === 13) {
+                    e.preventDefault();
+                    return false;
+                }
+                fetchSymbols();
+            });
             // Handle pagination click event dynamically
             $('body').on('click', '.pagination a', function (event) {
                 event.preventDefault();

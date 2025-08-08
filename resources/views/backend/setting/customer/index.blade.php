@@ -68,3 +68,7 @@
     @yield('customer-content')
 
 @endsection
+
+@section('script')
+    @yield('user-management-script')
+@endsection

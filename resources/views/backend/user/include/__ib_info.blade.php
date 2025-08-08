@@ -26,18 +26,68 @@
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('IB Group') }}</th>
-                                    <th scope="col" class="table-th">{{ __('status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Rebate Rules') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Types') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th"></th>
-
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 <tr>
+                                   <td class="table-td">
+                                       @if(isset($user->ib_group_id) && $user->ibGroup)
+                                           <a href="{{ route('admin.ib-group.index', ['filter_group' => $user->ibGroup->id, 'global_search' => $user->ibGroup->name]) }}" 
+                                              class="badge badge-secondary uppercase text-primary hover:text-primary-dark cursor-pointer">
+                                               {{ $user->ibGroup->name }}
+                                           </a>
+                                       @else
+                                           <span class="text-slate-400">{{ __('N/A') }}</span>
+                                       @endif
+                                   </td>
                                     <td class="table-td">
-                                        {{ isset($user->ib_group_id) ? $user->ibGroup->name : 'N/A' }}
+                                        @if(isset($user->ib_group_id) && $user->ibGroup && $user->ibGroup->rebateRules->isNotEmpty())
+                                            <div class="flex flex-wrap gap-1">
+                                                @foreach($user->ibGroup->rebateRules as $rule)
+                                                    <a href="{{ route('admin.rebate-rules.index') }}?filter_rule={{ $rule->id }}&global_search={{ urlencode($rule->title) }}" 
+                                                       class="badge badge-secondary uppercase text-primary hover:text-primary-dark cursor-pointer">
+                                                        {{ $rule->title }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-slate-400">{{ __('N/A') }}</span>
+                                        @endif
                                     </td>
                                     <td class="table-td">
-                                        {{ ucfirst($user->ib_status)}}
+                                        @if(isset($user->ib_group_id) && $user->ibGroup)
+                                            @php
+                                                $accountTypes = collect();
+                                                foreach($user->ibGroup->rebateRules as $rule) {
+                                                    $accountTypes = $accountTypes->merge($rule->forexSchemas);
+                                                }
+                                                $accountTypes = $accountTypes->unique('id');
+                                            @endphp
+
+                                            @if($accountTypes->isNotEmpty())
+                                                <div class="flex flex-wrap gap-1">
+                                                    @foreach($accountTypes as $schema)
+                                                                    <a href="{{ route('admin.accountType.index') }}?filter_schema={{ $schema['id'] }}&title={{ urlencode($schema['title']) }}" 
+                                                           class="badge badge-secondary uppercase text-primary hover:text-primary-dark cursor-pointer">
+                                                            {{ $schema->title }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="text-slate-400">{{ __('N/A') }}</span>
+                                            @endif
+                                        @else
+                                            <span class="text-slate-400">{{ __('N/A') }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="table-td">
+                                        <span class="badge {{ ucfirst($user->ib_status) === 'Approved' ? 'bg-success-500 text-success-500 bg-opacity-30' : 'bg-warning-500 text-warning-500 bg-opacity-30' }} capitalize">
+                                            {{ ucfirst($user->ib_status)}}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -81,10 +131,8 @@
             });
         })(jQuery);
 
-
         $('#ibGroupIDSelect').select2({
             dropdownParent: $('#addIBModal')
         });
-
     </script>
 @endpush

@@ -163,6 +163,8 @@ class UniwireTxn extends BaseTxn
                 'currency' => base_currency(),
                 'kind' => $this->getKindForCurrency($this->currency),
                 'pricing_type' => 'fixed_price',
+                'return_url' => route('status.success', ['txn' => $this->txn]),
+                'cancel_url' => route('status.cancel', ['txn' => $this->txn]),
                 'passthrough' => json_encode([
                     'transaction_id' => $this->txn,
                     'user_id' => $this->userId,
@@ -176,15 +178,23 @@ class UniwireTxn extends BaseTxn
 
             // Store invoice data
             $this->txnInfo->update([
-                'status' => TxnStatus::Pending,
+                // 'status' => TxnStatus::Pending,
                 'approval_cause' => json_encode($invoice),
                 'manual_field_data' => json_encode($invoice['result'])
             ]);
             
-            // Return view with invoice URL
+            // Return modal view that keeps user on the site while handling payment
             return view('gateway.uniwire', [
                 'data' => [
-                    'invoice_url' => $invoiceUrl
+                    'invoice_url' => $invoiceUrl,
+                    'txn' => $this->txn,
+                    'original_amount' => $this->txnInfo->amount, // Original amount in base currency
+                    'final_amount' => $this->final_amount, // Final amount in base currency (with charges)
+                    'pay_amount' => $this->amount, // Pay amount in selected currency
+                    'currency' => $this->currency, // Selected payment currency
+                    'base_currency' => base_currency(), // Base currency
+                    'method' => $this->txnInfo->method, // Payment method name
+                    'invoice_id' => $invoiceId
                 ]
             ]);
 

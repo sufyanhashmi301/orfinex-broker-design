@@ -150,7 +150,7 @@ class AuthController extends Controller
                 // Logout temporarily and show 2FA form
                 $this->guard()->logout();
                 notify()->success('Verification code sent to your email.');
-                return redirect()->route('admin.2fa.verify');
+                return redirect()->route('admin.2fa.verifylogin');
             }
             
             // If 2FA not enabled, proceed with normal login
@@ -166,43 +166,55 @@ class AuthController extends Controller
     }
 
     protected function handle2FAVerification(Request $request)
-    {
-        $request->validate(['verification_code' => 'required|string|size:4']);
+{
+    $request->validate(['verification_code' => 'required|string|size:4']);
 
-        $adminId = $request->session()->get('admin_2fa_id');
-        $code = $request->verification_code;
+    $adminId = $request->session()->get('admin_2fa_id');
+    $code = $request->verification_code;
 
-        $codeRecord = Admin2FACode::where('admin_id', $adminId)
-            ->where('code', $code)
-            ->where('used', false)
-            ->where('expires_at', '>', now())
-            ->first();
+    // First check if there's a valid unused code
+    $codeRecord = Admin2FACode::where('admin_id', $adminId)
+        ->where('used', false)
+        ->where('expires_at', '>', now())
+        ->first();
 
-        if (!$codeRecord) {
-            notify()->warning('Invalid verification code. Please try again.');
-            return back()->with('status', 'invalid-code');
-        }
-
-        // Mark code as used
-        $codeRecord->markAsUsed();
-
-        // Retrieve stored credentials and log in
-        $credentials = $request->session()->get('admin_credentials');
-        $remember = $request->session()->get('remember', false);
-
-        if ($this->guard()->attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            $request->session()->forget(['admin_2fa_id', 'admin_2fa_email', 'admin_credentials', 'remember']);
-            
-            AdminLoginActivity::add();
-            notify()->success('Two-factor authentication successful. Welcome back!');
-            
-            return $this->redirectBasedOnRole();
-        }
-
-        notify()->error('Authentication failed. Please try again.');
-        return redirect()->route('admin.login');
+    if (!$codeRecord) {
+        notify()->warning('No active verification code found. Please request a new one.');
+        return back()->with('status', 'invalid-code');
     }
+
+    // Check if the code matches
+    if ($codeRecord->code !== $code) {
+        // Mark the code as expired immediately
+        $codeRecord->update([
+            'expires_at' => now(),
+            'attempts' => $codeRecord->attempts + 1
+        ]);
+        
+        notify()->warning('Invalid verification code. The code has been expired. Please request a new one.');
+        return back()->with('status', 'invalid-code');
+    }
+
+    // If code matches, mark as used
+    $codeRecord->markAsUsed();
+
+    // Retrieve stored credentials and log in
+    $credentials = $request->session()->get('admin_credentials');
+    $remember = $request->session()->get('remember', false);
+
+    if ($this->guard()->attempt($credentials, $remember)) {
+        $request->session()->regenerate();
+        $request->session()->forget(['admin_2fa_id', 'admin_2fa_email', 'admin_credentials', 'remember']);
+        
+        AdminLoginActivity::add();
+        notify()->success('Two-factor authentication successful. Welcome back!');
+        
+        return $this->redirectBasedOnRole();
+    }
+
+    notify()->error('Authentication failed. Please try again.');
+    return redirect()->route('admin.login');
+}
 
     protected function redirectBasedOnRole()
     {

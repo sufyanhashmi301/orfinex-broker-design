@@ -27,7 +27,8 @@ class SymbolGroupsExport implements FromCollection, WithHeadings, WithMapping
             'ID',
             'Group Name',
             'Symbols',
-            'Created At'
+            'Created At',
+            'Updated At'
         ];
     }
 
@@ -37,7 +38,8 @@ class SymbolGroupsExport implements FromCollection, WithHeadings, WithMapping
             $group->id,
             $group->title,
             $group->symbols->pluck('symbol')->implode(', '),
-            $group->created_at->format('Y-m-d H:i:s')
+            $group->created_at->format('Y-m-d H:i:s'),
+            $group->updated_at->format('Y-m-d H:i:s')
         ];
     }
 }

@@ -112,6 +112,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Account Type Management', 'name' => 'account-type-create'],
             ['category' => 'Account Type Management', 'name' => 'account-type-edit'],
             ['category' => 'Account Type Management', 'name' => 'account-type-delete'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-export'],
 
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
@@ -159,19 +160,25 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-delete'],
 
             ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbols-export'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-edit'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-delete'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbol-group-export'],
+
 
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-list'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-export'],
 
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-list'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-create'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-edit'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-delete'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-export'],
+
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],

@@ -11,9 +11,18 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($gateways as $gateway)
             @php
-                $icon = $gateway->logo;
-                if (null != $gateway->gateway_id && $gateway->icon == ''){
+                // Priority 1: Check if $gateway->logo is set and file exists
+                $icon = null;
+                if (!empty($gateway->logo)) {
+                    $icon = asset($gateway->logo);
+                }
+                // Priority 2: Fallback to gateway->logo if gateway_id exists
+                elseif (isset($gateway->gateway_id) && !empty($gateway->gateway->logo)) {
                     $icon = $gateway->gateway->logo;
+                }
+                // Priority 3: Fallback to default $gateway->logo even if file doesn't exist
+                else {
+                    $icon = asset($gateway->logo ?? '');
                 }
 
                 // Determine link route
@@ -23,7 +32,7 @@
             @endphp
             <a href="{{ $route }}" class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
-                    <img src="{{ isset($gateway->gateway_id) ? $gateway->gateway->logo : asset($icon) }}" class="h-10" alt="{{ $gateway->name }}" />
+                    <img src="{{ $icon }}" class="h-10" alt="{{ $gateway->name }}" />
                     <span class="badge badge-secondary capitalize rounded-3xl py-1">
                         {{ __('Verification required') }}
                     </span>

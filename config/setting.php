@@ -552,6 +552,15 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'admin_2fa_enabled', // unique name for field
+                'label' => 'Admin Two-Factor Authentication', // you know what label it is
+                'description' => 'Enable two-factor authentication for admin login using email verification codes',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
         ],
     ],
 

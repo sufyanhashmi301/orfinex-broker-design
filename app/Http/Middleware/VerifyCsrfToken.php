@@ -16,6 +16,7 @@ class VerifyCsrfToken extends Middleware
         '*user/kyc/status',
         '*gateway/coingate/callback',
         '*ipn*',
+        'ipn/uniwire',
         'webhook/*',
         '*advance/kyc/status',
         '*telegram/webhook',

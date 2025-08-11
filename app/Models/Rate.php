@@ -10,6 +10,10 @@ class Rate extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_id',
+        'currency_name',
+        'currency_symbol',
+        'currency_code',
         'rate'
     ];
 

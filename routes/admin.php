@@ -165,6 +165,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
+    Route::post('ib-group/export', [IBGroupController::class, 'export'])->name('ib-group.export');
 
 
 //===============================  Risk Profile Tag ==================================
@@ -225,6 +226,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::get('accountType/export', [ForexSchemaController::class, 'export'])->name('accountType.export');
     Route::get('manage-level', [ForexSchemaController::class, 'manageLevel'])->name('manageLevel');
     Route::get('multi-level/view/{id}', [ForexSchemaController::class, 'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
@@ -611,10 +613,12 @@ Route::prefix('team')->group(function() {
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
     Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+    Route::post('symbol-groups/export', [SymbolGroupController::class, 'export'])->name('symbol-groups.export');
 
 
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+    Route::post('rebate-rules/export', [RebateRuleController::class, 'export'])->name('rebateRules.export');
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');

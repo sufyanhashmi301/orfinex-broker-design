@@ -15,6 +15,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\IBGroupExport;
 
 class IBGroupController extends Controller
 {
@@ -33,11 +35,87 @@ class IBGroupController extends Controller
      }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $ibGroups = IbGroup::with( 'rebateRules')->paginate(10); // Load related rebate rules
-        $rebateRules = RebateRule::where('status', 1)->get(); // Active rebate rules for dropdowns
-        return view('backend.ib_group.index', compact('ibGroups', 'rebateRules'));
+        $query = IBGroup::with(['rebateRules.forexSchemas']);
+        if ($request->ajax() || $request->hasAny(['global_search', 'status', 'global_account', 'filter_group'])) {
+        // Global search
+        if ($request->filled('global_search')) {
+            $search = $request->global_search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('rebateRules', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('rebateRules.forexSchemas', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by global account type
+        if ($request->filled('global_account')) {
+            $query->where('is_global_account', $request->global_account);
+        }
+
+        // Handle direct filter links
+        if ($request->filled('filter_group')) {
+            $query->where('id', $request->filter_group);
+        }
+    }
+        $ibGroups = $query->paginate(10);
+        $rebateRules = \App\Models\RebateRule::select('id', 'title')->get();
+        $accountTypes = \App\Models\ForexSchema::select('id', 'title')->get();
+
+        if ($request->ajax()) {
+            $html = view('backend.ib_group.index', compact('ibGroups', 'rebateRules', 'accountTypes'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('backend.ib_group.index', compact('ibGroups', 'rebateRules', 'accountTypes'));
+    }
+
+    public function export(Request $request)
+    {
+        $query = IBGroup::with(['rebateRules.forexSchemas']);
+
+        // Global search
+        if ($request->filled('global_search')) {
+            $search = $request->global_search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('rebateRules', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('rebateRules.forexSchemas', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by global account type
+        if ($request->filled('global_account')) {
+            $query->where('is_global_account', $request->global_account);
+        }
+
+        // Handle direct filter links
+        if ($request->filled('filter_group')) {
+            $query->where('id', $request->filter_group);
+        }
+
+        $ibGroups = $query->get();
+
+        return Excel::download(new IBGroupExport($ibGroups), 'ib-groups-' . date('Y-m-d') . '.xlsx');
     }
 
 

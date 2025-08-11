@@ -1161,6 +1161,11 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'boolean',
                 'val' => '1',
             ],
+            [
+                'name' => 'admin_2fa_enabled',
+                'type' => 'boolean',
+                'val' => '0',
+            ],
         ];
 
         foreach ($settings as $setting) {

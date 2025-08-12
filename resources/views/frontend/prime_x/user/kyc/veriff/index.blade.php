@@ -184,7 +184,8 @@ veriff.setParams({
         givenName: '{{ $user->first_name ?? "" }}',
         lastName: '{{ $user->last_name ?? "" }}'
     },
-    vendorData: '{{ $endUserId }}'
+    vendorData: '{{ $user->id }}', // Our internal user ID
+    endUserId: '{{ $endUserId }}' // UUID or user-X format for Veriff
 });
 
 // Simple update when verification is ready

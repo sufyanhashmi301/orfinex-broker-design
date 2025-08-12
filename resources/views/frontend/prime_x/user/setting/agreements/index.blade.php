@@ -7,7 +7,7 @@
         <div class="card-body p-6">
             <div class="mb-4">
                 <h4 class="card-title mb-2">{{ __('Legal Agreements') }}</h4>
-                <p class="block font-normal text-sm text-slate-500">
+                <p class="block font-normal text-sm text-slate-500 dark:text-slate-200">
                     {{ __("Stay informed and compliant; review all legal agreements linked to your profile.") }}
                 </p>
             </div>
@@ -50,16 +50,16 @@
                                     @endswitch
                                 </div>
                                 <div class="flex-1">
-                                    <span class="block text-slate-600 text-sm font-semibold dark:text-slate-300">
+                                    <span class="block text-slate-600 text-sm font-semibold dark:text-slate-100">
                                         {{ $documentLink->title }}
                                     </span>
-                                    <span class="block font-normal text-xs text-slate-500">
+                                    <span class="block font-normal text-xs text-slate-500 dark:text-slate-200">
                                         {{ __('PDF') }}
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-none">
-                                <a href="{{ $documentLink->link }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                                <a href="{{ $documentLink->link }}" class="inline-flex items-center text-sm dark:text-slate-100" target="_blank">
                                     <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </div>

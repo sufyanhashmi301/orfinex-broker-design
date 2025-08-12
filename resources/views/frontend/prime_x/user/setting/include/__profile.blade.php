@@ -4,7 +4,7 @@
             <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
                 <div class="bg-white dark:bg-secondary p-4">
                     <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Balance') }}
                         </p>
                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
@@ -14,7 +14,7 @@
                 </div>
                 <div class="bg-white dark:bg-secondary p-4">
                     <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Equity') }}
                         </p>
                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
@@ -24,7 +24,7 @@
                 </div>
                 <div class="bg-white dark:bg-secondary p-4">
                     <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Wallet Balance') }}
                         </p>
                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">

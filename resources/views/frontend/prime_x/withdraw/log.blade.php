@@ -153,7 +153,7 @@
                                             $total = $withdraws->total(); // The total number of items
                                         @endphp
 
-                                        <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
+                                        <p class="text-sm text-gray-700 dark:text-slate-100 px-3">
                                             {{ __('Showing') }}
                                             <span class="font-medium">{{ $from }}</span>
                                             {{ __('to') }}

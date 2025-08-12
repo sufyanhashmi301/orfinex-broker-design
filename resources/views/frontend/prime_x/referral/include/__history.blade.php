@@ -68,7 +68,7 @@
                                         $total = $transactions->total(); // The total number of items
                                     @endphp
 
-                                    <p class="text-sm text-gray-700 dark:text-slate-300 px-3" id="total-records">
+                                    <p class="text-sm text-gray-700 dark:text-slate-100 px-3" id="total-records">
                                         {{ __('Showing') }}
                                         <span class="font-medium">{{ $transactions->firstItem() }}</span>
                                         {{ __('to') }}

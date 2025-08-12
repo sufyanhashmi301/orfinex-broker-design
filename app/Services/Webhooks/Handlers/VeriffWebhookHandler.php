@@ -74,14 +74,30 @@ class VeriffWebhookHandler
         // Find user by multiple methods
         $user = null;
 
-        // Try by vendor data (user ID)
+        // Try by vendor data (user ID) - handle both "user-X" format and direct ID
         if ($vendorData) {
-            $user = User::find($vendorData);
+            // If vendorData is in format "user-2", extract the number
+            if (str_starts_with($vendorData, 'user-')) {
+                $userId = (int) str_replace('user-', '', $vendorData);
+                $user = User::find($userId);
+                Log::info('Veriff webhook: trying user lookup with extracted ID', [
+                    'vendor_data' => $vendorData,
+                    'extracted_id' => $userId,
+                    'user_found' => $user ? true : false,
+                ]);
+            } else {
+                // Direct ID lookup
+                $user = User::find($vendorData);
+            }
         }
 
-        // Try by session ID
+        // Try by session ID if still not found
         if (!$user && $sessionId) {
             $user = User::where('kyc_session_id', $sessionId)->first();
+            Log::info('Veriff webhook: trying session ID lookup', [
+                'session_id' => $sessionId,
+                'user_found' => $user ? true : false,
+            ]);
         }
 
         // Try by end user ID (UUID or external ID)
@@ -89,6 +105,10 @@ class VeriffWebhookHandler
             $user = User::where('uuid', $endUserId)
                        ->orWhere('external_kyc_id', $endUserId)
                        ->first();
+            Log::info('Veriff webhook: trying end user ID lookup', [
+                'end_user_id' => $endUserId,
+                'user_found' => $user ? true : false,
+            ]);
         }
 
         if (!$user) {

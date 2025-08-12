@@ -153,56 +153,118 @@
                             $manualSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::MANUAL)->where('status', true)->first();
                             $automaticSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::AUTOMATIC)->where('status', true)->first();
                         @endphp
-                        @if($automaticSubLevel && $automaticSubLevel->status)
-
-                            <div
-                                class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
-                                <p class="text-base font-normal text-slate-500 dark:text-slate-300">
-                                    {{ __('Provide a document confirming your name') }}
-                                </p>
-                                <h4 class="text-2xl text-slate-900 dark:text-white">
-                                    {{ __('2 - Verify your identity using Sumsub') }}
-                                </h4>
-
-                                <div>
-                                    <p class="text-slate-900 dark:text-white mb-2 text-sm font-semibold uppercase tracking-wide">
-                                        {{ __('Privileges of Profile Verification') }}
+                        @if($automaticSubLevel && $automaticSubLevel->status && !empty($automaticProviders))
+                            @if(count($automaticProviders) == 1)
+                                {{-- Single provider display --}}
+                                @php $provider = $automaticProviders[0]; @endphp
+                                <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
+                                    <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
+                                    <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                        {{ __('Provide a document confirming your name') }}
                                     </p>
-                                    <ul class="space-y-2 mb-10">
-                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
-                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
-                                            <span>{{ __('Withdraw funds from verified accounts.') }}</span>
-                                        </li>
-                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
-                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
-                                            <span>{{ __('Make external transfers securely.') }}</span>
-                                        </li>
-                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
-                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
-                                            <span>{{ __('Get approved for higher trading limits.') }}</span>
-                                        </li>
-                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
-                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:layout-dashboard"></iconify-icon>
-                                            <span>{{ __('Unlock advanced account features.') }}</span>
-                                        </li>
-                                        <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
-                                            <iconify-icon class="text-primary mt-0.5" icon="lucide:clock"></iconify-icon>
-                                            <span>{{ __('Faster processing of requests and reviews.') }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <h4 class="text-2xl text-slate-900 dark:text-white">
+                                        {{ __('2 - Verify your identity using :provider', ['provider' => $provider['title']]) }}
+                                    </h4>
 
-                                @if($user->kyc>=\App\Enums\KYCStatus::Level2->value)
-                                    <a href="javascript:void(0);" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
-                                @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
-                                    <a href="javascript:void(0);" class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
-                                @else
-                                    <a href="{{route('user.kyc.automatic')}}" class="btn btn-primary loaderBtn block-btn mt-auto">
-                                        {{ __('Go to Sumsub') }}
-                                    </a>
-                                @endif
-                            </div>
+                                    <div>
+                                        <p class="text-slate-900 dark:text-white mb-2 text-sm font-semibold uppercase tracking-wide">
+                                            {{ __('Privileges of Profile Verification') }}
+                                        </p>
+                                        <ul class="space-y-2 mb-10">
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
+                                                <span>{{ __('Withdraw funds from verified accounts.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
+                                                <span>{{ __('Make external transfers securely.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
+                                                <span>{{ __('Get approved for higher trading limits.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:layout-dashboard"></iconify-icon>
+                                                <span>{{ __('Unlock advanced account features.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:clock"></iconify-icon>
+                                                <span>{{ __('Faster processing of requests and reviews.') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    @if($user->kyc>=\App\Enums\KYCStatus::Level2->value)
+                                        <a href="javascript:void(0);" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
+                                    @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
+                                        <a href="javascript:void(0);" class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
+                                    @else
+                                        <a href="{{route($provider['route'])}}" class="btn btn-primary loaderBtn block-btn mt-auto">
+                                            {{ __('Go to :provider', ['provider' => $provider['title']]) }}
+                                        </a>
+                                    @endif
+                                </div>
+                            @else
+                                {{-- Multiple providers selection --}}
+                                <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
+                                    <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
+                                    <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                        {{ __('Choose your preferred verification method') }}
+                                    </p>
+                                    <h4 class="text-2xl text-slate-900 dark:text-white">
+                                        {{ __('2 - Select Identity Verification Provider') }}
+                                    </h4>
+
+                                    <div class="w-full space-y-3">
+                                        @foreach($automaticProviders as $provider)
+                                            <div class="verification-provider border border-slate-200 dark:border-slate-600 rounded-lg p-4 hover:border-primary transition-colors">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="provider-icon">
+                                                            <iconify-icon class="text-2xl text-primary" icon="{{ $provider['icon'] }}"></iconify-icon>
+                                                        </div>
+                                                        <div class="provider-info">
+                                                            <h5 class="text-lg font-semibold text-slate-900 dark:text-white">{{ $provider['title'] }}</h5>
+                                                            <p class="text-sm text-slate-500 dark:text-slate-400">{{ $provider['description'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="provider-action">
+                                                        @if($user->kyc>=\App\Enums\KYCStatus::Level2->value)
+                                                            <span class="btn btn-sm btn-dark disabled">{{ __('Completed') }}</span>
+                                                        @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
+                                                            <span class="btn btn-sm btn-light disabled">{{ __('Complete Level 1') }}</span>
+                                                        @else
+                                                            <a href="{{route($provider['route'])}}" class="btn btn-sm btn-primary loaderBtn">
+                                                                {{ __('Select') }}
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <p class="text-slate-900 dark:text-white mb-2 text-sm font-semibold uppercase tracking-wide">
+                                            {{ __('Privileges of Profile Verification') }}
+                                        </p>
+                                        <ul class="space-y-2">
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
+                                                <span>{{ __('Withdraw funds from verified accounts.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
+                                                <span>{{ __('Make external transfers securely.') }}</span>
+                                            </li>
+                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                                <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
+                                                <span>{{ __('Get approved for higher trading limits.') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
                         @if($manualSubLevel && $manualSubLevel->status)
                             <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">

@@ -355,14 +355,14 @@ function openInNewTab(url) {
                     <ol class="text-sm text-blue-600 dark:text-blue-400 list-decimal list-inside space-y-1">
                         <li>{{ __("Complete the verification in the new tab") }}</li>
                         <li>{{ __("Follow all instructions from Veriff") }}</li>
-                        <li>{{ __("Return here to check status") }}</li>
+                        <li>{{ __("Return to KYC dashboard to view updated status") }}</li>
                     </ol>
                 </div>
                 
                 <div class="mt-4">
-                    <button onclick="checkVerificationStatus()" class="btn btn-primary">
-                        {{ __("Check Status") }}
-                    </button>
+                    <a href="{{ route('user.kyc') }}" class="btn btn-primary">
+                        {{ __("Return to KYC Dashboard") }}
+                    </a>
                 </div>
             </div>
         `);
@@ -390,33 +390,19 @@ function openInNewTab(url) {
                     </a>
                 </div>
                 
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-4">{{ __("After completing verification, return here and click 'Check Status'") }}</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-4">{{ __("After completing verification, return to your KYC dashboard to view the updated status.") }}</p>
                 
                 <div class="mt-4">
-                    <button onclick="checkVerificationStatus()" class="btn btn-primary">
-                        {{ __("Check Status") }}
-                    </button>
+                    <a href="{{ route('user.kyc') }}" class="btn btn-primary">
+                        {{ __("Return to KYC Dashboard") }}
+                    </a>
                 </div>
             </div>
         `);
     }
 }
 
-// Check verification status
-function checkVerificationStatus() {
-    updateKycStatus('check');
-    $('#verification-status').html(`
-        <div class="text-center">
-            <p class="text-blue-600 font-semibold">{{ __("🔄 Checking Status...") }}</p>
-            <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Please wait while we check your verification status.") }}</p>
-        </div>
-    `);
-    
-    // Refresh page after 2 seconds
-    setTimeout(() => {
-        location.reload();
-    }, 2000);
-}
+
 
 // Show verification in direct iframe
 function showDirectIframe(url) {

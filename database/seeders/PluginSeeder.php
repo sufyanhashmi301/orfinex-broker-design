@@ -228,7 +228,7 @@ class PluginSeeder extends Seeder
                 'data' => json_encode([
                     'api_key' => '',
                     'shared_secret' => '',
-                    'base_url' => 'https://api.veriff.com/v1',
+                    'base_url' => 'https://api.veriff.com',
                     'integration_id' => '',
                     'level_name' => 'Level 2 Verification'
                 ]),

@@ -221,7 +221,7 @@ class PluginSeeder extends Seeder
 
         if (!$veriffExists) {
             $plugins[] = [
-                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/veriff.webp',
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/veriff.svg',
                 'type' => 'system',
                 'name' => 'Veriff (Automated KYC)',
                 'description' => 'Advanced identity verification with AI-powered document analysis and real-time fraud detection.',
@@ -229,8 +229,8 @@ class PluginSeeder extends Seeder
                     'api_key' => '',
                     'shared_secret' => '',
                     'base_url' => 'https://api.veriff.com',
-                    'integration_id' => '',
-                    'level_name' => 'Level 2 Verification'
+                    // 'integration_id' => '',
+                    // 'level_name' => 'Level 2 Verification'
                 ]),
                 'status' => 0,
                 'created_at' => Carbon::now(),

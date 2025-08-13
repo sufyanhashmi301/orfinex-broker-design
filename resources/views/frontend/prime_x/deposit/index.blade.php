@@ -11,14 +11,14 @@
                         <div class="single-step {{ $isStepOne }}">
                             <div class="progress_bar mb-5"></div>
                             <div class="">
-                                <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
+                                <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 1') }}</div>
                                 <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Deposit Amount') }}</h4>
                             </div>
                         </div>
                         <div class="single-step {{ $isStepTwo }}">
                             <div class="progress_bar mb-5"></div>
                             <div class="">
-                                <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
+                                <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 2') }}</div>
                                 <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                             </div>
                         </div>

@@ -63,11 +63,11 @@
             </div>
             <div class="card-footer">
                 <ul class="space-y-3">
-                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                         <iconify-icon class="relative text-xl mr-2 text-success" icon="material-symbols:check-box"></iconify-icon>
                         {{ __('Upload a colorful full-size (4 sides visible) photo of the document.') }}
                     </li>
-                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                         <iconify-icon class="relative text-xl mr-2 text-danger" icon="entypo:squared-cross"></iconify-icon>
                         {{ __('Do not upload selfies, screenshots, and do not modify the images in graphic editors.') }}
                     </li>

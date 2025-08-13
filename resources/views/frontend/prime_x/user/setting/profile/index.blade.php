@@ -33,10 +33,10 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="text-sm font-light text-slate-600 dark:text-slate-400">
+                            <div class="text-sm font-light text-slate-600 dark:text-slate-200">
                                 {{ucwords($user->city)}}@if($user->city != ''), @endif{{ $user->country }}
                             </div>
-                            <div class="text-sm font-light text-slate-600 dark:text-slate-400 my-5">
+                            <div class="text-sm font-light text-slate-600 dark:text-slate-200 my-5">
                                 <span class="font-medium">
                                     {{ __('Member since: ') }}
                                 </span>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <ul class="space-y-5">
-                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-100">
                                 <span>{{ __('Customer Group: ') }}</span>
                                 @if($user->customerGroups->isNotEmpty())
                                     @foreach($user->customerGroups as $group)
@@ -54,7 +54,7 @@
                                     <span>{{ 'N/A' }}</span>
                                 @endif
                             </li>
-                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-100">
                                 <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
                                 <span class="flex items-center gap-2">
                                     @if($user->riskProfileTags->isEmpty())
@@ -65,7 +65,7 @@
                                 </span>
                             </li>
 
-                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-100">
                                 <span>{{ __('KYC Level:') }}</span>
                                 <span>
                                     @php
@@ -106,7 +106,7 @@
                                     {{ $displayName }}
                                 </span>
                             </li>
-                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-100">
                                 <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
                                 <span class="flex items-center gap-2">
                                     @if($user->ib_status == 'Unprocessed')

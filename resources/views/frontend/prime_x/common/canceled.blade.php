@@ -17,7 +17,7 @@
             <p class="max-w-xl text-center text-slate-500 text-sm mb-3 dark:text-gray-300">
                 {{ __('If this was a mistake or you wish to proceed with your payment, you can always try again. Let us know if you need any assistance, or feel free to retry the payment at your convenience.') }}
             </p>
-            <blockquote class="border-0 text-slate-700 dark:text-slate-300 text-base my-5">
+            <blockquote class="border-0 text-slate-700 dark:text-slate-100 text-base my-5">
                 {{ __('The only limit to our realization of tomorrow is our doubts of today.') }}
                 <span class="text-sm text-slate-400 text-right block mt-3">
                     {{ __('– Franklin D. Roosevelt') }}

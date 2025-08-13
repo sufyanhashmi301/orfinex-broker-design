@@ -121,6 +121,7 @@ class KYCLevelsController extends Controller
         $level3ManualKycs = Kyc::where('kyc_sub_level_id', 5)->get();
 //        dd($level3ManualKycs);
         $sumsub = Plugin::findOrFail(8);
+        $veriff = Plugin::where('name', 'Veriff (Automated KYC)')->first();
         return view('backend.kyc_levels.edit', get_defined_vars());
 
 

@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-3">
-        <h4 class="text-xl text-slate-600 dark:text-slate-300">{{ __('Account Details') }}</h4>
+        <h4 class="text-xl text-slate-600 dark:text-slate-100">{{ __('Account Details') }}</h4>
     </div>
     <div class="grid md:grid-cols-3 col-span-1 gap-5 mb-6">
         <div class="card h-full p-6 mb-6">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="mb-5">
-                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('E-') }}{{ data_get($mainWallet,'wallet_id') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <div class="mb-5">
-                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('IB-') }}{{ data_get($ibWallet,'wallet_id') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
@@ -109,7 +109,7 @@
         </div>
         <div class="card border border-dashed h-full border-slate-200 dark:border-slate-700 p-6 mb-6">
             <div class="card-body h-full flex flex-col items-center justify-center gap-5">
-                <iconify-icon class="text-2xl" icon="ic:outline-dashboard-customize"></iconify-icon>
+                <iconify-icon class="text-2xl dark:text-slate-100" icon="ic:outline-dashboard-customize"></iconify-icon>
                 <a href="" class="btn-link loaderBtn">
                     {{ __('Open Additional Account') }}
                 </a>
@@ -118,7 +118,7 @@
     </div>
 
     <div class="flex justify-between flex-wrap items-center mb-3">
-        <h4 class="text-xl text-slate-600 dark:text-slate-300">{{ __('Recent Transactions') }}</h4>
+        <h4 class="text-xl text-slate-600 dark:text-slate-100">{{ __('Recent Transactions') }}</h4>
     </div>
     <div class="card desktop-screen-show md:block hidden">
         <div class="card">
@@ -149,14 +149,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
-                                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    <h4 class="text-sm font-medium text-slate-600 dark:text-slate-100 whitespace-nowrap">
                                                         {{ $raw->description }} @if(!in_array($raw->approval_cause,['none',""]))
                                                             <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
                                                                 <i icon-name="mail"></i>
                                                             </span>
                                                         @endif
                                                     </h4>
-                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
                                                         {{ $raw->created_at }}
                                                     </div>
                                                 </div>
@@ -215,7 +215,7 @@
                                         $total = $wallets->total(); // The total number of items
                                     @endphp
 
-                                    <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
+                                    <p class="text-sm text-gray-700 dark:text-slate-100 px-3">
                                         Showing
                                         <span class="font-medium">{{ $from }}</span>
                                         to

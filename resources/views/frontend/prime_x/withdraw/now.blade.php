@@ -12,14 +12,14 @@
                 <div class="single-step current">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 1') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
                     </div>
                 </div>
                 <div class="single-step">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 2') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                                            value="{{ old('amount') }}"
                                            aria-describedby="basic-addon1">
                                     <span
-                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center"
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-100 flex items-center justify-center"
                                         id="basic-addon1">
                                         {{ $currency }}
                                     </span>
@@ -134,10 +134,10 @@
                             <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <tbody class="selectDetailsTbody">
                                 <tr class="detailsCol">
-                                    <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                    <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                         <strong>{{ __('Withdraw Amount') }}</strong>
                                     </td>
-                                    <td class="dark:text-slate-300">
+                                    <td class="dark:text-slate-100">
                                         <span class="withdrawAmount">{{ old('amount') }}</span>
                                         {{ $currency }}
                                     </td>

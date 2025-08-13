@@ -44,19 +44,19 @@
                     <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                         <tbody>
                             <tr class="border-b border-slate-100 dark:border-slate-700">
-                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                     <strong>{{ __('Amount') }}</strong>
                                 </td>
                                 <td><span class="amount"></span> <span class="currency"></span></td>
                             </tr>
                             <tr class="border-b border-slate-100 dark:border-slate-700">
-                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                     <strong>{{ __('Charge') }}</strong>
                                 </td>
                                 <td class="charge2"></td>
                             </tr>
                             <tr class="border-b border-slate-100 dark:border-slate-700">
-                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                     <strong>{{ __('Total') }}</strong>
                                 </td>
                                 <td class="total"></td>

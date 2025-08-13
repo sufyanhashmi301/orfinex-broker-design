@@ -39,29 +39,29 @@
                                         <div class="flex-none">
                                             @switch($platformLink->os)
                                                 @case('window')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="material-symbols:window-sharp"></iconify-icon>
                                                 @break
                                                 @case('mac')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="fa6-brands:app-store-ios"></iconify-icon>
                                                 @break
                                                 @case('android')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="ion:logo-google-playstore"></iconify-icon>
                                                 @break
                                                 @case('ios')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="fa6-brands:apple"></iconify-icon>
                                                 @break
                                                 @case('android_apk')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="material-symbols:android"></iconify-icon>
                                                 @break
                                                 @case('web')
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="mdi:web"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="mdi:web"></iconify-icon>
                                                 @break
                                                 @default()
-                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="lucide:app-window"></iconify-icon>
+                                                <iconify-icon class="text-2xl dark:text-slate-100" icon="lucide:app-window"></iconify-icon>
                                             @endswitch
                                         </div>
                                         <div class="flex-1">
-                                            <span class="block text-slate-600 text-sm font-semibold dark:text-slate-300">
+                                            <span class="block text-slate-600 text-sm font-semibold dark:text-slate-100">
                                                 {{ $platformLink->title }}
                                             </span>
                                             <span class="block font-normal text-xs text-slate-500">

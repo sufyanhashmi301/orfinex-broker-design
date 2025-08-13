@@ -11,7 +11,7 @@
             @if($schema->real_swap_free || $schema->real_islamic)
                 <li class="nav-item">
                     <a href="javascript:;"
-                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100"
                        data-type="real" id="real-tab">
                         {{ __('Real') }}
                     </a>
@@ -21,7 +21,7 @@
             @if($schema->demo_swap_free || $schema->demo_islamic)
                 <li class="nav-item">
                     <a href="javascript:;"
-                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100"
                        data-type="demo" id="demo-tab">
                         {{ __('Demo') }}
                     </a>
@@ -140,20 +140,20 @@
                 </div>
                 <div class="card-body p-6 pt-0">
                     <ul class="space-y-5">
-                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-100">
                             <span>{{ __('Spread from') }}</span>
                             <span id="display-spread">{{ $schema->spread }}</span>
                         </li>
-                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-100">
                             <span>{{ __('Commission') }}</span>
                             <span
                                 id="display-commission">{{ $schema->commission == 0 ? __('No Commission') : $schema->commission }}</span>
                         </li>
-                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-100">
                             <span>{{ __('Leverage') }}</span>
                             <span id="display-leverage">{{ explode(',', $schema->leverage)[0] }}</span>
                         </li>
-                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-100">
                             <span>{{ __('Initial Deposit Limit') }}</span>
                             <span id="initial-deposit">{{ $schema->first_min_deposit }}</span>
                         </li>
@@ -163,7 +163,7 @@
         </div>
     </div>
     <div
-        class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+        class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-100">
         <div class="flex items-center space-x-3 rtl:space-x-reverse">
             <iconify-icon class="text-xl flex-0" icon="lucide:info"></iconify-icon>
             <p class="flex-1 font-Inter">

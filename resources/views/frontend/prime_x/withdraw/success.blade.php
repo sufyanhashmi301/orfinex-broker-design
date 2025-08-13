@@ -9,14 +9,14 @@
                 <div class="single-step current">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 1') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
                     </div>
                 </div>
                 <div class="single-step current">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-100 mb-2">{{ __('Step - 2') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                 </span>
                 {{ __('Feel free to explore more of our services or check your account for the updated balance.') }}
             </p>
-            <blockquote class="border-0 text-slate-700 dark:text-slate-300 text-base my-5">
+            <blockquote class="border-0 text-slate-700 dark:text-slate-100 text-base my-5">
                 {{ __('Success is not final; failure is not fatal: It is the courage to continue that counts.') }}
                 <span class="text-sm text-slate-400 text-right block mt-3">
                     {{ __('- Winston Churchill') }}

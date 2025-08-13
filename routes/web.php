@@ -396,6 +396,10 @@ Route::get('user/webterminal', function () {
 Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
 
+// Veriff KYC Routes
+Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');
+Route::post('user/veriff/kyc/status', [\App\Http\Controllers\VeriffController::class, 'updateKycStatus'])->name('user.kyc.veriff.status');
+
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
 Route::view('verify-email-2', 'frontend::auth.verify-email-2');

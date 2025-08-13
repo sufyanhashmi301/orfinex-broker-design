@@ -30,8 +30,10 @@ class ForexSchemaController extends Controller
             // If user is NOT part of master IB, show ALL accounts immediately
             if (!$isPartOfMasterIb) {
                 $schemas = $baseQuery
-                ->relevantForUser($user->country, $tagNames)
-                ->orWhere('account_category_id', 1)
+                ->where(function($query) use ($user, $tagNames) {
+                    $query->relevantForUser($user->country, $tagNames)
+                          ->orWhere('account_category_id', 1);
+                })
                 ->get()
                     ->unique('id')
                     ->sortBy('priority')
@@ -107,7 +109,8 @@ class ForexSchemaController extends Controller
     {
         $id = get_hash($id);
         $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        $schemas = ForexSchema::where('status', true)
+        $schemas = ForexSchema::active()
+            ->traderType()
             ->where(function($query) use ($tagNames) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All')

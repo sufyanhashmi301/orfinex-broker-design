@@ -4,7 +4,7 @@
 @endsection
 @section('settings-content')
 <div class="card">
-    <div class="card-body p-6">
+    <div class="card-body px-6 pt-3">
         @if (auth()->user()->kyc >= kyc_required_completed_level())
         {{-- verification completed--}}
         <div class="text-center py-8">

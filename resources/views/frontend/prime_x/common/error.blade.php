@@ -11,7 +11,7 @@
             <p class="max-w-xl text-center text-slate-500 text-sm mb-3 dark:text-gray-300">
                 {{ __('It seems like your transaction couldn’t be completed. Don’t worry—there might be a simple issue. Please try again, or contact our support team for assistance. We’re here to help if you need us! Feel free to try again or contact support.') }}
             </p>
-            <blockquote class="border-0 text-slate-700 dark:text-slate-300 text-base my-5">
+            <blockquote class="border-0 text-slate-700 dark:text-slate-100 text-base my-5">
                 {{ __('Our greatest glory is not in never falling, but in rising every time we fall.') }}
                 <span class="text-sm text-slate-400 text-right block mt-3">
                     {{ __('– Confucius') }}

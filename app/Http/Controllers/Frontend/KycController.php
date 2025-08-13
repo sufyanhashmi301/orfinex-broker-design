@@ -32,6 +32,32 @@ class KycController extends Controller
             ->get();
         $level2Settings = KycSubLevel::where('kyc_level_id', 2)
             ->get();
+
+        // Get automatic KYC providers status
+        $sumsubPlugin = \App\Models\Plugin::find(8); // Sumsub plugin
+        $veriffPlugin = \App\Models\Plugin::where('name', 'Veriff (Automated KYC)')->first(); // Veriff plugin
+        
+        // Determine available automatic KYC providers
+        $automaticProviders = [];
+        if ($sumsubPlugin && $sumsubPlugin->status == 1) {
+            $automaticProviders[] = [
+                'name' => 'sumsub',
+                'title' => 'Sumsub',
+                'description' => 'AI-powered document verification',
+                'route' => 'user.kyc.automatic',
+                'icon' => 'mdi:id-card-outline'
+            ];
+        }
+        if ($veriffPlugin && $veriffPlugin->status == 1) {
+            $automaticProviders[] = [
+                'name' => 'veriff',
+                'title' => 'Veriff',
+                'description' => 'Advanced identity verification with real-time fraud detection',
+                'route' => 'user.kyc.veriff',
+                'icon' => 'mdi:shield-check-outline'
+            ];
+        }
+
 //        $userKyc = ::where('user_id',Auth::id())->get();
         return view('frontend::user.kyc.index', get_defined_vars());
     }

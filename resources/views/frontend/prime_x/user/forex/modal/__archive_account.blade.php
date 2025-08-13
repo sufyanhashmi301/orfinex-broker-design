@@ -5,10 +5,10 @@
                 <div class="text-center">
                     <iconify-icon icon="heroicons:question-mark-circle-16-solid" class="display-1 mb-3"></iconify-icon>
                     <h3 class="mb-0">{{ __('Are You Sure!') }}</h3>
-                    <p class="lead dark:text-slate-300 my-3">
+                    <p class="lead dark:text-slate-100 my-3">
                         {{ __('you want to archive this account!.') }}
                     </p>
-                    <p class="dark:text-slate-300">{{ __('If you archive this account you can\'t update info/use') }}</p>
+                    <p class="dark:text-slate-100">{{ __('If you archive this account you can\'t update info/use') }}</p>
                     <div class="action-btns mt-5">
                         <input type="hidden" class="update-archive-login" name="login">
                         <button type="button" class="btn btn-primary mr-2 dropdown-update-archive">

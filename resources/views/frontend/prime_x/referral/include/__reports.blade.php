@@ -5,7 +5,7 @@
     <div class="sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a href="#tabs-" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300"
+                <a href="#tabs-" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-100"
                    id="tabs-generalTarget-tab" data-bs-toggle="pill" data-bs-target="#tabs-generalTarget" role="tab"
                    aria-controls="tabs-generalTarget" aria-selected="true">
                     <i icon-name="network"></i>
@@ -18,7 +18,7 @@
                     $target = json_decode($raw,true);
                 @endphp
                 <li class="nav-item" role="presentation">
-                    <a href="#tabs-t{{ $target['id'] }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                    <a href="#tabs-t{{ $target['id'] }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100"
                        id="tabs-t{{ $target['id'] }}-tab" data-bs-toggle="pill" data-bs-target="#tabs-t{{ $target['id'] }}" role="tab"
                        aria-controls="tabs-t{{ $target['id'] }}" aria-selected="false">
                         <i icon-name="boxes"></i>

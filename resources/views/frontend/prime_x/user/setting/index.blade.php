@@ -24,7 +24,7 @@
                     </li>
                     @if(setting('kyc_verification','permission'))
                     <li class="nav-item">
-                        <a href="{{ route('user.kyc') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.kyc') }}">
+                        <a href="{{ route('user.kyc') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.kyc*') }}">
                             {{ __('KYC') }}
                         </a>
                     </li>

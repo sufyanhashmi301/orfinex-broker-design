@@ -3,11 +3,11 @@
     {{ __('Veriff Identity Verification') }}
 @endsection
 @section('settings-content')
-<div class="card">
-    <div class="card-body px-6 pt-3">
+<div class="card h-full min-h-[calc(100vh-200px)] flex flex-col">
+    <div class="card-body px-6 pt-3 flex-1 flex flex-col justify-center text-center">
         @if (auth()->user()->kyc >= kyc_required_completed_level())
         {{-- verification completed--}}
-        <div class="text-center py-8">
+        <div class="py-8">
             <iconify-icon icon="lucide:check-circle" class="text-6xl text-primary mb-4"></iconify-icon>
             <h4 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                 {{ __('Verification Completed') }}
@@ -18,7 +18,7 @@
         </div>
         @elseif (!isset($veriffstatus) || $veriffstatus === 0)
         {{-- veriff deactivated --}}
-        <div class="text-center py-8">
+        <div class="py-8">
             <iconify-icon icon="lucide:alert-circle" class="text-6xl text-orange-500 mb-4"></iconify-icon>
             <h4 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                 {{ __('Service Unavailable') }}
@@ -30,7 +30,7 @@
         @else
         {{-- Veriff account verification --}}
         <div class="mb-6">
-            <h4 class="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h4 class="text-xl font-semibold text-slate-900 dark:text-white flex items-center justify-center gap-2">
                 <iconify-icon icon="lucide:shield-check" class="text-primary text-2xl"></iconify-icon>
                 {{ __('Identity Verification with Veriff') }}
             </h4>
@@ -46,33 +46,33 @@
                         <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
                         <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                     </div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 ml-2">Initializing...</span>
+                    <span class="text-xs text-slate-600 dark:text-slate-400 ml-2">Initializing...</span>
                 </div>
             </div>
         </div>
 
         <div class="border border-slate-100 dark:border-slate-700 rounded-lg p-6 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
-            <div class="text-center">
+            <div>
                 {{-- Enhanced loading state --}}
                 <div id="loading-spinner" class="mb-6">
                     <div class="inline-flex items-center px-6 py-3 bg-white dark:bg-slate-700 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600">
                         <div class="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent mr-3"></div>
-                        <span class="text-sm font-medium text-slate-700 dark:text-slate-100" id="loading-text">{{ __('Setting up verification...') }}</span>
+                        <span class="text-sm font-medium text-slate-900 dark:text-white" id="loading-text">{{ __('Setting up verification...') }}</span>
                     </div>
                 </div>
                 
                 {{-- Veriff SDK container with simple centered layout --}}
                 <div class="flex justify-center items-center min-h-[200px] w-full">
-                    <div class="w-full max-w-md mx-auto text-center">
-                        <div id='veriff-root' class="mx-auto text-center"></div>
+                    <div class="w-full max-w-md mx-auto">
+                        <div id='veriff-root' class="mx-auto"></div>
                     </div>
                 </div>
                 
                 {{-- Success message after button appears --}}
                 <div id="verification-ready" class="mt-4 hidden">
                     <div class="inline-flex items-center px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <iconify-icon icon="lucide:check-circle" class="text-green-600 dark:text-green-400 mr-2"></iconify-icon>
-                        <span class="text-sm text-green-700 dark:text-green-300">{{ __('Verification ready! Click the button above.') }}</span>
+                        <iconify-icon icon="lucide:check-circle" class="text-primary mr-2"></iconify-icon>
+                        <span class="text-sm text-slate-900 dark:text-white">{{ __('Verification ready! Click the button above.') }}</span>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
             </iframe>
         </div>
         
-        <div id="verification-status" class="mt-4 text-center" style="display: none;">
+        <div id="verification-status" class="mt-4" style="display: none;">
             <p class="text-slate-600 dark:text-slate-400">
                 {{ __('Verification in progress...') }}
             </p>
@@ -98,6 +98,12 @@
 
 @section('style')
 <style>
+    /* Full height card layout */
+    .card.h-full {
+        height: calc(100vh - 200px);
+        min-height: 500px;
+    }
+    
     /* Simple, non-aggressive centering for Veriff */
     #veriff-root {
         text-align: center;
@@ -129,6 +135,14 @@
     #veriff-root button:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card.h-full {
+            height: calc(100vh - 150px);
+            min-height: 400px;
+        }
     }
 </style>
 @endsection
@@ -230,22 +244,22 @@ function handleVeriffEvent(msg) {
     switch(msg) {
         case 'STARTED':
             console.log('Verification started');
-            $('#verification-status').html('<p class="text-blue-600">{{ __("Verification started...") }}</p>');
+            $('#verification-status').html('<p class="text-slate-900 dark:text-white">{{ __("Verification started...") }}</p>');
             break;
         case 'SUBMITTED':
             console.log('Verification submitted');
-            $('#verification-status').html('<p class="text-blue-600">{{ __("Verification submitted for review...") }}</p>');
+            $('#verification-status').html('<p class="text-slate-900 dark:text-white">{{ __("Verification submitted for review...") }}</p>');
             break;
         case 'FINISHED':
             console.log('Verification finished');
             updateKycStatus('finished');
-            $('#verification-status').html('<p class="text-green-600">{{ __("Verification completed! Please wait for review.") }}</p>');
+            $('#verification-status').html('<p class="text-slate-900 dark:text-white">{{ __("Verification completed! Please wait for review.") }}</p>');
             $('#start-veriff-btn').hide();
             break;
         case 'CANCELED':
             console.log('Verification canceled');
             updateKycStatus('canceled');
-            $('#verification-status').html('<p class="text-yellow-600">{{ __("Verification was canceled.") }}</p>');
+            $('#verification-status').html('<p class="text-slate-900 dark:text-white">{{ __("Verification was canceled.") }}</p>');
             $('#start-veriff-btn').show().prop('disabled', false).text('{{ __("Start Verification") }}');
             break;
         case 'RELOAD_REQUEST':
@@ -314,7 +328,7 @@ function showVerificationOptions(url) {
     // Show options to user
     $('#verification-status').html(`
         <div class="text-center mb-4">
-            <p class="text-blue-600 font-semibold mb-4">{{ __("🔍 Verification Ready") }}</p>
+            <p class="text-slate-900 dark:text-white font-semibold mb-4">{{ __("🔍 Verification Ready") }}</p>
             <p class="text-slate-600 dark:text-slate-400 mb-6">{{ __("Choose how you'd like to complete your verification:") }}</p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -328,7 +342,7 @@ function showVerificationOptions(url) {
                 </button>
             </div>
             
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-4">{{ __("Recommended: Open in new tab for better experience") }}</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-4">{{ __("Recommended: Open in new tab for better experience") }}</p>
         </div>
     `);
 }
@@ -344,15 +358,15 @@ function openInNewTab(url) {
         // Update status
         $('#verification-status').html(`
             <div class="text-center">
-                <p class="text-green-600 font-semibold">{{ __("✅ Verification Opened") }}</p>
+                <p class="text-slate-900 dark:text-white font-semibold">{{ __("✅ Verification Opened") }}</p>
                 <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Please complete your verification in the new tab that just opened.") }}</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">{{ __("Return to this page after completing verification.") }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">{{ __("Return to this page after completing verification.") }}</p>
                 
                 <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <p class="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                    <p class="text-sm text-slate-900 dark:text-white mb-3">
                         <strong>{{ __("What to do:") }}</strong>
                     </p>
-                    <ol class="text-sm text-blue-600 dark:text-blue-400 list-decimal list-inside space-y-1">
+                    <ol class="text-sm text-slate-600 dark:text-slate-400 list-decimal list-inside space-y-1">
                         <li>{{ __("Complete the verification in the new tab") }}</li>
                         <li>{{ __("Follow all instructions from Veriff") }}</li>
                         <li>{{ __("Return to KYC dashboard to view updated status") }}</li>
@@ -380,7 +394,7 @@ function openInNewTab(url) {
         // Popup blocked - show manual link
         $('#verification-status').html(`
             <div class="text-center">
-                <p class="text-red-600 font-semibold">{{ __("❌ Popup Blocked") }}</p>
+                <p class="text-slate-900 dark:text-white font-semibold">{{ __("❌ Popup Blocked") }}</p>
                 <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Your browser blocked the popup. Please click the link below to open verification manually:") }}</p>
                 
                 <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
@@ -390,7 +404,7 @@ function openInNewTab(url) {
                     </a>
                 </div>
                 
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-4">{{ __("After completing verification, return to your KYC dashboard to view the updated status.") }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-4">{{ __("After completing verification, return to your KYC dashboard to view the updated status.") }}</p>
                 
                 <div class="mt-4">
                     <a href="{{ route('user.kyc') }}" class="btn btn-primary">
@@ -418,7 +432,7 @@ function showDirectIframe(url) {
     // Show loading state first
     $('#verification-status').html(`
         <div class="text-center">
-            <p class="text-blue-600 font-semibold">{{ __("🔄 Loading Verification...") }}</p>
+            <p class="text-slate-900 dark:text-white font-semibold">{{ __("🔄 Loading Verification...") }}</p>
             <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Please wait while we load the verification interface.") }}</p>
             <div class="mt-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -437,7 +451,7 @@ function showDirectIframe(url) {
         console.error('Iframe failed to load');
         $('#verification-status').html(`
             <div class="text-center">
-                <p class="text-red-600 font-semibold">{{ __("❌ Loading Failed") }}</p>
+                <p class="text-slate-900 dark:text-white font-semibold">{{ __("❌ Loading Failed") }}</p>
                 <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("The verification interface couldn't load in the iframe.") }}</p>
                 <div class="mt-4">
                     <button onclick="openInNewTab('${url}')" class="btn btn-primary">
@@ -459,7 +473,7 @@ function showDirectIframe(url) {
                     // Iframe is empty
                     $('#verification-status').html(`
                         <div class="text-center">
-                            <p class="text-yellow-600 font-semibold">{{ __("⚠️ Interface Not Loading") }}</p>
+                            <p class="text-slate-900 dark:text-white font-semibold">{{ __("⚠️ Interface Not Loading") }}</p>
                             <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("The verification interface appears to be empty. This may be due to security restrictions.") }}</p>
                             <div class="mt-4">
                                 <button onclick="openInNewTab('${url}')" class="btn btn-primary">
@@ -472,7 +486,7 @@ function showDirectIframe(url) {
                     // Iframe loaded successfully
                     $('#verification-status').html(`
                         <div class="text-center">
-                            <p class="text-green-600 font-semibold">{{ __("✅ Verification Loaded") }}</p>
+                            <p class="text-slate-900 dark:text-white font-semibold">{{ __("✅ Verification Loaded") }}</p>
                             <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Please complete your verification in the interface below.") }}</p>
                         </div>
                     `);
@@ -481,9 +495,9 @@ function showDirectIframe(url) {
                 // Cross-origin restriction - this is normal
                 $('#verification-status').html(`
                     <div class="text-center">
-                        <p class="text-green-600 font-semibold">{{ __("✅ Verification Interface Ready") }}</p>
+                        <p class="text-slate-900 dark:text-white font-semibold">{{ __("✅ Verification Interface Ready") }}</p>
                         <p class="text-slate-600 dark:text-slate-400 mt-2">{{ __("Please complete your verification in the interface below.") }}</p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">{{ __("If the interface appears blank, try the 'Open in New Tab' option.") }}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">{{ __("If the interface appears blank, try the 'Open in New Tab' option.") }}</p>
                     </div>
                 `);
             }

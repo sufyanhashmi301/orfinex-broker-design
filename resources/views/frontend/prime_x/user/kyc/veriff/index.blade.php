@@ -3,11 +3,11 @@
     {{ __('Veriff Identity Verification') }}
 @endsection
 @section('settings-content')
-<div class="card">
-    <div class="card-body px-6 pt-3">
+<div class="card h-full min-h-[calc(100vh-200px)] flex flex-col">
+    <div class="card-body px-6 pt-3 flex-1 flex flex-col justify-center text-center">
         @if (auth()->user()->kyc >= kyc_required_completed_level())
         {{-- verification completed--}}
-        <div class="text-center py-8">
+        <div class="py-8">
             <iconify-icon icon="lucide:check-circle" class="text-6xl text-primary mb-4"></iconify-icon>
             <h4 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                 {{ __('Verification Completed') }}
@@ -18,7 +18,7 @@
         </div>
         @elseif (!isset($veriffstatus) || $veriffstatus === 0)
         {{-- veriff deactivated --}}
-        <div class="text-center py-8">
+        <div class="py-8">
             <iconify-icon icon="lucide:alert-circle" class="text-6xl text-orange-500 mb-4"></iconify-icon>
             <h4 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                 {{ __('Service Unavailable') }}
@@ -30,7 +30,7 @@
         @else
         {{-- Veriff account verification --}}
         <div class="mb-6">
-            <h4 class="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h4 class="text-xl font-semibold text-slate-900 dark:text-white flex items-center justify-center gap-2">
                 <iconify-icon icon="lucide:shield-check" class="text-primary text-2xl"></iconify-icon>
                 {{ __('Identity Verification with Veriff') }}
             </h4>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="border border-slate-100 dark:border-slate-700 rounded-lg p-6 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
-            <div class="text-center">
+            <div>
                 {{-- Enhanced loading state --}}
                 <div id="loading-spinner" class="mb-6">
                     <div class="inline-flex items-center px-6 py-3 bg-white dark:bg-slate-700 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600">
@@ -63,8 +63,8 @@
                 
                 {{-- Veriff SDK container with simple centered layout --}}
                 <div class="flex justify-center items-center min-h-[200px] w-full">
-                    <div class="w-full max-w-md mx-auto text-center">
-                        <div id='veriff-root' class="mx-auto text-center"></div>
+                    <div class="w-full max-w-md mx-auto">
+                        <div id='veriff-root' class="mx-auto"></div>
                     </div>
                 </div>
                 
@@ -86,7 +86,7 @@
             </iframe>
         </div>
         
-        <div id="verification-status" class="mt-4 text-center" style="display: none;">
+        <div id="verification-status" class="mt-4" style="display: none;">
             <p class="text-slate-600 dark:text-slate-400">
                 {{ __('Verification in progress...') }}
             </p>
@@ -98,6 +98,12 @@
 
 @section('style')
 <style>
+    /* Full height card layout */
+    .card.h-full {
+        height: calc(100vh - 200px);
+        min-height: 500px;
+    }
+    
     /* Simple, non-aggressive centering for Veriff */
     #veriff-root {
         text-align: center;
@@ -129,6 +135,14 @@
     #veriff-root button:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card.h-full {
+            height: calc(100vh - 150px);
+            min-height: 400px;
+        }
     }
 </style>
 @endsection

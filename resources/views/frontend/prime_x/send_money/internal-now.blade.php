@@ -47,7 +47,7 @@
                                     <input type="text" class="form-control !text-lg sendAmount" name="amount" required
                                            placeholder="{{ __('Enter Amount') }}" aria-label="{{ __('Amount') }}"
                                            oninput="this.value = validateDouble(this.value)" aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-100 flex items-center justify-center" id="basic-addon1">
                                         {{ $currency }}
                                     </span>
                                 </div>
@@ -75,32 +75,32 @@
                                     <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                         <tbody>
                                             <tr>
-                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                                     <strong>{{ __('Payment Amount') }}</strong>
                                                 </td>
-                                                <td class="dark:text-slate-300">
+                                                <td class="dark:text-slate-100">
                                                     <span class="previewAmount"></span> {{ $currency }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                                     <strong>{{ __('Charge') }}</strong>
                                                 </td>
-                                                <td class="dark:text-slate-300">
+                                                <td class="dark:text-slate-100">
                                                     <span class="previewCharge"></span> {{ $currency }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal px-6 py-4">
+                                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal px-6 py-4">
                                                     <strong>{{ __('Account From') }}</strong>
                                                 </td>
-                                                <td class="dark:text-slate-300 accountFrom"></td>
+                                                <td class="dark:text-slate-100 accountFrom"></td>
                                             </tr>
                                             <tr>
-                                                <td class="text-slate-900 dark:text-slate-300 text-sm font-normal px-6 py-4">
+                                                <td class="text-slate-900 dark:text-slate-100 text-sm font-normal px-6 py-4">
                                                     <strong>{{ __('Account To') }}</strong>
                                                 </td>
-                                                <td class="dark:text-slate-300 accountTo"></td>
+                                                <td class="dark:text-slate-100 accountTo"></td>
                                             </tr>
                                         </tbody>
                                     </table>

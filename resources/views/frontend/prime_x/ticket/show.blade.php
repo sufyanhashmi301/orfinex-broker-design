@@ -59,7 +59,7 @@
                                                         <iconify-icon icon="heroicons-outline:menu-alt-1"></iconify-icon>
                                                     </span>
                                                     <div class="flex-1 text-start">
-                                                        <span class="text-slate-800 dark:text-slate-300 text-lg font-medium mb-[2px] truncate mr-2">
+                                                        <span class="text-slate-800 dark:text-slate-100 text-lg font-medium mb-[2px] truncate mr-2">
                                                             {{ $ticket->title.' - '.$ticket->uuid }}
                                                         </span>
                                                         <span class="badge badge-primary">
@@ -84,10 +84,10 @@
                                                 <div class="flex space-x-2 items-end justify-end rtl:space-x-reverse">
                                                     <div class="flex space-x-4 rtl:space-x-reverse">
                                                         <div class="text-right">
-                                                            <span class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
+                                                            <span class="font-normal text-xs text-slate-400 dark:text-slate-200 mb-1">
                                                                 {{ $ticket->user->first_name }} {{ $ticket->user->last_name }}
                                                             </span>
-                                                            <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                            <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-100 text-slate-600 text-sm font-normal rounded-md">
                                                                 {!! $ticket->message !!}
                                                                 @if($ticket->attach)
                                                                     <div class="mt-1">
@@ -119,14 +119,14 @@
                                                         @endif
                                                         <div class="@if( $message->model != 'admin') no @else flex-1 @endif flex space-x-4 rtl:space-x-reverse">
                                                             <div class="@if( $message->model != 'admin') text-right @endif">
-                                                                <span class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
+                                                                <span class="font-normal text-xs text-slate-400 dark:text-slate-200 mb-1">
                                                                     @if( $message->model != 'admin')
                                                                         {{ $user->full_name }}
                                                                     @else
                                                                         {{ $message->user->name }}
                                                                     @endif
                                                                 </span>
-                                                                <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                                <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-100 text-slate-600 text-sm font-normal rounded-md">
                                                                     {!! $message->message !!}
                                                                     @if($message->attach)
                                                                         <div class="flex items-start gap-3 mt-1">

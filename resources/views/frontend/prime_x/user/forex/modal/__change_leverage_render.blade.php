@@ -10,7 +10,7 @@
                     <option value="{{$leverage}}" @if($leverage == $forexTrading->leverage) selected @endif>1:{{$leverage}}</option>
                 @endforeach
             </select>
-            <small class="dark:text-slate-300 mt-1">
+            <small class="dark:text-slate-100 mt-1">
                 {{ __('Choose the leverage ratio you want to adjust for this account.') }}
             </small>
         </div>
@@ -27,7 +27,7 @@
     </div>
     <div class="divider border-b dark:border-slate-700 my-5"></div>
     <div class="flex">
-        <p class="text-xs text-slate-400 dark:text-slate-300 mb-0">
+        <p class="text-xs text-slate-400 dark:text-slate-100 mb-0">
             {{ __('Disclaimer: The leverage you select is subject to market conditions and internal policies of '. setting('site_title', 'global') .'. Please be aware that leverage can increase both gains and losses. '. setting('site_title', 'global') .' will not be held responsible for any risks or financial losses incurred through leverage adjustments.') }}
         </p>
     </div>

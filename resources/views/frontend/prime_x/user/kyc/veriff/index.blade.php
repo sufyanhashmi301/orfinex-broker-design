@@ -57,7 +57,7 @@
                 <div id="loading-spinner" class="mb-6">
                     <div class="inline-flex items-center px-6 py-3 bg-white dark:bg-slate-700 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600">
                         <div class="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent mr-3"></div>
-                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300" id="loading-text">{{ __('Setting up verification...') }}</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-100" id="loading-text">{{ __('Setting up verification...') }}</span>
                     </div>
                 </div>
                 

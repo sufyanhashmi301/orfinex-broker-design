@@ -229,8 +229,8 @@ class PluginSeeder extends Seeder
                     'api_key' => '',
                     'shared_secret' => '',
                     'base_url' => 'https://api.veriff.com',
-                    'integration_id' => '',
-                    'level_name' => 'Level 2 Verification'
+                    // 'integration_id' => '',
+                    // 'level_name' => 'Level 2 Verification'
                 ]),
                 'status' => 0,
                 'created_at' => Carbon::now(),

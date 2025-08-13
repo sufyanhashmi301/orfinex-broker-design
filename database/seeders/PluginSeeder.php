@@ -221,7 +221,7 @@ class PluginSeeder extends Seeder
 
         if (!$veriffExists) {
             $plugins[] = [
-                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/veriff.webp',
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/veriff.svg',
                 'type' => 'system',
                 'name' => 'Veriff (Automated KYC)',
                 'description' => 'Advanced identity verification with AI-powered document analysis and real-time fraud detection.',

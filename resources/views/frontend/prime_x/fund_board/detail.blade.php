@@ -55,14 +55,14 @@
                             <div class="flex justify-between flex-wrap gap-4">
                                 <div class="flex-1">
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
-                                        <div class="flex justify-between text-slate-600 dark:text-slate-300">
+                                        <div class="flex justify-between text-slate-600 dark:text-slate-100">
                                             <span class="text-sm">{{ __('Challenge Funding Program') }}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
-                                        <div class="flex justify-between text-slate-600 dark:text-slate-300">
+                                        <div class="flex justify-between text-slate-600 dark:text-slate-100">
                                             <span class="text-sm">{{ __('Starting Balance') }}</span>
                                             <span class="text-sm font-medium text-slate-900 dark:text-white">${{ __('10,000.00') }}</span>
                                         </div>
@@ -74,7 +74,7 @@
                     <div class="flex justify-between flex-wrap gap-4">
                         <div class="flex-1">
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
-                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-100">
                                     <span class="text-sm">{{ __('P&L:') }}</span>
                                     <span class="text-sm font-medium text-slate-900 dark:text-white">${{ __('8154.16') }}</span>
                                 </div>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
-                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-100">
                                     <span class="text-sm">{{ __('Equity:') }}</span>
                                     <span class="text-sm font-medium text-slate-900 dark:text-white">${{ __('8154.16') }}</span>
                                 </div>
@@ -90,7 +90,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
-                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-100">
                                     <span class="text-sm">{{ __('Balance:') }}</span>
                                     <span class="text-sm font-medium text-slate-900 dark:text-white">${{ __('8154.16') }}</span>
                                 </div>
@@ -149,7 +149,7 @@
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                    <h5 class="text-slate-900 dark:text-slate-100 text-sm">
                                         {{ __('Minimum Trading Days') }}
                                     </h5>
                                     <span class="badge bg-success text-white capitalize">{{ __('Ongoing') }}</span>
@@ -167,7 +167,7 @@
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                    <h5 class="text-slate-900 dark:text-slate-100 text-sm">
                                         {{ __('Daily Loss Limit') }}
                                     </h5>
                                     <span class="badge bg-success text-white capitalize">{{ __('Ongoing') }}</span>
@@ -185,7 +185,7 @@
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                    <h5 class="text-slate-900 dark:text-slate-100 text-sm">
                                         {{ __('Stopout Level') }}
                                     </h5>
                                     <span class="badge bg-success text-white capitalize">{{ __('Ongoing') }}</span>
@@ -203,7 +203,7 @@
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                    <h5 class="text-slate-900 dark:text-slate-100 text-sm">
                                         {{ __('Profit Target') }}
                                     </h5>
                                     <span class="badge bg-success text-white capitalize">{{ __('Ongoing') }}</span>
@@ -233,7 +233,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Total Trades') }}
                                         </span>
                                     </div>
@@ -245,7 +245,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Profit Trades') }}
                                         </span>
                                     </div>
@@ -257,7 +257,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Loss Trades') }}
                                         </span>
                                     </div>
@@ -269,7 +269,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Long Trades') }}
                                         </span>
                                     </div>
@@ -281,7 +281,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Short Trades') }}
                                         </span>
                                     </div>
@@ -293,7 +293,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Gross Profit') }}
                                         </span>
                                     </div>
@@ -305,7 +305,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Gross Loss') }}
                                         </span>
                                     </div>
@@ -317,7 +317,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Total Net Profit') }}
                                         </span>
                                     </div>
@@ -329,7 +329,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Profit Factor') }}
                                         </span>
                                     </div>
@@ -341,7 +341,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Win Rate') }}
                                         </span>
                                     </div>
@@ -353,7 +353,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Best Profit') }}
                                         </span>
                                     </div>
@@ -365,7 +365,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Biggest Loss') }}
                                         </span>
                                     </div>
@@ -377,7 +377,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Largest Pip Win') }}
                                         </span>
                                     </div>
@@ -389,7 +389,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Largest Pip Loss') }}
                                         </span>
                                     </div>
@@ -401,7 +401,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Avg. Profit') }}
                                         </span>
                                     </div>
@@ -413,7 +413,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Avg. Loss') }}
                                         </span>
                                     </div>
@@ -425,7 +425,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Expectancy') }}
                                         </span>
                                     </div>
@@ -437,7 +437,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Avg. Trade Size') }}
                                         </span>
                                     </div>
@@ -449,7 +449,7 @@
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-100">
                                             {{ __('Avg. Trade Duration') }}
                                         </span>
                                     </div>

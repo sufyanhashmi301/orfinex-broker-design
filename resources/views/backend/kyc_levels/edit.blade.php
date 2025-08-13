@@ -223,7 +223,8 @@
                                         @endforeach
                                     </div>
                                     <!-- Automatic Content -->
-                                    <div id="automaticContent" class="hidden">
+                                    <div id="automaticContent" class="hidden space-y-3">
+                                        <!-- Sumsub Plugin -->
                                         <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
                                             <div class="gateway-name flex items-center gap-2">
                                                 <div class="gateway-icon mr-1">
@@ -231,8 +232,9 @@
                                                 </div>
                                                 <div class="gateway-title">
                                                     <h4 class="text-base">
-                                                        {{ __('Sumsub')}}
+                                                        {{ __('Sumsub (Automated KYC)')}}
                                                     </h4>
+                                                    <p class="text-sm text-slate-500">{{ __('AI-powered document verification and compliance') }}</p>
                                                 </div>
                                             </div>
                                             <div class="gateway-right flex items-center gap-2">
@@ -256,6 +258,43 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- Veriff Plugin -->
+                                        @if($veriff)
+                                        <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                            <div class="gateway-name flex items-center gap-2">
+                                                <div class="gateway-icon mr-1">
+                                                    <iconify-icon class="text-3xl text-blue-600"  icon="mdi:shield-check-outline"></iconify-icon>
+                                                </div>
+                                                <div class="gateway-title">
+                                                    <h4 class="text-base">
+                                                        {{ __('Veriff (Automated KYC)')}}
+                                                    </h4>
+                                                    <p class="text-sm text-slate-500">{{ __('Advanced identity verification with real-time fraud detection') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="gateway-right flex items-center gap-2">
+                                                <div class="gateway-status">
+                                                    @if($veriff->status)
+                                                        <div class="badge badge-success capitalize">
+                                                            {{ __('Active') }}
+                                                        </div>
+                                                    @else
+                                                        <div class="badge badge-danger capitalize">
+                                                            {{ __('Deactivated') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="gateway-edit">
+                                                    <a type="button" class="action-btn cursor-pointer editPlugin"
+                                                       data-id="{{ $veriff->id }}"
+                                                       data-status="{{ $veriff->status }}">
+                                                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 @elseif($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL3 )
                                         @foreach($level3ManualKycs as $kyc)

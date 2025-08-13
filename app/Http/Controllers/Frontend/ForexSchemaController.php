@@ -63,6 +63,7 @@ class ForexSchemaController extends Controller
                         $ruleSchemas = $rule->forexSchemas()
                             ->where('status', true)
                             ->traderType()
+                            ->active()
                             ->get();
                         
                         $schemas = $schemas->merge($ruleSchemas);
@@ -78,6 +79,8 @@ class ForexSchemaController extends Controller
                         // CHANGED: Using baseQuery which already has traderType()
                         $globalSchemasFromSetting = $baseQuery->clone()
                             ->where('account_category_id', 1)
+                            ->traderType()
+                            ->active()
                             ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
                             ->get();
                     }

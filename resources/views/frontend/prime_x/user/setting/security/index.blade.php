@@ -8,7 +8,7 @@
         <div class="card-body p-6">
             <div class="mb-4">
                 <h4 class="card-title mb-2">{{ __('Security Settings') }}</h4>
-                <p class="block font-normal text-sm text-slate-500">
+                <p class="block font-normal text-sm text-slate-500 dark:text-slate-200">
                     {{ __("Strengthen Your Online Security: It's your primary defense.") }}
                 </p>
             </div>
@@ -16,7 +16,7 @@
                 <div class="card border dark:border-slate-700 h-full">
                     <div class="card-body h-full flex flex-col items-start p-6 gap-3">
                         <div>
-                            <p class="font-normal text-sm text-slate-500 mb-1">{{ __('Security') }}</p>
+                            <p class="font-normal text-sm text-slate-500 dark:text-slate-200 mb-1">{{ __('Security') }}</p>
                             <h4 class="card-title">{{ __('Authorization') }}</h4>
                         </div>
                         <div>
@@ -60,7 +60,7 @@
                 <div class="card border dark:border-slate-700 h-full">
                     <div class="card-body h-full flex flex-col items-start p-6 gap-3">
                         <div>
-                            <p class="font-normal text-sm text-slate-500">{{ __('Security') }}</p>
+                            <p class="font-normal text-sm text-slate-500 dark:text-slate-200">{{ __('Security') }}</p>
                             <h4 class="card-title">{{ __('2-Step verification') }}</h4>
                         </div>
                         <div>
@@ -72,7 +72,7 @@
                             </p>
                         </div>
                         <div class="input-area w-full">
-                            <label for="" class="text-sm block w-full mb-1 text-slate-500 dark:text-slate-300">
+                            <label for="" class="text-sm block w-full mb-1 text-slate-500 dark:text-slate-100">
                                 {{ __('Security type') }}
                             </label>
                             <div class="relative">

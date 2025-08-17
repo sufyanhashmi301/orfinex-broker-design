@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-3">
-        <h4 class="text-xl text-slate-600 dark:text-slate-300">
+        <h4 class="text-xl text-slate-600 dark:text-slate-100">
             @yield('title')
         </h4>
     </div>
@@ -38,21 +38,21 @@
                     </span>
                 </div>
                 <div class="card-body p-4">
-                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap mb-3">
+                    <h4 class="text-sm font-semibold text-slate-600 dark:text-white whitespace-nowrap mb-3">
                         {{ $gateway->name }}
                     </h4>
                     <ul class="space-y-3">
                         <li class="text-sm">
-                            <span class="text-slate-400 mr-1">{{ __('Processing Time') }}</span>
-                            <span class="capitalize">{{ $gateway->processing_time }}</span>
+                            <span class="text-slate-500 dark:text-slate-100 mr-1">{{ __('Processing Time') }}</span>
+                            <span class="capitalize text-slate-500 dark:text-white font-medium">{{ $gateway->processing_time }}</span>
                         </li>
                         <li class="text-sm">
-                            <span class="text-slate-400 mr-1">{{ __('Fee') }}</span>
-                            <span>{{ $gateway->charge }}</span>
+                            <span class="text-slate-500 dark:text-slate-100 mr-1">{{ __('Fee') }}</span>
+                            <span class="text-slate-500 dark:text-white font-medium">{{ $gateway->charge }}</span>
                         </li>
                         <li class="text-sm">
-                            <span class="text-slate-400 mr-1">{{ __('Limits') }}</span>
-                            <span>{{ $gateway->minimum_deposit }} - {{ $gateway->maximum_deposit }} {{ $gateway->currency }}</span>
+                            <span class="text-slate-500 dark:text-slate-100 mr-1">{{ __('Limits') }}</span>
+                            <span class="text-slate-500 dark:text-white font-medium">{{ $gateway->minimum_deposit }} - {{ $gateway->maximum_deposit }} {{ $gateway->currency }}</span>
                         </li>
                     </ul>
                 </div>

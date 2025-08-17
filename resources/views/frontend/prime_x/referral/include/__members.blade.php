@@ -66,10 +66,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
-                                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    <h4 class="text-sm font-medium text-slate-600 dark:text-white whitespace-nowrap">
                                                         {{ $referral->full_name }}
                                                     </h4>
-                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
                                                         {{ $referral->email }}
                                                     </div>
                                                 </div>
@@ -131,31 +131,31 @@
                     </header>
                     <div class="card-body p-6 pt-0">
                         <ul class="divide-y divide-slate-100 dark:divide-slate-700">
-                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-100 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>{{ __('Phone') }}</span>
                                     <span>{{ $referral->phone ? $referral->phone : 'N/A' }}</span>
                                 </div>
                             </li>
-                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-100 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>{{ __('Balance') }}</span>
                                     <span>{{ mt5_total_balance($referral->id) }}</span>
                                 </div>
                             </li>
-                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-100 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>{{ __('Equity') }}</span>
                                     <span>{{ mt5_total_equity($referral->id) }}</span>
                                 </div>
                             </li>
-                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-100 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>{{ __('Credit') }}</span>
                                     <span>{{ mt5_total_credit($referral->id) }}</span>
                                 </div>
                             </li>
-                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                            <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-100 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>{{ __('Join') }}</span>
                                     <span>{{ $referral->created_at }}</span>

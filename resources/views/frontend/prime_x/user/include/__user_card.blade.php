@@ -3,7 +3,7 @@
         <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
             <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('Total Balance') }}
                     </div>
 {{--                    <div class="text-sm text-success">--}}
@@ -17,7 +17,7 @@
 
             <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('Current Equity') }}
                     </div>
 {{--                    <div class="text-sm text-success">--}}
@@ -31,7 +31,7 @@
 
             <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('Wallet Balance') }}
                     </div>
 {{--                    <div class="text-sm text-success">--}}

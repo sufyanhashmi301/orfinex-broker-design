@@ -34,14 +34,14 @@
                     </div>
                 </div>
                 <div class="flex-1 text-start">
-                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                    <h4 class="text-sm font-medium text-slate-600 dark:text-slate-100 whitespace-nowrap">
                         {{ $transaction->description }} @if(!in_array($transaction->approval_cause,['none',""]))
                             <span class="toolTip onTop optional-msg" data-tippy-content="{{ $transaction->approval_cause }}">
                                 <iconify-icon icon="lucide:mail"></iconify-icon>
                             </span>
                         @endif
                     </h4>
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                    <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
                         {{ $transaction->display_time->format('M d, Y h:i A') }}
                     </div>
                 </div>

@@ -1260,19 +1260,17 @@ if (!function_exists('get_mt5_account_balance')) {
      */
     function get_mt5_account_balance($login)
     {
-        if(isset($login) && $login > 0) {
-        try {
-            $mt5Account = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-            return $mt5Account ? $mt5Account->Balance : 0.0;
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
+        if (!isset($login) || $login <= 0) {
             return 0.0;
         }
-    }
-        return 0.0;
+
+        try {
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            return $mt5Service->getAccountBalance($login);
+        } catch (\Exception $e) {
+            \Log::error('Failed to get MT5 account balance via service: ' . $e->getMessage());
+            return 0.0;
+        }
     }
 }
 
@@ -1425,41 +1423,22 @@ if (!function_exists('mt5_total_equity')) {
      */
     function mt5_total_equity($user_id)
     {
-        $cacheKey = 'mt5_db_connection_status';
-
-        // Check if the database is marked as unavailable
-        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
-            // Return 0 immediately without attempting to connect
-            return 0;
-        }
-
-        // Attempt to establish a database connection
-        try {
-            DB::connection('mt5_db')->getPdo();
-        } catch (\PDOException $e) {
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-            Cache::put($cacheKey, 'down', now()->addMinutes(10)); // Adjust the duration as needed
-            return 0;
-        }
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
                 ->where('account_type', 'real')
                 ->where('status', ForexAccountStatus::Ongoing)
-                ->pluck('login');
+                ->pluck('login')
+                ->toArray();
 
             // If no accounts found, return 0
-            if ($forexAccounts->isEmpty()) {
+            if (empty($forexAccounts)) {
                 return 0;
             }
 
-            // Calculate the total equity using the mt5_db connection
-            $totalEquity = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $forexAccounts)
-                ->sum('Equity');
-
-            return $totalEquity;
+            // Use the resilient MT5DatabaseService
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            return $mt5Service->getTotalEquity($forexAccounts);
 
         } catch (\Exception $e) {
             // Log the error message for debugging

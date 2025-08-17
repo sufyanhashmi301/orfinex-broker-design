@@ -10,7 +10,7 @@
                     <iconify-icon icon="lucide:shield-check" class="text-primary text-2xl"></iconify-icon>
                     {{ __('KYC Verification Center') }}
                 </h4>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-200 leading-relaxed">
                     {{ __('To maintain a secure and compliant trading environment, identity verification is required.') }} <br>
                     {{ __('Complete your KYC steps to unlock full access including deposits, trading, and withdrawals.') }}
                 </p>
@@ -73,7 +73,7 @@
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
                         <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                             <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
-                            <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                            <p class="text-base font-normal text-slate-500 dark:text-slate-100">
                                 {{ __('Verify your details please') }}
                             </p>
                             @php
@@ -116,23 +116,23 @@
                             <div>
                                 <p class="text-slate-900 dark:text-white mb-3 text-sm font-semibold uppercase tracking-wide">{{ __('Privileges of Account Verification') }}</p>
                                 <ul class="space-y-2 mb-10">
-                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                         <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
                                         <span>{{ __('Update your full profile securely.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                         <iconify-icon class="text-primary mt-0.5" icon="lucide:wallet"></iconify-icon>
                                         <span>{{ __('Deposit funds without restrictions.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                         <iconify-icon class="text-primary mt-0.5" icon="lucide:rocket"></iconify-icon>
                                         <span>{{ __('Open demo and real trading accounts.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                         <iconify-icon class="text-primary mt-0.5" icon="lucide:refresh-cw"></iconify-icon>
                                         <span>{{ __('Transfer funds internally.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                         <iconify-icon class="text-primary mt-0.5" icon="lucide:headset"></iconify-icon>
                                         <span>{{ __('Create support ticket for assistance.') }}</span>
                                     </li>
@@ -159,7 +159,7 @@
                                 @php $provider = $automaticProviders[0]; @endphp
                                 <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                                     <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
-                                    <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                    <p class="text-base font-normal text-slate-500 dark:text-slate-100">
                                         {{ __('Provide a document confirming your name') }}
                                     </p>
                                     <h4 class="text-2xl text-slate-900 dark:text-white">
@@ -171,23 +171,23 @@
                                             {{ __('Privileges of Profile Verification') }}
                                         </p>
                                         <ul class="space-y-2 mb-10">
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
                                                 <span>{{ __('Withdraw funds from verified accounts.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
                                                 <span>{{ __('Make external transfers securely.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
                                                 <span>{{ __('Get approved for higher trading limits.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:layout-dashboard"></iconify-icon>
                                                 <span>{{ __('Unlock advanced account features.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:clock"></iconify-icon>
                                                 <span>{{ __('Faster processing of requests and reviews.') }}</span>
                                             </li>
@@ -208,7 +208,7 @@
                                 {{-- Multiple providers selection --}}
                                 <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                                     <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
-                                    <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                    <p class="text-base font-normal text-slate-500 dark:text-slate-100">
                                         {{ __('Choose your preferred verification method') }}
                                     </p>
                                     <h4 class="text-2xl text-slate-900 dark:text-white">
@@ -249,15 +249,15 @@
                                             {{ __('Privileges of Profile Verification') }}
                                         </p>
                                         <ul class="space-y-2">
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:shield-check"></iconify-icon>
                                                 <span>{{ __('Withdraw funds from verified accounts.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:repeat"></iconify-icon>
                                                 <span>{{ __('Make external transfers securely.') }}</span>
                                             </li>
-                                            <li class="text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 rtl:space-x-reverse">
+                                            <li class="text-sm text-slate-700 dark:text-slate-100 flex items-start space-x-2 rtl:space-x-reverse">
                                                 <iconify-icon class="text-primary mt-0.5" icon="lucide:user-check"></iconify-icon>
                                                 <span>{{ __('Get approved for higher trading limits.') }}</span>
                                             </li>
@@ -269,7 +269,7 @@
                         @if($manualSubLevel && $manualSubLevel->status)
                             <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                                 <span class="badge badge-primary capitalize">{{ __('Manual') }}</span>
-                                <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                <p class="text-base font-normal text-slate-500 dark:text-slate-100">
                                     {{ __('Provide a document confirming your name') }}
                                 </p>
                                 <h4 class="text-2xl text-slate-900 dark:text-white">
@@ -300,7 +300,7 @@
 
                         <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                             <span class="badge badge-primary capitalize">{{ __('Semi-Automated') }}</span>
-                            <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                            <p class="text-base font-normal text-slate-500 dark:text-slate-100">
                                 {{ __('You will need to provide proof of your place of residence') }}
                             </p>
                             <h4 class="text-2xl text-slate-500 dark:text-white">
@@ -319,33 +319,33 @@
                             <div>
                                 <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __("Access to client's area.") }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Open demo & real accounts.') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Open demo & real accounts.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Trade on demo accounts') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Trade on demo accounts') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Trade on Real Accounts.') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Trade on Real Accounts.') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Deposit money in real accounts') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Deposit money in real accounts') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Withdrawal money from real accounts') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Withdrawal money from real accounts') }}</span>
                                     </li>
-                                    <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                                    <li class="text-sm text-slate-900 dark:text-slate-100 flex space-x-2 items-center rtl:space-x-reverse">
                                         <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Priority Customer Support') }}</span>
+                                        <span class="text-slate-500 dark:text-slate-200">{{ __('Priority Customer Support') }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -369,7 +369,7 @@
 
             <div class="pt-10 border-t border-slate-200 mt-14">
                 <h4 class="text-xl font-semibold mb-6 text-slate-800 dark:text-white">{{ __('Why KYC Matters') }}</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600 dark:text-slate-100">
                     <!-- Secure Account -->
                     <div class="flex items-start gap-4">
                         <div class="text-yellow-600 text-xl mt-1">

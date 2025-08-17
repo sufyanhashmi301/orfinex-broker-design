@@ -15,7 +15,7 @@
                         {{ __('Are you sure?') }}
                     </h4>
                 </div>
-                <p class="dark:text-slate-300">
+                <p class="dark:text-slate-100">
                     {{ __('You want to Cancel OTP verification') }}
                 </p>
                 <div class="action-btns">

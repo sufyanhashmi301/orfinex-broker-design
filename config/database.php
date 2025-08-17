@@ -111,8 +111,18 @@ return [
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix'    => '',
-            'strict'    => true,
+            'strict'    => false, // Allow more flexibility for timeout scenarios
             'engine'    => null,
+            'options'   => [
+                \PDO::ATTR_PERSISTENT => false, // Disable persistent connections
+                \PDO::ATTR_TIMEOUT => env('MT5_DB_TIMEOUT', 10),
+                2003 => env('MT5_DB_CONNECT_TIMEOUT', 5), // MYSQL_ATTR_CONNECT_TIMEOUT
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION wait_timeout=" . env('MT5_DB_WAIT_TIMEOUT', 30) . ", interactive_timeout=" . env('MT5_DB_INTERACTIVE_TIMEOUT', 30),
+            ],
+            'sticky' => false,
+            'read_write_timeout' => env('MT5_DB_READ_WRITE_TIMEOUT', 10),
         ],
 
     ],

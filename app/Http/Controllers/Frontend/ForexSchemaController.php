@@ -30,8 +30,10 @@ class ForexSchemaController extends Controller
             // If user is NOT part of master IB, show ALL accounts immediately
             if (!$isPartOfMasterIb) {
                 $schemas = $baseQuery
-                ->relevantForUser($user->country, $tagNames)
-                ->orWhere('account_category_id', 1)
+                ->where(function($query) use ($user, $tagNames) {
+                    $query->relevantForUser($user->country, $tagNames)
+                          ->orWhere('account_category_id', 1);
+                })
                 ->get()
                     ->unique('id')
                     ->sortBy('priority')
@@ -63,6 +65,7 @@ class ForexSchemaController extends Controller
                         $ruleSchemas = $rule->forexSchemas()
                             ->where('status', true)
                             ->traderType()
+                            ->active()
                             ->get();
                         
                         $schemas = $schemas->merge($ruleSchemas);
@@ -78,6 +81,8 @@ class ForexSchemaController extends Controller
                         // CHANGED: Using baseQuery which already has traderType()
                         $globalSchemasFromSetting = $baseQuery->clone()
                             ->where('account_category_id', 1)
+                            ->traderType()
+                            ->active()
                             ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
                             ->get();
                     }
@@ -104,7 +109,8 @@ class ForexSchemaController extends Controller
     {
         $id = get_hash($id);
         $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        $schemas = ForexSchema::where('status', true)
+        $schemas = ForexSchema::active()
+            ->traderType()
             ->where(function($query) use ($tagNames) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All')

@@ -640,6 +640,15 @@ return [
                 'value' => 0, // default value if you want
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'auto_exchange_rates_update', // unique name for field
+                'label' => 'Auto Exchange Rates Update', // you know what label it is
+                'description' => 'Enable automatic exchange rates updates from external APIs',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value - enabled by default
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
@@ -648,6 +657,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
             ],
+          
         ],
     ],
 

@@ -398,6 +398,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
+        Route::post('mt5-connection-test', 'testMT5Connection')->name('mt5.connection.test');
         Route::post('update', 'update')->name('update');
 
         Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');

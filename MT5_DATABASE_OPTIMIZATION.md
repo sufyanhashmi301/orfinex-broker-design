@@ -59,6 +59,28 @@ php artisan mt5-db:health-check --reset
 php artisan mt5-db:monitor --interval=60 --max-failures=5
 ```
 
+### 5. Automatic Cache Reset on Credentials Update
+
+When MT5 database credentials are updated through the admin panel:
+
+1. **Automatic Reset**: The system automatically:
+   - Clears the credentials cache (`mt5_db_credentials`)
+   - Resets connection status cache (`mt5_db_connection_status`)
+   - Clears health check cache (`mt5_db_health_check`)
+   - Purges existing database connections
+   - Performs immediate health check with new credentials
+
+2. **Test Connection Button**: 
+   - Available in the admin panel database settings
+   - Tests connection without saving credentials
+   - Shows real-time connection status
+   - Provides detailed feedback on success/failure
+
+3. **User Feedback**:
+   - Success: "Database credentials updated and connection tested successfully"
+   - Warning: "Database credentials updated but connection test failed. Please verify the settings."
+   - Error logging for troubleshooting
+
 ## Environment Configuration
 
 Add these settings to your `.env` file:

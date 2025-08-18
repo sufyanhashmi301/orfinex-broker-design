@@ -291,6 +291,37 @@ class MT5DatabaseService
     }
 
     /**
+     * Reset connection status after credentials update
+     * This method is specifically called when database credentials are updated
+     */
+    public function resetAfterCredentialsUpdate(): bool
+    {
+        try {
+            // Clear all caches
+            $this->forceReconnection();
+            
+            // Clear the credentials cache as well
+            Cache::forget('mt5_db_credentials');
+            
+            // Perform immediate health check with new credentials
+            $isHealthy = $this->performHealthCheck();
+            
+            Log::info('MT5 database status reset after credentials update', [
+                'is_healthy' => $isHealthy,
+                'timestamp' => now()->toISOString()
+            ]);
+            
+            return $isHealthy;
+            
+        } catch (Throwable $e) {
+            Log::error('Failed to reset MT5 database after credentials update', [
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
      * Get connection statistics for monitoring
      *
      * @return array

@@ -28,6 +28,7 @@ class PluginSeeder extends Seeder
         $cleverTapExists = Plugin::where('name', 'CleverTap')->exists();
         $cloudflareTurnstileExists = Plugin::where('name', 'Cloudflare Turnstile')->exists();
         $exchangeRateApiExists = Plugin::where('name', 'Currency Exchange API')->exists();
+        $feednaxApiExists = Plugin::where('name', 'Feednax Exchange API')->exists();
         $veriffExists = Plugin::where('name', 'Veriff (Automated KYC)')->exists();
 
         $plugins = [];
@@ -49,6 +50,26 @@ class PluginSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ];
         }
+
+        // Add Feednax Exchange API plugin if it doesn't exist
+        if (!$feednaxApiExists) {
+            $plugins[] = [
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/feednax.webp',
+                'type' => 'system',
+                'name' => 'Feednax Exchange API',
+                'description' => 'Advanced forex and cryptocurrency exchange rates with real-time data from Feednax',
+                'data' => json_encode([
+                    'api_key' => 'demo',
+                    'api_url' => 'https://data.feednax.com/api/v1/forex-rates/latest.json',
+                    'base_currency' => 'USD',
+                    'priority' => 1 // Higher priority than other APIs
+                ]),
+                'status' => 1, // Active by default
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
+
         // Insert Custom Chat plugin if it doesn't exist
         if (!$customChatExists) {
             $plugins[] = [

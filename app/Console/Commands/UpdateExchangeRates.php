@@ -12,83 +12,271 @@ use Illuminate\Support\Facades\Log;
 
 class UpdateExchangeRates extends Command
 {
-    protected $signature = 'exchange:update-rates';
-    protected $description = 'Update exchange rates in the Countries table every 30 minutes';
+    protected $signature = 'exchange:update-rates {--api= : Specific API to use (feednax, rapidapi)}';
+    protected $description = 'Update exchange rates with multiple API providers and fallback mechanism';
+
+    private $supportedApis = [
+        'feednax' => 'Feednax Exchange API',
+        'rapidapi' => 'Currency Exchange API'
+    ];
 
     public function handle()
     {
         try {
-            // Get API credentials from Plugin
-            $apiPlugin = Plugin::where('name', 'Currency Exchange API')->first();
-            
-            if (!$apiPlugin) {
-                $this->error('Currency Exchange API plugin not found.');
-                Log::error('Currency Exchange API plugin not found.');
-                return 1;
-            }
-            
-            $apiConfig = json_decode($apiPlugin->data, true);
-            
-            $response = Http::withOptions(['verify' => false])
-                ->withHeaders([
-                    'x-rapidapi-host' => $apiConfig['api_host'],
-                    'x-rapidapi-key' => $apiConfig['api_key']
-                ])
-                ->timeout(30)
-                ->get($apiConfig['api_url'], [
-                    'base' => $apiConfig['base_currency'] ?? 'USD',
-                ]);
+            $specificApi = $this->option('api');
+            $rates = null;
+            $usedApi = null;
 
-            if ($response->successful()) {
-                $rates = $response->json()['result'];
-
-                // Update rates in the Rate model
-                foreach ($rates as $countryCode => $rate) {
-                    $formattedRate = $this->truncateToTwoDecimals($rate);
-                    Rate::where('currency_code', $countryCode)->update(['rate' => $formattedRate]);
-                }
-
-                // Fetch unique currencies from DepositMethod and WithdrawMethod
-                $depositCurrencies = DB::table('deposit_methods')->distinct()->pluck('currency')->toArray();
-                $withdrawCurrencies = DB::table('withdraw_methods')->distinct()->pluck('currency')->toArray();
-
-                // Combine currencies and filter relevant rates
-                $relevantCurrencies = array_unique(array_merge($depositCurrencies, $withdrawCurrencies));
-                $filteredRates = array_intersect_key($rates, array_flip($relevantCurrencies));
-
-                // Update rates in the DepositMethod table
-                foreach ($filteredRates as $currencyCode => $rate) {
-                    $formattedRate = $this->truncateToTwoDecimals($rate);
-                    DB::table('deposit_methods')
-                        ->where('currency', $currencyCode)
-                        ->update(['rate' => $formattedRate]);
-                }
-
-                // Update rates in the WithdrawMethod table
-                foreach ($filteredRates as $currencyCode => $rate) {
-                    $formattedRate = $this->truncateToTwoDecimals($rate);
-                    DB::table('withdraw_methods')
-                        ->where('currency', $currencyCode)
-                        ->update(['rate' => $formattedRate]);
-                }
-
-                $this->info('Exchange rates updated successfully for all models.');
-                Log::info('Exchange rates updated successfully.');
+            if ($specificApi && isset($this->supportedApis[$specificApi])) {
+                // Use specific API if requested
+                $rates = $this->fetchRatesFromApi($specificApi);
+                $usedApi = $specificApi;
             } else {
-                $errorMsg = 'Failed to fetch exchange rates. Response: ' . $response->body();
+                // Try APIs in priority order (Feednax first, then fallback)
+                $rates = $this->fetchRatesWithFallback();
+                $usedApi = $this->getLastUsedApi();
+            }
+
+            if (!$rates) {
+                $errorMsg = 'Failed to fetch exchange rates from all available APIs.';
                 $this->error($errorMsg);
                 Log::error($errorMsg);
+                return 1;
             }
+
+            // Process and update rates
+            $this->updateRatesInDatabase($rates, $usedApi);
+            
+            $this->info("Exchange rates updated successfully using {$usedApi} API.");
+            Log::info("Exchange rates updated successfully using {$usedApi} API.", [
+                'rates_count' => count($rates),
+                'api_used' => $usedApi
+            ]);
+
+            return 0;
+
         } catch (\Exception $e) {
             $errorMsg = 'Error updating exchange rates: ' . $e->getMessage();
             $this->error($errorMsg);
-            Log::error($errorMsg);
+            Log::error($errorMsg, [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return 1;
         }
-        
-        return 0;
     }
 
+    /**
+     * Fetch rates with fallback mechanism
+     */
+    private function fetchRatesWithFallback()
+    {
+        // Try Feednax first (higher priority)
+        $rates = $this->fetchRatesFromApi('feednax');
+        if ($rates) {
+            $this->lastUsedApi = 'feednax';
+            return $rates;
+        }
+
+        // Fallback to RapidAPI
+        $rates = $this->fetchRatesFromApi('rapidapi');
+        if ($rates) {
+            $this->lastUsedApi = 'rapidapi';
+            return $rates;
+        }
+
+        return null;
+    }
+
+    private $lastUsedApi = null;
+
+    private function getLastUsedApi()
+    {
+        return $this->lastUsedApi;
+    }
+
+    /**
+     * Fetch rates from specific API
+     */
+    private function fetchRatesFromApi($apiType)
+    {
+        try {
+            switch ($apiType) {
+                case 'feednax':
+                    return $this->fetchFromFeednax();
+                case 'rapidapi':
+                    return $this->fetchFromRapidApi();
+                default:
+                    Log::warning("Unsupported API type: {$apiType}");
+                    return null;
+            }
+        } catch (\Exception $e) {
+            Log::error("Error fetching from {$apiType} API: " . $e->getMessage(), [
+                'api_type' => $apiType,
+                'exception' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch rates from Feednax API
+     */
+    private function fetchFromFeednax()
+    {
+        $feednaxPlugin = Plugin::where('name', 'Feednax Exchange API')->where('status', 1)->first();
+        
+        if (!$feednaxPlugin) {
+            Log::info('Feednax Exchange API plugin not found or disabled.');
+            return null;
+        }
+
+        $config = json_decode($feednaxPlugin->data, true);
+        
+        $response = Http::withOptions(['verify' => false])
+            ->timeout(30)
+            ->get($config['api_url'], [
+                'apikey' => $config['api_key'] ?? 'demo'
+            ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            
+            if ($data['success'] ?? false) {
+                Log::info('Successfully fetched rates from Feednax API', [
+                    'timestamp' => $data['timestamp'] ?? null,
+                    'base_currency' => $data['base'] ?? 'USD',
+                    'rates_count' => count($data['rates'] ?? [])
+                ]);
+                return $data['rates'] ?? [];
+            }
+        }
+
+        Log::warning('Feednax API request failed', [
+            'status' => $response->status(),
+            'response' => $response->body()
+        ]);
+        return null;
+    }
+
+    /**
+     * Fetch rates from RapidAPI
+     */
+    private function fetchFromRapidApi()
+    {
+        $rapidApiPlugin = Plugin::where('name', 'Currency Exchange API')->where('status', 1)->first();
+        
+        if (!$rapidApiPlugin) {
+            Log::info('Currency Exchange API plugin not found or disabled.');
+            return null;
+        }
+
+        $config = json_decode($rapidApiPlugin->data, true);
+        
+        $response = Http::withOptions(['verify' => false])
+            ->withHeaders([
+                'x-rapidapi-host' => $config['api_host'],
+                'x-rapidapi-key' => $config['api_key']
+            ])
+            ->timeout(30)
+            ->get($config['api_url'], [
+                'base' => $config['base_currency'] ?? 'USD',
+            ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            
+            if (isset($data['result'])) {
+                Log::info('Successfully fetched rates from RapidAPI', [
+                    'base_currency' => $config['base_currency'] ?? 'USD',
+                    'rates_count' => count($data['result'])
+                ]);
+                return $data['result'];
+            }
+        }
+
+        Log::warning('RapidAPI request failed', [
+            'status' => $response->status(),
+            'response' => $response->body()
+        ]);
+        return null;
+    }
+
+    /**
+     * Update rates in database tables
+     */
+    private function updateRatesInDatabase($rates, $apiSource)
+    {
+        DB::beginTransaction();
+        
+        try {
+            $updateCounts = [
+                'rates_table' => 0,
+                'deposit_methods' => 0,
+                'withdraw_methods' => 0
+            ];
+
+            // Update rates in the Rate model
+            foreach ($rates as $currencyCode => $rate) {
+                $formattedRate = $this->truncateToTwoDecimals($rate);
+                $updated = Rate::where('currency_code', $currencyCode)
+                    ->update([
+                        'rate' => $formattedRate,
+                        'updated_at' => Carbon::now()
+                    ]);
+                $updateCounts['rates_table'] += $updated;
+            }
+
+            // Fetch unique currencies from DepositMethod and WithdrawMethod
+            $depositCurrencies = DB::table('deposit_methods')->distinct()->pluck('currency')->toArray();
+            $withdrawCurrencies = DB::table('withdraw_methods')->distinct()->pluck('currency')->toArray();
+
+            // Combine currencies and filter relevant rates
+            $relevantCurrencies = array_unique(array_merge($depositCurrencies, $withdrawCurrencies));
+            $filteredRates = array_intersect_key($rates, array_flip($relevantCurrencies));
+
+            // Update rates in the DepositMethod table
+            foreach ($filteredRates as $currencyCode => $rate) {
+                $formattedRate = $this->truncateToTwoDecimals($rate);
+                $updated = DB::table('deposit_methods')
+                    ->where('currency', $currencyCode)
+                    ->update([
+                        'rate' => $formattedRate,
+                        'updated_at' => Carbon::now()
+                    ]);
+                $updateCounts['deposit_methods'] += $updated;
+            }
+
+            // Update rates in the WithdrawMethod table
+            foreach ($filteredRates as $currencyCode => $rate) {
+                $formattedRate = $this->truncateToTwoDecimals($rate);
+                $updated = DB::table('withdraw_methods')
+                    ->where('currency', $currencyCode)
+                    ->update([
+                        'rate' => $formattedRate,
+                        'updated_at' => Carbon::now()
+                    ]);
+                $updateCounts['withdraw_methods'] += $updated;
+            }
+
+            DB::commit();
+
+            Log::info('Database rates updated successfully', [
+                'api_source' => $apiSource,
+                'update_counts' => $updateCounts,
+                'total_rates_processed' => count($rates),
+                'relevant_currencies' => count($filteredRates)
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Truncate number to two decimal places without rounding
+     */
     private function truncateToTwoDecimals($number)
     {
         return floor($number * 100) / 100;

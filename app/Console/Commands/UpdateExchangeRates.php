@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class UpdateExchangeRates extends Command
 {
-    protected $signature = 'exchange:update-rates {--api= : Specific API to use (feednax, rapidapi)}';
+    protected $signature = 'exchange:update-rates {--api= : Specific API to use (feednax, rapidapi)} {--force : Force update even if auto-update is disabled}';
     protected $description = 'Update exchange rates with multiple API providers and fallback mechanism';
 
     private $supportedApis = [
@@ -23,6 +23,13 @@ class UpdateExchangeRates extends Command
     public function handle()
     {
         try {
+            // Check if auto exchange rates update is enabled (unless forced)
+            if (!$this->option('force') && !$this->isAutoUpdateEnabled()) {
+                $this->info('Auto exchange rates update is disabled in company permissions. Use --force to override.');
+                Log::info('Auto exchange rates update skipped - disabled in company permissions.');
+                return 0;
+            }
+
             $specificApi = $this->option('api');
             $rates = null;
             $usedApi = null;
@@ -271,6 +278,21 @@ class UpdateExchangeRates extends Command
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Check if auto exchange rates update is enabled in company permissions
+     */
+    private function isAutoUpdateEnabled()
+    {
+        try {
+            // Use the setting helper function with permission section and default to enabled (1)
+            return (bool) setting('auto_exchange_rates_update', 'permission', 1);
+        } catch (\Exception $e) {
+            Log::error('Error checking auto update permission: ' . $e->getMessage());
+            // Default to enabled if there's an error
+            return true;
         }
     }
 

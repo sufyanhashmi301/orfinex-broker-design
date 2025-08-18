@@ -1237,10 +1237,13 @@ if (!function_exists('get_mt5_account')) {
     {
         if(isset($login) && $login > 0) {
             try {
-                return DB::connection('mt5_db')
-                    ->table('mt5_accounts')
-                    ->where('Login', $login)
-                    ->first();
+                $mt5Service = app(\App\Services\MT5DatabaseService::class);
+                return $mt5Service->executeWithTimeout(function () use ($login) {
+                    return DB::connection('mt5_db')
+                        ->table('mt5_accounts')
+                        ->where('Login', $login)
+                        ->first();
+                }, null);
             } catch (\Exception $e) {
                 \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
                 return null;
@@ -1269,6 +1272,70 @@ if (!function_exists('get_mt5_account_balance')) {
             return $mt5Service->getAccountBalance($login);
         } catch (\Exception $e) {
             \Log::error('Failed to get MT5 account balance via service: ' . $e->getMessage());
+            return 0.0;
+        }
+    }
+}
+
+if (!function_exists('get_mt5_account_equity')) {
+    /**
+     * Retrieves the equity of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The equity of the MT5 account, or 0.0 if not found or on error.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_mt5_account_equity($login)
+    {
+        if (!isset($login) || $login <= 0) {
+            return 0.0;
+        }
+
+        try {
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            return $mt5Service->executeWithTimeout(function () use ($login) {
+                $mt5Account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+                    
+                return $mt5Account ? (float)$mt5Account->Equity : 0.0;
+            }, 0.0);
+        } catch (\Exception $e) {
+            \Log::error('Failed to get MT5 account equity via service: ' . $e->getMessage());
+            return 0.0;
+        }
+    }
+}
+
+if (!function_exists('get_mt5_account_credit')) {
+    /**
+     * Retrieves the credit of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The credit of the MT5 account, or 0.0 if not found or on error.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_mt5_account_credit($login)
+    {
+        if (!isset($login) || $login <= 0) {
+            return 0.0;
+        }
+
+        try {
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            return $mt5Service->executeWithTimeout(function () use ($login) {
+                $mt5Account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+                    
+                return $mt5Account ? (float)$mt5Account->Credit : 0.0;
+            }, 0.0);
+        } catch (\Exception $e) {
+            \Log::error('Failed to get MT5 account credit via service: ' . $e->getMessage());
             return 0.0;
         }
     }
@@ -1334,11 +1401,14 @@ if (!function_exists('get_mt5_account_equity')) {
     {
         if(isset($login) && $login > 0) {
             try {
-                $mt5Account = DB::connection('mt5_db')
-                    ->table('mt5_accounts')
-                    ->where('Login', $login)
-                    ->first();
-                return $mt5Account ? $mt5Account->Equity : 0.0;
+                $mt5Service = app(\App\Services\MT5DatabaseService::class);
+                return $mt5Service->executeWithTimeout(function () use ($login) {
+                    $mt5Account = DB::connection('mt5_db')
+                        ->table('mt5_accounts')
+                        ->where('Login', $login)
+                        ->first();
+                    return $mt5Account ? $mt5Account->Equity : 0.0;
+                }, 0.0);
             } catch (\Exception $e) {
                 \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
                 return 0.0;
@@ -1397,13 +1467,14 @@ if (!function_exists('mt5_total_balance')) {
             }
 //dd($forexAccounts);
           //   Calculate the total balance using the mt5_db connection
-            $totalBalance = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $forexAccounts)
-                ->sum('Balance');
-//            dd($totalBalance);
-
-            return $totalBalance;
+            // Use the resilient MT5DatabaseService
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            return $mt5Service->executeWithTimeout(function () use ($forexAccounts) {
+                return (float)DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->whereIn('Login', $forexAccounts)
+                    ->sum('Balance');
+            }, 0.0);
         } catch (\Exception $e) {
             // Handle other exceptions if necessary
             \Log::error('An error occurred: ' . $e->getMessage());

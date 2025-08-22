@@ -408,6 +408,41 @@
             </li>
         @endcanany
 
+        {{-- *************************************************************  Payment Deposit Management *********************************************************--}}
+        @canany(['payment-deposit-list','payment-deposit-action','payment-deposit-form-manage'])
+            <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.payment-deposit*']) }}">
+                <a href="javascript:void(0);" class="navItem">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
+                            <span>{{ __('Payment Deposit') }}</span>
+                        </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    @canany(['payment-deposit-list','payment-deposit-action'])
+                        <li>
+                            <a href="{{ route('admin.payment-deposit.pending.list') }}"
+                               class="{{ isActive('admin.payment-deposit.pending.list') }}">
+                                {{ __('Pending Requests') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.payment-deposit.approved.list') }}"
+                               class="{{ isActive('admin.payment-deposit.approved.list') }}">
+                                {{ __('Approved Requests') }}
+                            </a>
+                        </li>
+                    @endcanany
+                    @can('payment-deposit-form-manage')
+                        <li>
+                            <a href="{{ route('admin.payment-deposit-form.index') }}" class="{{ isActive('admin.payment-deposit-form*') }}">
+                                {{ __('Manage Forms') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcanany
 
         {{-- *************************************************************  Transactions *********************************************************--}}
 

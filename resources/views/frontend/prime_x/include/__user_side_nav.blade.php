@@ -112,6 +112,17 @@
                 </span>
             </a>
         </li>
+
+        @if(setting('deposit_account_mode', 'features') === 'request_deposit_accounts')
+        <li>
+            <a href="{{ route('user.payment-deposit') }}" class="navItem loaderBtn {{ isActive('user.payment-deposit*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
+                    <span>{{ __('Payment Deposit') }}</span>
+                </span>
+            </a>
+        </li>
+        @endif
         @if(setting('is_copy_trading', 'copy_trading'))
             <li>
                 <a href="{{ route('user.follower_access') }}" class="navItem loaderBtn {{ isActive('user.follower_access') }}">

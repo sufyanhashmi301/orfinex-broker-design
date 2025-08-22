@@ -19,7 +19,23 @@ class GatewayController extends Controller
         if ($gateway->type == GatewayType::Manual->value) {
             $fieldOptions = $gateway->field_options;
             $paymentDetails = $gateway->payment_details;
-            $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+            
+            // Check if request deposit accounts is enabled and user has approved request
+            if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+                $approvedRequest = \App\Models\PaymentDepositRequest::forUser(auth()->id())
+                    ->approved()
+                    ->first();
+                
+                if ($approvedRequest && $approvedRequest->bank_details) {
+                    // Use approved bank details instead of default payment method details
+                    $bankDetails = $approvedRequest->bank_details;
+                    $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.approved_bank_details', compact('fieldOptions', 'bankDetails'))->render()]);
+                } else {
+                    $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+                }
+            } else {
+                $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+            }
         }else{
             $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
             $gateway['currency'] = $gatewayCurrency;

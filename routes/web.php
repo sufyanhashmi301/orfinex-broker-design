@@ -291,6 +291,10 @@ Route::get('user/ib-program', [IBController::class, 'index'])->name('user.ib-pro
 Route::post('/ib/transfer/balance', [IBController::class, 'ibTransferBalance'])->name('ib.transfer.balance');
 Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-program.store');
 
+// Payment Deposit Request Routes
+Route::get('user/payment-deposit', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'index'])->name('user.payment-deposit');
+Route::post('user/payment-deposit/store', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'store'])->name('user.payment-deposit.store');
+Route::get('user/payment-deposit/{id}', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'show'])->name('user.payment-deposit.show');
 
 // Route::post('/ib/transfer/balance', 'IBController@ibTransferBalance')->name('user.ib.transfer.balance');
 

@@ -39,6 +39,8 @@ class DepositController extends GatewayController
     }
     public function depositMethods()
     {
+       
+
         $gateways = DepositMethod::where('status', 1)
             ->where(function($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
@@ -60,6 +62,22 @@ class DepositController extends GatewayController
             return redirect()->back();
         }
 
+        // Check if the selected gateway is manual type and if request deposit accounts is enabled
+        $gateway = DepositMethod::code($gatewayCode)->first();
+        if ($gateway && $gateway->type == \App\Enums\GatewayType::Manual->value) {
+            if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+                $user = auth()->user();
+                $approvedRequest = \App\Models\PaymentDepositRequest::forUser($user->id)
+                    ->approved()
+                    ->first();
+                
+                if (!$approvedRequest) {
+                    notify()->info('Please submit a payment deposit request first to get your bank details.');
+                    return redirect()->route('user.payment-deposit');
+                }
+            }
+        }
+
         $isStepOne = 'current';
         $isStepTwo = '';
         $forexAccounts = ForexAccount::with('schema')->traderType()
@@ -69,7 +87,15 @@ class DepositController extends GatewayController
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'forexAccounts', 'gatewayCode'));
+        // Get approved payment deposit request for bank details (if applicable)
+        $approvedRequest = null;
+        if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+            $approvedRequest = \App\Models\PaymentDepositRequest::forUser(auth()->id())
+                ->approved()
+                ->first();
+        }
+
+        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'forexAccounts', 'gatewayCode', 'approvedRequest'));
     }
 
     public function depositNow(Request $request)

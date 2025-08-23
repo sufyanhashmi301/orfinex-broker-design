@@ -64,7 +64,7 @@ class PaymentDepositRequest extends Model
      */
     public function approvedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(Admin::class, 'approved_by');
     }
 
     /**

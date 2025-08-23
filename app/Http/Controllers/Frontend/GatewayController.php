@@ -20,8 +20,8 @@ class GatewayController extends Controller
             $fieldOptions = $gateway->field_options;
             $paymentDetails = $gateway->payment_details;
             
-            // Check if request deposit accounts is enabled and user has approved request
-            if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+            // Check if request deposit accounts is enabled and this method has custom bank details enabled
+            if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts' && $gateway->is_custom_bank_details) {
                 $approvedRequest = \App\Models\PaymentDepositRequest::forUser(auth()->id())
                     ->approved()
                     ->first();

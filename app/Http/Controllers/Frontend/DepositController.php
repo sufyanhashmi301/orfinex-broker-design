@@ -44,7 +44,37 @@ class DepositController extends GatewayController
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
-        return view('frontend::deposit.deposit-methods', compact('gateways'));
+
+        // Check if request deposit accounts is enabled
+        $isRequestDepositMode = setting('deposit_account_mode', 'features') === 'request_deposit_accounts';
+        $approvedRequest = null;
+        
+        if ($isRequestDepositMode) {
+            $approvedRequest = \App\Models\PaymentDepositRequest::forUser(auth()->id())
+                ->approved()
+                ->first();
+        }
+
+        // Add validation flags to each gateway
+        $gateways->each(function ($gateway) use ($isRequestDepositMode, $approvedRequest) {
+            $gateway->requires_payment_deposit = false;
+            $gateway->is_accessible = true;
+            
+            // Check if this is a manual method with custom bank details enabled
+            if ($gateway->type == \App\Enums\GatewayType::Manual->value && 
+                $isRequestDepositMode && 
+                $gateway->is_custom_bank_details) {
+                
+                $gateway->requires_payment_deposit = true;
+                
+                // If user doesn't have approved request, mark as not accessible
+                if (!$approvedRequest) {
+                    $gateway->is_accessible = false;
+                }
+            }
+        });
+
+        return view('frontend::deposit.deposit-methods', compact('gateways', 'isRequestDepositMode', 'approvedRequest'));
     }
     public function deposit()
     {
@@ -60,6 +90,25 @@ class DepositController extends GatewayController
             return redirect()->back();
         }
 
+        // Check if the selected gateway is manual type and if request deposit accounts is enabled
+        $gateway = DepositMethod::code($gatewayCode)->first();
+        if ($gateway && $gateway->type == \App\Enums\GatewayType::Manual->value) {
+            if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+                // Only check for payment deposit request if this method has custom bank details enabled
+                if ($gateway->is_custom_bank_details) {
+                    $user = auth()->user();
+                    $approvedRequest = \App\Models\PaymentDepositRequest::forUser($user->id)
+                        ->approved()
+                        ->first();
+                    
+                    if (!$approvedRequest) {
+                        notify()->info('Please submit a payment deposit request first to get your custom bank details for this method.');
+                        return redirect()->route('user.payment-deposit');
+                    }
+                }
+            }
+        }
+
         $isStepOne = 'current';
         $isStepTwo = '';
         $forexAccounts = ForexAccount::with('schema')->traderType()
@@ -69,7 +118,15 @@ class DepositController extends GatewayController
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'forexAccounts', 'gatewayCode'));
+        // Get approved payment deposit request for bank details (if applicable)
+        $approvedRequest = null;
+        if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
+            $approvedRequest = \App\Models\PaymentDepositRequest::forUser(auth()->id())
+                ->approved()
+                ->first();
+        }
+
+        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'forexAccounts', 'gatewayCode', 'approvedRequest'));
     }
 
     public function depositNow(Request $request)

@@ -577,4 +577,350 @@ class PaymentDepositController extends Controller
             Log::warning('Payment deposit rejection notifications failed: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Get bank details for a specific request (JSON format)
+     */
+    public function getBankDetails(PaymentDepositRequest $request)
+    {
+        return response()->json([
+            'id' => $request->id,
+            'status' => $request->status,
+            'bank_details' => $request->bank_details
+        ]);
+    }
+
+    /**
+     * Update bank details for an approved request
+     */
+    public function updateBankDetails(Request $request)
+    {
+        DB::beginTransaction();
+        
+        try {
+            $validator = Validator::make($request->all(), [
+                'request_id' => 'required|exists:payment_deposit_requests,id',
+                'bank_name' => 'required|string|max:255',
+                'account_name' => 'required|string|max:255',
+                'account_number' => 'required|string|max:50',
+                'routing_number' => 'nullable|string|max:50',
+                'swift_code' => 'nullable|string|max:20',
+                'bank_address' => 'nullable|string|max:500',
+                'additional_instructions' => 'nullable|string|max:1000'
+            ]);
+
+            if ($validator->fails()) {
+                DB::rollback();
+                return response()->json([
+                    'error' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $depositRequest = PaymentDepositRequest::findOrFail($request->request_id);
+
+            if ($depositRequest->status !== PaymentDepositRequest::STATUS_APPROVED) {
+                DB::rollback();
+                return response()->json([
+                    'error' => 'Only approved requests can have their bank details updated'
+                ], 400);
+            }
+
+            // Prepare updated bank details
+            $bankDetails = [
+                'bank_name' => $request->bank_name,
+                'account_name' => $request->account_name,
+                'account_number' => $request->account_number,
+                'routing_number' => $request->routing_number,
+                'swift_code' => $request->swift_code,
+                'bank_address' => $request->bank_address,
+                'additional_instructions' => $request->additional_instructions,
+                'approved_at' => $depositRequest->approved_at->toISOString(),
+                'updated_at' => now()->toISOString(),
+                'updated_by' => auth()->id()
+            ];
+
+            // Update bank details
+            $depositRequest->update([
+                'bank_details' => $bankDetails
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bank details updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Failed to update bank details: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Reject an approved request
+     */
+    public function rejectApproved(Request $request)
+    {
+        DB::beginTransaction();
+        
+        try {
+            $validator = Validator::make($request->all(), [
+                'request_id' => 'required|exists:payment_deposit_requests,id',
+                'rejection_reason' => 'required|string|max:1000'
+            ]);
+
+            if ($validator->fails()) {
+                DB::rollback();
+                return response()->json([
+                    'error' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $depositRequest = PaymentDepositRequest::findOrFail($request->request_id);
+
+            if ($depositRequest->status !== PaymentDepositRequest::STATUS_APPROVED) {
+                DB::rollback();
+                return response()->json([
+                    'error' => 'Only approved requests can be rejected'
+                ], 400);
+            }
+
+            // Update request to rejected status
+            $depositRequest->update([
+                'status' => PaymentDepositRequest::STATUS_REJECTED,
+                'rejection_reason' => $request->rejection_reason,
+                'bank_details' => null, // Remove bank details when rejecting
+                'approved_by' => null,
+                'approved_at' => null
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request has been rejected successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Failed to reject request: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Show rejected payment deposit requests list
+     */
+    public function rejectedList()
+    {
+        if (request()->ajax()) {
+            $query = PaymentDepositRequest::with(['user'])
+                ->rejected()
+                ->orderBy('updated_at', 'desc');
+
+            // Apply filters
+            if (request('global_search')) {
+                $search = request('global_search');
+                $query->whereHas('user', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            if (request('date_filter')) {
+                $days = match(request('date_filter')) {
+                    '3_days' => 3,
+                    '5_days' => 5,
+                    '15_days' => 15,
+                    '1_month' => 30,
+                    '3_months' => 90,
+                    default => null
+                };
+                
+                if ($days) {
+                    $query->where('updated_at', '>=', now()->subDays($days));
+                }
+            }
+
+            if (request('created_at')) {
+                $dates = explode(' to ', request('created_at'));
+                if (count($dates) == 2) {
+                    $query->whereBetween('updated_at', [
+                        \Carbon\Carbon::parse($dates[0])->startOfDay(),
+                        \Carbon\Carbon::parse($dates[1])->endOfDay()
+                    ]);
+                }
+            }
+
+            if (request('rejection_reason')) {
+                $search = request('rejection_reason');
+                $query->where('rejection_reason', 'like', "%{$search}%");
+            }
+
+            return datatables($query)
+                ->addColumn('user_info', function ($request) {
+                    return view('backend.user.include.__user', ['row' => $request->user])->render();
+                })
+                ->addColumn('request_details', function ($request) {
+                    return '<div class="text-slate-600 dark:text-slate-300 text-sm font-medium">#PDX' . $request->id . '</div>';
+                })
+                ->editColumn('updated_at', function ($request) {
+                    return $request->updated_at ? $request->updated_at->format('M d, Y') . '<br><span class="text-xs text-slate-400">' . $request->updated_at->format('h:i A') . '</span>' : 'N/A';
+                })
+                ->editColumn('status', function ($request) {
+                    return '<span class="badge bg-danger-500 text-white">' . __('Rejected') . '</span>';
+                })
+                ->addColumn('action', function ($request) {
+                    return view('backend.payment-deposit.include.__action', compact('request'))->render();
+                })
+                ->rawColumns(['user_info', 'request_details', 'updated_at', 'status', 'action'])
+                ->make(true);
+        }
+
+        // Calculate stats for rejected requests
+        $totalRejected = PaymentDepositRequest::rejected()->count();
+        $thisMonthRejected = PaymentDepositRequest::rejected()
+            ->whereMonth('updated_at', now()->month)
+            ->whereYear('updated_at', now()->year)
+            ->count();
+        $totalUsers = \App\Models\User::count();
+        $thisYearRejected = PaymentDepositRequest::rejected()
+            ->whereYear('updated_at', now()->year)
+            ->count();
+
+        $stats = [
+            'total_rejected' => $totalRejected,
+            'this_month' => $thisMonthRejected,
+            'total_users' => $totalUsers,
+            'this_year' => $thisYearRejected
+        ];
+
+        return view('backend.payment-deposit.rejected', compact('stats'));
+    }
+
+    /**
+     * Reset status of a rejected request back to pending
+     */
+    public function resetStatus(Request $request)
+    {
+        DB::beginTransaction();
+        
+        try {
+            $validator = Validator::make($request->all(), [
+                'request_id' => 'required|exists:payment_deposit_requests,id'
+            ]);
+
+            if ($validator->fails()) {
+                DB::rollback();
+                return response()->json([
+                    'error' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $depositRequest = PaymentDepositRequest::findOrFail($request->request_id);
+
+            if ($depositRequest->status !== PaymentDepositRequest::STATUS_REJECTED) {
+                DB::rollback();
+                return response()->json([
+                    'error' => 'Only rejected requests can be reset'
+                ], 400);
+            }
+
+            // Reset request to pending status
+            $depositRequest->update([
+                'status' => PaymentDepositRequest::STATUS_PENDING,
+                'rejection_reason' => null,
+                'updated_at' => now()
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request status has been reset to pending'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Failed to reset status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Re-approve a rejected request with new bank details
+     */
+    public function reApproveRequest(Request $request)
+    {
+        DB::beginTransaction();
+        
+        try {
+            $validator = Validator::make($request->all(), [
+                'request_id' => 'required|exists:payment_deposit_requests,id',
+                'bank_name' => 'required|string|max:255',
+                'account_name' => 'required|string|max:255',
+                'account_number' => 'required|string|max:50',
+                'routing_number' => 'nullable|string|max:50',
+                'swift_code' => 'nullable|string|max:20',
+                'bank_address' => 'nullable|string|max:500',
+                'additional_instructions' => 'nullable|string|max:1000'
+            ]);
+
+            if ($validator->fails()) {
+                DB::rollback();
+                return response()->json([
+                    'error' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $depositRequest = PaymentDepositRequest::findOrFail($request->request_id);
+
+            if ($depositRequest->status !== PaymentDepositRequest::STATUS_REJECTED) {
+                DB::rollback();
+                return response()->json([
+                    'error' => 'Only rejected requests can be re-approved'
+                ], 400);
+            }
+
+            // Prepare bank details
+            $bankDetails = [
+                'bank_name' => $request->bank_name,
+                'account_name' => $request->account_name,
+                'account_number' => $request->account_number,
+                'routing_number' => $request->routing_number,
+                'swift_code' => $request->swift_code,
+                'bank_address' => $request->bank_address,
+                'additional_instructions' => $request->additional_instructions,
+                'approved_at' => now()->toISOString()
+            ];
+
+            // Update request to approved status
+            $depositRequest->update([
+                'status' => PaymentDepositRequest::STATUS_APPROVED,
+                'bank_details' => $bankDetails,
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'rejection_reason' => null // Clear rejection reason
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request has been approved successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Failed to approve request: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

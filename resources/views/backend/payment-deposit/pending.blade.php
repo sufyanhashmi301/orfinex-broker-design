@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Pending Payment Deposit Requests') }}
+    {{ __('Pending Custom Payment Account Requests') }}
 @endsection
 
 @section('filters')
@@ -47,7 +47,7 @@
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Pending Payment Deposit Requests') }}
+            {{ __('Pending Custom Payment Account Requests') }}
         </h4>
     </div>
 

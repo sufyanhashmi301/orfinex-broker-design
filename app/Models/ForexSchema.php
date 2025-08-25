@@ -133,13 +133,23 @@ class ForexSchema extends Model
 	public function scopeRelevantForUser(Builder $query, $country, array $tags)
 	{
 		return $query->where(function ($q) use ($country, $tags) {
-			$q->whereJsonContains('country', $country)
-				->orWhereJsonContains('country', 'All')
-				->orWhere(function ($subQuery) use ($tags) {
+			// Rule 3: For non-global accounts, match based on user's tags OR country
+			if (!empty($tags)) {
+				// If user has tags, show schemas that match their tags OR their country
+				$q->where(function ($tagQuery) use ($tags) {
 					foreach ($tags as $tag) {
-						$subQuery->orWhereJsonContains('tags', $tag);
+						$tagQuery->orWhereJsonContains('tags', $tag);
 					}
+				})
+				->orWhere(function ($countryQuery) use ($country) {
+					$countryQuery->whereJsonContains('country', $country)
+								->orWhereJsonContains('country', 'All');
 				});
+			} else {
+				// If user has no tags, only match by country
+				$q->whereJsonContains('country', $country)
+					->orWhereJsonContains('country', 'All');
+			}
 		});
 	}
 }

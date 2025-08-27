@@ -55,6 +55,7 @@
                                                 <option value="checkbox" {{ ($field['type'] ?? '') === 'checkbox' ? 'selected' : '' }}>Checkbox</option>
                                                 <option value="radio" {{ ($field['type'] ?? '') === 'radio' ? 'selected' : '' }}>Radio</option>
                                                 <option value="dropdown" {{ ($field['type'] ?? '') === 'dropdown' ? 'selected' : '' }}>Dropdown</option>
+                                                <option value="file" {{ ($field['type'] ?? '') === 'file' ? 'selected' : '' }}>File Upload</option>
                                             </select>
                                         </div>
                                     </div>
@@ -158,6 +159,7 @@
                                 <option value="checkbox">Checkbox</option>
                                 <option value="radio">Radio</option>
                                 <option value="dropdown">Dropdown</option>
+                                <option value="file">File Upload</option>
                             </select>
                         </div>
                     </div>

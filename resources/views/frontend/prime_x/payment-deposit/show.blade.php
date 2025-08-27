@@ -194,11 +194,99 @@
                                             @endforeach
                                         </div>
                                     @else
-                                        <span class="flex items-center">
-                                            <iconify-icon icon="lucide:check-circle"
-                                                class="text-green-500 text-sm ltr:mr-2 rtl:ml-2"></iconify-icon>
-                                            {{ $value }}
-                                        </span>
+                                        @php
+                                            $isFile = false;
+                                            $fileExtension = '';
+                                            // Check if this is a file path (contains Custom-Payments directory or has file extension)
+                                            if (
+                                                is_string($value) &&
+                                                (str_contains($value, 'Custom-Payments/') ||
+                                                    str_contains($value, 'payment-deposit/') ||
+                                                    str_contains($value, 'global/images/') ||
+                                                    preg_match(
+                                                        '/\.(jpeg|jpg|png|gif|svg|pdf|doc|docx|txt)$/i',
+                                                        $value,
+                                                        $matches,
+                                                    ))
+                                            ) {
+                                                $isFile = true;
+                                                // Extract file extension
+                                                if (preg_match('/\.([a-z0-9]+)$/i', $value, $matches)) {
+                                                    $fileExtension = strtolower($matches[1]);
+                                                }
+                                            }
+                                        @endphp
+
+                                        @if ($isFile)
+                                            <div class="space-y-3">
+                                                @if (in_array($fileExtension, ['jpeg', 'jpg', 'png', 'gif', 'svg']))
+                                                    {{-- Image display with overlay download icon --}}
+                                                    <div class="relative inline-block">
+                                                        <img src="{{ asset($value) }}" alt="{{ basename($value) }}"
+                                                            class="max-w-full max-h-64 rounded-lg border border-slate-300 dark:border-slate-600 cursor-pointer hover:opacity-75 transition-opacity shadow-md"
+                                                            onclick="viewUserImage('{{ asset($value) }}', '{{ basename($value) }}')">
+
+                                                        {{-- Download icon overlay --}}
+                                                        <a href="{{ asset($value) }}" download
+                                                            class="absolute top-3 right-3 bg-black bg-opacity-60 text-white p-2 rounded-full hover:bg-opacity-80 transition-all shadow-lg"
+                                                            title="{{ __('Download') }}">
+                                                            <iconify-icon icon="lucide:download"
+                                                                class="text-lg"></iconify-icon>
+                                                        </a>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <p class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                            {{ basename($value) }}</p>
+                                                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase">
+                                                            {{ $fileExtension }} {{ __('Image') }}</p>
+                                                    </div>
+                                                @else
+                                                    {{-- Non-image file display --}}
+                                                    <div
+                                                        class="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">
+                                                        {{-- File icon --}}
+                                                        <div class="flex-shrink-0">
+                                                            @if ($fileExtension === 'pdf')
+                                                                <iconify-icon icon="lucide:file-text"
+                                                                    class="text-red-500 text-3xl"></iconify-icon>
+                                                            @elseif(in_array($fileExtension, ['doc', 'docx']))
+                                                                <iconify-icon icon="lucide:file-text"
+                                                                    class="text-blue-600 text-3xl"></iconify-icon>
+                                                            @else
+                                                                <iconify-icon icon="lucide:file"
+                                                                    class="text-gray-500 text-3xl"></iconify-icon>
+                                                            @endif
+                                                        </div>
+
+                                                        {{-- File details --}}
+                                                        <div class="flex-1 min-w-0">
+                                                            <p
+                                                                class="text-lg font-semibold text-slate-900 dark:text-white truncate">
+                                                                {{ basename($value) }}
+                                                            </p>
+                                                            <p
+                                                                class="text-sm text-slate-500 dark:text-slate-400 uppercase">
+                                                                {{ $fileExtension }} {{ __('Document') }}
+                                                            </p>
+                                                        </div>
+
+                                                        {{-- Download icon --}}
+                                                        <a href="{{ asset($value) }}" download
+                                                            class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 p-3 rounded-full hover:bg-green-50 dark:hover:bg-green-900/20 transition-all"
+                                                            title="{{ __('Download') }}">
+                                                            <iconify-icon icon="lucide:download"
+                                                                class="text-2xl"></iconify-icon>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <span class="flex items-center">
+                                                <iconify-icon icon="lucide:check-circle"
+                                                    class="text-green-500 text-sm ltr:mr-2 rtl:ml-2"></iconify-icon>
+                                                {{ $value }}
+                                            </span>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -416,10 +504,61 @@
     @endif
     </div>
 
+    {{-- Image Preview Modal for User --}}
+    <div id="userImageModal"
+        class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
+        <div class="relative max-w-4xl max-h-full">
+            <button onclick="closeUserImageModal()"
+                class="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 z-10">
+                <iconify-icon icon="lucide:x" class="text-xl"></iconify-icon>
+            </button>
+            <img id="userModalImage" src="" alt=""
+                class="max-w-full max-h-full object-contain rounded-lg">
+            <div class="absolute bottom-4 left-4 right-4 text-center">
+                <p id="userModalImageName" class="text-white bg-black bg-opacity-50 rounded px-3 py-1 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('script')
     <script>
+        function viewUserImage(imageSrc, imageName) {
+            const modal = document.getElementById('userImageModal');
+            const modalImage = document.getElementById('userModalImage');
+            const modalImageName = document.getElementById('userModalImageName');
+
+            modalImage.src = imageSrc;
+            modalImageName.textContent = imageName;
+            modal.classList.remove('hidden');
+
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUserImageModal() {
+            const modal = document.getElementById('userImageModal');
+            modal.classList.add('hidden');
+
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside the image
+        document.getElementById('userImageModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUserImageModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeUserImageModal();
+            }
+        });
+
         function copyBankDetails() {
             const bankDetails = @json($request->bank_details ?? []);
             console.log('Bank Details Object:', bankDetails);

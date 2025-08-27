@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentDepositQuestion;
 use App\Models\PaymentDepositRequest;
 use App\Traits\NotifyTrait;
+use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 
 class PaymentDepositController extends Controller
 {
-    use NotifyTrait;
+    use NotifyTrait, ImageUpload;
 
     /**
      * Display payment deposit request form
@@ -113,7 +114,7 @@ class PaymentDepositController extends Controller
             }
 
             // Sanitize form data
-            $sanitizedData = $this->sanitizeFormData($request->input('fields', []));
+            $sanitizedData = $this->sanitizeFormData($request->input('fields', []), $request);
             
             // Create payment deposit request
             $depositRequest = PaymentDepositRequest::create([
@@ -234,6 +235,12 @@ class PaymentDepositController extends Controller
                             $fieldRules[] = 'in:' . implode(',', $field['options']);
                         }
                         break;
+                        
+                    case 'file':
+                        $fieldRules[] = 'file';
+                        $fieldRules[] = 'max:5120'; // 5MB max
+                        $fieldRules[] = 'mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx,txt';
+                        break;
                 }
 
                 $rules[$fieldName] = implode('|', $fieldRules);
@@ -244,14 +251,47 @@ class PaymentDepositController extends Controller
     }
 
     /**
-     * Sanitize form data to prevent XSS and injection attacks
+     * Sanitize form data and handle file uploads
      */
-    private function sanitizeFormData(array $formData): array
+    private function sanitizeFormData(array $formData, Request $request): array
     {
         $sanitized = [];
         
+        // Get active questions to check field types
+        $depositQuestions = PaymentDepositQuestion::active()->get();
+        $fileFields = [];
+        
+        // Identify file fields
+        foreach ($depositQuestions as $question) {
+            $fields = json_decode($question->fields, true);
+            if (is_array($fields)) {
+                foreach ($fields as $field) {
+                    if ($field['type'] === 'file') {
+                        $fileFields[] = $field['name'];
+                    }
+                }
+            }
+        }
+        
         foreach ($formData as $key => $value) {
-            if (is_array($value)) {
+            // Check if this is a file field
+            if (in_array($key, $fileFields) && $request->hasFile("fields.{$key}")) {
+                // Handle file upload
+                $uploadedFile = $request->file("fields.{$key}");
+                try {
+                    $sanitized[$key] = $this->paymentDepositFileUploadTrait($uploadedFile);
+                } catch (\Exception $e) {
+                    Log::error('File upload failed for field: ' . $key, [
+                        'error' => $e->getMessage(),
+                        'user_id' => auth()->id()
+                    ]);
+                    throw new ValidationException(
+                        Validator::make([], [])
+                            ->errors()
+                            ->add("fields.{$key}", 'File upload failed: ' . $e->getMessage())
+                    );
+                }
+            } elseif (is_array($value)) {
                 // For checkbox arrays
                 $sanitized[$key] = array_map(function($item) {
                     return strip_tags(trim($item));

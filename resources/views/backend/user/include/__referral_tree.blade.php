@@ -81,29 +81,25 @@
 
             // Add toggle button to each parent with children
             $('.hv-item').each(function () {
-                var $children = $(this).children('.hv-item-children');
-                var $parent = $(this).children('.hv-item-parent');
+                var $item = $(this);
+                var $children = $item.children('.hv-item-children');
+                var $parent = $item.children('.hv-item-parent');
+                var $btn = $item.find('.person .toggle-btn'); // Scope to current item only
 
-                if ($children.length) {
-                    var $btn = $(`
-                        <button class="h-5 w-5 btn-primary rounded-full inline-flex items-center justify-center mx-auto mt-1 toggle-btn">
-                            <iconify-icon icon="lucide:plus"></iconify-icon>
-                        </button>
-                    `);
-
-                    $parent.find('.person').append($btn);
-
-                    // Toggle logic
-                    $btn.on('click', function () {
+                if ($children.length && $btn.length) {
+                    // Remove any existing handlers to prevent duplicates
+                    $btn.off('click.treeToggle').on('click.treeToggle', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
                         var isVisible = $children.is(':visible');
                         $children.toggle();
                         $children.find('.person').toggle(!isVisible);
                         $parent.toggleClass('hide-line', isVisible);
-                        $parent.find('.level-summary').toggle(!isVisible);
-
-                        // Change the icon accordingly
-                        var $icon = $(this).find('iconify-icon');
-                        $icon.attr('icon', isVisible ? 'lucide:plus' : 'lucide:minus');
+                        $item.find('.level-summary').toggle(!isVisible);
+                        
+                        // Update button text/icon if needed
+                        $(this).find('span').text(isVisible ? '+' : '-');
                     });
                 }
             });
@@ -117,21 +113,18 @@
                     if ($nextUl.length) {
                         $nextUl.hide();
 
-                        // Avoid duplicate buttons
-                        if (!$level.find('.horizontal-toggle-btn').length) {
-                            const $toggleBtn = $(`
-                                <button class="h-5 w-5 btn-primary rounded inline-flex items-center justify-center horizontal-toggle-btn">
-                                    <iconify-icon icon="lucide:plus"></iconify-icon>
-                                </button>
-                            `);
-                            $level.find('.text-start').append($toggleBtn);
+                        // Find toggle button scoped to this level
+                        const $toggleBtn = $level.find('.horizontal-toggle-btn');
 
-                            $toggleBtn.on('click', function () {
-                                const isVisible = $nextUl.is(':visible');
+                        if ($toggleBtn.length) {
+                            $toggleBtn.off('click.horizontalToggle').on('click.horizontalToggle', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
                                 $nextUl.slideToggle(200);
-
-                                var $icon = $(this).find('iconify-icon');
-                                $icon.attr('icon', isVisible ? 'lucide:plus' : 'lucide:minus');
+                                
+                                // Update button state if needed
+                                $(this).toggleClass('expanded');
                             });
                         }
                     }

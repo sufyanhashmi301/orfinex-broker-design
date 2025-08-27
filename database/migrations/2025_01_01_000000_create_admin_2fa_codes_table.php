@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('admin_2fa_codes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('admin_id')->constrained('admins')->onDelete('cascade');
+            $table->string('email');
+            $table->string('code', 4);
+            $table->timestamp('expires_at');
+            $table->boolean('used')->default(false);
+            $table->timestamps();
+
+            $table->index(['admin_id', 'code']);
+            $table->index(['admin_id', 'used']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('admin_2fa_codes');
+    }
+}; 

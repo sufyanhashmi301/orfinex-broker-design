@@ -9,7 +9,6 @@ use App\Models\Category;
 use App\Models\User;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use DataTables;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,47 +18,41 @@ class TicketController extends Controller
 {
     use ImageUpload, NotifyTrait;
 
-    public function index(Request $request)
+    public function index()
     {
+        $userId = Auth::id();
 
-        $totalTickets = Ticket::where('user_id', Auth::id())->count();
-        $closedTickets = Ticket::where('user_id', Auth::id())->closed()->count();
-        $openTickets = Ticket::where('user_id', Auth::id())->opened()->count();
-        $resolvedTickets = Ticket::where('user_id', Auth::id())->resolved()->count();
+        // Query builder for tickets belonging to the logged-in user
+        $ticketsQuery = Ticket::where('user_id', $userId);
+
+        // Get counts
+        $totalTickets    = (clone $ticketsQuery)->count();
+        $closedTickets   = (clone $ticketsQuery)->where('status', 'closed')->count();
+        $openTickets     = (clone $ticketsQuery)->where('status', 'open')->count();
+        $resolvedTickets = (clone $ticketsQuery)->where('is_resolved', true)->count();
         $labels = Label::visible()->pluck('name', 'id');
 
-        $ticketsQuery = Ticket::where('user_id', Auth::id());
+        // Get tickets list (newest first)
+        $tickets = $ticketsQuery
+            ->latest()
+            ->get([
+                'id',
+                'uuid',
+                'title',
+                'status',
+                'priority',
+                'is_resolved',
+                'created_at'
+            ]);
 
-        if ($request->filled('status') && $request->status !== 'all') {
-            if ($request->status === 'resolved') {
-                $ticketsQuery->where('is_resolved', true);
-            } else {
-                $ticketsQuery->where('status', $request->status);
-            }
-        }
-
-        // For DataTables (desktop)
-        if ($request->ajax() && $request->wantsJson()) {
-            return Datatables::of($ticketsQuery)
-                ->addIndexColumn()
-                ->addColumn('title', 'frontend::ticket.include.__title')
-                ->addColumn('status', 'frontend::ticket.include.__status')
-                ->addColumn('action', 'frontend::ticket.include.__action')
-                ->rawColumns(['title', 'status', 'action'])
-                ->make(true);
-        }
-
-        // For mobile AJAX (HTML partial)
-        if ($request->ajax()) {
-            $tickets = $ticketsQuery->latest()->paginate(10)->appends($request->query());
-            $html = view('frontend::ticket.include.__mobile_cards', compact('tickets'))->render();
-            return response()->json(['html' => $html]);
-        }
-
-        $tickets = $ticketsQuery->latest()->paginate(10)->appends($request->query());
-
-        return view('frontend::ticket.index', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets', 'labels', 'tickets'));
-
+        return view('frontend::ticket.index', compact(
+            'totalTickets',
+            'closedTickets',
+            'openTickets',
+            'resolvedTickets',
+            'tickets',
+            'labels'
+        ));
     }
 
     public function newTicket()

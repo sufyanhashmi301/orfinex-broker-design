@@ -1,0 +1,576 @@
+@extends('frontend::layouts.user')
+@section('title')
+    {{ __('Withdraw Now') }}
+@endsection
+@section('content')
+    @php
+        use Carbon\Carbon;
+    @endphp
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 mb-6">
+        <div class="hidden md:block">
+            <div class="progress-steps md:flex justify-between items-center gap-5">
+                <div class="single-step w-full current">
+                    <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-800 progress_bar mb-5"></div>
+                    <div class="">
+                        <div class="text-theme-sm text-gray-500 dark:text-gray-400 mb-1">{{ __('Step - 1') }}</div>
+                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Withdraw Amount') }}</h4>
+                    </div>
+                </div>
+                <div class="single-step w-full">
+                    <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-800 progress_bar mb-5"></div>
+                    <div class="">
+                        <div class="text-theme-sm text-gray-500 dark:text-gray-400 mb-1">{{ __('Step - 2') }}</div>
+                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Success') }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="progress-steps-form" x-data="withdrawForm()">
+        <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm" @submit="handleSubmit">
+            @csrf
+            <input type="hidden" name="account_type" x-model="accountType">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-3">
+                        {{ __('Enter your deposit details.') }}
+                    </h4>
+                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+                        <div class="space-y-5">
+                            <div class="input-area relative">
+                                <label for="exampleFormControlInput1" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    {{ __('Account to withdraw:') }}
+                                </label>
+                                <select id="tradingAccount" name="target_id" x-model="selectedTargetId" @change="handleTradingAccountChange"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option selected
+                                            class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                            disabled>
+                                        --{{ __('Select Account') }}--
+                                    </option>
+                                    {{-- Forex Accounts --}}
+                                    @foreach($forexAccounts as $forexAccount)
+                                        <option value="{{ the_hash($forexAccount->login) }}"
+                                                data-type="forex"
+                                                {{ old('target_id') == the_hash($forexAccount->login) ? 'selected' : '' }}
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                            ({{ get_mt5_account_equity($forexAccount->login) }} {{ $currency }})
+                                        </option>
+                                    @endforeach
+                                    {{-- Wallet Accounts --}}
+                                    @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
+                                </select>
+                            </div>
+                            <div class="input-area relative">
+                                <div class="flex items-center justify-between gap-3">
+                                    <label for="exampleFormControlInput1" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                        {{ __('Withdraw Account') }}
+                                    </label>
+                                    <x-text-link href="{{ route('user.withdraw.account.index') }}" variant="primary" icon="plus" icon-position="left">
+                                        {{ __('Add New Account') }}
+                                    </x-text-link>
+                                </div>
+                                <select name="withdraw_account" 
+                                    id="withdrawAccountId" 
+                                    x-model="selectedWithdrawAccount" 
+                                    @change="handleWithdrawAccountChange"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>
+                                        {{ __('Withdraw Method') }}
+                                    </option>
+                                    @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}"
+                                                {{ old('withdraw_account') == $account->id ? 'selected' : '' }}
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $account->method_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="text-theme-xs text-error-500 mt-1" x-text="processingTime"></div>
+                            </div>
+                            <div class="input-area relative">
+                                <label for="exampleFormControlInput1" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    {{ __('Amount') }}
+                                </label>
+                                <div class="relative">
+                                    <input type="text" name="amount" id="amount" x-model="amount" @input="handleAmountChange"
+                                           class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 withdrawAmount"
+                                           placeholder="{{ __('Enter Amount') }}"
+                                           aria-describedby="basic-addon1">
+                                    <span
+                                        class="absolute top-1/2 right-0 inline-flex -translate-y-1/2 cursor-pointer items-center gap-1 border-l border-gray-200 py-3 pr-3 pl-3.5 text-sm font-medium text-gray-700 dark:border-gray-800 dark:text-gray-400"
+                                        id="basic-addon1">
+                                        {{ $currency }}
+                                    </span>
+                                </div>
+                                <div class="text-theme-xs text-error-500 mt-1" x-text="withdrawAmountRange"></div>
+                            </div>
+                            <div class="input-area relative conversion" :class="{ 'hidden': isConversionHidden }">
+                                <label for="exampleFormControlInput1" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    {{ __('Amount') }}
+                                </label>
+                                <div class="relative">
+                                    <input type="text" x-model="convertedAmount" @input="handleConvertedAmountChange"
+                                           class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" id="converted-amount"
+                                           placeholder="{{ __('Enter Amount') }}" aria-describedby="basic-addon2">
+                                    <span class="absolute top-1/2 right-0 inline-flex -translate-y-1/2 cursor-pointer items-center gap-1 border-l border-gray-200 py-3 pr-3 pl-3.5 text-sm font-medium text-gray-700 dark:border-gray-800 dark:text-gray-400"
+                                        id="basic-addon2" x-text="info.pay_currency || '{{ $currency }}'"></span>
+                                </div>
+                                <div class="text-theme-xs text-error-500 mt-1" x-text="conversionRate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-3">
+                        {{ __('Withdraw Details') }}
+                    </h4>
+                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 transaction-list">
+                        <div class="">
+                            <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
+                                <tbody class="selectDetailsTbody">
+                                <tr class="detailsCol">
+                                    <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                        <strong>{{ __('Withdraw Amount') }}</strong>
+                                    </td>
+                                    <td class="dark:text-slate-300">
+                                        <span class="withdrawAmount" x-text="amount"></span>
+                                        {{ $currency }}
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
+                                <x-forms.button type="submit" class="w-full mt-auto" size="lg" variant="primary" icon="arrow-right" icon-position="right"
+                                    x-bind:disabled="isSubmitting"
+                                    x-bind:loading="isSubmitting">
+                                    {{ __('Withdraw Money') }}
+                                </x-forms.button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        
+        {{-- Modal for OTP (only if OTP is enabled) --}}
+        @if(setting('withdraw_otp', 'misc'))
+            @include('frontend::withdraw.modal.__otp_form')
+
+            {{-- Modal for Cancel--}}
+            @include('frontend::withdraw.modal.__cancel_otp')
+        @endif
+        
+    </div>
+
+@endsection
+
+@section('script')
+    <script>
+        function withdrawForm() {
+            return {
+                // Data properties
+                selectedTargetId: '{{ old('target_id') }}',
+                selectedWithdrawAccount: '{{ old('withdraw_account') }}',
+                accountType: '{{ old('account_type') }}',
+                amount: '{{ old('amount') }}',
+                convertedAmount: '',
+                info: {},
+                currency: @json($currency),
+                
+                // UI state
+                isConversionHidden: true,
+                processingTime: '',
+                withdrawAmountRange: '',
+                conversionRate: '',
+                
+                // OTP related
+                otpInput: '',
+                isOtpModalOpen: @json(session('otp') && Carbon::now()->lt(session('otp_expiration')) ? true : false),
+                isCancelModalOpen: false,
+                isResendingOtp: false,
+                isSubmitting: false,
+                isOtpEnabled: @json((bool) setting('withdraw_otp', 'misc')),
+
+                init() {
+                    // Initialize old values
+                    if (this.accountType && this.selectedWithdrawAccount) {
+                        this.$nextTick(() => {
+                            this.handleWithdrawAccountChange();
+                        });
+                    }
+                    
+                    if (this.amount) {
+                        this.$nextTick(() => {
+                            this.handleAmountChange();
+                        });
+                    }
+                },
+
+                // Validation helper
+                validateDouble(value) {
+                    return value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                },
+
+                // Calculate percentage
+                calPercentage(amount, percentage) {
+                    return (parseFloat(amount) * parseFloat(percentage)) / 100;
+                },
+
+
+
+                handleTradingAccountChange() {
+                    const selectedOption = this.$el.querySelector('#tradingAccount option:checked');
+                    if (selectedOption) {
+                        this.accountType = selectedOption.dataset.type || '';
+                    }
+                },
+
+                async handleWithdrawAccountChange() {
+                    if (!this.selectedWithdrawAccount || isNaN(this.selectedWithdrawAccount)) {
+                        return;
+                    }
+                    
+                    try {
+                        let url = '{{ route("user.withdraw.details", ['accountId' => ':accountId', 'amount' => ':amount']) }}';
+                        url = url.replace(':accountId', this.selectedWithdrawAccount);
+                        url = url.replace(':amount', this.amount || '0');
+                        url = url.replace(/\/+$/, '');
+                            
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        this.info = data.info || {};
+                        
+                        if (this.info.pay_currency === this.currency) {
+                            this.isConversionHidden = true;
+                        } else {
+                            this.isConversionHidden = false;
+                            this.conversionRate = `1 ${this.currency} = ${this.info.rate} ${this.info.pay_currency}`;
+                            this.handleAmountChange();
+                        }
+                        
+                        // Add HTML rows to the table
+                        if (data.html) {
+                            const updateDOM = () => {
+                                let tableBody = this.$el?.querySelector('.selectDetailsTbody') || 
+                                               document.querySelector('.selectDetailsTbody');
+                                
+                                if (tableBody) {
+                                    const existingRows = Array.from(tableBody.children);
+                                    const tempTable = document.createElement('table');
+                                    tempTable.innerHTML = `<tbody>${data.html}</tbody>`;
+                                    const newRows = Array.from(tempTable.querySelectorAll('tr'));
+                                    
+                                    if (newRows.length > 0) {
+                                        const fragment = document.createDocumentFragment();
+                                        
+                                        // Keep the first row, add new rows
+                                        if (existingRows.length > 0) {
+                                            fragment.appendChild(existingRows[0].cloneNode(true));
+                                        }
+                                        
+                                        newRows.forEach(row => {
+                                            fragment.appendChild(row.cloneNode(true));
+                                        });
+                                        
+                                        // Replace all content at once to minimize reflow
+                                        tableBody.innerHTML = '';
+                                        tableBody.appendChild(fragment);
+                                    }
+                                }
+                            };
+                            
+                            // Use requestIdleCallback when available for better performance
+                            if (window.requestIdleCallback) {
+                                requestIdleCallback(updateDOM, { timeout: 100 });
+                            } else {
+                                requestAnimationFrame(updateDOM);
+                            }
+                        }
+                        
+                        this.withdrawAmountRange = this.info.range || '';
+                        this.processingTime = this.info.processing_time || '';
+                        
+                    } catch (error) {
+                        // Silent error handling - could add user notification here if needed
+                    }
+                },
+
+                handleAmountChange() {
+                    // Validate input
+                    this.amount = this.validateDouble(this.amount);
+                    
+                    if (!this.info.charge) return;
+                    
+                    const charge = this.info.charge_type === 'percentage' 
+                        ? this.calPercentage(this.amount, this.info.charge) 
+                        : this.info.charge;
+                    
+                    // Update UI elements that use these values using requestAnimationFrame for better performance
+                    requestAnimationFrame(() => {
+                        const withdrawFeeEl = document.querySelector('.withdrawFee');
+                        const payAmountEl = document.querySelector('.pay-amount');
+                        
+                        if (withdrawFeeEl) {
+                            withdrawFeeEl.textContent = charge;
+                        }
+                        if (payAmountEl) {
+                            const payAmount = parseFloat(((this.amount * this.info.rate) - (charge * this.info.rate)).toFixed(4));
+                            payAmountEl.textContent = `${payAmount} ${this.info.pay_currency}`;
+                        }
+                    });
+                    
+                    this.convertedAmount = parseFloat((this.amount * (this.info.rate || 1)).toFixed(4)).toString();
+                },
+
+                handleConvertedAmountChange() {
+                    this.convertedAmount = this.validateDouble(this.convertedAmount);
+                    
+                    if (!this.info.rate) return;
+                    
+                    this.amount = parseFloat((this.convertedAmount / this.info.rate).toFixed(4)).toString();
+                    
+                    const charge = this.info.charge_type === 'percentage' 
+                        ? this.calPercentage(this.amount, this.info.charge) 
+                        : this.info.charge;
+                    
+                    // Update UI elements using requestAnimationFrame for better performance
+                    requestAnimationFrame(() => {
+                        const withdrawFeeEl = document.querySelector('.withdrawFee');
+                        const payAmountEl = document.querySelector('.pay-amount');
+                        
+                        if (withdrawFeeEl) {
+                            withdrawFeeEl.textContent = charge;
+                        }
+                        if (payAmountEl) {
+                            const payAmount = parseFloat(((this.amount * this.info.rate) - (charge * this.info.rate)).toFixed(4));
+                            payAmountEl.textContent = `${payAmount} ${this.info.pay_currency}`;
+                        }
+                    });
+                },
+
+                async submitOtp() {
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.otp.verify") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                otp: this.otpInput
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            this.isOtpModalOpen = false;
+                            
+                            if (typeof tNotify !== 'undefined') {
+                                tNotify('success', data.message);
+                            }
+                            
+                            // Show loading state
+                            const pageLoader = document.getElementById('page-loader');
+                            if (pageLoader) pageLoader.style.display = 'block';
+                            
+                            // Submit the form after successful OTP verification
+                            this.submitFormAfterOtp();
+                        }
+                    } catch (error) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'An error occurred during OTP verification. Please try again.');
+                        }
+                        this.otpInput = '';
+                    }
+                },
+
+                async resendOtp() {
+                    this.isResendingOtp = true;
+                    
+                    try {
+                        const response = await fetch('{{ route('user.withdraw.otp.resend') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('success', data.message);
+                        }
+                    } catch (error) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'An error occurred while resending the OTP. Please try again.');
+                        }
+                    } finally {
+                        this.isResendingOtp = false;
+                    }
+                },
+
+                showCancelModal() {
+                    this.isCancelModalOpen = true;
+                },
+
+                closeOtpModal() {
+                    this.isOtpModalOpen = false;
+                    this.otpInput = ''; // Clear OTP input when closing
+                },
+
+                confirmCancel() {
+                    this.isOtpModalOpen = false;
+                    this.isCancelModalOpen = false;
+                    this.otpInput = ''; // Clear OTP input when canceling
+                },
+
+                async handleSubmit(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    
+                    if (this.isSubmitting) return; // Prevent double submission
+                    
+                    // Validate required fields before submission
+                    if (!this.selectedTargetId) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'Please select an account to withdraw from');
+                        }
+                        return;
+                    }
+                    
+                    if (!this.selectedWithdrawAccount) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'Please select a withdraw method');
+                        }
+                        return;
+                    }
+                    
+                    if (!this.amount || parseFloat(this.amount) <= 0) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'Please enter a valid amount');
+                        }
+                        return;
+                    }
+                    
+                    // Check if OTP is enabled in settings
+                    if (this.isOtpEnabled) {
+                        // Show OTP modal for withdrawal verification
+                        this.isOtpModalOpen = true;
+                        return;
+                    } else {
+                        // OTP is disabled, submit form directly
+                        const form = document.getElementById('withdrawForm');
+                        if (form) {
+                            // Remove the Alpine.js submit handler temporarily
+                            form.removeAttribute('@submit');
+                            
+                            // Submit the form normally
+                            form.submit();
+                        }
+                        return;
+                    }
+                    
+                    // Set loading state
+                    this.isSubmitting = true;
+                    
+                    // Try to submit the form first (disabled for now)
+                    try {
+                        const form = document.getElementById('withdrawForm');
+                        const formData = new FormData(form);
+                        
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        let result;
+                        const responseText = await response.text();
+                        
+                        try {
+                            result = JSON.parse(responseText);
+                        } catch (e) {
+                            
+                            // If we get HTML back, it might be a successful redirect
+                            if (responseText.includes('<!doctype') || responseText.includes('<html')) {
+                                if (typeof tNotify !== 'undefined') {
+                                    tNotify('success', 'Withdrawal submitted successfully');
+                                }
+                                window.location.reload();
+                                return;
+                            } else {
+                                throw new Error('Server returned invalid response format.');
+                            }
+                        }
+                        
+                        if (result.status === 'otp_required') {
+                            // Backend is requesting OTP verification
+                            this.isSubmitting = false; // Reset loading state
+                            this.isOtpModalOpen = true;
+                        } else if (result.status === 'success') {
+                            // Form submitted successfully without OTP
+                            if (typeof tNotify !== 'undefined') {
+                                tNotify('success', result.message);
+                            }
+                            
+                            // Redirect if provided, otherwise reload
+                            if (result.redirect_url) {
+                                window.location.href = result.redirect_url;
+                            } else {
+                                window.location.reload();
+                            }
+                        } else if (result.status === 'error') {
+                            // Backend returned an error
+                            this.isSubmitting = false; // Reset loading state
+                            if (typeof tNotify !== 'undefined') {
+                                tNotify('error', result.message);
+                            }
+                        }
+                    } catch (error) {
+                        this.isSubmitting = false; // Reset loading state
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'An error occurred while processing your withdrawal');
+                        }
+                    }
+                },
+
+                submitFormAfterOtp() {
+                    // Submit form after successful OTP verification
+                    const form = document.getElementById('withdrawForm');
+                    if (form) {
+                        // Remove the Alpine.js submit handler temporarily
+                        form.removeAttribute('@submit');
+                        
+                        // Submit the form normally
+                        form.submit();
+                    } else {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'Form submission error');
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+@endsection

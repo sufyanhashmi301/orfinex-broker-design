@@ -32,58 +32,58 @@ class TicketController extends Controller
     }
 
    public function index(Request $request, $id = null)
-{
-    $loggedInUser = auth()->user();
-    $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
+    {
+        $loggedInUser = auth()->user();
+        $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
 
-    // Ticket counts
-    $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
+        // Ticket counts
+        $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
-    if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
-        $totalTickets = Ticket::count();
-        $closedTickets = Ticket::closed()->count();
-        $openTickets = Ticket::opened()->count();
-        $resolvedTickets = Ticket::resolved()->count();
-    } else {
-        $totalTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->count();
-        $closedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->closed()->count();
-        $openTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->opened()->count();
-        $resolvedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->resolved()->count();
-    }
+        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+            $totalTickets = Ticket::count();
+            $closedTickets = Ticket::closed()->count();
+            $openTickets = Ticket::opened()->count();
+            $resolvedTickets = Ticket::resolved()->count();
+        } else {
+            $totalTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->count();
+            $closedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->closed()->count();
+            $openTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->opened()->count();
+            $resolvedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->resolved()->count();
+        }
 
-    // Ajax call
-    if ($request->ajax()) {
-        if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
-            if ($request->status === 'resolved') {
-                $ticketQuery->where('is_resolved', true);
-            } else {
-                $ticketQuery->where('status', $request->status);
+        // Ajax call
+        if ($request->ajax()) {
+            if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
+                if ($request->status === 'resolved') {
+                    $ticketQuery->where('is_resolved', true);
+                } else {
+                    $ticketQuery->where('status', $request->status);
+                }
             }
+
+            // Apply user accessibility filter to ticket query
+            if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
+                $ticketQuery->whereIn('assigned_to', $accessibleUserIds);
+            }
+
+            $data = $ticketQuery->get();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('uuid', 'backend.ticket.include.__uuid')
+                ->addColumn('title', 'backend.ticket.include.__title')
+                ->addColumn('user', 'backend.ticket.include.__user')
+                ->addColumn('assigned_to', function($ticket) {
+                    return $ticket->assignedToUser ? $ticket->assignedToUser->first_name.' '.$ticket->assignedToUser->last_name : 'Not assigned';
+                })
+                ->addColumn('status', 'backend.ticket.include.__status')
+                ->addColumn('action', 'backend.ticket.include.__action')
+                ->rawColumns(['uuid', 'title', 'user', 'assigned_to', 'status', 'action'])
+                ->make(true);
         }
 
-        // Apply user accessibility filter to ticket query
-        if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $ticketQuery->whereIn('assigned_to', $accessibleUserIds);
-        }
-
-        $data = $ticketQuery->get();
-
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('uuid', 'backend.ticket.include.__uuid')
-            ->addColumn('title', 'backend.ticket.include.__title')
-            ->addColumn('user', 'backend.ticket.include.__user')
-            ->addColumn('assigned_to', function($ticket) {
-                return $ticket->assignedToUser ? $ticket->assignedToUser->first_name.' '.$ticket->assignedToUser->last_name : 'Not assigned';
-            })
-            ->addColumn('status', 'backend.ticket.include.__status')
-            ->addColumn('action', 'backend.ticket.include.__action')
-            ->rawColumns(['uuid', 'title', 'user', 'assigned_to', 'status', 'action'])
-            ->make(true);
+        return view('backend.ticket.all', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets'));
     }
-
-    return view('backend.ticket.all', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets'));
-}
 
 
     public function create()

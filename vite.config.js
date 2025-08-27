@@ -5,10 +5,15 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
+                'assets/common/css/style.css',
+                'assets/common/js/index.js',
             ],
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            '@brokeret': '/assets/common',
+        }
+    },
 });

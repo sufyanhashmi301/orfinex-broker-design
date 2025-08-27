@@ -1689,6 +1689,19 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('getDynamicCssVariables')) {
+    function getDynamicCssVariables()
+    {
+        try {
+            $colorService = app(\App\Services\ColorService::class);
+            return $colorService->generateCssVariables();
+        } catch (Exception $e) {
+            // Return empty string if theme colors aren't set up yet
+            return '';
+        }
+    }
+}
+
 if (!function_exists('isDarkColor')) {
     function isDarkColor($hex)
     {

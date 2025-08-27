@@ -80,6 +80,7 @@ use App\Http\Controllers\Backend\DealNoteController;
 use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
+use App\Http\Controllers\Backend\ThemeColorController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -362,7 +363,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('colors', 'colorsSetting')->name('colors');
         Route::get('fonts', 'fontSetting')->name('fonts');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
-
         Route::get('status-update', 'statusUpdate')->name('status-update');
 
         Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');

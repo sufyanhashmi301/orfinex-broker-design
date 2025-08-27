@@ -620,7 +620,7 @@ class WithdrawController extends Controller
                 'p' => __('The Withdraw Request has been successfully sent'),
                 'strong' => __('Transaction ID: ') . $txnInfo->tnx,
                 'action' => route('user.withdraw.view'),
-                'a' => __('WITHDRAW REQUEST AGAIN'),
+                'a' => __('Withdraw Request Again'),
                 'view_name' => 'withdraw',
             ];
             Session::put('user_notify', $notify);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Theme;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -39,12 +40,13 @@ class ThemeController extends Controller
     }
 
     public function providerLogo(Request $request)
-{
-    return view('backend.setting.branding.provider_logo', [
-        'section' => 'provider_logo',
-        'fields' => config('setting.provider_logo')
-    ]);
-}
+    {
+        return view('backend.setting.branding.provider_logo', [
+            'section' => 'provider_logo',
+            'fields' => config('setting.provider_logo')
+        ]);
+    }
+
     public function colorsSetting(Request $request)
     {
         // Retrieve the 'type' query parameter from the request

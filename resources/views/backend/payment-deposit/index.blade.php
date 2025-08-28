@@ -63,7 +63,6 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Form Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Total Fields') }}</th>
                                     <th scope="col" class="table-th">{{ __('Created At') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -93,11 +92,7 @@
                                                 <span class="badge bg-danger-500 text-white">{{ __('Inactive') }}</span>
                                             @endif
                                         </td>
-                                        <td class="table-td">
-                                            <span
-                                                class="text-slate-500 dark:text-slate-400">{{ is_array($question->fields) ? count($question->fields) : 0 }}
-                                                {{ __('fields') }}</span>
-                                        </td>
+
                                         <td class="table-td">
                                             <span
                                                 class="text-slate-500 dark:text-slate-400">{{ $question->created_at->format('M d, Y') }}</span>

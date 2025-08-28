@@ -8,91 +8,93 @@
             @yield('title')
         </h2>
     </div>
-    
-    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div x-data="transactionFilter()" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
-            @include('frontend::user.transaction.include.__tabs_nav')
-            <div class="flex-1 flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
-                <div class="input-area relative">
-                    <select x-model="filters.transaction_date" 
-                        id="transaction-date" 
-                        class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
-                        <option value="">{{ __('Select Days') }}</option>
-                        <option value="3_days">{{ __('Last 3 Days') }}</option>
-                        <option value="5_days">{{ __('Last 5 Days') }}</option>
-                        <option value="15_days">{{ __('Last 15 Days') }}</option>
-                        <option value="1_month">{{ __('Last 1 Month') }}</option>
-                        <option value="3_months">{{ __('Last 3 Months') }}</option>
-                    </select>
-                </div>
-                <div class="input-area relative">
-                    <select x-model="filters.transaction_type" 
-                        id="transaction-type" 
-                        class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
-                        <option value="">{{ __('All transaction types') }}</option>
-                        @foreach (getFilteredTxnTypes() as $txnType)
-                            @if ($txnType->value !== 'ib_bonus')
-                                <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-                <div class="input-area relative">
-                    <select x-model="filters.transaction_status" 
-                        id="transaction-status" 
-                        class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
-                        <option value="">{{ __('All statuses') }}</option>
-                        <option value="pending">{{ __('Pending') }}</option>
-                        <option value="success">{{ __('Success') }}</option>
-                    </select>
-                </div>
-                <div class="input-area relative">
-                    <select x-model="filters.forex_account" 
-                        id="forex-account" 
-                        class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
-                        <option value="">{{ __('All accounts') }}</option>
-                        @foreach($realForexAccounts as $account)
-                            <option value="{{ $account->login }}">{{ $account->account_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <!-- Clear filters button -->
-                <button @click="clearFilters()" 
-                    x-show="Object.values(filters).some(v => v !== '')"
-                    class="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                    <i data-lucide="x" class="w-4"></i>
-                    {{ __('Clear') }}
-                </button>
-                
-                <form method="POST" action="{{ route('user.history.transactions.export') }}">
-                    @csrf
-                    <input type="hidden" name="query" value="{{ request('query') }}">
-                    <input type="hidden" name="date" value="{{ request('date') }}">
-                    <button type="submit" class="inline-flex items-center gap-2 rounded bg-white px-4 py-1 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                        <i data-lucide="arrow-up-from-dot" class="w-4 mr-2"></i>
-                        {{ __('Export') }}
-                    </button>
-                </form>
+
+    @if(count($transactions) == 0)
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+            <div class="flex items-center justify-center flex-col py-10 px-10">
+                <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                    {{ __("You don't have any transactions yet.") }}
+                </p>
+                <x-link-button href="{{ route('user.deposit.methods') }}" size="md" variant="primary" icon="arrow-up-from-dot" icon-position="left">
+                    {{ __('Deposit Now') }}
+                </x-link-button>
             </div>
         </div>
-
-        <div class="desktop-screen-show md:block hidden">
-            @if(count($transactions) == 0)
-                <div class="flex items-center justify-center flex-col py-10 px-10">
-                    <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                        {{ __("You don't have any transactions yet.") }}
-                    </p>
-                    <x-link-button href="{{ route('user.deposit.methods') }}" size="md" variant="primary" icon="arrow-up-from-dot" icon-position="left">
-                        {{ __('Deposit Now') }}
-                    </x-link-button>
+    @else
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+            <div x-data="transactionFilter()" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
+                @include('frontend::user.transaction.include.__tabs_nav')
+                <div class="flex-1 flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
+                    <div class="input-area relative">
+                        <select x-model="filters.transaction_date" 
+                            id="transaction-date" 
+                            class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                            <option value="">{{ __('Select Days') }}</option>
+                            <option value="3_days">{{ __('Last 3 Days') }}</option>
+                            <option value="5_days">{{ __('Last 5 Days') }}</option>
+                            <option value="15_days">{{ __('Last 15 Days') }}</option>
+                            <option value="1_month">{{ __('Last 1 Month') }}</option>
+                            <option value="3_months">{{ __('Last 3 Months') }}</option>
+                        </select>
+                    </div>
+                    <div class="input-area relative">
+                        <select x-model="filters.transaction_type" 
+                            id="transaction-type" 
+                            class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                            <option value="">{{ __('All transaction types') }}</option>
+                            @foreach (getFilteredTxnTypes() as $txnType)
+                                @if ($txnType->value !== 'ib_bonus')
+                                    <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area relative">
+                        <select x-model="filters.transaction_status" 
+                            id="transaction-status" 
+                            class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                            <option value="">{{ __('All statuses') }}</option>
+                            <option value="pending">{{ __('Pending') }}</option>
+                            <option value="success">{{ __('Success') }}</option>
+                        </select>
+                    </div>
+                    <div class="input-area relative">
+                        <select x-model="filters.forex_account" 
+                            id="forex-account" 
+                            class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                            <option value="">{{ __('All accounts') }}</option>
+                            @foreach($realForexAccounts as $account)
+                                <option value="{{ $account->login }}">{{ $account->account_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Clear filters button -->
+                    <button @click="clearFilters()" 
+                        x-show="Object.values(filters).some(v => v !== '')"
+                        class="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+                        <i data-lucide="x" class="w-4"></i>
+                        {{ __('Clear') }}
+                    </button>
+                    
+                    <form method="POST" action="{{ route('user.history.transactions.export') }}">
+                        @csrf
+                        <input type="hidden" name="query" value="{{ request('query') }}">
+                        <input type="hidden" name="date" value="{{ request('date') }}">
+                        <button type="submit" class="inline-flex items-center gap-2 rounded bg-white px-4 py-1 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
+                            <i data-lucide="arrow-up-from-dot" class="w-4 mr-2"></i>
+                            {{ __('Export') }}
+                        </button>
+                    </form>
                 </div>
-            @else
+            </div>
+
+            <div class="desktop-screen-show md:block hidden">
                 <div class="custom-scrollbar overflow-x-auto">
                     <table class="w-full table-auto">
                         <thead class="border-b border-gray-100 dark:border-gray-800">
@@ -162,28 +164,10 @@
                         </div>
                     </div>
                 </div>
-            @endif
-        </div>
-    </div>
-    <div class="md:hidden block mobile-screen-show">
-        <!-- Transactions -->
-        @if(count($transactions) == 0)
-            <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                <div class="flex items-center justify-center flex-col py-10 px-10">
-                    <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                        {{ __("You don't have any transactions yet.") }}
-                    </p>
-                    <x-link-button href="{{ route('user.deposit.methods') }}" size="md" variant="primary" icon="arrow-up-from-dot" icon-position="left">
-                        {{ __('Deposit Now') }}
-                    </x-link-button>
-                </div>
             </div>
-        @else
+        </div>
+        <div class="md:hidden block mobile-screen-show">
+            <!-- Transactions -->
             <div class="mobile-transaction-filter">
                 <div class="contents space-y-3" id="mobile-transactions-container">
                     @include('frontend::user.transaction.include.__transaction_row_mobile', ['transactions' => $transactions])
@@ -192,8 +176,8 @@
                     {{ $transactions->onEachSide(1)->links() }}
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @endif
 @endsection
 @section('script')
     <script>

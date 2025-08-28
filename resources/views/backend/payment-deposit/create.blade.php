@@ -91,6 +91,7 @@
                         <div class="input-area">
                             <select name="fields[${i}][type]" class="form-control w-100 field-type">
                                 <option value="text">Input Text</option>
+                                <option value="date">Date</option>
                                 <option value="checkbox">Checkbox</option>
                                 <option value="radio">Radio</option>
                                 <option value="dropdown">Dropdown</option>

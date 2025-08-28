@@ -197,7 +197,7 @@
             </div>
             <div class="card-body px-6 pb-6">
                 <form action="{{ route('user.payment-deposit.store') }}" method="POST" id="payment-deposit-form"
-                    class="space-y-4">
+                    class="space-y-4" enctype="multipart/form-data">
                     @csrf
                     @foreach ($depositQuestions as $qIndex => $depositQuestion)
                         @if ($depositQuestion->fields && is_array($depositQuestion->fields))
@@ -271,6 +271,18 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                        @elseif($field['type'] === 'file')
+                                            <div class="md:col-span-6 col-span-12">
+                                                <div class="fileUpload">
+                                                    <input type="file" name="fields[{{ $field['name'] }}]" 
+                                                        class="form-control !text-lg" 
+                                                        accept="image/*,.pdf,.doc,.docx,.txt"
+                                                        @if ($field['validation'] === 'required') required @endif>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                        {{ __('Allowed file types: images, PDF, DOC, DOCX, TXT. Maximum size: 5MB') }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endif
                                     </div>

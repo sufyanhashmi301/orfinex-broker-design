@@ -923,4 +923,42 @@ class PaymentDepositController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Download uploaded file
+     */
+    public function downloadFile(PaymentDepositRequest $request, $field)
+    {
+        try {
+            // Check if the field exists in the request data
+            if (!isset($request->fields[$field])) {
+                abort(404, 'File not found');
+            }
+
+            $filePath = $request->fields[$field];
+            $fullPath = 'assets/' . $filePath;
+
+            // Check if file exists
+            if (!file_exists($fullPath)) {
+                abort(404, 'File not found on server');
+            }
+
+            // Get file info
+            $fileName = basename($filePath);
+            $mimeType = mime_content_type($fullPath);
+
+            // Return file download response
+            return response()->download($fullPath, $fileName, [
+                'Content-Type' => $mimeType,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('File download failed', [
+                'request_id' => $request->id,
+                'field' => $field,
+                'error' => $e->getMessage()
+            ]);
+            abort(404, 'File not found');
+        }
+    }
 }

@@ -13,6 +13,125 @@
             background-repeat: repeat;
             border-radius: 0;
         }
+        
+        /* Enhanced card styles */
+        .enhanced-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .enhanced-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+        
+        .dark .enhanced-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .dark .enhanced-card:hover {
+            border-color: #475569;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Chart container improvements */
+        .chart-container {
+            position: relative;
+            padding: 24px;
+            background: #fafafa;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        
+        .dark .chart-container {
+            background: #0f172a;
+        }
+        
+        /* Card header enhancements */
+        .enhanced-card-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.25rem 1.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .dark .enhanced-card-header {
+            background: #0f172a;
+            border-bottom-color: #334155;
+        }
+        
+        .enhanced-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dark .enhanced-card-title {
+            color: #f1f5f9;
+        }
+        
+        .enhanced-card-title iconify-icon {
+            font-size: 1.25rem;
+            opacity: 0.7;
+        }
+        
+        /* Grid improvements */
+        .dashboard-grid {
+            gap: 1.5rem;
+        }
+        
+        .dashboard-grid > div {
+            min-height: 400px;
+        }
+        
+        /* Statistics cards specific styling */
+        .stats-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Canvas container */
+        .canvas-wrapper {
+            position: relative;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .canvas-wrapper canvas {
+            max-height: 100%;
+            border-radius: 8px;
+        }
+        
+        /* Filter section improvements */
+        .filter-section {
+            background: #f1f5f9;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .dark .filter-section {
+            background: #0f172a;
+            border-color: #334155;
+        }
+        
+        /* Animation for loading states */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .chart-loading {
+            animation: pulse-subtle 2s infinite;
+        }
     </style>
 @endsection
 @section('content')
@@ -85,72 +204,119 @@
 
     <div class="tab-content" id="tabs-tabContent">
         <div class="tab-pane fade show active" id="tabs-dashboard" role="tabpanel" aria-labelledby="tabs-dashboard-tab">
-            <div class="space-y-5 mb-5">
+            <div class="space-y-5 mb-6">
                 @include('backend.include.__data_card')
             </div>
 
-            <div class="grid grid-cols-12 gap-5">
+            <div class="grid grid-cols-12 dashboard-grid">
 
                 @include('backend.include.__latest_tickets')
 
+                <!-- Payment Statistics - Enhanced -->
                 <div class="lg:col-span-8 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Payment Statistics') }}</h3>
-                            <div class="card-header-links">
-                                <form id="transactions_statistics_filter" action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center gap-3">
-                                    <div class="input-area relative">
-                                        <input class="form-control flatpickr h-[32px] !py-1" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
-                                    </div>
-                                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
-                                        {{ __('Filter') }}
-                                    </button>
-                                </form>
+                    <div class="card enhanced-card stats-card h-full">
+                        <div class="enhanced-card-header">
+                            <div class="flex justify-between items-center">
+                                <h3 class="enhanced-card-title">
+                                    <iconify-icon icon="lucide:trending-up" class="text-blue-500"></iconify-icon>
+                                    {{ __('Payment Statistics') }}
+                                </h3>
+                                <div class="filter-section">
+                                    <form id="transactions_statistics_filter" action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center gap-3">
+                                        <div class="input-area relative">
+                                            <iconify-icon icon="lucide:calendar" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 z-10"></iconify-icon>
+                                            <input class="form-control flatpickr h-[36px] !py-2 !pl-10" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
+                                        </div>
+                                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-600 hover:bg-slate-700 text-white transition-all duration-200">
+                                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:filter"></iconify-icon>
+                                            {{ __('Filter') }}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body p-6">
-                            <canvas id="depositChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="chart-container">
+                                <div class="canvas-wrapper">
+                                    <canvas id="depositChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Deposit Statistics - Enhanced -->
                 <div class="lg:col-span-4 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Deposit Statistics') }}</h3>
+                    <div class="card enhanced-card stats-card h-full">
+                        <div class="enhanced-card-header">
+                            <h3 class="enhanced-card-title">
+                                <iconify-icon icon="lucide:pie-chart" class="text-slate-600 dark:text-slate-400"></iconify-icon>
+                                {{ __('Deposit Statistics') }}
+                            </h3>
                         </div>
-                        <div class="card-body p-6">
-                            <canvas id="schemeChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="chart-container">
+                                <div class="canvas-wrapper">
+                                    <canvas id="schemeChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Top Country Statistics - Enhanced -->
                 <div class="lg:col-span-4 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Top Country Statistics') }}</h3>
+                    <div class="card enhanced-card stats-card h-full">
+                        <div class="enhanced-card-header">
+                            <h3 class="enhanced-card-title">
+                                <iconify-icon icon="lucide:globe" class="text-slate-600 dark:text-slate-400"></iconify-icon>
+                                {{ __('Top Country Statistics') }}
+                            </h3>
                         </div>
-                        <div class="card-body p-6">
-                            <canvas id="countryChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="chart-container">
+                                <div class="canvas-wrapper">
+                                    <canvas id="countryChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Best Browser Statistics - Enhanced -->
                 <div class="lg:col-span-4 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Best Browser Statistics') }}</h3>
+                    <div class="card enhanced-card stats-card h-full">
+                        <div class="enhanced-card-header">
+                            <h3 class="enhanced-card-title">
+                                <iconify-icon icon="lucide:monitor" class="text-slate-600 dark:text-slate-400"></iconify-icon>
+                                {{ __('Best Browser Statistics') }}
+                            </h3>
                         </div>
-                        <div class="card-body p-6">
-                            <canvas id="browserChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="chart-container">
+                                <div class="canvas-wrapper">
+                                    <canvas id="browserChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Best OS Statistics - Enhanced -->
                 <div class="lg:col-span-4 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Best OS Statistics') }}</h3>
+                    <div class="card enhanced-card stats-card h-full">
+                        <div class="enhanced-card-header">
+                            <h3 class="enhanced-card-title">
+                                <iconify-icon icon="lucide:smartphone" class="text-slate-600 dark:text-slate-400"></iconify-icon>
+                                {{ __('Best OS Statistics') }}
+                            </h3>
                         </div>
-                        <div class="card-body p-6">
-                            <canvas id="osChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="chart-container">
+                                <div class="canvas-wrapper">
+                                    <canvas id="osChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

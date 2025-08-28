@@ -4,6 +4,11 @@
 <a href="{{ route('user.deposit.methods') }}" class="{{ isActive('user.deposit*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:download"></iconify-icon>
 </a>
+@if(setting('deposit_account_mode', 'features') === 'request_deposit_accounts')
+<a href="{{ route('user.payment-deposit') }}" class="{{ isActive('user.payment-deposit*') }}">
+    <iconify-icon class="text-xl dark:text-white" icon="lucide:credit-card"></iconify-icon>
+</a>
+@endif
 <a href="{{ route('user.forex-account-logs') }}" class="{{ isActive('user.forex*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:gift"></iconify-icon>
 </a>

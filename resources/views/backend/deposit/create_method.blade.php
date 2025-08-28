@@ -1,10 +1,11 @@
 @extends('backend.setting.payment.deposit.index')
 @section('title')
-    {{ __(ucwords($type).' Method') }}
+    {{ __(ucwords($type) . ' Method') }}
 @endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4
+            class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
     </div>
@@ -20,53 +21,49 @@
                         <div class="md:col-span-2">
                             <div class="input-area relative max-w-xs">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Upload an image to visually identify this deposit method">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Upload an image to visually identify this deposit method">
                                         {{ __('Add Method Logo') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
                                 <div class="wrap-custom-file">
-                                    <input
-                                        type="file"
-                                        name="logo"
-                                        id="logo"
-                                        accept=".gif, .jpg, .png"
-                                    />
+                                    <input type="file" name="logo" id="logo" accept=".gif, .jpg, .png" />
                                     <label for="logo">
-                                        <img
-                                            class="upload-icon"
-                                            src="{{ asset('global/materials/upload.svg') }}"
-                                            alt=""
-                                        />
+                                        <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}"
+                                            alt="" />
                                         <span>{{ __('Upload Logo') }}</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
-                        @if($type == 'auto')
+                        @if ($type == 'auto')
                             <div class="input-area relative">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the payment gateway (e.g., Stripe, PayPal) for automatic processing">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Select the payment gateway (e.g., Stripe, PayPal) for automatic processing">
                                         {{ __('Automatic Gateway') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
-                                <select name="gateway_id"
-                                        class="form-control w-100"
-                                        id="gateway-select">
+                                <select name="gateway_id" class="form-control w-100" id="gateway-select">
                                     <option>{{ __('Select Gateway') }}</option>
-                                    @foreach($gateways as $gateway)
+                                    @foreach ($gateways as $gateway)
                                         <option data-currencies="{{ $gateway->supported_currencies }}"
-                                                value="{{$gateway->id}}"> {{$gateway->name}}
+                                            value="{{ $gateway->id }}"> {{ $gateway->name }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="input-area relative">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The currency used by the selected gateway (e.g., USD, EUR)">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="The currency used by the selected gateway (e.g., USD, EUR)">
                                         {{ __('Gateway Supported Currency') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
                                 <select name="currency" class="form-control w-100" id="currency">
@@ -77,39 +74,37 @@
 
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a user-friendly name for this deposit method">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Enter a user-friendly name for this deposit method">
                                     {{ __('Name') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="name"
-                            />
+                            <input type="text" class="form-control" name="name" />
                         </div>
-                        @if($type == 'manual')
+                        @if ($type == 'manual')
                             <div class="input-area relative">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Internal short identifier for this method (e.g., BANK_WIRE)">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Internal short identifier for this method (e.g., BANK_WIRE)">
                                         {{ __('Code Name') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    name="method_code"
-                                />
+                                <input type="text" class="form-control" name="method_code" />
                             </div>
                         @endif
 
-                        @if($type == 'manual')
+                        @if ($type == 'manual')
                             <div class="input-area relative">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the currency in which deposits will be accepted">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Choose the currency in which deposits will be accepted">
                                         {{ __('Currency') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
                                 {{-- <input
@@ -118,11 +113,12 @@
                                     name="currency"
                                     id="currency"
                                 /> --}}
-                                <select name="currency" class="select2 form-control w-full select-manual-currency" placeholder="Select Currency">
+                                <select name="currency" class="select2 form-control w-full select-manual-currency"
+                                    placeholder="Select Currency">
                                     <option value=""></option>
-                                    @foreach( $rates_with_countries as $field)
-                                        <option  value="{{ $field->currency_code }}">
-                                            {{ $field->currency_code  }} ({{ $field->currency_name }})
+                                    @foreach ($rates_with_countries as $field)
+                                        <option value="{{ $field->currency_code }}">
+                                            {{ $field->currency_code }} ({{ $field->currency_name }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -130,43 +126,50 @@
                         @endif
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
                                     {{ __('Currency Symbol') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input
-                                type="text"
-                                class="form-control currency-symbol"
-                                name="currency_symbol"
-                                readonly
-                            />
+                            <input type="text" class="form-control currency-symbol" name="currency_symbol" readonly />
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Define the conversion from 1 {{ $currency }} to the target currency">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Define the conversion from 1 {{ $currency }} to the target currency">
                                     {{ __('Conversion Rate') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <div class="joint-input relative">
-                                <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                    {{'1 '.' ' . $currency. ' ='}}
+                                <span
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
+                                    {{ '1 ' . ' ' . $currency . ' =' }}
                                 </span>
-                                <input type="text"  class="form-control !pl-16.5 !pr-9 display-conversion-rate" name="rate" readonly />
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected"></span>
+                                <input type="text" class="form-control !pl-16.5 !pr-9 display-conversion-rate"
+                                    name="rate" readonly />
+                                <span
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1"
+                                    id="currency-selected"></span>
                             </div>
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Set the transaction fee as a percentage or fixed amount">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Set the transaction fee as a percentage or fixed amount">
                                     {{ __('Charges') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <div class="relative">
-                                <input type="text" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)" name="charge"/>
-                                <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                <input type="text" class="form-control !pr-12"
+                                    oninput="this.value = validateDouble(this.value)" name="charge" />
+                                <div
+                                    class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                     <select name="charge_type" class="w-full h-full outline-none">
                                         <option value="percentage">{{ __('%') }}</option>
                                         <option value="fixed">{{ $currencySymbol }}</option>
@@ -176,61 +179,74 @@
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum deposit allowed using this method">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The minimum deposit allowed using this method">
                                     {{ __('Minimum Deposit') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <div class="joint-input relative">
-                                <input type="text" name="minimum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                    {{$currency}}
+                                <input type="text" name="minimum_deposit" class="form-control !pr-12"
+                                    oninput="this.value = validateDouble(this.value)" />
+                                <span
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
+                                    {{ $currency }}
                                 </span>
                             </div>
 
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The maximum deposit limit for this method">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The maximum deposit limit for this method">
                                     {{ __('Maximum Deposit') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <div class="joint-input relative">
-                                <input type="text" name="maximum_deposit" class="form-control !pr-12" oninput="this.value = validateDouble(this.value)"/>
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                    {{$currency}}
+                                <input type="text" name="maximum_deposit" class="form-control !pr-12"
+                                    oninput="this.value = validateDouble(this.value)" />
+                                <span
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
+                                    {{ $currency }}
                                 </span>
                             </div>
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Specify the expected time to process a deposit (e.g., 1-2 hours)">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Specify the expected time to process a deposit (e.g., 1-2 hours)">
                                     {{ __('Processing Time') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" name="processing_time" class="form-control"/>
+                            <input type="text" name="processing_time" class="form-control" />
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select ‘All’ to make this payment method available in all countries">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Select ‘All’ to make this payment method available in all countries">
                                     {{ __('Select Countries Authorized to Use') }}
-                                    <iconify-icon class="text-[16px]" icon="mdi:information-slab-circle-outline"></iconify-icon>
+                                    <iconify-icon class="text-[16px]"
+                                        icon="mdi:information-slab-circle-outline"></iconify-icon>
                                 </span>
                             </label>
-                            <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
-                                @foreach( getCountries() as $country)
-                                    <option  value="{{ $country['name'] }}">
-                                        {{ $country['name']  }}
+                            <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country"
+                                multiple>
+                                @foreach (getCountries() as $country)
+                                    <option value="{{ $country['name'] }}">
+                                        {{ $country['name'] }}
                                     </option>
                                 @endforeach
-                                <option  value="All" >
+                                <option value="All">
                                     {{ __('All') }}
                                 </option>
                             </select>
                         </div>
-                        @if($type == 'manual')
+                        @if ($type == 'manual')
                             <div class="md:col-span-2">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex">
                                     {{ __('Add Field option') }}
@@ -241,9 +257,11 @@
                             <div class="md:col-span-2">
                                 <div class="input-area relative fw-normal">
                                     <label for="" class="form-label">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable this ranking level">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="Toggle to enable or disable this ranking level">
                                             {{ __('Payment Details') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="site-editor">
@@ -257,20 +275,48 @@
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to enable or disable the method for users">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Toggle to enable or disable the method for users">
                                         {{ __('Status') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="status">
-                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                         <input type="checkbox" name="status" value="1" class="sr-only peer">
-                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
                             </div>
                         </div>
+                        @if ($type == 'manual')
+                            <div class="input-area">
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <label class="form-label !w-auto pt-0">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="Enable this to allow users to request custom bank details for this method">
+                                            {{ __('Is Custom Requested Bank Details') }}
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
+                                        </span>
+                                    </label>
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="is_custom_bank_details">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_custom_bank_details" value="1"
+                                                class="sr-only peer">
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="md:col-span-2 text-right mt-10">
                             <button type="submit" class="btn btn-dark">
                                 {{ __('Save Changes') }}
@@ -284,11 +330,10 @@
 @endsection
 @section('payment-script')
     <script>
-
         let get_rate = (code) => {
 
             $.ajax({
-                url:  '{{ route("admin.settings.currency.get-rate", ":code") }}'.replace(':code', code),
+                url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
                 type: 'GET',
                 success: function(response) {
                     // Handle the success response (you get the rate here)
@@ -307,31 +352,31 @@
             });
         }
 
-       (function ($) {
-    $(document).ready(function () {
-        $('.select-manual-currency').on('change', function () {
-            get_rate($(this).val());
-        });
+        (function($) {
+            $(document).ready(function() {
+                $('.select-manual-currency').on('change', function() {
+                    get_rate($(this).val());
+                });
 
-        $('#currency').on('change', function () {
-            get_rate($(this).val());
-        });
-    });
-})(jQuery);
+                $('#currency').on('change', function() {
+                    get_rate($(this).val());
+                });
+            });
+        })(jQuery);
 
-        (function ($) {
+        (function($) {
             var i = 0;
             "use strict";
 
             let currency = null;
-            $("#currency").on('change', function () {
+            $("#currency").on('change', function() {
                 if (currency === null) {
                     $('#currency-selected').text(this.value);
                     $('#currency-selected').text(this.value);
                 }
             });
 
-            $("#generate").on('click', function () {
+            $("#generate").on('click', function() {
                 ++i;
                 var form = `<div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
                     <div class="xl:col-span-4 md:col-span-6 col-span-12">
@@ -369,15 +414,15 @@
                 $('.addOptions').append(form)
             });
 
-            $(document).on('click', '.delete_desc', function () {
+            $(document).on('click', '.delete_desc', function() {
                 $(this).closest('.option-remove-row').remove();
             });
 
-            $('#gateway-select').on('change', function () {
+            $('#gateway-select').on('change', function() {
                 var id = $(this).val();
-                var url = '{{ route('admin.gateway.supported.currency',':id') }}';
+                var url = '{{ route('admin.gateway.supported.currency', ':id') }}';
                 url = url.replace(':id', id);
-                $.get(url, function ($data) {
+                $.get(url, function($data) {
                     $('#currency').html($data.view);
                     $('#currency-selected').text($data.pay_currency);
                     currency = $data.pay_currency

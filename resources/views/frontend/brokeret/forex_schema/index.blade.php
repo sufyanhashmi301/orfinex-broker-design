@@ -15,7 +15,7 @@
 </div>
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
     @foreach($schemas as $schema)
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
         <div class="mb-3 flex items-start justify-between">
             <span class="block text-theme-xl font-semibold text-gray-800 dark:text-white/90">
                 {{ $schema->title }}

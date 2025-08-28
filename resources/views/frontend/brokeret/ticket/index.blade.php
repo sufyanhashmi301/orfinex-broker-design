@@ -236,7 +236,7 @@
             </div>
         </template>
         
-        <div x-show="filteredTickets.length === 0" class="text-center py-8">
+        <div x-show="filteredTickets.length === 0" class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] text-center py-8">
             <i data-lucide="inbox" class="w-12 h-12 text-gray-400 mx-auto mb-3"></i>
             <p class="text-gray-500 dark:text-gray-400">{{ __('No tickets found for the selected filter.') }}</p>
         </div>

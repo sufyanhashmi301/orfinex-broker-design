@@ -88,9 +88,9 @@
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                         {{ __("You don't have any transactions yet.") }}
                     </p>
-                    <a href="{{ route('user.deposit.methods') }}" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 transition-colors duration-200">
+                    <x-link-button href="{{ route('user.deposit.methods') }}" size="md" variant="primary" icon="arrow-up-from-dot" icon-position="left">
                         {{ __('Deposit Now') }}
-                    </a>
+                    </x-link-button>
                 </div>
             @else
                 <div class="custom-scrollbar overflow-x-auto">
@@ -167,16 +167,19 @@
     </div>
     <div class="md:hidden block mobile-screen-show">
         <!-- Transactions -->
-        @if(count($transactions) == 1)
-            <div class="basicTable_wrapper card flex items-center justify-center flex-col p-4">
-                <svg width="42" height="43" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+        @if(count($transactions) == 0)
+            <div class="flex items-center justify-center flex-col py-10 px-10">
+                <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <p class="text-sm text-slate-600 dark:text-slate-100 my-3">
+                <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                     {{ __("You don't have any transactions yet.") }}
                 </p>
+                <x-link-button href="{{ route('user.deposit.methods') }}" size="md" variant="primary" icon="arrow-up-from-dot" icon-position="left">
+                    {{ __('Deposit Now') }}
+                </x-link-button>
             </div>
         @else
             <div class="mobile-transaction-filter">

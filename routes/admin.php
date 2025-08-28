@@ -214,6 +214,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('reset-status', 'resetStatus')->name('reset.status');
         Route::post('re-approve', 'reApproveRequest')->name('re.approve');
         Route::get('request/{request}/bank-details', 'getBankDetails')->name('get.bank.details');
+        Route::get('download/{request}/{field}', 'downloadFile')->name('download.file');
         Route::post('save/form', 'saveForm')->name('save.form');
     });
 

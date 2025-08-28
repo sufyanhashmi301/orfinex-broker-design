@@ -1601,6 +1601,15 @@ return [
                 'description' => 'Enable this to require an OTP (One-Time Password) for withdrawals',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_account_otp', // unique name for field
+                'label' => 'User Withdraw Account Creation OTP', // you know what label it is
+                'description' => 'Enable this to require an OTP for creating withdraw accounts',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
             ]
         ],
     ],

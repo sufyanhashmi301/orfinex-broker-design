@@ -13,6 +13,24 @@
             </div>
         </div>
         <div class="card-body p-6">
+            @if(setting('withdraw_account_otp', 'withdraw_settings'))
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <iconify-icon icon="lucide:shield-check" class="text-blue-600 dark:text-blue-400 text-xl"></iconify-icon>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">
+                                {{ __('Two-Factor Authentication Required') }}
+                            </h3>
+                            <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                                <p>{{ __('For security purposes, you will receive a verification code via email after submitting this form. Please verify the OTP to complete your withdraw account creation.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            
             <div class="progress-steps-form">
                 <form action="{{ route('user.withdraw.account.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

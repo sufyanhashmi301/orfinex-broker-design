@@ -178,6 +178,11 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('log/export', 'export')->name('log.export');
         Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
         Route::post('resend-otp', 'resendOtp')->name('otp.resend');
+        
+        // OTP verification for account creation
+        Route::get('account/verify-otp', 'showOtpVerification')->name('account.verify-otp');
+        Route::post('account/verify-otp', 'verifyAccountCreationOtp')->name('account.verify-otp');
+        Route::post('account/resend-otp', 'resendAccountCreationOtp')->name('account.resend-otp');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');

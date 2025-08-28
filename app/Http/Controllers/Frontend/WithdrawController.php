@@ -18,6 +18,7 @@ use App\Models\UserOtp;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Services\OtpService;
+use App\Services\UserAccountCreationService;
 use App\Services\WalletService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
@@ -45,12 +46,13 @@ class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
 
-    protected $forexApiService, $otpService;
+    protected $forexApiService, $otpService, $userAccountCreationService;
 
-    public function __construct(ForexApiService $forexApiService, OtpService $otpService)
+    public function __construct(ForexApiService $forexApiService,UserAccountCreationService $userAccountCreationService, OtpService $otpService)
     {
         $this->forexApiService = $forexApiService;
         $this->otpService = $otpService;
+        $this->userAccountCreationService = $userAccountCreationService;
     }
 
     /**
@@ -72,7 +74,6 @@ class WithdrawController extends Controller
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'withdraw_method_id' => 'required',
             'method_name' => 'required',
@@ -84,6 +85,151 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
 
+        // Check if OTP verification is required for account creation
+        if (setting('withdraw_account_otp', 'withdraw_settings')) {
+            $user = Auth::user();
+            
+            // Check if user can create withdraw account
+            $accountStatus = $this->userAccountCreationService->canCreateWithdrawAccount($user);
+            
+            if (!$accountStatus['can_create']) {
+                notify()->error($accountStatus['message'], __('Account Creation Restricted'));
+                return redirect()->back();
+            }
+            
+            // Always require OTP verification - don't check for existing verified OTPs
+            // Store form data in session and redirect to OTP verification
+            $formData = [
+                'withdraw_method_id' => $request->input('withdraw_method_id'),
+                'method_name' => $request->input('method_name'),
+                'credentials' => $request->input('credentials'),
+            ];
+            
+            Session::put('withdraw_account_form_data', $formData);
+            
+            // Send OTP
+            $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
+            
+            if ($otpResult['status'] === 'error') {
+                notify()->error($otpResult['message'], __('Error'));
+                return redirect()->back();
+            }
+            
+            notify()->success(__('OTP has been sent to your email. Please verify it to create your withdraw account.'), __('OTP Sent'));
+            return redirect()->route('user.withdraw.account.verify-otp');
+        }
+
+        // Proceed with account creation
+        return $this->createWithdrawAccount($request);
+    }
+
+    /**
+     * Show OTP verification page for withdraw account creation
+     */
+    public function showOtpVerification()
+    {
+        if (!Session::has('withdraw_account_form_data')) {
+            return redirect()->route('user.withdraw.account.create');
+        }
+        
+        $user = Auth::user();
+        
+        // Use the service to get OTP status
+        $otpStatus = $this->userAccountCreationService->getOtpStatus($user);
+        
+        return view('frontend::withdraw.account.verify_otp', [
+            'isRestricted' => $otpStatus['is_restricted'],
+            'remainingTime' => $otpStatus['remaining_time'],
+            'formattedTime' => $otpStatus['formatted_time'],
+            'resendAttempts' => $otpStatus['resend_attempts']
+        ]);
+    }
+
+    /**
+     * Verify OTP for withdraw account creation
+     */
+    public function verifyAccountCreationOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'verification_code' => 'required|digits:4',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 400);
+        }
+
+        $user = Auth::user();
+        $otpInput = $request->input('verification_code');
+
+        // Validate the OTP
+        $otpValidationResult = $this->userAccountCreationService->validateWithdrawAccountOtp($user, $otpInput);
+
+        if ($otpValidationResult['status'] === 'error') {
+            return response()->json($otpValidationResult, 400);
+        }
+
+        // OTP is valid, proceed with account creation
+        $formData = Session::get('withdraw_account_form_data');
+        if (!$formData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Form data not found. Please try again.')
+            ], 400);
+        }
+
+        // Create a new request with the stored form data
+        $newRequest = new Request($formData);
+        
+        // Create the account
+        $result = $this->createWithdrawAccount($newRequest);
+        
+        // Clear session data
+        Session::forget('withdraw_account_form_data');
+        
+        if ($result instanceof RedirectResponse) {
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Account created successfully!'),
+                'redirect' => $result->getTargetUrl()
+            ]);
+        }
+        
+        return response()->json([
+            'status' => 'error',
+            'message' => __('Failed to create account. Please try again.')
+        ], 400);
+    }
+
+    /**
+     * Resend OTP for withdraw account creation
+     */
+    public function resendAccountCreationOtp()
+    {
+        $user = Auth::user();
+        
+        $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
+        
+        if ($otpResult['status'] === 'error') {
+            return response()->json([
+                'status' => 'error',
+                'message' => $otpResult['message']
+            ], 400);
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => __('OTP has been resent successfully.')
+        ]);
+    }
+
+    /**
+     * Create withdraw account after OTP verification
+     */
+    private function createWithdrawAccount(Request $request)
+    {
         $input = $request->all();
 
         $credentials = $input['credentials'];

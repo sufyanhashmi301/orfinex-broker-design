@@ -2,7 +2,35 @@
     (function ($) {
         'use strict';
 
-        //site chart
+        // Professional Color Palette
+        const professionalColors = {
+            slate: '#64748b',
+            darkSlate: '#475569',
+            lightSlate: '#94a3b8',
+            emerald: '#10b981',
+            amber: '#f59e0b',
+            blue: '#3b82f6',
+            red: '#ef4444',
+            cyan: '#06b6d4',
+            lime: '#84cc16',
+            orange: '#f97316'
+        };
+
+        // Chart color arrays for consistency
+        const chartColors = [
+            professionalColors.slate,
+            professionalColors.emerald,
+            professionalColors.amber,
+            professionalColors.blue,
+            professionalColors.red,
+            professionalColors.cyan,
+            professionalColors.darkSlate,
+            professionalColors.lime,
+            professionalColors.orange,
+            professionalColors.lightSlate
+        ];
+
+        // Site chart
         let chart;
 
         $('#transactions_statistics_filter').on('submit', function (e) {
@@ -28,75 +56,118 @@
             });
         });
 
-
         function chart_show(chartData){
-            var date_label =  Object.keys(chartData['date_label']);
+            var date_label = Object.keys(chartData['date_label']);
             var deposit_data = Object.values(chartData['deposit_statistics']);
             var invest_data = Object.values(chartData['demo_deposit_statistics']);
             var withdraw_data = Object.values(chartData['withdraw_statistics']);
             var profit_data = Object.values(chartData['ib_bonus_statistics']);
             var symbol = chartData['symbol'];
 
-
-            // Bar Chart
+            // Professional Bar Chart Configuration
             var data = {
                 labels: date_label,
                 datasets: [{
-                    label: 'Total Deposit '+symbol+sumArrayValues(deposit_data),
+                    label: 'Total Deposit ' + symbol + sumArrayValues(deposit_data),
                     data: deposit_data,
-                    backgroundColor: '#2a9d8f',
+                    backgroundColor: professionalColors.slate,
                     borderColor: '#ffffff',
                     borderWidth: 0,
-                    borderRadius: 90,
-                    tension: 0.1
-                },
-                {
-                    label: 'Total Withdraw '+symbol+sumArrayValues(withdraw_data),
-                    data:  withdraw_data,
-                    backgroundColor: '#ef476f',
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }, {
+                    label: 'Total Withdraw ' + symbol + sumArrayValues(withdraw_data),
+                    data: withdraw_data,
+                    backgroundColor: professionalColors.red,
                     borderColor: '#ffffff',
                     borderWidth: 0,
-                    borderRadius: 90,
-                    tension: 0.1
-                },
-                {
-                    label: 'Total Demo Deposit '+symbol+sumArrayValues(invest_data),
-                    data:  invest_data,
-                    backgroundColor: '#5e3fc9',
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }, {
+                    label: 'Total Demo Deposit ' + symbol + sumArrayValues(invest_data),
+                    data: invest_data,
+                    backgroundColor: professionalColors.emerald,
                     borderColor: '#ffffff',
                     borderWidth: 0,
-                    borderRadius: 90,
-                    tension: 1
-                },
-                {
-                    label: 'Total IB Bonus '+symbol+sumArrayValues(profit_data),
-                    data:  profit_data,
-                    backgroundColor: '#003566',
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }, {
+                    label: 'Total IB Bonus ' + symbol + sumArrayValues(profit_data),
+                    data: profit_data,
+                    backgroundColor: professionalColors.amber,
                     borderColor: '#ffffff',
                     borderWidth: 0,
-                    borderRadius: 90,
-                    tension: 0.1
-                },
-                ]
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }]
             };
-            // render init block
-
 
             var ctx = document.getElementById('depositChart');
             var configuration = {
                 type: 'bar',
                 data,
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    family: 'Inter, system-ui, sans-serif',
+                                    size: 12,
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    family: 'Inter, system-ui, sans-serif',
+                                    size: 12,
+                                }
+                            }
                         }
                     },
                     plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'start',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: {
+                                    family: 'Inter, system-ui, sans-serif',
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                color: '#475569'
+                            }
+                        },
                         tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#e2e8f0',
+                            borderColor: '#475569',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
                             callbacks: {
                                 label: function (context) {
-                                    return (context.dataset.label.split(symbol)[0]).split(' ')[1] + ': ' +symbol+ context.formattedValue;
+                                    return (context.dataset.label.split(symbol)[0]).split(' ')[1] + ': ' + symbol + context.formattedValue;
                                 }
                             }
                         }
@@ -122,218 +193,214 @@
         }
         chart_show(chartData);
 
-
-        //Plan chart
+        // Deposit Statistics Chart (Doughnut)
         var schema = @json($data['total_deposit_statistics']);
         var invest_data = Object.values(schema);
         var invest_label = Object.keys(schema).map(function(key) {
             return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
         });
-        // Bar Chart
-        var data = {
+
+        var schemeData = {
             labels: invest_label,
             datasets: [{
                 label: 'Total Deposit',
                 data: invest_data,
-                backgroundColor: [
-                    '#5e3fc9',
-                    '#2a9d8f',
-                    '#ee6c4d',
-                    '#6d597a',
-                    '#003566',
-                    '#ef476f',
-                    '#718355',
-                ],
-                borderColor: [
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff'
-                ],
+                backgroundColor: chartColors.slice(0, invest_data.length),
+                borderColor: '#ffffff',
                 borderWidth: 3,
-                borderRadius: 12,
-                barPercentage: 0.3,
-                hoverBackgroundColor: '#003566',
+                hoverOffset: 8,
+                hoverBorderWidth: 4,
             }]
         };
-        // render init block
-        new Chart(
-            document.getElementById('schemeChart'),
-            {
-                type: 'doughnut',
-                data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+        new Chart(document.getElementById('schemeChart'), {
+            type: 'doughnut',
+            data: schemeData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 15,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                size: 11,
+                                weight: '500'
+                            },
+                            color: '#475569'
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        borderColor: '#475569',
+                        borderWidth: 1,
+                        cornerRadius: 8,
                     }
                 }
             }
-        );
+        });
 
-
-        // Country Chart
+        // Country Statistics Chart (Doughnut)
         var country = @json($data['country']);
         var country_data = Object.values(country);
         var country_label = Object.keys(country);
-        var data = {
+
+        var countryData = {
             labels: country_label,
             datasets: [{
                 label: 'Country',
                 data: country_data,
-                backgroundColor: [
-                    '#5e3fc9',
-                    '#2a9d8f',
-                    '#ef476f',
-                    '#718355',
-                    '#ee6c4d',
-                    '#6d597a',
-                    '#003566',
-                    "#b91d47",
-                    "#00aba9",
-                    "#2b5797",
-                    "#e8c3b9",
-                    "#1e7145"
-                ],
-                borderColor: [
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff'
-                ],
+                backgroundColor: chartColors.slice(0, country_data.length),
+                borderColor: '#ffffff',
                 borderWidth: 3,
-                borderRadius: 12,
-                barPercentage: 0.3,
-                hoverBackgroundColor: '#003566',
+                hoverOffset: 6,
+                hoverBorderWidth: 4,
             }]
         };
-        // render init block
-        new Chart(
-            document.getElementById('countryChart'),
-            {
-                type: 'doughnut',
-                data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+        new Chart(document.getElementById('countryChart'), {
+            type: 'doughnut',
+            data: countryData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 12,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                size: 11,
+                                weight: '500'
+                            },
+                            color: '#475569'
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        borderColor: '#475569',
+                        borderWidth: 1,
+                        cornerRadius: 8,
                     }
                 }
             }
-        );
+        });
 
-        // Browser Chart
+        // Browser Statistics Chart (Doughnut)
         var browser = @json($data['browser']);
         var browser_data = Object.values(browser);
         var browser_label = Object.keys(browser);
-        var data = {
+
+        var browserData = {
             labels: browser_label,
             datasets: [{
                 label: 'Browser',
                 data: browser_data,
-                backgroundColor: [
-                    '#5e3fc9',
-                    '#2a9d8f',
-                    '#ef476f',
-                    '#718355',
-                    '#ee6c4d',
-                    '#6d597a',
-                    '#003566',
-                    "#b91d47",
-                    "#00aba9",
-                    "#2b5797",
-                    "#e8c3b9",
-                    "#1e7145"
-                ],
-                borderColor: [
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff'
-                ],
-                borderWidth: 2,
-                borderRadius: 12,
-                barPercentage: 0.3,
-                hoverBackgroundColor: '#003566',
+                backgroundColor: chartColors.slice(0, browser_data.length),
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 6,
+                hoverBorderWidth: 4,
             }]
         };
-        // render init block
-        new Chart(
-            document.getElementById('browserChart'),
-            {
-                type: 'polarArea',
-                data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+        new Chart(document.getElementById('browserChart'), {
+            type: 'doughnut',
+            data: browserData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '50%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 12,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                size: 11,
+                                weight: '500'
+                            },
+                            color: '#475569'
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        borderColor: '#475569',
+                        borderWidth: 1,
+                        cornerRadius: 8,
                     }
                 }
             }
-        );
+        });
 
-        // OS Chart
+        // OS Statistics Chart (Pie)
         var platform = @json($data['platform']);
         var platform_data = Object.values(platform);
         var platform_label = Object.keys(platform);
-        var data = {
+
+        var platformData = {
             labels: platform_label,
             datasets: [{
-                label: 'OS',
+                label: 'Operating System',
                 data: platform_data,
-                backgroundColor: [
-                    '#5e3fc9',
-                    '#718355',
-                    '#ef476f',
-                    '#ee6c4d',
-                    "#b91d47",
-                    "#2b5797",
-                    "#e8c3b9",
-                    "#1e7145",
-                    '#2a9d8f',
-                ],
-                borderColor: [
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff',
-                    '#ffffff'
-                ],
+                backgroundColor: chartColors.slice(0, platform_data.length),
+                borderColor: '#ffffff',
                 borderWidth: 3,
-                borderRadius: 12,
-                barPercentage: 0.3,
-                hoverBackgroundColor: '#003566',
+                hoverOffset: 8,
+                hoverBorderWidth: 4,
             }]
         };
-        // render init block
-        new Chart(
-            document.getElementById('osChart'),
-            {
-                type: 'pie',
-                data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+        new Chart(document.getElementById('osChart'), {
+            type: 'pie',
+            data: platformData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 12,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                size: 11,
+                                weight: '500'
+                            },
+                            color: '#475569'
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        borderColor: '#475569',
+                        borderWidth: 1,
+                        cornerRadius: 8,
                     }
                 }
             }
-        );
+        });
 
     })(jQuery);
 </script>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\RiskHubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\IBController;
+use App\Http\Controllers\Backend\PaymentDepositController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\SmsController;
@@ -197,6 +198,24 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('save/form', 'saveForm')->name('save.form');
         Route::post('export/{type?}', 'export')->name('export');
 
+    });
+
+    //===============================  Payment Deposit Request Management ==================================
+    Route::resource('payment-deposit-form', PaymentDepositController::class)->except(['show']);
+    Route::group(['prefix' => 'payment-deposit', 'as' => 'payment-deposit.', 'controller' => PaymentDepositController::class], function () {
+        Route::get('pending', 'pendingList')->name('pending.list');
+        Route::get('approved', 'approvedList')->name('approved.list');
+        Route::get('rejected', 'rejectedList')->name('rejected.list');
+        Route::get('request/view/{request}', 'requestView')->name('request.view');
+        Route::post('approve', 'approveRequest')->name('approve');
+        Route::post('reject', 'rejectRequest')->name('reject');
+        Route::post('update-bank-details', 'updateBankDetails')->name('update.bank.details');
+        Route::post('reject-approved', 'rejectApproved')->name('reject.approved');
+        Route::post('reset-status', 'resetStatus')->name('reset.status');
+        Route::post('re-approve', 'reApproveRequest')->name('re.approve');
+        Route::get('request/{request}/bank-details', 'getBankDetails')->name('get.bank.details');
+        Route::get('download/{request}/{field}', 'downloadFile')->name('download.file');
+        Route::post('save/form', 'saveForm')->name('save.form');
     });
 
     //===============================  Role Management ==================================

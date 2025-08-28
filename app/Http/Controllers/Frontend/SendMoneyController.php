@@ -841,17 +841,17 @@ class SendMoneyController extends Controller
             $toUser = $receiverWallet->user;
         }
 
-        // Create transactions with TxnStatus::None before managing the ledger
+        // Create transactions with TxnStatus::Pending before managing the ledger
         $sendDescription = __('Transfer Money To ') . $fromUser->username . '-' . $receiverAccount . '(' . $receiverType . ')';
         $txnInfoSender = Txn::new(
             $amount, $this->calculateCharge($amount), $totalAmount, 'system', $sendDescription,
-            TxnType::SendMoneyInternal, TxnStatus::None, null, null, $fromUser->id, $toUser->id, 'User', [],
+            TxnType::SendMoneyInternal, TxnStatus::Pending, null, null, $fromUser->id, $toUser->id, 'User', [],
             $input['note'], $targetId, $targetType
         );
 
         $receiveDescription = __('Receive Money From ') . $toUser->username . '-' . $targetId . '(' . $targetType . ')';
         $txnInfoReceiver = Txn::new(
-            $amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoneyInternal, TxnStatus::None,
+            $amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoneyInternal, TxnStatus::Pending,
             null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, $receiverType
         );
 

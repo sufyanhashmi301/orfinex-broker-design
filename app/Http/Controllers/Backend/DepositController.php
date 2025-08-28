@@ -128,6 +128,7 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
@@ -206,6 +207,7 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? $input['payment_details'] : null,
         ];

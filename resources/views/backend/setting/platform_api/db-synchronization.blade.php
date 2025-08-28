@@ -202,10 +202,17 @@
         }
 
         document.getElementById('test-connection-btn').addEventListener('click', function() {
+            const button = this;
+            const originalText = button.innerText;
+            
+            // Disable button and show loading state
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+            
             const form = document.getElementById('db-credentials-form');
             const formData = new FormData(form);
 
-            fetch('{{ route('admin.settings.testConnection') }}', {
+            fetch('{{ route('admin.settings.mt5.connection.test') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -214,13 +221,26 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'success') {
+                if (data.success) {
                     showNotification(data.message, 'success');
+                    
+                    // Show connection stats if available
+                    if (data.stats) {
+                        console.log('MT5 Connection Stats:', data.stats);
+                    }
                 } else {
                     showNotification(data.message, 'error');
                 }
             })
-            .catch(error => showNotification('An error occurred while testing the connection.', 'error'));
+            .catch(error => {
+                console.error('Connection test error:', error);
+                showNotification('An error occurred while testing the connection.', 'error');
+            })
+            .finally(() => {
+                // Re-enable button and restore original text
+                button.disabled = false;
+                button.innerHTML = originalText;
+            });
         });
     </script>
 @endsection

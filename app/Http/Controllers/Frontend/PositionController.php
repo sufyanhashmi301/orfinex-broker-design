@@ -23,8 +23,9 @@ class PositionController extends Controller
 
     public function getOrders()
     {
-        $table = 'mt5_deals_' . Carbon::now()->year;
-
+        // $table = 'mt5_deals_' . Carbon::now()->year;
+        // For Qorva - uncomment if needed
+            $table = 'mt5_deals';
         $orders = DB::connection('mt5_db')
             ->table($table)
             ->when(request('trade_date'), function ($query) {

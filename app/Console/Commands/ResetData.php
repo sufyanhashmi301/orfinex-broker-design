@@ -137,7 +137,7 @@ class ResetData extends Command
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        Artisan::call('db:seed');
+        // Artisan::call('db:seed');
 
         $rank = Ranking::find(1);
 

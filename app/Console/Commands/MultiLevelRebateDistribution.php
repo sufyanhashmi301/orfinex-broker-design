@@ -21,23 +21,39 @@ use App\Models\UserIbRuleLevelShare;
 use App\Models\Level;
 use App\Models\Transaction;
 use App\Services\WalletService;
+use App\Services\MT5DatabaseService;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use Txn;
+use App\Facades\Txn\TxnFacade as Txn;
 
 class MultiLevelRebateDistribution extends Command
 {
     protected $signature = 'rebate:distribution';
     protected $description = 'Multi-Level IB Rebate Distribution';
 
+    protected MT5DatabaseService $mt5DatabaseService;
+
+
+    public function __construct(MT5DatabaseService $mt5DatabaseService)
+    {
+        parent::__construct();
+        $this->mt5DatabaseService = $mt5DatabaseService;
+    }
 
     public function handle()
     {
         try {
+            // Check MT5 database availability before processing
+            if (!$this->mt5DatabaseService->isConnectionAvailable()) {
+                $this->warn('MT5 database is currently unavailable. Skipping rebate distribution to prevent system blocking.');
+                Log::warning('Rebate distribution skipped due to MT5 database unavailability');
+                return 0; // Return success to prevent error escalation
+            }
+
             ReferralRelationship::with('referralLink')
                 ->chunkById(500, function ($referrals) {
                     foreach ($referrals as $referral) {
@@ -80,13 +96,25 @@ class MultiLevelRebateDistribution extends Command
             ->get();
 
         foreach ($accounts as $account) {
-            $symbols = $this->getUserAssignedSymbols($parent, $account);
-            $lastDealTime = $this->getLastDeal($childUserId, $account->login);
-            $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
-//            dd($deals);
+            try {
+                // Check MT5 database availability before processing each account
+                if (!$this->mt5DatabaseService->isConnectionAvailable()) {
+                    Log::info("MT5 database unavailable for account {$account->login}, skipping to prevent timeout");
+                    continue;
+                }
 
-            if (!$deals->isEmpty()) {
-                $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
+                $symbols = $this->getUserAssignedSymbols($parent, $account);
+                $lastDealTime = $this->getLastDeal($childUserId, $account->login);
+                $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
+//                dd($deals);
+
+                if (!$deals->isEmpty()) {
+                    $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
+                }
+            } catch (Throwable $e) {
+                Log::error("Error processing rebate for account {$account->login}: {$e->getMessage()}");
+                // Continue with next account instead of failing entire process
+                continue;
             }
         }
     }
@@ -257,19 +285,8 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getMT5Deals($login, $lastTime, $symbols)
     {
-//        $table = 'mt5_deals_' . Carbon::now()->year;
-        //For Qorva
-        $table = 'mt5_deals';
-
-        return DB::connection('mt5_db')
-            ->table($table)
-            ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
-            ->where('Login', $login)
-            ->whereIn('Symbol', $symbols)
-            ->where('Time', '>', $lastTime)
-            ->where('Volume', '>', 0)
-            ->whereColumn('Volume', 'VolumeClosed')
-            ->get();
+        // Use the resilient MT5DatabaseService instead of direct DB connection
+        return $this->mt5DatabaseService->getMT5Deals($login, $lastTime, $symbols);
     }
 
     protected function getValidParent($user)

@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Paginator::defaultView('frontend::include.__pagination');
+        
+        // Register MT5DatabaseService as singleton
+        $this->app->singleton(\App\Services\MT5DatabaseService::class, function ($app) {
+            return new \App\Services\MT5DatabaseService();
+        });
 
     }
 

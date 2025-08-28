@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            @foreach($documentLinks as $documentLink)
+            @forelse($documentLinks as $documentLink)
                 <div class="flex items-center gap-5 rounded-xl border border-gray-200 p-3 pr-5 dark:border-gray-800">
                     <div class="inline-flex h-13 w-13 shrink-0 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-white/90">
                         @switch($documentLink->slug)
@@ -100,8 +100,12 @@
                         </a>
                     </div>
                 </div>
-            @endforeach
-        </div>
+            @empty
+                <div class="col-span-full flex flex-col items-center justify-center py-10 text-center">
+                    <i data-lucide="file-x" class="w-12 h-12 text-gray-400 mb-3"></i>
+                    <p class="text-gray-500 dark:text-gray-400">{{ __('No documents found') }}</p>
+                </div>
+            @endforelse
         </div>
     </div>
 @endsection

@@ -2,15 +2,15 @@
     class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0">
     <!-- SIDEBAR HEADER -->
     <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-        class="flex items-center gap-2 py-7 sidebar-header">
+        class="flex items-center gap-2 py-3 lg:py-7 mb-3 lg:mb-0 sidebar-header">
         <a href="{{ route('home') }}">  
             <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
                 <img class="h-10 dark:hidden" src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
                 <img class="h-10 hidden dark:block" src="{{ getFilteredPath(setting('site_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
             </span>
             <span :class="sidebarToggle ? 'lg:block' : 'hidden'">
-                <img class="logo-icon dark:hidden" src="{{ getFilteredPath(setting('site_mobile_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
-                <img class="logo-icon dark:block" src="{{ getFilteredPath(setting('site_mobile_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
+                <img class="logo-icon h-10 dark:hidden" src="{{ getFilteredPath(setting('site_mobile_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
+                <img class="logo-icon h-10 hidden dark:block" src="{{ getFilteredPath(setting('site_mobile_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
             </span>
         </a>
     </div>

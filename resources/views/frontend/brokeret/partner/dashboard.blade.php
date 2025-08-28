@@ -17,7 +17,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-5">
                     <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Referrals') }}
@@ -138,7 +138,7 @@
         <div class="col-span-12 xl:col-span-4" x-data="partnerDashboard()">
             <div class="h-full rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
                 <div class="shadow-default rounded-2xl bg-white px-5 pb-11 pt-5 dark:bg-gray-900 sm:px-6 sm:pt-6">
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-2">
                         <div>
                             <h3 class="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
                                 {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
@@ -149,14 +149,14 @@
                                 type="button"
                                 @click="copyText('{{ $account->wallet_id }}', $event.target)" 
                                 class="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                <i data-lucide="copy" class="h-4"></i>
+                                <i data-lucide="copy" class="hidden md:block h-4"></i>
                                 {{ __('Copy ID') }}
                             </button>
                             <button 
                                 type="button"
                                 @click="copyText('{{ $getReferral->link }}', $event.target)" 
                                 class="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                <i data-lucide="copy" class="h-4"></i>
+                                <i data-lucide="copy" class="hidden md:block h-4"></i>
                                 {{ __('Copy Link') }}
                             </button>
                         </div>
@@ -259,85 +259,8 @@
             </div>
         </div>
     </div>
-    <div class="md:hidden block mb-6">
-        <div class="card">
-            <div class="card-body p-6" x-data="partnerDashboard()">
-                <div class="flex justify-between flex-wrap items-center mb-3">
-                    <h4 class="card-title">{{ __('Signup') }}</h4>
-                    <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                        <div class="relative">
-                            <div class="dropdown relative">
-                                <button class="btn btn-outline-light btn-sm inline-flex items-center justify-center" type="button" id="shareDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
-                                    {{ __('Share') }}
-                                </button>
-                                <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
-                                    <li>
-                                        <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <span class="flex items-center gap-2">
-                                                <img src="{{ asset('frontend/images/logo/email-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                {{ __('Email') }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="a2a_button_sms text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <span class="flex items-center gap-2">
-                                                <img src="{{ asset('frontend/images/logo/sms-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                {{ __('SMS') }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="a2a_button_whatsapp text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <span class="flex items-center gap-2">
-                                                <img src="{{ asset('frontend/images/logo/whatsapp-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                {{ __('Whatsapp') }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="a2a_button_facebook text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <span class="flex items-center gap-2">
-                                                <img src="{{ asset('frontend/images/logo/facebook-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                {{ __('Facebook') }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="a2a_button_twitter text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <span class="flex items-center gap-2">
-                                                <img src="{{ asset('frontend/images/logo/twitter-item.png') }}" border="0" alt="Facebook" width="14" height="14">
-                                                {{ __('Twitter') }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-outline-light btn-sm inline-flex items-center justify-center">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:share-2"></iconify-icon>
-                            {{ __('Invite') }}
-                        </button>
-                    </div>
-                </div>
-                <div class="input-area">
-                    <div class="relative">
-                        <input type="text" class="form-control !pr-20" id="referral-input-mobile" value="{{ $getReferral->link }}" readonly>
-                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                            <button type="button" 
-                                @click="copyText('{{ $getReferral->link }}', $event.target)" 
-                                class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400">
-                                {{ __('Copy Link') }}
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="grid lg:grid-cols-4 grid-cols-2 gap-5 mb-6">
+    <div class="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mb-6">
         <article class="flex items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
             <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                 <i data-lucide="banknote-arrow-down" class="h-7 w-7"></i>

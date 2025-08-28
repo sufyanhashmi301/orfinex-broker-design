@@ -86,9 +86,6 @@
         </div>
     @else
         <div class="card all-feature-mobile mobile-rules mb-3">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('Distribution Rules') }}</h4>
-            </div>
             <div class="card-body p-3">
                 <div class="contents space-y-3" id="mobile-rules-container">
                     @foreach($userIbRules as $userIbRule)
@@ -113,11 +110,10 @@
                                     <span class="font-medium dark:text-white">${{$userIbRule->rebateRule->rebate_amount - $userIbRule->sub_ib_share }}</span>
                                 </div>
                             </div>
-                            <div class="rule-action text-right">
-                                <a href="{{ route('user.ib.rule.levels', ['id' => $userIbRule->id]) }}" class="inline-flex items-center justify-center px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors">
-                                    <i data-lucide="pencil" class="w-3 h-3 mr-1"></i>
+                            <div class="rule-action">
+                                <x-link-button href="{{ route('user.ib.rule.levels', ['id' => $userIbRule->id]) }}" variant="outline" icon="pencil" icon-position="left" class="w-full">
                                     {{ __('Edit') }}
-                                </a>
+                                </x-link-button>
                             </div>
                         </div>
                     @endforeach

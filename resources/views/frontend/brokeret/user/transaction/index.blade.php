@@ -10,7 +10,7 @@
     </div>
     
     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div x-data="transactionFilter()" class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
+        <div x-data="transactionFilter()" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
             @include('frontend::user.transaction.include.__tabs_nav')
             <div class="flex-1 flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
                 <div class="input-area relative">

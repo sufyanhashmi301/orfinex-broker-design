@@ -77,9 +77,11 @@
         </div>
     @endif
 
+    
+    @include('frontend::user.include.__user_card')
+    
     <div class="md:block hidden desktop-screen-show">
-        @include('frontend::user.include.__user_card')
-        <div class="grid {{ setting('user_tickets_feature', 'customer_permission') ? 'lg:grid-cols-6' : 'lg:grid-cols-5' }} md:grid-cols-3 grid-cols-2 gap-3 mb-3">
+        <div class="grid {{ setting('user_tickets_feature', 'customer_permission') ? 'xl:grid-cols-6' : 'xl:grid-cols-5' }} md:grid-cols-3 grid-cols-2 gap-3 mb-3">
             @php
                 $quickActions = [
                     [
@@ -138,7 +140,7 @@
         </div>
 
         <div class="grid grid-cols-12 gap-3 mb-3">
-            <div class="lg:col-span-7 col-span-12">
+            <div class="xl:col-span-7 col-span-12">
                 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 sm:px-6 sm:pt-6 dark:border-gray-800 dark:bg-white/[0.03]">
                     <header class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Trading Accounts') }}</h3>
@@ -222,7 +224,7 @@
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-5 col-span-12">
+            <div class="xl:col-span-5 col-span-12">
                 <div class="h-full rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                     <div x-data="profitLossChartComponent()" x-init="initChart()" class="relative">
                         <div id="profitLossChart" style="opacity: 0.05"></div>

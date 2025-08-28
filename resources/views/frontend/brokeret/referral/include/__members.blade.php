@@ -1,7 +1,7 @@
 @php use App\Enums\TxnStatus; use App\Enums\TxnType; @endphp
 
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-    <div class="flex items-center justify-between border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
         <div class="flex-shrink-0">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
                 {{ __('Referral Members') }}
@@ -135,25 +135,24 @@
             </div>
         @else
             <div class="card all-feature-mobile mobile-members mb-3">
-                <div class="card-header">
-                    <h4 class="card-title">{{ __('Referral Members') }}</h4>
-                </div>
                 <div class="card-body p-3">
                     <div class="contents space-y-3" id="mobile-members-container">
                         @foreach($referrals as $referral)
-                            <div class="single-member flex items-center text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-3">
-                                <div class="member-avatar flex-none">
-                                    <div class="w-10 h-10 rounded-full ltr:mr-3 rtl:ml-3">
+                            <div class="single-member text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-full max-w-8 items-center rounded-full">
                                         <img src="{{ getFilteredPath($referral->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-full object-cover">
                                     </div>
+                                    <div class="flex flex-col gap-1">
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+                                            {{ $referral->full_name }}
+                                        </p>
+                                        <span class="block text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $referral->email }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="member-info flex-1">
-                                    <div class="member-name font-semibold dark:text-white mb-1">
-                                        {{ $referral->full_name }}
-                                    </div>
-                                    <div class="member-email text-gray-500 dark:text-gray-400 mb-1">
-                                        {{ $referral->email }}
-                                    </div>
+                                <div class="member-info">
                                     <div class="member-stats grid grid-cols-2 gap-2 text-xs">
                                         <div class="stat-item">
                                             <span class="text-gray-500 dark:text-gray-400">{{ __('Balance') }}:</span>

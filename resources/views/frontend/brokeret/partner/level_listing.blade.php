@@ -12,17 +12,16 @@
         csrf: '{{ csrf_token() }}'
     })">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex flex-col gap-5 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-3 px-6 mb-4">
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
                     {{ __('IB Level Distribution') }}
                 </h3>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <button @click="openModal()" class="text-theme-sm shadow-theme-xs inline-flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                    <i data-lucide="square-pen" class="w-4 h-4"></i>
+                <x-forms.button type="button" @click="openModal()" variant="outline" icon="pencil" icon-position="left" class="w-fit">
                     {{ __('Update IB Shares') }}
-                </button>
+                </x-forms.button>
             </div>
         </div>
         <div class="max-w-full overflow-x-auto custom-scrollbar">

@@ -1,5 +1,5 @@
 <div x-data="{ activeTab: 'vertical' }">
-    <div class="flex justify-between flex-wrap items-center mb-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
+    <div class="flex justify-between flex-wrap items-center gap-2 mb-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
         <div>
             <h1 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-1">
                 {{ __('Network Tree') }}

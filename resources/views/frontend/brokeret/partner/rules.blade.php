@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex items-center justify-between border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 px-4 py-5 xl:px-6 xl:py-6 dark:border-gray-800">
             <div class="flex-shrink-0">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
                     {{ __('IB Distribution Rules') }}

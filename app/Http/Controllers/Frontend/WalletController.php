@@ -23,6 +23,7 @@ class WalletController extends Controller
         $ibWallet = get_user_account($userID,AccountBalanceType::IB_WALLET);
         $wallets = Transaction::search(request('query'), function ($query) {
             $query->where('user_id', auth()->user()->id)
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
                 ->when(request('date'), function ($query) {
                     $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
                 })

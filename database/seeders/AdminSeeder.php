@@ -24,6 +24,7 @@ class AdminSeeder extends Seeder
             'name' => 'Super Admin',
             'email' => 'admin@admin.com',
             'password' => Hash::make(12345678),
+            'key' => 'SUPER_ADMIN_DELETE_KEY_2024', // Set a secure key for user deletion
         ]);
 
         $superAdmin->assignRole($superRole);

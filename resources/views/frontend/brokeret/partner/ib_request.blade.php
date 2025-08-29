@@ -277,22 +277,9 @@
                             </label>
                         </div>
                         <div class="col-span-12 text-right">
-                            <button type="submit" 
-                                class="bg-brand-500 hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white save-btn"
-                                :disabled="loading">
-
-                                <!-- Loader icon when submitting -->
-                                <span x-show="loading" class="animate-spin">
-                                    <i data-lucide="loader-circle" class="w-4 h-4"></i>
-                                </span>
-
-                                <!-- Check icon when not submitting -->
-                                <span x-show="!loading">
-                                    <i data-lucide="check" class="w-4 h-4"></i>
-                                </span>
-
+                            <x-forms.button type="submit" size="lg" variant="primary" icon="check" icon-position="left" x-bind:disabled="loading">
                                 {{ __('Submit Request') }}
-                            </button>
+                            </x-forms.button>
                         </div>
                     </form>
                 </div>

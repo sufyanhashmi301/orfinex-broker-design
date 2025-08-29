@@ -3,12 +3,12 @@
     {{ __('My Wallet') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex flex-wrap items-center justify-between gap-3 pb-6">
+    <div class="pageTitle flex flex-wrap items-center justify-between gap-3 mb-3">
         <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90">
             @yield('title')
         </h4>
     </div>
-    <div class="grid md:grid-cols-3 col-span-1 gap-5 mb-6">
+    <div class="grid sm:grid-cols-2 xl:grid-cols-3 col-span-1 gap-5 mb-6">
         <div class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="card-body">
                 <div class="flex flex-wrap justify-between items-center mb-5">
@@ -83,7 +83,7 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-5 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="hidden xl:block rounded-2xl border border-dashed border-gray-200 bg-white p-5 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="h-full flex flex-col items-center justify-center gap-5">
                 <i data-lucide="grid-2x2-plus" class="text-brand-500"></i>
                 <x-text-link href="javascript:void(0)" variant="text">

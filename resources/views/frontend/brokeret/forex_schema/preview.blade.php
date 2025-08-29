@@ -40,8 +40,8 @@
 
         <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="description"></p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mb-5">
-        <div class="h-full">
+    <div class="grid grid-cols-12 gap-5 mb-5">
+        <div class="col-span-12 sm:col-span-6 xl:col-span-7 h-full">
             <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-3">
                 {{ __('Account Options') }}
             </h4>
@@ -143,7 +143,7 @@
                 </form>
             </div>
         </div>
-        <div class="h-full">
+        <div class="col-span-12 sm:col-span-6 xl:col-span-5 h-full">
             <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-3">
                 {{ __('Account Specifications and Features') }}
             </h4>

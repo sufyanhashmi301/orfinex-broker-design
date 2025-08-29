@@ -40,10 +40,9 @@
                 <div class="input-area relative min-w-[170px]">
                     <input type="date" class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 flatpickr" name="end_date" value="{{ request()->get('end_date') }}"/>
                 </div>
-                <button type="submit" class="inline-flex items-center gap-2 rounded bg-white px-4 py-1 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                    <i data-lucide="arrow-up-from-dot" class="w-4 mr-2"></i>
+                <x-forms.button type="submit" class="flex-1" variant="outline" icon="arrow-up-from-dot" icon-position="left" size="sm">
                     {{ __('Filter') }}
-                </button>
+                </x-forms.button>
             </form>
         </div>
 
@@ -54,7 +53,7 @@
                     <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
                     {{ isset($login) ? __('No record found.') : __('Kindly select the account to view the orders') }}
                 </p>
             </div>
@@ -192,4 +191,18 @@
             </div>
         @endif
     </div>
+@endsection
+
+@section('script')
+    <script>
+        function transactionFilter() {
+            return {
+                // Initialize component
+                init() {
+                    // Simple initialization for forex orders page
+                    console.log('Transaction filter initialized for forex orders');
+                }
+            }
+        }
+    </script>
 @endsection

@@ -996,6 +996,7 @@ class SendMoneyController extends Controller
 
         $sendMoneys = Transaction::search(request('query'), function ($query) {
             $query->where('user_id', auth()->user()->id)
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
                 ->whereIn('type', [TxnType::SendMoney,TxnType::SendMoneyInternal,TxnType::ReceiveMoneyInternal])
                 ->when(request('date'), function ($query) {
                     $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));

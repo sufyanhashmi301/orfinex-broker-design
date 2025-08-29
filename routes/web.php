@@ -25,7 +25,6 @@ use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
-use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\UserIbRuleController;
@@ -47,14 +46,6 @@ use App\Http\Controllers\WebhookController;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
-
-//Static Page
-Route::get('/{page}', PageController::class)->name('page')->where('page', 'schema|how-it-works|about-us|faq|rankings|blog|contact|privacy-policy|terms-and-conditions');
-
-//Dynamic Page
-Route::get('page/{section}', [PageController::class, 'getPage'])->name('dynamic.page');
-
-Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-details');
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
@@ -301,8 +292,6 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
 
-Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
-
 Route::get('user/agreements', function () {
     $documentLinks = App\Models\DocumentLink::where('status', 1)->get();
     return view('frontend::user.setting.agreements.index', compact('documentLinks'));
@@ -320,37 +309,15 @@ Route::get('get/account/{login}', function ($login) {
 });
 
 Route::get('user/platform', function () {
-    return view('frontend.default.terminal.index');
+    return view('frontend::terminal.index');
 })->name('user.platform');
-
-
-Route::get('user/fund-board', function () {
-    return view('frontend.default.fund_board.index');
-})->name('user.fund-board');
-
-Route::get('user/fund/plans', function () {
-    return view('frontend.default.fund_board.plans');
-})->name('user.fund.plans');
-
-Route::get('user/fund/details', function () {
-    return view('frontend.default.fund_board.plan_details');
-})->name('user.fund.details');
-
-Route::get('user/fund/detail', function () {
-    return view('frontend.default.fund_board.detail');
-})->name('user.fund.detail');
-
-Route::get('user/downloads', function () {
-    return view('frontend::user.downloads');
-})->name('user.downloads');
 
 Route::get('user/economic_calendar', function () {
     return view('frontend::user.economic_calendar');
 })->name('user.economic_calendar');
 
 Route::get('user/provider_access', function () {
-
-    return view('frontend.prime_x.copy_trading.provider_access');
+    return view('frontend::copy_trading.provider_access');
 })->name('user.provider_access')->middleware('secure_header');
 
 Route::get('user/follower_access', function () {
@@ -363,42 +330,12 @@ Route::get('user/ratings', function () {
 
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
 
-
-Route::get('user/partner/dashboard', function () {
-    return view('frontend::partner.dashboard');
-});
-
-Route::get('user/partner/accounts', function () {
-    return view('frontend::partner.accounts');
-});
-
-Route::get('user/partner/clients', function () {
-    return view('frontend::partner.clients');
-});
-
-Route::get('user/notify/success', function () {
-    return view('frontend::common.success');
-});
-
-Route::get('user/notify/canceled', function () {
-    return view('frontend::common.canceled');
-});
-
-Route::get('user/notify/failed', function () {
-    return view('frontend::common.error');
-});
-
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
 Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
-
-Route::view('login-2', 'frontend::auth.login-2');
-Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
-Route::view('verify-email-2', 'frontend::auth.verify-email-2');
-Route::view('register-2', 'frontend::auth.register-2');
 
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');

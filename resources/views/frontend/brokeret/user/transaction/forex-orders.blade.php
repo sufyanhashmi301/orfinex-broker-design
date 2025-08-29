@@ -40,7 +40,7 @@
                 <div class="input-area relative min-w-[170px]">
                     <input type="date" class="dark:bg-dark-900 h-8 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 flatpickr" name="end_date" value="{{ request()->get('end_date') }}"/>
                 </div>
-                <x-forms.button type="submit" class="flex-1" variant="outline" icon="arrow-up-from-dot" icon-position="left" size="sm">
+                <x-forms.button type="submit" variant="outline" icon="arrow-up-from-dot" icon-position="left" size="sm">
                     {{ __('Filter') }}
                 </x-forms.button>
             </form>

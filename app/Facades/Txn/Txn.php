@@ -173,7 +173,8 @@ class Txn
         }
         //        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
         if (isset($transaction->target_id) && $transaction->target_type == 'withdraw_deposit') {
-            $this->forexWithdraw($transaction);
+            $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+            $this->forexWithdraw($transaction->target_id, $transaction->amount, $comment);
         }
 
         $data = [
@@ -484,6 +485,7 @@ class Txn
         $transaction = Transaction::tnx($tnx);
 
         $uId = $userId == null ? auth()->user()->id : $userId;
+
         $user = User::find($uId);
 
         try {
@@ -543,7 +545,7 @@ class Txn
             }
         }
 
-            if ($status == TxnStatus::Pending && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
+            if (($status == TxnStatus::Pending) && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
                 if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
                     $this->deductBonusFromForexAccount($transaction, $user, $uId, 'pending');
                 }

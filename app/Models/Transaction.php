@@ -31,10 +31,10 @@ class Transaction extends Model
     /**
      * The "booted" method of the model.
      */
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ExcludeNoneStatusScope);
-    }
+    // protected static function booted(): void
+    // {
+    //     static::addGlobalScope(new ExcludeNoneStatusScope);
+    // }
 
     protected $searchable = [
         'amount',

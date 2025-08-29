@@ -16,13 +16,13 @@
         </li>
         @endcan
 
-        @can('site-settings')
+        @canany('site-settings','customer-registration-settings')
         <li>
             <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
                 {{ __('Site Settings') }}
             </a>
         </li>
-        @endcan
+        @endcanany
 
         @can('banner-settings')
         <li>

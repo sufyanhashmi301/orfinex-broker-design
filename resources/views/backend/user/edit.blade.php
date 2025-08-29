@@ -469,11 +469,16 @@
 @endsection
 @section('script')
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
+      <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             $("select.select2").select2({
                 tags: true
-            })
+            });
+
+            // Phone field initialization is handled in __basic_info.blade.php
+            // No duplicate initialization needed here
         });
 
         $('#bonus-form').on('submit', function(){

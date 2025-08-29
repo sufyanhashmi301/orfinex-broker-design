@@ -37,13 +37,25 @@ class SettingController extends Controller
         $input = $request->all();
 //        dd($input);
         $user = \Auth::user();
+        
+        // Get phone restriction setting
+        $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+        
+        // Build phone validation rules
+        $phoneRules = ['required', 'string', 'max:255'];
+        
+        // Add unique validation if phone restriction is enabled
+        if ($isPhoneRestricted) {
+            $phoneRules[] = 'unique:users,phone,' . $user->id;
+        }
+        
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
             'username' => 'required|unique:users,username,'.$user->id,
             'gender' => 'required',
             'date_of_birth' => 'date',
-            'phone' => 'required',
+            'phone' => $phoneRules,
         ]);
 
         if ($validator->fails()) {

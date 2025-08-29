@@ -613,6 +613,7 @@ Route::prefix('team')->group(function() {
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
     Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+    Route::post('symbols/{symbol}/check-groups', [SymbolController::class, 'checkSymbolGroups'])->name('symbols.check-groups');
     Route::post('symbol-groups/export', [SymbolGroupController::class, 'export'])->name('symbol-groups.export');
 
 

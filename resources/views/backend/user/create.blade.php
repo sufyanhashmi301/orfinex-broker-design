@@ -85,7 +85,7 @@
                                     <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" name="phone" class="form-control" placeholder="e.g. 1234567890" value="{{ old('phone') }}">
+                            <input type="text" name="phone" class="form-control" id="phone" placeholder="{{ __('Phone Number') }}" value="{{ old('phone') }}">
                             @error('phone')
                                 <span class="error" role="alert">{{ $message }}</span>
                             @enderror
@@ -401,10 +401,93 @@
     </form>
 @endsection
 @section('script')
+<script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
 <script>
 $(document).ready(function() {
     // Initialize select2
     $('.select2').select2();
+
+    // Initialize intlTelInput for phone field
+    let phoneIti = null;
+    if (document.getElementById('phone')) {
+        const phoneInput = document.querySelector("#phone");
+        phoneIti = window.intlTelInput(phoneInput, {
+            initialCountry: "ae", // Set UAE as initial country
+            showSelectedDialCode: true,
+            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        });
+        
+        // Check if there's an old country value (validation error) and set the phone input accordingly
+        const oldCountry = '{{ old("country") }}';
+        if (oldCountry) {
+            // Extract country name from old value (format: "Country Name:+123")
+            const countryName = oldCountry.split(':')[0];
+            
+            // Map country names to ISO codes for intlTelInput
+            const countryCodeMap = {
+                'Afghanistan': 'af', 'Albania': 'al', 'Algeria': 'dz', 'Andorra': 'ad', 'Angola': 'ao',
+                'Antigua and Barbuda': 'ag', 'Argentina': 'ar', 'Armenia': 'am', 'Australia': 'au',
+                'Austria': 'at', 'Azerbaijan': 'az', 'Bahamas': 'bs', 'Bahrain': 'bh', 'Bangladesh': 'bd',
+                'Barbados': 'bb', 'Belarus': 'by', 'Belgium': 'be', 'Belize': 'bz', 'Benin': 'bj',
+                'Bhutan': 'bt', 'Bolivia': 'bo', 'Bosnia and Herzegovina': 'ba', 'Botswana': 'bw',
+                'Brazil': 'br', 'Brunei': 'bn', 'Bulgaria': 'bg', 'Burkina Faso': 'bf', 'Burundi': 'bi',
+                'Cambodia': 'kh', 'Cameroon': 'cm', 'Canada': 'ca', 'Cape Verde': 'cv', 'Central African Republic': 'cf',
+                'Chad': 'td', 'Chile': 'cl', 'China': 'cn', 'Colombia': 'co', 'Comoros': 'km',
+                'Congo': 'cg', 'Costa Rica': 'cr', 'Croatia': 'hr', 'Cuba': 'cu', 'Cyprus': 'cy',
+                'Czech Republic': 'cz', 'Democratic Republic of the Congo': 'cd', 'Denmark': 'dk',
+                'Djibouti': 'dj', 'Dominica': 'dm', 'Dominican Republic': 'do', 'East Timor': 'tl',
+                'Ecuador': 'ec', 'Egypt': 'eg', 'El Salvador': 'sv', 'Equatorial Guinea': 'gq',
+                'Eritrea': 'er', 'Estonia': 'ee', 'Ethiopia': 'et', 'Fiji': 'fj', 'Finland': 'fi',
+                'France': 'fr', 'Gabon': 'ga', 'Gambia': 'gm', 'Georgia': 'ge', 'Germany': 'de',
+                'Ghana': 'gh', 'Greece': 'gr', 'Grenada': 'gd', 'Guatemala': 'gt', 'Guinea': 'gn',
+                'Guinea-Bissau': 'gw', 'Guyana': 'gy', 'Haiti': 'ht', 'Honduras': 'hn', 'Hungary': 'hu',
+                'Iceland': 'is', 'India': 'in', 'Indonesia': 'id', 'Iran': 'ir', 'Iraq': 'iq',
+                'Ireland': 'ie', 'Israel': 'il', 'Italy': 'it', 'Ivory Coast': 'ci', 'Jamaica': 'jm',
+                'Japan': 'jp', 'Jordan': 'jo', 'Kazakhstan': 'kz', 'Kenya': 'ke', 'Kiribati': 'ki',
+                'Kuwait': 'kw', 'Kyrgyzstan': 'kg', 'Laos': 'la', 'Latvia': 'lv', 'Lebanon': 'lb',
+                'Lesotho': 'ls', 'Liberia': 'lr', 'Libya': 'ly', 'Liechtenstein': 'li', 'Lithuania': 'lt',
+                'Luxembourg': 'lu', 'Macedonia': 'mk', 'Madagascar': 'mg', 'Malawi': 'mw', 'Malaysia': 'my',
+                'Maldives': 'mv', 'Mali': 'ml', 'Malta': 'mt', 'Marshall Islands': 'mh', 'Mauritania': 'mr',
+                'Mauritius': 'mu', 'Mexico': 'mx', 'Micronesia': 'fm', 'Moldova': 'md', 'Monaco': 'mc',
+                'Mongolia': 'mn', 'Montenegro': 'me', 'Morocco': 'ma', 'Mozambique': 'mz', 'Myanmar': 'mm',
+                'Namibia': 'na', 'Nauru': 'nr', 'Nepal': 'np', 'Netherlands': 'nl', 'New Zealand': 'nz',
+                'Nicaragua': 'ni', 'Niger': 'ne', 'Nigeria': 'ng', 'North Korea': 'kp', 'Norway': 'no',
+                'Oman': 'om', 'Pakistan': 'pk', 'Palau': 'pw', 'Panama': 'pa', 'Papua New Guinea': 'pg',
+                'Paraguay': 'py', 'Peru': 'pe', 'Philippines': 'ph', 'Poland': 'pl', 'Portugal': 'pt',
+                'Qatar': 'qa', 'Romania': 'ro', 'Russia': 'ru', 'Rwanda': 'rw', 'Saint Kitts and Nevis': 'kn',
+                'Saint Lucia': 'lc', 'Saint Vincent and the Grenadines': 'vc', 'Samoa': 'ws', 'San Marino': 'sm',
+                'Sao Tome and Principe': 'st', 'Saudi Arabia': 'sa', 'Senegal': 'sn', 'Serbia': 'rs',
+                'Seychelles': 'sc', 'Sierra Leone': 'sl', 'Singapore': 'sg', 'Slovakia': 'sk', 'Slovenia': 'si',
+                'Solomon Islands': 'sb', 'Somalia': 'so', 'South Africa': 'za', 'South Korea': 'kr', 'South Sudan': 'ss',
+                'Spain': 'es', 'Sri Lanka': 'lk', 'Sudan': 'sd', 'Suriname': 'sr', 'Swaziland': 'sz',
+                'Sweden': 'se', 'Switzerland': 'ch', 'Syria': 'sy', 'Taiwan': 'tw', 'Tajikistan': 'tj',
+                'Tanzania': 'tz', 'Thailand': 'th', 'Togo': 'tg', 'Tonga': 'to', 'Trinidad and Tobago': 'tt',
+                'Tunisia': 'tn', 'Turkey': 'tr', 'Turkmenistan': 'tm', 'Tuvalu': 'tv', 'Uganda': 'ug',
+                'Ukraine': 'ua', 'United Arab Emirates': 'ae', 'United Kingdom': 'gb', 'United States': 'us',
+                'Uruguay': 'uy', 'Uzbekistan': 'uz', 'Venezuela': 've', 'Vietnam': 'vn', 'Yemen': 'ye',
+                'Zambia': 'zm', 'Zimbabwe': 'zw'
+            };
+            
+            const countryCode = countryCodeMap[countryName];
+            if (countryCode) {
+                phoneIti.setCountry(countryCode);
+            }
+        } else {
+            // Set UAE as default country if no old value
+            phoneIti.setCountry("ae");
+        }
+    }
+
+    // Handle form submission to format phone number
+    $('form').on('submit', function(e) {
+        if (phoneIti) {
+            const phoneNumber = phoneIti.getNumber();
+            if (phoneNumber) {
+                // Update the phone input with the full formatted number
+                document.getElementById('phone').value = phoneNumber;
+            }
+        }
+    });
 
     // Function to toggle KYC fields based on level
     function toggleKycFields(level) {

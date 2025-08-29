@@ -32,7 +32,9 @@ class TransactionController extends Controller
             ->orderBy('balance', 'desc')
             ->get();
 
-        $query = Transaction::where('user_id', auth()->user()->id)->where('type', '!=', 'ib_bonus');;
+        $query = Transaction::where('user_id', auth()->user()->id)
+            ->where('type', '!=', 'ib_bonus')
+            ->where('status', '!=', \App\Enums\TxnStatus::None); // Exclude none status
 
         if (request('transaction_date')) {
             $filter = request('transaction_date');
@@ -90,7 +92,8 @@ class TransactionController extends Controller
 
     public function export(Request $request)
     {
-        $query = Transaction::where('user_id', auth()->user()->id);
+        $query = Transaction::where('user_id', auth()->user()->id)
+            ->where('status', '!=', \App\Enums\TxnStatus::None); // Exclude none status
 
         if ($request->date) {
             $filter = $request->date;

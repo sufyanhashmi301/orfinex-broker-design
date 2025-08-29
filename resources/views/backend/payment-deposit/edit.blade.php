@@ -52,6 +52,7 @@
                                         <div class="input-area">
                                             <select name="fields[{{ $index }}][type]" class="form-control w-100 field-type">
                                                 <option value="text" {{ ($field['type'] ?? '') === 'text' ? 'selected' : '' }}>Input Text</option>
+                                                <option value="date" {{ ($field['type'] ?? '') === 'date' ? 'selected' : '' }}>Date</option>
                                                 <option value="checkbox" {{ ($field['type'] ?? '') === 'checkbox' ? 'selected' : '' }}>Checkbox</option>
                                                 <option value="radio" {{ ($field['type'] ?? '') === 'radio' ? 'selected' : '' }}>Radio</option>
                                                 <option value="dropdown" {{ ($field['type'] ?? '') === 'dropdown' ? 'selected' : '' }}>Dropdown</option>
@@ -156,6 +157,7 @@
                         <div class="input-area">
                             <select name="fields[${i}][type]" class="form-control w-100 field-type">
                                 <option value="text">Input Text</option>
+                                <option value="date">Date</option>
                                 <option value="checkbox">Checkbox</option>
                                 <option value="radio">Radio</option>
                                 <option value="dropdown">Dropdown</option>

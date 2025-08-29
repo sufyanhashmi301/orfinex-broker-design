@@ -55,8 +55,8 @@ class TransactionController extends Controller
             $accessibleUsersQuery = getAccessibleUserIds();
             $accessibleUserIds = $accessibleUsersQuery->pluck('id');
 
-            // Base query (without order) for summary
-            $baseQuery = Transaction::query();
+            // Base query (without order) for summary - exclude none status transactions
+            $baseQuery = Transaction::query()->where('status', '!=', \App\Enums\TxnStatus::None);
 
             if ($id && $accessibleUserIds->contains($id)) {
                 $baseQuery->where('user_id', $id);
@@ -174,8 +174,10 @@ class TransactionController extends Controller
     public function report()
     {
         $users = User::all();
-        // Build the query
-        $query = Transaction::select(['type', 'status', DB::raw('SUM(amount) as total')])->groupBy('type', 'status');
+        // Build the query - exclude none status for reports
+        $query = Transaction::where('status', '!=', TxnStatus::None)
+            ->select(['type', 'status', DB::raw('SUM(amount) as total')])
+            ->groupBy('type', 'status');
 
         $results = $query->get()->groupBy(function ($item) {
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
@@ -195,7 +197,7 @@ class TransactionController extends Controller
             $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
             $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
             $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
-            $none = round($records->filter(fn ($r) => $r->status === TxnStatus::None)->sum('total'), 2);
+
 
             $total_amount = $records->sum('total');
 
@@ -205,7 +207,7 @@ class TransactionController extends Controller
                 'success' => $success,
                 'pending' => $pending,
                 'rejected' => $rejected,
-                'none' => $none,
+
                 'total' => $total_amount,
             ];
 
@@ -228,8 +230,8 @@ class TransactionController extends Controller
 
         $selectedUser = $userId ? User::find($userId) : null;
 
-        // Build the query
-        $query = Transaction::query()
+        // Build the query - exclude none status for user transaction summary
+        $query = Transaction::where('status', '!=', TxnStatus::None)
             ->select(['type', 'status', DB::raw('SUM(amount) as total')])
             ->groupBy('type', 'status');
 
@@ -267,7 +269,7 @@ class TransactionController extends Controller
             $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
             $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
             $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
-            $none = round($records->filter(fn ($r) => $r->status === TxnStatus::None)->sum('total'), 2);
+
 
             $total_amount = $records->sum('total');
 
@@ -277,7 +279,7 @@ class TransactionController extends Controller
                 'success' => $success,
                 'pending' => $pending,
                 'rejected' => $rejected,
-                'none' => $none,
+
                 'total' => $total_amount,
             ];
 
@@ -331,8 +333,8 @@ class TransactionController extends Controller
             $userIds = $allUsers->pluck('user.id')->toArray();
             $currency = setting('site_currency', 'global');
 
-            // Build base transaction query
-            $txnQuery = Transaction::query()
+            // Build base transaction query - exclude none status for referral network report
+            $txnQuery = Transaction::where('status', '!=', TxnStatus::None)
                 ->select(['user_id', 'type', 'status', DB::raw('SUM(amount) as total')])
                 ->whereIn('user_id', $userIds)
                 ->groupBy('user_id', 'type', 'status');
@@ -377,7 +379,7 @@ class TransactionController extends Controller
                         'success' => round($records->where('status', TxnStatus::Success)->sum('total'), 2),
                         'pending' => round($records->where('status', TxnStatus::Pending)->sum('total'), 2),
                         'rejected' => round($records->where('status', TxnStatus::Failed)->sum('total'), 2),
-                        'none' => round($records->where('status', TxnStatus::None)->sum('total'), 2),
+
                         'total' => round($records->sum('total'), 2),
                     ];
 

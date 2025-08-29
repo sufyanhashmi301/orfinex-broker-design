@@ -44,7 +44,10 @@ class PaymentDepositController extends Controller
             $question->fields = $question->fields ?: [];
         });
 
-        return view('frontend.prime_x.payment-deposit.index', compact('latestRequest', 'depositQuestions'));
+        // Get previously used dates for suggestions
+        $previouslyUsedDates = $this->getPreviouslyUsedDates($depositQuestions);
+
+        return view('frontend.prime_x.payment-deposit.index', compact('latestRequest', 'depositQuestions', 'previouslyUsedDates'));
     }
 
     /**
@@ -220,6 +223,11 @@ class PaymentDepositController extends Controller
                         $fieldRules[] = 'max:500'; // Prevent large inputs
                         break;
                         
+                    case 'date':
+                        $fieldRules[] = 'date';
+                        $fieldRules[] = 'date_format:Y-m-d';
+                        break;
+                        
                     case 'checkbox':
                         $fieldRules[] = 'array';
                         $fieldRules[] = 'max:10'; // Limit selections
@@ -346,5 +354,63 @@ class PaymentDepositController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Get previously used dates from existing payment deposit requests
+     */
+    private function getPreviouslyUsedDates($depositQuestions): array
+    {
+        $previousDates = [];
+        
+        // Get field names that are date type
+        $dateFieldNames = [];
+        foreach ($depositQuestions as $question) {
+            foreach ($question->fields as $field) {
+                if ($field['type'] === 'date') {
+                    $dateFieldNames[] = $field['name'];
+                }
+            }
+        }
+        
+        if (empty($dateFieldNames)) {
+            return $previousDates;
+        }
+        
+        // Get all approved requests with date fields
+        $requests = PaymentDepositRequest::where('status', PaymentDepositRequest::STATUS_APPROVED)
+            ->whereNotNull('fields')
+            ->get();
+            
+        foreach ($requests as $request) {
+            if (is_array($request->fields)) {
+                foreach ($request->fields as $fieldName => $value) {
+                    if (in_array($fieldName, $dateFieldNames) && !empty($value)) {
+                        // Validate date format
+                        try {
+                            $date = \Carbon\Carbon::createFromFormat('Y-m-d', $value);
+                            if (!isset($previousDates[$fieldName])) {
+                                $previousDates[$fieldName] = [];
+                            }
+                            if (!in_array($date->format('Y-m-d'), $previousDates[$fieldName])) {
+                                $previousDates[$fieldName][] = $date->format('Y-m-d');
+                            }
+                        } catch (\Exception $e) {
+                            // Skip invalid dates
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Sort dates in descending order (newest first)
+        foreach ($previousDates as $fieldName => $dates) {
+            rsort($previousDates[$fieldName]);
+            // Limit to last 10 dates per field
+            $previousDates[$fieldName] = array_slice($previousDates[$fieldName], 0, 10);
+        }
+        
+        return $previousDates;
     }
 }

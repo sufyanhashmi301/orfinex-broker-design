@@ -28,13 +28,7 @@ class Transaction extends Model
         'amount' => 'double',
     ];
 
-    /**
-     * The "booted" method of the model.
-     */
-    // protected static function booted(): void
-    // {
-    //     static::addGlobalScope(new ExcludeNoneStatusScope);
-    // }
+
 
     protected $searchable = [
         'amount',

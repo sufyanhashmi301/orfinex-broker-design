@@ -1149,6 +1149,7 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
                 ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
                 ->latest();
 
             return Datatables::of($data)
@@ -1168,7 +1169,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
     {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
-                ->where('type', TxnType::IbBonus->value);
+                ->where('type', TxnType::IbBonus->value)
+                ->where('status', '!=', \App\Enums\TxnStatus::None); // Exclude none status
 
             $dateRanges = [];
 

@@ -7,16 +7,19 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Traits\Payment;
 use Binance\API;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Modules\Payment\Monnify\Monnify;
 use Mollie\Laravel\Facades\Mollie;
 use Payment\Securionpay\SecurionpayTxn;
 use Paystack;
-use Session;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Txn;
 
@@ -462,4 +465,136 @@ class IpnController extends Controller
           $this->paymentSuccess( $request->li_0_product_id);
         }
     }
+
+        public function uniwireIpn(Request $request)
+    {
+        try {
+            // Get raw content from the request
+            $rawContent = $request->getContent();
+            
+            // Log the raw content first
+            Log::info('Raw content received:', [
+                'content' => $rawContent,
+                'content_type' => $request->header('Content-Type'),
+                'method' => $request->method()
+            ]);
+            
+            // Decode the raw JSON content
+            $payload = json_decode($rawContent, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('JSON parsing failed', [
+                    'error' => json_last_error_msg(),
+                    'raw_content' => $rawContent,
+                    'content_length' => strlen($rawContent)
+                ]);
+                return response()->json([
+                    'error' => 'Invalid JSON payload',
+                    'details' => json_last_error_msg(),
+                    'received_content_type' => $request->header('Content-Type')
+                ], 400);
+            }
+
+            Log::info('Uniwire IPN payload: ' . $rawContent);
+
+            // Extract transaction ID based on callback type
+            $txn = null;
+            $passthrough = null;
+
+            if ($payload['callback_status'] === 'invoice_complete') {
+                if (isset($payload['invoice']['passthrough'])) {
+                    $passthrough = json_decode($payload['invoice']['passthrough'], true);
+                }
+            } elseif ($payload['callback_status'] === 'transaction_complete') {
+                if (isset($payload['transaction']['invoice']['passthrough'])) {
+                    $passthrough = json_decode($payload['transaction']['invoice']['passthrough'], true);
+                }
+            }
+
+            if (!$passthrough || !isset($passthrough['transaction_id'])) {
+                Log::error('Transaction ID not found in passthrough', ['payload' => $payload]);
+                return response()->json(['error' => 'Transaction ID not found'], 400);
+            }
+
+            $txn = $passthrough['transaction_id'];
+
+            // Start database transaction with row locking
+            return DB::transaction(function() use ($txn, $payload) {
+                // Get transaction with lock
+                $txnInfo = Transaction::where('tnx', $txn)->lockForUpdate()->first();
+                
+                if (!$txnInfo) {
+                    Log::error('Transaction not found', ['txn' => $txn]);
+                    return response()->json(['error' => 'Transaction not found'], 404);
+                }
+
+                // Check if transaction is already successful
+                if ($txnInfo->status == TxnStatus::Success) {
+                    Log::info('Transaction already successful, skipping processing', ['txn' => $txn]);
+                    return response()->json(['status' => 'success', 'message' => 'Transaction already processed']);
+                }
+
+                // Process transaction based on status
+                $status = $payload['callback_status'];
+                switch ($status) {
+                    case 'transaction_pending':
+                        $txnInfo->update([
+                            'status' => TxnStatus::Pending,
+                            'approval_cause' => 'Pending',
+                            'manual_field_data' => json_encode([
+                                'txid' => $payload['transaction']['txid'] ?? null,
+                                'confirmations' => $payload['transaction']['confirmations'] ?? 0
+                            ])
+                        ]);
+                        break;
+
+                    case 'transaction_complete':
+                    case 'invoice_complete':
+                        // Get transaction data based on callback type
+                        $transactionData = $status === 'transaction_complete' ? 
+                            $payload['transaction'] : 
+                            (isset($payload['invoice']['transactions'][0]) ? $payload['invoice']['transactions'][0] : null);
+
+                        if (!$transactionData) {
+                            Log::error('No transaction data found', ['payload' => $payload]);
+                            return response()->json(['error' => 'No transaction data found'], 400);
+                        }
+
+                        $txnInfo->update([
+                            'pay_amount' => $transactionData['amount'] ?? 0,
+                            'pay_currency' => $transactionData['currency'] ?? 'USDT-TRX',
+                            'manual_field_data' => json_encode([
+                                'txid' => $transactionData['txid'] ?? null,
+                                'confirmations' => $transactionData['confirmations'] ?? 0,
+                                'network' => $payload['transaction']['network'] ?? 'mainnet',
+                                'risk_level' => $payload['transaction']['risk_level'] ?? null
+                            ]),
+                            'approval_cause' => 'Payment complete'
+                        ]);
+                        return self::paymentSuccess($txn);
+
+                    case 'transaction_failed':
+                        $txnInfo->update([
+                            'status' => TxnStatus::Failed,
+                            'approval_cause' => 'Transaction failed'
+                        ]);
+                        break;
+
+                    default:
+                        Log::warning('Unhandled Uniwire callback status', ['status' => $status]);
+                        return response()->json(['warning' => 'Unhandled status'], 200);
+                }
+
+                return response()->json(['status' => 'success']);
+            }, 3); // 3 retries if deadlock occurs
+
+        } catch (\Exception $e) {
+            Log::error('Error processing Uniwire IPN', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
+    }
+
 }

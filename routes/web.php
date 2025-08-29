@@ -258,6 +258,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
     Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
     Route::post('match2pay', 'match2payIpn')->name('match2pay');
+    Route::post('uniwire', 'uniwireIpn')->name('uniwire');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');
@@ -295,6 +296,10 @@ Route::get('user/ib-program', [IBController::class, 'index'])->name('user.ib-pro
 Route::post('/ib/transfer/balance', [IBController::class, 'ibTransferBalance'])->name('ib.transfer.balance');
 Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-program.store');
 
+// Payment Deposit Request Routes
+Route::get('user/payment-deposit', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'index'])->name('user.payment-deposit');
+Route::post('user/payment-deposit/store', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'store'])->name('user.payment-deposit.store');
+Route::get('user/payment-deposit/{id}', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'show'])->name('user.payment-deposit.show');
 
 // Route::post('/ib/transfer/balance', 'IBController@ibTransferBalance')->name('user.ib.transfer.balance');
 
@@ -400,6 +405,10 @@ Route::get('user/webterminal', function () {
 Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
 
+// Veriff KYC Routes
+Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');
+Route::post('user/veriff/kyc/status', [\App\Http\Controllers\VeriffController::class, 'updateKycStatus'])->name('user.kyc.veriff.status');
+
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
 Route::view('verify-email-2', 'frontend::auth.verify-email-2');
@@ -409,3 +418,7 @@ Route::view('register-2', 'frontend::auth.register-2');
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
 Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');
+
+
+
+

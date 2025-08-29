@@ -87,7 +87,7 @@
             <div class="grid md:grid-cols-3 grid-cols-2 gap-5 h-full">
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -95,14 +95,14 @@
                                 {{ $dataCount['monthly_referrals'] }}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('This Month') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Lot size') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -110,14 +110,14 @@
                                 {{ $dataCount['current_month_lots'] }}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('This Month') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Commission') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -125,7 +125,7 @@
                                 {{ $dataCount['current_month_ib_bonus'] }} {{$currency}}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('This Month') }}
                         </p>
                     </div>
@@ -133,7 +133,7 @@
 
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -141,14 +141,14 @@
                                 {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Lot size') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -156,14 +156,14 @@
                                 {{ $dataCount['total_lots'] }}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('Total') }}
                         </p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body p-6">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                        <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-6">
                             {{ __('Commission') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
@@ -171,7 +171,7 @@
                                 {{ $dataCount['total_ib_bonus'] }} {{$currency}}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                        <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
                             {{ __('Total') }}
                         </p>
                     </div>
@@ -198,7 +198,7 @@
                     </div>
                     <div class="flex items-center justify-between gap-3 mt-5 mb-4">
                         <div class="flex-1">
-                            <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-1">
+                            <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-1">
                                 {{ __('Your Current Balance') }}
                             </p>
                             <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none">
@@ -284,12 +284,12 @@
                     </div>
 {{--                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">--}}
 {{--                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">--}}
-{{--                            <span class="text-slate-600 dark:text-slate-300 text-sm block">--}}
+{{--                            <span class="text-slate-600 dark:text-slate-100 text-sm block">--}}
 {{--                                {{ __('Sales: 75%') }}--}}
 {{--                            </span>--}}
 {{--                        </div>--}}
 {{--                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">--}}
-{{--                            <span class="text-slate-600 dark:text-slate-300 text-sm block">--}}
+{{--                            <span class="text-slate-600 dark:text-slate-100 text-sm block">--}}
 {{--                                {{ __('Referral: 75%') }}--}}
 {{--                            </span>--}}
 {{--                        </div>--}}
@@ -302,7 +302,7 @@
     <div class="grid lg:grid-cols-4 grid-cols-2 gap-5 mb-6">
         <div class="card">
             <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-3">
                     {{ __('Net Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
@@ -312,7 +312,7 @@
         </div>
         <div class="card">
             <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-3">
                     {{ __('Net Withdrawal') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
@@ -332,7 +332,7 @@
 {{--        </div>--}}
         <div class="card">
             <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-3">
                     {{ __('Net Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
@@ -342,7 +342,7 @@
         </div>
         <div class="card">
             <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                <p class="text-slate-600 dark:text-slate-200 text-sm font-medium mb-3">
                     {{ __('Net Volume') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">

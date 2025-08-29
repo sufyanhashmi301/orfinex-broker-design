@@ -43,7 +43,7 @@ class DatabaseConfigServiceProvider extends ServiceProvider
         $username = $settings['username'] ?? env('MT5_DB_USERNAME', 'forge');
         $password = $settings['password'] ?? env('MT5_DB_PASSWORD', '');
 
-        // Set the database configuration dynamically
+        // Set the database configuration dynamically with timeout and resilience options
         Config::set('database.connections.mt5_db', [
             'driver'    => 'mysql',
             'host'      => $host,
@@ -54,11 +54,19 @@ class DatabaseConfigServiceProvider extends ServiceProvider
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix'    => '',
-            'strict'    => true,
+            'strict'    => false, // Allow more flexibility for timeout scenarios
             'engine'    => null,
             'options'   => [
-                \PDO::ATTR_PERSISTENT => true, // Enable persistent connections
+                \PDO::ATTR_PERSISTENT => false, // Disable persistent connections to avoid hanging connections
+                \PDO::ATTR_TIMEOUT => env('MT5_DB_TIMEOUT', 10), // Connection timeout in seconds
+                2003 => env('MT5_DB_CONNECT_TIMEOUT', 5), // MYSQL_ATTR_CONNECT_TIMEOUT constant value
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, // Ensure exceptions are thrown
+                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true, // Use buffered queries for better timeout handling
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION wait_timeout=" . env('MT5_DB_WAIT_TIMEOUT', 30) . ", interactive_timeout=" . env('MT5_DB_INTERACTIVE_TIMEOUT', 30),
             ],
+            // Laravel specific timeout settings
+            'sticky' => false,
+            'read_write_timeout' => env('MT5_DB_READ_WRITE_TIMEOUT', 10),
         ]);
     }
 }

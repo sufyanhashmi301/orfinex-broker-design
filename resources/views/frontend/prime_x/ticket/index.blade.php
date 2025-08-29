@@ -13,7 +13,7 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-start">
-                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Total Tickets') }}
                         </div>
                         <div class="count text-slate-900 dark:text-white text-xl font-medium">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-start">
-                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Closed Tickets') }}
                         </div>
                         <div class="count text-slate-900 dark:text-white text-xl font-medium">
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-start">
-                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Open Tickets') }}
                         </div>
                         <div class="count text-slate-900 dark:text-white text-xl font-medium">
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-start">
-                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Resolved Tickets') }}
                         </div>
                         <div class="count text-slate-900 dark:text-white text-xl font-medium">

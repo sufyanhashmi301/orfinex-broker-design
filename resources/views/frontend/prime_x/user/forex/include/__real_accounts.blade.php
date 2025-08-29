@@ -26,65 +26,65 @@
                         </div>
                         <ul class="h-full p-3">
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Number') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-right text-slate-600 dark:text-slate-100">
                                     {{ $account->login }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Account Type') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-right text-slate-600 dark:text-slate-100">
                                     {{ $account->account_type }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Platform') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-100">
                                     {{ __('MT5') }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Server') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-100">
                                     {{ $account->server }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Balance') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-100">
                                     {{ get_mt5_account_balance($account->login) }} {{ $account->currency }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Leverage') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-100">
                                     {{ $account->leverage }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
-                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Equity') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-100">
                                     {{ get_mt5_account_equity($account->login) }}
                                 </span>
                             </li>

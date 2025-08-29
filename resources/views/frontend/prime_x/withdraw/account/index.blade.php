@@ -38,10 +38,10 @@
                                     </div>
                                 </div>
                                 <div class="flex-1 text-start">
-                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                    <h4 class="text-sm font-medium text-slate-600 dark:text-white whitespace-nowrap">
                                         {{ $account->method_name }}
                                     </h4>
-                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
                                         {{ __('Account') }}: {{ $account->method->currency }}
                                     </div>
                                 </div>

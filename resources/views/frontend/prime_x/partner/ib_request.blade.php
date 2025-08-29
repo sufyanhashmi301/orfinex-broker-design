@@ -40,7 +40,7 @@
                                 @endif
                             </div>
                             <div class="mt-5">
-                                <p class="text-sm dark:text-slate-300">
+                                <p class="text-sm dark:text-slate-100">
                                     {{ __('If you face any issue, please visit our') }}
                                     <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">{{ __('Customer Support') }}</a>
                                     {{ __('or Email us at') }}
@@ -82,7 +82,7 @@
                                 @endif
                             </div>
                             <div class="mt-5">
-                                <p class="text-sm dark:text-slate-300">
+                                <p class="text-sm dark:text-slate-100">
                                     {{ __('If you face any issue, please visit our') }}
                                     <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">{{ __('Customer Support') }}</a>
                                     {{ __('or Email us at') }}

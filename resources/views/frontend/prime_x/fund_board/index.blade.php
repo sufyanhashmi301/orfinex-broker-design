@@ -22,13 +22,13 @@
             </ul>
         </div>
         <div class="flex flex-wrap ">
-            <a href="" class="btn btn-sm inline-flex justify-center btn-white dark:bg-slate-700 dark:text-slate-300 m-1">
+            <a href="" class="btn btn-sm inline-flex justify-center btn-white dark:bg-slate-700 dark:text-slate-100 m-1">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus"></iconify-icon>
                     <span>{{ __('Deposit Funds') }}</span>
                 </span>
             </a>
-            <a href="" class="btn btn-sm inline-flex justify-center btn-dark dark:bg-slate-700 dark:text-slate-300 m-1">
+            <a href="" class="btn btn-sm inline-flex justify-center btn-dark dark:bg-slate-700 dark:text-slate-100 m-1">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:hand-coins-light"></iconify-icon>
                     <span>{{ __('Get Funded') }}</span>

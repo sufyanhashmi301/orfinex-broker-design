@@ -27,6 +27,7 @@ use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Ledger;
 use App\Models\KycLevel;
 use App\Models\Lead;
 use App\Scopes\ExcludeGracePeriodScope;
@@ -580,29 +581,474 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
 
     public function destroy(Request $request, $id)
     {
-        // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
-        $superAdmin = Admin::where('name', 'Super Admin')->first();
+        try {
+            // Validate the admin key input
+            $request->validate([
+                'admin_key' => 'required|string|min:1|max:255'
+            ], [
+                'admin_key.required' => 'Super-Admin key is required for user deletion.',
+                'admin_key.string' => 'Super-Admin key must be a valid string.',
+                'admin_key.min' => 'Super-Admin key cannot be empty.',
+                'admin_key.max' => 'Super-Admin key is too long.'
+            ]);
 
-        // Check if the Super-Admin key exists in the database and the input matches
-        if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
-            // If the key doesn't match, notify error
-            notify()->error('Invalid Super-Admin key. Deletion denied.');
-            return redirect()->back();  // Redirect back to the previous page
+            // Fetch the Super-Admin from the database
+            $superAdmin = Admin::where('name', 'Super Admin')->first();
+
+            // Check if Super-Admin exists
+            if (!$superAdmin) {
+                $errorMessage = 'System error: Super-Admin not found. Please contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput();
+            }
+
+            // Check if Super-Admin has a key set
+            if (empty($superAdmin->key)) {
+                $errorMessage = 'System error: Super-Admin key not configured. Please contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput();
+            }
+
+            // Verify the provided key matches
+            if ($request->input('admin_key') !== $superAdmin->key) {
+                $errorMessage = 'Invalid Super-Admin key. Access denied.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error',
+                        'errors' => ['admin_key' => ['The provided Super-Admin key is incorrect.']]
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput()->withErrors(['admin_key' => 'The provided Super-Admin key is incorrect.']);
+            }
+
+            // Find the user to delete
+            $user = User::find($id);
+            if (!$user) {
+                $errorMessage = 'User not found. The user may have already been deleted.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error',
+                        'redirect' => route('admin.user.index')
+                    ], 404);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->route('admin.user.index');
+            }
+
+            // Store user info for logging before deletion
+            $deletedUserInfo = [
+                'id' => $user->id,
+                'name' => $user->name ?? 'N/A',
+                'email' => $user->email ?? 'N/A',
+                'created_at' => $user->created_at ?? 'N/A'
+            ];
+
+            // Begin transaction for cascade deletion
+            \DB::beginTransaction();
+            
+            try {
+                // Perform cascade deletion of all related data
+                $this->cascadeDeleteUserData($user);
+                
+                // Finally delete the user
+                $user->delete();
+                
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollback();
+                
+                $errorMessage = 'Failed to delete user and related data. Please try again or contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 500);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back();
+            }
+
+            $successMessage = 'User and all associated data deleted successfully. User: ' . ($deletedUserInfo['name'] ?? 'N/A') . ' (' . ($deletedUserInfo['email'] ?? 'N/A') . ')';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $successMessage,
+                    'type' => 'success',
+                    'redirect' => route('admin.user.index')
+                ], 200);
+            }
+            
+            notify()->success($successMessage);
+            return redirect()->route('admin.user.index');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed. Please check your input and try again.',
+                    'type' => 'error',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
+            notify()->error('Validation failed. Please check your input and try again.');
+            return redirect()->back()->withErrors($e->errors())->withInput();
+
+        } catch (\Exception $e) {
+            // Handle any unexpected errors
+            $errorMessage = 'An unexpected error occurred. Please try again or contact system administrator.';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'type' => 'error'
+                ], 500);
+            }
+            
+            notify()->error($errorMessage);
+            return redirect()->back()->withInput();
+        }
+    }
+
+    /**
+     * Cascade delete all user-related data
+     * 
+     * @param User $user
+     * @return void
+     */
+    private function cascadeDeleteUserData(User $user)
+    {
+        $userId = $user->id;
+        $deletionCounts = [];
+
+        // First, delete ledgers that reference user's transactions and accounts
+        // This is critical as ledgers have foreign key constraints to both transactions and accounts
+        $userTransactionIds = $user->transaction()->pluck('id')->toArray();
+        $userAccountIds = $user->accounts()->pluck('id')->toArray();
+        
+        // Delete ledgers referencing user's transactions
+        $ledgerTransactionCount = 0;
+        if (!empty($userTransactionIds)) {
+            $ledgerTransactionCount = Ledger::whereIn('transaction_id', $userTransactionIds)->count();
+            Ledger::whereIn('transaction_id', $userTransactionIds)->delete();
+        }
+        
+        // Delete ledgers referencing user's accounts  
+        $ledgerAccountCount = 0;
+        if (!empty($userAccountIds)) {
+            $ledgerAccountCount = Ledger::whereIn('account_id', $userAccountIds)->count();
+            Ledger::whereIn('account_id', $userAccountIds)->delete();
+        }
+        
+        $deletionCounts['ledgers_by_transaction'] = $ledgerTransactionCount;
+        $deletionCounts['ledgers_by_account'] = $ledgerAccountCount;
+
+        // Delete bonus_deductions that reference user's transactions or bonus_transactions
+        $bonusDeductionCount = 0;
+        if (\Schema::hasTable('bonus_deductions')) {
+            $bonusDeductionDeleteCount = 0;
+            
+            // Delete bonus_deductions that reference withdraw transactions from this user
+            if (!empty($userTransactionIds)) {
+                $bonusDeductionDeleteCount += \DB::table('bonus_deductions')
+                    ->whereIn('withdraw_transaction_id', $userTransactionIds)
+                    ->count();
+                \DB::table('bonus_deductions')
+                    ->whereIn('withdraw_transaction_id', $userTransactionIds)
+                    ->delete();
+            }
+            
+            // Delete bonus_deductions that reference bonus_transactions from this user
+            if (\Schema::hasTable('bonus_transactions') && (!empty($userTransactionIds) || !empty($userAccountIds))) {
+                $userBonusTransactionIds = [];
+                
+                if (!empty($userTransactionIds)) {
+                    $userBonusTransactionIds = array_merge($userBonusTransactionIds, 
+                        \DB::table('bonus_transactions')->whereIn('transaction_id', $userTransactionIds)->pluck('id')->toArray());
+                }
+                
+                if (!empty($userAccountIds)) {
+                    $userBonusTransactionIds = array_merge($userBonusTransactionIds, 
+                        \DB::table('bonus_transactions')->whereIn('account_id', $userAccountIds)->pluck('id')->toArray());
+                }
+                
+                $userBonusTransactionIds = array_unique($userBonusTransactionIds);
+                
+                if (!empty($userBonusTransactionIds)) {
+                    $bonusDeductionDeleteCount += \DB::table('bonus_deductions')
+                        ->whereIn('bonus_transaction_id', $userBonusTransactionIds)
+                        ->count();
+                    \DB::table('bonus_deductions')
+                        ->whereIn('bonus_transaction_id', $userBonusTransactionIds)
+                        ->delete();
+                }
+            }
+            
+            $bonusDeductionCount = $bonusDeductionDeleteCount;
+        }
+        $deletionCounts['bonus_deductions'] = $bonusDeductionCount;
+
+        // Delete bonus_transactions that reference user's transactions and accounts
+        $bonusTransactionCount = 0;
+        if (\Schema::hasTable('bonus_transactions')) {
+            $bonusTransactionDeleteCount = 0;
+            
+            // Delete by transaction_id
+            if (!empty($userTransactionIds)) {
+                $bonusTransactionDeleteCount += \DB::table('bonus_transactions')
+                    ->whereIn('transaction_id', $userTransactionIds)
+                    ->count();
+                \DB::table('bonus_transactions')
+                    ->whereIn('transaction_id', $userTransactionIds)
+                    ->delete();
+            }
+            
+            // Delete by account_id 
+            if (!empty($userAccountIds)) {
+                $bonusTransactionDeleteCount += \DB::table('bonus_transactions')
+                    ->whereIn('account_id', $userAccountIds)
+                    ->count();
+                \DB::table('bonus_transactions')
+                    ->whereIn('account_id', $userAccountIds)
+                    ->delete();
+            }
+            
+            $bonusTransactionCount = $bonusTransactionDeleteCount;
+        }
+        $deletionCounts['bonus_transactions'] = $bonusTransactionCount;
+
+        // Now safely delete Transactions
+        $transactionCount = $user->transaction()->count();
+        $user->transaction()->delete();
+        $deletionCounts['transactions'] = $transactionCount;
+
+        // Delete Forex Accounts (soft delete)
+        $forexCount = $user->ForexAccounts()->count();
+        $user->ForexAccounts()->delete(); // This will soft delete
+        $deletionCounts['forex_accounts'] = $forexCount;
+
+        // Now safely delete Accounts (wallet balances)
+        $accountCount = $user->accounts()->count();
+        $user->accounts()->delete();
+        $deletionCounts['accounts'] = $accountCount;
+
+        // Delete User Metas
+        $metaCount = $user->user_metas()->count();
+        $user->user_metas()->delete();
+        $deletionCounts['user_metas'] = $metaCount;
+
+        // Delete MetaTransactions
+        $metaTransactionCount = $user->metaTransaction()->count();
+        $user->metaTransaction()->delete();
+        $deletionCounts['meta_transactions'] = $metaTransactionCount;
+
+        // Delete MetaDeals
+        $metaDealCount = $user->metaDeals()->count();
+        $user->metaDeals()->delete();
+        $deletionCounts['meta_deals'] = $metaDealCount;
+
+        // Delete Notes
+        $noteCount = $user->notes()->count();
+        $user->notes()->delete();
+        $deletionCounts['notes'] = $noteCount;
+
+        // Delete Tickets (using HasTickets trait)
+        $ticketCount = \DB::table('tickets')->where('user_id', $userId)->count();
+        \DB::table('tickets')->where('user_id', $userId)->delete();
+        $deletionCounts['tickets'] = $ticketCount;
+
+        // Delete Leverage Updates
+        $leverageCount = $user->leverageUpdates()->count();
+        $user->leverageUpdates()->delete();
+        $deletionCounts['leverage_updates'] = $leverageCount;
+
+        // Delete IB Question Answers
+        try {
+            if ($user->ibQuestionAnswers) {
+                $user->ibQuestionAnswers()->delete();
+                $deletionCounts['ib_question_answers'] = 1;
+            } else {
+                $deletionCounts['ib_question_answers'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['ib_question_answers'] = 0;
         }
 
-        // Proceed with deleting the user if the key matches
-        $user = User::find($id);
+        // Delete Risk Profile Tag relationships (check if table exists first)
+        $riskTagCount = 0;
+        if (\Schema::hasTable('risk_profile_tag_user')) {
+            $riskTagCount = $user->riskProfileTags()->count();
+            $user->riskProfileTags()->detach();
+        }
+        $deletionCounts['risk_profile_tags'] = $riskTagCount;
 
-        // Ensure the user exists before attempting to delete
-        if ($user) {
-            $user->delete();
-            notify()->success('User deleted successfully');
-        } else {
-            notify()->error('User not found.');
+        // Delete Referral Relationship
+        try {
+            if ($user->referralRelationship) {
+                $user->referralRelationship()->delete();
+                $deletionCounts['referral_relationship'] = 1;
+            } else {
+                $deletionCounts['referral_relationship'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['referral_relationship'] = 0;
         }
 
-        // Redirect to the user listing page after the operation
-        return redirect()->route('admin.user.index');
+        // Delete Referral Links
+        try {
+            if ($user->getReferral()) {
+                $user->getReferral()->delete();
+                $deletionCounts['referral_links'] = 1;
+            } else {
+                $deletionCounts['referral_links'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['referral_links'] = 0;
+        }
+
+        // Update referrals to remove this user as referrer
+        $referralUpdateCount = User::where('ref_id', $userId)->count();
+        User::where('ref_id', $userId)->update(['ref_id' => null]);
+        $deletionCounts['referral_updates'] = $referralUpdateCount;
+
+        // Delete Bonus relationships (check if table exists first)
+        $bonusCount = 0;
+        if (\Schema::hasTable('bonus_user')) {
+            $bonusCount = $user->bonuses()->count();
+            $user->bonuses()->detach();
+        }
+        $deletionCounts['bonus_relationships'] = $bonusCount;
+
+        // Delete Customer Group relationships (check if table exists first)
+        $customerGroupCount = 0;
+        if (\Schema::hasTable('customer_group_has_customers')) {
+            $customerGroupCount = $user->customerGroups()->count();
+            $user->customerGroups()->detach();
+        }
+        $deletionCounts['customer_groups'] = $customerGroupCount;
+
+        // Delete Staff User relationships (check if table exists first)
+        $staffCount = 0;
+        if (\Schema::hasTable('staff_user')) {
+            $staffCount = $user->staff()->count();
+            $user->staff()->detach();
+        }
+        $deletionCounts['staff_relationships'] = $staffCount;
+
+        // Delete additional user-related records that might exist
+        $this->deleteAdditionalUserData($userId, $deletionCounts);
+
+        // Cascade deletion completed
+    }
+
+    /**
+     * Delete additional user-related data from junction tables and other references
+     * 
+     * @param int $userId
+     * @param array &$deletionCounts
+     * @return void
+     */
+    private function deleteAdditionalUserData($userId, &$deletionCounts)
+    {
+        // Delete from user_otps table
+        $otpCount = 0;
+        if (\Schema::hasTable('user_otps')) {
+            $otpCount = \DB::table('user_otps')->where('user_id', $userId)->count();
+            \DB::table('user_otps')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_otps'] = $otpCount;
+
+        // Delete from user_language table
+        $languageCount = 0;
+        if (\Schema::hasTable('user_language')) {
+            $languageCount = \DB::table('user_language')->where('user_id', $userId)->count();
+            \DB::table('user_language')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_language'] = $languageCount;
+
+        // Delete from rebate_records table
+        $rebateCount = 0;
+        if (\Schema::hasTable('rebate_records')) {
+            $rebateCount = \DB::table('rebate_records')->where('user_id', $userId)->count();
+            \DB::table('rebate_records')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['rebate_records'] = $rebateCount;
+
+        // Delete from user_ib_rules table
+        $ibRulesCount = 0;
+        if (\Schema::hasTable('user_ib_rules')) {
+            $ibRulesCount = \DB::table('user_ib_rules')->where('user_id', $userId)->count();
+            \DB::table('user_ib_rules')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_ib_rules'] = $ibRulesCount;
+
+        // Delete from old_transactions table if it exists
+        if (\Schema::hasTable('old_transactions')) {
+            $oldTxnCount = \DB::table('old_transactions')->where('user_id', $userId)->count();
+            \DB::table('old_transactions')->where('user_id', $userId)->delete();
+            $deletionCounts['old_transactions'] = $oldTxnCount;
+        }
+
+        // Delete from kyc_user pivot table if it exists
+        if (\Schema::hasTable('kyc_user')) {
+            $kycUserCount = \DB::table('kyc_user')->where('user_id', $userId)->count();
+            \DB::table('kyc_user')->where('user_id', $userId)->delete();
+            $deletionCounts['kyc_user'] = $kycUserCount;
+        }
+
+        // Delete any sessions for this user
+        $sessionCount = 0;
+        if (\Schema::hasTable('sessions')) {
+            $sessionCount = \DB::table('sessions')->where('user_id', $userId)->count();
+            \DB::table('sessions')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['sessions'] = $sessionCount;
+
+        // Delete personal access tokens if using Sanctum
+        if (\Schema::hasTable('personal_access_tokens')) {
+            $tokenCount = \DB::table('personal_access_tokens')
+                ->where('tokenable_type', User::class)
+                ->where('tokenable_id', $userId)
+                ->count();
+            \DB::table('personal_access_tokens')
+                ->where('tokenable_type', User::class)
+                ->where('tokenable_id', $userId)
+                ->delete();
+            $deletionCounts['personal_access_tokens'] = $tokenCount;
+        }
     }
 
     /**
@@ -1149,6 +1595,7 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
                 ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
                 ->latest();
 
             return Datatables::of($data)
@@ -1168,7 +1615,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
     {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
-                ->where('type', TxnType::IbBonus->value);
+                ->where('type', TxnType::IbBonus->value)
+                ->where('status', '!=', \App\Enums\TxnStatus::None); // Exclude none status
 
             $dateRanges = [];
 

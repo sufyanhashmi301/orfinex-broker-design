@@ -20,7 +20,7 @@
                 </span>
                 {{ __('Feel free to explore more of our services or check your account for the updated balance.') }}
             </p>
-            <blockquote class="border-0 text-slate-700 dark:text-slate-300 text-base my-5">
+            <blockquote class="border-0 text-slate-700 dark:text-slate-100 text-base my-5">
                 {{ __('Success is not final; failure is not fatal: It is the courage to continue that counts.') }}
                 <span class="text-sm text-slate-400 text-right block mt-3">
                     {{ __('- Winston Churchill') }}

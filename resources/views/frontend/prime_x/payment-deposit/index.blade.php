@@ -213,6 +213,17 @@
                                                     type="text" value=""
                                                     @if ($field['validation'] === 'required') required @endif>
                                             </div>
+                                        @elseif($field['type'] === 'date')
+                                            <div class="md:col-span-6 col-span-12">
+                                                <input name="fields[{{ $field['name'] }}]"
+                                                    class="form-control !text-lg dateOfBirth flatpickr-payment-date"
+                                                    type="text" value="" placeholder="YYYY-MM-DD" readonly
+                                                    data-field-name="{{ $field['name'] }}"
+                                                    @if ($field['validation'] === 'required') required @endif>
+                                                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                    {{ __('Click to select a date. Previously used dates will be highlighted in green.') }}
+                                                </div>
+                                            </div>
                                         @elseif($field['type'] === 'checkbox')
                                             <div class="col-span-12">
                                                 @foreach ($field['options'] as $index => $option)
@@ -275,8 +286,8 @@
                                         @elseif($field['type'] === 'file')
                                             <div class="md:col-span-6 col-span-12">
                                                 <div class="fileUpload">
-                                                    <input type="file" name="fields[{{ $field['name'] }}]" 
-                                                        class="form-control !text-lg" 
+                                                    <input type="file" name="fields[{{ $field['name'] }}]"
+                                                        class="form-control !text-lg"
                                                         accept="image/*,.pdf,.doc,.docx,.txt"
                                                         @if ($field['validation'] === 'required') required @endif>
                                                     <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -326,6 +337,56 @@
 
 @section('script')
     <script>
+        // Initialize flatpickr for payment deposit date fields
+        $(document).ready(function() {
+            // Get previously used dates from PHP
+            var previouslyUsedDates = @json($previouslyUsedDates ?? []);
+
+            // Initialize flatpickr for payment date fields using the predefined dateOfBirth class pattern
+            $('.flatpickr-payment-date').each(function() {
+                var $field = $(this);
+                var fieldName = $field.data('field-name');
+                var fieldDates = previouslyUsedDates[fieldName] || [];
+
+                // Initialize flatpickr with system standard configuration
+                var fpInstance = $field.flatpickr({
+                    dateFormat: "Y-m-d",
+                    allowInput: false,
+                    clickOpens: true,
+                    enableTime: false,
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        // Highlight previously used dates in green
+                        var dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                        if (fieldDates.includes(dateStr)) {
+                            dayElem.classList.add('previously-used-date');
+                            dayElem.style.backgroundColor = '#10b981';
+                            dayElem.style.color = 'white';
+                            dayElem.style.fontWeight = 'bold';
+                            dayElem.title = 'Previously used date - Click to select';
+                        }
+                    },
+                    onChange: function(selectedDates, dateStr, instance) {
+                        // Validate the selected date format
+                        if (dateStr && !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                            instance.clear();
+                            if (typeof tNotify === 'function') {
+                                tNotify('error', 'Please select a valid date');
+                            }
+                        }
+                    }
+                });
+
+                // Add information about previously used dates
+                if (fieldDates.length > 0) {
+                    var $helpText = $field.siblings('.text-xs');
+                    var datesList = fieldDates.slice(0, 5).join(', ');
+                    var moreText = fieldDates.length > 5 ? ` (and ${fieldDates.length - 5} more)` : '';
+                    $helpText.html($helpText.html() + '<br><strong>Recent dates:</strong> ' + datesList +
+                        moreText);
+                }
+            });
+        });
+
         // Function to reset submit button loading state
         function resetSubmitButton() {
             $('#submitRequestBtn').prop('disabled', false);

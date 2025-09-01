@@ -28,7 +28,7 @@
                                     @endforeach
 
                                     <!-- Wallet Accounts -->
-                                    @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
+                                    @include('frontend::wallets.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
                                 </select>
                             </div>
 

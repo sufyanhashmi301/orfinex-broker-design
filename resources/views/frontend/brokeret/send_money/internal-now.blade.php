@@ -23,7 +23,7 @@
                                     @foreach($forexAccounts as $forexAccount)
                                         <option value="{{ the_hash($forexAccount->login) }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                     @endforeach
-                                    @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
+                                    @include('frontend::wallets.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
 
                                 </select>
                             </div>
@@ -37,7 +37,7 @@
                                     @foreach($forexAccounts as $forexAccount)
                                         <option value="{{ the_hash($forexAccount->login) }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                     @endforeach
-                                    @include('frontend::wallet.include.__specific-wallet-dropdown', ['target_id_name' => 'receiver_account', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
+                                    @include('frontend::wallets.include.__specific-wallet-dropdown', ['target_id_name' => 'receiver_account', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
                                 </select>
                             </div>
 

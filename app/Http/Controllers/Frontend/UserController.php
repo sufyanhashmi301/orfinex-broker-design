@@ -178,6 +178,7 @@ class UserController extends Controller
             Notification::where('for', 'user')->where('user_id', auth()->user()->id)->update(['read' => 1]);
 
             return redirect()->back();
+
         }
         $notification = Notification::find($id);
         if ($notification->read == 0) {
@@ -188,3 +189,4 @@ class UserController extends Controller
         return redirect()->to($notification->action_url);
     }
 }
+

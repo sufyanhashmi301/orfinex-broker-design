@@ -4,16 +4,16 @@
     "src": "assets/common/js/index.js",
     "isEntry": true,
     "css": [
-      "assets/index.f39910bb.css"
+      "assets/index.994ee7ae.css"
     ]
   },
   "assets/common/css/style.css": {
-    "file": "assets/style.99b35054.css",
+    "file": "assets/style.229a15af.css",
     "src": "assets/common/css/style.css",
     "isEntry": true
   },
   "assets/common/js/index.css": {
-    "file": "assets/index.f39910bb.css",
+    "file": "assets/index.994ee7ae.css",
     "src": "assets/common/js/index.css"
   }
 }

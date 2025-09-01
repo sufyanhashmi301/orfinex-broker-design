@@ -3,26 +3,8 @@
     {{ __('Withdraw Successful') }}
 @endsection
 @section('content')
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 mb-6">
-        <div class="hidden md:block">
-            <div class="progress-steps md:flex justify-between items-center gap-5">
-                <div class="single-step w-full current">
-                    <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-800 progress_bar mb-5"></div>
-                    <div class="">
-                        <div class="text-theme-sm text-gray-500 dark:text-gray-400 mb-1">{{ __('Step - 1') }}</div>
-                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Withdraw Amount') }}</h4>
-                    </div>
-                </div>
-                <div class="single-step w-full current">
-                    <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-800 progress_bar mb-5"></div>
-                    <div class="">
-                        <div class="text-theme-sm text-gray-500 dark:text-gray-400 mb-1">{{ __('Step - 2') }}</div>
-                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Success') }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <x-progress-steps step-one-title="{{ __('Withdraw Amount') }}" :current-step="2" />
+    
     <div class="progress-steps-form rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div class="transaction-status flex flex-col items-center px-7 py-12">
             <div class="relative mb-10">

@@ -640,6 +640,15 @@ return [
                 'value' => 0, // default value if you want
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'auto_exchange_rates_update', // unique name for field
+                'label' => 'Auto Exchange Rates Update', // you know what label it is
+                'description' => 'Enable automatic exchange rates updates from external APIs',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value - enabled by default
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
@@ -657,6 +666,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
+
         ],
     ],
 
@@ -1638,6 +1648,19 @@ return [
     'features' => [
         'title' => 'Features Settings',
         'elements' => [
+            [
+                'type' => 'radio', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'deposit_account_mode', // unique name for field
+                'label' => 'Deposit Account Mode', // you know what label it is
+                'description' => 'Choose between default deposit accounts managed by admin or user request-based deposit accounts',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'default_deposit_accounts', // default value - this option will be checked by default
+                'options' => [
+                    'default_deposit_accounts' => 'Default Deposit Accounts',
+                    'request_deposit_accounts' => 'Request Deposit Account',
+                ],
+            ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean

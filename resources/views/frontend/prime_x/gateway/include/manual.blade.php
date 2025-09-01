@@ -1,17 +1,19 @@
 <div class="col-span-12">
-    <div class="frontend-editor-data space-y-4 text-lg">
+    <div class="frontend-editor-data space-y-4 text-lg mb-3">
         <h6 class="text-slate-900 dark:text-white">
             {{ __('Account Details:') }}
         </h6>
-        {!! $paymentDetails !!}
+        <div class="dark:text-slate-200">
+            {!! $paymentDetails !!}
+        </div>
     </div>
 </div>
 @foreach(json_decode($fieldOptions, true) as $key => $field)
 
     @if($field['type'] == 'file')
         <div class="col-span-12">
-            <div class="body-title">{{ __('' . $field['name']) }}</div>
-            <div class="wrap-custom-file">
+            <label class="form-label">{{ __('' . $field['name']) }}</label>
+            <div class="wrap-custom-file dark:border-slate-700">
                 <input
                     type="file"
                     name="manual_data[{{ $field['name'] }}]"
@@ -25,7 +27,7 @@
                         src="{{ asset('global/materials/upload.svg') }}"
                         alt="{{ __('Upload Icon') }}"
                     />
-                    <span>{{ __('Select ') . $field['name'] }}</span>
+                    <span class="dark:text-slate-200">{{ __('Select ') . $field['name'] }}</span>
                 </label>
             </div>
         </div>

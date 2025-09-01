@@ -78,12 +78,12 @@
         </div>
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-3 " id="pills-tabHorizontal" role="tablist">
             <li class="nav-item text-center" role="presentation">
-                <a href="#pills-runingOrdersHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300" id="pills-runingOrders-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-runingOrdersHorizontal" role="tab" aria-controls="pills-runingOrdersHorizontal" aria-selected="true">
+                <a href="#pills-runingOrdersHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-100" id="pills-runingOrders-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-runingOrdersHorizontal" role="tab" aria-controls="pills-runingOrdersHorizontal" aria-selected="true">
                     {{ __('Running Orders') }}
                 </a>
             </li>
             <li class="nav-item text-center" role="presentation">
-                <a href="#pills-ordersHistoryHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" id="pills-ordersHistory-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-ordersHistoryHorizontal" role="tab" aria-controls="pills-ordersHistoryHorizontal" aria-selected="false">
+                <a href="#pills-ordersHistoryHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100" id="pills-ordersHistory-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-ordersHistoryHorizontal" role="tab" aria-controls="pills-ordersHistoryHorizontal" aria-selected="false">
                     {{ __('Orders History') }}
                 </a>
             </li>

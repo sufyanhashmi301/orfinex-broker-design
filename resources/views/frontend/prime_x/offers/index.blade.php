@@ -70,20 +70,20 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
-                                    <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
+                                    <p class="text-xs text-slate-900 dark:text-slate-100 uppercase font-normal">{{ __('bonus') }}</p>
+                                    <span class="flex items-center text-slate-900 dark:text-slate-100 font-normal text-xs space-x-1 rtl:space-x-reverse ">
                                         <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
-                                <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
+                                <h6 class="text-slate-900 dark:text-slate-100 text-base	font-medium	mt-2 truncate">
                                     <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
                                     {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
-                                    <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
+                                    <span class="text-slate-900 dark:text-slate-100 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
                                     <del class="text-slate-500 dark:text-slate-500 font-normal text-base">$700</del>
                                 </p>
                                 <button type="button" class="btn btn inline-flex justify-center btn-outline-dark w-full btn-sm  font-medium hover:bg-slate-900 hover:text-white dark:hover:text-white  dark:hover:bg-slate-700 ">
@@ -119,20 +119,20 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
-                                    <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
+                                    <p class="text-xs text-slate-900 dark:text-slate-100 uppercase font-normal">{{ __('bonus') }}</p>
+                                    <span class="flex items-center text-slate-900 dark:text-slate-100 font-normal text-xs space-x-1 rtl:space-x-reverse ">
                                         <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
-                                <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
+                                <h6 class="text-slate-900 dark:text-slate-100 text-base	font-medium	mt-2 truncate">
                                     <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
                                     {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
-                                    <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
+                                    <span class="text-slate-900 dark:text-slate-100 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
                                     <del class="text-slate-500 dark:text-slate-500 font-normal text-base">$700</del>
                                 </p>
                                 <button type="button" class="btn btn inline-flex justify-center btn-outline-dark w-full btn-sm  font-medium hover:bg-slate-900 hover:text-white dark:hover:text-white  dark:hover:bg-slate-700 ">
@@ -168,20 +168,20 @@
                             </div>
                             <div class="product-content">
                                 <div class="flex justify-between items-center ">
-                                    <p class="text-xs text-slate-900 dark:text-slate-300 uppercase font-normal">{{ __('bonus') }}</p>
-                                    <span class="flex items-center text-slate-900 dark:text-slate-300 font-normal text-xs space-x-1 rtl:space-x-reverse ">
+                                    <p class="text-xs text-slate-900 dark:text-slate-100 uppercase font-normal">{{ __('bonus') }}</p>
+                                    <span class="flex items-center text-slate-900 dark:text-slate-100 font-normal text-xs space-x-1 rtl:space-x-reverse ">
                                         <iconify-icon class="text-warning" icon="heroicons:star-16-solid"></iconify-icon>
                                         <span>4.8</span>
                                     </span>
                                 </div>
-                                <h6 class="text-slate-900 dark:text-slate-300 text-base	font-medium	mt-2 truncate">
+                                <h6 class="text-slate-900 dark:text-slate-100 text-base	font-medium	mt-2 truncate">
                                     <a href="/products/1">{{ __('50% Margin Bonus') }}</a>
                                 </h6>
                                 <p class="text-slate-500 dark:text-slate-500  text-[11px]  font-normal mt-1.5">
                                     {{ __('Increase Your Trading Capacity') }}
                                 </p>
                                 <p class="pb-4">
-                                    <span class="text-slate-900 dark:text-slate-300 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
+                                    <span class="text-slate-900 dark:text-slate-100 text-base font-medium mt-2 ltr:mr-2 rtl:mr-2">$489</span>
                                     <del class="text-slate-500 dark:text-slate-500 font-normal text-base">$700</del>
                                 </p>
                                 <button type="button" class="btn btn inline-flex justify-center btn-outline-dark w-full btn-sm  font-medium hover:bg-slate-900 hover:text-white dark:hover:text-white  dark:hover:bg-slate-700 ">

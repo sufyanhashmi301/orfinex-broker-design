@@ -15,14 +15,14 @@
                         {{ __('Enter OTP') }}
                     </h4>
                 </div>
-                <p class="dark:text-slate-300">
+                <p class="dark:text-slate-100">
                     {{ __('We have sent a verification code via email') }}
                 </p>
                 <form method="post" class="mt-5">
                     <div class="input-area">
                         <input type="text" name="otp" id="otpInput" class="form-control !text-lg" placeholder="Enter OTP">
                     </div>
-                    <p class="dark:text-slate-300 my-5">
+                    <p class="dark:text-slate-100 my-5">
                         {{ __("Don't received code ?") }}
                         <a href="javascript:;" id="resendOtpBtn" class="btn-link hover:underline">{{ __('Resend') }}</a>
                     </p>

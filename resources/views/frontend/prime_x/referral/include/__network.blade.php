@@ -53,11 +53,11 @@
                         <!-- Personal Stats -->
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded">
-                                <div class="text-sm text-slate-600 dark:text-slate-400">{{ __('Personal Equity') }}</div>
+                                <div class="text-sm text-slate-600 dark:text-slate-200">{{ __('Personal Equity') }}</div>
                                 <div class="text-lg font-medium dark:text-white">{{ $currencySymbol.number_format($equityDetails['personal_equity'], 2) }}</div>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded">
-                                <div class="text-sm text-slate-600 dark:text-slate-400">{{ __('Total Network Equity') }}</div>
+                                <div class="text-sm text-slate-600 dark:text-slate-200">{{ __('Total Network Equity') }}</div>
                                 <div class="text-lg font-medium dark:text-white">{{ $currencySymbol.number_format($equityDetails['total_equity'], 2) }}</div>
                             </div>
                         </div>

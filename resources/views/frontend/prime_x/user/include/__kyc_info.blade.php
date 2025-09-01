@@ -18,7 +18,7 @@
     <div id="kycAlert" class="kyc-alert alert alert-dismissible ltr:ml-[248px] rtl:mr-[248px] dark:shadow-slate-700 !p-3 hidden">
         <div class="flex items-center gap-3">
             <div class="flex item-center gap-3 mx-auto">
-                <p class="text-sm text-slate-600 dark:text-slate-300">
+                <p class="text-sm text-slate-600 dark:text-slate-100">
                     {{ __('Verify your account to unlock additional features.') }}
                 </p>
                 <a href="{{ route('user.kyc') }}" class="btn-link inline-flex items-center justify-center text-sm">

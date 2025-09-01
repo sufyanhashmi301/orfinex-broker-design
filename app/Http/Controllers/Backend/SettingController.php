@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Exception;
 use App\Models\Setting;
 use App\Models\Country;
@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\Foundation\Application;
@@ -71,6 +72,7 @@ class SettingController extends Controller
     {
         return view('backend.setting.site_setting.site');
     }
+
 
     /**
      * @return Application|Factory|View
@@ -216,7 +218,11 @@ class SettingController extends Controller
             }
 
             if ($section == 'mt5_db_credentials') {
+                // Clear cached credentials
                 Cache::forget('mt5_db_credentials');
+                
+                // Reset MT5 database connection status and circuit breaker
+                $this->resetMT5DatabaseStatus();
             }
 
             notify()->success(__('Settings have been saved')); // Success message
@@ -391,6 +397,97 @@ class SettingController extends Controller
     public function featureLocked()
     {
         return view('global.__feature_locked');
+    }
+
+    /**
+     * Test MT5 database connection via AJAX
+     */
+    public function testMT5Connection(Request $request)
+    {
+        try {
+            // Try to instantiate the service directly
+            $mt5Service = app(\App\Services\MT5DatabaseService::class);
+            
+            // Force a fresh health check
+            $mt5Service->forceReconnection();
+            $isHealthy = $mt5Service->performHealthCheck();
+            $stats = $mt5Service->getConnectionStats();
+            
+            if ($isHealthy) {
+                Log::info('MT5 database connection test successful via admin panel');
+                return response()->json([
+                    'success' => true,
+                    'message' => __('Connection test successful'),
+                    'stats' => $stats
+                ]);
+            } else {
+                Log::warning('MT5 database connection test failed via admin panel', $stats);
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Connection test failed. Please verify your credentials.'),
+                    'stats' => $stats
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error testing MT5 database connection from admin panel', [
+                'error' => $e->getMessage(),
+                'admin_id' => auth()->id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => __('Connection test error: ') . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Reset MT5 database connection status and circuit breaker when credentials are updated
+     */
+    private function resetMT5DatabaseStatus(): void
+    {
+        try {
+            // Clear all MT5 database related cache keys
+            Cache::forget('mt5_db_connection_status');
+            Cache::forget('mt5_db_health_check');
+            
+            // Purge the MT5 database connection to force reconnection
+            DB::purge('mt5_db');
+            
+            // Log the reset action
+            Log::info('MT5 database credentials updated - connection status and circuit breaker reset', [
+                'admin_id' => auth()->id(),
+                'timestamp' => now()->toISOString(),
+                'action' => 'credentials_update_reset'
+            ]);
+            
+            // Try to test the new connection immediately using the dedicated method
+            try {
+                $mt5Service = app(\App\Services\MT5DatabaseService::class);
+                $isHealthy = $mt5Service->resetAfterCredentialsUpdate();
+                
+                if ($isHealthy) {
+                    Log::info('New MT5 database credentials tested successfully');
+                    notify()->success(__('Database credentials updated and connection tested successfully'));
+                } else {
+                    Log::warning('New MT5 database credentials failed health check');
+                    notify()->warning(__('Database credentials updated but connection test failed. Please verify the settings.'));
+                }
+            } catch (\Exception $e) {
+                Log::warning('Failed to test new MT5 database credentials immediately', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                notify()->success(__('Database credentials updated. Connection will be tested on next access.'));
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Failed to reset MT5 database status after credentials update', [
+                'error' => $e->getMessage(),
+                'admin_id' => auth()->id()
+            ]);
+        }
     }
 
 }

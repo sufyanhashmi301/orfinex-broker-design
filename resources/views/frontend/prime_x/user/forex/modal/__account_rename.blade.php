@@ -26,7 +26,7 @@
                         <label class="form-label" for="">{{ __('New nickname:') }}</label>
                         <div class="input-form-group">
                             <input type="text" class="form-control" name="nickname" id="update-name-modal-name" >
-                            <small class="dark:text-slate-300 mt-1">{{ __('The name you want to update to remember.') }}</small>
+                            <small class="dark:text-slate-100 mt-1">{{ __('The name you want to update to remember.') }}</small>
                         </div>
                         <div class="action-btns mt-4">
                             <button type="submit" class="btn btn-primary mr-2" id="submit-name">
@@ -38,7 +38,7 @@
                         </div>
                         <div class="divider border-b dark:border-slate-700 my-5"></div>
                         <div class="flex">
-                            <p class="text-xs dark:text-slate-300 mb-0">
+                            <p class="text-xs dark:text-slate-100 mb-0">
                                 {{ __('If you have multiple accounts, you can give each one a unique name to make navigation easier.') }}
                             </p>
                         </div>

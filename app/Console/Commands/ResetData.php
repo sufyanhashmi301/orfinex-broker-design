@@ -140,7 +140,7 @@ class ResetData extends Command
         // Artisan::call('db:seed');
 
         $rank = Ranking::find(1);
-        $sitename = 'brokeret';
+        $sitename = 'oqnix';
 
         $dataUser = [
             'ranking_id' => $rank->id,

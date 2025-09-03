@@ -649,6 +649,15 @@ return [
                 'value' => 1, // default value - enabled by default
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'phone_number_restriction', // unique name for field
+                'label' => 'Duplicate Phone Number Restriction', // you know what label it is
+                'description' => 'Restrict one phone number to one user account only',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
@@ -656,15 +665,6 @@ return [
                 'description' => 'Set max number of accounts per user',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'phone_number_restriction', // unique name for field
-                'label' => 'Phone Number Restriction', // you know what label it is
-                'description' => 'Restrict one phone number to one user account only',
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
             ],
 
         ],

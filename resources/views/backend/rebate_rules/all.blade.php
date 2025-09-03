@@ -393,18 +393,147 @@
     });
 });
 
+$(document).on('click', '.deleteRebateRule', function(e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const deleteUrl = '{{ route("admin.rebate-rules.destroy", ":id") }}'.replace(':id', id);
 
-         $(document).on('click', '.deleteRebateRule', function(event) {
+    // Reset modal state
+    resetDeleteModal(name, deleteUrl);
+    
+    // Show modal
+    $('#deleteRebateRule').modal('show');
+    
+    // Check for attached IB groups
+    checkAttachedGroups(deleteUrl);
+});
 
-            "use strict";
-            event.preventDefault();
-            var id = $(this).data('id');
+$('#rebateRuleDeleteForm').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const deleteUrl = form.attr('action');
+    const table = $('#rebate-rules-dataTable').DataTable();
+    const currentPage = table.page();
 
-            var url = '{{ route("admin.rebate-rules.destroy", ":id") }}';
-            url = url.replace(':id', id);
-            $('#rebateRuleDeleteForm').attr('action', url)
-            $('#deleteRebateRule').modal('show');
-        });
+    // Show loading state on button
+    const submitBtn = form.find('#confirm-delete-btn');
+    submitBtn.prop('disabled', true).html(`
+        <iconify-icon class="spining-icon text-xl ltr:mr-2 rtl:ml-2" icon="svg-spinners:180-ring"></iconify-icon>
+        Deleting...
+    `);
+
+    // Submit deletion request
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hide modal
+                $('#deleteRebateRule').modal('hide');
+                
+                // Show success notification
+                tNotify('success', response.message);
+                
+                // Reload table but maintain page
+                table.ajax.reload(null, false);
+                table.page(currentPage).draw('page');
+            } else {
+                submitBtn.prop('disabled', false).html(`
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    Confirm
+                `);
+                tNotify('error', response.message || 'Error deleting Rebate Rule');
+            }
+        },
+        error: function(xhr) {
+            submitBtn.prop('disabled', false).html(`
+                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                Confirm
+            `);
+
+            let errorMessage = 'Error deleting Rebate Rule';
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMessage = xhr.responseJSON.error;
+            }
+            tNotify('error', errorMessage);
+        }
+    });
+});
+
+// Helper function to reset modal state
+function resetDeleteModal(name = '', deleteUrl = '') {
+    $('#rebateRuleDeleteForm').attr('action', deleteUrl);
+    $('.name').text(name);
+    $('#attached-groups').addClass('hidden');
+    $('#no-groups').addClass('hidden');
+    $('.groups-list').html('');
+    $('#confirm-delete-btn').prop('disabled', false).html(`
+        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+        Confirm
+    `);
+}
+
+// Helper function to check attached IB groups
+function checkAttachedGroups(deleteUrl) {
+    // Show loading state
+    $('#attached-groups').removeClass('hidden');
+    $('.groups-list').html(`
+        <div class="flex items-center justify-center py-4">
+            <iconify-icon icon="svg-spinners:180-ring" class="text-lg mr-2"></iconify-icon>
+            Checking for attached IB groups...
+        </div>
+    `);
+
+    // Check for attached IB groups
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}',
+            check_groups: true
+        },
+        success: function(response) {
+            if (response.group_count > 0) {
+                // Show groups list
+                let groupList = '';
+                response.groups.forEach(group => {
+                    groupList += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <span>${group.name}</span>
+                            <span class="text-slate-400 text-sm">ID: ${group.id}</span>
+                        </li>
+                    `;
+                });
+                $('.groups-list').html(groupList);
+                $('#attached-groups').removeClass('hidden');
+                $('#no-groups').addClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', true)
+                    .addClass('opacity-50 cursor-not-allowed');
+            } else {
+                // No groups attached
+                $('.groups-list').html('');
+                $('#attached-groups').addClass('hidden');
+                $('#no-groups').removeClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', false)
+                    .removeClass('opacity-50 cursor-not-allowed');
+            }
+        },
+        error: function(xhr) {
+            $('.groups-list').html(`
+                <div class="text-red-500 py-4">
+                    Error checking for attached IB groups
+                </div>
+            `);
+            $('#confirm-delete-btn').prop('disabled', true);
+        }
+    });
+}
 
        $(document).on('click', '.status-checkbox', function(event) {
     "use strict";

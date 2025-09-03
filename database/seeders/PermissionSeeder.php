@@ -90,6 +90,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Withdraw Management', 'name' => 'withdraw-reject'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-auto-approve'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
+            
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-pending'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-approve'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-rejected'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-action'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-export'],
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],

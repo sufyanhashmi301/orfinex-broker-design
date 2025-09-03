@@ -34,6 +34,12 @@
                         {{ __('Filter') }}
                     </button>
                 </div>
+                <div class="input-area relative">
+    <button type="button" id="clear-filters" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:x"></iconify-icon>
+        {{ __('Clear') }}
+    </button>
+</div>
              @can('account-type-export')
 <div class="input-area relative">
     <button type="button" id="export-button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
@@ -209,62 +215,162 @@
 @endsection
 @section('script')
 <script>
-    $(document).ready(function () {
-        let deleteSchemaId = null;
- const urlParams = new URLSearchParams(window.location.search);
-        const accountTitle = urlParams.get('title');
+ $(document).ready(function () {
+    let deleteSchemaId = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const accountTitle = urlParams.get('title');
 
-        if (accountTitle) {
-            // Set the value of the search input field
-            $('#title').val(accountTitle);
-            
-            // Show the filters section if a filter is active
-            $('#filters_div').removeClass('hidden');
+    // Initialize filters from URL
+    if (accountTitle) {
+        $('#title').val(accountTitle);
+        $('#filters_div').removeClass('hidden');
+    }
 
-            // Manually trigger the filter to update the table
-            fetchRecords();
-        }
-
-        // Debounce function to limit API calls
-        function debounce(func, wait, immediate) {
-            let timeout;
-            return function() {
-                const context = this, args = arguments;
-                const later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                const callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
+    // Debounce function
+    function debounce(func, wait, immediate) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            const later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
             };
-        }
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+ // REFINED fetchRecords function
+function fetchRecords(resetPage = true) {
+    const formData = $('#filter-form').serialize();
+    let url = '{{ route('admin.accountType.index') }}';
+    
+    if (resetPage) {
+        url += '?page=1&' + formData;
+    } else {
+        // This part is not in your original code, but is good practice for pagination clicks
+        const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+        url += '?page=' + currentPage + '&' + formData;
+    }
 
-        // Fetch records with filters
-        function fetchRecords() {
-            const formData = $('#filter-form').serialize();
-            $.ajax({
-                url: '{{ route('admin.accountType.index') }}',
-                type: 'GET',
-                data: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                success: function(response) {
-                    // Extract the table content from the full page response
-                    const $response = $(response.html);
-                    const tableContent = $response.find('tbody').html();
-                    const pagination = $response.find('.pagination-container').html();
-                    
-                    $('tbody').html(tableContent);
-                    $('.pagination-container').html(pagination);
-                    updateExportLink(formData);
-                },
-                error: function(xhr) {
-                    console.error('An error occurred during filtering.');
-                }
-            });
-        }
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        beforeSend: function() {
+            $('#processingIndicator').show();
+        },
+        complete: function() {
+            $('#processingIndicator').hide();
+        },
+        success: function(response) {
+            // Note: Your controller returns JSON {html: '...'}, so access response.html
+            const $responseHtml = $(response.html); 
+            const tableContent = $responseHtml.find('tbody').html();
+            // Assuming your pagination links are inside the main rendered view
+            const paginationContent = $responseHtml.find('.flex.flex-wrap.justify-between.items-center.border-t').last().html();
 
+            $('tbody').html(tableContent);
+            // Replace the entire pagination footer for simplicity and correctness
+            $('.flex.flex-wrap.justify-between.items-center.border-t').last().html(paginationContent);
+            
+            // Update URL
+            updateUrlWithFilters();
+        },
+        error: function(xhr) {
+            console.error('An error occurred during filtering.');
+        }
+    });
+}
+
+
+    // Update URL with current filters
+    function updateUrlWithFilters() {
+        const formData = $('#filter-form').serialize();
+        const newUrl = '{{ route('admin.accountType.index') }}?' + formData;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+
+    // Event listeners for filters
+    $('.filter-input').on('keyup', debounce(function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    }, 500));
+    
+    $('.filter-select').on('change', function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    });
+    
+    $('#filter-button').on('click', function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    });
+
+   $('#clear-filters').on('click', function() {
+        // Reset all filter inputs
+        $('#filter-form')[0].reset();
+        
+        // Force a fresh load of page 1 with no filters
+        loadFreshPage();
+    });
+      function loadFreshPage() {
+    const freshUrl = '{{ route('admin.accountType.index') }}';
+    
+    $.ajax({
+        url: freshUrl,
+        type: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        beforeSend: function() {
+            $('#processingIndicator').show();
+        },
+        complete: function() {
+            $('#processingIndicator').hide();
+        },
+        success: function(response) {
+            // Note: Your controller returns JSON {html: '...'}, so access response.html
+            const $responseHtml = $(response.html);
+            const tableContent = $responseHtml.find('tbody').html();
+            const paginationContent = $responseHtml.find('.flex.flex-wrap.justify-between.items-center.border-t').last().html();
+
+            $('tbody').html(tableContent);
+            $('.flex.flex-wrap.justify-between.items-center.border-t').last().html(paginationContent);
+            
+            // Reset URL completely
+            window.history.pushState({ path: freshUrl }, '', freshUrl);
+        },
+        error: function(xhr) {
+            console.error('An error occurred while clearing filters.');
+        }
+    });
+}
+    
+    // Pagination links - don't reset page
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        const pageUrl = $(this).attr('href');
+        $.ajax({
+            url: pageUrl,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            beforeSend: function() {
+                $('#processingIndicator').show();
+            },
+            complete: function() {
+                $('#processingIndicator').hide();
+            },
+            success: function(response) {
+                const $response = $(response.html);
+                const tableContent = $response.find('tbody').html();
+                const pagination = $response.find('.pagination-container').html();
+                
+                $('tbody').html(tableContent);
+                $('.pagination-container').html(pagination);
+                updateUrlWithFilters();
+            },
+            error: function(xhr) {
+                console.error('An error occurred during pagination.');
+            }
+        });
+    });
         // Update export link with current filters
      // Add this to your $(document).ready function
 $('#export-button').on('click', function() {
@@ -290,35 +396,7 @@ $('#export-button').on('click', function() {
     document.body.appendChild(form);
     form.submit();
 });
-        // Event listeners
-        $('.filter-input').on('keyup', debounce(fetchRecords, 500));
-        $('.filter-select').on('change', fetchRecords);
-        $('#filter-button').on('click', fetchRecords);
-
-        // Pagination links
-        $(document).on('click', '.pagination a', function(e) {
-            e.preventDefault();
-            const pageUrl = $(this).attr('href');
-            $.ajax({
-                url: pageUrl,
-                type: 'GET',
-                data: $('#filter-form').serialize(),
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                success: function(response) {
-                    const $response = $(response.html);
-                    const tableContent = $response.find('tbody').html();
-                    const pagination = $response.find('.pagination-container').html();
-                    
-                    $('tbody').html(tableContent);
-                    $('.pagination-container').html(pagination);
-                    updateExportLink(pageUrl.split('?')[1]);
-                },
-                error: function(xhr) {
-                    console.error('An error occurred during pagination.');
-                }
-            });
-        });
-
+       
         // Delete functionality
         $('.delete-schema-btn').on('click', function (e) {
             e.preventDefault();

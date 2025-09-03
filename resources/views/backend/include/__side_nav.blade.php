@@ -179,6 +179,41 @@
                 </li>
             @endcanany
 
+            @canany(['withdraw-account-pending', 'withdraw-account-approve', 'withdraw-account-rejected'])
+                <li class="{{ isActive(['admin.withdraw.approved.accounts', 'admin.withdraw.rejected.accounts']) }}">
+                    <a href="javascript:void(0);" class="navItem">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
+                            <span>{{ __('Withdraw Accounts') }}</span>
+                        </span>
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
+                    <ul class="sidebar-submenu">
+                        @can('withdraw-account-pending')
+                            <li class="">
+                                <a href="{{ route('admin.withdraw.pending.accounts') }}" class="{{ isActive('admin.withdraw.pending.accounts') }}">
+                                    {{ __('Pending Accounts') }}
+                                </a>
+                            </li>
+                            @endcan
+                            @can('withdraw-account-approve')
+                            <li class="">
+                                <a href="{{ route('admin.withdraw.approved.accounts') }}" class="{{ isActive('admin.withdraw.approved.accounts') }}">
+                                    {{ __('Approved Accounts') }}
+                                </a>
+                            </li>
+                            @endcan
+                            @can('withdraw-account-rejected')
+                            <li class="">
+                                <a href="{{ route('admin.withdraw.rejected.accounts') }}" class="{{ isActive('admin.withdraw.rejected.accounts') }}">
+                                    {{ __('Rejected Accounts') }}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcanany
+
         @endcanany
 
         @canany(['kyc-list', 'kyc-action', 'risk-profile-tag'])

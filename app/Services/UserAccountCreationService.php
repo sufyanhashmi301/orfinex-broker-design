@@ -38,9 +38,10 @@ class UserAccountCreationService
             if ($resendAttempts >= 3) {
                 // Apply 2-hour restriction
                 $this->applyRestriction($user);
+                $formattedTime = $this->formatRemainingTime(7200); // 2 hours = 7200 seconds
                 return [
                     'status' => 'error',
-                    'message' => __('Too many resend attempts. Account creation is restricted for 2 hours.')
+                    'message' => __('Too many resend attempts. Account creation is restricted for :time.', ['time' => $formattedTime])
                 ];
             }
 
@@ -130,9 +131,10 @@ class UserAccountCreationService
                         'restricted_until' => Carbon::now()->addHours(2)
                     ]);
                     
+                    $formattedTime = $this->formatRemainingTime(7200); // 2 hours = 7200 seconds
                     return [
                         'status' => 'error',
-                        'message' => __('Too many failed attempts. Account creation is restricted for 2 hours.')
+                        'message' => __('Too many failed attempts. Account creation is restricted for :time.', ['time' => $formattedTime])
                     ];
                 }
 
@@ -145,12 +147,15 @@ class UserAccountCreationService
                 ];
             }
 
-            // OTP is valid - mark as verified and clear restrictions
+            // OTP is valid - mark as verified, clear restrictions, and reset resend attempts
             $userOtp->update([
                 'verified' => 1,
                 'failed_attempts' => 0,
                 'restricted_until' => null,
             ]);
+
+            // Reset resend attempts after successful verification
+            $this->resetResendAttempts($user);
 
             return [
                 'status' => 'success',
@@ -240,7 +245,7 @@ class UserAccountCreationService
     }
 
     /**
-     * Get resend attempts for user
+     * Get resend attempts for user (per session, not per account creation)
      */
     private function getResendAttempts(User $user): int
     {
@@ -256,6 +261,15 @@ class UserAccountCreationService
         $resendKey = 'withdraw_account_resend_attempts_' . $user->id;
         $attempts = session($resendKey, 0);
         session([$resendKey => $attempts + 1]);
+    }
+
+    /**
+     * Reset resend attempts for user
+     */
+    public function resetResendAttempts(User $user): void
+    {
+        $resendKey = 'withdraw_account_resend_attempts_' . $user->id;
+        session([$resendKey => 0]);
     }
 
     /**

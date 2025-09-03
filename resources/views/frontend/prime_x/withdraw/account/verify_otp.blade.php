@@ -93,12 +93,30 @@ $(document).ready(function() {
     // Auto-focus OTP input
     $('#verification_code').focus();
     
-    // Auto-submit when 4 digits are entered
+    // Handle OTP input (NO AUTO-SUBMIT)
     $('#verification_code').on('input', function() {
         const value = $(this).val();
-        if (value.length === 4) {
-            $('#otpVerificationForm').submit();
+        
+        // Only allow numbers
+        const numericValue = value.replace(/[^0-9]/g, '');
+        if (value !== numericValue) {
+            $(this).val(numericValue);
         }
+        
+        // Limit to 4 digits
+        if (numericValue.length > 4) {
+            $(this).val(numericValue.substring(0, 4));
+        }
+        // Note: No auto-submit - user must click "Verify OTP" button
+    });
+
+    // Handle paste event for OTP (NO AUTO-SUBMIT)
+    $('#verification_code').on('paste', function(e) {
+        e.preventDefault();
+        const pastedText = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+        const numericValue = pastedText.replace(/[^0-9]/g, '').substring(0, 4);
+        $(this).val(numericValue);
+        // Note: No auto-submit - user must click "Verify OTP" button
     });
     
     // Handle form submission
@@ -135,8 +153,16 @@ $(document).ready(function() {
                 if (response && response.message) {
                     tNotify('error', response.message);
                     
-                    // Clear OTP input on error
-                    $('#verification_code').val('').focus();
+                    // Check if it's a restriction message
+                    if (response.is_restricted || response.message.includes('restricted') || response.message.includes('Too many')) {
+                        // Reload page to show restriction status
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        // Clear OTP input on error (only if not restricted)
+                        $('#verification_code').val('').focus();
+                    }
                 } else {
                     tNotify('error', '{{ __("An error occurred. Please try again.") }}');
                 }
@@ -177,10 +203,20 @@ $(document).ready(function() {
                 const response = xhr.responseJSON;
                 if (response && response.message) {
                     tNotify('error', response.message);
+                    
+                    // Check if it's a restriction message
+                    if (response.is_restricted || response.message.includes('restricted') || response.message.includes('Too many')) {
+                        // Reload page to show restriction status
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    }
                 } else {
                     tNotify('error', '{{ __("Failed to resend OTP. Please try again.") }}');
                 }
-                
+            },
+            complete: function() {
+                // Always reset the button state
                 $('#resendOtpBtn').removeClass('disabled').html('{{ __("Resend") }}');
             }
         });

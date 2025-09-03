@@ -1629,6 +1629,15 @@ return [
                 'description' => 'Enable this to require an OTP for creating withdraw accounts',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "withdraw_account_approval", // unique name for field
+                "label" => "Withdraw Account Manual Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for withdraw account creation even if withdraw account creation otp is enabled or disabled",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
             ]
         ],
     ],

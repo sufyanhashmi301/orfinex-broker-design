@@ -62,9 +62,57 @@ class WithdrawController extends Controller
      */
     public function index()
     {
-        $accounts = WithdrawAccount::where('user_id', auth()->id())->get();
+        $accounts = WithdrawAccount::where('user_id', auth()->id())
+            ->whereHas('method', function($query) {
+                $query->where('status', true);
+            })
+            ->get();
 
-        return view('frontend::withdraw.account.index', compact('accounts'));
+        $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+
+        return view('frontend::withdraw.account.index', compact('accounts', 'withdrawAccountApproval'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $accountId = get_hash($id);
+            $account = WithdrawAccount::where('id', $accountId)
+                ->where('user_id', auth()->id())
+                ->with(['method'])
+                ->first();
+
+            if (!$account) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Account not found.')
+                ]);
+            }
+
+            // Decode credentials
+            $credentials = is_string($account->credentials) ? json_decode($account->credentials, true) : $account->credentials;
+            $credentials = is_array($credentials) ? $credentials : [];
+
+            // Generate HTML for account details
+            $html = view('frontend::withdraw.account.show', compact('account', 'credentials'))->render();
+
+            return response()->json([
+                'success' => true,
+                'html' => $html
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Error loading account details.')
+            ]);
+        }
     }
 
     /**
@@ -93,12 +141,16 @@ class WithdrawController extends Controller
             $accountStatus = $this->userAccountCreationService->canCreateWithdrawAccount($user);
             
             if (!$accountStatus['can_create']) {
-                notify()->error($accountStatus['message'], __('Account Creation Restricted'));
-                return redirect()->back();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $accountStatus['message'],
+                    'is_restricted' => true,
+                    'remaining_time' => $accountStatus['remaining_time'],
+                    'formatted_time' => $accountStatus['formatted_time']
+                ], 400);
             }
             
-            // Always require OTP verification - don't check for existing verified OTPs
-            // Store form data in session and redirect to OTP verification
+            // Store form data in session
             $formData = [
                 'withdraw_method_id' => $request->input('withdraw_method_id'),
                 'method_name' => $request->input('method_name'),
@@ -111,16 +163,33 @@ class WithdrawController extends Controller
             $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
             
             if ($otpResult['status'] === 'error') {
-                notify()->error($otpResult['message'], __('Error'));
-                return redirect()->back();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $otpResult['message'],
+                    'is_restricted' => $otpResult['message'] && (str_contains($otpResult['message'], 'restricted') || str_contains($otpResult['message'], 'Too many'))
+                ], 400);
             }
             
-            notify()->success(__('OTP has been sent to your email. Please verify it to create your withdraw account.'), __('OTP Sent'));
-            return redirect()->route('user.withdraw.account.verify-otp');
+            // Return JSON response for modal
+            $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+            $otpMessage = $withdrawAccountApproval 
+                ? __('OTP has been sent to your email. Please verify it to create your withdraw account. It will be reviewed by admin for approval.')
+                : __('OTP has been sent to your email. Please verify it to create your withdraw account.');
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => $otpMessage,
+                'show_modal' => true
+            ]);
         }
 
         // Proceed with account creation
-        return $this->createWithdrawAccount($request);
+        $result = $this->createWithdrawAccount($request);
+        
+        // Reset resend attempts after successful account creation (when OTP is not required)
+        $this->userAccountCreationService->resetResendAttempts(auth()->user());
+        
+        return $result;
     }
 
     /**
@@ -168,7 +237,11 @@ class WithdrawController extends Controller
         $otpValidationResult = $this->userAccountCreationService->validateWithdrawAccountOtp($user, $otpInput);
 
         if ($otpValidationResult['status'] === 'error') {
-            return response()->json($otpValidationResult, 400);
+            return response()->json([
+                'status' => 'error',
+                'message' => $otpValidationResult['message'],
+                'is_restricted' => $otpValidationResult['message'] && (str_contains($otpValidationResult['message'], 'restricted') || str_contains($otpValidationResult['message'], 'Too many'))
+            ], 400);
         }
 
         // OTP is valid, proceed with account creation
@@ -183,24 +256,33 @@ class WithdrawController extends Controller
         // Create a new request with the stored form data
         $newRequest = new Request($formData);
         
-        // Create the account
-        $result = $this->createWithdrawAccount($newRequest);
-        
-        // Clear session data
-        Session::forget('withdraw_account_form_data');
-        
-        if ($result instanceof RedirectResponse) {
+        try {
+            // Create the account
+            $this->createWithdrawAccount($newRequest);
+            
+            // Clear session data
+            Session::forget('withdraw_account_form_data');
+            
+            // Reset resend attempts after successful account creation (when OTP is required)
+            $this->userAccountCreationService->resetResendAttempts($user);
+            
+            // Determine appropriate success message based on settings
+            $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+            $successMessage = $withdrawAccountApproval 
+                ? __('Account created successfully! It will be reviewed by admin for approval.')
+                : __('Account created successfully!');
+            
             return response()->json([
                 'status' => 'success',
-                'message' => __('Account created successfully!'),
-                'redirect' => $result->getTargetUrl()
+                'message' => $successMessage,
+                'redirect' => route('user.withdraw.account.index')
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Failed to create account. Please try again.')
+            ], 400);
         }
-        
-        return response()->json([
-            'status' => 'error',
-            'message' => __('Failed to create account. Please try again.')
-        ], 400);
     }
 
     /**
@@ -215,7 +297,8 @@ class WithdrawController extends Controller
         if ($otpResult['status'] === 'error') {
             return response()->json([
                 'status' => 'error',
-                'message' => $otpResult['message']
+                'message' => $otpResult['message'],
+                'is_restricted' => $otpResult['message'] && (str_contains($otpResult['message'], 'restricted') || str_contains($otpResult['message'], 'Too many'))
             ], 400);
         }
         
@@ -239,17 +322,76 @@ class WithdrawController extends Controller
             }
         }
 
+        // Determine status based on both settings
+        $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+        $withdrawAccountOtp = setting('withdraw_account_otp', 'withdraw_settings');
+        
+        // Logic for determining status:
+        // 1. If withdraw_account_approval is OFF and withdraw_account_otp is OFF -> APPROVED
+        // 2. If withdraw_account_approval is OFF and withdraw_account_otp is ON -> APPROVED (after OTP verification)
+        // 3. If withdraw_account_approval is ON and withdraw_account_otp is OFF -> PENDING
+        // 4. If withdraw_account_approval is ON and withdraw_account_otp is ON -> PENDING (after OTP verification)
+        
+        if ($withdrawAccountApproval) {
+            // Manual approval required - always PENDING
+            $status = WithdrawAccount::STATUS_PENDING;
+        } else {
+            // No manual approval required - always APPROVED
+            $status = WithdrawAccount::STATUS_APPROVED;
+        }
+
         $data = [
             'user_id' => auth()->id(),
             'withdraw_method_id' => $input['withdraw_method_id'],
             'method_name' => $input['method_name'],
             'credentials' => json_encode($credentials),
+            'status' => $status,
         ];
 
         WithdrawAccount::create($data);
 
-        notify()->success(__('Successfully Withdraw Account Created'), 'success');
+        // Show appropriate success message based on status
+        if ($status === WithdrawAccount::STATUS_APPROVED) {
+            notify()->success(__('Successfully Withdraw Account Created'), 'success');
+        } else {
+            notify()->success(__('Withdraw Account Created Successfully. It will be reviewed by admin for approval.'), 'success');
+        }
 
+        return redirect()->route('user.withdraw.account.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function destroy($id)
+    {
+        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))
+            ->where('user_id', auth()->user()->id)
+            ->first();
+
+        if (!$withdrawAccount) {
+            notify()->error(__('Withdraw account not found.'), __('Error'));
+            return redirect()->back();
+        }
+
+        // Check if account is being used in any pending withdrawals
+        $pendingWithdrawals = Transaction::where('user_id', auth()->user()->id)
+            ->whereIn('type', [TxnType::Withdraw, TxnType::WithdrawAuto])
+            ->where('status', TxnStatus::Pending)
+            ->whereJsonContains('manual_field_data', ['withdraw_account_id' => $withdrawAccount->id])
+            ->count();
+
+        if ($pendingWithdrawals > 0) {
+            notify()->error(__('Cannot delete account with pending withdrawals.'), __('Error'));
+            return redirect()->back();
+        }
+
+        $withdrawAccount->delete();
+
+        notify()->success(__('Withdraw account deleted successfully.'), __('Success'));
         return redirect()->route('user.withdraw.account.index');
     }
 
@@ -282,7 +424,10 @@ class WithdrawController extends Controller
             $query->whereJsonContains('country', auth()->user()->country)
                 ->orWhereJsonContains('country', 'All');
         })->get();
-        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))->where('user_id', auth()->user()->id)->first();
+        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))
+            ->where('user_id', auth()->user()->id)
+            ->where('status', WithdrawAccount::STATUS_APPROVED)
+            ->first();
         if ($withdrawAccount) {
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
         }
@@ -335,6 +480,7 @@ class WithdrawController extends Controller
             'withdraw_method_id' => $input['withdraw_method_id'],
             'method_name' => $input['method_name'],
             'credentials' => json_encode($credentials),
+            // Keep the existing status - don't change it on update
         ];
 
         $withdrawAccount->update($data);
@@ -364,7 +510,9 @@ class WithdrawController extends Controller
     public function details($accountId, int $amount = 0)
     {
 
-        $withdrawAccount = WithdrawAccount::find($accountId);
+        $withdrawAccount = WithdrawAccount::where('id', $accountId)
+            ->where('status', WithdrawAccount::STATUS_APPROVED)
+            ->first();
 
         $credentials = json_decode($withdrawAccount->credentials, true);
 
@@ -566,7 +714,16 @@ class WithdrawController extends Controller
         }
 
         $amount = (float)$input['amount'];
-        $withdrawAccount = WithdrawAccount::find($input['withdraw_account']);
+        $withdrawAccount = WithdrawAccount::where('id', $input['withdraw_account'])
+            ->where('user_id', $user->id)
+            ->where('status', WithdrawAccount::STATUS_APPROVED)
+            ->first();
+            
+        if (!$withdrawAccount) {
+            notify()->error(__('Invalid or unapproved withdraw account.'), 'Error');
+            return false;
+        }
+        
         $withdrawMethod = $withdrawAccount->method;
 
         // Check if the amount is within the allowed withdraw range
@@ -820,7 +977,9 @@ class WithdrawController extends Controller
         public
         function withdraw()
         {
-            $accounts = WithdrawAccount::where('user_id', \Auth::id())->get();
+            $accounts = WithdrawAccount::where('user_id', \Auth::id())
+                ->where('status', WithdrawAccount::STATUS_APPROVED)
+                ->get();
             $accounts = $accounts->reject(function ($value, $key) {
                 return !$value->method->status;
             });

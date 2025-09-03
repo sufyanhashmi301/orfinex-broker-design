@@ -603,8 +603,9 @@ class WithdrawController extends Controller
         {
             $user = Auth::user();
             $transactionType = TxnType::Withdraw->value;
+            $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
 
-        $this->otpService->sendOtp($user, $transactionType); // Call the method to resend OTP
+        $this->otpService->sendOtp($user, $transactionType, $otpValidityMinutes); // Call the method to resend OTP
 
         return response()->json([
             'success' => true,

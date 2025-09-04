@@ -195,7 +195,7 @@
             $(this).prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verifying...") }}');
             
             $.ajax({
-                url: '{{ route("user.withdraw.account.veriffy-otp") }}',
+                url: '{{ route("user.withdraw.account.verify-otp.post") }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',

@@ -176,9 +176,26 @@ $(document).ready(function() {
                         tNotify('success', response.message);
                     }
                     
-                    // Reload table
-                    if (typeof table !== 'undefined') {
-                        table.draw();
+                    // Reload table - try multiple methods to ensure it works
+                    try {
+                        // Method 1: Direct table reference
+                        if (typeof table !== 'undefined' && table.draw) {
+                            table.draw();
+                        }
+                        // Method 2: Find table by ID
+                        else if ($('#dataTable').length) {
+                            $('#dataTable').DataTable().draw();
+                        }
+                        // Method 3: Trigger custom event for parent page
+                        else {
+                            $(document).trigger('withdrawAccountActionCompleted');
+                        }
+                    } catch (e) {
+                       
+                        // Fallback: reload page
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
                     }
                 } else {
                     if (typeof tNotify === 'function') {
@@ -235,9 +252,26 @@ $(document).ready(function() {
                         tNotify('success', response.message);
                     }
                     
-                    // Reload table
-                    if (typeof table !== 'undefined') {
-                        table.draw();
+                    // Reload table - try multiple methods to ensure it works
+                    try {
+                        // Method 1: Direct table reference
+                        if (typeof table !== 'undefined' && table.draw) {
+                            table.draw();
+                        }
+                        // Method 2: Find table by ID
+                        else if ($('#dataTable').length) {
+                            $('#dataTable').DataTable().draw();
+                        }
+                        // Method 3: Trigger custom event for parent page
+                        else {
+                            $(document).trigger('withdrawAccountActionCompleted');
+                        }
+                    } catch (e) {
+                        
+                        // Fallback: reload page
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
                     }
                 } else {
                     if (typeof tNotify === 'function') {

@@ -542,7 +542,10 @@ class WithdrawController extends Controller
             // Apply filters
             if (!empty($filters['username'])) {
                 $data = $data->whereHas('user', function($query) use ($filters) {
-                    $query->where('username', 'like', '%' . $filters['username'] . '%');
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
                 });
             }
 
@@ -553,7 +556,18 @@ class WithdrawController extends Controller
             }
 
             if (!empty($filters['created_at'])) {
-                $data = $data->whereDate('created_at', $filters['created_at']);
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
             }
 
             return Datatables::of($data)
@@ -621,7 +635,10 @@ class WithdrawController extends Controller
             // Apply filters
             if (!empty($filters['username'])) {
                 $data = $data->whereHas('user', function($query) use ($filters) {
-                    $query->where('username', 'like', '%' . $filters['username'] . '%');
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
                 });
             }
 
@@ -632,7 +649,18 @@ class WithdrawController extends Controller
             }
 
             if (!empty($filters['created_at'])) {
-                $data = $data->whereDate('created_at', $filters['created_at']);
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
             }
 
             return Datatables::of($data)
@@ -700,7 +728,10 @@ class WithdrawController extends Controller
             // Apply filters
             if (!empty($filters['username'])) {
                 $data = $data->whereHas('user', function($query) use ($filters) {
-                    $query->where('username', 'like', '%' . $filters['username'] . '%');
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
                 });
             }
 
@@ -711,7 +742,18 @@ class WithdrawController extends Controller
             }
 
             if (!empty($filters['created_at'])) {
-                $data = $data->whereDate('created_at', $filters['created_at']);
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
             }
 
             return Datatables::of($data)

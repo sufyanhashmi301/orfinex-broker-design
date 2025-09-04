@@ -15,20 +15,20 @@
         <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
             <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="username" id="username" class="form-control" placeholder="Search User By Username">
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Search User By Username or Name">
                 </div>
                 <div class="flex-1 input-area relative">
                     <input type="text" name="email" id="email" class="form-control" placeholder="Search User By Email">
                 </div>
                 <div class="flex-1 input-area">
                     <div class="relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control" data-mode="range" placeholder="Created At">
+                        <input type="text" name="created_at" id="created_at" class="form-control" placeholder="Select Date Range">
                         <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
                             <iconify-icon icon="mdi:window-close"></iconify-icon>
                         </button>
                     </div>
                     <span class="text-xs font-light dark:text-slate-200">
-                        {{ __('Double click for a single date') }}
+                        {{ __('Select start and end dates for range') }}
                     </span>
                 </div>
             </div>
@@ -146,19 +146,17 @@
                 var url = '{{ route("admin.withdraw.account.action.modal", ":id") }}';
                 url = url.replace(':id', id);
                 
-                console.log('Loading modal for account ID:', id);
-                console.log('URL:', url);
+              
                 
                 $.get(url, function (data) {
-                    console.log('Modal data received:', data);
+                   
                     $('.account-action').append(data);
                     imagePreview();
                     
                     // Show modal using Bootstrap
                     $('#account-action-modal').modal('show');
                 }).fail(function(xhr, status, error) {
-                    console.error('Failed to load modal:', error);
-                    console.log('Response:', xhr.responseText);
+                  
                 });
             });
 
@@ -181,6 +179,8 @@
                 altInput: false,
                 dateFormat: "Y-m-d",
                 allowInput: false,
+                mode: "range",
+                placeholder: "Select Date Range"
             });
 
             // Clear button logic
@@ -197,6 +197,13 @@
             $(document).on('click', '#account-action-modal', function(e) {
                 if (e.target === this) {
                     $(this).modal('hide');
+                }
+            });
+
+            // Listen for withdraw account action completion
+            $(document).on('withdrawAccountActionCompleted', function() {
+                if (typeof table !== 'undefined' && table.draw) {
+                    table.draw();
                 }
             });
         })(jQuery);

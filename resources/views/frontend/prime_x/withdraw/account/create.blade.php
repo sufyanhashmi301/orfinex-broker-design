@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div class="action-buttons text-right mt-4">
-                        <button type="submit" class="btn inline-flex justify-center btn-primary">
+                        <button type="submit" id="submitWithdrawAccountBtn" class="btn inline-flex justify-center btn-primary">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
                             {{ __('Add New Withdraw Account') }}
                         </button>
@@ -117,7 +117,12 @@
             @if($withdrawAccountOtp)
                 // Submit form via AJAX to get OTP
                 const formData = new FormData(this);
-                
+
+                // Set loading state on submit button
+                const $submitBtn = $('#submitWithdrawAccountBtn');
+                const originalBtnHtml = $submitBtn.html();
+                $submitBtn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Processing...") }}');
+
                 $.ajax({
                     url: $(this).attr('action'),
                     method: 'POST',
@@ -144,6 +149,10 @@
                         } else {
                             tNotify('error', '{{ __("An error occurred. Please try again.") }}');
                         }
+                    },
+                    complete: function() {
+                        // Reset loading state on submit button
+                        $submitBtn.prop('disabled', false).html(originalBtnHtml);
                     }
                 });
             @else

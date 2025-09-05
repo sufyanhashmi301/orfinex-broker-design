@@ -585,6 +585,70 @@ if (!function_exists('getCountryCode')) {
     }
 }
 
+if (!function_exists('getCountryDialCode')) {
+
+    function getCountryDialCode($countryName)
+    {
+        $filePath = resource_path('json/CountryCodes.json');
+
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $jsonContents = file_get_contents($filePath);
+        $countries = json_decode($jsonContents, true);
+
+        foreach ($countries as $country) {
+            if (strcasecmp($country['name'], $countryName) == 0) {
+                return $country['dial_code'] ?? null;
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('getCountryFromPhone')) {
+
+    /**
+     * Detect country metadata from an E.164 phone by matching longest dial code prefix.
+     * Returns ['name' => string, 'dial_code' => string, 'code' => string] or null.
+     */
+    function getCountryFromPhone(string $e164Phone)
+    {
+        $normalized = preg_replace('/[^\d\+]/', '', $e164Phone);
+        if (empty($normalized) || !str_starts_with($normalized, '+')) {
+            return null;
+        }
+
+        $filePath = resource_path('json/CountryCodes.json');
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $countries = json_decode(file_get_contents($filePath), true);
+        // Find the longest matching dial code prefix
+        $match = null;
+        $maxLen = 0;
+        foreach ($countries as $country) {
+            if (!isset($country['dial_code'])) continue;
+            $dial = $country['dial_code']; // e.g. +44
+            if (str_starts_with($normalized, $dial)) {
+                $len = strlen($dial);
+                if ($len > $maxLen) {
+                    $maxLen = $len;
+                    $match = [
+                        'name' => $country['name'] ?? null,
+                        'dial_code' => $dial,
+                        'code' => $country['code'] ?? null,
+                    ];
+                }
+            }
+        }
+        return $match;
+    }
+}
+
 if (!function_exists('getJsonData')) {
 
     function getJsonData($fileName)

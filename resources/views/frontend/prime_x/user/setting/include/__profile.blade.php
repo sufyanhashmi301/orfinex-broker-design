@@ -121,18 +121,18 @@
                             placeholder="{{ __('Phone') }}"
                             @if($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif
                         />
+                        <input type="hidden" name="formatted_phone" id="formatted_phone" value="" />
+                        <input type="hidden" name="phone_country_iso2" id="phone_country_iso2" value="" />
+                        <input type="hidden" name="phone_country_dial" id="phone_country_dial" value="" />
+                        <div id="phone-error" class="text-danger text-xs mt-1" style="display:none;"></div>
                     </div>
                     <div class="input-area relative">
-                        <label for="exampleFormControlInput1" class="form-label">
-                            {{ __('Country') }}
-                        </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            value="{{ $user->country }}"
-                            placeholder="{{ __('Country') }}"
-                            @if($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif
-                        />
+                        <label for="exampleFormControlInput1" class="form-label">{{ __('Country') }}</label>
+                        <select name="country" class="form-control" id="country" @if($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif>
+                            @foreach(getCountries() as $country)
+                                <option value="{{ $country['name'] }}" @selected(null != $user->country && in_array($country['name'],[$user->country]))>{{ $country['name'] }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="input-area relative">

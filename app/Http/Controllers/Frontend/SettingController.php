@@ -56,7 +56,43 @@ class SettingController extends Controller
             'gender' => 'required',
             'date_of_birth' => 'date',
             'phone' => $phoneRules,
+            'country' => ['required','string','max:255'],
         ]);
+
+        // Cross-validate phone against user's country (or submitted country if present) and normalize to E.164
+        $validator->after(function ($v) use ($request, $user) {
+            $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+            // Prefer submitted country, else fallback to user's stored country
+            $countryRaw = (string) $request->input('country', $user->country);
+            $countryName = (strpos($countryRaw, ':') !== false) ? explode(':', $countryRaw)[0] : $countryRaw;
+
+            if (!empty($rawPhone)) {
+                $normalized = preg_replace('/[\s\-\(\)]/', '', (string) $rawPhone);
+
+                if (!str_starts_with($normalized, '+')) {
+                    $dial = getCountryDialCode($countryName);
+                    if (!empty($dial)) {
+                        $normalized = $dial . ltrim($normalized, '0+');
+                    }
+                }
+
+                if (!preg_match('/^\+[1-9]\d{6,14}$/', $normalized)) {
+                    $v->errors()->add('phone', 'Invalid phone number format. Use full international format.');
+                    return;
+                }
+
+                // Detect country from phone itself (server-side) and compare against submitted/known country
+                $detected = getCountryFromPhone($normalized);
+                $expectedDial = getCountryDialCode($countryName);
+
+                if ($detected && $expectedDial && $detected['dial_code'] !== $expectedDial) {
+                    $v->errors()->add('phone', 'Phone number dial code does not match the selected country.');
+                }
+
+                // Put normalized phone back into request
+                $request->merge(['__normalized_phone' => $normalized]);
+            }
+        });
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));
@@ -71,11 +107,16 @@ class SettingController extends Controller
             'username' => $input['username'],
             'gender' => $input['gender'],
             'date_of_birth' => $input['date_of_birth'] == '' ? null : $input['date_of_birth'],
-            'phone' => $input['phone'],
+            'phone' => $request->input('__normalized_phone') ?: $input['phone'],
             'city' => $input['city'],
             'zip_code' => $input['zip_code'],
             'address' => $input['address'],
         ];
+
+        // If client sent a country value synced from the phone UI, update it as well
+        if ($request->filled('country')) {
+            $data['country'] = $request->input('country');
+        }
 
         $user->update($data);
 

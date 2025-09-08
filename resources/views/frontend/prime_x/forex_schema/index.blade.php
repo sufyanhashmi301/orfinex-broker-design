@@ -27,7 +27,7 @@
                         </p>
                     @endif
                 </div>
-                @php
+                {{-- @php
                     $countries = json_decode($schema->country, true);
                 @endphp
                 <p class="text-sm text-success mb-2">
@@ -37,7 +37,7 @@
                     @elseif($schema->is_global)
                         {{ __('Global') }}
                     @endif
-                </p>
+                </p> --}}
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{!! $schema->desc !!}</p>
             </div>
             <div class="h-full space-y-3 bg-slate-50 dark:bg-dark rounded p-3 mb-5">

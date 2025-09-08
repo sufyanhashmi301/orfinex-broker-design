@@ -1,8 +1,8 @@
-@extends('backend.setting.customer.index')
+@extends('backend.setting.site_setting.index')
 @section('title')
     {{ __('Registration Settings') }}
 @endsection
-@section('customer-content')
+@section('site-setting-content')
     <div class="card">
         <div class="card-body p-6">
             <form action="{{ route('admin.page.setting.update') }}" method="post" enctype="multipart/form-data" class="space-y-5">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Exception;
 
 class EmailVerificationPromptController extends Controller
 {
@@ -30,11 +31,29 @@ class EmailVerificationPromptController extends Controller
             $user->save();
         }
 
+        // Check if user is already verified first
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
 
-        $request->user()->sendEmailVerificationNotification();
+        // Try to send email verification notification with error handling
+        $emailError = null;
+        
+        // Check if we've already tried to send email in this session to avoid repeated failures
+        if (!session()->has('email_send_attempted')) {
+            try {
+                $request->user()->sendEmailVerificationNotification();
+                session()->put('email_send_attempted', true);
+            } catch (Exception $e) {
+                // Log the error for debugging
+                logger()->error('Email verification failed: ' . $e->getMessage());
+                
+                // Set error message to display on the view
+                $emailError = 'Failed to send verification email. Please check your email settings or try again later.';
+                session()->put('email_send_attempted', true);
+            }
+        }
 
-        return $request->user()->hasVerifiedEmail()
-            ? redirect()->intended(RouteServiceProvider::HOME)
-            : view('frontend::auth.verify-email');
+        return view('frontend::auth.verify-email', compact('emailError'));
     }
 }

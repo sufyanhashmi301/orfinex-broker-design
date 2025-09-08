@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ImageUpload;
-use Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -35,29 +36,61 @@ class SettingController extends Controller
     public function profileUpdate(Request $request)
     {
         $input = $request->all();
-//        dd($input);
-        $user = \Auth::user();
+        $user = Auth::user();
         
-        // Get phone restriction setting
+        // Get setting permissions for each field
+        $nameEditEnabled = (bool) setting('customer_name_edit', 'customer_permission');
+        $phoneEditEnabled = (bool) setting('customer_phone_edit', 'customer_permission');
+        $usernameEditEnabled = (bool) setting('customer_username_edit', 'customer_permission');
+        $emailEditEnabled = (bool) setting('customer_email_edit', 'customer_permission');
+        $countryEditEnabled = (bool) setting('customer_country_edit', 'customer_permission');
+        $dobEditEnabled = (bool) setting('customer_dob_edit', 'customer_permission');
         $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
         
-        // Build phone validation rules
-        $phoneRules = ['required', 'string', 'max:255'];
+        // Build conditional validation rules
+        $validationRules = [];
         
-        // Add unique validation if phone restriction is enabled
-        if ($isPhoneRestricted) {
-            $phoneRules[] = 'unique:users,phone,' . $user->id;
+        // Only validate fields that are enabled for editing and have existing values or are being updated
+        if ($nameEditEnabled || !$user->first_name) {
+            $validationRules['first_name'] = 'required|string|max:255';
         }
         
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'username' => 'required|unique:users,username,'.$user->id,
-            'gender' => 'required',
-            'date_of_birth' => 'date',
-            'phone' => $phoneRules,
-            'country' => ['required','string','max:255'],
-        ]);
+        if ($nameEditEnabled || !$user->last_name) {
+            $validationRules['last_name'] = 'required|string|max:255';
+        }
+        
+        if ($usernameEditEnabled || !$user->username) {
+            $validationRules['username'] = 'required|string|max:255|unique:users,username,'.$user->id;
+        }
+        
+        if ($emailEditEnabled && $request->has('email')) {
+            $validationRules['email'] = 'required|email|max:255|unique:users,email,'.$user->id;
+        }
+        
+        if ($phoneEditEnabled || !$user->phone) {
+            $phoneRules = ['required', 'string', 'max:255'];
+            if ($isPhoneRestricted) {
+                $phoneRules[] = 'unique:users,phone,' . $user->id;
+            }
+            $validationRules['phone'] = $phoneRules;
+        }
+        
+        if ($countryEditEnabled && $request->has('country')) {
+            $validationRules['country'] = 'required|string|max:255';
+        }
+        
+        if ($dobEditEnabled || !$user->date_of_birth) {
+            $validationRules['date_of_birth'] = 'nullable|date';
+        }
+        
+        // Always validate gender and optional fields
+        $validationRules['gender'] = 'required|in:male,female,other';
+        $validationRules['city'] = 'nullable|string|max:255';
+        $validationRules['zip_code'] = 'nullable|string|max:10';
+        $validationRules['address'] = 'nullable|string|max:255';
+
+        $validator = Validator::make($request->all(), $validationRules);
+
 
         // Cross-validate phone against user's country (or submitted country if present) and normalize to E.164
         $validator->after(function ($v) use ($request, $user) {
@@ -96,38 +129,73 @@ class SettingController extends Controller
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));
-
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
 
-        $data = [
-            'avatar' => $request->hasFile('avatar') ? self::imageUploadTrait($input['avatar'], $user->avatar) : $user->avatar,
-            'first_name' => $input['first_name'],
-            'last_name' => $input['last_name'],
-            'username' => $input['username'],
-            'gender' => $input['gender'],
-            'date_of_birth' => $input['date_of_birth'] == '' ? null : $input['date_of_birth'],
-            'phone' => $request->input('__normalized_phone') ?: $input['phone'],
-            'city' => $input['city'],
-            'zip_code' => $input['zip_code'],
-            'address' => $input['address'],
-        ];
-
-        // If client sent a country value synced from the phone UI, update it as well
-        if ($request->filled('country')) {
-            $data['country'] = $request->input('country');
+        // Build data array with only enabled fields or fields that don't have existing values
+        $data = [];
+        
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = self::imageUploadTrait($input['avatar'], $user->avatar);
+        }
+        
+        // Only update fields that are enabled for editing or don't have existing values
+        if (($nameEditEnabled || !$user->first_name) && $request->has('first_name')) {
+            $data['first_name'] = $input['first_name'];
+        }
+        
+        if (($nameEditEnabled || !$user->last_name) && $request->has('last_name')) {
+            $data['last_name'] = $input['last_name'];
+        }
+        
+        if (($usernameEditEnabled || !$user->username) && $request->has('username')) {
+            $data['username'] = $input['username'];
+        }
+        
+        if ($emailEditEnabled && $request->has('email')) {
+            $data['email'] = $input['email'];
+        }
+        
+        if (($phoneEditEnabled || !$user->phone) && $request->has('phone')) {
+            $data['phone'] = $input['phone'];
+        }
+        
+        if ($countryEditEnabled && $request->has('country')) {
+            $data['country'] = $input['country'];
+        }
+        
+        if (($dobEditEnabled || !$user->date_of_birth) && $request->has('date_of_birth')) {
+            $data['date_of_birth'] = $input['date_of_birth'] == '' ? null : $input['date_of_birth'];
+        }
+        
+        // Always allow updating these optional fields
+        if ($request->has('gender')) {
+            $data['gender'] = $input['gender'];
+        }
+        if ($request->has('city')) {
+            $data['city'] = $input['city'];
+        }
+        if ($request->has('zip_code')) {
+            $data['zip_code'] = $input['zip_code'];
+        }
+        if ($request->has('address')) {
+            $data['address'] = $input['address'];
         }
 
-        $user->update($data);
+        // Only update if we have data to update
+        if (!empty($data)) {
+            $user->update($data);
+        }
+
 
         notify()->success(__('Your Profile Updated successfully'));
-
         return redirect()->back();
     }
 
     public function updateAvatar(Request $request)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $domain = Str::slug(request()->getHttpHost());
 
         if ($request->hasFile('avatar')) {
@@ -157,7 +225,7 @@ class SettingController extends Controller
     {
         $input = $request->all();
 //        dd($input);
-        $user = \Auth::user();
+        $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'email' => 'sometimes|unique:users,email,'.$user->id,
             'phone' => 'sometimes',
@@ -190,7 +258,7 @@ class SettingController extends Controller
 
     public function twoFa()
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $google2fa = app('pragmarx.google2fa');
         $secret = $google2fa->generateSecretKey();
 //dd($google2fa,$secret);
@@ -205,7 +273,7 @@ class SettingController extends Controller
 
     public function actionTwoFa(Request $request)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
 
         if ($request->status == 'disable') {
 
@@ -249,7 +317,7 @@ class SettingController extends Controller
 
     public function preference()
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $selectedLanguage = UserLanguage::where('user_id', $user->id)->value('language') ?? 'english';
 
         // Fetch the user's theme preference
@@ -264,7 +332,7 @@ class SettingController extends Controller
             'language' => 'required',
         ]);
 
-        $user = \Auth::user();
+        $user = Auth::user();
         $userLanguage = UserLanguage::where('user_id', $user->id)->first();
 
         if ($userLanguage) {
@@ -287,7 +355,7 @@ class SettingController extends Controller
             'user_theme' => 'required|in:light,dark',
         ]);
 
-        $user = \Auth::user();
+        $user = Auth::user();
         $user->update([
             'user_theme' => $request['user_theme'],
         ]);

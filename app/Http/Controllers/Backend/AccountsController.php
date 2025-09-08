@@ -90,7 +90,10 @@ class   AccountsController extends Controller
             ->addColumn('balance', 'backend.investment.include.__balance_mt5')
             ->addColumn('equity', 'backend.investment.include.__equity_mt5')
             ->addColumn('credit', 'backend.investment.include.__credit_mt5')
-            ->addColumn('schema', 'backend.investment.include.__invest_schema')
+            ->addColumn('schema', function($account) {
+                // Return the rendered HTML directly
+                return view('backend.investment.include.__invest_schema', ['account' => $account])->render();
+            })
             ->addColumn('status', 'backend.investment.include.__status')
             ->addColumn('action', 'backend.investment.include.__action')
             ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])

@@ -75,8 +75,9 @@ class DepositController extends Controller
     {
         $gateways = Gateway::where('status', true)->get();
         $rates_with_countries = Rate::with('country')->get();
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
 
-        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries'));
+        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled'));
     }
 
     public function methodStore(Request $request)
@@ -144,8 +145,9 @@ class DepositController extends Controller
         $gateways = Gateway::where('status', true)->get();
         $method = DepositMethod::find(\request('id'));
         $supported_currencies = Gateway::find($method->gateway_id)->supported_currencies ?? [];
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
 
-        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies'));
+        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled'));
     }
 
     public function methodUpdate($id, Request $request)

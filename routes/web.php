@@ -403,8 +403,6 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
-Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
-Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
 
 // Veriff KYC Routes
 Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');
@@ -418,6 +416,8 @@ Route::view('register-2', 'frontend::auth.register-2');
 
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
+//https://demo.brokeret.com/webhook/sumsub   for sumsub webhook receive
+
 Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');
 
 

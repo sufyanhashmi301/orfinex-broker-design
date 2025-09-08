@@ -330,17 +330,24 @@
 @endsection
 @section('payment-script')
     <script>
-        let get_rate = (code) => {
+        const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled);
 
+        let get_rate = (code) => {
             $.ajax({
                 url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
                 type: 'GET',
                 success: function(response) {
                     // Handle the success response (you get the rate here)
                     if (response.rate) {
-                        // You can also update a field or display the result on the page
+                        // Always load the values, but only make them readonly if auto exchange is enabled
                         $('.display-conversion-rate').val(response.rate.toFixed(6));
                         $('.currency-symbol').val(response.symbol);
+
+                        // If auto exchange rates are disabled, make the fields editable after loading values
+                        if (!autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
+                        }
                     } else {
                         console.log(response.error);
                     }
@@ -361,6 +368,13 @@
                 $('#currency').on('change', function() {
                     get_rate($(this).val());
                 });
+
+                // If auto exchange rates are disabled, show a message or provide manual input guidance
+                if (!autoExchangeRatesEnabled) {
+                    console.log(
+                        'Auto exchange rates are disabled. Currency symbol and conversion rate can be edited manually.'
+                    );
+                }
             });
         })(jQuery);
 

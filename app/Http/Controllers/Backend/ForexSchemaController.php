@@ -69,13 +69,21 @@ class ForexSchemaController extends Controller
             $schemas->where('status', $request->input('status'));
         }
     
-        if ($request->ajax()) {
-            $schemas = $schemas->paginate(10);
-            $view = view('backend.forex_schema.index', compact('schemas'))->render();
-            return response()->json(['html' => $view]);
+        // Force page 1 when filters change
+        if ($request->hasAny(['title', 'trader_type', 'leverage', 'badge', 'status']) && !$request->ajax()) {
+            $request->merge(['page' => 1]);
         }
     
         $schemas = $schemas->paginate(10);
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('backend.forex_schema.index', compact('schemas'))->render(),
+                'current_page' => $schemas->currentPage(),
+                'filters_active' => $request->anyFilled(['title', 'trader_type', 'leverage', 'badge', 'status'])
+            ]);
+        }
+    
         return view('backend.forex_schema.index', compact('schemas'));
     }
     

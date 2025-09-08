@@ -245,30 +245,54 @@ class IBGroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $ibGroup = IbGroup::find($id);
-        if (!$ibGroup) {
-            notify()->error(__('IB Group not found'), 'Error');
-            return redirect()->route('admin.ib-group.index');
+        try {
+            $ibGroup = IbGroup::find($id);
+            
+            if (!$ibGroup) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'IB Group not found'
+                ], 404);
+            }
+            
+            // Check for attached users
+            $users = User::where('ib_group_id', $id)
+                        ->select('id', 'username', 'email', 'first_name', 'last_name')
+                        ->get();
+            
+            if ($request->check_users) {
+                return response()->json([
+                    'users' => $users,
+                    'user_count' => $users->count()
+                ]);
+            }
+            
+            if ($users->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete IB Group because there are users still attached to it.'
+                ], 422);
+            }
+            
+            // Proceed with deletion
+            $ibGroup->rebateRules()->sync([]);
+            $ibGroup->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => __('IB Group Deleted Successfully')
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error("IB Group Deletion Error: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while processing your request.'
+            ], 500);
         }
-
-        // Manage User IB Rules for cleanup
-        $users = $ibGroup->users;
-        foreach ($users as $user) {
-            $this->manageUserRebateRules($user, null); // Pass null to remove all user rebate rules for this group
-        }
-
-        // Detach rebate rules
-        $ibGroup->rebateRules()->sync([]);
-        User::where('ib_group_id',$id)->update(['ib_group_id'=>null]);
-
-        $ibGroup->delete();
-
-        notify()->success(__('IB Group Deleted Successfully'));
-        return redirect()->route('admin.ib-group.index');
     }
-
     protected function manageUserRebateRules($user, $ibGroup)
     {
         if (!$ibGroup) {

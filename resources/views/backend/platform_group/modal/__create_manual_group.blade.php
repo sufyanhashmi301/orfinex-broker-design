@@ -55,11 +55,11 @@
                                     </span>
                                 </label>
                                 <select name="currencyDigits" class="form-control">
-                                    <option value="1">{{ __('1') }}</option>
+                                    <option value="1">1</option>
                                     <option value="2" selected>{{ __('2 (Default)') }}</option>
-                                    <option value="3">{{ __('3') }}</option>
-                                    <option value="4">{{ __('4') }}</option>
-                                    <option value="5">{{ __('5') }}</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
                                 </select>
                             </div>
                             <div class="input-area relative">

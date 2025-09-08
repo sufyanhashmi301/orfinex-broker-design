@@ -70,8 +70,9 @@ class SettingController extends Controller
      */
     public static function siteSetting()
     {
-        return view('backend.setting.site_setting.index');
+        return view('backend.setting.site_setting.site');
     }
+
 
     /**
      * @return Application|Factory|View

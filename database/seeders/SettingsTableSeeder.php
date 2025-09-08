@@ -1097,6 +1097,11 @@ class SettingsTableSeeder extends Seeder
                 'val' => '0',
             ],
             [
+                'name' => 'withdraw_account_otp',
+                'type' => 'boolean',
+                'val' => '0',
+            ],
+            [
                 'name' => 'site_mobile_logo',
                 'type' => 'string',
                 'val' => 'global/images/d7P7MjUHhzwIBltn4zsm.png',

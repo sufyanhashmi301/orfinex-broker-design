@@ -119,17 +119,60 @@ class SymbolGroupController extends Controller
         return redirect()->route('admin.symbol-groups.index');
     }
 
-    public function destroy(SymbolGroup $symbolGroup)
-    {
-        if ($symbolGroup->rebateRule()->count() > 0) {
-            notify()->error(__('Sorry, cannot delete this symbol group because it is still associated with rebate rules. Please detach first'));
+    public function destroy(Request $request, SymbolGroup $symbolGroup)
+{
+    try {
+        // Handle the AJAX request to check for attached rebate rules
+        if ($request->has('check_rules')) {
+            // Use the singular relationship name rebateRule() instead of rebateRules()
+            $rebateRules = $symbolGroup->rebateRule()
+                ->select('rebate_rules.id', 'rebate_rules.title')
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'rules' => $rebateRules,
+                'rule_count' => $rebateRules->count()
+            ]);
+        }
+
+        // Check for attached rules before actual deletion using the singular relationship
+        if ($symbolGroup->rebateRule()->exists()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 'Cannot delete this symbol group because it is associated with rebate rules.'
+                ], 422);
+            }
+            notify()->error(__('Cannot delete this symbol group. Please detach associated rebate rules first.'));
             return redirect()->back();
         }
+
+        // Proceed with deletion
         $this->symbolGroupService->delete($symbolGroup);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Symbol Group deleted successfully.'
+            ]);
+        }
+
         notify()->success(__('Symbol Group deleted successfully.'));
         return redirect()->route('admin.symbol-groups.index');
-    }
 
+    } catch (\Exception $e) {
+        \Log::error("Symbol Group Deletion Error: " . $e->getMessage());
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'error' => 'An error occurred while checking for attached rebate rules.'
+            ], 500);
+        }
+
+        notify()->error(__('An error occurred. Please try again.'), 'Error');
+        return redirect()->back();
+    }
+}
     public function export(Request $request)
     {
         // Start with the base query

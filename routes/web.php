@@ -167,8 +167,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
     //withdraw
     Route::group(['middleware' => 'KYC', 'prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-        //withdraw methods
-        Route::resource('account', WithdrawController::class)->except('show');
+            //withdraw methods
+    Route::resource('account', WithdrawController::class)->except('show');
+    Route::get('account/{id}', 'show')->name('account.show');
         //user withdraw
         Route::get('/', 'withdraw')->name('view');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');
@@ -178,6 +179,11 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('log/export', 'export')->name('log.export');
         Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
         Route::post('resend-otp', 'resendOtp')->name('otp.resend');
+        
+        // OTP verification for account creation
+        Route::get('account/verify-otp', 'showOtpVerification')->name('account.verify-otp');
+        Route::post('account/verify-otp', 'verifyAccountCreationOtp')->name('account.verify-otp.post');
+        Route::post('account/resend-otp', 'resendAccountCreationOtp')->name('account.resend-otp');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');

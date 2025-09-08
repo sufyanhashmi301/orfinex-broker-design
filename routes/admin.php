@@ -338,6 +338,14 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('history', 'history')->name('history');
         Route::get('pending', 'pending')->name('pending');
         Route::post('pending/export', 'pendingExport')->name('pending.export');
+        Route::get('pending-accounts', 'pendingAccounts')->name('pending.accounts');
+        Route::post('pending-accounts/export', 'pendingAccountsExport')->name('pending.accounts.export');
+        Route::get('approved-accounts', 'approvedAccounts')->name('approved.accounts');
+        Route::post('approved-accounts/export', 'approvedAccountsExport')->name('approved.accounts.export');
+        Route::get('rejected-accounts', 'rejectedAccounts')->name('rejected.accounts');
+        Route::post('rejected-accounts/export', 'rejectedAccountsExport')->name('rejected.accounts.export');
+        Route::get('account-action/{id}', 'accountActionModal')->name('account.action.modal');
+        Route::post('account-action', 'accountAction')->name('account.action');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
 
@@ -633,6 +641,7 @@ Route::prefix('team')->group(function() {
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
     Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+    Route::post('symbols/{symbol}/check-groups', [SymbolController::class, 'checkSymbolGroups'])->name('symbols.check-groups');
     Route::post('symbol-groups/export', [SymbolGroupController::class, 'export'])->name('symbol-groups.export');
 
 

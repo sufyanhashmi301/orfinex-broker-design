@@ -293,14 +293,147 @@ $('#global_search, #symbol_filter, #created_at_filter').on('change keyup', funct
                     }
                 });
             });
+$(document).on('click', '.deleteSymbolGroup', function(e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const deleteUrl = '{{ route("admin.symbol-groups.destroy", ":id") }}'.replace(':id', id);
 
-            $(document).on('click', '.deleteSymbolGroup', function(event) {
-                event.preventDefault();
-                var id = $(this).data('id');
-                var url = '{{ route("admin.symbol-groups.destroy", ":id") }}'.replace(':id', id);
-                $('#symbolGroupDeleteForm').attr('action', url);
-                $('#deleteSymbolGroup').modal('show');
-            });
+    // Reset modal state
+    resetDeleteModal(name, deleteUrl);
+    
+    // Show modal
+    $('#deleteSymbolGroup').modal('show');
+    
+    // Check for attached rebate rules
+    checkAttachedRules(deleteUrl);
+});
+
+$('#symbolGroupDeleteForm').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const deleteUrl = form.attr('action');
+    const table = $('#symbol-groups-dataTable').DataTable();
+    const currentPage = table.page();
+
+    // Show loading state on button
+    const submitBtn = form.find('#confirm-delete-btn');
+    submitBtn.prop('disabled', true).html(`
+        <iconify-icon class="spining-icon text-xl ltr:mr-2 rtl:ml-2" icon="svg-spinners:180-ring"></iconify-icon>
+        Deleting...
+    `);
+
+    // Submit deletion request
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hide modal
+                $('#deleteSymbolGroup').modal('hide');
+                
+                // Show success notification
+                tNotify('success', response.message);
+                
+                // Reload table but maintain page
+                table.ajax.reload(null, false);
+                table.page(currentPage).draw('page');
+            } else {
+                submitBtn.prop('disabled', false).html(`
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    Confirm
+                `);
+                tNotify('error', response.message || 'Error deleting Symbol Group');
+            }
+        },
+        error: function(xhr) {
+            submitBtn.prop('disabled', false).html(`
+                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                Confirm
+            `);
+
+            let errorMessage = 'Error deleting Symbol Group';
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMessage = xhr.responseJSON.error;
+            }
+            tNotify('error', errorMessage);
+        }
+    });
+});
+
+// Helper function to reset modal state
+function resetDeleteModal(name = '', deleteUrl = '') {
+    $('#symbolGroupDeleteForm').attr('action', deleteUrl);
+    $('.name').text(name);
+    $('#attached-rules').addClass('hidden');
+    $('#no-rules').addClass('hidden');
+    $('.rules-list').html('');
+    $('#confirm-delete-btn').prop('disabled', false).html(`
+        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+        Confirm
+    `);
+}
+
+// Helper function to check attached rebate rules
+function checkAttachedRules(deleteUrl) {
+    // Show loading state
+    $('#attached-rules').removeClass('hidden');
+    $('.rules-list').html(`
+        <div class="flex items-center justify-center py-4">
+            <iconify-icon icon="svg-spinners:180-ring" class="text-lg mr-2"></iconify-icon>
+            Checking for attached rebate rules...
+        </div>
+    `);
+
+    // Check for attached rebate rules
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}',
+            check_rules: true
+        },
+        success: function(response) {
+            if (response.rule_count > 0) {
+                // Show rules list
+                let ruleList = '';
+                response.rules.forEach(rule => {
+                    ruleList += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <span>${rule.title}</span>
+                            <span class="text-slate-400 text-sm">ID: ${rule.id}</span>
+                        </li>
+                    `;
+                });
+                $('.rules-list').html(ruleList);
+                $('#attached-rules').removeClass('hidden');
+                $('#no-rules').addClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', true)
+                    .addClass('opacity-50 cursor-not-allowed');
+            } else {
+                // No rules attached
+                $('.rules-list').html('');
+                $('#attached-rules').addClass('hidden');
+                $('#no-rules').removeClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', false)
+                    .removeClass('opacity-50 cursor-not-allowed');
+            }
+        },
+        error: function(xhr) {
+            $('.rules-list').html(`
+                <div class="text-red-500 py-4">
+                    Error checking for attached rebate rules
+                </div>
+            `);
+            $('#confirm-delete-btn').prop('disabled', true);
+        }
+    });
+}
 
            // Export functionality
 $('#export-button').click(function(e) {

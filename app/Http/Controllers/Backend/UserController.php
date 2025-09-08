@@ -1125,12 +1125,21 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         $isPhone = (bool) getPageSetting('phone_show');
 
         // Validation
+        $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+        
+        $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+        
+        // Add unique validation if phone restriction is enabled (regardless of phone_show)
+        if ($isPhoneRestricted) {
+            $phoneRules[] = Rule::unique('users', 'phone')->ignore($id);
+        }
+        
         $validator = Validator::make($request->all(), [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
             'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users,username,' . $id],
-            'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+            'phone' => $phoneRules,
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
             'email_verified_at' => 'nullable|date',
             'gender' => 'in:male,female,other|nullable',
@@ -1166,12 +1175,19 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'comment',
             'password',
         ]);
-        $data = [
+
+        // Handle phone number with country code from intlTelInput
+        // Always use the phone from input if provided, otherwise keep existing
+        $phone = !empty($request->formatted_phone) ? $request->formatted_phone : ($request->phone ?? $user->phone);
+        
+
+       
+       $data = [
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'country' => $input['country'] ?? $user->country,
             'username' => $input['username'],
-            'phone' => $input['phone'] ?? $user->phone,
+            'phone' => $phone,
             'email' => $input['email'],
             'gender' => $input['gender'] ?? $user->gender,
             'city' => $input['city'] ?? $user->city,
@@ -1194,6 +1210,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
             $user->riskProfileTags()->sync($input['risk_profile_tags']);
         }
+
+
 
         // Redirect with success message
         notify()->success('User Info Updated Successfully', 'success');
@@ -1775,12 +1793,21 @@ public function store(Request $request)
 
         // Validate the request data
         try {
+            $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+            
+            $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+            
+            // Add unique validation if phone restriction is enabled (regardless of phone_show)
+            if ($isPhoneRestricted) {
+                $phoneRules[] = 'unique:users,phone';
+            }
+            
             $validatedData = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
                 'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
-                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'phone' => $phoneRules,
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'email_verified_at' => 'nullable|date',
                 'gender' => 'in:male,female,other|nullable',
@@ -1841,8 +1868,23 @@ public function store(Request $request)
 
         // Set country and phone depending on settings and input
        $country = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[0] : ($location->country_code ?? '');
-$phone = $isPhone ? (($isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '')) . ' ' . ($input['phone'] ?? '')) : ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
-        // Generate a username if it’s not provided
+       
+       // Handle phone number with country code from intlTelInput
+       if ($isPhone && !empty($input['phone'])) {
+           // Check if phone already contains country code (from intlTelInput)
+           if (strpos($input['phone'], '+') === 0) {
+               // Phone already has country code, use as is
+               $phone = $input['phone'];
+           } else {
+               // Add country code from country selection or location
+               $dialCode = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '');
+               $phone = $dialCode . ' ' . $input['phone'];
+           }
+       } else {
+           $phone = ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
+       }
+
+        // Generate a username if it's not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 
         // Get the ranking
@@ -1956,12 +1998,21 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         // Validate the request data
         try {
+            $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+            
+            $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+            
+            // Add unique validation if phone restriction is enabled (regardless of phone_show)
+            if ($isPhoneRestricted) {
+                $phoneRules[] = 'unique:users,phone';
+            }
+            
             $validatedData = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
                 'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
-                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'phone' => $phoneRules,
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'email_verified_at' => 'nullable|date',
                 'gender' => 'in:male,female,other|nullable',
@@ -2020,9 +2071,23 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         // Set country and phone depending on settings and input
         $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
-        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+        
+        // Handle phone number with country code from intlTelInput
+        if ($isPhone && !empty($input['phone'])) {
+            // Check if phone already contains country code (from intlTelInput)
+            if (strpos($input['phone'], '+') === 0) {
+                // Phone already has country code, use as is
+                $phone = $input['phone'];
+            } else {
+                // Add country code from country selection or location
+                $dialCode = $isCountry ? explode(':', $input['country'])[1] : $location->dial_code;
+                $phone = $dialCode . ' ' . $input['phone'];
+            }
+        } else {
+            $phone = $location->dial_code . ' ' . ($input['phone'] ?? '');
+        }
 
-        // Generate a username if it’s not provided
+        // Generate a username if it's not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 
         // Get the ranking

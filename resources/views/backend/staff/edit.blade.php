@@ -373,7 +373,7 @@
                     <input
                         type="text"
                         name="date_of_birth"
-                        class="form-control flatpicket dateOfBirth"
+                        class="form-control flatpickr dateOfBirth"
                         value="{{ $staff->date_of_birth }}"
                         placeholder="2006-12-19"
                     >

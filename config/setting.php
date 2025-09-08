@@ -649,6 +649,15 @@ return [
                 'value' => 1, // default value - enabled by default
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'phone_number_restriction', // unique name for field
+                'label' => 'Duplicate Phone Number Restriction', // you know what label it is
+                'description' => 'Restrict one phone number to one user account only',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
@@ -657,7 +666,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
             ],
-          
+
         ],
     ],
 
@@ -1611,6 +1620,24 @@ return [
                 'description' => 'Enable this to require an OTP (One-Time Password) for withdrawals',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_account_otp', // unique name for field
+                'label' => 'User Withdraw Account Creation OTP', // you know what label it is
+                'description' => 'Enable this to require an OTP for creating withdraw accounts',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "withdraw_account_approval", // unique name for field
+                "label" => "Withdraw Account Manual Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for withdraw account creation even if withdraw account creation otp is enabled or disabled",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
             ]
         ],
     ],

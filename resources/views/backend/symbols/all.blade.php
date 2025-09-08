@@ -126,6 +126,60 @@
             </div>
         </div>
     </div>
+   <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+     id="disableSymbolModal"
+     tabindex="-1"
+     aria-labelledby="disableSymbolModal"
+     aria-hidden="true">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-6 py-10 text-center">
+                <div class="space-y-3">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                        <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
+                    </div>
+                    <div class="title">
+                        <h4 class="text-2xl font-medium dark:text-white capitalize">
+                            {{ __('Are you sure?') }}
+                        </h4>
+                    </div>
+                    <p>
+                        {{ __('You want to disable') }}
+                        <strong class="symbol-name"></strong>
+                    </p>
+                    <div id="attached-groups" class="hidden">
+                        <div class="text-left max-h-60 overflow-y-auto">
+                            <h5 class="font-medium mb-2">{{ __('Attached Symbol Groups') }}:</h5>
+                            <ul class="groups-list"></ul>
+                        </div>
+                        <div class="mt-4 text-red-500">
+                            {{ __('Please detach these symbol groups first before disabling.') }}
+                        </div>
+                    </div>
+                    <div id="no-groups" class="hidden">
+                        <p class="text-green-500">{{ __('No symbol groups are attached.') }}</p>
+                    </div>
+                </div>
+                <form method="POST" id="disableSymbolForm">
+                    @csrf
+                    <input type="hidden" name="symbol_id" id="symbol_id">
+                    <input type="hidden" name="status" value="0">
+                    <div class="action-btns mt-10">
+                        <button type="submit" id="confirm-disable-btn" class="btn btn-dark inline-flex items-center justify-center mr-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Confirm') }}
+                        </button>
+                        <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
     <div class="card-body relative px-6 pt-3">
     <div id="processingIndicator" class="text-center" style="display: none;">
         <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
@@ -244,35 +298,172 @@
             });
 
 
-            // Handle Toggle Change for Single Symbol
-            $('body').on('click', '.symbol-toggle', function () {
-                var checkbox = $(this);
-                var symbolId = $(this).data("id");
-                var newState = $(this).is(":checked") ? 1 : 0;
+ // Handle Toggle Change for Single Symbol with confirmation
+$('body').on('change', '.symbol-toggle', function () {
+    var checkbox = $(this);
+    var symbolId = $(this).data("id");
+    var newState = $(this).is(":checked") ? 1 : 0;
+    var previousState = !newState;
 
-                $.ajax({
-                    url: "{{ route('admin.symbols.updateStatus') }}",
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id: symbolId,
-                        status: newState
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            tNotify('success', response.message);
-                        } else {
-                            tNotify('warning', response.message);
-                            checkbox.prop("checked", !newState); // Revert toggle
+    // If enabling, proceed directly
+    if (newState === 1) {
+        updateSymbolStatus(symbolId, newState, checkbox);
+        return;
+    }
 
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        tNotify('warning', "Error updating symbol status.");
-                        console.error("Error:", error);
-                    }
-                });
-            });
+    // If disabling, show confirmation modal and prevent immediate toggle change
+    checkbox.prop("checked", true); // Keep it checked (enable state) until confirmed
+    showDisableConfirmation(symbolId, checkbox, previousState);
+});
+
+// Function to show disable confirmation modal
+function showDisableConfirmation(symbolId, checkbox, previousState) {
+    // Reset modal state
+    resetDisableModal();
+    
+    // Store the previous state in the checkbox data
+    checkbox.data('previous-state', previousState);
+    
+    // Show loading in modal
+    $('#attached-groups').removeClass('hidden');
+    $('.groups-list').html(`
+        <div class="flex items-center justify-center py-4">
+            <iconify-icon icon="svg-spinners:180-ring" class="text-lg mr-2"></iconify-icon>
+            Checking for attached symbol groups...
+        </div>
+    `);
+    
+    // Find the symbol name from the table row
+    var symbolName = $(checkbox).closest('tr').find('td:nth-child(2)').text().trim();
+    $('.symbol-name').text(symbolName);
+    $('#symbol_id').val(symbolId);
+    
+    // Show modal
+    $('#disableSymbolModal').modal('show');
+    
+    // Check for attached symbol groups
+    $.ajax({
+        url: '{{ route("admin.symbols.check-groups", ":id") }}'.replace(':id', symbolId),
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success && response.group_count !== undefined) {
+                if (response.group_count > 0) {
+                    // Show groups list and disable confirm button
+                    let groupList = '';
+                    response.groups.forEach(group => {
+                        groupList += `
+                            <li class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                                <span>${group.title}</span>
+                                <span class="text-slate-400 text-sm">ID: ${group.id}</span>
+                            </li>`;
+                    });
+                    $('.groups-list').html(groupList);
+                    $('#attached-groups').removeClass('hidden');
+                    $('#no-groups').addClass('hidden');
+                    $('#confirm-disable-btn').prop('disabled', true)
+                        .addClass('opacity-50 cursor-not-allowed');
+                } else {
+                    // No groups attached - enable confirm button
+                    $('.groups-list').html('');
+                    $('#attached-groups').addClass('hidden');
+                    $('#no-groups').removeClass('hidden');
+                    $('#confirm-disable-btn').prop('disabled', false)
+                        .removeClass('opacity-50 cursor-not-allowed');
+                }
+            }
+        },
+        error: function(xhr) {
+            $('.groups-list').html(`
+                <div class="text-red-500 py-4">
+                    Error checking for attached symbol groups
+                </div>
+            `);
+            console.error('Error checking symbol groups:', xhr.responseText);
+        }
+    });
+}
+
+// Function to reset modal state
+function resetDisableModal() {
+    $('.groups-list').html('');
+    $('#attached-groups').addClass('hidden');
+    $('#no-groups').addClass('hidden');
+    $('#confirm-disable-btn').prop('disabled', false)
+        .removeClass('opacity-50 cursor-not-allowed');
+}
+
+// Handle form submission for disabling
+$('#disableSymbolForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const form = $(this);
+    const symbolId = $('#symbol_id').val();
+    const submitBtn = form.find('#confirm-disable-btn');
+    
+    submitBtn.prop('disabled', true).html(`
+        <iconify-icon class="spining-icon text-xl ltr:mr-2 rtl:ml-2" icon="svg-spinners:180-ring"></iconify-icon>
+        Disabling...
+    `);
+
+    // Update symbol status
+    updateSymbolStatus(symbolId, 0, null, function() {
+        $('#disableSymbolModal').modal('hide');
+        submitBtn.prop('disabled', false).html(`
+            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+            {{ __('Confirm') }}
+        `);
+    });
+});
+
+// Handle modal close/cancel event
+$('#disableSymbolModal').on('hidden.bs.modal', function () {
+    // Find the checkbox that triggered the modal and revert to previous state
+    $('.symbol-toggle').each(function() {
+        if ($(this).data('previous-state') !== undefined) {
+            $(this).prop('checked', $(this).data('previous-state'));
+            $(this).removeData('previous-state');
+        }
+    });
+});
+
+// Function to update symbol status
+function updateSymbolStatus(symbolId, status, checkbox, callback = null) {
+    $.ajax({
+        url: "{{ route('admin.symbols.updateStatus') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            id: symbolId,
+            status: status
+        },
+        success: function (response) {
+            if (response.success) {
+                tNotify('success', response.message);
+                if (status === 0) {
+                    // Refresh the table to show updated state
+                    fetchSymbols();
+                }
+            } else {
+                tNotify('warning', response.message);
+                if (checkbox) {
+                    checkbox.prop("checked", !status); // Revert toggle
+                }
+            }
+            if (callback) callback();
+        },
+        error: function (xhr, status, error) {
+            tNotify('warning', "Error updating symbol status.");
+            console.error("Error:", error);
+            if (checkbox) {
+                checkbox.prop("checked", !status); // Revert toggle
+            }
+            if (callback) callback();
+        }
+    });
+}
             $('#filter').click(function () {
                 table.draw();
             });

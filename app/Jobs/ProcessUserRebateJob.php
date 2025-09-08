@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Throwable;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class ProcessUserRebateJob implements ShouldQueue
 {
@@ -35,7 +35,7 @@ class ProcessUserRebateJob implements ShouldQueue
             $user = User::find($this->userId);
             if (!$user) return;
 
-            $command = new EmailBasedRebateDistribution(); // or extract logic to service
+            $command = app(EmailBasedRebateDistribution::class); // Use service container for dependency injection
             $command->processUserDealsFromDate($user, Carbon::parse($this->startDate));
 
             DB::commit();

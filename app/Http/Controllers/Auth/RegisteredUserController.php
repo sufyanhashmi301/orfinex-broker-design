@@ -146,13 +146,21 @@ class RegisteredUserController extends Controller
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
+        $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+
+        $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+        
+        // Add unique validation if phone restriction is enabled (regardless of phone_show)
+        if ($isPhoneRestricted) {
+            $phoneRules[] = 'unique:users,phone';
+        }
 
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
             'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
-            'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+            'phone' => $phoneRules,
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),

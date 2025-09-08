@@ -130,8 +130,9 @@
                                         class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" class="form-control" value="{{ $method->currency_symbol }}"
-                                name="currency_symbol" />
+                            <input type="text" class="form-control currency-symbol"
+                                value="{{ $method->currency_symbol }}" name="currency_symbol"
+                                @if ($autoExchangeRatesEnabled) readonly @endif />
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">
@@ -147,8 +148,10 @@
                                     class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{ '1 ' . ' ' . setting('site_currency', 'global') . ' =' }}
                                 </span>
-                                <input type="text" name="rate" class="form-control !pl-16.5 !pr-12"
-                                    oninput="this.value = validateDouble(this.value)" value="{{ $method->rate }}" />
+                                <input type="text" name="rate"
+                                    class="form-control !pl-16.5 !pr-12 display-conversion-rate"
+                                    oninput="this.value = validateDouble(this.value)" value="{{ $method->rate }}"
+                                    @if ($autoExchangeRatesEnabled) readonly @endif />
                                 <span
                                     class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1"
                                     id="currency-selected">
@@ -429,11 +432,21 @@
 
 @section('payment-script')
     <script>
+        const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled);
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
         $("#currency").on('change', function() {
             if (currency === null) {
                 $('#currency-selected').text(this.value);
+            }
+        });
+
+        // If auto exchange rates are disabled, make the fields editable on page load
+        $(document).ready(function() {
+            if (!autoExchangeRatesEnabled) {
+                $('.display-conversion-rate').prop('readonly', false);
+                $('.currency-symbol').prop('readonly', false);
+                console.log('Auto exchange rates are disabled. Currency symbol and conversion rate are editable.');
             }
         });
 

@@ -68,7 +68,7 @@
             </div>
         </div>
         @endcanany
-        @canany(['ranking-list','ranking-create','ranking-edit','kyc-levels-list','lead-source-list','lead-pipeline-list','role-list','role-create','role-edit','risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions','customer-registration-settings'])
+        @canany(['ranking-list','ranking-create','ranking-edit','kyc-levels-list','lead-source-list','lead-pipeline-list','role-list','role-create','role-edit','risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -80,7 +80,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    @canany(['risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions','customer-registration-settings'])
+                    @canany(['risk-profile-list','system-tag-list','customer-group-list','ib-group-list','customer-permissions'])
                     <li>
                         <a href="{{ route('admin.customer-groups.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Customer') }}

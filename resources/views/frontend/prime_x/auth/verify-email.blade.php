@@ -5,7 +5,7 @@
 @section('content')
     <div class="shadow-xl rounded-xl border p-8">
         <div class="text-center mb-5">
-            <h4 class="card-title mb-5">👋 {{ __('Welcome to '). setting('site_title', 'common_settings') }}</h4>
+            <h4 class="card-title mb-5">👋 {{ __('Welcome to ') . setting('site_title', 'common_settings') }}</h4>
             <p class="text-slate-500 dark:text-slate-400 text-sm">
                 {{ __('To start using your account, we need to verify your email address. Please check your inbox for the verification email we just sent.') }}
             </p>
@@ -21,7 +21,8 @@
                 <div class="fromGroup">
                     <label class="block capitalize form-label">{{ __('Code') }}</label>
                     <div class="relative ">
-                        <input type="text" name="verification_code" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter 4 digits code!') }}" required>
+                        <input type="text" name="verification_code" class="form-control py-2 h-[48px]"
+                            placeholder="{{ __('Enter 4 digits code!') }}" required>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary block w-full text-center">
@@ -35,12 +36,18 @@
                 {{ __('A new verification link has been sent to the email address you provided during registration.') }}
             </div>
         @endif
+
+        @if (session('error') || isset($emailError))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') ?? $emailError }}
+            </div>
+        @endif
         <div class="text-center space-y-3 mb-5">
             <p class="dark:white text-sm font-semibold">
                 {{ __("Didn't receive the email?") }}
             </p>
             <p class="text-slate-500 dark:text-slate-400 text-sm">
-                {{ __("Click the button below to resend the verification code.") }}
+                {{ __('Click the button below to resend the verification code.') }}
             </p>
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
@@ -51,7 +58,7 @@
         </div>
         <div class="text-center space-y-3">
             <p class="dark:white text-sm font-semibold">
-                {{ __("Need Help?") }}
+                {{ __('Need Help?') }}
             </p>
             <p class="text-slate-500 dark:text-slate-400 text-sm">
                 {{ __("If you're having trouble or need assistance, contact our support team at ") }}
@@ -62,9 +69,10 @@
             @php
                 $socialLogins = App\Models\Social::activePlatforms();
             @endphp
-            @if($socialLogins->isNotEmpty())
+            @if ($socialLogins->isNotEmpty())
                 <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                    <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                    <div
+                        class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
                         {{ __('Or continue with') }}
                     </div>
                 </div>
@@ -73,8 +81,10 @@
                     <ul class="flex justify-center gap-2">
                         @foreach ($socialLogins as $socialLogin)
                             <li>
-                                <a href="{{ route('social.redirect', $socialLogin->driver) }}" class="inline-flex h-10 w-10 flex-col items-center justify-center">
-                                    <img src="https://cdn.brokeret.com/crm-assets/admin/social/{{ strtolower($socialLogin->title) }}.webp" class="w-full" alt="{{ ucfirst($socialLogin->title) }}">
+                                <a href="{{ route('social.redirect', $socialLogin->driver) }}"
+                                    class="inline-flex h-10 w-10 flex-col items-center justify-center">
+                                    <img src="https://cdn.brokeret.com/crm-assets/admin/social/{{ strtolower($socialLogin->title) }}.webp"
+                                        class="w-full" alt="{{ ucfirst($socialLogin->title) }}">
                                 </a>
                             </li>
                         @endforeach
@@ -84,7 +94,7 @@
             @endif
         </div>
         <div class="flex justify-center font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
-            {{ __("Not ready yet? ") }}
+            {{ __('Not ready yet? ') }}
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="text-slate-900 dark:text-white font-medium uppercase hover:underline ml-2">

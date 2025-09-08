@@ -203,17 +203,59 @@ class RebateRuleController extends Controller
     }
 
 
-    public function destroy(RebateRule $rebateRule)
+    public function destroy(Request $request, RebateRule $rebateRule)
     {
-        if($rebateRule->ibGroups()->count() > 0) {
-            notify()->error(__('Sorry,Cannot delete this rebate rule because it is still associated with Ib group. Please detach the levels first'));
+        try {
+            // Handle the AJAX request to check for attached IB Groups
+            if ($request->has('check_groups')) {
+                $ibGroups = $rebateRule->ibGroups()
+                    ->select('ib_groups.id', 'ib_groups.name')
+                    ->get();
+                
+                return response()->json([
+                    'success' => true,
+                    'groups' => $ibGroups,
+                    'group_count' => $ibGroups->count()
+                ]);
+            }
+    
+            // Check for attached groups before actual deletion
+            if ($rebateRule->ibGroups()->exists()) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'error' => 'Cannot delete this rule because it is associated with IB groups.'
+                    ], 422);
+                }
+                notify()->error(__('Cannot delete this rule. Please detach associated IB groups first.'));
+                return redirect()->back();
+            }
+    
+            // Proceed with deletion
+            $rebateRule->delete();
+    
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Rebate Rule deleted successfully.'
+                ]);
+            }
+    
+            notify()->success(__('Rebate Rule deleted successfully.'));
+            return redirect()->route('admin.rebate-rules.index');
+    
+        } catch (\Exception $e) {
+            \Log::error("Rebate Rule Deletion Error: " . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 'An error occurred while processing your request.'
+                ], 500);
+            }
+    
+            notify()->error(__('An error occurred. Please try again.'), 'Error');
             return redirect()->back();
         }
-        $this->rebateRuleService->delete($rebateRule);
-        notify()->success(__('Rebate Rule deleted successfully.'));
-        return redirect()->route('admin.rebate-rules.index');
     }
-
     public function updateStatus(Request $request)
     {
         $rebateRule = RebateRule::find($request->id);

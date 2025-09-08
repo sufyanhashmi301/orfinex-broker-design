@@ -370,20 +370,146 @@ $(document).ready(function() {
             alert('Error loading the edit form.');
         });
     });
+$(document).on('click', '.deleteIbGroup', function(event) {
+    event.preventDefault();
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const deleteUrl = '{{ route("admin.ib-group.destroy", ":id") }}'.replace(':id', id);
 
-    // Delete IB Group (existing functionality)
-    $('body').on('click', '.deleteIbGroup', function (e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        var name = $(this).data('name');
+    // Reset modal state
+    resetDeleteModal(name, deleteUrl);
+    
+    // Show modal
+    $('#deleteIbGroup').modal('show');
+    
+    // Check for attached users
+    checkAttachedUsers(deleteUrl);
+});
 
-        var url = '{{ route("admin.ib-group.destroy", ":id") }}';
-        url = url.replace(':id', id);
-        $('#ibGroupDeleteForm').attr('action', url)
+$('#ibGroupDeleteForm').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const deleteUrl = form.attr('action');
 
-        $('.name').html(name);
-        $('#deleteIbGroup').modal('show');
+    // Show loading state on button
+    const submitBtn = form.find('#confirm-delete-btn');
+    submitBtn.prop('disabled', true).html(`
+        <iconify-icon class="spining-icon text-xl ltr:mr-2 rtl:ml-2" icon="svg-spinners:180-ring"></iconify-icon>
+        Deleting...
+    `);
+
+    // Submit deletion request
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hide modal
+                $('#deleteIbGroup').modal('hide');
+                
+                // Show success notification using tNotify
+                tNotify('success', response.message);
+                
+                // Reload the page after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                // Handle error case
+                submitBtn.prop('disabled', false).html(`
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    Confirm
+                `);
+                tNotify('error', response.message || 'Error deleting IB Group');
+            }
+        },
+        error: function(xhr) {
+            submitBtn.prop('disabled', false).html(`
+                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                Confirm
+            `);
+
+            let errorMessage = 'Error deleting IB Group';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            tNotify('error', errorMessage);
+        }
     });
+});
+// Helper function to reset modal state
+function resetDeleteModal(name = '', deleteUrl = '') {
+    $('#ibGroupDeleteForm').attr('action', deleteUrl);
+    $('.name').text(name);
+    $('#attached-users').addClass('hidden');
+    $('#no-users').addClass('hidden');
+    $('.users-list').html('');
+    $('#confirm-delete-btn').prop('disabled', false).html(`
+        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+        Confirm
+    `);
+}
+
+// Helper function to check attached users
+function checkAttachedUsers(deleteUrl) {
+    // Show loading state
+    $('#attached-users').removeClass('hidden');
+    $('.users-list').html(`
+        <div class="flex items-center justify-center py-4">
+            <iconify-icon icon="svg-spinners:180-ring" class="text-lg mr-2"></iconify-icon>
+            Checking for attached users...
+        </div>
+    `);
+
+    // Check for attached users
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}',
+            check_users: true
+        },
+        success: function(response) {
+            if (response.user_count > 0) {
+                // Show users list
+                let userList = '';
+                response.users.forEach(user => {
+                    userList += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <span>${user.first_name} ${user.last_name} (${user.username})</span>
+                            <span class="text-slate-400 text-sm">${user.email}</span>
+                        </li>
+                    `;
+                });
+                $('.users-list').html(userList);
+                $('#attached-users').removeClass('hidden');
+                $('#no-users').addClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', true)
+                    .addClass('opacity-50 cursor-not-allowed');
+            } else {
+                // No users attached
+                $('.users-list').html('');
+                $('#attached-users').addClass('hidden');
+                $('#no-users').removeClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', false)
+                    .removeClass('opacity-50 cursor-not-allowed');
+            }
+        },
+        error: function(xhr) {
+            $('.users-list').html(`
+                <div class="text-red-500 py-4">
+                    Error checking for attached users
+                </div>
+            `);
+            $('#confirm-delete-btn').prop('disabled', true);
+        }
+    });
+}
 });
 </script>
 @endsection

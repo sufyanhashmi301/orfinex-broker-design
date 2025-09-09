@@ -68,6 +68,19 @@ class ViewServiceProvider extends ServiceProvider
             ]);
         });
 
+        View::composer(['frontend::include.__new_header', 'frontend::include.__user_side_nav'], function ($view) {
+            if (auth()->check()) {
+                $userId = auth()->id();
+                $mainWallet = get_user_account($userId);
+                $ibWallet = get_user_account($userId, \App\Enums\AccountBalanceType::IB_WALLET);
+                
+                $view->with([
+                    'mainWallet' => $mainWallet,
+                    'ibWallet' => $ibWallet,
+                ]);
+            }
+        });
+
         View::composer(['*'], function ($view) {
             $view->with([
                 'currencySymbol' => setting('currency_symbol', 'global'),

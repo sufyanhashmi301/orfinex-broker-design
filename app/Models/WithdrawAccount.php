@@ -21,9 +21,9 @@ class WithdrawAccount extends Model
         "description"
     ];
 
-    protected $casts = [
-        "credentials" => "array"
-    ];
+//    protected $casts = [
+//        "credentials" => "array"
+//    ];
 
     // Status constants
     const STATUS_PENDING = "pending";

@@ -5,8 +5,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'assets/common/css/style.css',
-                'assets/common/js/index.js',
+                'resources/css/style.css',
+                'resources/js/index.js',
             ],
             refresh: true,
         }),
@@ -16,8 +16,8 @@ export default defineConfig({
         manifest: true,
         rollupOptions: {
             input: [
-                'assets/common/css/style.css',
-                'assets/common/js/index.js',
+                'resources/css/style.css',
+                'resources/js/index.js',
             ],
         },
     },

@@ -1,19 +1,19 @@
 {
-  "assets/common/js/index.js": {
+  "resources/js/index.js": {
     "file": "assets/index.c8301793.js",
-    "src": "assets/common/js/index.js",
+    "src": "resources/js/index.js",
     "isEntry": true,
     "css": [
-      "assets/index.994ee7ae.css"
+      "assets/index.f738d9d6.css"
     ]
   },
-  "assets/common/css/style.css": {
-    "file": "assets/style.229a15af.css",
-    "src": "assets/common/css/style.css",
+  "resources/css/style.css": {
+    "file": "assets/style.dea6f334.css",
+    "src": "resources/css/style.css",
     "isEntry": true
   },
-  "assets/common/js/index.css": {
-    "file": "assets/index.994ee7ae.css",
-    "src": "assets/common/js/index.css"
+  "resources/js/index.css": {
+    "file": "assets/index.f738d9d6.css",
+    "src": "resources/js/index.css"
   }
 }

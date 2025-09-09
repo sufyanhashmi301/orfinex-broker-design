@@ -294,39 +294,39 @@ class WithdrawController extends Controller
         if ($request->ajax()) {
             $userIds = getAccessibleUserIds()->pluck('id');
 
-        // Build base query
-        $data = Transaction::query()
-            ->where(function ($query) {
-                $query->where('type', TxnType::Withdraw)
-                      ->orWhere('type', TxnType::WithdrawAuto);
-            })
-            ->when($userIds !== 'all', function ($query) use ($userIds) {
-                $query->whereIn('user_id', $userIds);
-            })
-            ->latest();
+            // Build base query
+            $data = Transaction::query()
+                ->where(function ($query) {
+                    $query->where('type', TxnType::Withdraw)
+                        ->orWhere('type', TxnType::WithdrawAuto);
+                })
+                ->when($userIds !== 'all', function ($query) use ($userIds) {
+                    $query->whereIn('user_id', $userIds);
+                })
+                ->latest();
 
 
-            // Apply additional filters if any
-            $data = $data->applyFilters($filters);
+                // Apply additional filters if any
+                $data = $data->applyFilters($filters);
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
-                })
-                ->editColumn('status', 'backend.transaction.include.__txn_status')
-                ->editColumn('type', 'backend.transaction.include.__txn_type')
-                ->editColumn('amount', 'backend.transaction.include.__txn_amount')
-                ->editColumn('charge', function ($request) {
-                    return $request->charge . ' ' . setting('site_currency', 'global');
-                })
-                ->addColumn('action_by', function ($row) {
-                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
-                })
-                ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'action_by','status', 'type', 'amount', 'username', 'action'])
-                ->make(true);
+                return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('created_at', function ($row) {
+                        return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                    })
+                    ->editColumn('status', 'backend.transaction.include.__txn_status')
+                    ->editColumn('type', 'backend.transaction.include.__txn_type')
+                    ->editColumn('amount', 'backend.transaction.include.__txn_amount')
+                    ->editColumn('charge', function ($request) {
+                        return $request->charge . ' ' . setting('site_currency', 'global');
+                    })
+                    ->addColumn('action_by', function ($row) {
+                        return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                    })
+                    ->addColumn('username', 'backend.transaction.include.__user')
+                    ->addColumn('action', 'backend.transaction.include.__action')
+                    ->rawColumns(['created_at', 'action_by','status', 'type', 'amount', 'username', 'action'])
+                    ->make(true);
         }
 
         // For non-AJAX requests, show the full view

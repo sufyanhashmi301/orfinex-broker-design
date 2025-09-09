@@ -28,6 +28,11 @@ class WalletController extends Controller
                 })
                 ->whereIn('target_type', [TxnTargetType::Wallet]);
         })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        if (request()->ajax()) {
+            return view('frontend::wallets.include.__transaction_row', compact('wallets'))->render();
+        }
+
         return view('frontend::wallets.index', get_defined_vars());
     }
 

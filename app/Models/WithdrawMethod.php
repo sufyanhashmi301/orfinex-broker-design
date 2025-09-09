@@ -13,6 +13,9 @@ class WithdrawMethod extends Model
     protected $casts = [
         'country' => 'array',
     ];
+    protected $appends = [
+        'gateway_logo',
+    ];
 
     public function gateway(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -27,4 +30,40 @@ class WithdrawMethod extends Model
     {
         $this->attributes['country'] = json_encode($value);
     }
+    
+    public function getGatewayLogoAttribute()
+    {
+        // Check if gateway exists and has logo
+        if ($this->gateway_id && $this->gateway && $this->gateway->logo) {
+            return $this->gateway->logo;
+        }
+
+        // Fallback to method icon if available
+        if ($this->icon) {
+            return $this->icon;
+        }
+
+        // Final fallback to default image
+        return 'assets/frontend/images/default-method.png';
+    }
+
+    /**
+     * Get the properly formatted logo URL
+     * 
+     * @return string
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        $logo = $this->gateway_logo;
+        
+        // If it's already a full URL, return as is
+        if (filter_var($logo, FILTER_VALIDATE_URL)) {
+            return $logo;
+        }
+        
+        // Otherwise, use asset() helper for local paths
+        return asset($logo);
+    }
+    
 }
+

@@ -60,7 +60,7 @@ class AuthenticatedSessionController extends Controller
         LoginActivities::add();
         session()->put('site-color-mode', $oldTheme);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::getThemeSpecificHome());
     }
 
     /**

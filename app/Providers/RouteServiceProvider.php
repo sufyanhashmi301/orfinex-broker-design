@@ -20,6 +20,22 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/user/dashboard';
 
     /**
+     * Get the theme-specific home route for the authenticated user.
+     *
+     * @return string
+     */
+    public static function getThemeSpecificHome(): string
+    {
+        // Check if the current theme is brokeret_x
+        if (site_theme() === 'brokeret_x') {
+            return '/user/forex-account-logs';
+        }
+
+        // Default to dashboard for all other themes
+        return self::HOME;
+    }
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      *
      * @return void

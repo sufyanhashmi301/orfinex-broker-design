@@ -1,0 +1,231 @@
+@extends('frontend::layouts.user')
+@section('title')
+    {{ __('Send Money Logs') }}
+@endsection
+@php use App\Enums\TxnStatus; use App\Enums\TxnType; @endphp
+@section('content')
+    <div class="space-y-5">
+        <div class="card desktop-screen-show md:block hidden">
+            <div class="card-body p-6 pb-0">
+                @if(count($sendMoneys) == 0)
+                    <div class="flex items-center justify-center flex-col">
+                        <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                            {{ __("You don't have any transaction yet.") }}
+                        </p>
+                        <a href="{{ route('user.send-money.view') }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center min-w-[170px]">
+                            {{ __('Send Now') }}
+                        </a>
+                    </div>
+                @else
+                    <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
+                        <div class="filter">
+                            <form action="{{ route('user.send-money.log') }}" method="get">
+                                <div class="search flex gap-3 items-center">
+                                    <input type="text" class="form-control" id="search" placeholder="{{ __('Search') }}"
+                                        value="{{ request('query') }}"
+                                        name="query"/>
+                                    <input type="date" class="form-control" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
+                                    <button type="submit" class="btn btn-dark btn-sm">
+                                        <i icon-name="search"></i>
+                                        {{ __('Search') }}
+                                    </button>
+                                </div>
+                            </form>
+                            <form method="POST" action="{{ route('user.send-money.log.export') }}">
+                                @csrf
+                                <input type="hidden" name="query" value="{{ request('query') }}">
+                                <input type="hidden" name="date" value="{{ request('date') }}">
+                                <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                    {{ __('Export') }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto -mx-6">
+                        <div class="inline-block min-w-full align-middle">
+                            <div class="overflow-hidden basicTable_wrapper">
+                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                    <thead class="border-t border-slate-100 dark:border-slate-800">
+                                        <tr>
+                                            <th scope="col" class="table-th">{{ __('Description') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Account') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                        @foreach($sendMoneys as $raw)
+                                        <tr>
+                                            <td class="table-td">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none">
+                                                        <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                                            @switch($raw->type->value)
+                                                                @case('send_money')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('receive_money')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('manual_deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('investment')
+                                                                <iconify-icon icon="fluent:arrow-swap-24-regular"></iconify-icon>
+                                                                @break
+                                                                @case('withdraw')
+                                                                <iconify-icon icon="akar-icons:arrow-back"></iconify-icon>
+                                                                @break
+                                                                @default()
+                                                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                                                            @endswitch
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-1 text-start">
+                                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                            {{ $raw->description }} @if(!in_array($raw->approval_cause,['none',""]))
+                                                                <span class="toolTip onTop optional-msg" data-tippy-content="{{ $raw->approval_cause }}">
+                                                                    <iconify-icon icon="lucide:mail"></iconify-icon>
+                                                                </span>
+                                                            @endif
+                                                        </h4>
+                                                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                            {{ $raw->created_at }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="table-td">
+                                                {{ $raw->tnx }}
+                                            </td>
+                                            <td class="table-td">
+                                                {{ $raw->target_id }}
+                                            </td>
+                                            <td class="table-td">
+                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                                                    {{ (in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ? '-': '+' ).$raw->amount.' '.$raw->currency }}
+                                                </strong>
+                                            </td>
+                                            <td class="table-td">
+                                                {{transaction_method_name($raw)}}
+                                            </td>
+                                            <td class="table-td">
+                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                                                    {{ $raw->charge.' '.$raw->currency }}
+                                                </strong>
+                                            </td>
+                                            <td class="table-td">
+                                                @switch($raw->status->value)
+                                                    @case('pending')
+                                                    <span class="badge-warning bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
+                                                    @break
+                                                    @case('success')
+                                                    <span class="badge-success bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Success') }}</span>
+                                                    @break
+                                                    @case('failed')
+                                                    <span class="badge-danger bg-opacity-30 capitalize rounded px-2 py-1">{{ __('canceled') }}</span>
+                                                    @break
+                                                @endswitch
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
+                                    <div>
+                                        @php
+                                            $from = $sendMoneys->firstItem(); // The starting item number on the current page
+                                            $to = $sendMoneys->lastItem(); // The ending item number on the current page
+                                            $total = $sendMoneys->total(); // The total number of items
+                                        @endphp
+
+                                        <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
+                                            {{ __('Showing') }}
+                                            <span class="font-medium">{{ $from }}</span>
+                                            {{ __('to') }}
+                                            <span class="font-medium">{{ $to }}</span>
+                                            {{ __('of') }}
+                                            <span class="font-medium">{{ $total }}</span>
+                                            {{ __('results') }}
+                                        </p>
+                                    </div>
+                                    {{  $sendMoneys->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="mobile-screen-show  md:hidden block">
+        <!-- Transactions -->
+        <div class="card all-feature-mobile mobile-transactions mb-3">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('All Send Money Log') }}</h4>
+            </div>
+            <div class="card-body p-3 mobile-transaction-filter">
+                <div class="filter mb-3">
+                    <form action="{{ route('user.send-money.log') }}" method="get">
+                        <div class="search flex items-center gap-2">
+                            <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
+                            <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
+                            <button type="submit" class="apply-btn h-10 btn btn-dark">
+                                <iconify-icon icon="lucide:search"></iconify-icon>
+                            </button>
+                        </div>
+                    </form>
+                    <form method="POST" action="{{ route('user.send-money.log.export') }}">
+                        @csrf
+                        <input type="hidden" name="query" value="{{ request('query') }}">
+                        <input type="hidden" name="date" value="{{ request('date') }}">
+                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                            {{ __('Export') }}
+                        </button>
+                    </form>
+                </div>
+                <div class="contents space-y-3">
+                    @foreach($sendMoneys as $raw )
+                        <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                            <div class="transaction-left w-3/4">
+                                <div class="transaction-des">
+                                    <div class="transaction-title mb-1 dark:text-white">{{ $raw->description }}</div>
+                                    <div class="transaction-id mb-1 dark:text-white">{{ $raw->tnx }}</div>
+                                    <div class="transaction-date mb-1 dark:text-white">{{ $raw->created_at }}</div>
+                                </div>
+                            </div>
+                            <div class="transaction-right text-right">
+                                <div class="transaction-amount sub mb-1 dark:text-white">- {{$raw->amount .' '.$currency}}</div>
+                                <div class="transaction-fee sub mb-1 dark:text-white">-{{  $raw->charge.' '. $currency .' '.__('Fee') }} </div>
+                                <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
+
+                                @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
+                                    <div class="transaction-status text-warning">{{ __('Pending') }}</div>
+                                @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
+                                    <div class="transaction-status text-success">{{ __('Success') }}</div>
+                                @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
+                                    <div class="transaction-status text-danger">{{ __('canceled') }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                {{  $sendMoneys->onEachSide(1)->links() }}
+            </div>
+        </div>
+    </div>
+@endsection

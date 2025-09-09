@@ -671,13 +671,37 @@ class WithdrawController extends Controller
         /**
          * @return Application|Factory|View
          */
+
+        public
+        function withdrawMethods()
+        {
+            $accounts = WithdrawAccount::with(['method', 'method.gateway'])
+            ->where('user_id', auth()->id())
+            ->get();
+
+            return view('frontend::withdraw.index', compact('accounts'));
+        }
+
         public
         function withdraw()
         {
-            $accounts = WithdrawAccount::where('user_id', \Auth::id())->get();
+
+            $gatewayCode = request()->get('gateway_code', '');
+            $selectedAccount = get_hash($gatewayCode);
+
+            $accounts = WithdrawAccount::with(['method', 'method.gateway'])
+                ->where('user_id', \Auth::id())
+                ->get();
+
             $accounts = $accounts->reject(function ($value, $key) {
                 return !$value->method->status;
             });
+
+            if (!$selectedAccount){
+                notify()->error('Please select a valid withdraw method');
+                return redirect()->back();
+            }
+
             $forexAccounts = ForexAccount::with('schema')->traderType()
                 ->where('user_id', auth()->id())
                 ->where('account_type', 'real')
@@ -685,7 +709,7 @@ class WithdrawController extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
 
-            return view('frontend::withdraw.now', compact('accounts', 'forexAccounts'));
+            return view('frontend::withdraw.now', compact('accounts', 'forexAccounts', 'selectedAccount'));
         }
 
         public

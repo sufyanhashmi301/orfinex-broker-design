@@ -164,6 +164,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('/', 'withdraw')->name('view');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');
         Route::get('method/{id}', 'withdrawMethod')->name('method');
+
+        Route::get('methods', 'withdrawMethods')->name('methods');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
         Route::post('log/export', 'export')->name('log.export');

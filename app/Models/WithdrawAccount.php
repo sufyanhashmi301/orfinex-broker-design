@@ -16,4 +16,24 @@ class WithdrawAccount extends Model
     {
         return $this->belongsTo(WithdrawMethod::class, 'withdraw_method_id')->withDefault();
     }
+
+    /**
+     * Get the logo for this withdraw account
+     * 
+     * @return string
+     */
+    public function getLogoAttribute(): string
+    {
+        return $this->method ? $this->method->gateway_logo : 'assets/frontend/images/default-method.png';
+    }
+
+    /**
+     * Get the properly formatted logo URL for this withdraw account
+     * 
+     * @return string
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        return $this->method ? $this->method->logo_url : asset('assets/frontend/images/default-method.png');
+    }
 }

@@ -82,6 +82,7 @@ class TransactionController extends Controller
                 'mobile_html' => view('frontend::user.transaction.include.__transaction_row_mobile', compact('transactions'))->render(),
                 'pagination' => (string) $transactions->links(),
                 'total' => $transactions->total(),
+                'has_more' => $transactions->hasMorePages(),
             ]);
         }
 

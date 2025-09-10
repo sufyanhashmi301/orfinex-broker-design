@@ -2273,7 +2273,7 @@ return [
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'email_show_site_logo', // unique name for field
                 'label' => 'Show/Hide Site Logo In Emails Headers', // you know what label it is
-                'description' => 'Toggle to show or hide the site logo in emails header',
+                'description' => 'enable to show or disable to hide the site logo in emails header',
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],

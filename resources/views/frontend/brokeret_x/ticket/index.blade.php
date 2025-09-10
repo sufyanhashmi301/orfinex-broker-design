@@ -188,16 +188,14 @@
                 </tbody>
             </table>
             
-            <div x-show="filteredTickets.length === 0" class="flex flex-col items-center justify-center gap-4 text-center py-8">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <svg width="32" height="32" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M26 19.875V30.9167" stroke="rgba(220 0 0)" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="rgba(220 0 0)" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M25.988 37.5417H26.0075" stroke="rgba(220 0 0)" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </div>
-                <p class="text-gray-500 dark:text-gray-400">{{ __('No tickets found for the selected filter.') }}</p>
-            </div>
+            <x-frontend::empty-state x-show="filteredTickets.length === 0" class="!my-10" icon="inbox">
+                <x-slot name="title">
+                    {{ __('No matching results found') }}
+                </x-slot>
+                <x-slot name="subtitle">
+                    {{ __('Please try a different keyword.') }}
+                </x-slot>
+            </x-frontend::empty-state>
         </div>
     </div>
 
@@ -243,10 +241,14 @@
             </div>
         </template>
         
-        <div x-show="filteredTickets.length === 0" class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] text-center py-8">
-            <i data-lucide="inbox" class="w-12 h-12 text-gray-400 mx-auto mb-3"></i>
-            <p class="text-gray-500 dark:text-gray-400">{{ __('No tickets found for the selected filter.') }}</p>
-        </div>
+        <x-frontend::empty-state x-show="filteredTickets.length === 0" class="!my-10" icon="inbox">
+            <x-slot name="title">
+                {{ __('No matching results found') }}
+            </x-slot>
+            <x-slot name="subtitle">
+                {{ __('Please try a different keyword.') }}
+            </x-slot>
+        </x-frontend::empty-state>
     </div>
 
     {{-- Modal for new ticket--}}
@@ -398,11 +400,11 @@
                     requestAnimationFrame(() => {
                         if (file) {
                             fileTitle.textContent = file.name;
-                            fileTitle.classList.remove('text-slate-400');
+                            fileTitle.classList.remove('text-gray-400');
                             fileTitle.classList.add('text-gray-900', 'dark:text-white');
                         } else {
                             fileTitle.textContent = 'Choose a file or drop it here...';
-                            fileTitle.classList.add('text-slate-400');
+                            fileTitle.classList.add('text-gray-400');
                             fileTitle.classList.remove('text-gray-900', 'dark:text-white');
                         }
                     });

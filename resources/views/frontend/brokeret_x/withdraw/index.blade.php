@@ -14,24 +14,19 @@
     </div>
     @if(count($accounts) == 0)
         <!-- Empty State -->
-        <div class="flex items-center justify-center flex-col gap-3 px-10 mt-10 lg:mt-20">
-            <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="text-center">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white/90">
-                    {{ __("You're almost ready to withdraw!") }}
-                </h2>
-                <p class="mt-1 text-base text-gray-500 dark:text-gray-400">
-                    {{ __('To make a withdraw, please add a withdraw account.') }}
-                </p>
-            </div>
-            <x-frontend::link-button href="{{ route('user.withdraw.account.create') }}" variant="primary" size="md" icon="plus" icon-position="left">
-                {{ __('Add Withdraw Account') }}
-            </x-frontend::link-button>
-        </div>
+         <x-frontend::empty-state icon="inbox">
+            <x-slot name="title">
+                {{ __("You're almost ready to withdraw!") }}
+            </x-slot>
+            <x-slot name="subtitle">
+                {{ __('To make a withdraw, please add a withdraw account.') }}
+            </x-slot>
+            <x-slot name="actions">
+                <x-frontend::link-button href="{{ route('user.withdraw.account.create') }}" variant="primary" size="md" icon="plus" icon-position="left">
+                    {{ __('Add Withdraw Account') }}
+                </x-frontend::link-button>
+            </x-slot>
+         </x-frontend::empty-state>
     @else
         <!-- Accounts List -->
         <div class="grid sm:grid-cols-2 grid-cols-1 gap-5">

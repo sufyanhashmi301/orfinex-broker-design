@@ -133,79 +133,40 @@
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('global/css/cropper.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
 @endsection
 @section('script')
     <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
     <script src="{{ asset('global/js/cropper.js') }}"></script>
     <script>
-        const input = document.querySelector("#phone");
-        const form = document.getElementById('profile-update-form');
-        const formattedPhoneField = document.getElementById('formatted_phone');
-        const hiddenCountryField = document.getElementById('country');
-        const phoneCountryIso2 = document.getElementById('phone_country_iso2');
-        const phoneCountryDial = document.getElementById('phone_country_dial');
-
-        const iti = window.intlTelInput(input, {
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
-            separateDialCode: false,
-            formatOnDisplay: true
-        });
-
-        function syncCountryFromPhone() {
-            try {
-                const data = iti.getSelectedCountryData();
-                if (data && data.name) {
-                    if (hiddenCountryField && hiddenCountryField.tagName === 'SELECT') {
-                        const name = data.name;
-                        const options = hiddenCountryField.options;
-                        for (let i=0; i<options.length; i++) {
-                            if (options[i].value && options[i].value.toLowerCase() === name.toLowerCase()) {
-                                hiddenCountryField.value = options[i].value;
-                                break;
-                            }
-                        }
-                    }
-                    if (phoneCountryIso2) phoneCountryIso2.value = data.iso2 || '';
-                    if (phoneCountryDial) phoneCountryDial.value = (data.dialCode ? ('+' + data.dialCode) : '');
-                }
-            } catch (e) {}
-        }
-
-        if (input) {
-            input.addEventListener('countrychange', function() {
-                syncCountryFromPhone();
-            });
-        }
-
-        if (form) {
-            form.addEventListener('submit', function(e) {
+        (function() {
+            var input = document.querySelector('#phone');
+            var userPhone = "{{ $user->phone }}";
+            if (input && window.intlTelInput) {
                 try {
-                    const fullNumber = iti.getNumber();
-                    if (formattedPhoneField) formattedPhoneField.value = fullNumber;
-                    syncCountryFromPhone();
-
-                    // Client-side consistency check: dial code vs number
-                    const dial = phoneCountryDial ? phoneCountryDial.value : '';
-                    const phoneError = document.getElementById('phone-error');
-                    if (dial && fullNumber && !fullNumber.startsWith(dial)) {
-                        if (phoneError) {
-                            phoneError.style.display = 'block';
-                            phoneError.textContent = 'Phone number does not match the selected country dial code.';
-                        }
-                        e.preventDefault();
-                        return false;
+                    var iti = window.intlTelInput(input, {
+                        separateDialCode: true,
+                        showSelectedDialCode: true,
+                        formatOnDisplay: true,
+                        autoPlaceholder: 'polite',
+                        utilsScript: "{{ asset('frontend/js/utils.js') }}"
+                    });
+                    if (userPhone) {
+                        try { iti.setNumber(userPhone); } catch (e) {}
                     }
-                    if (phoneError) {
-                        phoneError.style.display = 'none';
-                        phoneError.textContent = '';
+                    var form = document.getElementById('profile-update-form');
+                    if (form) {
+                        form.addEventListener('submit', function() {
+                            try {
+                                // Ensure the submitted value is full E.164
+                                input.value = iti.getNumber();
+                            } catch (e) {}
+                        });
                     }
                 } catch (e) {}
-            });
-        }
-
-        // Initialize select based on current phone value
-        syncCountryFromPhone();
+            }
+        })();
+        // No client-side phone validation required; server handles with libphonenumber
         // $('#profile-update-save').on('click', function (event) {
         //     event.preventDefault();
         //     var form = $("#profile-update-form");

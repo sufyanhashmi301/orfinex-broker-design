@@ -1153,43 +1153,18 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'date_of_birth' => 'nullable|date',
         ]);
 
-        // Cross-validate phone number with selected country dial code and E.164 format
+        // Cross-validate phone using helper and normalize to E.164
         $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
-            // Only validate when phone is shown/required and provided
             $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
-            $countryName = $request->input('country');
-
+            $countryRaw = $request->input('country');
             if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
-                // Normalize phone: remove spaces, dashes, parentheses
-                $normalized = preg_replace('/[\s\-\(\)]/', '', (string) $rawPhone);
-
-                // Ensure it starts with '+' and digits
-                if (!str_starts_with($normalized, '+')) {
-                    // If no plus, attempt to prepend dial code if country present
-                    if ($isCountry && !empty($countryName)) {
-                        $dial = getCountryDialCode($countryName);
-                        if (!empty($dial)) {
-                            $normalized = $dial . ltrim($normalized, '0+');
-                        }
-                    }
-                }
-
-                // Validate E.164 basic pattern
-                if (!preg_match('/^\+[1-9]\d{6,14}$/', $normalized)) {
-                    $v->errors()->add('phone', 'Invalid phone number format. Use full international format.');
+                // Backend: allow phone country to be independent from selected country
+                $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null, false);
+                if (!$validation['valid']) {
+                    $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
                     return;
                 }
-
-                // Validate dial code-country consistency when country is provided
-                if ($isCountry && !empty($countryName)) {
-                    $dial = getCountryDialCode($countryName);
-                    if (!empty($dial) && !\Illuminate\Support\Str::startsWith($normalized, $dial)) {
-                        $v->errors()->add('phone', 'Phone number does not match the selected country dial code.');
-                    }
-                }
-
-                // Put normalized phone back into request for later use
-                $request->merge(['__normalized_phone' => $normalized]);
+                $request->merge(['__normalized_phone' => $validation['e164']]);
             }
         });
 
@@ -1216,9 +1191,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'password',
         ]);
 
-        // Handle phone number with country code from intlTelInput
-        // Use normalized phone (set during validator after-hook) if present, else fallback
-        $phone = $request->input('__normalized_phone') ?? (!empty($request->formatted_phone) ? $request->formatted_phone : ($request->phone ?? $user->phone));
+        // Handle phone number: use normalized E.164 if present
+        $phone = $request->input('__normalized_phone') ?? ($request->phone ?? $user->phone);
         
 
        
@@ -1877,37 +1851,17 @@ public function store(Request $request)
                 'kyc_id' => 'nullable|exists:kycs,id',
             ]);
 
-            // Cross-validate phone with country dial code and normalize to E.164
+            // Cross-validate phone using helper and normalize to E.164
             $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
                 $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
                 $countryRaw = (string) $request->input('country');
-                $countryName = (strpos($countryRaw, ':') !== false) ? explode(':', $countryRaw)[0] : $countryRaw;
-
                 if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
-                    $normalized = preg_replace('/[\s\-\(\)]/', '', (string) $rawPhone);
-
-                    if (!str_starts_with($normalized, '+')) {
-                        if ($isCountry && !empty($countryName)) {
-                            $dial = getCountryDialCode($countryName);
-                            if (!empty($dial)) {
-                                $normalized = $dial . ltrim($normalized, '0+');
-                            }
-                        }
-                    }
-
-                    if (!preg_match('/^\+[1-9]\d{6,14}$/', $normalized)) {
-                        $v->errors()->add('phone', 'Invalid phone number format. Use full international format.');
+                    $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null);
+                    if (!$validation['valid']) {
+                        $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
                         return;
                     }
-
-                    if ($isCountry && !empty($countryName)) {
-                        $dial = getCountryDialCode($countryName);
-                        if (!empty($dial) && !\Illuminate\Support\Str::startsWith($normalized, $dial)) {
-                            $v->errors()->add('phone', 'Phone number does not match the selected country dial code.');
-                        }
-                    }
-
-                    $request->merge(['__normalized_phone' => $normalized]);
+                    $request->merge(['__normalized_phone' => $validation['e164']]);
                 }
             });
 

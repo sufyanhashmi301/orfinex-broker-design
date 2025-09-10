@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 use App\Models\User;
 use App\Models\UserLanguage;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\NumberParseException;
 
 class SettingController extends Controller
 {
@@ -92,39 +95,16 @@ class SettingController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
 
-        // Cross-validate phone against user's country (or submitted country if present) and normalize to E.164
+        // Cross-validate phone using helper and normalize to E.164 against selected country
         $validator->after(function ($v) use ($request, $user) {
             $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
-            // Prefer submitted country, else fallback to user's stored country
             $countryRaw = (string) $request->input('country', $user->country);
-            $countryName = (strpos($countryRaw, ':') !== false) ? explode(':', $countryRaw)[0] : $countryRaw;
-
-            if (!empty($rawPhone)) {
-                $normalized = preg_replace('/[\s\-\(\)]/', '', (string) $rawPhone);
-
-                if (!str_starts_with($normalized, '+')) {
-                    $dial = getCountryDialCode($countryName);
-                    if (!empty($dial)) {
-                        $normalized = $dial . ltrim($normalized, '0+');
-                    }
-                }
-
-                if (!preg_match('/^\+[1-9]\d{6,14}$/', $normalized)) {
-                    $v->errors()->add('phone', 'Invalid phone number format. Use full international format.');
-                    return;
-                }
-
-                // Detect country from phone itself (server-side) and compare against submitted/known country
-                $detected = getCountryFromPhone($normalized);
-                $expectedDial = getCountryDialCode($countryName);
-
-                if ($detected && $expectedDial && $detected['dial_code'] !== $expectedDial) {
-                    $v->errors()->add('phone', 'Phone number dial code does not match the selected country.');
-                }
-
-                // Put normalized phone back into request
-                $request->merge(['__normalized_phone' => $normalized]);
+            $validation = validateAndNormalizePhone($rawPhone, $countryRaw, $user->country);
+            if (!$validation['valid']) {
+                $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                return;
             }
+            $request->merge(['__normalized_phone' => $validation['e164']]);
         });
 
         if ($validator->fails()) {
@@ -134,6 +114,22 @@ class SettingController extends Controller
 
         // Build data array with only enabled fields or fields that don't have existing values
         $data = [];
+        
+        // Determine normalized phone value post-validation
+        $normalizedPhone = $request->input('__normalized_phone');
+        $rawPhone = $request->input('phone');
+        $phoneToStore = $normalizedPhone ?? ($rawPhone ?? $user->phone);
+        
+        $countryRawForStore = (string) $request->input('country', $user->country);
+        $countryNameForStore = (strpos($countryRawForStore, ':') !== false) ? explode(':', $countryRawForStore)[0] : $countryRawForStore;
+        
+        // If no country provided but phone detected a country, use it when allowed
+        if (empty($request->input('country')) && !empty($phoneToStore)) {
+            $detected = getCountryFromPhone($phoneToStore);
+            if ($detected && isset($detected['name'])) {
+                $countryNameForStore = $detected['name'];
+            }
+        }
         
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
@@ -157,8 +153,9 @@ class SettingController extends Controller
             $data['email'] = $input['email'];
         }
         
-        if (($phoneEditEnabled || !$user->phone) && $request->has('phone')) {
-            $data['phone'] = $input['phone'];
+        if ($phoneEditEnabled || !$user->phone) {
+            // Save E.164 normalized phone
+            $data['phone'] = $phoneToStore;
         }
         
         if ($countryEditEnabled && $request->has('country')) {

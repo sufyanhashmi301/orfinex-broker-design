@@ -17,8 +17,8 @@
     ];
     
     $sizeClasses = [
-        'sm' => 'px-4 py-1.5 text-sm rounded gap-1.5 h-8',
-        'md' => 'px-5 py-2.5 text-sm rounded-sm gap-2 h-10',
+        'sm' => 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
+        'md' => 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
         'lg' => 'px-6 py-3 text-base rounded-md gap-2 h-12'
     ];
     
@@ -52,16 +52,16 @@
     {{ $attributes->merge(['class' => implode(' ', array_filter($classes))]) }}
 >
     @if($icon && $iconPosition === 'left')
-        <i data-lucide="{{ $icon }}" class="w-4 h-4"></i>
+        <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
     @endif
     
     {{ $slot }}
     
     @if($icon && $iconPosition === 'right')
-        <i data-lucide="{{ $icon }}" class="w-4 h-4"></i>
+        <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
     @endif
     
     @if($external)
-        <i data-lucide="external-link" class="w-3 h-3 ml-1 opacity-70"></i>
+        <i data-lucide="external-link" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif ml-1 opacity-70"></i>
     @endif
 </a>

@@ -166,10 +166,15 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('referralApp', () => ({
-                transactionStatus: '',
-                transactionDate: '',
+                filters: {
+                    transaction_status: '',
+                    transaction_date: ''
+                },
                 selectedLanguage: '',
                 loading: false,
+                page: 1,
+                hasMore: true,
+                debounceTimer: null,
 
                 init() {
                     window.addEventListener('pageshow', e => {
@@ -179,53 +184,175 @@
                     });
 
                     this.resetFiltersIfNavigatedBack();
-                    this.restoreSelections();
+                    this.restoreFilters();
 
                     this.$watch('selectedLanguage', value => {
                         if (value) this.changeLanguage();
                     });
 
                     this.fetchTransactions();
+
+                    // restore saved filters from localStorage
+                    this.restoreFilters();
+
+                    // Initialize Lucide icons on component init
+                    this.refreshLucideIcons();
+
+                    // watch filters and reload transactions
+                    this.$watch('filters', () => {
+                        clearTimeout(this.debounceTimer);
+                        this.debounceTimer = setTimeout(() => {
+                            this.page = 1;
+                            this.fetchTransactions(false);
+                        }, 300);
+                    }, { deep: true });
                 },
 
-                async fetchTransactions(url = '{{ route("user.referral.history") }}') {
+                async fetchTransactions(append = false) {
                     this.loading = true;
+                    this.error = null;
+
+                    const params = new URLSearchParams();
+                    Object.entries(this.filters).forEach(([key, value]) => {
+                        if (value) params.append(key, value);
+                    });
+                    params.append('page', this.page);
 
                     try {
-                        const params = new URLSearchParams({
-                            transaction_status: this.transactionStatus,
-                            transaction_date: this.transactionDate
-                        });
-
-                        const res = await fetch(`${url}?${params}`, {
+                        const response = await fetch(`{{ route("user.referral.history") }}?${params}`, {
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             }
                         });
 
-                        if (!res.ok) throw new Error('Network error');
-                        const data = await res.json();
+                        if (!response.ok) throw new Error('Network response was not ok');
 
-                        document.getElementById('transaction-table-body').innerHTML = data.html.trim() || 
-                            `<tr><td colspan="7" class="text-center px-5 py-4 sm:px-6">
-                                <span class="text-gray-500 text-theme-sm dark:text-gray-400">{{ __('No transactions found') }}</span>
-                            </td></tr>`;
+                        const data = await response.json();
+                        const container = document.getElementById('transaction-table-body');
 
-                        document.querySelector('.pagination-container').innerHTML = data.pagination || '';
+                        // handle no results
+                        if (!append && (!data.html || data.html.trim() === '')) {
+                            container.innerHTML = `
+                                <x-frontend::empty-state icon="inbox">
+                                    <x-slot name="title">
+                                        {{ __("No transaction matches your filters") }}
+                                    </x-slot>
+                                    <x-slot name="subtitle">
+                                        {{ __("Try changing your search terms") }}
+                                    </x-slot>
+                                    <x-slot name="actions">
+                                        <x-frontend::forms.button type="button" variant="primary" size="md" @click="clearFilters()">
+                                            {{ __('Reset Filters') }}
+                                        </x-frontend::forms.button>
+                                    </x-slot>
+                                </x-frontend::empty-state>`;
+                            this.hasMore = false;
+                            return;
+                        }
 
-                        localStorage.setItem('transaction_status', this.transactionStatus);
-                        localStorage.setItem('transaction_date', this.transactionDate);
+                        if (append) {
+                            // append rows
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = data.html;
+                            Array.from(tempDiv.children).forEach(el => {
+                                container.appendChild(el);
+                            });
+                        } else {
+                            // replace rows
+                            container.innerHTML = data.html;
+                        }
 
-                        if (window.renderLucideIcons) window.renderLucideIcons();
-                        this.attachPaginationEvents();
+                        // Refresh Lucide icons after DOM update
+                        this.refreshLucideIcons();
 
-                    } catch (err) {
-                        tNotify('error', 'Error loading transactions.');
-                        console.error(err);
+                        // update load more state
+                        this.hasMore = data.has_more ?? false;
+
+                        // save filters
+                        this.saveFiltersToStorage();
+
+                    } catch (error) {
+                        this.error = 'Error loading transactions. Please try again.';
+                        console.error(error);
                     } finally {
                         this.loading = false;
                     }
+                },
+
+                /**
+                 * Load more transactions (next page)
+                 */
+                loadMore() {
+                    if (!this.hasMore || this.loading) return;
+                    this.page++;
+                    this.fetchTransactions(true);
+                },
+
+                /**
+                 * Save filters to localStorage
+                 */
+                saveFiltersToStorage() {
+                    Object.entries(this.filters).forEach(([key, value]) => {
+                        if (value) {
+                            localStorage.setItem(key, value);
+                        } else {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                },
+
+                /**
+                 * Restore filters from localStorage
+                 */
+                restoreFilters() {
+                    Object.keys(this.filters).forEach(key => {
+                        const value = localStorage.getItem(key);
+                        if (value) {
+                            this.filters[key] = value;
+                        }
+                    });
+                },
+
+                /**
+                 * Clear all filters
+                 */
+                clearFilters() {
+                    this.filters = {
+                        transaction_status: '',
+                        transaction_type: '',
+                        transaction_date: '',
+                        forex_account: ''
+                    };
+                    this.page = 1;
+
+                    Object.keys(this.filters).forEach(key => {
+                        localStorage.removeItem(key);
+                    });
+
+                    this.fetchTransactions(false);
+                },
+
+                /**
+                 * Refresh Lucide icons
+                 */
+                refreshLucideIcons() {
+                    // Use setTimeout to ensure DOM is fully updated
+                    setTimeout(() => {
+                        if (window.renderLucideIcons && typeof window.renderLucideIcons === 'function') {
+                            try {
+                                window.renderLucideIcons();
+                            } catch (error) {
+                                console.error('Error refreshing Lucide icons:', error);
+                            }
+                        } else if (window.lucide && typeof lucide.createIcons === 'function') {
+                            try {
+                                lucide.createIcons();
+                            } catch (error) {
+                                console.error('Error refreshing Lucide icons (fallback):', error);
+                            }
+                        }
+                    }, 100);
                 },
 
                 attachPaginationEvents() {
@@ -252,15 +379,15 @@
                     if (isBack) {
                         localStorage.removeItem('transaction_status');
                         localStorage.removeItem('transaction_date');
-                        this.transactionStatus = '';
-                        this.transactionDate = '';
+                        this.filters.transaction_status = '';
+                        this.filters.transaction_date = '';
                         sessionStorage.removeItem('navigatedBack');
                     }
                 },
 
                 restoreSelections() {
-                    this.transactionStatus = localStorage.getItem('transaction_status') || '';
-                    this.transactionDate = localStorage.getItem('transaction_date') || '';
+                    this.filters.transaction_status = localStorage.getItem('transaction_status') || '';
+                    this.filters.transaction_date = localStorage.getItem('transaction_date') || '';
                 },
 
                 async changeLanguage() {

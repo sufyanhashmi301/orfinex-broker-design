@@ -17,8 +17,8 @@
     ];
     
     $sizeClasses = [
-        'sm' => 'px-4 py-1.5 text-sm rounded gap-1.5 h-8',
-        'md' => 'px-5 py-2.5 text-sm rounded-sm gap-2 h-10',
+        'sm' => 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
+        'md' => 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
         'lg' => 'px-6 py-3 text-base rounded-md gap-2 h-12'
     ];
     
@@ -51,13 +51,13 @@
         <span class="ml-2">{{ __('Loading...') }}</span>
     @else
         @if($icon && $iconPosition === 'left')
-            <i data-lucide="{{ $icon }}" class="w-4 h-4 shrink-0"></i>
+            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
         @endif
 
         <span>{{ $slot }}</span>
         
         @if($icon && $iconPosition === 'right')
-            <i data-lucide="{{ $icon }}" class="w-4 h-4 shrink-0"></i>
+            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
         @endif
     @endif
 </button>

@@ -163,6 +163,7 @@ class ReferralController extends Controller
                 'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
                 'pagination' => (string) $transactions->links(),
                 'total' => $transactions->total(),
+                'has_more' => $transactions->hasMorePages(),
             ]);
         }
 

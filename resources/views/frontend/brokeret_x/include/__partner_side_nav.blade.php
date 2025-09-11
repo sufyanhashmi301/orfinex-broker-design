@@ -1,22 +1,14 @@
-<aside :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
-    class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0">
-    <!-- SIDEBAR HEADER -->
-    <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-        class="flex items-center gap-2 py-3 lg:py-7 mb-3 lg:mb-0 sidebar-header">
-        <a href="{{ route('home') }}">  
-            <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
-                <img class="h-10 dark:hidden" src="{{ getFilteredPath(setting('site_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
-                <img class="h-10 hidden dark:block" src="{{ getFilteredPath(setting('site_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
-            </span>
-            <span :class="sidebarToggle ? 'lg:block' : 'hidden'">
-                <img class="logo-icon h-10 dark:hidden" src="{{ getFilteredPath(setting('site_mobile_logo', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
-                <img class="logo-icon h-10 hidden dark:block" src="{{ getFilteredPath(setting('site_mobile_logo_light', 'global'), 'fallback/branding/desktop-logo.png') }}" alt="Logo" />
-            </span>
-        </a>
-    </div>
-    <!-- SIDEBAR HEADER -->
-
-    <div class="flex flex-col grow pb-4 overflow-y-auto duration-300 ease-linear no-scrollbar">
+<div x-show="sidebarOpen"
+    x-transition:enter="transition-opacity ease-linear duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity ease-linear duration-300"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="sidebarOpen = false"
+    class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden"></div>
+<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border">
+    <div class="overflow-y-auto grow shrink-0 flex flex-col px-2.5 py-2.5 me-0.5 pe-2 lg:px-1 xl:px-2.5 h-[calc(100vh-12rem)] lg:h-[calc(100vh-12rem)]">
         <!-- Sidebar Menu -->
         @php
             // Simple menu items array for partner sidebar
@@ -62,7 +54,6 @@
                     'icon' => 'layout-grid',
                     'label' => 'Client Area',
                     'show' => true,
-                    'class' => 'mt-auto'
                 ],
             ];
 
@@ -79,31 +70,22 @@
                 }
             }
         @endphp
-        
+       
         <nav x-data="{ 
             selected: $persist('{{ $activeLabel }}'),
             currentRoute: '{{ $currentRoute }}'
         }"
         class="flex flex-col flex-1">
-            <!-- Menu Group -->
-            <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">
-                <span class="menu-group-title" :class="sidebarToggle ? 'lg:hidden' : ''">
-                    MENU
-                </span>
-
-                <i data-lucide="more-horizontal" :class="sidebarToggle ? 'lg:block hidden' : 'hidden'" class="mx-auto menu-group-icon"></i>
-            </h3>
-
-            <ul class="flex flex-col flex-1 gap-4">
+            <ul class="flex flex-col flex-1 gap-2 py-2">
                 @foreach($menuItems as $item)
                     @if($item['show'])
                         <li class="{{ $item['class'] ?? '' }}">
                             <a href="{{ route($item['route']) }}" 
                                @click="selected = (selected === '{{ $item['label'] }}' ? '':'{{ $item['label'] }}')"
-                               class="menu-item group"
-                               :class="currentRoute === '{{ $item['route'] }}' ? 'menu-item-active' : 'menu-item-inactive'">
-                                <i data-lucide="{{ $item['icon'] }}"></i>
-                                <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                               class="flex items-center px-3 py-2 rounded-md transition-colors text-theme-sm gap-3 border border-transparent lg:px-2 lg:justify-center xl:px-3 xl:justify-start"
+                               :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:hover:border-gray-200'">
+                                <i data-lucide="{{ $item['icon'] }}" class="shrink-0 size-5"></i>
+                                <span class="menu-item-text lg:hidden xl:block">
                                     {{ __($item['label']) }}
                                 </span>
                             </a>

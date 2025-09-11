@@ -4,16 +4,16 @@
     "src": "resources/js/index.js",
     "isEntry": true,
     "css": [
-      "assets/index.f738d9d6.css"
+      "assets/index.0df4e599.css"
     ]
   },
   "resources/css/style.css": {
-    "file": "assets/style.dea6f334.css",
+    "file": "assets/style.39bbe554.css",
     "src": "resources/css/style.css",
     "isEntry": true
   },
   "resources/js/index.css": {
-    "file": "assets/index.f738d9d6.css",
+    "file": "assets/index.0df4e599.css",
     "src": "resources/js/index.css"
   }
 }

@@ -111,41 +111,35 @@
 
                     <!-- Dropdown Start -->
                     <div x-show="dropdownOpen"
-                        class="shadow-theme-lg dark:bg-gray-dark absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800">
+                        class="shadow-theme-lg dark:bg-gray-dark absolute right-0 mt-[17px] flex w-[220px] flex-col rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800">
                         <ul class="flex flex-col gap-1">
                             <li>
-                                <a href="{{ route('user.change.password') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                    <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300" 
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" 
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 17a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2m6 3V10H6v10zm0-12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"
-                                        fill=""/>
-                                    </svg>
-                                    {{ __('Change Password') }}
+                                <a href="{{ route('user.forex-account-logs') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                    <i data-lucide="layout-dashboard" class="shrink-0 size-4"></i>
+                                    {{ __('Personal Area') }}
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('user.change.password') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                    <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300" 
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" 
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 17a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2m6 3V10H6v10zm0-12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"
-                                        fill=""/>
-                                    </svg>
-                                    {{ __('Change Password') }}
+                                <a href="{{ route('user.platform') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                    <i data-lucide="chart-candlestick" class="shrink-0 size-4"></i>
+                                    {{ __('Web Terminal') }}
                                 </a>
                             </li>
-                            <li>
-                                <a href="{{ route('user.change.password') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                    <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300" 
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" 
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 17a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2m6 3V10H6v10zm0-12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"
-                                        fill=""/>
-                                    </svg>
-                                    {{ __('Change Password') }}
-                                </a>
-                            </li>
+                            @if (auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || isset(auth()->user()->ref_id))
+                                <li>
+                                    <a href="{{ route('user.multi-level.ib.dashboard') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                        <i data-lucide="users" class="shrink-0 size-4"></i>
+                                        {{ __('Partnership') }}
+                                    </a>
+                                </li>
+                            @elseif(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id))
+                                <li>
+                                    <a href="{{ route('user.ib.request') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                        <i data-lucide="users" class="shrink-0 size-4"></i>
+                                        {{ __('Request Master IB') }}
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                     <!-- Dropdown End -->

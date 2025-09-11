@@ -1,13 +1,9 @@
 <div x-data="{ activeTab: 'vertical' }">
-    <div class="flex justify-between flex-wrap items-center gap-2 mb-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-        <div>
-            <h1 class="text-xl font-semibold text-gray-800 dark:text-white/90 mb-1">
-                {{ __('Network Tree') }}
-            </h1>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Visualize and manage your referral network hierarchy') }}
-            </p>
-        </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90">
+            {{ __('Network Tree') }}
+        </h2>
+
         <div class="inline-flex flex-wrap items-center gap-x-1 gap-y-2 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900">
             <button 
                 type="button" 
@@ -29,7 +25,7 @@
     </div>
     @if(setting('site_referral','global') == 'level' && auth()->user()->referrals->count() > 0)
         <div class="grid grid-cols-12 gap-5">
-            <div class="lg:col-span-9 col-span-12">
+            <div class="lg:col-span-8 col-span-12">
                 <div class="h-full rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
                     {{-- level referral tree --}}
                     <section class="management-hierarchy mt-5">
@@ -53,7 +49,7 @@
                     </section>
                 </div>
             </div>
-            <div class="lg:col-span-3 col-span-12">
+            <div class="lg:col-span-4 col-span-12">
                 <div class="h-full rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
                     @php
                         $equityDetails = get_recursive_equity_details(auth()->user());

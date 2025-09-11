@@ -8,8 +8,7 @@
     x-transition:leave-end="opacity-0"
     @click="sidebarOpen = false"
     class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden"></div>
-<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-    class="fixed bg-white top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border">
+<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border">
     <div class="overflow-y-auto grow shrink-0 flex flex-col px-2.5 py-2.5 me-0.5 pe-2 lg:px-1 xl:px-2.5 h-[calc(100vh-12rem)] lg:h-[calc(100vh-12rem)]">
         <!-- Sidebar Menu -->
         @php

@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-5">
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Referrals') }}
                         </p>
@@ -37,7 +37,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Lot size') }}
                         </p>
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Commission') }}
                         </p>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Referrals') }}
                         </p>
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Lot size') }}
                         </p>
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                             {{ __('Commission') }}
                         </p>
@@ -145,20 +145,12 @@
                             </h3>
                         </div>
                         <div class="flex space-x-2 sm:justify-end items-center">
-                            <button 
-                                type="button"
-                                @click="copyText('{{ $account->wallet_id }}', $event.target)" 
-                                class="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                <i data-lucide="copy" class="hidden md:block h-4"></i>
+                            <x-frontend::forms.button type="button" variant="outline" size="sm" icon="copy" iconPosition="left" @click="copyText('{{ $account->wallet_id }}', $event.target)">
                                 {{ __('Copy ID') }}
-                            </button>
-                            <button 
-                                type="button"
-                                @click="copyText('{{ $getReferral->link }}', $event.target)" 
-                                class="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                <i data-lucide="copy" class="hidden md:block h-4"></i>
+                            </x-frontend::forms.button>
+                            <x-frontend::forms.button type="button" variant="outline" size="sm" icon="copy" iconPosition="left" @click="copyText('{{ $getReferral->link }}', $event.target)">
                                 {{ __('Copy Link') }}
-                            </button>
+                            </x-frontend::forms.button>
                         </div>
                     </div>
                     <div class="flex items-center justify-between mt-6">
@@ -170,26 +162,22 @@
                                 {{ $affiliateBalance }} {{$currency}}
                             </h4>
                         </div>
-                        <a href="{{route('user.withdraw.view')}}" class="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                        <x-frontend::link-button href="{{route('user.withdraw.view')}}" variant="primary" size="md">
                             <i data-lucide="upload" class="h-4"></i>
                             {{ __('Withdraw') }}
-                        </a>
+                        </x-frontend::link-button>
                     </div>
                 </div>
 
                 <div class="px-6 py-3.5 sm:gap-8 sm:py-5" x-data="partnerDashboard()">
                     <div class="flex items-center justify-between gap-5 mb-5">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">{{ __('Signup') }}</h3>
-                        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center">
+                        <div class="flex space-x-2 sm:justify-end items-center">
                             <div x-data="{openDropDown: false}" class="dropdown relative">
-                                <button 
-                                    type="button" 
-                                    @click="openDropDown = !openDropDown"
-                                    class="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
-                                >
-                                    <i data-lucide="share-2" class="h-4"></i>
+                                <x-frontend::forms.button type="button" variant="outline" size="sm" icon="share-2" iconPosition="left" @click="openDropDown = !openDropDown">
                                     {{ __('Share') }}
-                                </button>
+                                </x-frontend::forms.button>
+                                
                                 <ul x-show="openDropDown" @click.outside="openDropDown = false" class="shadow-theme-lg dark:bg-gray-dark absolute top-full right-0 z-40 w-max space-y-1 rounded-2xl border border-gray-200 bg-white p-2 dark:border-gray-800 a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
                                     <li>
                                         <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
@@ -233,24 +221,18 @@
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" class="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-                                <i data-lucide="mail-plus" class="h-4"></i>
+                            <x-frontend::forms.button type="button" variant="outline" size="sm" icon="mail-plus" iconPosition="left">
                                 {{ __('Invite') }}
-                            </button>
+                            </x-frontend::forms.button>
                         </div>
                     </div>
                     <div class="input-area">
                         <div class="relative">
-                            <input 
-                                type="text" 
-                                id="referral-input" 
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pr-[90px] pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                                value="{{ $getReferral->link }}" 
-                                readonly>
+                            <x-frontend::forms.input type="text" id="referral-input" class="pe-[90px]" value="{{ $getReferral->link }}" readonly />
                             <button type="button" 
                                 @click="copyText('{{ $getReferral->link }}', $event.target)"
-                                class="absolute top-1/2 right-0 inline-flex -translate-y-1/2 cursor-pointer items-center gap-1 border-l border-gray-200 py-3 pr-3 pl-3.5 text-sm font-medium text-gray-700 dark:border-gray-800 dark:text-gray-400">
-                                <i data-lucide="copy" class="h-4"></i>
+                                class="absolute top-1/2 right-0 inline-flex -translate-y-1/2 cursor-pointer items-center gap-1 border-l border-gray-200 py-2.5 px-3 text-sm text-gray-700 dark:border-gray-800 dark:text-gray-400">
+                                <i data-lucide="copy" class="h-3"></i>
                                 {{ __('Copy') }}
                             </button>
                         </div>

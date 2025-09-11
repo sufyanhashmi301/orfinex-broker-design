@@ -4,10 +4,9 @@
 @endsection
 @section('content')
     <div class="mx-auto max-w-2xl">
-        <x-card
+        <x-frontend::card
             title="{{ __('Change Password') }}"
-            subtitle="{{ __('Enter your current password and confirm your new password.') }}"
-        >
+            subtitle="{{ __('Enter your current password and confirm your new password.') }}">
             <form action="{{ route('user.new.password') }}" method="post" class="space-y-4">
                 @csrf
 
@@ -16,7 +15,7 @@
                         notify()->warning($error);
                     @endphp
                 @endforeach
-                <x-forms.field
+                <x-frontend::forms.field
                     fieldId="current_password"
                     fieldLabel="{{ __('Current Password') }}"
                     fieldName="current_password"
@@ -24,7 +23,7 @@
                     type="password"
                     :fieldRequired="true"
                 />
-                <x-forms.field
+                <x-frontend::forms.field
                     fieldId="new_password"
                     fieldLabel="{{ __('New Password') }}"
                     fieldName="new_password"
@@ -32,7 +31,7 @@
                     type="password"
                     :fieldRequired="true"
                 />
-                <x-forms.field
+                <x-frontend::forms.field
                     fieldId="new_confirm_password"
                     fieldLabel="{{ __('Confirm Password') }}"
                     fieldName="new_confirm_password"
@@ -40,10 +39,10 @@
                     type="password"
                     :fieldRequired="true"
                 />
-                <x-forms.button type="submit" class="w-full" size="lg" variant="primary">
+                <x-frontend::forms.button type="submit" class="w-full" size="md" variant="primary">
                     {{ __('Change Password') }}
-                </x-forms.button>
+                </x-frontend::forms.button>
             </form>
-        </x-card>
+        </x-frontend::card>
     </div>
 @endsection

@@ -37,6 +37,21 @@
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
+                                @if($field['name'] === 'email_show_site_logo')
+                                    <div class="w-full mt-4">
+                                        <label class="form-label flex items-center !w-auto">
+                                            {{ __('Current Site Logo') }}
+                                            <iconify-icon class="toolTip onTop relative top-[2px]" icon="lucide:info" data-tippy-content="{{ __('Preview of the current site logo used in emails') }}"></iconify-icon>
+                                        </label>
+                                        <div class="wrap-custom-file">
+                                            <div
+                                                style="background-image: url('{{ getFilteredPath(setting('site_logo','global'), 'fallback/branding/desktop-logo.png') }}'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 150px;"
+                                                class="file-ok border rounded-md bg-white">
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @elseif($field['type'] == 'textarea')

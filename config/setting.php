@@ -2269,6 +2269,15 @@ return [
         'title' => 'Template Settings',
         'elements' => [
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'email_show_site_logo', // unique name for field
+                'label' => 'Show/Hide Site Logo In Emails Headers', // you know what label it is
+                'description' => 'enable to show or disable to hide the site logo in emails header',
+                'rules' => 'nullable', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
                 'type' => 'textarea', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_disclaimer', // unique name for field

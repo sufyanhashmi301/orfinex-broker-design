@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\NoteController;
+use App\Http\Controllers\Backend\CommentController;
 use App\Http\Controllers\Backend\PageController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
@@ -405,9 +406,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('update-auth-covers', 'updateAuthCovers')->name('update-auth-covers');
     });
 
-    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
-        Route::get('settings', 'pageSetting')->name('setting');
-        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
+        Route::controller(PageController::class)->group(function () {
+            Route::get('settings', 'pageSetting')->name('setting');
+            Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+        });
+        Route::resource('comments', CommentController::class)->except('show');
     });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {

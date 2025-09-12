@@ -72,7 +72,7 @@
                                     {{ __('Global Account') }}
                                 </span>
                                 <span class="text-xs font-Inter font-normal text-slate-600">
-                                    {{ __('This will override the country and tag restrictions and will be shown to all users.') }}
+                                    {{ __('This will override the country, tag and ib rebate rules restrictions and will be shown to all users.') }}
                                 </span>
                             </div>
                         </div>

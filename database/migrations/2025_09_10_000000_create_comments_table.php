@@ -13,7 +13,11 @@ return new class extends Migration
             $table->string('title');
             $table->string('type');
             $table->text('description')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
+            
+            $table->index('status');
+            $table->index('type');
         });
     }
 

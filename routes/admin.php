@@ -249,6 +249,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('manage-level', [ForexSchemaController::class, 'manageLevel'])->name('manageLevel');
     Route::get('multi-level/view/{id}', [ForexSchemaController::class, 'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
+    Route::get('account-type-settings', [ForexSchemaController::class, 'accountTypeSetting'])->name('settingsAccountType');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');

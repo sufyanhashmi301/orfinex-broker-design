@@ -349,5 +349,8 @@ class ForexSchemaController extends Controller
 
         return redirect()->route('admin.accountType.index');
     }
-    
+    public static function accountTypeSetting()
+    {
+        return view('backend.forex_schema.account_type_settings');
+    }
 }

@@ -262,7 +262,7 @@
 
         {{-- *************************************************************  Plan Management ********************************************************* --}}
         @canany(['account-type-list'])
-            <li class="{{ isActive(['admin.schedule*', 'admin.accountType*', 'admin.ibAccountType*']) }}">
+            <li class="{{ isActive(['admin.schedule*', 'admin.accountType*', 'admin.ibAccountType*', 'admin.settingsAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
@@ -291,6 +291,13 @@
                         </a>
                     </li>
 
+                   
+                    <li>
+                        <a href="{{ route('admin.settingsAccountType') }}" class="{{ isActive('admin.settingsAccountType*') }}">
+                            {{ __('Account Type Settings') }}
+                        </a>
+                    </li>
+                  
 
                     {{--                        @can('schema-edit') --}}
                     {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}"> --}}

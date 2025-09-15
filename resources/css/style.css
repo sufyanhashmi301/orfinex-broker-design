@@ -593,11 +593,11 @@
 }
 
 .swiper-pagination-bullet {
-  @apply shadow-theme-xs m-0! h-2.5 w-2.5 bg-white opacity-100 duration-200 ease-in-out;
+  @apply shadow-theme-xs m-0! h-2.5 w-2.5 bg-brand-500 opacity-100 duration-200 ease-in-out;
 }
 
 .swiper-pagination-bullet-active {
-  @apply w-6.5 rounded-xl;
+  @apply w-6.5 rounded-xl bg-brand-500;
 }
 
 .form-check-input:checked ~ span {

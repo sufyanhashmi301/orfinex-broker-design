@@ -319,6 +319,10 @@ Route::get('user/agreements', function () {
     return view('frontend::user.setting.agreements.index', compact('documentLinks'));
 })->name('user.agreements');
 
+Route::get('client-fund-safety', function () {
+    return view('frontend::user.client_fund_safety');
+})->name('user.client-fund-safety');
+
 Route::get('user/margin-account', function () {
     return view('frontend::user.setting.margin.index');
 })->name('user.margin-account');

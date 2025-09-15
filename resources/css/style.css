@@ -630,3 +630,20 @@
 .current .progress_bar {
   @apply bg-brand-500;
 }
+
+/* Mobile carousel specific styles */
+@media (max-width: 767px) {
+  .schema-carousel .swiper {
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+  
+  .schema-carousel .swiper-wrapper {
+    width: 100% !important;
+  }
+  
+  .schema-carousel .swiper-slide {
+    width: auto !important;
+    max-width: calc(100vw - 2rem) !important;
+  }
+}

@@ -96,13 +96,10 @@
     </div>
 
     <!-- Mobile Carousel View (visible only on mobile) -->
-    <div class="md:hidden schema-carousel">
-        <div class="swiper swiper-init"
-            data-slides-default="1.2"
+    <div class="md:hidden schema-carousel w-full overflow-hidden">
+        <div class="swiper swiper-init w-full"
+            data-slides-default="1"
             data-slides-sm="1.5"
-            data-slides-md="2"
-            data-slides-lg="3"
-            data-slides-xl="4"
             data-space="16"
             data-free-mode="true"
             data-mousewheel="true">
@@ -172,9 +169,20 @@
 @section('script')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            if (window.matchMedia('(max-width: 767px)').matches) {
-                window.initAllSwipers();
+            // Initialize Swiper only on mobile devices
+            function initMobileSwiper() {
+                if (window.matchMedia('(max-width: 767px)').matches) {
+                    window.initAllSwipers();
+                }
             }
+            
+            // Initialize on load
+            initMobileSwiper();
+            
+            // Re-initialize on resize if needed
+            window.addEventListener('resize', function() {
+                initMobileSwiper();
+            });
         });
     </script>
 @endsection

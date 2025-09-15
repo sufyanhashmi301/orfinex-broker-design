@@ -31,10 +31,17 @@ window.initAllSwipers = () => {
 
       // slides per view defaults
       const slidesDefault = parseFloat(el.dataset.slidesDefault) || 1.2;
-      const slidesSm = parseFloat(el.dataset.slidesSm) || 1.5;
-      const slidesMd = parseFloat(el.dataset.slidesMd) || 2;
-      const slidesLg = parseFloat(el.dataset.slidesLg) || 3;
-      const slidesXl = parseFloat(el.dataset.slidesXl) || 4;
+      const slidesSm = el.dataset.slidesSm ? parseFloat(el.dataset.slidesSm) : null;
+      const slidesMd = el.dataset.slidesMd ? parseFloat(el.dataset.slidesMd) : null;
+      const slidesLg = el.dataset.slidesLg ? parseFloat(el.dataset.slidesLg) : null;
+      const slidesXl = el.dataset.slidesXl ? parseFloat(el.dataset.slidesXl) : null;
+
+      // Build breakpoints object only for provided data attributes
+      const breakpoints = {};
+      if (slidesSm !== null) breakpoints[480] = { slidesPerView: slidesSm };
+      if (slidesMd !== null) breakpoints[640] = { slidesPerView: slidesMd };
+      if (slidesLg !== null) breakpoints[768] = { slidesPerView: slidesLg };
+      if (slidesXl !== null) breakpoints[1024] = { slidesPerView: slidesXl };
 
       new Swiper(el, {
           modules: [Navigation, Pagination, FreeMode, Mousewheel],
@@ -50,12 +57,7 @@ window.initAllSwipers = () => {
               nextEl: el.querySelector('.swiper-button-next'),
               prevEl: el.querySelector('.swiper-button-prev'),
           },
-          breakpoints: {
-              480: { slidesPerView: slidesSm },
-              640: { slidesPerView: slidesMd },
-              768: { slidesPerView: slidesLg },
-              1024: { slidesPerView: slidesXl },
-          },
+          breakpoints: breakpoints,
       });
   });
 };

@@ -15,6 +15,7 @@ use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
 use App\Models\UserOtp;
+use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Services\OtpService;
@@ -348,7 +349,62 @@ class WithdrawController extends Controller
             'status' => $status,
         ];
 
-        WithdrawAccount::create($data);
+        $createdAccount = WithdrawAccount::create($data);
+
+        // Prepare notifications and emails
+        try {
+            $user = auth()->user();
+            $withdrawMethod = WithdrawMethod::find($input['withdraw_method_id']);
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[method_name]]' => $input['method_name'],
+                '[[currency]]' => optional($withdrawMethod)->currency ?? 'N/A',
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+
+            // Resolve admin email (site email or first active admin)
+            $adminEmail = setting('site_email', 'global');
+            if (empty($adminEmail)) {
+                $adminEmail = User::where('status', 1)
+                    ->whereHas('roles', function($q) { $q->whereIn('name', ['Super-Admin', 'Admin']); })
+                    ->value('email');
+            }
+
+            // If account requires manual approval, notify admin and user
+            if ($status === WithdrawAccount::STATUS_PENDING) {
+                // Email to user
+                try { $this->mailNotify($user->email, 'withdraw_account_request_user', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
+                // Email to admin
+                if (!empty($adminEmail)) {
+                    try { $this->mailNotify($adminEmail, 'withdraw_account_request', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
+                }
+
+                // Push notification to admin (only if a matching push template exists)
+                try { $this->pushNotify('withdraw_account_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw'); } catch (\Exception $e) { /* silently ignore */ }
+            }
+
+            // If account is auto-approved, notify user with approval email
+            if ($status === WithdrawAccount::STATUS_APPROVED) {
+                $approvalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval')->first();
+                if ($approvalTemplate) {
+                    try { $this->mailNotify($user->email, 'withdraw_account_approval', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
+                }
+
+                // Email to admin on direct approval (if admin template exists)
+                if (!empty($adminEmail)) {
+                    $adminApprovalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval_admin')->first();
+                    if ($adminApprovalTemplate) {
+                        try { $this->mailNotify($adminEmail, 'withdraw_account_approval_admin', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
+                    }
+                }
+
+                // Push notification to admin on approval
+                try { $this->pushNotify('withdraw_account_approval', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw'); } catch (\Exception $e) { /* silently ignore */ }
+            }
+        } catch (\Exception $e) {
+            // Swallow any notification errors to not block the flow
+        }
 
         // Show appropriate success message based on status
         if ($status === WithdrawAccount::STATUS_APPROVED) {
@@ -689,7 +745,21 @@ class WithdrawController extends Controller
                 notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
                 return false;
             }
+            // Add conditional validation based on the account type
+            $validator = Validator::make($input, [
+                'target_id' => ['required'],
+                'account_type' => ['required'],
+                'withdraw_account' => ['required'],
+                'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+            ], [
+                'target_id.required' => __('Kindly select the account to withdraw'),
+            ]);
 
+            if ($validator->fails()) {
+                // Send back validation errors with old input
+                notify()->error($validator->errors()->first(), 'Error');
+                return false;
+            }
             // Decrypt the hashed target_id
             $targetId = get_hash($input['target_id']);
             $targetType = TxnTargetType::Wallet->value;  // Default to wallet
@@ -698,21 +768,7 @@ class WithdrawController extends Controller
         $accountType = $input['account_type'] ?? 'wallet';
         $isForexAccount = $accountType === 'forex';
 
-        // Add conditional validation based on the account type
-        $validator = Validator::make($input, [
-            'target_id' => ['required'],
-            'account_type' => ['required'],
-            'withdraw_account' => ['required'],
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
-        ], [
-            'target_id.required' => __('Kindly select the account to withdraw'),
-        ]);
-
-        if ($validator->fails()) {
-            // Send back validation errors with old input
-            notify()->error($validator->errors()->first(), 'Error');
-            return false;
-        }
+        
 
         $amount = (float)$input['amount'];
         $withdrawAccount = WithdrawAccount::where('id', $input['withdraw_account'])

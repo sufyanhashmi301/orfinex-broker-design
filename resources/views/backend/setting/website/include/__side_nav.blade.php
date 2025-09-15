@@ -16,7 +16,7 @@
         </li>
         @endcan
 
-        @canany('site-settings','customer-registration-settings')
+        @canany('site-settings','customer-registration-settings','comments-settings')
         <li>
             <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
                 {{ __('Site Settings') }}

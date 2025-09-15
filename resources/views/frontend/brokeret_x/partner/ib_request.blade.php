@@ -4,7 +4,7 @@
 @endsection
 @section('content')
         @if(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING )
-            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+            <div class="p-5 sm:p-6">
                 <div class="max-w-2xl mx-auto progress-steps-form">
                     <div class="transaction-status text-center">
                         <div class="relative flex items-center justify-center z-1 mb-7">
@@ -16,14 +16,16 @@
                                 <i data-lucide="hourglass" class="text-warning-600 dark:text-orange-400 w-8 h-8"></i>
                             </span>
                         </div>
-                        <h2 class="text-2xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>
-                        <p class="mb-3 text-gray-500 dark:text-gray-400">
+                        <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-4">
+                            {{ __('Partner Request Pending') }}
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400">
                             {{ __("Your partnership request is under review and we'll confirm with you shortly. Stay tuned!") }}
                         </p>
                         <div class="flex flex-wrap items-center justify-center gap-3 my-6">
-                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="flex items-center justify-center rounded-lg border border-gray-300 bg-white p-3 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                            <x-frontend::link-button href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" variant="outline" size="md">
                                 {{ __('Read Partner Agreement') }}
-                            </a>
+                            </x-frontend::link-button>
                             @php
                                 $trustpilot = plugin_active('Trustpilot');
                             @endphp
@@ -31,9 +33,9 @@
                                 @php
                                     $trustpilotData = json_decode($trustpilot->data, true);
                                 @endphp
-                                <a href="{{ $trustpilotData['link'] }}" target="_blank" class="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-brand-500 text-theme-sm shadow-theme-xs hover:bg-brand-600">
+                                <x-frontend::link-button href="{{ $trustpilotData['link'] }}" target="_blank" variant="primary" size="md">
                                     {{ __('Read Our Reviews on Trustpilot') }}
-                                </a>
+                                </x-frontend::link-button>
                             @endif
                         </div>
                         <div>
@@ -52,7 +54,7 @@
                 </div>
             </div>
         @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::REJECTED )
-            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+            <div class="p-5 sm:p-6">
                 <div class="max-w-2xl mx-auto progress-steps-form">
                     <div class="transaction-status text-center">
                         <div class="relative flex items-center justify-center z-1 mb-7">
@@ -64,14 +66,16 @@
                                 <i data-lucide="x" class="text-error-600 dark:text-red-400 w-8 h-8"></i>
                             </span>
                         </div>
-                        <h2 class="text-2xl dark:text-white my-5">{{ __('Partner Request Rejected') }}</h2>
-                        <p class="mb-3 text-gray-500 dark:text-gray-400">
+                        <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-4">
+                            {{ __('Partner Request Rejected') }}
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400">
                             {{ __("Unfortunately, your partnership request has been rejected. If you have any questions or need clarification, feel free to contact us.") }}
                         </p>
-                        <div class="flex flex-wrap items-center justify-center gap-3">
-                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="flex items-center justify-center rounded-lg border border-gray-300 bg-white p-3 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                        <div class="flex flex-wrap items-center justify-center gap-3 my-6">
+                            <x-frontend::link-button href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" variant="outline" size="md">
                                 {{ __('Read Partner Agreement') }}
-                            </a>
+                            </x-frontend::link-button>
                             @php
                                 $trustpilot = plugin_active('Trustpilot');
                             @endphp
@@ -79,9 +83,9 @@
                                 @php
                                     $trustpilotData = json_decode($trustpilot->data, true);
                                 @endphp
-                                <a href="{{ $trustpilotData['link'] }}" target="_blank" class="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-brand-500 text-theme-sm shadow-theme-xs hover:bg-brand-600">
+                                <x-frontend::link-button href="{{ $trustpilotData['link'] }}" target="_blank" variant="primary" size="md">
                                     {{ __('Read Our Reviews on Trustpilot') }}
-                                </a>
+                                </x-frontend::link-button>
                             @endif
                         </div>
                         <div class="mt-5">
@@ -107,10 +111,10 @@
                         <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                             <i data-lucide="handshake" class="w-7 h-7"></i>
                         </div>
-                        <h4 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                        <h4 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-4">
                             {{ __('Become a Introducing Broker') }}
                         </h4>
-                        <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+                        <p class="text-gray-500 text-theme-sm dark:text-gray-400">
                             {{ __('Make sure your details are correct-after applying, we will reach you to discuss your experience. We will also answer all the questions you might have.') }}
                         </p>
                     </div>
@@ -129,18 +133,19 @@
                                 <div class="input-area">
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-12">
-                                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ $field->name }}
-                                            </label>
+                                            <x-frontend::forms.label
+                                                fieldId="{{ $field->name }}"
+                                                fieldLabel="{{ $field->name }}"
+                                                fieldRequired="{{ $field->validation === 'required' }}"
+                                            />
                                         </div>
                                         @if($field->type === 'text')
                                             <div class="col-span-12">
-                                                <input 
-                                                    name="fields[{{ $field->name }}]" 
-                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" 
-                                                    type="text" 
-                                                    value="" 
-                                                    @if($field->validation === 'required') required @endif>
+                                                <x-frontend::forms.input
+                                                    fieldId="{{ $field->name }}"
+                                                    fieldName="fields[{{ $field->name }}]"
+                                                    fieldRequired="{{ $field->validation === 'required' }}"
+                                                />
                                             </div>
                                         @elseif($field->type === 'checkbox')
                                             <div class="col-span-12">
@@ -148,7 +153,7 @@
                                                     @foreach($field->options as $index => $option)
                                                         <label 
                                                             for="flexCheckDefault{{$qIndex}}{{$index}}" 
-                                                            class="flex px-3 py-3.5 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-400 cursor-pointer">
+                                                            class="flex px-3 py-3.5 w-full bg-white border border-gray-200 rounded-sm text-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-400 cursor-pointer">
 
                                                             <div class="relative">
                                                                 <input 
@@ -219,16 +224,16 @@
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="col-span-12">
-                                                <select 
-                                                    name="fields[{{ $field->name }}]" 
-                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 z-20 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" 
-                                                    @if($field->validation === 'required') required @endif>
+                                                <x-frontend::forms.select
+                                                    fieldId="{{ $field->name }}"
+                                                    fieldName="fields[{{ $field->name }}]"
+                                                    fieldRequired="{{ $field->validation === 'required' }}">
                                                     @foreach($field->options as $option)
-                                                        <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                        <option value="{{ $option }}">
                                                             {{ $option }}
                                                         </option>
                                                     @endforeach
-                                                </select>
+                                                </x-frontend::forms.select>
                                             </div>
                                         @endif
                                     </div>
@@ -238,8 +243,7 @@
                         <div>
                             <label
                                 for="agreement-check"
-                                class="flex cursor-pointer items-center text-sm font-medium text-gray-700 select-none dark:text-gray-400"
-                            >
+                                class="flex cursor-pointer items-center text-sm font-medium text-gray-700 select-none dark:text-gray-400">
                                 <div class="relative">
                                     <input
                                         x-model="agreementChecked"
@@ -249,8 +253,7 @@
                                     />
                                     <div
                                         :class="agreementChecked ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
-                                        class="f hover:border-brand-500 dark:hover:border-brand-500 mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]"
-                                    >
+                                        class="f hover:border-brand-500 dark:hover:border-brand-500 mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
                                         <span :class="agreementChecked ? '' : 'opacity-0'">
                                             <svg
                                             width="14"
@@ -271,15 +274,15 @@
                                     </div>
                                 </div>
                                 {{ __('I have read and agree with the ') }}
-                                <a href="javascript:;" class="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm ms-1">
+                                <x-frontend::text-link href="javascript:;" class="ms-1" variant="primary">
                                     {{ __('IB Agreement') }}
-                                </a> 
+                                </x-frontend::text-link>
                             </label>
                         </div>
                         <div class="col-span-12 text-right">
-                            <x-forms.button type="submit" size="lg" variant="primary" icon="check" icon-position="left" x-bind:disabled="loading">
+                            <x-frontend::forms.button type="submit" size="md" variant="primary" icon="check" icon-position="left" x-bind:disabled="loading">
                                 {{ __('Submit Request') }}
-                            </x-forms.button>
+                            </x-frontend::forms.button>
                         </div>
                     </form>
                 </div>
@@ -315,7 +318,7 @@
 
                 async submitForm() {
                     if (!this.agreementChecked) {
-                        alert('Kindly check the agreement before proceeding!');
+                        notify().error('Kindly check the agreement before proceeding!');
                         return;
                     }
                     this.loading = true;
@@ -333,10 +336,13 @@
 
                         if (!response.ok) throw new Error('Form submission failed');
 
-                        alert('Form submitted successfully!');
+                        notify().success('Form submitted successfully!');
+                        window.location.reload();
+
                     } catch (error) {
                         console.error(error);
-                        alert('Something went wrong.');
+                        notify().error('Something went wrong.');
+                        window.location.reload();
                     } finally {
                         this.loading = false;
                     }

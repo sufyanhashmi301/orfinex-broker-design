@@ -1,5 +1,10 @@
 import "flatpickr/dist/flatpickr.min.css";
 import "dropzone/dist/dropzone.css";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/free-mode';
+import 'swiper/css/mousewheel';
 import "../css/style.css";
 
 import Alpine from "alpinejs";
@@ -9,6 +14,51 @@ import Dropzone from "dropzone";
 import { createIcons, icons } from "lucide";
 import ApexCharts from "apexcharts";
 window.ApexCharts = ApexCharts;
+
+// Swiper imports
+import Swiper from 'swiper';
+import { Navigation, Pagination, FreeMode, Mousewheel } from 'swiper/modules';
+
+// make Swiper available globally
+window.initAllSwipers = () => {
+  const swipers = document.querySelectorAll('.swiper-init');
+
+  swipers.forEach((el) => {
+      // read data attributes
+      const space = parseInt(el.dataset.space) || 16;
+      const freeMode = el.dataset.freeMode === 'true';
+      const mousewheel = el.dataset.mousewheel === 'true';
+
+      // slides per view defaults
+      const slidesDefault = parseFloat(el.dataset.slidesDefault) || 1.2;
+      const slidesSm = parseFloat(el.dataset.slidesSm) || 1.5;
+      const slidesMd = parseFloat(el.dataset.slidesMd) || 2;
+      const slidesLg = parseFloat(el.dataset.slidesLg) || 3;
+      const slidesXl = parseFloat(el.dataset.slidesXl) || 4;
+
+      new Swiper(el, {
+          modules: [Navigation, Pagination, FreeMode, Mousewheel],
+          slidesPerView: slidesDefault,
+          spaceBetween: space,
+          freeMode: freeMode,
+          mousewheel: mousewheel,
+          pagination: {
+              el: el.querySelector('.swiper-pagination'),
+              clickable: true,
+          },
+          navigation: {
+              nextEl: el.querySelector('.swiper-button-next'),
+              prevEl: el.querySelector('.swiper-button-prev'),
+          },
+          breakpoints: {
+              480: { slidesPerView: slidesSm },
+              640: { slidesPerView: slidesMd },
+              768: { slidesPerView: slidesLg },
+              1024: { slidesPerView: slidesXl },
+          },
+      });
+  });
+};
 
 Alpine.plugin(persist);
 window.Alpine = Alpine;
@@ -51,6 +101,7 @@ if (year) {
 }
 
 window.renderLucideIcons = () => createIcons({ icons });
+
 document.addEventListener("DOMContentLoaded", () => {
   renderLucideIcons();
 });

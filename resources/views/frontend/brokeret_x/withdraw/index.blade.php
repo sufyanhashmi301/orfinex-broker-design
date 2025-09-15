@@ -29,7 +29,7 @@
          </x-frontend::empty-state>
     @else
         <!-- Accounts List -->
-        <div class="grid sm:grid-cols-2 grid-cols-1 gap-5">
+        <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
             @foreach($accounts as $account)
                 <a href="{{ route('user.withdraw.view', ['gateway_code' => the_hash($account->id)]) }}" class="flex gap-3 rounded-lg border border-gray-200 p-5 hover:shadow-lg dark:border-gray-800 md:p-6">
                     <!-- Account Content -->

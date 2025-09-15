@@ -8,7 +8,7 @@
             @yield('title')
         </h2>
     </div>
-    <div class="grid sm:grid-cols-2 grid-cols-1 gap-5">
+    <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
         @if(setting('is_internal_transfer', 'transfer_internal'))
             <a href="{{ route('user.send-money.internal-view') }}" class="flex gap-3 rounded-lg border border-gray-200 p-5 hover:shadow-lg dark:border-gray-800 md:p-6">
                 <div class="shrink-0 h-11 w-11 overflow-hidden rounded-full">

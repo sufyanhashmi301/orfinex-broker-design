@@ -8,7 +8,7 @@
             @yield('title')
         </h2>
     </div>
-    <div class="grid sm:grid-cols-2 grid-cols-1 gap-5">
+    <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($gateways as $gateway)
             @php
                 $icon = $gateway->logo;

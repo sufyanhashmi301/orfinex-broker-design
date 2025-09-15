@@ -1,11 +1,5 @@
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('flash', {
-            success(msg) { notify().success(msg) },
-            error(msg) { notify().error(msg) },
-        })
-    })
-</script>
+<!-- Frontend Notification System -->
+<script src="{{ asset('js/notify.js') }}"></script>
 <x-notify-user />
 
 <!-- Third-party libraries -->

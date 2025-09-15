@@ -121,7 +121,7 @@
                 </div>
             </div>
             <div class="col-span-12 lg:col-span-5">
-                <div class="border-l border-gray-200 dark:border-gray-800 ps-5">
+                <div class="lg:border-l border-gray-200 dark:border-gray-800 lg:ps-5">
                     <div class="mb-6">
                         <h3 class="text-lg font-medium text-gray-800 dark:text-white/90 mb-3">
                             {{ __('Terms') }}

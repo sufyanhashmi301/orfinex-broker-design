@@ -58,10 +58,10 @@
                     </p>
                 </div>
                 <div class="flex gap-3">
-                    <x-frontend::link-button href="javascript:void(0);" variant="secondary" size="md">
+                    <x-frontend::link-button href="javascript:void(0);" class="text-nowrap" variant="secondary" size="md">
                         {{ __('Learn more') }}
                     </x-frontend::link-button>
-                    <x-frontend::link-button href="{{ route('user.kyc') }}" variant="error" size="md">
+                    <x-frontend::link-button href="{{ route('user.kyc') }}" class="text-nowrap" variant="error" size="md">
                         {{ __('Complete Profile') }}
                     </x-frontend::link-button>
                 </div>

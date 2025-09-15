@@ -34,18 +34,17 @@
                         @submit="validateAndSubmit($event)">
                         @csrf
                         <div class="progress-steps-form">
-                            <label for="" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                {{ __('Verification Type') }}
-                            </label>
-                            <div class="relative">
-                                <select name="kyc_id" x-model="selectedKycId" @change="handleKycTypeChange()"
-                                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" required>
-                                    <option value="">{{ __('----') }}</option>
-                                    @foreach($kycs as $kyc)
-                                        <option value="{{ $kyc->id }}">{{ $kyc->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <x-frontend::forms.select-field
+                                fieldLabel="{{ __('Verification Type') }}"
+                                fieldName="kyc_id"
+                                x-model="selectedKycId"
+                                @change="handleKycTypeChange()"
+                                placeholder="{{ __('----') }}"
+                                fieldRequired>
+                                @foreach($kycs as $kyc)
+                                    <option value="{{ $kyc->id }}">{{ $kyc->name }}</option>
+                                @endforeach
+                            </x-frontend::forms.select-field>
                         </div>
                         
                         <!-- Loading State -->
@@ -80,26 +79,16 @@
                         <!-- KYC Data Container -->
                         <div x-show="kycContent && !isLoading && !error" x-transition class="mt-4" x-html="kycContent"></div>
                         
-                        <button 
+                        <x-frontend::forms.button 
                             type="submit" 
-                            :disabled="isSubmitting || !selectedKycId || !kycContent"
-                            class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-3.5 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600 mt-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-brand-500">
-                            
-                            <!-- Loading state -->
-                            <template x-if="isSubmitting">
-                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </template>
-                            
-                            <!-- Normal state -->
-                            <template x-if="!isSubmitting">
-                                <i data-lucide="check" class="w-4 h-4"></i>
-                            </template>
-                            
+                            size="md" 
+                            variant="primary" 
+                            icon="check" 
+                            icon-position="left"
+                            x-bind:disabled="isSubmitting || !selectedKycId || !kycContent"
+                            class="mt-3">
                             <span x-text="isSubmitting ? '{{ __('Submitting...') }}' : '{{ __('Submit Now') }}'"></span>
-                        </button>
+                        </x-frontend::forms.button>
                     </form>
                 </div>
                 <div>
@@ -115,14 +104,18 @@
             </div>
         </div>
         <div class="p-5 md:p-6">
-            <ul class="space-y-3">
-                <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                    <iconify-icon class="relative text-xl mr-2 text-success" icon="material-symbols:check-box"></iconify-icon>
-                    {{ __('Upload a colorful full-size (4 sides visible) photo of the document.') }}
+            <ul class="space-y-2">
+                <li class="text-sm text-gray-900 dark:text-gray-300 flex space-x-2 items-center">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-success-600"></i>
+                    <span>
+                        {{ __('Upload a colorful full-size (4 sides visible) photo of the document.') }}
+                    </span>
                 </li>
-                <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                    <iconify-icon class="relative text-xl mr-2 text-danger" icon="entypo:squared-cross"></iconify-icon>
-                    {{ __('Do not upload selfies, screenshots, and do not modify the images in graphic editors.') }}
+                <li class="text-sm text-gray-900 dark:text-gray-300 flex space-x-2 items-center">
+                    <i data-lucide="x-circle" class="w-4 h-4 text-error-600"></i>
+                    <span>
+                        {{ __('Do not upload selfies, screenshots, and do not modify the images in graphic editors.') }}
+                    </span>
                 </li>
             </ul>
         </div>

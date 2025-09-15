@@ -76,9 +76,8 @@
         @if(count($transactions) == 0)
             <x-frontend::empty-state 
                 icon="inbox"
-                title="{{ __('You don\'t have any transactions yet') }}"
-                subtitle="{{ __('Make a deposit to start trading') }}"
-            >
+                title="{!! __('You don\'t have any transactions yet') !!}"
+                subtitle="{{ __('Make a deposit to start trading') }}">
                 <x-slot name="actions">
                     <x-frontend::link-button href="{{ route('user.deposit.methods') }}" variant="primary" size="md">
                         {{ __('Deposit Now') }}

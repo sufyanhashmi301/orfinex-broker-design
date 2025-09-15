@@ -7,14 +7,14 @@
     @if (auth()->user()->kyc >= kyc_required_completed_level())
     {{-- verification completed--}}
     <div class="p-5">
-        <p class="text-center font-medium dark:text-slate-300">
+        <p class="text-center font-medium dark:text-gray-300">
             {{ __('Your Verification is completed') }}
         </p>
     </div>
     @elseif ($sumsubstatus === 0)
     {{-- sumsub deactivated --}}
     <div class="p-5">
-        <p class="text-center font-medium dark:text-slate-300">
+        <p class="text-center font-medium dark:text-gray-300">
             {{ __('Something went wrong.') }}
         </p>
     </div>

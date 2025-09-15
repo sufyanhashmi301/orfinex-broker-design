@@ -15,45 +15,36 @@
         </div>
     </div>
 
-    <div class="overflow-hidden">
+    <!-- Desktop Table View (hidden on mobile) -->
+    <div class="hidden md:block overflow-hidden">
         <div class="max-w-full overflow-x-auto">
             <table class="min-w-full border-separate border-spacing-3">
                 <!-- table body start -->
                 <tbody class="">
                     <tr>
                         <td class="pe-5 pt-2 pb-1 sm:pe-6">
-                            <div class="flex items-center">
-                                <p class="text-nowrap text-gray-800 dark:text-white/90">
-                                    {{ __('Account type')}}
-                                </p>
+                            <div class="min-w-max text-nowrap text-gray-800 dark:text-white/90">
+                                {{ __('Account type')}}
                             </div>
                         </td>
                         <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="flex items-center">
-                                <p class="text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                    {{ __('Min deposit') }}
-                                </p>
+                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                {{ __('Min deposit') }}
                             </div>
                         </td>
                         <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="flex items-center">
-                                <p class="text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                    {{ __('Min spread') }}
-                                </p>
+                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                {{ __('Min spread') }}
                             </div>
                         </td>
                         <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="flex items-center">
-                                <p class="text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                    {{ __('Max leverage') }}
-                                </p>
+                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                {{ __('Max leverage') }}
                             </div>
                         </td>
                         <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="flex items-center">
-                                <p class="text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                    {{ __('Commission') }}
-                                </p>
+                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                {{ __('Commission') }}
                             </div>
                         </td>
                     </tr>
@@ -63,47 +54,39 @@
                             @click="window.location.href = '{{ route('user.schema.preview', the_hash($schema->id)) }}'">
                             <td class="px-5 py-4 sm:px-6">
                                 <div class="flex gap-3">
-                                    <div class="w-12 h-12 overflow-hidden">
+                                    <div class="flex-shrink-0 w-12 h-12 overflow-hidden">
                                         <img src="{{ asset($schema->icon) }}" alt="brand">
                                     </div>
 
-                                    <div>
-                                        <span class="block font-medium text-gray-800 text-theme-lg dark:text-white/90">
+                                    <div class="flex flex-col gap-1 max-w-[356px]">
+                                        <span class="font-medium text-gray-800 text-theme-lg dark:text-white/90">
                                             {{ $schema->title }}
                                         </span>
-                                        <span class="block text-gray-500 text-theme-sm dark:text-gray-400">
+                                        <span class="w-full max-w-max text-gray-500 text-theme-sm dark:text-gray-400">
                                             {!! $schema->desc !!}
                                         </span>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-5 py-4 sm:px-6">
-                                <div class="flex items-center">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
-                                    </p>
-                                </div>
+                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                    {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
+                                </p>
                             </td>
                             <td class="px-5 py-4 sm:px-6">
-                                <div class="flex items-center">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {{ $schema->spread }}
-                                    </p>
-                                </div>
+                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                    {{ $schema->spread }}
+                                </p>
                             </td>
                             <td class="px-5 py-4 sm:px-6">
-                                <div class="flex items-center">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {{ $schema->leverage }}
-                                    </p>
-                                </div>
+                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                    {{ $schema->leverage }}
+                                </p>
                             </td>
                             <td class="px-5 py-4 sm:px-6">
-                                <div class="flex items-center">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {{ $schema->commission }}
-                                    </p>
-                                </div>
+                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                    {{ $schema->commission }}
+                                </p>
                             </td>
                         </tr>
                     @endforeach
@@ -111,4 +94,87 @@
             </table>
         </div>
     </div>
+
+    <!-- Mobile Carousel View (visible only on mobile) -->
+    <div class="md:hidden schema-carousel">
+        <div class="swiper swiper-init"
+            data-slides-default="1.2"
+            data-slides-sm="1.5"
+            data-slides-md="2"
+            data-slides-lg="3"
+            data-slides-xl="4"
+            data-space="16"
+            data-free-mode="true"
+            data-mousewheel="true">
+            <div class="swiper-wrapper">
+                @foreach($schemas as $schema)
+                    <div class="swiper-slide">
+                        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3" 
+                            x-data 
+                            @click="window.location.href = '{{ route('user.schema.preview', the_hash($schema->id)) }}'">
+                            <div class="text-center mb-5">
+                                <div class="flex items-center justify-center mb-5">
+                                    <img src="{{ asset($schema->icon) }}" alt="{{ $schema->title }}" class="h-32">
+                                </div>
+                                <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-2">
+                                    {{ $schema->title }}
+                                </h2>
+                                <x-frontend::badge variant="light" style="light" size="sm" class="mb-2">
+                                    {{ $schema->badge }}
+                                </x-frontend::badge>
+                                <p class="text-gray-500 text-theme-sm dark:text-gray-400 text-center">
+                                    {!! $schema->desc !!}
+                                </p>
+                            </div>
+                            <div class="flex flex-col flex-auto self-stretch">
+                                <div class="grid [grid-template-columns:1fr_min-content]">
+                                    <div class="flex align-items-baseline text-theme-sm text-gray-600 py-2 dark:text-gray-300 after:content-[''] after:flex-auto after:min-w-2 after:border-b after:border-dashed after:border-gray-300">
+                                        {{ __('Min deposit') }}
+                                    </div>
+                                    <div class="whitespace-nowrap text-right text-gray-600 text-theme-sm py-2 dark:text-gray-300">
+                                        {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
+                                    </div>
+                                </div>
+                                <div class="grid [grid-template-columns:1fr_min-content]">
+                                    <div class="flex align-items-baseline text-theme-sm text-gray-600 py-2 dark:text-gray-300 after:content-[''] after:flex-auto after:min-w-2 after:border-b after:border-dashed after:border-gray-300">
+                                        {{ __('Min spread') }}
+                                    </div>
+                                    <div class="whitespace-nowrap text-right text-gray-600 text-theme-sm py-2 dark:text-gray-300">
+                                        {{ $schema->spread }}
+                                    </div>
+                                </div>
+                                <div class="grid [grid-template-columns:1fr_min-content]">
+                                    <div class="flex align-items-baseline text-theme-sm text-gray-600 py-2 dark:text-gray-300 after:content-[''] after:flex-auto after:min-w-2 after:border-b after:border-dashed after:border-gray-300">
+                                        {{ __('Max leverage') }}
+                                    </div>
+                                    <div class="whitespace-nowrap text-right text-gray-600 text-theme-sm py-2 dark:text-gray-300">
+                                        {{ $schema->leverage }}
+                                    </div>
+                                </div>
+                                <div class="grid [grid-template-columns:1fr_min-content]">
+                                    <div class="flex align-items-baseline text-theme-sm text-gray-600 py-2 dark:text-gray-300 after:content-[''] after:flex-auto after:min-w-2 after:border-b after:border-dashed after:border-gray-300">
+                                        {{ __('Commission') }}
+                                    </div>
+                                    <div class="whitespace-nowrap text-right text-gray-600 text-theme-sm py-2 dark:text-gray-300">
+                                        {{ $schema->commission }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination !relative !bottom-0"></div>
+        </div>
+    </div>
+@endsection
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.matchMedia('(max-width: 767px)').matches) {
+                window.initAllSwipers();
+            }
+        });
+    </script>
 @endsection

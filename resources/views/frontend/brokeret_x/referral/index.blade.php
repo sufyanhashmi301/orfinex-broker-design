@@ -10,28 +10,30 @@
                 <div class="max-w-2xl progress-steps-form">
                     <div class="transaction-status text-center">
                         <div class="icon h-20 w-20 bg-warning text-warning bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
-                            <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
+                            <i data-lucide="hourglass" class="w-8 h-8 text-warning-600"></i>
                         </div>
                         <h2 class="text-3xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>
                         <p class="text-sm mb-3 dark:text-white">
                             {{ __("Your partnership request is under review and we'll confirm with you shortly. Stay tuned!") }}
                         </p>
                         <div class="flex flex-wrap items-center justify-center gap-3">
-                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
-                                <span>{{ __('Read Partner Agreement') }}</span>
-                            </a>
-                            <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
-                                <span>{{ __('Read Our Reviews on Trustpilot') }}</span>
-                            </a>
+                            <x-frontend::link-button href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" variant="secondary" size="md" icon="file-text" iconPosition="left">
+                                {{ __('Read Partner Agreement') }}
+                            </x-frontend::link-button>
+                            <x-frontend::link-button href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" variant="primary" size="md" icon="star" iconPosition="left">
+                                {{ __('Read Our Reviews on Trustpilot') }}
+                            </x-frontend::link-button>
                         </div>
                         <div class="mt-5">
-                            <p class="text-sm dark:text-slate-300">
+                            <p class="text-sm dark:text-gray-300">
                                 {{ __('If you face any issue, please visit our') }}
-                                <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">{{ __('Customer Support') }}</a>
+                                <x-frontend::text-link href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" variant="primary">
+                                    {{ __('Customer Support') }}
+                                </x-frontend::text-link>
                                 {{ __('or Email us at') }}
-                                <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.
+                                <x-frontend::text-link href="mailto:{{ setting('support_email','global')}}" variant="primary">
+                                    {{ setting('support_email','global')}}
+                                </x-frontend::text-link>.
                             </p>
                         </div>
                     </div>
@@ -49,8 +51,7 @@
                 </p>
             </div>
             <div class="card-body px-6 pb-6">
-                <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create"
-                        class="space-y-4">
+                <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create" class="space-y-4">
                     @csrf
 
                     @foreach($ibQuestions as $qIndex=>$ibQuestion)
@@ -58,11 +59,19 @@
                             <div class="input-area">
                                 <div class="grid grid-cols-12">
                                     <div class="col-span-12">
-                                        <label class="form-label text-lg font-medium">{{ $field->name }}</label>
+                                        <x-frontend::forms.label
+                                            :fieldId="$field->name"
+                                            :fieldLabel="$field->name"
+                                            :fieldRequired="$field->validation === 'required'"
+                                        />
                                     </div>
                                     @if($field->type === 'text')
                                         <div class="md:col-span-6 col-span-12">
-                                            <input name="fields[{{ $field->name }}]" class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
+                                            <x-frontend::forms.input
+                                                :fieldId="$field->name"
+                                                :fieldName="fields[{{ $field->name }}]"
+                                                :fieldRequired="$field->validation === 'required'"
+                                            />
                                         </div>
                                     @elseif($field->type === 'checkbox')
                                         <div class="col-span-12">
@@ -104,13 +113,16 @@
                                         </div>
                                     @elseif($field->type === 'dropdown')
                                         <div class="md:col-span-6 col-span-12 select2-lg">
-                                            <select name="fields[{{ $field->name }}]" class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
+                                            <x-frontend::forms.select
+                                                :fieldId="$field->name"
+                                                :fieldName="fields[{{ $field->name }}]"
+                                                :fieldRequired="$field->validation === 'required'">
                                                 @foreach($field->options as $option)
-                                                    <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600"">
+                                                    <option value="{{ $option }}">
                                                         {{ $option }}
                                                     </option>
                                                 @endforeach
-                                            </select>
+                                            </x-frontend::forms.select>
                                         </div>
                                     @endif
                                 </div>

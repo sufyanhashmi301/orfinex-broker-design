@@ -11,7 +11,7 @@
 
     <div class="grid grid-cols-12 gap-12" x-data="sendMoneyForm()" x-init="init()">
         <div class="col-span-12 lg:col-span-7">
-            <div class="max-w-xl">
+            <div class="lg:max-w-xl">
                 <form @submit="validateBeforeSubmit($event)" action="{{ route('user.send-money.internal-now') }}" method="post">
                     @csrf
                     <input type="hidden" name="target_type" id="selectedAccountType" value="">
@@ -88,7 +88,7 @@
             </div>
         </div>
         <div class="col-span-12 lg:col-span-5">
-            <div class="border-l border-gray-200 dark:border-gray-800 ps-5">
+            <div class="lg:border-l border-gray-200 dark:border-gray-800 lg:ps-5">
                 <div class="mb-6">
                     <h3 class="text-lg font-medium text-gray-800 dark:text-white/90 mb-3">
                         {{ __('Terms') }}

@@ -17,7 +17,7 @@
     
     <div class="grid grid-cols-12 gap-12 mb-5" x-data="accountForm()" x-init="init()">
         <div class="col-span-12 lg:col-span-7">
-            <div class="max-w-xl">
+            <div class="lg:max-w-xl">
                 <div class="mb-5">
                     <div class="flex items-center gap-0.5 rounded-lg border border-gray-200 dark:border-gray-800 p-0.5 mb-2" id="account-type-tabs">
                         @if($schema->real_swap_free || $schema->real_islamic)

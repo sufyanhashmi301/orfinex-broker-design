@@ -32,6 +32,19 @@
             .hover\:bg-primary-500:hover {
                 background-color: #667eea;
             }
+
+            .hover\:-translate-y-5:hover {
+                transform: translateY(-0.5rem);
+            }
+
+            .hover\:shadow-xl:hover {
+                --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+                --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
+                box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+                    var(--tw-ring-shadow, 0 0 #0000),
+                    var(--tw-shadow);
+            }
+
         </style>
     </head>
     <body class="font-inter dashcode-app bg-gradient">
@@ -82,7 +95,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                    <div class="bg-white rounded-xl shadow-lg py-12 px-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-lg transition duration-300 hover:-translate-y-5 py-12 px-6 mb-6">
                         <div class="flex items-center gap-3 mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 32 32">
                                 <g fill="none">
@@ -135,7 +148,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-lg py-12 px-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-lg transition duration-300 hover:-translate-y-5 py-12 px-6 mb-6">
                         <div class="flex items-center gap-3 mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 48 48">
                                 <path fill="#424242" d="M24 4c-5.5 0-10 4.5-10 10v4h4v-4c0-3.3 2.7-6 6-6s6 2.7 6 6v4h4v-4c0-5.5-4.5-10-10-10"/>
@@ -192,7 +205,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-lg py-12 px-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-lg transition duration-300 hover:-translate-y-5 py-12 px-6 mb-6">
                         <div class="flex items-center gap-3 mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 512 512">
                                 <path fill="#ffab56" d="M376 211H256V16L136 301h120v195z"/>
@@ -246,7 +259,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-lg py-12 px-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-lg transition duration-300 hover:-translate-y-5 py-12 px-6 mb-6">
                         <div class="flex items-center gap-3 mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
                                 <path fill="#4669fa" fill-rule="evenodd" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473V2c-.811 0-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082" clip-rule="evenodd"/>
@@ -366,21 +379,21 @@
                     </div>
 
                     <div class="flex items-center justify-center gap-4 mb-5">
-                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 hover:bg-primary-500 hover:text-white px-4 py-3">
+                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 transition duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-primary-500 hover:text-white px-4 py-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02z"/>
                             </svg>
                             {{ __('Call Banking Support') }}
                         </a>
 
-                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 hover:bg-primary-500 hover:text-white px-4 py-3">
+                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 transition duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-primary-500 hover:text-white px-4 py-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5l-8-5V6l8 5l8-5z"/>
                             </svg>
                             {{ __('Email Banking Team') }}
                         </a>
 
-                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 hover:bg-primary-500 hover:text-white px-4 py-3">
+                        <a href="javascript:void(0)" class="inline-flex justify-center items-center gap-2 bg-slate-100 rounded-full border border-slate-200 transition duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-primary-500 hover:text-white px-4 py-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8"/>
                             </svg>

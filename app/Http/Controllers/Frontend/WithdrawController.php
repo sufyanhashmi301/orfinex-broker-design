@@ -745,7 +745,21 @@ class WithdrawController extends Controller
                 notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
                 return false;
             }
+            // Add conditional validation based on the account type
+            $validator = Validator::make($input, [
+                'target_id' => ['required'],
+                'account_type' => ['required'],
+                'withdraw_account' => ['required'],
+                'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+            ], [
+                'target_id.required' => __('Kindly select the account to withdraw'),
+            ]);
 
+            if ($validator->fails()) {
+                // Send back validation errors with old input
+                notify()->error($validator->errors()->first(), 'Error');
+                return false;
+            }
             // Decrypt the hashed target_id
             $targetId = get_hash($input['target_id']);
             $targetType = TxnTargetType::Wallet->value;  // Default to wallet
@@ -754,21 +768,7 @@ class WithdrawController extends Controller
         $accountType = $input['account_type'] ?? 'wallet';
         $isForexAccount = $accountType === 'forex';
 
-        // Add conditional validation based on the account type
-        $validator = Validator::make($input, [
-            'target_id' => ['required'],
-            'account_type' => ['required'],
-            'withdraw_account' => ['required'],
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
-        ], [
-            'target_id.required' => __('Kindly select the account to withdraw'),
-        ]);
-
-        if ($validator->fails()) {
-            // Send back validation errors with old input
-            notify()->error($validator->errors()->first(), 'Error');
-            return false;
-        }
+        
 
         $amount = (float)$input['amount'];
         $withdrawAccount = WithdrawAccount::where('id', $input['withdraw_account'])

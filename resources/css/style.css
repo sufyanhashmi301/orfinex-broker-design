@@ -643,7 +643,6 @@
   }
   
   .schema-carousel .swiper-slide {
-    width: auto !important;
-    max-width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem)!important;
   }
 }

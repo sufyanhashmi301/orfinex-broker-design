@@ -15,7 +15,7 @@
         </div>
     </div>
     
-    <div class="grid grid-cols-12 gap-12 mb-5" x-data="accountForm()" x-init="init()">
+    <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12 mb-5" x-data="accountForm()" x-init="init()">
         <div class="col-span-12 lg:col-span-7">
             <div class="lg:max-w-xl">
                 <div class="mb-5">

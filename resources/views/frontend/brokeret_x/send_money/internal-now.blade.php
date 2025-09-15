@@ -9,7 +9,7 @@
         </h2>
     </div>
 
-    <div class="grid grid-cols-12 gap-12" x-data="sendMoneyForm()" x-init="init()">
+    <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12" x-data="sendMoneyForm()" x-init="init()">
         <div class="col-span-12 lg:col-span-7">
             <div class="lg:max-w-xl">
                 <form @submit="validateBeforeSubmit($event)" action="{{ route('user.send-money.internal-now') }}" method="post">

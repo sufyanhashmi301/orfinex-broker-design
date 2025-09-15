@@ -9,11 +9,11 @@
         </h2>
     </div>
 
-    <div x-data="{ currentRoute: '{{ Route::currentRouteName() }}' }" class="border-b border-gray-200 dark:border-gray-800 mb-10">
-        <nav class="-mb-px flex overflow-x-auto scrollbar-hide" role="tablist" aria-label="tab options">
+    <div x-data="{ currentRoute: '{{ Route::currentRouteName() }}' }" class="max-w-[calc(100vw-2em)] overflow-x-auto overflow-y-hidden scrollbar-hide border-b border-gray-200 dark:border-gray-800 mb-10">
+        <nav class="-mb-px flex h-full" role="tablist" aria-label="tab options">
             @if(setting('kyc_verification','permission'))
                 <a href="{{ route('user.kyc') }}" 
-                    class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                    class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                     x-on:click="currentRoute = 'user.kyc'" 
                     x-bind:aria-selected="currentRoute === 'user.kyc'" 
                     x-bind:tabindex="currentRoute === 'user.kyc' ? '0' : '-1'" 
@@ -24,7 +24,7 @@
                 </a>
             @endif
             <a href="{{ route('user.setting.security') }}" 
-                class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                 x-on:click="currentRoute = 'user.setting.security'" 
                 x-bind:aria-selected="currentRoute === 'user.setting.security'" 
                 x-bind:tabindex="currentRoute === 'user.setting.security' ? '0' : '-1'" 
@@ -34,7 +34,7 @@
                 {{ __('Security') }}
             </a>
             <a href="{{ route('user.withdraw.account.index') }}" 
-                class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                 x-on:click="currentRoute = 'user.withdraw.account.index'" 
                 x-bind:aria-selected="currentRoute === 'user.withdraw.account.index'" 
                 x-bind:tabindex="currentRoute === 'user.withdraw.account.index' ? '0' : '-1'" 
@@ -44,7 +44,7 @@
                 {{ __('Withdraw Accounts') }}
             </a>
             <a href="{{ route('user.setting.preference') }}" 
-                class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                 x-on:click="currentRoute = 'user.setting.preference'" 
                 x-bind:aria-selected="currentRoute === 'user.setting.preference'" 
                 x-bind:tabindex="currentRoute === 'user.setting.preference' ? '0' : '-1'" 
@@ -54,7 +54,7 @@
                 {{ __('Preference') }}
             </a>
             <a href="{{ route('user.agreements') }}" 
-                class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                 x-on:click="currentRoute = 'user.agreements'" 
                 x-bind:aria-selected="currentRoute === 'user.agreements'" 
                 x-bind:tabindex="currentRoute === 'user.agreements' ? '0' : '-1'" 
@@ -64,7 +64,7 @@
                 {{ __('Agreements') }}
             </a>
             <a href="{{ route('user.setting.tools') }}" 
-                class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
+                class="text-base border-b-3 px-4 py-3 transition-colors duration-200 whitespace-nowrap"
                 x-on:click="currentRoute = 'user.setting.tools'" 
                 x-bind:aria-selected="currentRoute === 'user.setting.tools'" 
                 x-bind:tabindex="currentRoute === 'user.setting.tools' ? '0' : '-1'" 

@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-12 gap-12" x-data="depositComponent()" x-init="initDeposit()">
+    <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12" x-data="depositComponent()" x-init="initDeposit()">
         <div class="col-span-12 lg:col-span-7">
             <div class="lg:max-w-xl">
                 <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">

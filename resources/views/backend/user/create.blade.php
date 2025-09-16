@@ -417,6 +417,8 @@ $(document).ready(function() {
             utilsScript: "{{ asset('frontend/js/utils.js') }}",
         });
         
+        // No syncing from phone country to country select to keep fields independent
+        
         // Check if there's an old country value (validation error) and set the phone input accordingly
         const oldCountry = '{{ old("country") }}';
         if (oldCountry) {
@@ -476,6 +478,8 @@ $(document).ready(function() {
             // Set UAE as default country if no old value
             phoneIti.setCountry("ae");
         }
+
+        // No syncing from country select to phone country to keep fields independent
     }
 
     // Handle form submission to format phone number

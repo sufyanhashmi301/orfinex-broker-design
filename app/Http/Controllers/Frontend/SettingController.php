@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 use App\Models\User;
 use App\Models\UserLanguage;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\NumberParseException;
 
 class SettingController extends Controller
 {
@@ -91,6 +94,19 @@ class SettingController extends Controller
 
         $validator = Validator::make($request->all(), $validationRules);
 
+
+        // Cross-validate phone using helper and normalize to E.164 against selected country
+        $validator->after(function ($v) use ($request, $user) {
+            $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+            $countryRaw = (string) $request->input('country', $user->country);
+            $validation = validateAndNormalizePhone($rawPhone, $countryRaw, $user->country);
+            if (!$validation['valid']) {
+                $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                return;
+            }
+            $request->merge(['__normalized_phone' => $validation['e164']]);
+        });
+
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));
             return redirect()->back()->withInput();
@@ -98,6 +114,22 @@ class SettingController extends Controller
 
         // Build data array with only enabled fields or fields that don't have existing values
         $data = [];
+        
+        // Determine normalized phone value post-validation
+        $normalizedPhone = $request->input('__normalized_phone');
+        $rawPhone = $request->input('phone');
+        $phoneToStore = $normalizedPhone ?? ($rawPhone ?? $user->phone);
+        
+        $countryRawForStore = (string) $request->input('country', $user->country);
+        $countryNameForStore = (strpos($countryRawForStore, ':') !== false) ? explode(':', $countryRawForStore)[0] : $countryRawForStore;
+        
+        // If no country provided but phone detected a country, use it when allowed
+        if (empty($request->input('country')) && !empty($phoneToStore)) {
+            $detected = getCountryFromPhone($phoneToStore);
+            if ($detected && isset($detected['name'])) {
+                $countryNameForStore = $detected['name'];
+            }
+        }
         
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
@@ -121,8 +153,9 @@ class SettingController extends Controller
             $data['email'] = $input['email'];
         }
         
-        if (($phoneEditEnabled || !$user->phone) && $request->has('phone')) {
-            $data['phone'] = $input['phone'];
+        if ($phoneEditEnabled || !$user->phone) {
+            // Save E.164 normalized phone
+            $data['phone'] = $phoneToStore;
         }
         
         if ($countryEditEnabled && $request->has('country')) {
@@ -151,6 +184,7 @@ class SettingController extends Controller
         if (!empty($data)) {
             $user->update($data);
         }
+
 
         notify()->success(__('Your Profile Updated successfully'));
         return redirect()->back();

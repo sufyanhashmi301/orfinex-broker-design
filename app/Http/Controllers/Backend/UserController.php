@@ -1153,6 +1153,21 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'date_of_birth' => 'nullable|date',
         ]);
 
+        // Cross-validate phone using helper and normalize to E.164
+        $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
+            $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+            $countryRaw = $request->input('country');
+            if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
+                // Backend: allow phone country to be independent from selected country
+                $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null, false);
+                if (!$validation['valid']) {
+                    $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                    return;
+                }
+                $request->merge(['__normalized_phone' => $validation['e164']]);
+            }
+        });
+
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back()->withInput();
@@ -1176,9 +1191,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'password',
         ]);
 
-        // Handle phone number with country code from intlTelInput
-        // Always use the phone from input if provided, otherwise keep existing
-        $phone = !empty($request->formatted_phone) ? $request->formatted_phone : ($request->phone ?? $user->phone);
+        // Handle phone number: use normalized E.164 if present
+        $phone = $request->input('__normalized_phone') ?? ($request->phone ?? $user->phone);
         
 
        
@@ -1802,7 +1816,7 @@ public function store(Request $request)
                 $phoneRules[] = 'unique:users,phone';
             }
             
-            $validatedData = $request->validate([
+            $validator = Validator::make($request->all(), [
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
@@ -1834,8 +1848,29 @@ public function store(Request $request)
                 'password' => ['required', 'string', 'min:8'],
                 'date_of_birth' => 'nullable|date',
                 'kyc_level' => 'nullable|in:1,3,5',
-            'kyc_id' => 'nullable|exists:kycs,id',
+                'kyc_id' => 'nullable|exists:kycs,id',
             ]);
+
+            // Cross-validate phone using helper and normalize to E.164
+            $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
+                $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+                $countryRaw = (string) $request->input('country');
+                if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
+                    $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null);
+                    if (!$validation['valid']) {
+                        $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                        return;
+                    }
+                    $request->merge(['__normalized_phone' => $validation['e164']]);
+                }
+            });
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator->errors())->withInput();
+            }
+
+            // if needed elsewhere
+            $validatedData = $validator->validated();
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -1869,19 +1904,18 @@ public function store(Request $request)
         // Set country and phone depending on settings and input
        $country = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[0] : ($location->country_code ?? '');
        
-       // Handle phone number with country code from intlTelInput
-       if ($isPhone && !empty($input['phone'])) {
-           // Check if phone already contains country code (from intlTelInput)
+       // Handle phone number with country code from intlTelInput using normalized value if present
+       if (!empty($request->input('__normalized_phone'))) {
+           $phone = $request->input('__normalized_phone');
+       } elseif ($isPhone && !empty($input['phone'])) {
            if (strpos($input['phone'], '+') === 0) {
-               // Phone already has country code, use as is
                $phone = $input['phone'];
            } else {
-               // Add country code from country selection or location
                $dialCode = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '');
-               $phone = $dialCode . ' ' . $input['phone'];
+               $phone = trim($dialCode . ' ' . $input['phone']);
            }
        } else {
-           $phone = ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
+           $phone = trim(($location->dial_code ?? '') . ' ' . ($input['phone'] ?? ''));
        }
 
         // Generate a username if it's not provided

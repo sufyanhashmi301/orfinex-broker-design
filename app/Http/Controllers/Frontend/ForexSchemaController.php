@@ -18,6 +18,11 @@ class ForexSchemaController extends Controller
         // try {
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
+            // Settings: control visibility of global accounts in different contexts
+            $showGlobalByCountryAndTags = setting('show_global_accounts_with_country_tags', 'account_type_settings');
+            $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
+            $allowGlobalAny = $showGlobalByCountryAndTags || $showGlobalWithIbRebateRules;
     
             // Get user's master IB status
             $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
@@ -30,16 +35,42 @@ class ForexSchemaController extends Controller
             // If user is NOT part of master IB, apply filtering based on priority rules
             if (!$isPartOfMasterIb) {
                 $schemas = $baseQuery
-                ->where(function($query) use ($user, $tagNames) {
-                    // Rule 1: Global accounts (account_category_id = 1) show to ALL users regardless of country/tag
-                    $query->where('account_category_id', 1)
-                    // Rule 3: Non-global accounts show based on tag/country matching
-                    ->orWhere(function($subQuery) use ($user, $tagNames) {
-                        $subQuery->where('account_category_id', '!=', 1)
-                                ->where(function($matchQuery) use ($user, $tagNames) {
-                                    $matchQuery->relevantForUser($user->country, $tagNames);
-                                });
-                    });
+                ->where(function($query) use ($user, $tagNames, $allowGlobalAny) {
+                    // Global accounts visibility controlled by setting; when enabled, show if relevant by country/tag
+                    if ($allowGlobalAny) {
+                        $query->where(function($q) use ($user, $tagNames) {
+                            $q->where('account_category_id', 1)
+                              ->where(function($globalMatch) use ($user, $tagNames) {
+                                  $globalMatch
+                                      // Match by country/tags when defined
+                                      ->where(function($matchQuery) use ($user, $tagNames) {
+                                          $matchQuery->relevantForUser($user->country, $tagNames);
+                                      })
+                                      // Fallback: include when no country/tags configured (treat as truly global)
+                                      ->orWhereNull('country')
+                                      ->orWhereJsonLength('country', 0)
+                                      ->orWhereNull('tags')
+                                      ->orWhereJsonLength('tags', 0);
+                              });
+                        })
+                        // Non-global accounts show based on tag/country matching
+                        ->orWhere(function($subQuery) use ($user, $tagNames) {
+                            $subQuery->where('account_category_id', '!=', 1)
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    });
+                        });
+                    } else {
+                        // Only non-global accounts based on tag/country matching
+                        $query->where(function($subQuery) use ($user, $tagNames) {
+                            $subQuery->where('account_category_id', '!=', 1)
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    });
+                        });
+                    }
+                    // Always include schemas explicitly marked as global
+                    $query->orWhere('is_global', 1);
                 })
                 ->get()
                     ->unique('id')
@@ -66,29 +97,55 @@ class ForexSchemaController extends Controller
                 }])->find($isPartOfMasterIb);
     
                 if ($ibGroup) {
-                    // Rule 2: Get ALL schemas from rebate rules regardless of country/tag
+                    // Rule 2: Get schemas from rebate rules; global visibility controlled by setting
                     foreach ($ibGroup->rebateRules as $rule) {
                         $ruleSchemas = $rule->forexSchemas()
                             ->where('status', true)
                             ->traderType()
                             ->active()
                             ->get();
-                        
-                        // Add ALL rule schemas without any filtering (IB users see all linked accounts)
+
+                        if (!$allowGlobalAny) {
+                            // Exclude global accounts from rebate rules when setting is off
+                            $ruleSchemas = $ruleSchemas->filter(function ($schema) {
+                                return ($schema->is_global == 1) || ($schema->account_category_id != 1);
+                            });
+                        }
+
+                        // Add rule schemas
                         $schemas = $schemas->merge($ruleSchemas);
-                        
-                        // Collect global accounts from rebate rules for the setting check
-                        $globalSchemasFromRules = $globalSchemasFromRules->merge(
-                            $ruleSchemas->where('account_category_id', 1)
-                        );
+
+                        // Track global accounts from rebate rules only if allowed
+                        if ($allowGlobalAny) {
+                            $globalSchemasFromRules = $globalSchemasFromRules->merge(
+                                $ruleSchemas->where('account_category_id', 1)
+                            );
+                        }
                     }
-    
-                    // Rule 1: IB users ALWAYS see global accounts regardless of is_global_account setting
-                    $globalSchemasFromSetting = $baseQuery->clone()
-                        ->where('account_category_id', 1)
-                        ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
-                        ->get();
+
+                    // Additionally include global accounts (by country/tag) only if allowed by setting
+                    if ($allowGlobalAny) {
+                        $globalSchemasFromSetting = $baseQuery->clone()
+                            ->where('account_category_id', 1)
+                            ->where(function($globalMatch) use ($user, $tagNames) {
+                                $globalMatch
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    })
+                                    ->orWhereNull('country')
+                                    ->orWhereJsonLength('country', 0)
+                                    ->orWhereNull('tags')
+                                    ->orWhereJsonLength('tags', 0);
+                            })
+                            ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
+                            ->get();
+                    }
                 }
+                // Always include schemas explicitly marked as global
+                $alwaysGlobalSchemas = $baseQuery->clone()
+                    ->where('is_global', 1)
+                    ->get();
+                $schemas = $schemas->merge($alwaysGlobalSchemas);
             }
     
             // For IB users, also include accounts that match their country/tag but are not global or part of IB group

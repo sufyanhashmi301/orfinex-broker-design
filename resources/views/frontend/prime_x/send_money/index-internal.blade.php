@@ -30,4 +30,8 @@
 
         </div>
     </div>
+
+    @if(setting('contact_widget_transfer_page', 'contact_widget'))
+        @include('frontend::include.__contact_widget')
+    @endif
 @endsection

@@ -55,19 +55,19 @@
             </div>
         </div>
         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-            <div class="card">
+            <div class="card flex flex-col h-full">
                 <div class="card-header">
                     <div>
                         <h4 class="card-title">{{ __('Dashboard Quick Links') }}</h4>
                         <p class="card-text">{{ __('Customize and access your most important dashboard features with one click.') }}</p>
                     </div>
                 </div>
-                <div class="card-body p-6">
+                <div class="card-body flex flex-col p-6 flex-1">
                     <img src="{{ asset('backend/images/dashboard-quick-links.png') }}" alt="image" class="w-full mb-5">
-                    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
                         @csrf
                         <input type="hidden" name="section" value="user_dashboard">
-                        <div class="space-y-5">
+                        <div class="space-y-5 mb-10">
                             <div class="flex items-center" style="line-height: 0;">
                                 <input type="hidden" value="0" name="is_desktop_dashboard_quick_link">
                                 <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
@@ -99,7 +99,77 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-10">
+                        <div class="mt-auto">
+                            <button type="submit" class="btn btn-dark w-full inline-flex items-center justify-center">
+                                {{ __('Save Changes') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card flex flex-col h-full">
+                <div class="card-header">
+                    <div>
+                        <h4 class="card-title">{{ __('Contact Widget') }}</h4>
+                        <p class="card-text">
+                            {{ __('Customize and access your most important contact widget features with one click.') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card-body flex flex-col p-6 flex-1">
+                    <img src="{{ asset('backend/images/contact-widget.png') }}" alt="image" class="w-full mb-5">
+                    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
+                        @csrf
+                        <input type="hidden" name="section" value="contact_widget">
+                        <div class="space-y-5 mb-10">
+                            <div class="flex items-center" style="line-height: 0;">
+                                <input type="hidden" value="0" name="contact_widget_deposit_page">
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                    <input type="checkbox" name="contact_widget_deposit_page" value="1" class="sr-only peer" @if(setting('contact_widget_deposit_page', 'contact_widget')) checked @endif>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                                <div class="flex flex-col ml-5">
+                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
+                                        {{ __('Deposit Page') }}
+                                    </span>
+                                    <span class="text-xs font-Inter font-normal text-slate-600">
+                                        {{ __('Show or hide contact widget on the deposit page.') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center" style="line-height: 0;">
+                                <input type="hidden" value="0" name="contact_widget_withdraw_page">
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                    <input type="checkbox" name="contact_widget_withdraw_page" value="1" class="sr-only peer" @if(setting('contact_widget_withdraw_page', 'contact_widget')) checked @endif>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                                <div class="flex flex-col ml-5">
+                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
+                                        {{ __('Withdraw Page') }}
+                                    </span>
+                                    <span class="text-xs font-Inter font-normal text-slate-600">
+                                        {{ __('Show or hide contact widget on the withdraw page.') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center" style="line-height: 0;">
+                                <input type="hidden" value="0" name="contact_widget_transfer_page">
+                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                    <input type="checkbox" name="contact_widget_transfer_page" value="1" class="sr-only peer" @if(setting('contact_widget_transfer_page', 'contact_widget')) checked @endif>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                </label>
+                                <div class="flex flex-col ml-5">
+                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
+                                        {{ __('Transfer Page') }}
+                                    </span>
+                                    <span class="text-xs font-Inter font-normal text-slate-600">
+                                        {{ __('Show or hide contact widget on the transfer page.') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-auto">
                             <button type="submit" class="btn btn-dark w-full inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
                             </button>

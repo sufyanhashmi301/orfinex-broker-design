@@ -2390,6 +2390,38 @@ return [
             ],
         ],
     ],
+    'contact_widget' => [
+        'title' => 'Contact Widget',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_deposit_page',
+                'label' => 'Enable Deposit Page',
+                'description' => 'Show or hide contact widget on the deposit page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_withdraw_page',
+                'label' => 'Enable Withdraw Page',
+                'description' => 'Show or hide contact widget on the withdraw page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_transfer_page',
+                'label' => 'Enable Transfer Page',
+                'description' => 'Show or hide contact widget on the transfer page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+        ],
+    ],
     // Account Type Settings
    'account_type_settings' => [
         'title' => 'Account Type Settings',

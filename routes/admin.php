@@ -402,6 +402,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('popup', 'popup')->name('popup');
         Route::get('provider-logo', 'providerLogo')->name('provider-logo');
+        Route::get('admin-auth-logo', 'adminAuthLogo')->name('admin-auth-logo');
         Route::get('auth-covers', 'authCovers')->name('auth-covers');
         Route::post('update-auth-covers', 'updateAuthCovers')->name('update-auth-covers');
     });

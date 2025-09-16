@@ -301,6 +301,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
             ['category' => 'Website Setting', 'name' => 'provider-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'auth-covers-settings'],
+            ['category' => 'Website Setting', 'name' => 'admin-auth-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-create-settings'],

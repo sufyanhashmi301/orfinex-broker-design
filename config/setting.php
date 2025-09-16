@@ -939,6 +939,27 @@ return [
             ],
         ]
     ],
+    'admin_auth_logo' => [
+        'title' => 'Admin Auth Logo Settings',
+        'elements' => [
+            [
+                'type' => 'file',
+                'data' => 'string',
+                'name' => 'admin_auth_logo_image',
+                'label' => 'Admin Auth Logo Image',
+                'rules' => 'mimes:jpeg,jpg,png,svg|max:2048',
+                'value' => 'backend/images/brokeret_logo.png',
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'admin_auth_logo_status',
+                'label' => 'Enable Admin Auth Logo',
+                'rules' => '',
+                'value' => 1,
+            ],
+        ]
+    ],
     'document_links' => [
         'title' => 'Document Links',
         'elements' => [

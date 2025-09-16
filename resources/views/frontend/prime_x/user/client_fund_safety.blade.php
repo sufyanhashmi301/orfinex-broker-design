@@ -72,7 +72,7 @@
         <main class="app-wrapper py-8">
             <div class="container max-w-6xl mx-auto px-4">
                 <!-- Hero Header Section -->
-                <div class="simple-card py-12 px-8 mb-8 text-center">
+                <div class="simple-card border-success-500 py-12 px-8 mb-8 text-center" style="border-top-width: 3px; border-style: solid;">
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                         {{ __('Your Funds Are Secure & Protected') }}
                     </h1>

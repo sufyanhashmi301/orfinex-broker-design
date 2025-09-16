@@ -912,7 +912,7 @@ class WithdrawController extends Controller
                     ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
                 ) {
                         $isDeducted = true; // Deduction applied
-                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
                         if (!$updateResult) {
                             DB::rollBack();
                             notify()->error('Failed to update transaction. Please try again.');
@@ -939,11 +939,11 @@ class WithdrawController extends Controller
                     $isDeducted = true;  // Mark deduction as applied for wallet
 
                     // Update transaction status
-                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
                 }
             } else {
                 // If deduction feature is disabled, mark the transaction as pending
-                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
             }
 
             // Ensure $txnInfo->manual_field_data is decoded as an array

@@ -234,6 +234,22 @@
                                 }
                             }
                         });
+
+                        // Initialize select2 for any comment dropdown injected and bind change handler
+                        if ($.fn.select2) {
+                            $('.select2').select2();
+                        }
+                        var $sel = $('#withdraw-comment-select');
+                        if ($sel.length) {
+                            $sel.off('change.__wd').on('change.__wd', function(){
+                                var desc = $(this).find('option:selected').data('description') || '';
+                                if (typeof desc === 'string') { try { desc = JSON.parse(desc); } catch(e) {} }
+                                var $summer = $('.summernote');
+                                if ($summer.length && typeof $summer.summernote === 'function') { $summer.summernote('code', desc); }
+                                else { $('textarea.summernote').val(desc); }
+                                $('input[name="message"]').val((desc || '').replace(/[<>]/g, function(m){ return m === '<' ? '{' : '}'; }));
+                            });
+                        }
                     }
                 });
             });

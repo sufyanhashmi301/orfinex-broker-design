@@ -585,6 +585,141 @@ if (!function_exists('getCountryCode')) {
     }
 }
 
+if (!function_exists('getCountryDialCode')) {
+
+    function getCountryDialCode($countryName)
+    {
+        $filePath = resource_path('json/CountryCodes.json');
+
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $jsonContents = file_get_contents($filePath);
+        $countries = json_decode($jsonContents, true);
+
+        foreach ($countries as $country) {
+            if (strcasecmp($country['name'], $countryName) == 0) {
+                return $country['dial_code'] ?? null;
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('getCountryFromPhone')) {
+
+    /**
+     * Detect country metadata from an E.164 phone by matching longest dial code prefix.
+     * Returns ['name' => string, 'dial_code' => string, 'code' => string] or null.
+     */
+    function getCountryFromPhone(string $e164Phone)
+    {
+        $normalized = preg_replace('/[^\d\+]/', '', $e164Phone);
+        if (empty($normalized) || !str_starts_with($normalized, '+')) {
+            return null;
+        }
+
+        $filePath = resource_path('json/CountryCodes.json');
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $countries = json_decode(file_get_contents($filePath), true);
+        // Find the longest matching dial code prefix
+        $match = null;
+        $maxLen = 0;
+        foreach ($countries as $country) {
+            if (!isset($country['dial_code'])) continue;
+            $dial = $country['dial_code']; // e.g. +44
+            if (str_starts_with($normalized, $dial)) {
+                $len = strlen($dial);
+                if ($len > $maxLen) {
+                    $maxLen = $len;
+                    $match = [
+                        'name' => $country['name'] ?? null,
+                        'dial_code' => $dial,
+                        'code' => $country['code'] ?? null,
+                    ];
+                }
+            }
+        }
+        return $match;
+    }
+}
+
+if (!function_exists('validateAndNormalizePhone')) {
+
+    /**
+     * Validate and normalize a phone number using libphonenumber.
+     * - Validates general number structure and, if a country is provided, region-specific validity
+     * - Returns E.164 formatted number on success
+     * - Optionally detects country from number when not supplied
+     *
+     * @param string|null $rawPhone Raw phone from input (may include spaces, dashes, etc.)
+     * @param string|null $countryRaw Country input; may be name or in format "Name:+Dial"
+     * @param string|null $fallbackCountry Country name to use if $countryRaw is empty
+     * @return array{valid: bool, e164?: string, error?: string, detected?: array{name: ?string, dial_code: ?string, code: ?string}, region?: ?string}
+     */
+    function validateAndNormalizePhone(?string $rawPhone, ?string $countryRaw = null, ?string $fallbackCountry = null, bool $enforceRegion = false): array
+    {
+        $result = ['valid' => false];
+        $phone = (string) ($rawPhone ?? '');
+        if ($phone === '') {
+            $result['error'] = 'Phone number is required.';
+            return $result;
+        }
+
+        // Normalize country input to name and ISO2 region code
+        $countrySource = $countryRaw ?? $fallbackCountry ?? '';
+        $countryName = $countrySource;
+        if ($countryName !== '' && strpos($countryName, ':') !== false) {
+            $countryName = explode(':', $countryName)[0];
+        }
+
+        $region = null; // ISO2, e.g. PK
+        if ($countryName !== '') {
+            $iso2 = getCountryCode($countryName);
+            if (!empty($iso2)) {
+                $region = strtoupper($iso2);
+            }
+        }
+
+        try {
+            $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+            $proto = $phoneUtil->parse($phone, $region ?: 'ZZ');
+
+            if (!$phoneUtil->isValidNumber($proto)) {
+                $result['error'] = 'Invalid phone number for the selected country.';
+                return $result;
+            }
+
+            if ($enforceRegion && !empty($region) && !$phoneUtil->isValidNumberForRegion($proto, $region)) {
+                $result['error'] = 'Phone number does not match the selected country.';
+                return $result;
+            }
+
+            $e164 = $phoneUtil->format($proto, \libphonenumber\PhoneNumberFormat::E164);
+            $result['e164'] = $e164;
+            $result['valid'] = true;
+
+            // Detect country from phone
+            $detected = getCountryFromPhone($e164);
+            if ($detected) {
+                $result['detected'] = $detected;
+                $result['region'] = $detected['code'] ?? null;
+            } else {
+                $result['region'] = $region;
+            }
+        } catch (\libphonenumber\NumberParseException $e) {
+            $result['error'] = 'Invalid phone number format.';
+        }
+
+        return $result;
+    }
+}
+
 if (!function_exists('getJsonData')) {
 
     function getJsonData($fileName)

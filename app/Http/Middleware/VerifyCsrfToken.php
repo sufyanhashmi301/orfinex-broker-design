@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         '*ipn*',
         'ipn/uniwire',
         'webhook/*',//for sumsub webhook receive,veriff webhook receive
+        'webhook/sumsub',
         '*telegram/webhook',
     ];
 }

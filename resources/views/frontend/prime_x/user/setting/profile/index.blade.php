@@ -133,16 +133,40 @@
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('global/css/cropper.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
 @endsection
 @section('script')
     <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
     <script src="{{ asset('global/js/cropper.js') }}"></script>
     <script>
-        const input = document.querySelector("#phone");
-        window.intlTelInput(input, {
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
-        });
+        (function() {
+            var input = document.querySelector('#phone');
+            var userPhone = "{{ $user->phone }}";
+            if (input && window.intlTelInput) {
+                try {
+                    var iti = window.intlTelInput(input, {
+                        separateDialCode: true,
+                        showSelectedDialCode: true,
+                        formatOnDisplay: true,
+                        autoPlaceholder: 'polite',
+                        utilsScript: "{{ asset('frontend/js/utils.js') }}"
+                    });
+                    if (userPhone) {
+                        try { iti.setNumber(userPhone); } catch (e) {}
+                    }
+                    var form = document.getElementById('profile-update-form');
+                    if (form) {
+                        form.addEventListener('submit', function() {
+                            try {
+                                // Ensure the submitted value is full E.164
+                                input.value = iti.getNumber();
+                            } catch (e) {}
+                        });
+                    }
+                } catch (e) {}
+            }
+        })();
+        // No client-side phone validation required; server handles with libphonenumber
         // $('#profile-update-save').on('click', function (event) {
         //     event.preventDefault();
         //     var form = $("#profile-update-form");

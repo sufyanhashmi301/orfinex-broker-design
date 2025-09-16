@@ -2269,6 +2269,15 @@ return [
         'title' => 'Template Settings',
         'elements' => [
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'email_show_site_logo', // unique name for field
+                'label' => 'Show/Hide Site Logo In Emails Headers', // you know what label it is
+                'description' => 'enable to show or disable to hide the site logo in emails header',
+                'rules' => 'nullable', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
                 'type' => 'textarea', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_disclaimer', // unique name for field
@@ -2378,6 +2387,30 @@ return [
                 'description' => 'Show or hide quick links section on the dashboard',
                 'rules' => 'required',
                 'value' => true,
+            ],
+        ],
+    ],
+    // Account Type Settings
+   'account_type_settings' => [
+        'title' => 'Account Type Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'show_global_accounts_with_country_tags',
+                'label' => 'Show Global Accounts with Country & Tags',
+                'description' => 'if enable this it shows global accounts with country and tags if disable it hides the global accounts',
+                'rules' => 'nullable',
+                'value' => 1,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'show_global_accounts_with_ib_rebate_rules',
+                'label' => 'Show Global Accounts with Ib Rebate Rules',
+                'description' => 'if enable this it shows global accounts with Ib Rebate Rule if disable it hides the global accounts',
+                'rules' => 'nullable',
+                'value' => 1,
             ],
         ],
     ],

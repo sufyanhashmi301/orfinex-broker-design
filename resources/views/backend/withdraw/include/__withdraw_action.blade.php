@@ -49,6 +49,24 @@
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
 
+        @php
+            $withdrawComments = isset($comments) && $comments instanceof \Illuminate\Support\Collection ? $comments : \App\Models\Comment::where('type','withdraw_amount')->where('status', true)->orderBy('title')->get(['id','title','description']);
+        @endphp
+        <div class="input-area">
+            <label class="form-label">{{ __('Comments') }}</label>
+            <select id="withdraw-comment-select" class="form-control select2 h-[42px]">
+                <option value="">{{ __('Select a comment') }}</option>
+                @if($withdrawComments->count())
+                    @foreach($withdrawComments as $comment)
+                        <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
+                    @endforeach
+                @else
+                    <option value="" disabled>{{ __('No active withdraw amount comments') }}</option>
+                @endif
+            </select>
+            <p class="text-xs text-slate-400 mt-1">{{ __('Selecting a title will prefill the description. You can edit it further.') }}</p>
+        </div>
+
         <div class="input-area">
             <label for="" class="form-label">{{ __('Detail Message') }}</label>
             <textarea class="summernote form-control mb-0" rows="6" placeholder="Details Message">
@@ -74,3 +92,27 @@
 
     </form>
 </div>
+
+@push('website-script')
+<script>
+    (function($){
+        'use strict';
+        $(document).ready(function(){
+            $('#withdraw-comment-select').on('change', function(){
+                var selected = $(this).find('option:selected');
+                var desc = selected.data('description') || '';
+                if (typeof desc === 'string') {
+                    try { desc = JSON.parse(desc); } catch(e) { /* leave as-is */ }
+                }
+                var $summernote = $('.summernote');
+                if ($summernote.length && typeof $summernote.summernote === 'function') {
+                    $summernote.summernote('code', desc);
+                } else {
+                    $('textarea.summernote').val(desc);
+                }
+                $('input[name="message"]').val((desc || '').replace(/[<>]/g, function(m){ return m === '<' ? '{' : '}'; }));
+            });
+        });
+    })(jQuery);
+</script>
+@endpush

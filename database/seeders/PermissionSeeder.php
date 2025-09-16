@@ -329,6 +329,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
 
             ['category' => 'Platform Groups Setting', 'name' => 'mt5-group-list'],
+            ['category' => 'Platform Groups Setting', 'name' => 'mt5-groups-delete'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-list'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-create'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-edit'],

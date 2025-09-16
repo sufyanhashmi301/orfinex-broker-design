@@ -682,6 +682,7 @@ Route::prefix('team')->group(function() {
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::delete('platform/groups/{id}', [PlatformGroupController::class, 'deleteManualGroup'])->name('group.delete');
+    Route::post('platform/groups/reset-all', [PlatformGroupController::class, 'resetAll'])->name('groups.resetAll');
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');

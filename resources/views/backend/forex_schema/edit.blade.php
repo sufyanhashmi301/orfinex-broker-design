@@ -66,7 +66,7 @@
                         <div id="global_account" class="input-area flex items-center hidden">
                             <input type="hidden" value="0" name="is_global">
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="radio" id="isGlobalInput" name="is_global" value="1" class="sr-only peer">
+                                <input type="checkbox" id="isGlobalInput" name="is_global" value="1" class="sr-only peer" {{ old('is_global', $schema->is_global ?? 0) ? 'checked' : '' }}>
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></div>
                             </label>
                             <div class="flex flex-col ml-5">
@@ -74,7 +74,7 @@
                                     {{ __('Set as Global Account') }}
                                 </span>
                                 <span class="text-xs font-Inter font-normal text-slate-600">
-                                    {{ __('This will override the country and tag restrictions and will be shown to all users.') }}
+                                    {{ __('This will override the country, tag and ib rebate rules restrictions and will be shown to all users.') }}
                                 </span>
                             </div>
                         </div>
@@ -816,12 +816,21 @@
             const rebateRuleSelect = $('#rebateRuleSelect');
             const globalToggle = $('#isGlobalInput');
             const allCategoryBlocks = ['#global_account', '#ib_rebate_rules', '#country_and_tags'];
+            const initialGlobalChecked = globalToggle.is(':checked');
             function updateAccountTypeCategory(selectedValue) {
-                const isGlobal = selectedValue === 'global_account';
+                const isGlobalCategory = selectedValue === 'global_account';
                 // Hide all blocks
                 allCategoryBlocks.forEach(selector => $(selector).addClass('hidden'));
 
-                globalToggle.prop('checked', isGlobal);
+                // Preserve existing checkbox state when category is global; ensure unchecked when not global
+                if (!isGlobalCategory) {
+                    globalToggle.prop('checked', false);
+                } else if (!globalToggle.data('initialized')) {
+                    // On first run keep backend value
+                    globalToggle.prop('checked', initialGlobalChecked);
+                    globalToggle.data('initialized', true);
+                }
+
                 // Show the selected block
                 const selectedBlock = `#${selectedValue}`;
                 if (allCategoryBlocks.includes(selectedBlock)) {

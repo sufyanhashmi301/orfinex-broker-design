@@ -27,6 +27,26 @@
     <form action="{{ route('admin.kyc.action.now') }}" method="post">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
+        @php
+            $kycComments = \App\Models\Comment::where('type','kyc')->where('status', true)->orderBy('title')->get(['id','title','description']);
+        @endphp
+        <div class="input-area">
+            <label class="form-label" for="kyc-comment-select">
+                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __('Pick a template to prefill the message below') }}">
+                    {{ __('Comments') }}
+                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                </span>
+            </label>
+            <select id="kyc-comment-select" class="form-control select2 h-[42px]">
+                <option value="">{{ __('Select a comment') }}</option>
+                @forelse($kycComments as $comment)
+                    <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
+                @empty
+                    <option value="" disabled>{{ __('No active KYC comments') }}</option>
+                @endforelse
+            </select>
+            <p class="text-xs text-slate-400 mt-1">{{ __('Selecting a title will prefill the description. You can edit it further.') }}</p>
+        </div>
         <div class="input-area">
             <label for="" class="form-label">
                 <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail message of the KYC">
@@ -34,7 +54,7 @@
                     <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                 </span>
             </label>
-            <input type="text" name="message" class="form-control mb-0" placeholder="Details Message">
+            <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
         </div>
     
         <div class="action-btns text-right mt-10">
@@ -53,3 +73,19 @@
         </div>
     </form>
 </div>
+
+@push('website-script')
+<script>
+    (function($){
+        'use strict';
+        $(document).ready(function(){
+            if ($.fn.select2) { $('#kyc-comment-select').select2(); }
+            $('#kyc-comment-select').on('change', function(){
+                var desc = $(this).find('option:selected').data('description') || '';
+                if (typeof desc === 'string') { try { desc = JSON.parse(desc); } catch(e) {} }
+                $('textarea[name="message"]').val(desc);
+            });
+        });
+    })(jQuery);
+</script>
+@endpush

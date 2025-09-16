@@ -23,6 +23,7 @@ use App\Traits\NotifyTrait;
 use App\Enums\TxnTargetType;
 use Illuminate\Http\Request;
 use App\Traits\ForexApiTrait;
+use App\Models\Comment;
 use App\Models\WithdrawMethod;
 use App\Models\WithdrawAccount;
 use App\Models\ForexAccount;
@@ -347,10 +348,14 @@ class WithdrawController extends Controller
      */
     public function withdrawAction($id)
     {
-
         $data = Transaction::find($id);
+        // For transaction withdraw approval modal → show only active 'withdraw_amount' comments
+        $comments = Comment::where('type', 'withdraw_amount')
+            ->where('status', true)
+            ->orderBy('title')
+            ->get(['id','title','description']);
 
-        return view('backend.withdraw.include.__withdraw_action', compact('data', 'id'))->render();
+        return view('backend.withdraw.include.__withdraw_action', compact('data', 'id', 'comments'))->render();
     }
 
     /**
@@ -825,7 +830,9 @@ class WithdrawController extends Controller
             return '<div class="p-6 text-center text-red-500">' . __('User data not found.') . '</div>';
         }
 
-        return view('backend.withdraw.include.__account_action', compact('data', 'id'))->render();
+        $comments = Comment::where('type', 'withdraw_account')->where('status', true)->orderBy('title')->get(['id','title','description']);
+
+        return view('backend.withdraw.include.__account_action', compact('data', 'id', 'comments'))->render();
     }
 
     /**

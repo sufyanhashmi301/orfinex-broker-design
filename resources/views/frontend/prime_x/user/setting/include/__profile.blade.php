@@ -87,11 +87,12 @@
                             placeholder="{{ __('Email Address') }}"
                             @if ($user->email && !setting('customer_email_edit', 'customer_permission')) disabled @endif />
                     </div>
+                    
                     <div class="input-area relative phone-input-wrapper">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Phone') }}</label>
                         <input type="text" class="form-control w-full" name="phone" id="phone"
-                            value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"
-                            @if ($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif />
+                             value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"
+                             @if ($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">

@@ -81,6 +81,22 @@
         @endforeach
     </ul>
 
+    {{-- Prefill Comments Dropdown --}}
+    @if(isset($comments) && $comments->count())
+    <div class="mb-5">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {{ __('Comments') }}
+        </label>
+        <select id="withdraw-account-comment-select" class="form-control select2 h-[42px]">
+            <option value="">{{ __('Select a comment') }}</option>
+            @foreach($comments as $comment)
+                <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
+            @endforeach
+        </select>
+        <p class="text-xs text-slate-400 mt-1">{{ __('Choosing a title will prefill the description. You can edit it before submit.') }}</p>
+    </div>
+    @endif
+
     {{-- Description Field --}}
     <div class="mb-5">
         <label for="account_description" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -144,6 +160,15 @@
 
 <script>
 $(document).ready(function() {
+    // Prefill description from comments dropdown
+    $('#withdraw-account-comment-select').on('change', function(){
+        var desc = $(this).find('option:selected').data('description') || '';
+        if (typeof desc === 'string') {
+            try { desc = JSON.parse(desc); } catch(e) { /* leave as-is */ }
+        }
+        $('#account_description').val(desc);
+    });
+
     // Handle approve button (only if button exists and is enabled)
     $(document).on('click', '#approveAccount:not(:disabled)', function() {
         const accountId = $(this).data('account-id');

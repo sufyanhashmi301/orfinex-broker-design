@@ -171,9 +171,21 @@
 
                 $('#kyc-action-data').append(data)
                 imagePreview()
-                tippy(".shift-Away", {
-                    placement: "top",
-                    animation: "shift-away"
+                if (typeof tippy === 'function') {
+                    tippy(".shift-Away", { placement: "top", animation: "shift-away" });
+                }
+                if ($.fn.select2) {
+                    $('#kyc-comment-select, #kyc-comment-select-level3').select2();
+                }
+                var fillKycMessage = function(desc){
+                    var val = desc || '';
+                    if (typeof val === 'string') { try { val = JSON.parse(val); } catch(e) {} }
+                    var $ta = $('textarea[name="message"]');
+                    if ($ta.length) { $ta.val(val); } else { $('input[name="message"]').val(val); }
+                };
+                $('#kyc-comment-select, #kyc-comment-select-level3').off('change.kyc').on('change.kyc', function(){
+                    var desc = $(this).find('option:selected').data('description');
+                    fillKycMessage(desc);
                 });
             })
 

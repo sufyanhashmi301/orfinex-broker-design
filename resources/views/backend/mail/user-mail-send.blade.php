@@ -38,9 +38,11 @@
 <body style="margin: 0; padding: 0; font-family: 'Jost', sans-serif; font-weight: 400; background: #f8f9fa;">
 <div class="container" style="width: 650px; margin: 0 auto; padding-top:15px; padding-bottom: 15px;">
     <div class="header" style="padding: 15px 15px; text-align: center">
+        @if(setting('email_show_site_logo', 'email_template'))
         <a href="{{ $details['site_link'] }}" style="display: inline-flex; text-decoration: none; transition: 0.3s;">
             <img style="height: 50px; width: auto;" src="{{ $details['site_logo'] }}" alt="">
         </a>
+        @endif
 
     </div>
     <div class="main-content" style="background-color: #ffffff; padding: 35px;">

@@ -33,7 +33,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
-                        {{ __('Enter your deposit details.') }}
+                        {{ __('Enter your withdraw details.') }}
                     </h4>
                     <div class="card">
                         <div class="card-body space-y-5 p-6">

@@ -4,19 +4,26 @@
 <body
     x-data="{
         'loaded': true, 
-        'darkMode': false, 
+        'darkMode': {{ auth()->user()->user_theme == 'dark' ? 'true' : 'false' }}, 
         'stickyMenu': false, 
         'sidebarOpen': false, 
         'scrollTop': false
     }"
     x-init="
-        darkMode = JSON.parse(localStorage.getItem('darkMode')) || false; 
+        // Initialize darkMode from server-side user_theme preference
+        darkMode = {{ auth()->user()->user_theme == 'dark' ? 'true' : 'false' }};
+        
+        // Sync localStorage with server preference
+        localStorage.setItem('darkMode', JSON.stringify(darkMode));
+        
+        // Watch for changes and update localStorage
         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+        
         window.addEventListener('scroll', () => scrollTop = window.pageYOffset > 100);
         setTimeout(() => loaded = false, 500);
     "
-    :class="{ 'dark': darkMode }"
-    class="flex h-full text-base text-foreground dark:bg-gray-900">
+    :class="{ 'dark bg-gray-900': darkMode }"
+    class="flex h-full text-base text-foreground">
 
     <!-- ===== Preloader Start ===== -->
     <div

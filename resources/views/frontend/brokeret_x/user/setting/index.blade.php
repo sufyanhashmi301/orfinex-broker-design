@@ -18,7 +18,7 @@
                     x-bind:aria-selected="currentRoute === 'user.kyc'" 
                     x-bind:tabindex="currentRoute === 'user.kyc' ? '0' : '-1'" 
                     x-bind:class="currentRoute === 'user.kyc'
-                        ? 'border-brand-500 dark:border-brand-400' 
+                        ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                         : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                     {{ __('Profile') }}
                 </a>
@@ -29,7 +29,7 @@
                 x-bind:aria-selected="currentRoute === 'user.setting.security'" 
                 x-bind:tabindex="currentRoute === 'user.setting.security' ? '0' : '-1'" 
                 x-bind:class="currentRoute === 'user.setting.security'
-                    ? 'border-brand-500 dark:border-brand-400' 
+                    ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                     : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                 {{ __('Security') }}
             </a>
@@ -39,7 +39,7 @@
                 x-bind:aria-selected="currentRoute === 'user.withdraw.account.index'" 
                 x-bind:tabindex="currentRoute === 'user.withdraw.account.index' ? '0' : '-1'" 
                 x-bind:class="currentRoute === 'user.withdraw.account.index'
-                    ? 'border-brand-500 dark:border-brand-400' 
+                    ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                     : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                 {{ __('Withdraw Accounts') }}
             </a>
@@ -49,7 +49,7 @@
                 x-bind:aria-selected="currentRoute === 'user.setting.preference'" 
                 x-bind:tabindex="currentRoute === 'user.setting.preference' ? '0' : '-1'" 
                 x-bind:class="currentRoute === 'user.setting.preference'
-                    ? 'border-brand-500 dark:border-brand-400' 
+                    ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                     : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                 {{ __('Preference') }}
             </a>
@@ -59,7 +59,7 @@
                 x-bind:aria-selected="currentRoute === 'user.agreements'" 
                 x-bind:tabindex="currentRoute === 'user.agreements' ? '0' : '-1'" 
                 x-bind:class="currentRoute === 'user.agreements'
-                    ? 'border-brand-500 dark:border-brand-400' 
+                    ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                     : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                 {{ __('Agreements') }}
             </a>
@@ -69,7 +69,7 @@
                 x-bind:aria-selected="currentRoute === 'user.setting.tools'" 
                 x-bind:tabindex="currentRoute === 'user.setting.tools' ? '0' : '-1'" 
                 x-bind:class="currentRoute === 'user.setting.tools'
-                    ? 'border-brand-500 dark:border-brand-400' 
+                    ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                     : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                 {{ __('Tools') }}
             </a>

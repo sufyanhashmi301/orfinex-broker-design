@@ -37,7 +37,7 @@
     
 @endphp
 @if($totalActiveLevels > 0 && $user->kyc < \App\Enums\KYCStatus::Level2->value)
-    <div class="bg-warning-50">
+    <div class="bg-warning-500/15">
         <div class="mx-auto max-w-(--breakpoint-xl) p-4">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-2">
@@ -47,10 +47,10 @@
                             <path d="M40.039 34.4539C40.042 34.3923 40.0127 34.3331 39.9601 34.3008C39.8835 34.2537 39.7828 34.2783 39.735 34.3544C34.3413 42.9313 23.015 45.5821 14.3552 40.2643C12.2248 38.9561 10.4576 37.2912 9.0786 35.3961C8.26694 34.2807 6.7027 34.0329 5.58478 34.8428C4.46687 35.6527 4.2186 37.2134 5.03027 38.3288C6.78699 40.743 9.03581 42.8592 11.733 44.5154C22.7468 51.2788 37.1562 47.8949 43.9975 36.968C44.0442 36.8934 44.0212 36.7946 43.9462 36.7485C43.8947 36.7169 43.8298 36.7175 43.7772 36.7474C42.9738 37.2038 41.9467 37.1964 41.1307 36.6425C40.3827 36.1348 39.9976 35.2939 40.039 34.4539Z" fill="{{ $path2Fill }}"></path>
                             <path d="M7.03801 32.2068C7.09 32.2406 7.1564 32.245 7.21086 32.2154C7.28956 32.1726 7.318 32.0733 7.27568 31.9943C2.39061 22.8782 5.74338 12.1008 14.6722 7.24352C16.8684 6.04875 19.1996 5.35488 21.5422 5.11897C22.921 4.98012 23.9073 3.73737 23.7453 2.34318C23.5833 0.948991 22.3342 -0.0686605 20.9554 0.0701932C17.9712 0.370718 15.007 1.25495 12.2264 2.76763C0.87075 8.94516 -3.3536 22.797 2.88475 34.3869C2.92633 34.4641 3.02341 34.4934 3.10047 34.4514C3.15381 34.4224 3.18546 34.3655 3.18504 34.3049C3.17853 33.3669 3.68994 32.4707 4.57791 32.04C5.39185 31.6451 6.32029 31.7393 7.03801 32.2068Z" fill="{{ $path3Fill }}"></path>
                         </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                            <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                            <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300">
+                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" stroke="currentColor"></path>
+                            <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" stroke="currentColor"></path>
+                            <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" stroke="currentColor"></path>
                         </svg>
                     </div>
                     <p class="text-base text-gray-800 dark:text-white/90">

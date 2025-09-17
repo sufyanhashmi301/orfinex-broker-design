@@ -30,7 +30,7 @@
                     x-bind:aria-selected="selectedTab === 'realAccounts'" 
                     x-bind:tabindex="selectedTab === 'realAccounts' ? '0' : '-1'" 
                     x-bind:class="selectedTab === 'realAccounts'
-                        ? 'border-brand-500 dark:border-brand-400' 
+                        ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                         : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                     {{ __('Real') }}            
                 </button>
@@ -40,7 +40,7 @@
                     x-bind:aria-selected="selectedTab === 'demoAccounts'" 
                     x-bind:tabindex="selectedTab === 'demoAccounts' ? '0' : '-1'" 
                     x-bind:class="selectedTab === 'demoAccounts'
-                        ? 'border-brand-500 dark:border-brand-400' 
+                        ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                         : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                     {{ __('Demo') }}
                 </button>
@@ -51,7 +51,7 @@
                         x-bind:aria-selected="selectedTab === 'archivedAccounts'" 
                         x-bind:tabindex="selectedTab === 'archivedAccounts' ? '0' : '-1'" 
                         x-bind:class="selectedTab === 'archivedAccounts'
-                            ? 'border-brand-500 dark:border-brand-400' 
+                            ? 'dark:text-white/90 border-brand-500 dark:border-brand-400' 
                             : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
                         {{ __('Archived') }}
                     </button>

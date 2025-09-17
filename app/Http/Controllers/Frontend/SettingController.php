@@ -236,7 +236,7 @@ class SettingController extends Controller
 
         $user = \Auth::user();
         $user->update([
-            'user_theme' => $request['user_theme'],
+            'user_theme' => $request->user_theme,
         ]);
 
         notify()->success(__('Your theme has been updated successfully.'));

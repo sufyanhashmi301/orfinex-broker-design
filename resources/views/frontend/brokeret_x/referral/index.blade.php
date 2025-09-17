@@ -69,7 +69,7 @@
                                         <div class="md:col-span-6 col-span-12">
                                             <x-frontend::forms.input
                                                 :fieldId="$field->name"
-                                                :fieldName="fields[{{ $field->name }}]"
+                                                :fieldName="'fields['.$field->name.']'"
                                                 :fieldRequired="$field->validation === 'required'"
                                             />
                                         </div>
@@ -115,7 +115,7 @@
                                         <div class="md:col-span-6 col-span-12 select2-lg">
                                             <x-frontend::forms.select
                                                 :fieldId="$field->name"
-                                                :fieldName="fields[{{ $field->name }}]"
+                                                :fieldName="'fields['.$field->name.']'"
                                                 :fieldRequired="$field->validation === 'required'">
                                                 @foreach($field->options as $option)
                                                     <option value="{{ $option }}">

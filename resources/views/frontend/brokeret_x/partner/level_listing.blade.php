@@ -11,40 +11,39 @@
         updateUrl: '{{ route('user.ib.rule.level.update') }}',
         csrf: '{{ csrf_token() }}'
     })">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex flex-wrap items-center justify-between gap-3 px-6 mb-4">
-            <div>
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                    {{ __('IB Level Distribution') }}
-                </h3>
-            </div>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <x-forms.button type="button" @click="openModal()" variant="outline" icon="pencil" icon-position="left" class="w-fit">
-                    {{ __('Update IB Shares') }}
-                </x-forms.button>
-            </div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90">
+            {{ __('IB Level Distribution') }}
+        </h2>
+
+        <div class="flex-1 flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3">
+            <x-frontend::forms.button type="button" @click="openModal()" variant="outline" icon="pencil" icon-position="left" class="w-fit">
+                {{ __('Update IB Shares') }}
+            </x-frontend::forms.button>
         </div>
+    </div>
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div class="max-w-full overflow-x-auto custom-scrollbar">
             <table class="min-w-full">
-                <thead class="border-gray-100 border-y bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+                <thead class="border-b border-gray-100 dark:border-gray-800">
                     <tr>
-                        <th class="px-6 py-3 whitespace-nowrap">
+                        <th class="text-start px-6 py-3 whitespace-nowrap">
                             <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 {{ __('Level') }}
                             </span>
                         </th>
-                        <th class="px-6 py-3 whitespace-nowrap">
+                        <th class="text-start px-6 py-3 whitespace-nowrap">
                             <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 {{ __('Total Share') }}
                             </span>
                         </th>
-                        <th class="px-6 py-3 whitespace-nowrap">
+                        <th class="text-start px-6 py-3 whitespace-nowrap">
                             <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 {{ __('Master IB Share / Level 0') }}
                             </span>
                         </th>
                         @foreach($levels as $level)
-                            <th class="px-6 py-3 whitespace-nowrap">
+                            <th class="text-start px-6 py-3 whitespace-nowrap">
                                 <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                     {{ __('Level ' . $level->level_order) }}
                                 </span>
@@ -136,21 +135,18 @@
                         <input type="hidden" name="user_ib_rule_id" value="{{ $userIbRule->id }}">
 
                         <!-- Total Share -->
-                        <div class="mb-3">
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">{{ __('Total Share') }}</label>
-                            <input type="text" 
-                                class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" 
-                                value="{{ $userIbRule->rebateRule->rebate_amount }}" 
-                                disabled>
-                        </div>
+                         <x-frontend::forms.field
+                            fieldLabel="{{ __('Total Share') }}"
+                            type="text"
+                            value="{{ $userIbRule->rebateRule->rebate_amount }}"
+                            disabled
+                         />
 
                         <!-- Dynamic Levels Input Fields -->
                         <div id="levelsContainer" class="space-y-4">
                             @foreach($levels as $level)
                                 <div class="input-area">
-                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        {{ __('Level ' . $level->level_order . ' Shares') }}
-                                    </label>
+                                    <x-frontend::forms.label fieldLabel="{{ __('Level ' . $level->level_order . ' Shares') }}" />
                                     <div class="grid md:grid-cols-5 grid-cols-1 gap-2">
                                         @for($i = 1; $i <= $level->level_order; $i++)
                                             @php
@@ -161,13 +157,14 @@
                                                 $individualShare = $shareRecord ? $shareRecord->share : '';
                                             @endphp
                                             <div>
-                                                <input type="number" 
-                                                    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 level-share"
+                                                <x-frontend::forms.input
+                                                    type="number"
                                                     name="shares[{{ $level->id }}][{{ $i }}]"
                                                     data-level="{{ $i }}"
                                                     value="{{ $individualShare }}"
                                                     min="0" step="0.01"
                                                     placeholder="Level {{ $i }}">
+                                                </x-frontend::forms.input>
                                                 <!-- Error message placeholder -->
                                                 <span class="text-red-500 text-sm error-message hidden"></span>
                                             </div>
@@ -177,15 +174,13 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="text-right p-6 lg:p-10">
-                        <button type="submit" @click="submitForm()" class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-3.5 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600 mr-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg>
+                    <div class="text-right space-x-2 p-6 lg:p-10">
+                        <x-frontend::forms.button type="submit" @click="submitForm()" variant="primary" icon="check" icon-position="left">
                             {{ __('Save Changes') }}
-                        </button>
-                        <a href="#" @click="closeModal()" class="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" data-bs-dismiss="modal" aria-label="Close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" class="lucide lucide-x w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                        </x-frontend::forms.button>
+                        <x-frontend::forms.button type="button" @click="closeModal()" variant="outline" icon="x" icon-position="left">
                             {{ __('Close') }}
-                        </a>
+                        </x-frontend::forms.button>
                     </div>
                 </form>
             </div>

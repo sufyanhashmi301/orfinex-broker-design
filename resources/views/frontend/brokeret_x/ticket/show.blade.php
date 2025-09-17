@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="grid h-full grid-cols-1 gap-5 xl:grid-cols-12">
-        <div class="xl:col-span-8 2xl:col-span-9">
+        <div class="xl:col-span-8">
             <div class="h-[calc(100vh-186px)] overflow-hidden sm:h-[calc(100vh-174px)]">
                 <div class="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                     <div class="sticky flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800 xl:px-6">
@@ -159,7 +159,7 @@
                 </div>
             </div>
         </div>
-        <div class="xl:col-span-4 2xl:col-span-3 hidden xl:block">
+        <div class="xl:col-span-4 hidden xl:block">
             <div class="h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
                 <ul class="space-y-5">
                     <li>

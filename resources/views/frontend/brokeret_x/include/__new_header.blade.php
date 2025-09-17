@@ -43,7 +43,7 @@
                         </div>
                         <div class="divide-y divide-gray-200 dark:divide-gray-800">
                             <div class="flex flex-col gap-1 py-3">
-                                <div class="flex items-center gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
+                                <div class="flex items-center dark:text-white/90 gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
                                     <span class="text-base font-semibold">{{ data_get($mainWallet,'amount') }}</span>
                                     <span class="text-base font-normal">{{ $currency }}</span>
                                 </div>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-col gap-1 py-3">
-                                <div class="flex items-center gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
+                                <div class="flex items-center dark:text-white/90 gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
                                     <span class="text-base font-semibold">{{ data_get($ibWallet,'amount') }}</span>
                                     <span class="text-base font-normal">{{ $currency }}</span>
                                 </div>

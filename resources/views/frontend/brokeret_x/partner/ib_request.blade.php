@@ -200,27 +200,27 @@
                                             </div>
                                         @elseif($field->type === 'radio')
                                             <div class="col-span-12">
-                                                <div x-data="{ isChecked: '' }">
+                                                <div x-data="{ selected: '' }" class="flex flex-wrap items-center gap-8">
                                                 @foreach($field->options as $option)
-                                                    <div class="basicRadio mb-2">
-                                                        <label 
-                                                            :class="isChecked === '{{ $option }}' ? 'text-gray-700 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400'" 
-                                                            class="relative flex cursor-pointer items-center gap-3 text-sm font-medium select-none text-gray-500 dark:text-gray-400">
+                                                    <label class="flex cursor-pointer items-center text-sm font-medium text-gray-700 select-none dark:text-gray-400">
+                                                        <div class="relative">
                                                             <input 
-                                                                class="sr-only" 
                                                                 type="radio" 
-                                                                name="fields[{{ $field->name }}]"
-                                                                value="{{ $option }}"
+                                                                name="fields[{{ $field->name }}]" 
+                                                                value="{{ $option }}" 
+                                                                class="sr-only" 
+                                                                x-model="selected" 
                                                                 @if($field->validation === 'required') required @endif>
-                                                            <span :class="isChecked === '{{ $option }}' ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'" class="flex h-5 w-5 items-center justify-center rounded-full border-[1.25px] bg-transparent border-gray-300 dark:border-gray-700">
-                                                                <span :class="isChecked === '{{ $option }}' ? 'block' : 'hidden'" class="h-2 w-2 rounded-full bg-white hidden"></span>
-                                                            </span>
-                                                                {{ $option }}
-                                                            </label>
+                                                            <div
+                                                                :class="selected === '{{ $option }}' ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
+                                                                class="hover:border-brand-500 dark:hover:border-brand-500 mr-3 flex h-5 w-5 items-center justify-center rounded-full border-[1.25px]">
+                                                                <span class="h-2 w-2 rounded-full" :class="selected === '{{ $option }}' ? 'bg-white' : 'bg-white dark:bg-[#171f2e]'"></span>
+                                                            </div>
                                                         </div>
-                                                        
-                                                    </div>
+                                                        {{ $option }}
+                                                    </label>
                                                 @endforeach
+                                                </div>
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="col-span-12">

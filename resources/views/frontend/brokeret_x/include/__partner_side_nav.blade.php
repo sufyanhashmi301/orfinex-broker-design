@@ -6,8 +6,8 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     @click="sidebarOpen = false"
-    class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden"></div>
-<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border">
+    class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden dark:bg-gray-900 dark:bg-opacity-75"></div>
+<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white dark:bg-gray-900 top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border dark:border-gray-800">
     <div class="overflow-y-auto grow shrink-0 flex flex-col px-2.5 py-2.5 me-0.5 pe-2 lg:px-1 xl:px-2.5 h-[calc(100vh-12rem)] lg:h-[calc(100vh-12rem)]">
         <!-- Sidebar Menu -->
         @php
@@ -50,7 +50,7 @@
                     'show' => auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED
                 ],
                 [
-                    'route' => 'user.dashboard',
+                    'route' => 'user.forex-account-logs',
                     'icon' => 'layout-grid',
                     'label' => 'Client Area',
                     'show' => true,
@@ -83,8 +83,8 @@
                             <a href="{{ route($item['route']) }}" 
                                @click="selected = (selected === '{{ $item['label'] }}' ? '':'{{ $item['label'] }}')"
                                class="flex items-center px-3 py-2 rounded-md transition-colors text-theme-sm gap-3 border border-transparent lg:px-2 lg:justify-center xl:px-3 xl:justify-start"
-                               :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:hover:border-gray-200'">
-                                <i data-lucide="{{ $item['icon'] }}" class="shrink-0 size-5"></i>
+                               :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-600'">
+                               <i data-lucide="{{ $item['icon'] }}" class="shrink-0 size-5"></i>
                                 <span class="menu-item-text lg:hidden xl:block">
                                     {{ __($item['label']) }}
                                 </span>

@@ -116,24 +116,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Banking Partner Card -->
                     <div class="simple-card p-6">
-                        <div class="flex space-x-3 mb-5">
+                        <div class="flex items-center space-x-3 mb-5">
                             <div class="flex-none h-12 w-12 flex items-center justify-center bg-primary-500 rounded-xl">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-white">
                                     <path fill="currentColor" d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10z"/>
                                 </svg>
                             </div>
                             <h3 class="flex-1 text-xl font-bold text-gray-900 leading-tight">
-                                {{ __('Our Banking Partner: ZENUS Bank') }}
+                                {{ __('Our Banking Partner') }}
                             </h3>
                         </div>
                         <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            {{ __('We partner with ZENUS Bank, a fully licensed and regulated financial institution based in Puerto Rico, operating under the strict oversight of the Office of the Commissioner of Financial Institutions of Puerto Rico (OCIF).') }}
+                            {{ __('We partner with established, fully licensed and regulated US financial institutions operating under the strict oversight of federal banking regulators including the FDIC, OCC, and Federal Reserve System.') }}
                         </p>
                         
                         <div class="bg-primary-500 rounded-lg p-4 mb-4">
-                            <h4 class="text-white font-semibold mb-2">{{ __('Why ZENUS Bank?') }}</h4>
+                            <h4 class="text-white font-semibold mb-2">{{ __('Why US Banks?') }}</h4>
                             <p class="text-white text-sm opacity-90 leading-relaxed">
-                                {{ __("ZENUS Bank provides the same FDIC-equivalent protection through Puerto Rico's deposit insurance, offering up to $250,000 in coverage per account. As a US territory, Puerto Rico banking follows US federal banking regulations and standards.") }}
+                                {{ __("US banks provide comprehensive FDIC protection with up to $250,000 in coverage per account. As domestically regulated institutions, they follow strict US federal banking regulations and standards, ensuring the highest level of security and compliance for your funds.") }}
                             </p>
                         </div>
                         
@@ -142,7 +142,7 @@
                             <ul class="space-y-2">
                                 <li class="flex items-start gap-2 text-sm text-gray-700">
                                     <div class="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <span>{{ __('Full regulatory compliance with US banking standards') }}</span>
+                                    <span>{{ __('Full FDIC insurance coverage up to $250,000 per account') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2 text-sm text-gray-700">
                                     <div class="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
@@ -166,7 +166,7 @@
 
                     <!-- Security Measures Card -->
                     <div class="simple-card p-6">
-                        <div class="flex space-x-3 mb-5">
+                        <div class="flex items-center space-x-3 mb-5">
                             <div class="flex-none h-12 w-12 flex items-center justify-center bg-primary-500 rounded-xl">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" class="text-white">
                                     <path fill="currentColor" d="M24 4c-5.5 0-10 4.5-10 10v4h4v-4c0-3.3 2.7-6 6-6s6 2.7 6 6v4h4v-4c0-5.5-4.5-10-10-10"/>
@@ -179,7 +179,7 @@
                             </h3>
                         </div>
                         <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            {{ __('We partner with ZENUS Bank, a fully licensed and regulated financial institution based in Puerto Rico, operating under the strict oversight of the Office of the Commissioner of Financial Institutions of Puerto Rico (OCIF).') }}
+                            {{ __('We partner with US banks that maintain the highest security standards, implementing comprehensive protection measures to safeguard your financial transactions and personal information.') }}
                         </p>
                         
                         <div class="grid grid-cols-2 gap-3 mb-4">
@@ -223,7 +223,7 @@
 
                     <!-- Wire Transfer Process Card -->
                     <div class="simple-card p-6">
-                        <div class="flex space-x-3 mb-5">
+                        <div class="flex items-center space-x-3 mb-5">
                             <div class="flex-none h-12 w-12 flex items-center justify-center bg-primary-500 rounded-xl">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" class="text-white">
                                     <path fill="currentColor" d="M376 211H256V16L136 301h120v195z"/>
@@ -282,7 +282,7 @@
 
                     <!-- Support & Transparency Card -->
                     <div class="simple-card p-6">
-                        <div class="flex space-x-3 mb-5">
+                        <div class="flex items-center space-x-3 mb-5">
                             <div class="flex-none h-12 w-12 flex items-center justify-center bg-primary-500 rounded-xl">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-white">
                                     <path fill="currentColor" fill-rule="evenodd" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473V2c-.811 0-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082" clip-rule="evenodd"/>
@@ -345,48 +345,84 @@
                         </h2>
                     </div>
 
-                    <div class="success-bg rounded-lg p-6 mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('ZENUS Bank Wire Details (USD)') }}</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Bank Name') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('ZENUS Bank') }}</div>
+                    <div class="py-[18px] px-4 font-normal font-Inter text-sm rounded-md bg-primary-500 bg-opacity-[14%] text-primary-500 mb-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-primary-600">
+                                    <path fill="currentColor" d="M1 21h22L12 2L1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                                </svg>
                             </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Bank Address') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('San Juan, Puerto Rico') }}</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Routing Number') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('[Your routing number]') }}</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Account Number') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('[Your account number]') }}</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Account Name') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('[Your company name]') }}</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-semibold text-gray-700">{{ __('Swift Code') }}</div>
-                                <div class="text-sm text-gray-900">{{ __('[Your swift code]') }}</div>
+                            <div>
+                                <h4 class="font-semibold text-primary-600 mb-1 text-sm">{{ __('Banking Details Available After KYC') }}</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    {{ __('Your personalized wire transfer details will be provided in your secure client portal once you complete the KYC verification process.') }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="warning-bg rounded-lg p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="light-bg rounded-lg p-4 flex flex-col items-center text-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary-500 text-lg font-bold text-white">
+                                1
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 text-sm">{{ __('Complete KYC') }}</h4>
+                                <p class="text-xs text-gray-600">{{ __('Submit required identification and verification documents') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="light-bg rounded-lg p-4 flex flex-col items-center text-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary-500 text-lg font-bold text-white">
+                                2
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 text-sm">{{ __('Account Approval') }}</h4>
+                                <p class="text-xs text-gray-600">{{ __('Our compliance team reviews and approves your application') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="light-bg rounded-lg p-4 flex flex-col items-center text-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary-500 text-lg font-bold text-white">
+                                3
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 text-sm">{{ __('Receive Details') }}</h4>
+                                <p class="text-xs text-gray-600">{{ __('Banking information appears in your secure client portal') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-bg rounded-md py-[18px] px-4 mb-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" class="text-success-600">
+                                    <g fill="none">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 8V7a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v1"/>
+                                        <path fill="currentColor" fill-rule="evenodd" d="M3.879 7.879C3 8.757 3 10.172 3 13v1c0 3.771 0 5.657 1.172 6.828S7.229 22 11 22h2c3.771 0 5.657 0 6.828-1.172S21 17.771 21 14v-1c0-2.828 0-4.243-.879-5.121C19.243 7 17.828 7 15 7H9c-2.828 0-4.243 0-5.121.879M12 15a1 1 0 1 0 0-2a1 1 0 0 0 0 2m3-1a3 3 0 0 1-2 2.83V19h-2v-2.17A3.001 3.001 0 1 1 15 14" clip-rule="evenodd"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-success-600 mb-1 text-sm">{{ __('Secure Portal Access') }}</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                Your <span class="font-medium">{{ __('personalized banking details') }}</span> including account numbers, routing information, and wire instructions will be securely stored in your client portal dashboard.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-bg rounded-md py-[18px] px-4">
                         <div class="flex items-start gap-3">
                             <div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="text-warning-600">
-                                    <path fill="currentColor" d="M1 21h22L12 2L1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                    <path fill="currentColor" d="M1 21h22L12 2L1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
                                 </svg>
                             </div>
                             <div>
                                 <h4 class="font-semibold text-warning-600 mb-1 text-sm">{{ __('Security Reminder') }}</h4>
                                 <p class="text-sm text-gray-700 leading-relaxed">
-                                    <span class="font-medium">{{ __('These banking details are also available in your secure client portal and can be verified by calling our support team. ') }}</span>
-                                    <span>{{ __('If you receive banking information from any other source, do not use it and contact us immediately.') }}</span>
+                                    {{ __('These banking details will be available in your secure client portal and can be verified by calling our support team. If you receive banking information from any other source, do not use it and contact us immediately.') }}
                                 </p>
                             </div>
                         </div>

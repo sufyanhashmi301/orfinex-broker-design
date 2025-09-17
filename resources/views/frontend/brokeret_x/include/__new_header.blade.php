@@ -1,9 +1,9 @@
-<header class="flex items-stretch fixed z-20 top-0 start-0 end-0 shrink-0 bg-white dark:bg-slate-800 border-b border-border h-(--header-height-mobile) lg:h-(--header-height)">
+<header class="flex items-stretch fixed z-20 top-0 start-0 end-0 shrink-0 bg-white dark:bg-gray-900 border-b border-border dark:border-gray-800 h-(--header-height-mobile) lg:h-(--header-height)">
     <div class="@container grow px-4 flex items-center justify-between gap-2.5">
         <!-- Sidebar Toggle Button -->
         <button 
             @click="sidebarOpen = !sidebarOpen"
-            class="lg:hidden size-9.5 relative inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+            class="lg:hidden size-9.5 relative inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-800 dark:focus:bg-gray-800"
         >
             <i data-lucide="menu" class="shrink-0 size-5" x-show="!sidebarOpen"></i>
             <i data-lucide="x" class="shrink-0 size-5" x-show="sidebarOpen"></i>
@@ -82,7 +82,7 @@
                  <div class="relative hidden lg:block">
                     <button 
                         @click="darkMode = !darkMode"
-                        class="size-9.5 relative inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded border border-transparent text-gray-800 hover:bg-gray-100 hover:border-gray-600 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                        class="size-9.5 relative inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded border border-transparent text-gray-800 hover:bg-gray-100 hover:border-gray-600 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-800 dark:focus:bg-gray-800"
                     >
                         <i data-lucide="sun" class="shrink-0 size-5 dark:hidden"></i>
                         <i data-lucide="moon" class="shrink-0 size-5 hidden dark:block"></i>

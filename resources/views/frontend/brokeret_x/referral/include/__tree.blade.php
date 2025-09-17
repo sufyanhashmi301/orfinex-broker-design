@@ -7,11 +7,11 @@
         :class="{ 'hide-line': !open }">
         <div class="person flex flex-col items-center z-10 relative">
             <!-- Avatar with enhanced styling -->
-            <div class="w-16 h-16 rounded-full bg-white border-2 {{ $me ? 'border-blue-400 ring-2 ring-blue-200' : 'border-gray-200' }} shadow-lg dark:bg-slate-800 dark:border-slate-600 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <div class="w-16 h-16 rounded-full bg-white border-2 {{ $me ? 'border-blue-400 ring-2 ring-blue-200 dark:border-blue-500 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-600' }} shadow-lg dark:bg-gray-800 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <img src="{{ getFilteredPath($levelUser->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full rounded-full object-cover">
             </div>
             <!-- Enhanced user info card -->
-            <div class="text-center inline-flex flex-col rounded-xl border {{ $me ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-700' : 'border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800' }} 
+            <div class="text-center inline-flex flex-col rounded-xl border {{ $me ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-700' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800' }} 
                 p-4 mt-3 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1
                 min-w-max backdrop-blur-sm group">
                 @if($me)
@@ -22,11 +22,11 @@
                         </h4>
                         <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                     </div>
-                    <p class="text-xs font-medium text-slate-600 dark:text-slate-300">
+                    <p class="text-xs font-medium text-gray-600 dark:text-gray-300">
                         {{ $levelUser->full_name }}
                     </p>
                 @else
-                    <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap mb-2 group-hover:text-blue-600 transition-colors">
+                    <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap mb-2 group-hover:text-blue-600 transition-colors">
                         {{ $levelUser->full_name }}
                     </h4>
                     <div class="space-y-1.5 text-xs">

@@ -7,8 +7,8 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     @click="sidebarOpen = false"
-    class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden"></div>
-<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border">
+    class="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-sm z-10 lg:hidden dark:bg-gray-900 dark:bg-opacity-75"></div>
+<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed bg-white dark:bg-gray-900 top-(--header-height) start-0 h-full transition-all duration-300 z-20 flex flex-col items-stretch flex-shrink-0 w-(--sidebar-width) lg:w-16 xl:w-(--sidebar-width) in-data-[sidebar-open=false]:-start-full border-e border-border dark:border-gray-800">
     <div class="overflow-y-auto grow shrink-0 flex flex-col px-2.5 py-2.5 me-0.5 pe-2 lg:px-1 xl:px-2.5 h-[calc(100vh-12rem)] lg:h-[calc(100vh-12rem)]">
         <!-- Sidebar Menu -->
         @php
@@ -104,10 +104,10 @@
         @endphp
         <div class="lg:hidden">
             <div class="relative border-b border-gray-200 dark:border-gray-800 py-2" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
-                <div class="w-full flex items-center p-3 gap-2"
+                <div class="w-full flex items-center p-3 gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                     @click.prevent="dropdownOpen = !dropdownOpen">
                     <div class="flex items-center gap-3">
-                        <div class="">
+                        <div class="text-gray-600 dark:text-gray-400">
                             <i data-lucide="circle-user" class="shrink-0 size-5"></i>
                         </div>
                         <div>
@@ -119,7 +119,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="ms-auto">
+                    <div class="ms-auto text-gray-500 dark:text-gray-400">
                         <i data-lucide="chevron-down" class="shrink-0 size-5" x-show="!dropdownOpen"></i>
                         <i data-lucide="chevron-up" class="shrink-0 size-5" x-show="dropdownOpen"></i>
                     </div>
@@ -159,14 +159,14 @@
             </div>
             <div class="relative border-b border-gray-200 dark:border-gray-800 py-2" x-data="{ dropdownOpen: false, switcherToggle: false }" @click.outside="dropdownOpen = false">
                 <button class="w-full flex items-center px-3 py-2 text-base rounded-md transition-colors text-theme-sm gap-2"
-                    :class="dropdownOpen ? 'text-gray-900 bg-gray-100' : 'text-gray-700 hover:bg-gray-100'"
+                    :class="dropdownOpen ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'"
                     @click.prevent="dropdownOpen = !dropdownOpen">
                     <i data-lucide="wallet" class="shrink-0 size-5"></i>
                     <div :class="switcherToggle ? 'blur-sm select-none' : ''">
                         <span class="font-medium">{{ data_get($mainWallet,'amount') + data_get($ibWallet,'amount') }}</span>
                         <span class="font-normal">{{ $currency }}</span>
                     </div>
-                    <div class="ms-auto">
+                    <div class="ms-auto text-gray-500 dark:text-gray-400">
                         <i data-lucide="chevron-down" class="shrink-0 size-5" x-show="!dropdownOpen"></i>
                         <i data-lucide="chevron-up" class="shrink-0 size-5" x-show="dropdownOpen"></i>
                     </div>
@@ -233,7 +233,7 @@
                             <a href="{{ route($item['route']) }}" 
                                @click="selected = (selected === '{{ $item['label'] }}' ? '':'{{ $item['label'] }}')"
                                class="flex items-center px-3 py-2 rounded-md transition-colors text-theme-sm gap-3 border border-transparent lg:px-2 lg:justify-center xl:px-3 xl:justify-start"
-                               :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:hover:border-gray-200'">
+                               :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-600'">
                                 <i data-lucide="{{ $item['icon'] }}" class="shrink-0 size-5"></i>
                                 <span class="menu-item-text lg:hidden xl:block">
                                     {{ __($item['label']) }}

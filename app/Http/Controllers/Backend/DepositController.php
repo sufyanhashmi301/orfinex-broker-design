@@ -389,8 +389,8 @@ class DepositController extends Controller
                 }
 
                 // Notify user
-                $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
-                $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
+                // $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
+                // $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
                 notify()->success('Deposit approved successfully.');
 
             } elseif (isset($input['reject'])) {
@@ -402,8 +402,8 @@ class DepositController extends Controller
                     return redirect()->back();
                 }
 
-                $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
-                $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
+                // $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
+                // $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
 
                 notify()->success('Deposit rejected successfully.');
             }
@@ -637,11 +637,11 @@ class DepositController extends Controller
                 ]);
             }
 
-            $this->mailNotify($txn->user->email, 'user_manual_deposit_approve', $shortcodes);
+            // $this->mailNotify($txn->user->email, 'user_manual_deposit_approve', $shortcodes);
             notify()->success(__('Approve successfully'));
         } else {
-            $this->mailNotify($txn->user->email, 'user_manual_deposit_request', $shortcodes);
-            $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+            // $this->mailNotify($txn->user->email, 'user_manual_deposit_request', $shortcodes);
+            // $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
             $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id, 'deposit');
             notify()->success(__('Successfully added pending deposit request'));
         }

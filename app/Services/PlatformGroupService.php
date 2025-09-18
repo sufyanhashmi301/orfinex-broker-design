@@ -41,11 +41,27 @@ class PlatformGroupService
             return ['success' => false, 'message' => 'Group not found'];
         }
 
-        $group->status = $status;
+        // Fetch the latest group data from MT5 database to get updated group name
+        $mt5Data = DB::connection('mt5_db')
+            ->table('mt5_groups')
+            ->select('Group_ID', 'Group', 'Currency', 'CurrencyDigits')
+            ->where('Group_ID', $groupId)
+            ->first();
+
+        if ($mt5Data) {
+            // Update both status and group name from MT5 data
+            $group->status = $status;
+            $group->group = $mt5Data->Group;
+           
+        } else {
+            // If MT5 data not found, just update the status
+            $group->status = $status;
+        }
+
         $group->save();
 
         $message = $status == 1 ? __('Group enabled successfully') : __('Group disabled successfully');
-        return ['success' => true, $message];
+        return ['success' => true, 'message' => $message];
     }
 
 }

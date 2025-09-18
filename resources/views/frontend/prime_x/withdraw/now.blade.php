@@ -156,6 +156,10 @@
         </form>
     </div>
 
+    @if(setting('contact_widget_withdraw_page', 'contact_widget'))
+        @include('frontend::include.__contact_widget')
+    @endif
+
     {{-- Modal for OTP--}}
     @include('frontend::withdraw.modal.__otp_form')
 

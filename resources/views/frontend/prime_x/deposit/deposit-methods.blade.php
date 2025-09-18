@@ -17,10 +17,10 @@
                 <iconify-icon icon="lucide:external-link"></iconify-icon>
             </a>
         @else
-            {{-- <a href="{{ route('user.client-fund-safety') }}" target="_blank" class="btn-link text-primary">
+            <a href="{{ route('user.client-fund-safety') }}" target="_blank" class="btn-link text-primary">
                 {{ __('Client Fund Safety') }}
                 <iconify-icon icon="lucide:external-link"></iconify-icon>
-            </a> --}}
+            </a>
         @endif
     </div>
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">

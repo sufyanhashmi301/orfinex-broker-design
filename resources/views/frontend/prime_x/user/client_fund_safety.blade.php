@@ -112,6 +112,45 @@
                     </div>
                 </div>
 
+                <!-- Contact Section -->
+                <div class="simple-card p-8 mb-8 text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        {{ __('Questions About Our Banking Security?') }}
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+                        {{ __('Our team is available to address any concerns and provide additional verification of our banking processes. Your confidence in our security measures is our priority.') }}
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02z"/>
+                            </svg>
+                            {{ __('Call Banking Support') }}
+                        </a>
+
+                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5l-8-5V6l8 5l8-5z"/>
+                            </svg>
+                            {{ __('Email Banking Team') }}
+                        </a>
+
+                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8"/>
+                            </svg>
+                            {{ __('Live Chat Support') }}
+                        </a>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-4">
+                        <p class="text-sm text-gray-500">
+                            {{ __('Banking support available Monday-Friday 8AM-8PM EST. Emergency wire verification available 24/7.') }}
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Main Content Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Banking Partner Card -->
@@ -333,7 +372,7 @@
                 </div>
 
                 <!-- Banking Information Section -->
-                <div class="simple-card p-8 mb-8">
+                <div class="simple-card p-8">
                     <div class="flex justify-center items-center space-x-3 mb-5">
                         <div class="flex-none h-12 w-12 flex items-center justify-center bg-primary-500 rounded-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-white">
@@ -426,43 +465,6 @@
                                 </p>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Contact Section -->
-                <div class="simple-card p-8 text-center">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ __('Questions About Our Banking Security?') }}</h2>
-                    <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
-                        {{ __('Our team is available to address any concerns and provide additional verification of our banking processes. Your confidence in our security measures is our priority.') }}
-                    </p>
-
-                    <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
-                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02z"/>
-                            </svg>
-                            {{ __('Call Banking Support') }}
-                        </a>
-
-                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5l-8-5V6l8 5l8-5z"/>
-                            </svg>
-                            {{ __('Email Banking Team') }}
-                        </a>
-
-                        <a href="javascript:void(0)" class="inline-flex items-center gap-2 light-bg hover:-translate-y-1 hover:shadow-lg duration-200 rounded-lg px-4 py-3 text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8"/>
-                            </svg>
-                            {{ __('Live Chat Support') }}
-                        </a>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-4">
-                        <p class="text-sm text-gray-500">
-                            {{ __('Banking support available Monday-Friday 8AM-8PM EST. Emergency wire verification available 24/7.') }}
-                        </p>
                     </div>
                 </div>
             </div>

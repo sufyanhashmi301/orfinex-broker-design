@@ -15,14 +15,17 @@ class DocumentLinkSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('document_links')->truncate();
-        DB::table('document_links')->insert([
+        $now = now();
+        
+        $documents = [
             [
                 'title' => 'AML Policy',
                 'link' => 'https://cdn.brokeret.com/doc/example.pdf',
                 'slug' => 'aml_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Client Agreement',
@@ -30,6 +33,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'client_agreement',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Complaints Handling Policy',
@@ -37,6 +42,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'complaints_handling_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Cookies Policy',
@@ -44,6 +51,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'cookies_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'IB Partner Agreement',
@@ -51,6 +60,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'ib_partner_agreement',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Order Execution Policy',
@@ -58,6 +69,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'order_execution_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Privacy Policy',
@@ -65,6 +78,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'privacy_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'Risk Disclosure',
@@ -72,6 +87,8 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'risk_disclosure',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title' => 'US Clients Policy',
@@ -79,7 +96,39 @@ class DocumentLinkSeeder extends Seeder
                 'slug' => 'us_clients_policy',
                 'is_deleteable' => 0,
                 'status' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
-        ]);
+            [
+                'title' => 'Client Fund Safety',
+                'link' => 'https://cdn.brokeret.com/doc/example.pdf',
+                'slug' => 'client_fund_safety',
+                'is_deleteable' => 0,
+                'status' => 0,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+        ];
+
+        $addedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($documents as $document) {
+            // Check if document with this slug already exists
+            $exists = DB::table('document_links')
+                ->where('slug', $document['slug'])
+                ->exists();
+
+            if (!$exists) {
+                DB::table('document_links')->insert($document);
+                $addedCount++;
+                $this->command->info("Added: {$document['title']}");
+            } else {
+                $skippedCount++;
+                $this->command->info("Skipped (already exists): {$document['title']}");
+            }
+        }
+
+        $this->command->info("Document links seeding completed. Added: {$addedCount}, Skipped: {$skippedCount}");
     }
 }

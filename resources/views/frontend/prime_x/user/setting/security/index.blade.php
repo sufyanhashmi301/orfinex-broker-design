@@ -94,7 +94,7 @@
             </div>
         </div>
     </div>
-
+    @include('frontend::user.setting.include.__two_fa')
     <!-- Modal for Edit Email -->
     @include('frontend::user.setting.security.modal.__edit_email')
 

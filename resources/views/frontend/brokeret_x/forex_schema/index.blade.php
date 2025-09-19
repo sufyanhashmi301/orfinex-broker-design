@@ -96,13 +96,20 @@
     </div>
 
     <!-- Mobile Carousel View (visible only on mobile) -->
-    <div class="md:hidden schema-carousel w-full overflow-hidden">
-        <div class="swiper swiper-init w-full"
-            data-slides-default="1"
-            data-slides-sm="1.5"
-            data-space="16"
-            data-free-mode="true"
-            data-mousewheel="true">
+    <div x-data="{swiper: null}"
+        x-init="swiper = new Swiper($refs.container, {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 10,
+            
+            pagination: {
+                el: $refs.pagination,
+                clickable: true,
+            },
+        })"
+        class="md:hidden schema-swiper relative w-full max-w-full mb-5">
+        
+        <div class="swiper w-full" x-ref="container">
             <div class="swiper-wrapper">
                 @foreach($schemas as $schema)
                     <div class="swiper-slide">
@@ -161,28 +168,15 @@
                     </div>
                 @endforeach
             </div>
-            <!-- Add Pagination -->
-            <div class="swiper-pagination !relative !bottom-0"></div>
         </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination" x-ref="pagination"></div>
     </div>
 @endsection
-@section('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Swiper only on mobile devices
-            function initMobileSwiper() {
-                if (window.matchMedia('(max-width: 767px)').matches) {
-                    window.initAllSwipers();
-                }
-            }
-            
-            // Initialize on load
-            initMobileSwiper();
-            
-            // Re-initialize on resize if needed
-            window.addEventListener('resize', function() {
-                initMobileSwiper();
-            });
-        });
-    </script>
+@section('style')
+    <style>
+        .schema-swiper .swiper-pagination {
+            bottom: -20px !important;
+        }
+    </style>
 @endsection

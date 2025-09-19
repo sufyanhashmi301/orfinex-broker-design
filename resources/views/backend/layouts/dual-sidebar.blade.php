@@ -43,7 +43,7 @@
                     <!--Page Content-->
                 </div>
             </div>
-            <footer class="md:block sticky bottom-0" id="footer">
+            <footer class="md:block sticky bottom-0 z-10" id="footer">
                 <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-2" style="height: 48px; margin-left: 448px;">
                     <div class="flex items-center justify-between gap-5">
                         @if(!setting('is_whitelabel', 'global'))

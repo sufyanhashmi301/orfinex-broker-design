@@ -1,14 +1,6 @@
 <!doctype html>
-<html lang="en">
-@include('frontend::include.__head')
-<body 
-    x-data="{
-        'loaded': true, 
-        'darkMode': {{ auth()->user()->user_theme == 'dark' ? 'true' : 'false' }}, 
-        'stickyMenu': false, 
-        'sidebarOpen': false, 
-        'scrollTop': false
-    }"
+<html lang="en" 
+    x-data="{ darkMode: {{ auth()->user()->user_theme == 'dark' ? 'true' : 'false' }} }"
     x-init="
         // Initialize darkMode from server-side user_theme preference
         darkMode = {{ auth()->user()->user_theme == 'dark' ? 'true' : 'false' }};
@@ -18,12 +10,21 @@
         
         // Watch for changes and update localStorage
         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
-        
+    "
+    :class="{ 'dark': darkMode }">
+@include('frontend::include.__head')
+<body 
+    x-data="{
+        'loaded': true, 
+        'stickyMenu': false, 
+        'sidebarOpen': false, 
+        'scrollTop': false
+    }"
+    x-init="
         window.addEventListener('scroll', () => scrollTop = window.pageYOffset > 100);
         setTimeout(() => loaded = false, 500);
     "
-    :class="{ 'dark bg-gray-900': darkMode }"
-    class="flex h-full text-base text-foreground">
+    class="text-base bg-white dark:bg-gray-900">
 
     <!-- ===== Preloader Start ===== -->
     <div
@@ -36,7 +37,7 @@
     </div>
     <!-- ===== Preloader End ===== -->
 
-    <div class="flex flex-grow">
+    <div class="flex flex-col flex-grow">
         <!-- ===== Header Start ===== -->
         @include('frontend::include.__new_header')
 
@@ -45,18 +46,16 @@
             @include('frontend::include.__user_side_nav')
         
             <!-- ===== Main Content Start ===== -->
-            <main class="lg:ps-16 xl:ps-(--sidebar-width) transition-all duration-300 grow">
-                <div class="container-fluid">
-                    <!-- ===== KYC Info Start ===== -->
-                    @if(setting('kyc_verification','permission'))
-                        @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*', 'user.kyc*']))
-                            @include('frontend::user.include.__kyc_info')
-                        @endif
+            <main class="flex-1 lg:ps-16 xl:ps-(--sidebar-width) overflow-y-auto transition-all duration-300">
+                <!-- ===== KYC Info Start ===== -->
+                @if(setting('kyc_verification','permission'))
+                    @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*', 'user.kyc*']))
+                        @include('frontend::user.include.__kyc_info')
                     @endif
+                @endif
 
-                    <div class="p-4 mx-auto max-w-(--breakpoint-xl) md:p-6">
-                        @yield('content')
-                    </div>
+                <div class="p-4 mx-auto max-w-(--breakpoint-xl) w-full md:p-6">
+                    @yield('content')
                 </div>
             </main>
             <!-- ===== Main Content End ===== -->

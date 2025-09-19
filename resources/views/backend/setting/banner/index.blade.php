@@ -14,7 +14,7 @@
         @foreach($banners as $banner)
             <div class="lg:col-span-1 col-span-3">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
-                    <form action="{{ route('admin.banner.update',$banner->id) }}" method="post">
+                    <form action="{{ route('admin.banner.update',$banner->id) }}" method="post" enctype="multipart/form-data">
                         @method('put')
                         @csrf
                         <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
@@ -51,6 +51,25 @@
                                 <div class="input-area">
                                     <label for="" class="form-label">{{ __('Button Link') }}</label>
                                     <input type="text" name="button_link" class="form-control" value="{{ $banner->button_link }}">
+                                </div>
+                                <div class="relative input-area">
+                                    <label for="" class="form-label">{{ __('Banner Image') }}</label>
+                                    <div class="wrap-custom-file">
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            id="banner-image-{{ $banner->id }}"
+                                            accept=".gif, .jpg, .png, .webp, .svg"
+                                        />
+                                        <label for="banner-image-{{ $banner->id }}" class="file-ok" style="background-image: url({{ asset($banner->image) }})">
+                                            <img
+                                                class="upload-icon"
+                                                src="{{asset('global/materials/upload.svg')}}"
+                                                alt=""
+                                            />
+                                            <span>{{ __('Upload Image') }}</span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="input-area">
                                     <button type="submit" class="btn btn-dark block-btn">

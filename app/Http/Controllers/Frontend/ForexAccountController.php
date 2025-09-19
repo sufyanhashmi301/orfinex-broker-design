@@ -18,6 +18,7 @@ use App\Models\LeverageUpdate;
 use App\Models\Schema;
 use App\Models\User;
 use App\Models\PlatformLink;
+use App\Models\Banner;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
@@ -441,8 +442,9 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
 
         $activePlatform = setting('active_trader_type', 'features');
         $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
+        $banners = Banner::where('status', 1)->get();
 
-        return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts', 'platformLinks'));
+        return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts', 'platformLinks', 'banners'));
     }
     public function testForexAccount(Request $request)
     {

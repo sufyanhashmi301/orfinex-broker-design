@@ -589,7 +589,7 @@
 }
 
 .swiper-pagination {
-  @apply shadow-slider-navigation bottom-3! left-1/2! inline-flex w-auto! -translate-x-1/2 items-center gap-1.5 rounded-[40px] border-[0.5px] border-white/10 bg-white/60 px-2 py-1.5 backdrop-blur-[10px] sm:bottom-5!;
+  @apply bottom-3! left-1/2! inline-flex w-auto! -translate-x-1/2 bg-transparent items-center gap-1.5 sm:bottom-5!;
 }
 
 .swiper-pagination-bullet {

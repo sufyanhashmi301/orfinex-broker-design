@@ -2,6 +2,8 @@
 
 return [
 
+    'encrypt' => true,
+    
     /*
      * Enable / disable Google2FA.
      */

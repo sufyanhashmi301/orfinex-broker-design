@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
+use App\Traits\ImageUpload; 
 
 class BannerController extends Controller
 {
-
+    use ImageUpload;
     
     public function __construct()
     {
@@ -28,6 +29,7 @@ class BannerController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:5120',
             'primary_link' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             'button_link' => 'nullable|string',
@@ -44,6 +46,12 @@ class BannerController extends Controller
         $banner->button_text = $request->input('button_text');
         $banner->button_link = $request->input('button_link');
         $banner->status = $request->input('status');
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $banner->image = self::imageUploadTrait($request->file('image'), $banner->image);
+        }
+
         $banner->save();
 
         notify()->success(__('Banner updated successfully'));

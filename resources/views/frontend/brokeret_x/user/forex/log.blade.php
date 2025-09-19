@@ -3,7 +3,65 @@
     {{ __('My Accounts') }}
 @endsection
 @section('content')
-    <div class="flex flex-wrap items-center justify-between gap-3 my-6">
+
+    <!-- Banner Section -->
+    @if($banners->count() > 0)
+    <div x-data="{swiper: null}"
+        x-init="swiper = new Swiper($refs.container, {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 3,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+            },
+        })"
+        class="banner-swiper relative w-full max-w-full mb-12">
+        
+        <div class="swiper w-full" x-ref="container">
+            <div class="swiper-wrapper items-stretch">
+                @foreach($banners as $banner)
+                    <div class="swiper-slide flex-grow !flex !h-auto">
+                        <div class="flex gap-2 border border-gray-100 rounded bg-success-50/50 dark:border-gray-800 w-full h-full">
+                            <div class="flex-grow-1 flex flex-col gap-1 p-4">
+                                <h4 class="text-theme-sm font-medium">
+                                    {{ $banner->title }}
+                                </h4>
+                                <p class="text-theme-xs">
+                                    {{ $banner->subtitle }}
+                                </p>
+                            </div>
+                            <div class="w-[100px] flex-shrink-0 flex-grow-0 bg-no-repeat bg-cover bg-center" style="background-image: url({{ asset($banner->image) }})"></div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- Add Navigation -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+    @endif
+
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90">
             @yield('title')
         </h2>
@@ -127,6 +185,21 @@
 @endsection
 @section('style')
     <style>
+        .banner-swiper .swiper-button-next {
+            right: -10px !important;
+        }
+        .banner-swiper .swiper-button-prev {
+            left: -10px !important;
+        }
+        .banner-swiper .swiper-button-next, .banner-swiper .swiper-button-prev {
+            width: 32px !important;
+            height: 32px !important;
+        }
+
+        .banner-swiper .swiper-pagination {
+            bottom: -20px !important;
+        }
+
         /* Default state - Grid View */
         #trading-accounts .list-view-layout {
             display: none;

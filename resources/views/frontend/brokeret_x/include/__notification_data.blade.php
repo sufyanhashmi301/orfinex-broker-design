@@ -25,7 +25,7 @@
         </button>
     </div>
 
-    <ul class="custom-scrollbar flex h-auto flex-col overflow-y-auto">
+    <ul class="custom-scrollbar flex h-auto flex-col overflow-y-auto mb-3">
         @forelse($notifications as $notification)
             <li>
                 <a class="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
@@ -57,9 +57,9 @@
     </ul>
 
     @if(count($notifications) > 0)
-        <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="text-theme-sm shadow-theme-xs mt-3 flex justify-center rounded-lg border border-gray-300 bg-white p-3 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+        <x-frontend::link-button href="{{ route($notifications->first()->for.'.notification.all') }}" variant="outline" size="md" class="w-full">
             {{ __('View All Notification') }}
-        </a>
+        </x-frontend::link-button>
     @endif
 </div>
 <!-- Dropdown End -->

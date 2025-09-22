@@ -9,7 +9,7 @@
 
 <!-- Dropdown Start -->
 <div x-show="dropdownOpen"
-    class="shadow-theme-lg dark:bg-gray-dark absolute mt-[17px] flex h-[480px] flex-col rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 z-50 w-[calc(100vw-3rem)] max-w-[320px] sm:w-[350px] lg:w-[361px] right-2 sm:-right-[240px] lg:right-0">
+    class="shadow-theme-lg dark:bg-gray-dark absolute mt-[17px] flex h-[480px] flex-col rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 z-50 w-[calc(100vw-3rem)] max-w-[320px] sm:w-[350px] lg:w-[361px] right-2 lg:right-0">
     <div class="mb-3 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-800">
         <h5 class="text-lg font-semibold text-gray-800 dark:text-white/90">
             {{ __('Notification') }}

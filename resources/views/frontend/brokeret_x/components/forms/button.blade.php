@@ -6,6 +6,7 @@
     'disabled' => false,
     'icon' => null,
     'iconPosition' => 'left', // left, right
+    'iconOnly' => false, // true for icon-only buttons
     'fullWidth' => false
 ])
 
@@ -17,9 +18,9 @@
     ];
     
     $sizeClasses = [
-        'sm' => 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
-        'md' => 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
-        'lg' => 'px-6 py-3 text-base rounded-md gap-2 h-12'
+        'sm' => $iconOnly ? 'p-1.5 text-theme-xs rounded w-8 h-8' : 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
+        'md' => $iconOnly ? 'p-2.5 text-theme-sm rounded-sm w-10 h-10' : 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
+        'lg' => $iconOnly ? 'p-3 text-base rounded-md w-12 h-12' : 'px-6 py-3 text-base rounded-md gap-2 h-12'
     ];
     
     $variantClasses = [
@@ -44,20 +45,26 @@
     @if($disabled || $loading) disabled @endif
 >
     @if($loading)
-        <svg class="animate-spin w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin @if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 3.04 1.13 5.82 3 7.94l3-2.65z"></path>
         </svg>
-        <span class="ml-2">{{ __('Loading...') }}</span>
-    @else
-        @if($icon && $iconPosition === 'left')
-            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
+        @if(!$iconOnly)
+            <span class="ml-2">{{ __('Loading...') }}</span>
         @endif
+    @else
+        @if($iconOnly && $icon)
+            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @elseif($size === 'lg') w-5 h-5 @else w-4 h-4 @endif shrink-0"></i>
+        @else
+            @if($icon && $iconPosition === 'left')
+                <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
+            @endif
 
-        <span>{{ $slot }}</span>
-        
-        @if($icon && $iconPosition === 'right')
-            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
+            <span>{{ $slot }}</span>
+            
+            @if($icon && $iconPosition === 'right')
+                <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif shrink-0"></i>
+            @endif
         @endif
     @endif
 </button>

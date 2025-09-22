@@ -17,17 +17,17 @@
         </div>
     </div>
     <div class="border border-gray-200 dark:border-gray-800 mb-10">
-        <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
-            <p class="text-gray-800 text-theme-sm dark:text-white/90 basis-[100px] flex-shrink-1 flex-grow-1">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-y-3 border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
+            <p class="text-gray-800 text-theme-sm dark:text-white/90 sm:basis-[100px] flex-shrink-1 flex-grow-1">
                 {{ __('Login') }}
             </p>
             <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90 w-full sm:w-[418px]">
                 {{ $user->email }}
             </p>
-            <div class="basis-[100px] flex-shrink-1 flex-grow-1"></div>
+            <div class="sm:basis-[100px] flex-shrink-1 flex-grow-1"></div>
         </div>
-        <div class="flex items-start justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800" x-data="{ showPasswordForm: false }">
-            <p class="text-gray-800 text-theme-sm dark:text-white/90 basis-[100px] flex-shrink-1 flex-grow-1">
+        <div class="flex flex-col sm:flex-row justify-between gap-y-3 border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800" x-data="{ showPasswordForm: false }">
+            <p class="text-gray-800 text-theme-sm dark:text-white/90 sm:basis-[100px] flex-shrink-1 flex-grow-1">
                 {{ __('Password') }}
             </p>
             <div class="w-full sm:w-[418px]">
@@ -126,11 +126,11 @@
                     </form>
                 </div>
             </div>
-            <div class="flex items-center justify-end basis-[100px] flex-shrink-1 flex-grow-1">
+            <div class="text-right sm:basis-[100px] flex-shrink-1 flex-grow-1">
                 <!-- Change button (shown when form is hidden) -->
                 <div x-show="!showPasswordForm">
-                    <x-frontend::forms.button type="button" variant="secondary" size="md" @click="showPasswordForm = true">
-                        {{ __('Change') }}
+                    <x-frontend::forms.button type="button" variant="secondary" size="md" class="w-full sm:w-auto" @click="showPasswordForm = true">
+                        {{ __('Change Password') }}
                     </x-frontend::forms.button>
                 </div>
             </div>
@@ -151,19 +151,7 @@
         </div>
     </div>
     <div class="border border-gray-200 dark:border-gray-800 mb-10">
-        <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
-            <p class="text-gray-800 text-theme-sm dark:text-white/90 basis-[100px] flex-shrink-1 flex-grow-1">
-                {{ __('Security type') }}
-            </p>
-            <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90 w-full sm:w-[418px]">
-                {{ $user->email }}
-            </p>
-            <div class="flex items-center justify-end basis-[100px] flex-shrink-1 flex-grow-1">
-                <x-frontend::forms.button type="button" variant="secondary" size="md" @click="$store.modals.open('emailEdit', {email: '{{ $user->email }}'})">
-                    {{ __('Change') }}
-                </x-frontend::forms.button>
-            </div>
-        </div>
+        @include('frontend::user.setting.include.__two_fa')
     </div>
     
     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -172,11 +160,11 @@
         </h2>
     </div>
     <div class="border border-gray-200 dark:border-gray-800 mb-10">
-        <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-y-3 border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
             <p class="text-gray-800 text-theme-sm dark:text-white/90">
                 {{ __('Log out from all other devices except this one to secure your account.') }}
             </p>
-            <x-frontend::forms.button type="button" variant="secondary" size="md" icon="log-out" iconPosition="left">
+            <x-frontend::forms.button type="button" variant="secondary" size="md" icon="log-out" iconPosition="left" class="w-full sm:w-auto">
                 {{ __('Log out from other devices') }}
             </x-frontend::forms.button>
         </div>

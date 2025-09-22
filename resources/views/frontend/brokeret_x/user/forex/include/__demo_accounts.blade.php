@@ -30,7 +30,10 @@
                             </x-frontend::badge>
                             <h5 class="text-base font-medium mb-0 dark:text-white/90">{{ $account->account_name }}</h5>
                         </div>
-                        @include('frontend::.user.forex.dropdown-menu')
+                        <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
+                            <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
+                            @include('frontend::.user.forex.dropdown-menu')
+                        </div>
                     </div>
                     <ul class="h-full p-3">
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
@@ -115,22 +118,60 @@
                             {{ $account->account_name }} / {{ $account->login }}
                         </h6>
                     </div>
-                    <div class="flex flex-wrap gap-3 justify-between items-center mt-5">
+                    <div class="flex flex-col sm:flex-row gap-3 gap-y-5 sm:justify-between sm:items-center mt-5">
                         <p class="account-balance mb-0 text-gray-800 dark:text-white/90">
                             <span class="text-3xl font-medium">{{ get_mt5_account_balance($account->login) }}</span>
                             <span>{{ $account->currency }}</span>
                         </p>
-                        <div class="action-btns flex items-center gap-3">
-                            <x-frontend::link-button href="{{ route('user.deposit.methods') }}" variant="primary" size="md" icon="download" iconPosition="left">
-                                {{ __('Deposit') }}
-                            </x-frontend::link-button>
-                            <x-frontend::link-button href="{{ route('user.withdraw.view') }}" variant="secondary" size="md" icon="upload" iconPosition="left">
-                                {{ __('Withdraw') }}
-                            </x-frontend::link-button>
-                            <x-frontend::link-button href="javascript:;" variant="outline" size="md" icon="chart-candlestick" iconPosition="left">
-                                {{ __('Trade') }}
-                            </x-frontend::link-button>
-                            @include('frontend::.user.forex.dropdown-menu')
+
+                        <div class="sm:hidden">
+                            <div class="action-btns flex items-center justify-between gap-3">
+                                <a href="{{ route('user.deposit.methods') }}" class="flex flex-col items-center gap-2 text-theme-sm">
+                                    <div class="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center">
+                                        <i data-lucide="download" class="w-5"></i>
+                                    </div>
+                                    {{ __('Deposit') }}
+                                </a>
+                                <a href="{{ route('user.withdraw.view') }}" class="flex flex-col items-center gap-2 text-theme-sm">
+                                    <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                        <i data-lucide="upload" class="w-5"></i>
+                                    </div>
+                                    {{ __('Withdraw') }}
+                                </a>
+                                <a href="javascript:;" class="flex flex-col items-center gap-2 text-theme-sm">
+                                    <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                        <i data-lucide="chart-candlestick" class="w-5"></i>
+                                    </div>
+                                    {{ __('Trade') }}
+                                </a>
+                                <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
+                                    <button @click="openDropDown = !openDropDown" type="button" class="flex flex-col items-center gap-2 text-theme-sm">
+                                        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                            <i data-lucide="more-vertical" class="w-5"></i>
+                                        </div>
+                                        {{ __('More') }}
+                                    </button>
+                                    @include('frontend::.user.forex.dropdown-menu')
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hidden sm:block">
+                            <div class="action-btns flex items-center gap-3">
+                                <x-frontend::link-button href="{{ route('user.deposit.methods') }}" variant="primary" size="md" icon="download" iconPosition="left">
+                                    {{ __('Deposit') }}
+                                </x-frontend::link-button>
+                                <x-frontend::link-button href="{{ route('user.withdraw.view') }}" variant="secondary" size="md" icon="upload" iconPosition="left">
+                                    {{ __('Withdraw') }}
+                                </x-frontend::link-button>
+                                <x-frontend::link-button href="javascript:;" variant="outline" size="md" icon="chart-candlestick" iconPosition="left">
+                                    {{ __('Trade') }}
+                                </x-frontend::link-button>
+                                <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
+                                    <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
+                                    @include('frontend::.user.forex.dropdown-menu')
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

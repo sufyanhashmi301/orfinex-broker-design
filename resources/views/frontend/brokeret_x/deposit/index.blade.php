@@ -10,4 +10,5 @@
         :step-two-class="$isStepTwo ?? ''" />
 
     @yield('deposit_content')
+    
 @endsection

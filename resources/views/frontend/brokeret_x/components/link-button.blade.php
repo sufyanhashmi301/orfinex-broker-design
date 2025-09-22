@@ -5,6 +5,7 @@
     'disabled' => false,
     'icon' => null,
     'iconPosition' => 'left', // left, right
+    'iconOnly' => false, // true for icon-only buttons
     'fullWidth' => false,
     'target' => null,
     'external' => false // Opens in new tab/window
@@ -17,9 +18,9 @@
     ];
     
     $sizeClasses = [
-        'sm' => 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
-        'md' => 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
-        'lg' => 'px-6 py-3 text-base rounded-md gap-2 h-12'
+        'sm' => $iconOnly ? 'p-1.5 text-theme-xs rounded w-8 h-8' : 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
+        'md' => $iconOnly ? 'p-2.5 text-theme-sm rounded-sm w-10 h-10' : 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
+        'lg' => $iconOnly ? 'p-3 text-base rounded-md w-12 h-12' : 'px-6 py-3 text-base rounded-md gap-2 h-12'
     ];
     
     $variantClasses = [
@@ -51,17 +52,21 @@
     @if($relAttr) rel="{{ $relAttr }}" @endif
     {{ $attributes->merge(['class' => implode(' ', array_filter($classes))]) }}
 >
-    @if($icon && $iconPosition === 'left')
-        <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
-    @endif
-    
-    {{ $slot }}
-    
-    @if($icon && $iconPosition === 'right')
-        <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
-    @endif
-    
-    @if($external)
-        <i data-lucide="external-link" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif ml-1 opacity-70"></i>
+    @if($iconOnly && $icon)
+        <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @elseif($size === 'lg') w-5 h-5 @else w-4 h-4 @endif shrink-0"></i>
+    @else
+        @if($icon && $iconPosition === 'left')
+            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
+        @endif
+        
+        {{ $slot }}
+        
+        @if($icon && $iconPosition === 'right')
+            <i data-lucide="{{ $icon }}" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif"></i>
+        @endif
+        
+        @if($external && !$iconOnly)
+            <i data-lucide="external-link" class="@if($size === 'sm') w-3 h-3 @else w-4 h-4 @endif ml-1 opacity-70"></i>
+        @endif
     @endif
 </a>

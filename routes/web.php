@@ -32,6 +32,7 @@ use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\WebhookController;
+use App\Providers\RouteServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,7 +216,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
             //            dd($request->all());
             //            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
-            return redirect(route('user.dashboard'));
+            // return redirect(route('user.dashboard'));
+            return redirect()->intended(RouteServiceProvider::getThemeSpecificHome());
         })->name('2fa.verify');
 
         Route::get('/preference', 'preference')->name('preference');

@@ -131,6 +131,10 @@
             </div>
         </div>
     </div>
+
+    <div class="border-t border-gray-200 dark:border-gray-700 my-10"></div>
+    @include('frontend::include.__contact_widget')
+
 @endsection
 @section('script')
     <script>

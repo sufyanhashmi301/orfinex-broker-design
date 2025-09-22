@@ -163,6 +163,41 @@
     {{-- Modal for OTP--}}
     @include('frontend::withdraw.modal.__otp_form')
 
+    {{-- Modal for GA --}}
+    @include('frontend::withdraw.modal.__ga_form')
+
+    {{-- Choice prompt (professional) --}}
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+         id="authChoiceModal"
+         tabindex="-1"
+         aria-labelledby="authChoiceModalLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body px-6 py-6 text-center">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-primary text-primary bg-opacity-30 mb-5" style="--tw-bg-opacity: 0.3;">
+                        <iconify-icon class="text-4xl" icon="lucide:shield-check"></iconify-icon>
+                    </div>
+                    <div class="title mb-2">
+                        <h4 class="text-xl font-medium dark:text-white capitalize" id="authChoiceModalLabel">
+                            {{ __('Select Verification Method') }}
+                        </h4>
+                    </div>
+                    <p class="dark:text-slate-100">{{ __('Choose how you want to verify this withdrawal request.') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+                        <button type="button" class="btn btn-dark w-full inline-flex items-center justify-center" id="chooseOtpBtn">
+                            {{ __('Email OTP') }}
+                        </button>
+                        <button type="button" class="btn btn-primary w-full inline-flex items-center justify-center" id="chooseGaBtn">
+                            {{ __('Authenticator App') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Modal for Cancel--}}
     @include('frontend::withdraw.modal.__cancel_otp')
 
@@ -247,7 +282,7 @@
             $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
         })
 
-        @if (session('otp') && Carbon::now()->lt(session('otp_expiration')))
+        @if (session()->has('withdrawal_data') && !session('withdraw_auth_required') && session('otp') && Carbon::now()->lt(session('otp_expiration')))
             $(document).ready(function() {
                 $('#otpModal').modal('show');
             });
@@ -287,6 +322,86 @@
 
         })
 
+        // If both options are enabled, show choice modal based on server session flags
+        @if(session('withdraw_auth_required'))
+            $(document).ready(function() {
+                const options = @json(session('withdraw_auth_options'));
+                if (options && options.otp && options.ga) {
+                    $('#authChoiceModal').modal('show');
+                } else if (options && options.ga && !options.otp) {
+                    $('#gaModal').modal('show');
+                } else if (options && options.otp && !options.ga) {
+                    $('#otpModal').modal('show');
+                }
+                @php
+                    session()->forget('withdraw_auth_required');
+                    session()->forget('withdraw_auth_options');
+                @endphp
+            });
+        @endif
+
+        // Choice handlers
+        $('body').on('click', '#chooseGaBtn', function() {
+            $('#authChoiceModal').modal('hide');
+            $('#gaModal').modal('show');
+        });
+        $('body').on('click', '#chooseOtpBtn', function() {
+            $('#authChoiceModal').modal('hide');
+            // Show loader and disable button while sending OTP
+            var $btn = $(this);
+            var originalHtml = $btn.html();
+            $btn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Sending...") }}');
+            if (typeof $('#page-loader').show === 'function') { $('#page-loader').show(); }
+            // Send OTP only when user selects Email OTP
+            $.ajax({
+                url: '{{ route('user.withdraw.otp.resend') }}',
+                method: 'POST',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    tNotify('success', response.message || '{{ __("OTP has been sent. Please verify it to proceed.") }}');
+                    $('#otpModal').modal('show');
+                },
+                error: function(xhr) {
+                    const resp = xhr.responseJSON || {};
+                    tNotify('error', resp.message || '{{ __("Failed to send OTP. Please try again.") }}');
+                },
+                complete: function() {
+                    if (typeof $('#page-loader').hide === 'function') { $('#page-loader').hide(); }
+                    $btn.prop('disabled', false).html(originalHtml);
+                }
+            });
+        });
+
+        // GA submit for withdraw
+        $('body').on('click', '.gaSubmitBtn', function() {
+            const code = $('#gaInput').val();
+            if (!code || code.length !== 6) {
+                tNotify('error', '{{ __("Please enter a valid 6-digit code") }}');
+                return;
+            }
+            $(this).prop('disabled', true).text('{{ __("Verifying...") }}');
+            $.ajax({
+                url: '{{ route('user.withdraw.ga.verify') }}',
+                method: 'POST',
+                data: { _token: '{{ csrf_token() }}', one_time_password: code },
+                success: function(resp) {
+                    tNotify('success', resp.message);
+                    $('#gaModal').modal('hide');
+                    // Submit the form now that GA is verified (session flag set)
+                    $('#withdrawForm').submit();
+                    $('#page-loader').show();
+                },
+                error: function(xhr){
+                    const resp = xhr.responseJSON || { message: '{{ __("Invalid authenticator code.") }}' };
+                    tNotify('error', resp.message);
+                    $('#gaInput').val('').focus();
+                },
+                complete: function(){
+                    $('.gaSubmitBtn').prop('disabled', false).text('{{ __("Verify") }}');
+                }
+            });
+        });
+
         $('body').on('click', '#resendOtpBtn', function(e) {
             e.preventDefault();
 
@@ -313,6 +428,8 @@
         });
 
         $(document).ready(function () {
+            // Ensure modals are appended to body to avoid z-index/stacking issues
+            $('#authChoiceModal, #gaModal, #otpModal').appendTo('body');
             var oldAccountType = '{{ old('account_type') }}';
             if (oldAccountType) {
                 $('input[name="account_type"]').val(oldAccountType);
@@ -326,14 +443,25 @@
             }
         });
 
+        // Cancel OTP -> show confirm modal above (hide OTP first to avoid stacking issues)
         $('body').on('click', '#cancelOtpVerification', function() {
+            $('#otpModal').modal('hide');
             $('#confirmCancelModal').modal('show');
         });
 
+        // When user confirms cancellation, close confirm; OTP stays hidden
         $('body').on('click', '.confirmCancelBtn', function() {
-            // Close both modals
-            $('#otpModal').modal('hide');
+            $('#confirmCancelModal').data('confirmed', true);
             $('#confirmCancelModal').modal('hide');
+        });
+
+        // If user dismisses confirm without confirming, re-open OTP modal
+        $('#confirmCancelModal').on('hidden.bs.modal', function () {
+            const wasConfirmed = !!$(this).data('confirmed');
+            if (!wasConfirmed) {
+                $('#otpModal').modal('show');
+            }
+            $(this).removeData('confirmed');
         });
 
     </script>

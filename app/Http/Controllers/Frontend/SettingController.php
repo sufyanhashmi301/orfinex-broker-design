@@ -302,7 +302,22 @@ class SettingController extends Controller
 
         if ($request->status == 'disable') {
 
-            if (Hash::check(request('one_time_password'), $user->password)) {
+            $inputCodeOrPassword = (string) $request->input('one_time_password');
+
+            // Accept either the user's account password OR a valid Google Authenticator OTP to disable 2FA
+            $google2fa = app('pragmarx.google2fa');
+            $isValidPassword = Hash::check($inputCodeOrPassword, $user->password);
+            $isValidOtp = false;
+
+            if (!empty($user->google2fa_secret) && $inputCodeOrPassword !== '') {
+                try {
+                    $isValidOtp = (bool) $google2fa->verifyKey($user->google2fa_secret, $inputCodeOrPassword);
+                } catch (\Throwable $e) {
+                    $isValidOtp = false;
+                }
+            }
+
+            if ($isValidPassword || $isValidOtp) {
                 $user->update([
                     'two_fa' => 0,
                 ]);
@@ -311,7 +326,7 @@ class SettingController extends Controller
                 return redirect()->back();
             }
 
-            notify()->warning(__('Wrong Your Password'));
+            notify()->warning(__('Incorrect password or one-time code'));
 
             return redirect()->back();
 

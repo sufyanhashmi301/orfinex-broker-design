@@ -57,7 +57,7 @@
     </ul>
 
     @if(count($notifications) > 0)
-        <x-frontend::link-button href="{{ route($notifications->first()->for.'.notification.all') }}" variant="outline" size="md" class="w-full">
+        <x-frontend::link-button href="{{ route($notifications->first()->for.'.notification.all') }}" variant="outline" size="md" class="w-full mt-auto">
             {{ __('View All Notification') }}
         </x-frontend::link-button>
     @endif

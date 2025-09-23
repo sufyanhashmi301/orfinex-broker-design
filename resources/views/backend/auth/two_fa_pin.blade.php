@@ -53,13 +53,18 @@
                         {{ __('Or continue with') }}
                     </div>
                 </div>
-                <div class="mt-6">
+                <div class="mt-6 space-y-3">
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-light inline-flex items-center justify-center w-full">
                             {{ __('Log Out') }}
                         </button>
                     </form>
+                    @if(setting('admin_2fa_enabled','global'))
+                        <a href="{{ route('admin.2fa.verifylogin', ['switch' => 1]) }}" class="btn btn-primary inline-flex items-center justify-center w-full">
+                            {{ __('Login via Email OTP instead') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

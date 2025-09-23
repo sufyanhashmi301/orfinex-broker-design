@@ -96,10 +96,16 @@
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">
-                            {{ __('Country') }}
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Change the country if the user has relocated">
+                                {{ __('Country') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            </span>
                         </label>
-                        <input type="text" class="form-control" name="country" value="{{ $user->country }}"
-                            placeholder="{{ __('Country') }}" @if ($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif />
+                        <select class="select2 form-control w-full" name="country" placeholder="Countries" @if ($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif>
+                            @foreach( getCountries() as $country)
+                                <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="input-area relative">

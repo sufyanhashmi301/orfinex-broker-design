@@ -23,6 +23,8 @@ class PlatformGroupController extends Controller
          $this->middleware('permission:manual-group-create', ['only' => ['storeManualGroup']]);
          $this->middleware('permission:manual-group-edit', ['only' => ['updateManualGroup']]);
          $this->middleware('permission:manual-group-delete', ['only' => ['deleteManualGroup']]);
+         $this->middleware('permission:mt5-groups-delete', ['only' => [ 'resetAll']]);
+
         $this->platformGroupService = $platformGroupService;
     }
 
@@ -222,4 +224,16 @@ class PlatformGroupController extends Controller
     }
 
 
+    public function resetAll(Request $request)
+    {
+        // Delete all platform groups (both MT5-synced and manual)
+        PlatformGroup::query()->delete();
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => __('All platform groups have been reset.')]);
+        }
+
+        notify()->success(__('All platform groups have been reset.'));
+        return redirect()->back();
+    }
 }

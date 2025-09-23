@@ -402,6 +402,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('popup', 'popup')->name('popup');
         Route::get('provider-logo', 'providerLogo')->name('provider-logo');
+        Route::get('admin-auth-logo', 'adminAuthLogo')->name('admin-auth-logo');
         Route::get('auth-covers', 'authCovers')->name('auth-covers');
         Route::post('update-auth-covers', 'updateAuthCovers')->name('update-auth-covers');
     });
@@ -618,7 +619,7 @@ Route::prefix('team')->group(function() {
     });
 
 
-    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin')->withoutMiddleware('2fa_admin');
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
@@ -681,6 +682,7 @@ Route::prefix('team')->group(function() {
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::delete('platform/groups/{id}', [PlatformGroupController::class, 'deleteManualGroup'])->name('group.delete');
+    Route::post('platform/groups/reset-all', [PlatformGroupController::class, 'resetAll'])->name('groups.resetAll');
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');

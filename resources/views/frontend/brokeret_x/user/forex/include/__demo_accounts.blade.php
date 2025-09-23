@@ -32,7 +32,7 @@
                         </div>
                         <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
                             <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
-                            @include('frontend::.user.forex.dropdown-menu')
+                            @include('frontend::user.forex.dropdown-menu')
                         </div>
                     </div>
                     <ul class="h-full p-3">
@@ -126,18 +126,15 @@
 
                         <div class="sm:hidden">
                             <div class="action-btns flex items-center justify-between gap-3">
-                                <a href="{{ route('user.deposit.methods') }}" class="flex flex-col items-center gap-2 text-theme-sm">
+                                <button type="button" class="flex flex-col items-center gap-2 text-theme-sm"
+                                    @click.prevent="$store.modals.open('depositDemo', {
+                                        login: '{{ $account->login }}'
+                                    })">
                                     <div class="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center">
                                         <i data-lucide="download" class="w-5"></i>
                                     </div>
-                                    {{ __('Deposit') }}
-                                </a>
-                                <a href="{{ route('user.withdraw.view') }}" class="flex flex-col items-center gap-2 text-theme-sm">
-                                    <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                                        <i data-lucide="upload" class="w-5"></i>
-                                    </div>
-                                    {{ __('Withdraw') }}
-                                </a>
+                                    {{ __('Set Balance') }}
+                                </button>
                                 <a href="javascript:;" class="flex flex-col items-center gap-2 text-theme-sm">
                                     <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                                         <i data-lucide="chart-candlestick" class="w-5"></i>
@@ -151,25 +148,25 @@
                                         </div>
                                         {{ __('More') }}
                                     </button>
-                                    @include('frontend::.user.forex.dropdown-menu')
+                                    @include('frontend::user.forex.dropdown-menu')
                                 </div>
                             </div>
                         </div>
 
                         <div class="hidden sm:block">
                             <div class="action-btns flex items-center gap-3">
-                                <x-frontend::link-button href="{{ route('user.deposit.methods') }}" variant="primary" size="md" icon="download" iconPosition="left">
-                                    {{ __('Deposit') }}
-                                </x-frontend::link-button>
-                                <x-frontend::link-button href="{{ route('user.withdraw.view') }}" variant="secondary" size="md" icon="upload" iconPosition="left">
-                                    {{ __('Withdraw') }}
-                                </x-frontend::link-button>
+                                <x-frontend::forms.button type="button" variant="primary" size="md" icon="download" iconPosition="left"
+                                    @click.prevent="$store.modals.open('depositDemo', {
+                                        login: '{{ $account->login }}'
+                                    })">
+                                    {{ __('Set Balance') }}
+                                </x-frontend::forms.button>
                                 <x-frontend::link-button href="javascript:;" variant="outline" size="md" icon="chart-candlestick" iconPosition="left">
                                     {{ __('Trade') }}
                                 </x-frontend::link-button>
                                 <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
                                     <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
-                                    @include('frontend::.user.forex.dropdown-menu')
+                                    @include('frontend::user.forex.dropdown-menu')
                                 </div>
                             </div>
                         </div>

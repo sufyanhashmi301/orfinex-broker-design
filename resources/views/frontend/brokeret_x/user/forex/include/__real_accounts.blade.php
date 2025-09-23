@@ -32,7 +32,7 @@
                         </div>
                         <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
                             <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
-                            @include('frontend::.user.forex.dropdown-menu')
+                            @include('frontend::user.forex.dropdown-menu')
                         </div>
                     </div>
                     <ul class="h-full p-3">
@@ -151,7 +151,7 @@
                                         </div>
                                         {{ __('More') }}
                                     </button>
-                                    @include('frontend::.user.forex.dropdown-menu')
+                                    @include('frontend::user.forex.dropdown-menu')
                                 </div>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
                                 </x-frontend::link-button>
                                 <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
                                     <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
-                                    @include('frontend::.user.forex.dropdown-menu')
+                                    @include('frontend::user.forex.dropdown-menu')
                                 </div>
                             </div>
                         </div>

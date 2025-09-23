@@ -7,13 +7,13 @@
       "assets/index.ee9e9ca8.css"
     ]
   },
+  "resources/js/index.css": {
+    "file": "assets/index.ee9e9ca8.css",
+    "src": "resources/js/index.css"
+  },
   "resources/css/style.css": {
     "file": "assets/style.609deb72.css",
     "src": "resources/css/style.css",
     "isEntry": true
-  },
-  "resources/js/index.css": {
-    "file": "assets/index.ee9e9ca8.css",
-    "src": "resources/js/index.css"
   }
 }

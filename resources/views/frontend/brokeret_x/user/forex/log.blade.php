@@ -37,7 +37,7 @@
             <div class="swiper-wrapper items-stretch">
                 @foreach($banners as $banner)
                     <div class="swiper-slide flex-grow !flex !h-auto">
-                        <div class="flex gap-2 border border-gray-100 rounded bg-success-50/50 dark:border-gray-800 w-full h-full">
+                        <div class="flex gap-2 border border-gray-100 rounded bg-success-50/50 cursor-pointer dark:border-gray-800 w-full h-full" onclick="window.location.href='{{ $banner->button_link }}'">
                             <div class="flex-grow-1 flex flex-col gap-1 p-4">
                                 <h4 class="text-theme-sm font-medium">
                                     {{ $banner->title }}
@@ -181,7 +181,7 @@
 @endsection
 
 @section('script')
-    @include('frontend::.user.forex.fx-js')
+    @include('frontend::user.forex.fx-js')
 @endsection
 @section('style')
     <style>

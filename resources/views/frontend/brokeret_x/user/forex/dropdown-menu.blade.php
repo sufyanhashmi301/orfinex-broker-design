@@ -1,14 +1,14 @@
 <div x-show="openDropDown" @click.outside="openDropDown = false" class="shadow-theme-lg dark:bg-gray-dark absolute top-full right-0 z-40 w-max space-y-1 rounded-2xl border border-gray-200 bg-white p-2 dark:border-gray-800">
     <div class="dropdown-header flex justify-around gap-3 border-b dark:border-slate-700 p-3">
         @if($account->account_type == 'demo' && $account->status == \App\Enums\ForexAccountStatus::Ongoing)
-            <a href="{{route('user.deposit.methods')}}" class="text-center text-theme-sm text-gray-500 dark:text-gray-400 dropdown-deposit-demo-account"
+            <a href="javascript:void(0)" class="text-center text-theme-sm text-gray-500 dark:text-gray-400 dropdown-deposit-demo-account"
                 @click.prevent="$store.modals.open('depositDemo', {
                     login: '{{ $account->login }}'
                 })">
                 <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
                     <i data-lucide="download" class="w-5"></i>
                 </div>
-                {{ __('Deposit') }}
+                {{ __('Set Balance') }}
             </a>
         @endif
 

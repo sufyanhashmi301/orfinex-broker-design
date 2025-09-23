@@ -50,8 +50,7 @@
             </li>
         @empty
             <li class="flex flex-col items-center justify-center py-6 text-slate-400 dark:text-slate-500 text-center">
-                <iconify-icon icon="lucide:bell-off" class="text-2xl mb-2"></iconify-icon>
-                <p>{{ __('No new notifications') }}</p>
+                <x-frontend::empty-state subtitle="{{ __('No new notifications') }}" icon="bell-off" />
             </li>
         @endforelse
     </ul>

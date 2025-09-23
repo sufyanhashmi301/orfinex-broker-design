@@ -269,7 +269,7 @@
                     
                     // Validate file size (2MB max)
                     if (file.size > this.maxFileSize * 1024) {
-                        alert('{{ __('File size must be less than 2MB') }}');
+                        notify().warning("File size must be less than 2MB");
                         this.$refs.fileInput.value = '';
                         return;
                     }

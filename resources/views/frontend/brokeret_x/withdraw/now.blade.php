@@ -499,7 +499,6 @@
                         if (form) {
                             // Remove the Alpine.js submit handler temporarily
                             form.removeAttribute('@submit');
-                            
                             // Submit the form normally
                             form.submit();
                         }

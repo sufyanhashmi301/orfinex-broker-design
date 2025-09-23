@@ -32,30 +32,42 @@
             <form x-ref="form" @submit.prevent="$store.modals.depositDemo($refs)" action="{{route('user.deposit.demo.now')}}" method="post">
                 @csrf
                 <input type="hidden" x-ref="login" :value="$store.modals.data.login">
-                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" for="">
-                    {{ __('Amount:') }}
-                </label>
+                <x-frontend::forms.label
+                    fieldId="amount"
+                    fieldLabel="{{ __('Amount') }}"
+                    fieldRequired="true"
+                />
                 <div class="relative">
-                    <input type="text" 
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" 
+                    <x-frontend::forms.input
                         x-ref="amount"
-                        placeholder="{{ __('Enter Amount') }}">
+                        type="text"
+                        placeholder="{{ __('Enter Amount') }}"
+                        fieldId="amount"
+                        fieldRequired="true"
+                    />
                     <small class="text-gray-500 dark:text-gray-400 mt-1">
                         {{ __('You can deposit Maximum $100000 amount') }}
                     </small>
                 </div>
-                <div class="mt-4">
-                    <button 
+                <div class="space-x-2 mt-4">
+                    <x-frontend::forms.button
                         type="submit"
-                        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-3.5 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600 mr-2" 
-                        x-ref="submitBtn">
-                        <i data-lucide="download" class="w-4 h-4"></i>
+                        x-ref="submitBtn"
+                        variant="primary"
+                        size="md"
+                        icon="download"
+                        icon-position="left">
                         {{ __('Deposit') }}
-                    </button>
-                    <a href="#" @click="$store.modals.close()" class="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </x-frontend::forms.button>
+                    <x-frontend::forms.button
+                        type="button"
+                        @click="$store.modals.close()"
+                        variant="outline"
+                        size="md"
+                        icon="x"
+                        icon-position="left">
                         {{ __('Close') }}
-                    </a>
+                    </x-frontend::forms.button>
                 </div>
             </form>
         </div>

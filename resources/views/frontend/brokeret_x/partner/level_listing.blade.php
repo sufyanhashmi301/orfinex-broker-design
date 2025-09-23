@@ -234,12 +234,16 @@
                         let res = await fetch(this.updateUrl, { method: 'POST', body: formData });
                         let data = await res.json();
                         if (data.success) {
+                            this.closeModal();
+                            notify().success(data.message);
                             window.location.reload();
                         } else {
-                            alert(data.message || 'An error occurred');
+                            this.closeModal();
+                            notify().warning(data.message || 'An error occurred');
                         }
                     } catch (e) {
-                        alert('An error occurred. Please try again.');
+                        this.closeModal();
+                        notify().warning('An error occurred. Please try again.');
                     }
                 }
             }

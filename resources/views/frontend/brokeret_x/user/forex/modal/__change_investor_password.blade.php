@@ -32,10 +32,6 @@
             <form @submit.prevent="$store.modals.updateInvestorPassword($refs)">
                 @csrf
                 <input type="hidden" x-ref="login" :value="$store.modals.data.login">
-
-                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" for="">
-                    {{ __('Investor Password:') }}
-                </label>
                 <x-frontend::forms.label
                     fieldId="invest_password"
                     fieldLabel="{{ __('Investor Password') }}"

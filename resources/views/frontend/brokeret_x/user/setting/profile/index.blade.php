@@ -215,21 +215,15 @@
                                 const data = await response.json();
                                 
                                 if (data.success) {
-                                    if (window.tNotify) {
-                                        window.tNotify('success', 'Profile picture updated successfully');
-                                    }
+                                    notify().success('Profile picture updated successfully');
                                     this.closeModal();
                                     setTimeout(() => location.reload(), 1000);
                                 } else {
-                                    if (window.tNotify) {
-                                        window.tNotify('error', 'Upload failed');
-                                    }
+                                    notify().warning('Upload failed');
                                 }
                             } catch (error) {
                                 console.error('Error:', error);
-                                if (window.tNotify) {
-                                    window.tNotify('error', 'Something went wrong');
-                                }
+                                notify().warning('Something went wrong');
                             } finally {
                                 this.isProcessing = false;
                             }
@@ -237,9 +231,7 @@
                         
                     } catch (error) {
                         console.error('Error:', error);
-                        if (window.tNotify) {
-                            window.tNotify('error', 'Something went wrong');
-                        }
+                        notify().warning('Something went wrong');
                         this.isProcessing = false;
                     }
                 }

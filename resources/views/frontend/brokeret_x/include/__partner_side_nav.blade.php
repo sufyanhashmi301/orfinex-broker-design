@@ -51,7 +51,7 @@
                 ],
                 [
                     'route' => 'user.forex-account-logs',
-                    'icon' => 'layout-grid',
+                    'icon' => 'house',
                     'label' => 'Client Area',
                     'show' => true,
                 ],

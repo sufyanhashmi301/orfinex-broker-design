@@ -49,8 +49,8 @@
                     this.html = html
 
                 } catch (e) {
-                    alert('Failed to load form.')
                     this.close()
+                    notify().warning('Failed to load form.')
                 } finally {
                     this.loading = false
                 }
@@ -71,23 +71,21 @@
                     const result = await res.json();
 
                     if (result.success) {
-                        alert(result.success); // Replace with tNotify if available
+                        this.close(); // Hide modal first
+                        notify().success(result.success); // Show notification
                         if (result.reload) {
-                            setTimeout(() => location.reload(), 800);
-                        } else {
-                            this.close();
+                            setTimeout(() => location.reload(), 1200); // Slightly longer delay to see notification
                         }
                     } else if (result.error) {
-                        alert(result.error);
-                        btn.disabled = false;
+                        this.close(); // Hide modal first
+                        notify().warning(result.error); // Show notification
                     } else if (result.errors) {
-                        alert(result.message);
-                        btn.disabled = false;
+                        this.close(); // Hide modal first
+                        notify().warning(result.message); // Show notification
                     }
                 } catch (error) {
-                    alert("Something went wrong!");
-                    console.error(error);
-                    btn.disabled = false;
+                    this.close(); // Hide modal first
+                    notify().warning("Something went wrong!"); // Show notification
                 }
             },
 
@@ -98,7 +96,7 @@
                 const url = $refs.form.getAttribute('action');
 
                 if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-                    alert('Please enter a valid amount.'); // Replace with your validation message system
+                    notify().warning('Please enter a valid amount.');
                     return;
                 }
 
@@ -118,19 +116,21 @@
                 .then(async res => {
                     const result = await res.json();
                     if (res.ok && result.success) {
-                        tNotify('success', result.success);
+                        this.close();
+                        notify().success(result.success);
                         if (result.reload) {
                             setTimeout(() => location.reload(), 900);
                         }
                     } else {
                         const message = result.error || result.message || 'Unknown error.';
-                        tNotify('warning', message);
+                        this.close();
+                        notify().warning(message);
                         btn.disabled = false;
                     }
                 })
                 .catch(err => {
-                    console.error(err);
-                    tNotify('warning', 'Sorry, something went wrong! Please try again.');
+                    this.close();
+                    notify().warning('Sorry, something went wrong! Please try again.');
                     btn.disabled = false;
                 });
             },
@@ -139,7 +139,8 @@
                 const leverage = $refs.leverage.value;
 
                 if (!leverage || leverage === 'default_option') {
-                    alert("Please select a valid leverage option.");
+                    this.close();
+                    notify().warning("Please select a valid leverage option.");
                     return;
                 }
 

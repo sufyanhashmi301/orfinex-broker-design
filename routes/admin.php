@@ -619,7 +619,7 @@ Route::prefix('team')->group(function() {
     });
 
 
-    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin')->withoutMiddleware('2fa_admin');
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 

@@ -329,18 +329,26 @@ class StaffController extends Controller
         $user = \Auth::user();
 
         if ($request->status == 'disable') {
+            // Allow disabling via either Google Authenticator code OR account password
+            session([
+                config('google2fa.session_var') => [
+                    'auth_passed' => false,
+                ],
+            ]);
 
-            if (Hash::check(request('one_time_password'), $user->password)) {
+            $authenticator = app(Authenticator::class)->boot($request);
+            $isGaVerified = $authenticator->isAuthenticated();
+            $isPasswordVerified = Hash::check($request->input('one_time_password'), $user->password);
+
+            if ($isGaVerified || $isPasswordVerified) {
                 $user->update([
                     'two_fa' => 0,
                 ]);
                 notify()->success(__('2Fa Authentication Disable successfully'));
-
                 return redirect()->back();
             }
 
-            notify()->warning(__('Wrong Your Password'));
-
+            notify()->warning(__('Wrong verification. Please enter valid GA code or your password'));
             return redirect()->back();
 
         } elseif ($request->status == 'enable') {

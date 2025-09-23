@@ -23,7 +23,7 @@
             {{ __('Feel free to explore more of our services or check your account for the updated balance.') }}
         </p>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-5">
-            <x-frontend::link-button href="{{ route('user.dashboard') }}" size="lg" variant="primary" icon="home">
+            <x-frontend::link-button href="{{ route('user.forex-account-logs') }}" size="lg" variant="primary" icon="home">
                 {{ __('Go to Dashboard') }}
             </x-frontend::link-button>
             @php

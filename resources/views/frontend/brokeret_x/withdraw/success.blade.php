@@ -30,7 +30,7 @@
                     {{ $notify['a'] }}
                 </x-frontend::link-button>
             @endif
-            <x-frontend::link-button href="{{ route('user.dashboard') }}" class="w-full sm:w-auto" size="lg" variant="secondary" icon="home">
+            <x-frontend::link-button href="{{ route('user.forex-account-logs') }}" class="w-full sm:w-auto" size="lg" variant="secondary" icon="home">
                 {{ __('Go to Dashboard') }}
             </x-frontend::link-button>
         </div>

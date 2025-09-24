@@ -464,5 +464,52 @@
             $(this).removeData('confirmed');
         });
 
+        $('#gaModal').on('show.bs.modal', function () {
+            let $inputs = $(".otp-input");
+
+            // unbind first to prevent duplicate bindings
+            $inputs.off();
+
+            // move to next on input
+            $inputs.on("input", function () {
+                let $this = $(this);
+                let value = $this.val().replace(/\D/g, ""); // allow only digits
+                $this.val(value);
+
+                if (value.length === 1) {
+                    $this.next(".otp-input").focus().select();
+                }
+
+                updateHiddenInput();
+            });
+
+            // move to prev on backspace
+            $inputs.on("keydown", function (e) {
+                if (e.key === "Backspace" && !$(this).val()) {
+                    $(this).prev(".otp-input").focus().select();
+                }
+            });
+
+            // allow paste of full OTP
+            $inputs.first().on("paste", function (e) {
+                let paste = (e.originalEvent || e).clipboardData.getData("text").trim();
+                if (/^\d+$/.test(paste) && paste.length === $inputs.length) {
+                    $inputs.each(function (i) {
+                        $(this).val(paste[i]);
+                    });
+                    updateHiddenInput();
+                    $inputs.last().focus();
+                }
+            });
+
+            function updateHiddenInput() {
+                let otp = "";
+                $inputs.each(function () {
+                    otp += $(this).val();
+                });
+                $("#gaInput").val(otp);
+            }
+        });
+
     </script>
 @endsection

@@ -67,7 +67,7 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'login_bg', // unique name for field
-                'label' => 'Admin Login Cover', // you know what label it is
+                'label' => 'Login/Signup Cover', // you know what label it is
                 'description' => 'Recommended Size 935 x 920',
                 'example_logo' => 'fallback/branding/admin-login-cover.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
@@ -552,6 +552,15 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'admin_2fa_enabled', // unique name for field
+                'label' => 'Admin Email Two-Factor Authentication', // you know what label it is
+                'description' => 'Enable two-factor authentication for admin login using email verification codes',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
         ],
     ],
 
@@ -631,6 +640,24 @@ return [
                 'value' => 0, // default value if you want
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'auto_exchange_rates_update', // unique name for field
+                'label' => 'Auto Exchange Rates Update', // you know what label it is
+                'description' => 'Enable automatic exchange rates updates from external APIs',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value - enabled by default
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'phone_number_restriction', // unique name for field
+                'label' => 'Duplicate Phone Number Restriction', // you know what label it is
+                'description' => 'Restrict one phone number to one user account only',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
@@ -639,6 +666,7 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 10, // default value if you want
             ],
+
         ],
     ],
 
@@ -906,6 +934,27 @@ return [
                 'data' => 'boolean',
                 'name' => 'provider_logo_status',
                 'label' => 'Enable Custom Logo',
+                'rules' => '',
+                'value' => 1,
+            ],
+        ]
+    ],
+    'admin_auth_logo' => [
+        'title' => 'Admin Auth Logo Settings',
+        'elements' => [
+            [
+                'type' => 'file',
+                'data' => 'string',
+                'name' => 'admin_auth_logo_image',
+                'label' => 'Admin Auth Logo Image',
+                'rules' => 'mimes:jpeg,jpg,png,svg|max:2048',
+                'value' => 'backend/images/brokeret_logo.png',
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'admin_auth_logo_status',
+                'label' => 'Enable Admin Auth Logo',
                 'rules' => '',
                 'value' => 1,
             ],
@@ -1592,6 +1641,24 @@ return [
                 'description' => 'Enable this to require an OTP (One-Time Password) for withdrawals',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_account_otp', // unique name for field
+                'label' => 'User Withdraw Account Creation OTP', // you know what label it is
+                'description' => 'Enable this to require an OTP for creating withdraw accounts',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "withdraw_account_approval", // unique name for field
+                "label" => "Withdraw Account Manual Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for withdraw account creation even if withdraw account creation otp is enabled or disabled",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
             ]
         ],
     ],
@@ -1611,6 +1678,19 @@ return [
     'features' => [
         'title' => 'Features Settings',
         'elements' => [
+            [
+                'type' => 'radio', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'deposit_account_mode', // unique name for field
+                'label' => 'Deposit Account Mode', // you know what label it is
+                'description' => 'Choose between default deposit accounts managed by admin or user request-based deposit accounts',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'default_deposit_accounts', // default value - this option will be checked by default
+                'options' => [
+                    'default_deposit_accounts' => 'Default Deposit Accounts',
+                    'request_deposit_accounts' => 'Request Deposit Account',
+                ],
+            ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
@@ -2210,6 +2290,15 @@ return [
         'title' => 'Template Settings',
         'elements' => [
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'email_show_site_logo', // unique name for field
+                'label' => 'Show/Hide Site Logo In Emails Headers', // you know what label it is
+                'description' => 'enable to show or disable to hide the site logo in emails header',
+                'rules' => 'nullable', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
                 'type' => 'textarea', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_disclaimer', // unique name for field
@@ -2319,6 +2408,62 @@ return [
                 'description' => 'Show or hide quick links section on the dashboard',
                 'rules' => 'required',
                 'value' => true,
+            ],
+        ],
+    ],
+    'contact_widget' => [
+        'title' => 'Contact Widget',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_deposit_page',
+                'label' => 'Enable Deposit Page',
+                'description' => 'Show or hide contact widget on the deposit page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_withdraw_page',
+                'label' => 'Enable Withdraw Page',
+                'description' => 'Show or hide contact widget on the withdraw page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_transfer_page',
+                'label' => 'Enable Transfer Page',
+                'description' => 'Show or hide contact widget on the transfer page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+        ],
+    ],
+    // Account Type Settings
+   'account_type_settings' => [
+        'title' => 'Account Type Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'show_global_accounts_with_country_tags',
+                'label' => 'Show Global Accounts with Country & Tags',
+                'description' => 'if enable this it shows global accounts with country and tags if disable it hides the global accounts',
+                'rules' => 'nullable',
+                'value' => 1,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'show_global_accounts_with_ib_rebate_rules',
+                'label' => 'Show Global Accounts with Ib Rebate Rules',
+                'description' => 'if enable this it shows global accounts with Ib Rebate Rule if disable it hides the global accounts',
+                'rules' => 'nullable',
+                'value' => 1,
             ],
         ],
     ],

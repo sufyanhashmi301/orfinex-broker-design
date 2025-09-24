@@ -7,10 +7,24 @@
             </a>
         </li>
          @endcan
+         @can('auth-covers-settings')
+        <li class="nav-item">
+            <a href="{{ route('admin.theme.auth-covers') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.auth-covers') }}">
+                {{ __('Auth Covers') }}
+            </a>
+        </li>
+         @endcan
         @can('provider-logo-settings')
         <li class="nav-item">
             <a href="{{ route('admin.theme.provider-logo') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.provider-logo') }}">
                 {{ __('provider logo') }}
+            </a>
+        </li>
+         @endcan
+         @can('admin-auth-logo-settings')
+        <li class="nav-item">
+            <a href="{{ route('admin.theme.admin-auth-logo') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.admin-auth-logo') }}">
+                {{ __('Admin Auth Logo') }}
             </a>
         </li>
          @endcan

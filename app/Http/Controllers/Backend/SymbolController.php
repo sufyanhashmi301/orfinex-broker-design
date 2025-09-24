@@ -122,5 +122,29 @@ class SymbolController extends Controller
             return back()->with('error', 'Export failed. Please try again.');
         }
     }
+    public function checkSymbolGroups(Request $request, $symbolId)
+{
+    try {
+        $symbol = \App\Models\Symbol::findOrFail($symbolId);
+        
+        // Get symbol groups that contain this symbol using the pivot table
+        $symbolGroups = \App\Models\SymbolGroup::whereHas('symbols', function($query) use ($symbolId) {
+            $query->where('symbols.id', $symbolId);
+        })->select('id', 'title')->get();
+            
+        return response()->json([
+            'success' => true,
+            'symbol' => $symbol->symbol, // assuming your symbol model has a 'symbol' field
+            'groups' => $symbolGroups,
+            'group_count' => $symbolGroups->count()
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Symbol Groups Check Error: " . $e->getMessage());
+        return response()->json([
+            'error' => 'An error occurred while checking symbol groups.'
+        ], 500);
+    }
+}
 }
 

@@ -16,6 +16,50 @@
 @endcan
 @endsection
 @section('symbol-groups-content')
+    <!-- Filters Section -->
+    <div class="card p-6 mb-5">
+        <form id="filter-form" method="POST" action="{{ route('admin.rebateRules.export')}}">
+            @csrf
+            @if(request('filter_rule'))
+                <input type="hidden" name="filter_rule" value="{{ request('filter_rule') }}">
+            @endif
+            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="input-area relative">
+                        <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search Rebate Name, Symbol Group, Account Type, IB Group..." value="{{ request('global_search') }}">
+                    </div>
+                    <div class="input-area relative">
+                        <input type="number" name="total_rebate" id="total_rebate" class="form-control h-full" placeholder="Total Rebate" value="{{ request('total_rebate') }}">
+                    </div>
+                    <div class="input-area relative">
+                        <select name="status" id="status" class="form-control h-full w-full">
+                            <option value="">{{ __('All Status') }}</option>
+                            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                            <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>{{ __('Disabled') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                    <div class="input-area relative">
+                        <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                            {{ __('Filter') }}
+                        </button>
+                    </div>
+                    @can('rebate-rules-export')
+                    <div class="input-area relative">
+                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                            {{ __('Export') }}
+                        </button>
+                    </div>
+                    @endcan
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Main Content -->
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -99,6 +143,140 @@
                     $('#'+field+'-error').text(errors[field][0]).show();
                 }
             }
+
+            // Debounce function
+            let filterTimeout;
+            function debouncedFilter() {
+                clearTimeout(filterTimeout);
+                filterTimeout = setTimeout(function() {
+                    loadRebateRules();
+                }, 500);
+            }
+
+            // AJAX function to load Rebate Rules
+            function loadRebateRules() {
+                const globalSearch = $('#global_search').val();
+                const status = $('#status').val();
+                const totalRebate = $('#total_rebate').val();
+                const filterRule = $('input[name="filter_rule"]').val();
+
+                // Show loading indicator
+
+                const data = {
+                    global_search: globalSearch,
+                    status: status,
+                    total_rebate: totalRebate,
+                    ajax: true
+                };
+
+                // Add filter_rule if present
+                if (filterRule) {
+                    data.filter_rule = filterRule;
+                }
+
+                $.ajax({
+                    url: '{{ route("admin.rebate-rules.index") }}',
+                    method: 'GET',
+                    data: data,
+                    success: function(response) {
+                        // Reload the DataTable with new data
+                        $('#rebate-rules-dataTable').DataTable().ajax.reload();
+                        
+                        // Update export form with current filters
+                        updateExportForm();
+                    },
+                    error: function() {
+                        $('#rebate-rules-dataTable tbody').html('<tr><td colspan="8" class="text-center py-4 text-red-500">Error loading data</td></tr>');
+                    }
+                });
+            }
+
+            // Function to update export form with current filters
+            function updateExportForm() {
+                const globalSearch = $('#global_search').val();
+                const status = $('#status').val();
+                const totalRebate = $('#total_rebate').val();
+                const filterRule = $('input[name="filter_rule"]').val();
+
+                // Only remove hidden inputs, not the visible ones!
+                $('input[type="hidden"][name="global_search"], input[type="hidden"][name="status"], input[type="hidden"][name="total_rebate"]').remove();
+
+                // Add current filter values as hidden inputs
+                if (globalSearch) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'global_search',
+                        value: globalSearch
+                    }).appendTo('#filter-form');
+                }
+                if (status) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'status',
+                        value: status
+                    }).appendTo('#filter-form');
+                }
+                if (totalRebate) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'total_rebate',
+                        value: totalRebate
+                    }).appendTo('#filter-form');
+                }
+                if (filterRule) {
+                    // Update existing filter_rule input or create new one
+                    if ($('input[name="filter_rule"]').length) {
+                        $('input[name="filter_rule"]').val(filterRule);
+                    } else {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'filter_rule',
+                            value: filterRule
+                        }).appendTo('#filter-form');
+                    }
+                }
+            }
+
+            // Remove filter_rule if any other filter is used
+            function clearFilterRuleIfOtherFilters() {
+                const globalSearch = $('#global_search').val();
+                const status = $('#status').val();
+                const totalRebate = $('#total_rebate').val();
+                if (globalSearch || status || totalRebate) {
+                    $('input[name="filter_rule"]').remove();
+                }
+            }
+
+            // Event listeners for filters
+            $('#global_search').on('keyup', function() {
+                if (!$(this).val()) {
+                    // If global_search is empty, remove filter_rule and reload all
+                    $('input[name="filter_rule"]').remove();
+                    debouncedFilter();
+                } else {
+                    clearFilterRuleIfOtherFilters();
+                    debouncedFilter();
+                }
+            });
+
+            $('#status, #total_rebate').on('change', function() {
+                clearFilterRuleIfOtherFilters();
+                debouncedFilter();
+            });
+
+            $('#filter').on('click', function() {
+                clearFilterRuleIfOtherFilters();
+                loadRebateRules();
+            });
+
+            // Pre-populate filters from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            $('#global_search').val(urlParams.get('global_search') || '');
+            $('#status').val(urlParams.get('status') || '');
+            $('#total_rebate').val(urlParams.get('total_rebate') || '');
+            
+            // Initial export form update
+            updateExportForm();
         });
 
        (function ($) {
@@ -123,7 +301,15 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.rebate-rules.index') }}",
+                ajax: {
+                    url: "{{ route('admin.rebate-rules.index') }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                        d.status = $('#status').val();
+                        d.total_rebate = $('#total_rebate').val();
+                        d.filter_rule = $('input[name="filter_rule"]').val();
+                    }
+                },
                 columns: [
                     {data: 'id', name: 'ID',orderable : false},
                     {data: 'title', name: 'Rebate Name',orderable : false},
@@ -207,18 +393,147 @@
     });
 });
 
+$(document).on('click', '.deleteRebateRule', function(e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const deleteUrl = '{{ route("admin.rebate-rules.destroy", ":id") }}'.replace(':id', id);
 
-         $(document).on('click', '.deleteRebateRule', function(event) {
+    // Reset modal state
+    resetDeleteModal(name, deleteUrl);
+    
+    // Show modal
+    $('#deleteRebateRule').modal('show');
+    
+    // Check for attached IB groups
+    checkAttachedGroups(deleteUrl);
+});
 
-            "use strict";
-            event.preventDefault();
-            var id = $(this).data('id');
+$('#rebateRuleDeleteForm').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const deleteUrl = form.attr('action');
+    const table = $('#rebate-rules-dataTable').DataTable();
+    const currentPage = table.page();
 
-            var url = '{{ route("admin.rebate-rules.destroy", ":id") }}';
-            url = url.replace(':id', id);
-            $('#rebateRuleDeleteForm').attr('action', url)
-            $('#deleteRebateRule').modal('show');
-        });
+    // Show loading state on button
+    const submitBtn = form.find('#confirm-delete-btn');
+    submitBtn.prop('disabled', true).html(`
+        <iconify-icon class="spining-icon text-xl ltr:mr-2 rtl:ml-2" icon="svg-spinners:180-ring"></iconify-icon>
+        Deleting...
+    `);
+
+    // Submit deletion request
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hide modal
+                $('#deleteRebateRule').modal('hide');
+                
+                // Show success notification
+                tNotify('success', response.message);
+                
+                // Reload table but maintain page
+                table.ajax.reload(null, false);
+                table.page(currentPage).draw('page');
+            } else {
+                submitBtn.prop('disabled', false).html(`
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    Confirm
+                `);
+                tNotify('error', response.message || 'Error deleting Rebate Rule');
+            }
+        },
+        error: function(xhr) {
+            submitBtn.prop('disabled', false).html(`
+                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                Confirm
+            `);
+
+            let errorMessage = 'Error deleting Rebate Rule';
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMessage = xhr.responseJSON.error;
+            }
+            tNotify('error', errorMessage);
+        }
+    });
+});
+
+// Helper function to reset modal state
+function resetDeleteModal(name = '', deleteUrl = '') {
+    $('#rebateRuleDeleteForm').attr('action', deleteUrl);
+    $('.name').text(name);
+    $('#attached-groups').addClass('hidden');
+    $('#no-groups').addClass('hidden');
+    $('.groups-list').html('');
+    $('#confirm-delete-btn').prop('disabled', false).html(`
+        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+        Confirm
+    `);
+}
+
+// Helper function to check attached IB groups
+function checkAttachedGroups(deleteUrl) {
+    // Show loading state
+    $('#attached-groups').removeClass('hidden');
+    $('.groups-list').html(`
+        <div class="flex items-center justify-center py-4">
+            <iconify-icon icon="svg-spinners:180-ring" class="text-lg mr-2"></iconify-icon>
+            Checking for attached IB groups...
+        </div>
+    `);
+
+    // Check for attached IB groups
+    $.ajax({
+        url: deleteUrl,
+        method: 'POST',
+        data: {
+            _method: 'DELETE',
+            _token: '{{ csrf_token() }}',
+            check_groups: true
+        },
+        success: function(response) {
+            if (response.group_count > 0) {
+                // Show groups list
+                let groupList = '';
+                response.groups.forEach(group => {
+                    groupList += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <span>${group.name}</span>
+                            <span class="text-slate-400 text-sm">ID: ${group.id}</span>
+                        </li>
+                    `;
+                });
+                $('.groups-list').html(groupList);
+                $('#attached-groups').removeClass('hidden');
+                $('#no-groups').addClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', true)
+                    .addClass('opacity-50 cursor-not-allowed');
+            } else {
+                // No groups attached
+                $('.groups-list').html('');
+                $('#attached-groups').addClass('hidden');
+                $('#no-groups').removeClass('hidden');
+                $('#confirm-delete-btn').prop('disabled', false)
+                    .removeClass('opacity-50 cursor-not-allowed');
+            }
+        },
+        error: function(xhr) {
+            $('.groups-list').html(`
+                <div class="text-red-500 py-4">
+                    Error checking for attached IB groups
+                </div>
+            `);
+            $('#confirm-delete-btn').prop('disabled', true);
+        }
+    });
+}
 
        $(document).on('click', '.status-checkbox', function(event) {
     "use strict";

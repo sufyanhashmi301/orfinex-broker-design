@@ -57,5 +57,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsTableSeeder::class);
         $this->call(CustomCssTableSeeder::class);
         $this->call(DepositMethodSeeder::class);
+        $this->call(CommentSeeder::class);
+        $this->call(ManualPlatformGroupsSeeder::class);
     }
 }

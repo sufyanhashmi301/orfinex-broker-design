@@ -23,6 +23,7 @@ use App\Traits\NotifyTrait;
 use App\Enums\TxnTargetType;
 use Illuminate\Http\Request;
 use App\Traits\ForexApiTrait;
+use App\Models\Comment;
 use App\Models\WithdrawMethod;
 use App\Models\WithdrawAccount;
 use App\Models\ForexAccount;
@@ -38,6 +39,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use App\Exports\PendingWithdrawsExport;
+use App\Exports\PendingWithdrawAccountsExport;
+use App\Exports\ApprovedWithdrawAccountsExport;
+use App\Exports\RejectedWithdrawAccountsExport;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -61,6 +65,12 @@ class WithdrawController extends Controller
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);
         $this->middleware('permission:withdraw-export', ['only' => ['export', 'pendingExport']]);
         $this->middleware('permission:withdraw-notification' , ['only' => ['notificationTune']]);
+        $this->middleware('permission:withdraw-account-export', ['only' => ['rejectedAccountsExport', 'approvedAccountsExport', 'pendingAccountsExport']]);
+        $this->middleware('permission:withdraw-account-action', ['only' => ['accountActionModal', 'accountAction']]);
+        $this->middleware('permission:withdraw-account-pending' , ['only' => ['pendingAccounts']]);
+        $this->middleware('permission:withdraw-account-approve' , ['only' => ['approvedAccounts']]);
+        $this->middleware('permission:withdraw-account-rejected' , ['only' => ['rejectedAccounts']]);
+
         $this->forexApiService = $forexApiService;
 
     }
@@ -338,10 +348,14 @@ class WithdrawController extends Controller
      */
     public function withdrawAction($id)
     {
-
         $data = Transaction::find($id);
+        // For transaction withdraw approval modal → show only active 'withdraw_amount' comments
+        $comments = Comment::where('type', 'withdraw_amount')
+            ->where('status', true)
+            ->orderBy('title')
+            ->get(['id','title','description']);
 
-        return view('backend.withdraw.include.__withdraw_action', compact('data', 'id'))->render();
+        return view('backend.withdraw.include.__withdraw_action', compact('data', 'id', 'comments'))->render();
     }
 
     /**
@@ -351,7 +365,9 @@ class WithdrawController extends Controller
     {
         $input = $request->all();
         $id = $input['id'];
-        $approvalCause = $input['message'];
+        $approvalCause = str_replace(['{', '}'], ['<', '>'], $input['message'] ?? 'none');
+
+        // dd($input['message'], $approvalCause);
 
         DB::beginTransaction();
         try {
@@ -376,7 +392,7 @@ class WithdrawController extends Controller
                 '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
-                '[[message]]' => $approvalCause,
+                '[[message]]' =>    ($approvalCause),
                 '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
             ];
 
@@ -509,11 +525,469 @@ class WithdrawController extends Controller
 
             return Excel::download(new WithdrawsExport($request), 'withdraws-history.xlsx');
         }
-        public function pendingExport(Request $request)
-        {
+            public function pendingExport(Request $request)
+    {
 
-            return Excel::download(new PendingWithdrawsExport($request), 'pending-withdraws.xlsx');
+        return Excel::download(new PendingWithdrawsExport($request), 'pending-withdraws.xlsx');
+    }
+
+    /**
+     * Display pending withdraw accounts
+     *
+     * @param Request $request
+     * @return Application|Factory|View|JsonResponse
+     */
+    public function pendingAccounts(Request $request)
+    {
+        $filters = $request->only(['username', 'email', 'created_at']);
+
+        if ($request->ajax()) {
+            $data = WithdrawAccount::where('status', 'pending')
+                ->with(['user', 'method'])
+                ->latest();
+
+            // Apply filters
+            if (!empty($filters['username'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
+                });
+            }
+
+            if (!empty($filters['email'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('email', 'like', '%' . $filters['email'] . '%');
+                });
+            }
+
+            if (!empty($filters['created_at'])) {
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
+            }
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('method_name', function ($row) {
+                    return '<div class="flex items-center">
+                        <div class="flex-none">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex flex-col items-center justify-center text-sm font-medium text-slate-600 dark:text-slate-400">
+                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                            </div>
+                        </div>
+                        <div class="flex-1 text-start ltr:ml-2 rtl:mr-2">
+                            <h4 class="text-sm font-medium text-slate-600 dark:text-white">
+                                ' . $row->method_name . '
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                ' . ($row->method->currency ?? 'N/A') . '
+                            </p>
+                        </div>
+                    </div>';
+                })
+                ->editColumn('status', 'backend.withdraw.include.__account_status')
+                ->addColumn('action', function ($row) {
+                    return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
+                        <iconify-icon icon="lucide:edit"></iconify-icon>
+                    </button>';
+                })
+                ->rawColumns(['created_at', 'username', 'method_name', 'status', 'action'])
+                ->make(true);
         }
+
+        return view('backend.withdraw.pending_accounts');
+    }
+
+    /**
+     * Export pending withdraw accounts
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function pendingAccountsExport(Request $request)
+    {
+        return Excel::download(new PendingWithdrawAccountsExport($request), 'pending-withdraw-accounts.xlsx');
+    }
+
+    /**
+     * Display approved withdraw accounts
+     *
+     * @param Request $request
+     * @return Application|Factory|View|JsonResponse
+     */
+    public function approvedAccounts(Request $request)
+    {
+        $filters = $request->only(['username', 'email', 'created_at']);
+
+        if ($request->ajax()) {
+            $data = WithdrawAccount::where('status', 'approved')
+                ->with(['user', 'method'])
+                ->latest();
+
+            // Apply filters
+            if (!empty($filters['username'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
+                });
+            }
+
+            if (!empty($filters['email'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('email', 'like', '%' . $filters['email'] . '%');
+                });
+            }
+
+            if (!empty($filters['created_at'])) {
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
+            }
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('method_name', function ($row) {
+                    return '<div class="flex items-center">
+                        <div class="flex-none">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex flex-col items-center justify-center text-sm font-medium text-slate-600 dark:text-slate-400">
+                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                            </div>
+                        </div>
+                        <div class="flex-1 text-start ltr:ml-2 rtl:mr-2">
+                            <h4 class="text-sm font-medium text-slate-600 dark:text-white">
+                                ' . $row->method_name . '
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                ' . ($row->method->currency ?? 'N/A') . '
+                            </p>
+                        </div>
+                    </div>';
+                })
+                ->editColumn('status', 'backend.withdraw.include.__account_status')
+                ->addColumn('action', function ($row) {
+                    return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
+                        <iconify-icon icon="lucide:edit"></iconify-icon>
+                    </button>';
+                })
+                ->rawColumns(['created_at', 'username', 'method_name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.withdraw.approved_accounts');
+    }
+
+    /**
+     * Export approved withdraw accounts
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function approvedAccountsExport(Request $request)
+    {
+        return Excel::download(new ApprovedWithdrawAccountsExport($request), 'approved-withdraw-accounts.xlsx');
+    }
+
+    /**
+     * Display rejected withdraw accounts
+     *
+     * @param Request $request
+     * @return Application|Factory|View|JsonResponse
+     */
+    public function rejectedAccounts(Request $request)
+    {
+        $filters = $request->only(['username', 'email', 'created_at']);
+
+        if ($request->ajax()) {
+            $data = WithdrawAccount::where('status', 'rejected')
+                ->with(['user', 'method'])
+                ->latest();
+
+            // Apply filters
+            if (!empty($filters['username'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('username', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('first_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhere('last_name', 'like', '%' . $filters['username'] . '%')
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$filters['username']}%"]);
+                });
+            }
+
+            if (!empty($filters['email'])) {
+                $data = $data->whereHas('user', function($query) use ($filters) {
+                    $query->where('email', 'like', '%' . $filters['email'] . '%');
+                });
+            }
+
+            if (!empty($filters['created_at'])) {
+                // Handle date range format "start_date to end_date"
+                if (strpos($filters['created_at'], ' to ') !== false) {
+                    $dates = explode(' to ', $filters['created_at']);
+                    if (count($dates) == 2) {
+                        $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                        $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                        $data = $data->whereBetween('created_at', [$startDate, $endDate]);
+                    }
+                } else {
+                    // Single date
+                    $data = $data->whereDate('created_at', $filters['created_at']);
+                }
+            }
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('method_name', function ($row) {
+                    return '<div class="flex items-center">
+                        <div class="flex-none">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex flex-col items-center justify-center text-sm font-medium text-slate-600 dark:text-slate-400">
+                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                            </div>
+                        </div>
+                        <div class="flex-1 text-start ltr:ml-2 rtl:mr-2">
+                            <h4 class="text-sm font-medium text-slate-600 dark:text-white">
+                                ' . $row->method_name . '
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                ' . ($row->method->currency ?? 'N/A') . '
+                            </p>
+                        </div>
+                    </div>';
+                })
+                ->editColumn('status', 'backend.withdraw.include.__account_status')
+                ->addColumn('action', function ($row) {
+                    return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
+                        <iconify-icon icon="lucide:edit"></iconify-icon>
+                    </button>';
+                })
+                ->rawColumns(['created_at', 'username', 'method_name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.withdraw.rejected_accounts');
+    }
+
+    /**
+     * Export rejected withdraw accounts
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function rejectedAccountsExport(Request $request)
+    {
+        return Excel::download(new RejectedWithdrawAccountsExport($request), 'rejected-withdraw-accounts.xlsx');
+    }
+
+    /**
+     * Show account action modal
+     *
+     * @param $id
+     * @return string
+     */
+    public function accountActionModal($id)
+    {
+        $data = WithdrawAccount::where('id', get_hash($id))
+            ->with(['user', 'method'])
+            ->first();
+
+        if (!$data) {
+            return '<div class="p-6 text-center text-red-500">' . __('Account not found.') . '</div>';
+        }
+
+        // Debug: Check if user relationship is loaded
+        if (!$data->user) {
+            \Log::error('User relationship not loaded for account ID: ' . $id);
+            return '<div class="p-6 text-center text-red-500">' . __('User data not found.') . '</div>';
+        }
+
+        $comments = Comment::where('type', 'withdraw_account')->where('status', true)->orderBy('title')->get(['id','title','description']);
+
+        return view('backend.withdraw.include.__account_action', compact('data', 'id', 'comments'))->render();
+    }
+
+    /**
+     * Handle account approval/rejection
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function accountAction(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'account_id' => 'required',
+            'action' => 'required|in:approve,reject',
+            'description' => 'nullable|string|max:1000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        try {
+            $accountId = get_hash($request->account_id);
+            $account = WithdrawAccount::where('id', $accountId)
+                ->with(['user', 'method']) // Eager load method for currency
+                ->first();
+
+            if (!$account) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Withdraw account not found.')
+                ]);
+            }
+
+            $action = $request->action;
+            $description = $request->description ?? '';
+            
+         
+            if ($action === 'approve') {
+                $previousStatus = $account->status;
+                $account->status = WithdrawAccount::STATUS_APPROVED;
+                $account->description = $description;
+                $account->save();
+                
+              
+                // Send approval notification
+                $shortcodes = [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[method_name]]' => $account->method_name,
+                    '[[currency]]' => $account->method->currency ?? 'N/A',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                // Debug: Check if email template exists
+                $template = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval')->first();
+                \Log::info('Email template check', [
+                    'template_exists' => $template ? 'Yes' : 'No',
+                    'template_code' => 'withdraw_account_approval',
+                    'user_email' => $account->user->email,
+                    'shortcodes' => $shortcodes
+                ]);
+
+                if ($template) {
+                    try {
+                        $this->mailNotify($account->user->email, 'withdraw_account_approval', $shortcodes);
+                        \Log::info('Withdraw account approval email sent successfully');
+                    } catch (\Exception $e) {
+                        \Log::error('Failed to send withdraw account approval email: ' . $e->getMessage());
+                    }
+                } else {
+                    \Log::error('Email template not found or not active: withdraw_account_approval');
+                }
+
+                try {
+                    $this->pushNotify('withdraw_account_approval', $shortcodes, route('user.withdraw.account.index'), $account->user->id, 'withdraw');
+                    \Log::info('Withdraw account approval push notification sent successfully');
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send withdraw account approval push notification: ' . $e->getMessage());
+                }
+
+                $message = $previousStatus === WithdrawAccount::STATUS_PENDING 
+                    ? __('Withdraw account approved successfully.')
+                    : __('Withdraw account status changed to approved successfully.');
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => $message
+                ]);
+            } else {
+                $previousStatus = $account->status;
+                $account->status = WithdrawAccount::STATUS_REJECTED;
+                $account->description = $description;
+                $account->save();
+                
+              
+
+                // Send rejection notification
+                $shortcodes = [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[method_name]]' => $account->method_name,
+                    '[[currency]]' => $account->method->currency ?? 'N/A',
+                    '[[rejection_reason]]' => $description ?: __('Account rejected by admin'),
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                // Debug: Check if email template exists
+                $template = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_rejection')->first();
+                \Log::info('Email template check', [
+                    'template_exists' => $template ? 'Yes' : 'No',
+                    'template_code' => 'withdraw_account_rejection',
+                    'user_email' => $account->user->email,
+                    'shortcodes' => $shortcodes
+                ]);
+
+                if ($template) {
+                    try {
+                        $this->mailNotify($account->user->email, 'withdraw_account_rejection', $shortcodes);
+                        \Log::info('Withdraw account rejection email sent successfully');
+                    } catch (\Exception $e) {
+                        \Log::error('Failed to send withdraw account rejection email: ' . $e->getMessage());
+                    }
+                } else {
+                    \Log::error('Email template not found or not active: withdraw_account_rejection');
+                }
+
+                try {
+                    $this->pushNotify('withdraw_account_rejection', $shortcodes, route('user.withdraw.account.index'), $account->user->id, 'withdraw');
+                    \Log::info('Withdraw account rejection push notification sent successfully');
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send withdraw account rejection push notification: ' . $e->getMessage());
+                }
+
+                $message = $previousStatus === WithdrawAccount::STATUS_PENDING 
+                    ? __('Withdraw account rejected successfully.')
+                    : __('Withdraw account status changed to rejected successfully.');
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => $message
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Withdraw account action failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => __('An error occurred while processing the request.')
+            ]);
+        }
+    }
 
     public function destroy($id)
     {
@@ -597,6 +1071,7 @@ class WithdrawController extends Controller
             'withdraw_method_id' => $input['withdraw_method_id'],
             'method_name' => $input['method_name'],
             'credentials' => json_encode($credentials),
+            'status' => WithdrawAccount::STATUS_APPROVED, // Admin created accounts are automatically approved
         ];
 
         WithdrawAccount::create($data);
@@ -619,6 +1094,7 @@ class WithdrawController extends Controller
         $wallets = get_all_wallets($userId);
 
         $withdrawAccounts = WithdrawAccount::where('user_id', $userId)
+            ->where('status', WithdrawAccount::STATUS_APPROVED)
             ->get()
             ->reject(function ($account) {
                 return !$account->method->status;

@@ -62,8 +62,9 @@ trait NotifyTrait
             }
         } catch (Exception $e) {
 //            notify()->error('SMTP connection failed', 'Error');
-
-            return false;
+            
+            // Re-throw the exception so it can be caught by calling code
+            throw $e;
         }
     }
 

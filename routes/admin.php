@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\RiskHubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\IBController;
+use App\Http\Controllers\Backend\PaymentDepositController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\SmsController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\NoteController;
+use App\Http\Controllers\Backend\CommentController;
 use App\Http\Controllers\Backend\PageController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
@@ -166,6 +168,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
+    Route::post('ib-group/export', [IBGroupController::class, 'export'])->name('ib-group.export');
 
 
 //===============================  Risk Profile Tag ==================================
@@ -199,6 +202,24 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     });
 
+    //===============================  Payment Deposit Request Management ==================================
+    Route::resource('payment-deposit-form', PaymentDepositController::class)->except(['show']);
+    Route::group(['prefix' => 'payment-deposit', 'as' => 'payment-deposit.', 'controller' => PaymentDepositController::class], function () {
+        Route::get('pending', 'pendingList')->name('pending.list');
+        Route::get('approved', 'approvedList')->name('approved.list');
+        Route::get('rejected', 'rejectedList')->name('rejected.list');
+        Route::get('request/view/{request}', 'requestView')->name('request.view');
+        Route::post('approve', 'approveRequest')->name('approve');
+        Route::post('reject', 'rejectRequest')->name('reject');
+        Route::post('update-bank-details', 'updateBankDetails')->name('update.bank.details');
+        Route::post('reject-approved', 'rejectApproved')->name('reject.approved');
+        Route::post('reset-status', 'resetStatus')->name('reset.status');
+        Route::post('re-approve', 'reApproveRequest')->name('re.approve');
+        Route::get('request/{request}/bank-details', 'getBankDetails')->name('get.bank.details');
+        Route::get('download/{request}/{field}', 'downloadFile')->name('download.file');
+        Route::post('save/form', 'saveForm')->name('save.form');
+    });
+
     //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
     Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
@@ -226,9 +247,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::get('accountType/export', [ForexSchemaController::class, 'export'])->name('accountType.export');
     Route::get('manage-level', [ForexSchemaController::class, 'manageLevel'])->name('manageLevel');
     Route::get('multi-level/view/{id}', [ForexSchemaController::class, 'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
+    Route::get('account-type-settings', [ForexSchemaController::class, 'accountTypeSetting'])->name('settingsAccountType');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
@@ -318,6 +341,14 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('history', 'history')->name('history');
         Route::get('pending', 'pending')->name('pending');
         Route::post('pending/export', 'pendingExport')->name('pending.export');
+        Route::get('pending-accounts', 'pendingAccounts')->name('pending.accounts');
+        Route::post('pending-accounts/export', 'pendingAccountsExport')->name('pending.accounts.export');
+        Route::get('approved-accounts', 'approvedAccounts')->name('approved.accounts');
+        Route::post('approved-accounts/export', 'approvedAccountsExport')->name('approved.accounts.export');
+        Route::get('rejected-accounts', 'rejectedAccounts')->name('rejected.accounts');
+        Route::post('rejected-accounts/export', 'rejectedAccountsExport')->name('rejected.accounts.export');
+        Route::get('account-action/{id}', 'accountActionModal')->name('account.action.modal');
+        Route::post('account-action', 'accountAction')->name('account.action');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
 
@@ -371,11 +402,17 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('popup', 'popup')->name('popup');
         Route::get('provider-logo', 'providerLogo')->name('provider-logo');
+        Route::get('admin-auth-logo', 'adminAuthLogo')->name('admin-auth-logo');
+        Route::get('auth-covers', 'authCovers')->name('auth-covers');
+        Route::post('update-auth-covers', 'updateAuthCovers')->name('update-auth-covers');
     });
 
-    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
-        Route::get('settings', 'pageSetting')->name('setting');
-        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
+        Route::controller(PageController::class)->group(function () {
+            Route::get('settings', 'pageSetting')->name('setting');
+            Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+        });
+        Route::resource('comments', CommentController::class)->except('show');
     });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
@@ -394,6 +431,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
+        Route::post('mt5-connection-test', 'testMT5Connection')->name('mt5.connection.test');
         Route::post('update', 'update')->name('update');
 
         Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
@@ -581,7 +619,7 @@ Route::prefix('team')->group(function() {
     });
 
 
-    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin')->withoutMiddleware('2fa_admin');
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
@@ -609,10 +647,13 @@ Route::prefix('team')->group(function() {
     Route::post('symbols/updateStatus', [SymbolController::class, 'updateStatus'])->name('symbols.updateStatus');
     Route::post('symbols/enableAll', [SymbolController::class, 'enableAll'])->name('symbols.enableAll');
     Route::post('symbols/export', [SymbolController::class, 'export'])->name('symbols.export');
+    Route::post('symbols/{symbol}/check-groups', [SymbolController::class, 'checkSymbolGroups'])->name('symbols.check-groups');
+    Route::post('symbol-groups/export', [SymbolGroupController::class, 'export'])->name('symbol-groups.export');
 
 
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+    Route::post('rebate-rules/export', [RebateRuleController::class, 'export'])->name('rebateRules.export');
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
@@ -641,6 +682,7 @@ Route::prefix('team')->group(function() {
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::delete('platform/groups/{id}', [PlatformGroupController::class, 'deleteManualGroup'])->name('group.delete');
+    Route::post('platform/groups/reset-all', [PlatformGroupController::class, 'resetAll'])->name('groups.resetAll');
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');

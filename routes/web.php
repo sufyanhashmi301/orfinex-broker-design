@@ -159,8 +159,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
     //withdraw
     Route::group(['middleware' => 'KYC', 'prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-        //withdraw methods
-        Route::resource('account', WithdrawController::class)->except('show');
+            //withdraw methods
+    Route::resource('account', WithdrawController::class)->except('show');
+    Route::get('account/{id}', 'show')->name('account.show');
         //user withdraw
         Route::get('/', 'withdraw')->name('view');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');
@@ -172,6 +173,15 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('log/export', 'export')->name('log.export');
         Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
         Route::post('resend-otp', 'resendOtp')->name('otp.resend');
+        // Google Authenticator verification for withdraw and account creation
+        Route::post('verify-ga', 'verifyGaForWithdraw')->name('ga.verify');
+        
+        // OTP verification for account creation
+        Route::get('account/verify-otp', 'showOtpVerification')->name('account.verify-otp');
+        Route::post('account/verify-otp', 'verifyAccountCreationOtp')->name('account.verify-otp.post');
+        Route::post('account/resend-otp', 'resendAccountCreationOtp')->name('account.resend-otp');
+        // Google Authenticator verification for account creation
+        Route::post('account/verify-ga', 'verifyGaForAccountCreation')->name('account.verify-ga.post');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -248,6 +258,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
     Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
     Route::post('match2pay', 'match2payIpn')->name('match2pay');
+    Route::post('uniwire', 'uniwireIpn')->name('uniwire');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');
@@ -285,6 +296,10 @@ Route::get('user/ib-program', [IBController::class, 'index'])->name('user.ib-pro
 Route::post('/ib/transfer/balance', [IBController::class, 'ibTransferBalance'])->name('ib.transfer.balance');
 Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-program.store');
 
+// Payment Deposit Request Routes
+Route::get('user/payment-deposit', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'index'])->name('user.payment-deposit');
+Route::post('user/payment-deposit/store', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'store'])->name('user.payment-deposit.store');
+Route::get('user/payment-deposit/{id}', [\App\Http\Controllers\Frontend\PaymentDepositController::class, 'show'])->name('user.payment-deposit.show');
 
 // Route::post('/ib/transfer/balance', 'IBController@ibTransferBalance')->name('user.ib.transfer.balance');
 
@@ -300,6 +315,10 @@ Route::get('user/agreements', function () {
     $documentLinks = App\Models\DocumentLink::where('status', 1)->get();
     return view('frontend::user.setting.agreements.index', compact('documentLinks'));
 })->name('user.agreements');
+
+Route::get('client-fund-safety', function () {
+    return view('frontend::user.client_fund_safety');
+})->name('user.client-fund-safety');
 
 Route::get('user/margin-account', function () {
     return view('frontend::user.setting.margin.index');
@@ -338,9 +357,17 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
-Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
-Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus']);
+
+// Veriff KYC Routes
+Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');
+Route::post('user/veriff/kyc/status', [\App\Http\Controllers\VeriffController::class, 'updateKycStatus'])->name('user.kyc.veriff.status');
 
 // Webhook Routers
 Route::post('/webhook/{provider}/{action?}', [WebhookController::class, 'handle'])->name('webhook.handle');
+//https://demo.brokeret.com/webhook/sumsub   for sumsub webhook receive
+
 Route::post('webhook/zeptomail', [WebhookController::class, 'handle'])->defaults('provider', 'zeptomail');
+
+
+
+

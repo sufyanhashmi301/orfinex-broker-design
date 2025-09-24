@@ -2,6 +2,56 @@
 @section('title')
     {{ __('Manage Schema') }}
 @endsection
+@section('filters')
+    <form id="filter-form">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="title" id="title" class="form-control h-full filter-input" placeholder="Search by Title">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="trader_type" id="trader_type" class="form-control h-full filter-input" placeholder="Search by Trader Type">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="leverage" id="leverage" class="form-control h-full filter-input" placeholder="Search by Leverage">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="badge" id="badge" class="form-control h-full filter-input" placeholder="Search by Badge">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="status" id="status" class="form-control h-full filter-select">
+                        <option value="">{{ __('Filter by Status') }}</option>
+                        <option value="1">{{ __('Active') }}</option>
+                        <option value="0">{{ __('Deactivated') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="input-area relative">
+                    <button type="button" id="filter-button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+    <button type="button" id="clear-filters" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:x"></iconify-icon>
+        {{ __('Clear') }}
+    </button>
+</div>
+             @can('account-type-export')
+<div class="input-area relative">
+    <button type="button" id="export-button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+        {{ __('Export') }}
+    </button>
+</div>
+@endcan
+            </div>
+        </div>
+    </form>
+@endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -156,56 +206,241 @@
             </div>
         </div>
     </div>
-
+<div id="processingIndicator" class="text-center" style="display: none;">
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
     <!-- Delete Confirmation Modal -->
     @include('backend.forex_schema.include.__delete')
 
 @endsection
-
 @section('script')
-
 <script>
-    $(document).ready(function () {
-        let deleteSchemaId = null;
+ $(document).ready(function () {
+    let deleteSchemaId = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const accountTitle = urlParams.get('title');
 
-        // Event listener for delete buttons
+    // Initialize filters from URL
+    if (accountTitle) {
+        $('#title').val(accountTitle);
+        $('#filters_div').removeClass('hidden');
+    }
+
+    // Debounce function
+    function debounce(func, wait, immediate) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            const later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+ // REFINED fetchRecords function
+function fetchRecords(resetPage = true) {
+    const formData = $('#filter-form').serialize();
+    let url = '{{ route('admin.accountType.index') }}';
+    
+    if (resetPage) {
+        url += '?page=1&' + formData;
+    } else {
+        // This part is not in your original code, but is good practice for pagination clicks
+        const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+        url += '?page=' + currentPage + '&' + formData;
+    }
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        beforeSend: function() {
+            $('#processingIndicator').show();
+        },
+        complete: function() {
+            $('#processingIndicator').hide();
+        },
+        success: function(response) {
+            // Note: Your controller returns JSON {html: '...'}, so access response.html
+            const $responseHtml = $(response.html); 
+            const tableContent = $responseHtml.find('tbody').html();
+            // Assuming your pagination links are inside the main rendered view
+            const paginationContent = $responseHtml.find('.flex.flex-wrap.justify-between.items-center.border-t').last().html();
+
+            $('tbody').html(tableContent);
+            // Replace the entire pagination footer for simplicity and correctness
+            $('.flex.flex-wrap.justify-between.items-center.border-t').last().html(paginationContent);
+            
+            // Update URL
+            updateUrlWithFilters();
+        },
+        error: function(xhr) {
+            console.error('An error occurred during filtering.');
+        }
+    });
+}
+
+
+    // Update URL with current filters
+    function updateUrlWithFilters() {
+        const formData = $('#filter-form').serialize();
+        const newUrl = '{{ route('admin.accountType.index') }}?' + formData;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+
+    // Event listeners for filters
+    $('.filter-input').on('keyup', debounce(function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    }, 500));
+    
+    $('.filter-select').on('change', function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    });
+    
+    $('#filter-button').on('click', function() {
+        fetchRecords(true); // Reset to page 1 when filtering
+    });
+
+   $('#clear-filters').on('click', function() {
+        // Reset all filter inputs
+        $('#filter-form')[0].reset();
+        
+        // Force a fresh load of page 1 with no filters
+        loadFreshPage();
+    });
+      function loadFreshPage() {
+    const freshUrl = '{{ route('admin.accountType.index') }}';
+    
+    $.ajax({
+        url: freshUrl,
+        type: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        beforeSend: function() {
+            $('#processingIndicator').show();
+        },
+        complete: function() {
+            $('#processingIndicator').hide();
+        },
+        success: function(response) {
+            // Note: Your controller returns JSON {html: '...'}, so access response.html
+            const $responseHtml = $(response.html);
+            const tableContent = $responseHtml.find('tbody').html();
+            const paginationContent = $responseHtml.find('.flex.flex-wrap.justify-between.items-center.border-t').last().html();
+
+            $('tbody').html(tableContent);
+            $('.flex.flex-wrap.justify-between.items-center.border-t').last().html(paginationContent);
+            
+            // Reset URL completely
+            window.history.pushState({ path: freshUrl }, '', freshUrl);
+        },
+        error: function(xhr) {
+            console.error('An error occurred while clearing filters.');
+        }
+    });
+}
+    
+    // Pagination links - don't reset page
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        const pageUrl = $(this).attr('href');
+        $.ajax({
+            url: pageUrl,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            beforeSend: function() {
+                $('#processingIndicator').show();
+            },
+            complete: function() {
+                $('#processingIndicator').hide();
+            },
+            success: function(response) {
+                const $response = $(response.html);
+                const tableContent = $response.find('tbody').html();
+                const pagination = $response.find('.pagination-container').html();
+                
+                $('tbody').html(tableContent);
+                $('.pagination-container').html(pagination);
+                updateUrlWithFilters();
+            },
+            error: function(xhr) {
+                console.error('An error occurred during pagination.');
+            }
+        });
+    });
+        // Update export link with current filters
+     // Add this to your $(document).ready function
+$('#export-button').on('click', function() {
+    // Get all filter values
+    const formData = $('#filter-form').serialize();
+    
+    // Create a temporary form
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '{{ route('admin.accountType.export') }}';
+    
+    // Add all filter parameters as hidden inputs
+    const params = new URLSearchParams(formData);
+    for (const [key, value] of params) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+    
+    // Submit the form
+    document.body.appendChild(form);
+    form.submit();
+});
+       
+        // Delete functionality
         $('.delete-schema-btn').on('click', function (e) {
             e.preventDefault();
             deleteSchemaId = $(this).data('id');
             $('#deleteConfirmationModal').modal('show');
         });
 
-        // Event listener for the confirm delete button in the modal
         $('#confirmDeleteButton').on('click', function () {
             const input = $('#deleteConfirmationInput').val();
             if (input.toLowerCase() === 'delete') {
-                // Create a form and submit it
                 const form = $('<form>', {
                     'method': 'POST',
                     'action': '{{ route('admin.accountType.delete', ':id') }}'.replace(':id', deleteSchemaId)
                 });
-
-                // Add the CSRF token and method fields
                 const csrfToken = $('meta[name="csrf-token"]').attr('content');
                 form.append($('<input>', {
                     'type': 'hidden',
                     'name': '_token',
                     'value': csrfToken
                 }));
-
                 form.append($('<input>', {
                     'type': 'hidden',
                     'name': '_method',
                     'value': 'DELETE'
                 }));
-
                 $('body').append(form);
                 form.submit();
             } else {
                 alert('You must type "delete" to confirm.');
             }
         });
-
     });
+      $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
 </script>
 @endsection

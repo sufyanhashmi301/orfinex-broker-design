@@ -1097,6 +1097,11 @@ class SettingsTableSeeder extends Seeder
                 'val' => '0',
             ],
             [
+                'name' => 'withdraw_account_otp',
+                'type' => 'boolean',
+                'val' => '0',
+            ],
+            [
                 'name' => 'site_mobile_logo',
                 'type' => 'string',
                 'val' => 'global/images/d7P7MjUHhzwIBltn4zsm.png',
@@ -1160,6 +1165,11 @@ class SettingsTableSeeder extends Seeder
                 'name' => 'is_mobile_dashboard_quick_link',
                 'type' => 'boolean',
                 'val' => '1',
+            ],
+            [
+                'name' => 'admin_2fa_enabled',
+                'type' => 'boolean',
+                'val' => '0',
             ],
         ];
 

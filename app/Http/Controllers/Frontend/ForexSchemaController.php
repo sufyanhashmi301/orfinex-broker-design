@@ -15,24 +15,63 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-        try {
+        // try {
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
+            // Settings: control visibility of global accounts in different contexts
+            $showGlobalByCountryAndTags = setting('show_global_accounts_with_country_tags', 'account_type_settings');
+            $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
+            $allowGlobalAny = $showGlobalByCountryAndTags || $showGlobalWithIbRebateRules;
     
             // Get user's master IB status
             $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
                 ->where('meta_key', 'is_part_of_master_ib')
                 ->value('meta_value');
-                // dd($isPartOfMasterIb);  
     
             // Base query for all schemas
             $baseQuery = ForexSchema::active()->traderType();
     
-            // If user is NOT part of master IB, show ALL accounts immediately
+            // If user is NOT part of master IB, apply filtering based on priority rules
             if (!$isPartOfMasterIb) {
                 $schemas = $baseQuery
-                ->relevantForUser($user->country, $tagNames)
-                ->orWhere('account_category_id', 1)
+                ->where(function($query) use ($user, $tagNames, $allowGlobalAny) {
+                    // Global accounts visibility controlled by setting; when enabled, show if relevant by country/tag
+                    if ($allowGlobalAny) {
+                        $query->where(function($q) use ($user, $tagNames) {
+                            $q->where('account_category_id', 1)
+                              ->where(function($globalMatch) use ($user, $tagNames) {
+                                  $globalMatch
+                                      // Match by country/tags when defined
+                                      ->where(function($matchQuery) use ($user, $tagNames) {
+                                          $matchQuery->relevantForUser($user->country, $tagNames);
+                                      })
+                                      // Fallback: include when no country/tags configured (treat as truly global)
+                                      ->orWhereNull('country')
+                                      ->orWhereJsonLength('country', 0)
+                                      ->orWhereNull('tags')
+                                      ->orWhereJsonLength('tags', 0);
+                              });
+                        })
+                        // Non-global accounts show based on tag/country matching
+                        ->orWhere(function($subQuery) use ($user, $tagNames) {
+                            $subQuery->where('account_category_id', '!=', 1)
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    });
+                        });
+                    } else {
+                        // Only non-global accounts based on tag/country matching
+                        $query->where(function($subQuery) use ($user, $tagNames) {
+                            $subQuery->where('account_category_id', '!=', 1)
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    });
+                        });
+                    }
+                    // Always include schemas explicitly marked as global
+                    $query->orWhere('is_global', 1);
+                })
                 ->get()
                     ->unique('id')
                     ->sortBy('priority')
@@ -47,48 +86,88 @@ class ForexSchemaController extends Controller
             }
     
             // Initialize collections
-            $userSchemas = $baseQuery->clone()
-                ->relevantForUser($user->country, $tagNames)
-                ->get();
-    
             $schemas = collect();
             $globalSchemasFromRules = collect(); // For global accounts from rebate rules
             $globalSchemasFromSetting = collect(); // For global accounts from IB group setting
     
             if ($isPartOfMasterIb) {
-                $ibGroup = IbGroup::with(['rebateRules.forexSchemas'])->find($isPartOfMasterIb);
+                // CHANGED: Added traderType filter to the eager load
+                $ibGroup = IbGroup::with(['rebateRules.forexSchemas' => function($query) {
+                    $query->active()->traderType();
+                }])->find($isPartOfMasterIb);
     
                 if ($ibGroup) {
-                    // Get ALL schemas from rebate rules (including global accounts)
+                    // Rule 2: Get schemas from rebate rules; global visibility controlled by setting
                     foreach ($ibGroup->rebateRules as $rule) {
                         $ruleSchemas = $rule->forexSchemas()
                             ->where('status', true)
+                            ->traderType()
+                            ->active()
                             ->get();
-                        
+
+                        if (!$allowGlobalAny) {
+                            // Exclude global accounts from rebate rules when setting is off
+                            $ruleSchemas = $ruleSchemas->filter(function ($schema) {
+                                return ($schema->is_global == 1) || ($schema->account_category_id != 1);
+                            });
+                        }
+
+                        // Add rule schemas
                         $schemas = $schemas->merge($ruleSchemas);
-                        
-                        // Collect global accounts from rebate rules
-                        $globalSchemasFromRules = $globalSchemasFromRules->merge(
-                            $ruleSchemas->where('account_category_id', 1)
-                        );
+
+                        // Track global accounts from rebate rules only if allowed
+                        if ($allowGlobalAny) {
+                            $globalSchemasFromRules = $globalSchemasFromRules->merge(
+                                $ruleSchemas->where('account_category_id', 1)
+                            );
+                        }
                     }
-    
-                    // Include additional global schemas if IB group has global access enabled
-                    if ($ibGroup->is_global_account) {
+
+                    // Additionally include global accounts (by country/tag) only if allowed by setting
+                    if ($allowGlobalAny) {
                         $globalSchemasFromSetting = $baseQuery->clone()
                             ->where('account_category_id', 1)
+                            ->where(function($globalMatch) use ($user, $tagNames) {
+                                $globalMatch
+                                    ->where(function($matchQuery) use ($user, $tagNames) {
+                                        $matchQuery->relevantForUser($user->country, $tagNames);
+                                    })
+                                    ->orWhereNull('country')
+                                    ->orWhereJsonLength('country', 0)
+                                    ->orWhereNull('tags')
+                                    ->orWhereJsonLength('tags', 0);
+                            })
                             ->whereNotIn('id', $globalSchemasFromRules->pluck('id')) // Avoid duplicates
                             ->get();
                     }
                 }
+                // Always include schemas explicitly marked as global
+                $alwaysGlobalSchemas = $baseQuery->clone()
+                    ->where('is_global', 1)
+                    ->get();
+                $schemas = $schemas->merge($alwaysGlobalSchemas);
             }
     
+            // For IB users, also include accounts that match their country/tag but are not global or part of IB group
+            if ($isPartOfMasterIb) {
+                $existingSchemaIds = $schemas->merge($globalSchemasFromSetting)->pluck('id')->toArray();
+                
+                $additionalSchemas = $baseQuery->clone()
+                    ->where('account_category_id', '!=', 1) // Not global
+                    ->whereNotIn('id', $existingSchemaIds) // Not already included from IB group
+                    ->where(function($query) use ($user, $tagNames) {
+                        $query->relevantForUser($user->country, $tagNames);
+                    })
+                    ->get();
+                
+                $schemas = $schemas->merge($additionalSchemas);
+            }
+
             // Merge all schemas:
             // 1. Schemas from rebate rules (including global accounts)
-            // 2. User-specific schemas
-            // 3. Additional global schemas if enabled
-            $schemas = $schemas->merge($userSchemas)
-                ->merge($globalSchemasFromSetting)
+            // 2. Additional global schemas if enabled
+            // 3. Additional country/tag matching schemas for IB users
+            $schemas = $schemas->merge($globalSchemasFromSetting)
                 ->unique('id')
                 ->sortBy('priority')
                 ->values();
@@ -99,34 +178,72 @@ class ForexSchemaController extends Controller
                 ->get();
     
             return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
-    
-        } catch (\Exception $e) {
-            \Log::error('Error in ForexSchemaController@index', [
-                'user_id' => auth()->id(),
-                'message' => $e->getMessage(),
-            ]);
-    
-            return redirect()->back()->withErrors(['An unexpected error occurred. Please try again later.']);
-        }
     }
-
+    
     public function schemaPreview($id)
     {
         $id = get_hash($id);
-        $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        $schemas = ForexSchema::where('status', true)
-            ->where(function($query) use ($tagNames) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All')
-                    ->orWhere(function($subQuery) use ($tagNames) {
-                        foreach ($tagNames as $tagName) {
-                            $subQuery->orWhereJsonContains('tags', $tagName);
-                        }
+        $user = auth()->user();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        
+        // Get user's master IB status
+        $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
+            ->where('meta_key', 'is_part_of_master_ib')
+            ->value('meta_value');
+        
+        $baseQuery = ForexSchema::active()->traderType();
+        
+        if (!$isPartOfMasterIb) {
+            // Non-IB users: Global accounts + tag/country matching accounts
+            $schemas = $baseQuery
+                ->where(function($query) use ($user, $tagNames) {
+                    $query->where('account_category_id', 1) // Global accounts
+                    ->orWhere(function($subQuery) use ($user, $tagNames) {
+                        $subQuery->where('account_category_id', '!=', 1)
+                                ->relevantForUser($user->country, $tagNames);
                     });
-            })
-            ->orderBy('priority', 'asc')
-            ->get();
-//        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
+                })
+                ->orderBy('priority', 'asc')
+                ->get();
+        } else {
+            // IB users: All schemas from their group + global accounts
+            $schemas = collect();
+            $ibGroup = IbGroup::with(['rebateRules.forexSchemas' => function($query) {
+                $query->active()->traderType();
+            }])->find($isPartOfMasterIb);
+            
+            if ($ibGroup) {
+                foreach ($ibGroup->rebateRules as $rule) {
+                    $ruleSchemas = $rule->forexSchemas()
+                        ->where('status', true)
+                        ->traderType()
+                        ->active()
+                        ->get();
+                    $schemas = $schemas->merge($ruleSchemas);
+                }
+                
+                // IB users ALWAYS see global accounts regardless of is_global_account setting
+                $globalSchemas = $baseQuery->clone()
+                    ->where('account_category_id', 1)
+                    ->get();
+                $schemas = $schemas->merge($globalSchemas);
+                
+                // Also include accounts that match country/tag but are not global or part of IB group
+                $existingSchemaIds = $schemas->pluck('id')->toArray();
+                $additionalSchemas = $baseQuery->clone()
+                    ->where('account_category_id', '!=', 1) // Not global
+                    ->whereNotIn('id', $existingSchemaIds) // Not already included from IB group
+                    ->where(function($query) use ($user, $tagNames) {
+                        $query->relevantForUser($user->country, $tagNames);
+                    })
+                    ->get();
+                
+                $schemas = $schemas->merge($additionalSchemas);
+            }
+            
+            $schemas = $schemas->unique('id')->sortBy('priority')->values();
+        }
+            
         $schema = ForexSchema::find($id);
 
         return view('frontend::forex_schema.preview', compact('schema', 'schemas'));

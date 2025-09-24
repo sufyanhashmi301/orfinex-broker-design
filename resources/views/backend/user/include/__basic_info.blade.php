@@ -45,15 +45,16 @@
                         </select>
                     </div>
 
-                    <div class="input-area relative">
-                        <label for="" class="form-label">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Edit the user's phone number">
-                                {{ __('Phone') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                            </span>
-                        </label>
-                        <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
-                    </div>
+                  <div class="input-area relative phone-input-wrapper">
+    <label for="" class="form-label">
+        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Edit the user's phone number">
+            {{ __('Phone') }}
+            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+        </span>
+    </label>
+    <input type="tel" name="phone" class="form-control" value="{{ safe($user->phone) }}" id="phone" placeholder="{{ __('Phone Number') }}">
+    <input type="hidden" name="formatted_phone" id="formatted_phone" value="{{ safe($user->phone) }}">
+</div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
                             <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Modify the username (used for login)">
@@ -221,5 +222,52 @@
         </div>
     </div>
     @endcan
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.querySelector("#phone");
+        if (phoneInput) {
+            // Initialize intlTelInput
+            const iti = window.intlTelInput(phoneInput, {
+                initialCountry: "auto",
+                showSelectedDialCode: true,
+                utilsScript: "{{ asset('frontend/js/utils.js') }}",
+                separateDialCode: false,
+                formatOnDisplay: true
+            });
 
+            // Set the initial value
+            const userPhone = '{{ $user->phone }}';
+            if (userPhone) {
+                iti.setNumber(userPhone);
+            }
+
+            // Intercept form submission to ensure phone number with country code is captured
+            const form = phoneInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    try {
+                        // Get the full formatted phone number with country code
+                        const formattedNumber = iti.getNumber();
+                        const isValid = iti.isValidNumber();
+                        
+                        if (formattedNumber && isValid) {
+                            // Update the phone input with the full formatted number
+                            phoneInput.value = formattedNumber;
+                            
+                            // Also update the hidden formatted_phone field if it exists
+                            const formattedPhoneField = document.getElementById('formatted_phone');
+                            if (formattedPhoneField) {
+                                formattedPhoneField.value = formattedNumber;
+                            }
+                        }
+                    } catch (error) {
+                        // Continue with form submission even if there's an error
+                    }
+                });
+            }
+        }
+        
+    });
+</script>
+  
 </div>

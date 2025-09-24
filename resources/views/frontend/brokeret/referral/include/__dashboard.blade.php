@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <div class="flex-1">
-                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('IB Balance') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="flex-1">
-                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('IB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="flex-1">
-                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                    <div class="text-slate-600 dark:text-slate-100 text-sm mb-1 font-medium">
                         {{ __('IB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">

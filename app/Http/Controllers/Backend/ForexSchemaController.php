@@ -21,6 +21,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AccountTypesExport;
 
 class ForexSchemaController extends Controller
 {
@@ -44,12 +46,75 @@ class ForexSchemaController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])->orderBy('priority','asc')->traderType()->paginate(10);
-
+        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])
+            ->orderBy('priority', 'asc')
+            ->traderType();
+    
+        // Apply filters
+        if ($request->filled('title')) {
+            $schemas->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+        if ($request->filled('trader_type')) {
+            $schemas->where('trader_type', 'like', '%' . $request->input('trader_type') . '%');
+        }
+        if ($request->filled('leverage')) {
+            $schemas->where('leverage', 'like', '%' . $request->input('leverage') . '%');
+        }
+        if ($request->filled('badge')) {
+            $schemas->where('badge', 'like', '%' . $request->input('badge') . '%');
+        }
+        if ($request->filled('status') && in_array($request->input('status'), ['0', '1'])) {
+            $schemas->where('status', $request->input('status'));
+        }
+    
+        // Force page 1 when filters change
+        if ($request->hasAny(['title', 'trader_type', 'leverage', 'badge', 'status']) && !$request->ajax()) {
+            $request->merge(['page' => 1]);
+        }
+    
+        $schemas = $schemas->paginate(10);
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('backend.forex_schema.index', compact('schemas'))->render(),
+                'current_page' => $schemas->currentPage(),
+                'filters_active' => $request->anyFilled(['title', 'trader_type', 'leverage', 'badge', 'status'])
+            ]);
+        }
+    
         return view('backend.forex_schema.index', compact('schemas'));
+    }
+    
+    public function export(Request $request)
+    {
+        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])
+            ->orderBy('priority', 'asc')
+            ->traderType();
+    
+        // Apply the same filters as index method
+        if ($request->filled('title')) {
+            $schemas->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+        if ($request->filled('trader_type')) {
+            $schemas->where('trader_type', 'like', '%' . $request->input('trader_type') . '%');
+        }
+        if ($request->filled('leverage')) {
+            $schemas->where('leverage', 'like', '%' . $request->input('leverage') . '%');
+        }
+        if ($request->filled('badge')) {
+            $schemas->where('badge', 'like', '%' . $request->input('badge') . '%');
+        }
+        if ($request->filled('status') && in_array($request->input('status'), ['0', '1'])) {
+            $schemas->where('status', $request->input('status'));
+        }
+    
+        // Get the filtered schemas
+        $schemas = $schemas->get();
+    
+        // Use the export class
+        return Excel::download(new AccountTypesExport($schemas), 'account_types_' . date('Y-m-d') . '.xlsx');
     }
 
     /**
@@ -283,5 +348,9 @@ class ForexSchemaController extends Controller
         notify()->success('schema deleted successfully');
 
         return redirect()->route('admin.accountType.index');
+    }
+    public static function accountTypeSetting()
+    {
+        return view('backend.forex_schema.account_type_settings');
     }
 }

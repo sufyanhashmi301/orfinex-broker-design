@@ -90,6 +90,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Withdraw Management', 'name' => 'withdraw-reject'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-auto-approve'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
+            
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-pending'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-approve'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-rejected'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-action'],
+            ['category' => 'Withdraw Accounts Management', 'name' => 'withdraw-account-export'],
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],
@@ -112,6 +118,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Account Type Management', 'name' => 'account-type-create'],
             ['category' => 'Account Type Management', 'name' => 'account-type-edit'],
             ['category' => 'Account Type Management', 'name' => 'account-type-delete'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-export'],
 
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
@@ -159,19 +166,25 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Multi IB Levels', 'name' => 'multi-ib-level-delete'],
 
             ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbols-export'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-edit'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-delete'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbol-group-export'],
+
 
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-list'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-export'],
 
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-list'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-create'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-edit'],
             ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-delete'],
+            ['category' => 'Partnership IB Groups Setting', 'name' => 'ib-group-export'],
+
 
             ['category' => 'Setting Management', 'name' => 'site-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
@@ -287,7 +300,13 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'theme-settings'],
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
             ['category' => 'Website Setting', 'name' => 'provider-logo-settings'],
+            ['category' => 'Website Setting', 'name' => 'auth-covers-settings'],
+            ['category' => 'Website Setting', 'name' => 'admin-auth-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
+            ['category' => 'Website Setting', 'name' => 'comments-settings'],
+            ['category' => 'Website Setting', 'name' => 'comments-create-settings'],
+            ['category' => 'Website Setting', 'name' => 'comments-edit-settings'],
+            ['category' => 'Website Setting', 'name' => 'comments-delete-settings'],
             ['category' => 'Website Setting', 'name' => 'banner-settings'],
             ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
             ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
@@ -310,6 +329,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
 
             ['category' => 'Platform Groups Setting', 'name' => 'mt5-group-list'],
+            ['category' => 'Platform Groups Setting', 'name' => 'mt5-groups-delete'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-list'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-create'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-edit'],

@@ -75,8 +75,9 @@ class DepositController extends Controller
     {
         $gateways = Gateway::where('status', true)->get();
         $rates_with_countries = Rate::with('country')->get();
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
 
-        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries'));
+        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled'));
     }
 
     public function methodStore(Request $request)
@@ -128,6 +129,7 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
@@ -143,8 +145,9 @@ class DepositController extends Controller
         $gateways = Gateway::where('status', true)->get();
         $method = DepositMethod::find(\request('id'));
         $supported_currencies = Gateway::find($method->gateway_id)->supported_currencies ?? [];
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
 
-        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies'));
+        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled'));
     }
 
     public function methodUpdate($id, Request $request)
@@ -206,6 +209,7 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? $input['payment_details'] : null,
         ];

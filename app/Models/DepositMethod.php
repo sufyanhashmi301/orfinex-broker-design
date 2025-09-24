@@ -12,6 +12,7 @@ class DepositMethod extends Model
     protected $guarded = ['id'];
     protected $casts = [
         'country' => 'array',
+        'is_custom_bank_details' => 'boolean',
     ];
     protected $appends = [
         'gateway_logo',

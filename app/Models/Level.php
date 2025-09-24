@@ -23,6 +23,12 @@ use Illuminate\Database\Eloquent\Model;
 class Level extends Model
 {
 	protected $table = 'levels';
+	
+	// Enable auto-incrementing but we'll manually override when needed
+	public $incrementing = true;
+	
+	// Specify the key type
+	protected $keyType = 'int';
 
 	protected $casts = [
 		'level_order' => 'int'

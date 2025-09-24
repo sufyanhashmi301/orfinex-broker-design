@@ -13,6 +13,9 @@ use App\Models\UserIbRule;
 use App\Services\RebateRuleService;
 use Illuminate\Http\Request;
 use DataTables;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RebateRuleExport;
+
 class RebateRuleController extends Controller
 {
     protected $rebateRuleService;
@@ -24,23 +27,72 @@ class RebateRuleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = RebateRule::with(['symbolGroups', 'forexSchemas'])->get();
+            $query = RebateRule::with(['symbolGroups', 'forexSchemas', 'ibGroups']);
+
+            // Global search
+            if ($request->filled('global_search')) {
+                $search = $request->global_search;
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhereHas('symbolGroups', function($subQuery) use ($search) {
+                          $subQuery->where('title', 'like', "%{$search}%");
+                      })
+                      ->orWhereHas('forexSchemas', function($subQuery) use ($search) {
+                          $subQuery->where('title', 'like', "%{$search}%");
+                      })
+                      ->orWhereHas('ibGroups', function($subQuery) use ($search) {
+                          $subQuery->where('name', 'like', "%{$search}%");
+                      });
+                });
+            }
+
+            // Filter by status
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Filter by total rebate
+            if ($request->filled('total_rebate')) {
+                $query->where('rebate_amount', $request->total_rebate);
+            }
+
+            // Handle direct filter links
+            if ($request->filled('filter_rule')) {
+                $query->where('id', $request->filter_rule);
+            }
+
+            $data = $query->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('symbolGroups', function($row) {
                     return view('backend.rebate_rules.include.__symbol_groups', [
-                        'symbolGroups' => $row->symbolGroups->pluck('title')
+                        'symbolGroups' => $row->symbolGroups->map(function($symbolGroup) {
+                            return [
+                                'id' => $symbolGroup->id,
+                                'title' => $symbolGroup->title
+                            ];
+                        })
                     ])->render();
                 })
                 ->addColumn('forexSchemas', function($row) {
                     return view('backend.rebate_rules.include.__forex_schemas', [
-                        'forexSchemas' => $row->forexSchemas->pluck('title')
+                        'forexSchemas' => $row->forexSchemas->map(function($schema) {
+                            return [
+                                'id' => $schema->id,
+                                'title' => $schema->title
+                            ];
+                        })
                     ])->render();
                 })
                 ->addColumn('ibGroups', function($row) {
                     return view('backend.rebate_rules.include.__ib_groups', [
-                        'ibGroups' => $row->ibGroups->pluck('name')
+                        'ibGroups' => $row->ibGroups->map(function($ibGroup) {
+                            return [
+                                'id' => $ibGroup->id,
+                                'name' => $ibGroup->name
+                            ];
+                        })
                     ])->render();
                 })
                 ->addColumn('status', 'backend.rebate_rules.include.__status')
@@ -52,6 +104,47 @@ class RebateRuleController extends Controller
         $forexSchemas = ForexSchema::pluck('title', 'id')->toArray(); // Fetch Forex Schemas
 
         return view('backend.rebate_rules.all',[ 'ibGroups' => $ibGroups,'forexSchemas' => $forexSchemas]);
+    }
+
+    public function export(Request $request)
+    {
+        $query = RebateRule::with(['symbolGroups', 'forexSchemas', 'ibGroups']);
+
+        // Global search
+        if ($request->filled('global_search')) {
+            $search = $request->global_search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('symbolGroups', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('forexSchemas', function($subQuery) use ($search) {
+                      $subQuery->where('title', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('ibGroups', function($subQuery) use ($search) {
+                      $subQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by total rebate
+        if ($request->filled('total_rebate')) {
+            $query->where('rebate_amount', $request->total_rebate);
+        }
+
+        // Handle direct filter links
+        if ($request->filled('filter_rule')) {
+            $query->where('id', $request->filter_rule);
+        }
+
+        $rebateRules = $query->get();
+
+        return Excel::download(new RebateRuleExport($rebateRules), 'rebate-rules-' . date('Y-m-d') . '.xlsx');
     }
 
 
@@ -110,17 +203,59 @@ class RebateRuleController extends Controller
     }
 
 
-    public function destroy(RebateRule $rebateRule)
+    public function destroy(Request $request, RebateRule $rebateRule)
     {
-        if($rebateRule->ibGroups()->count() > 0) {
-            notify()->error(__('Sorry,Cannot delete this rebate rule because it is still associated with Ib group. Please detach the levels first'));
+        try {
+            // Handle the AJAX request to check for attached IB Groups
+            if ($request->has('check_groups')) {
+                $ibGroups = $rebateRule->ibGroups()
+                    ->select('ib_groups.id', 'ib_groups.name')
+                    ->get();
+                
+                return response()->json([
+                    'success' => true,
+                    'groups' => $ibGroups,
+                    'group_count' => $ibGroups->count()
+                ]);
+            }
+    
+            // Check for attached groups before actual deletion
+            if ($rebateRule->ibGroups()->exists()) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'error' => 'Cannot delete this rule because it is associated with IB groups.'
+                    ], 422);
+                }
+                notify()->error(__('Cannot delete this rule. Please detach associated IB groups first.'));
+                return redirect()->back();
+            }
+    
+            // Proceed with deletion
+            $rebateRule->delete();
+    
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Rebate Rule deleted successfully.'
+                ]);
+            }
+    
+            notify()->success(__('Rebate Rule deleted successfully.'));
+            return redirect()->route('admin.rebate-rules.index');
+    
+        } catch (\Exception $e) {
+            \Log::error("Rebate Rule Deletion Error: " . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 'An error occurred while processing your request.'
+                ], 500);
+            }
+    
+            notify()->error(__('An error occurred. Please try again.'), 'Error');
             return redirect()->back();
         }
-        $this->rebateRuleService->delete($rebateRule);
-        notify()->success(__('Rebate Rule deleted successfully.'));
-        return redirect()->route('admin.rebate-rules.index');
     }
-
     public function updateStatus(Request $request)
     {
         $rebateRule = RebateRule::find($request->id);

@@ -7,15 +7,15 @@
         </div>
         <div class="text-start inline-flex items-center rounded border border-slate-100 dark:border-slate-700 gap-3 p-2 py-1 pl-8">
             @if($me)
-                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap py-2">
+                <h4 class="text-sm font-medium text-slate-600 dark:text-white whitespace-nowrap py-2">
                     {{ __("It's Me") }}( {{ $levelUser->full_name }} )
                 </h4>
             @else
                 <div>
-                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                    <h4 class="text-sm font-medium text-slate-600 dark:text-white whitespace-nowrap">
                         {{ $levelUser->full_name }}
                     </h4>
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                    <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
                         {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
                         {{ __('Accounts Balance') }} {{ mt5_total_balance($levelUser->id) }}
                     </div>

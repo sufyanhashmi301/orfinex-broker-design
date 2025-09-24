@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Scopes\ExcludeNoneStatusScope;
 use App\Traits\TransactionFilterable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -26,6 +27,8 @@ class Transaction extends Model
         'pay_amount' => 'double',
         'amount' => 'double',
     ];
+
+
 
     protected $searchable = [
         'amount',

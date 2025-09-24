@@ -328,17 +328,15 @@ class StaffController extends Controller
     {
         $user = \Auth::user();
 
+        $google2fa = app('pragmarx.google2fa');
+
         if ($request->status == 'disable') {
             // Allow disabling via either Google Authenticator code OR account password
-            session([
-                config('google2fa.session_var') => [
-                    'auth_passed' => false,
-                ],
-            ]);
-
-            $authenticator = app(Authenticator::class)->boot($request);
-            $isGaVerified = $authenticator->isAuthenticated();
-            $isPasswordVerified = Hash::check($request->input('one_time_password'), $user->password);
+            $inputCode = (string) $request->input('one_time_password');
+            $isGaVerified = $user->google2fa_secret
+                ? $google2fa->verifyKey($user->google2fa_secret, $inputCode, 0)
+                : false;
+            $isPasswordVerified = Hash::check($inputCode, $user->password);
 
             if ($isGaVerified || $isPasswordVerified) {
                 $user->update([
@@ -352,26 +350,20 @@ class StaffController extends Controller
             return redirect()->back();
 
         } elseif ($request->status == 'enable') {
-            session([
-                config('google2fa.session_var') => [
-                    'auth_passed' => false,
-                ],
-            ]);
+            $inputCode = (string) $request->input('one_time_password');
+            $isGaVerified = $user->google2fa_secret
+                ? $google2fa->verifyKey($user->google2fa_secret, $inputCode, 0)
+                : false;
 
-            $authenticator = app(Authenticator::class)->boot($request);
-            if ($authenticator->isAuthenticated()) {
-
+            if ($isGaVerified) {
                 $user->update([
                     'two_fa' => 1,
                 ]);
                 notify()->success(__('2Fa Authentication Enable successfully'));
-
                 return redirect()->back();
-
             }
 
             notify()->warning(__('2Fa Authentication Wrong One Time Key'));
-
             return redirect()->back();
         }
     }

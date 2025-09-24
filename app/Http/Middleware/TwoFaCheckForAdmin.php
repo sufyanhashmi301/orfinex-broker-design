@@ -56,7 +56,10 @@ class TwoFaCheckForAdmin
             if ($authenticator->isAuthenticated()) {
                 return $next($request);
             }
-
+            // Wrong or missing OTP: show a warning and return to PIN page
+            if ($request->isMethod('post') || $request->has(config('google2fa.otp_input'))) {
+                notify()->warning(__('2Fa Authentication Wrong One Time Key'));
+            }
             return redirect()->route('admin.staff.2fa.pin');
         }
 

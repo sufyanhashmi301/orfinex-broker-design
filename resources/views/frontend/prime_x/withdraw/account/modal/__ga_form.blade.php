@@ -16,9 +16,18 @@
                     </h4>
                 </div>
                 <p class="dark:text-slate-100">{{ __('Enter the 6-digit code from your Google Authenticator app.') }}</p>
-                <div class="input-area mt-5">
-                    <input type="password" maxlength="6" pattern="[0-9]*" inputmode="numeric" class="form-control !text-lg text-center tracking-widest" id="accountCreationGaInput" placeholder="{{ __('Enter 6-digit code') }}" />
+                <div id="otp-wrapper" class="flex gap-2 mt-5">
+                    @for ($i = 0; $i < 6; $i++)
+                        <input
+                            type="text"
+                            maxlength="1"
+                            class="w-16 h-16 text-center text-xl font-semibold rounded-md border border-gray-300 focus:ring focus:ring-indigo-500 focus:border-indigo-500 otp-input"
+                            required
+                        />
+                    @endfor
                 </div>
+                <input type="hidden" id="accountCreationGaInput">
+                
                 <div class="text-xs text-slate-500 mt-2">{{ __('Codes refresh every 30 seconds.') }}</div>
                 <div class="action-btns mt-5">
                     <button type="button" class="accountCreationGaSubmitBtn btn btn-dark inline-flex items-center justify-center mr-2">

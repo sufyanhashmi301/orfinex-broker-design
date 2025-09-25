@@ -19,6 +19,16 @@
             </p>
         </div>
 
+        <!-- Back to Google Authenticator -->
+        @if(!empty($hasGoogle))
+            <div class="text-center">
+                <a href="{{ route('admin.2fa.switchToGa') }}" class="btn btn-light inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back to Google Authenticator') }}
+                </a>
+            </div>
+        @endif
+
         <!-- Verification Form -->
         <div class="text-center space-y-3 mb-5">
             @if (session('status') == 'invalid-code')

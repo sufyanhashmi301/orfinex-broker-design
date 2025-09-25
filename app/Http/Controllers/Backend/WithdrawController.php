@@ -365,7 +365,9 @@ class WithdrawController extends Controller
     {
         $input = $request->all();
         $id = $input['id'];
-        $approvalCause = $input['message'];
+        $approvalCause = str_replace(['{', '}'], ['<', '>'], $input['message'] ?? 'none');
+
+        // dd($input['message'], $approvalCause);
 
         DB::beginTransaction();
         try {
@@ -390,7 +392,7 @@ class WithdrawController extends Controller
                 '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
-                '[[message]]' => $approvalCause,
+                '[[message]]' =>    ($approvalCause),
                 '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
             ];
 

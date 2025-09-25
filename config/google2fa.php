@@ -42,7 +42,7 @@ return [
     /*
      * One Time Password Window.
      */
-    'window' => 12,
+    'window' => 0,
 
     /*
      * Forbid user to reuse One Time Passwords.

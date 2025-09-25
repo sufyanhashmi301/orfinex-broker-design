@@ -179,11 +179,15 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('log/export', 'export')->name('log.export');
         Route::post('verify-otp', 'verifyOtp')->name('otp.verify');
         Route::post('resend-otp', 'resendOtp')->name('otp.resend');
+        // Google Authenticator verification for withdraw and account creation
+        Route::post('verify-ga', 'verifyGaForWithdraw')->name('ga.verify');
         
         // OTP verification for account creation
         Route::get('account/verify-otp', 'showOtpVerification')->name('account.verify-otp');
         Route::post('account/verify-otp', 'verifyAccountCreationOtp')->name('account.verify-otp.post');
         Route::post('account/resend-otp', 'resendAccountCreationOtp')->name('account.resend-otp');
+        // Google Authenticator verification for account creation
+        Route::post('account/verify-ga', 'verifyGaForAccountCreation')->name('account.verify-ga.post');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -254,7 +258,7 @@ Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as
 });
 
 //Instant payment notification
-Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::class], function () {
+Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::class, 'middleware' => ['ipn']], function () {
     Route::post('coinpayments', 'coinpaymentsIpn')->name('coinpayments');
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
     Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');

@@ -297,10 +297,18 @@ class UpdateExchangeRates extends Command
     }
 
     /**
-     * Truncate number to two decimal places without rounding
+     * Format rate based on currency type and value size
+     * For crypto currencies with very small values, preserve more precision
      */
     private function truncateToTwoDecimals($number)
     {
+        // Handle very small numbers (like BTC rates) by preserving more precision
+        if ($number < 0.01 && $number > 0) {
+            // For very small numbers, use up to 10 decimal places to preserve precision
+            return round($number, 10);
+        }
+        
+        // For regular currencies, use the original 2-decimal truncation
         return floor($number * 100) / 100;
     }
 }

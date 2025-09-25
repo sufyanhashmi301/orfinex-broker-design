@@ -14,6 +14,7 @@
 
 @section('customer-content')
     <!-- Filters Section -->
+    
     <div class="card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.ib-group.export')}}">
             @csrf
@@ -59,9 +60,17 @@
             </div>
         </form>
     </div>
-
+@php
+        $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
+    @endphp
+    @if(!$showGlobalWithIbRebateRules)
+    <div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mb-4">
+        <strong>Show Global Accounts with Ib Rebate Rules setting is off in account type settings</strong> thats why if here in any ib group if global account active its not effective with that ib group no global account visible only universal globals are visible. <a href="{{ route('admin.settingsAccountType') }}" target="_blank" rel="noopener" class="underline">Open Account Type Settings</a>.
+    </div>
+    @endif
     <!-- Main Content -->
     <div class="card">
+    
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">

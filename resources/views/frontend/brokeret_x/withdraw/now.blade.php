@@ -163,8 +163,10 @@
             </div>
         </div>
 
-        <div class="border-t border-gray-200 dark:border-gray-700 my-10"></div>
-        @include('frontend::include.__contact_widget')
+        @if(setting('contact_widget_withdraw_page', 'contact_widget'))
+            <div class="border-t border-gray-200 dark:border-gray-700 my-10"></div>
+            @include('frontend::include.__contact_widget')
+        @endif
 
         {{-- Modal for OTP (only if OTP is enabled) --}}
         @if(setting('withdraw_otp', 'misc'))

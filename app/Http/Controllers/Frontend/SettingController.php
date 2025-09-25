@@ -331,6 +331,7 @@ class SettingController extends Controller
             return redirect()->back();
 
         } elseif ($request->status == 'enable') {
+
             session([
                 config('google2fa.session_var') => [
                     'auth_passed' => false,

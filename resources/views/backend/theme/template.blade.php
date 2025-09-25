@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="card-body flex flex-col p-6 flex-1">
-                    <img src="{{ asset('backend/images/dashboard-quick-links.png') }}" alt="image" class="w-full mb-5">
+                    <img src="{{ asset('images/'.site_theme().'/dashboard-quick-links.png') }}" alt="image" class="w-full mb-5">
                     <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
                         @csrf
                         <input type="hidden" name="section" value="user_dashboard">
@@ -118,7 +118,7 @@
                     </div>
                 </div>
                 <div class="card-body flex flex-col p-6 flex-1">
-                    <img src="{{ asset('backend/images/contact-widget.png') }}" alt="image" class="w-full mb-5">
+                    <img src="{{ asset('images/'.site_theme().'/contact-widget.png') }}" alt="image" class="w-full mb-5">
                     <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
                         @csrf
                         <input type="hidden" name="section" value="contact_widget">

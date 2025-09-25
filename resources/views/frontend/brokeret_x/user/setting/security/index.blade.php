@@ -260,5 +260,52 @@
             }
         }
     }
+
+    function otpInput(length) {
+        return {
+            length,
+            digits: Array(length).fill(""),
+            inputs: [],
+
+            init() {
+                this.inputs = this.$el.querySelectorAll('.otp-input');
+            },
+
+            get otp() {
+                return this.digits.join('');
+            },
+
+            onInput(e, i) {
+                let v = e.target.value.replace(/\D/g, '').slice(-1);
+                this.digits[i] = v;
+                e.target.value = v;
+
+                if (v && i < this.length - 1) {
+                    this.inputs[i + 1].focus();
+                }
+            },
+
+            onKeydown(e, i) {
+                if (e.key === 'Backspace' && !this.digits[i] && i > 0) {
+                    this.inputs[i - 1].focus();
+                }
+            },
+
+            onPaste(e) {
+                e.preventDefault();
+                const data = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                if (!data) return;
+
+                [...data].forEach((ch, idx) => {
+                    if (idx < this.length) {
+                        this.digits[idx] = ch;
+                        this.inputs[idx].value = ch;
+                    }
+                });
+
+                this.inputs[Math.min(data.length - 1, this.length - 1)].focus();
+            }
+        }
+    }
 </script>
 @endsection

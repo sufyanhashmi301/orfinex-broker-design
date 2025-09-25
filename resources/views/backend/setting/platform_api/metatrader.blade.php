@@ -164,9 +164,14 @@
                 </div>
                 @can('meta-trader-edit')
                 <div class="mt-10">
-                    <button type="submit" class="btn btn-dark inline-flex">
+                    <button type="submit" class="btn btn-dark inline-flex ltr:mr-2 rtl:ml-2">
                         {{ __(' Save Changes') }}
                     </button>
+                    @can('mt5-groups-delete')
+                    <a href="javascript:;" class="btn btn-danger inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#resetAllGroupsModal">
+                        {{ __(' Reset All Groups') }}
+                    </a>
+                    @endcan
                 </div>
                 @endcan
 
@@ -183,4 +188,7 @@
             });
         });
     </script>
+    @can('mt5-groups-delete')
+        @include('backend.platform_group.modal.__reset_all')
+    @endcan
 @endsection

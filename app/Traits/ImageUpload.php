@@ -12,8 +12,8 @@ trait ImageUpload
         $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
         $ext = strtolower($query->getClientOriginalExtension());
 
-        if ($query->getSize() > 5100000) {
-            abort('406', 'max file size:5MB ');
+        if ($query->getSize() > 5242880) { // 5 MiB
+            abort('406', 'Max file size is 5 MB.');
         }
 
         if (! in_array($ext, $allowExt)) {
@@ -39,8 +39,8 @@ trait ImageUpload
         $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
         $ext = strtolower($query->getClientOriginalExtension());
 
-        if ($query->getSize() > 5100000) {
-            abort('406', 'max file size:5MB ');
+        if ($query->getSize() > 5242880) { // 5 MiB
+            abort('406', 'Max file size is 5 MB.');
         }
 
         if (! in_array($ext, $allowExt)) {
@@ -68,8 +68,8 @@ trait ImageUpload
         $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
         $ext = strtolower($query->getClientOriginalExtension());
 
-        if ($query->getSize() > 5100000) {
-            abort('406', 'max file size:5MB ');
+        if ($query->getSize() > 5242880) { // 5 MiB
+            abort('406', 'Max file size is 5 MB.');
         }
 
         if (! in_array($ext, $allowExt)) {
@@ -97,8 +97,8 @@ trait ImageUpload
         $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg', 'pdf', 'doc', 'docx', 'txt'];
         $ext = strtolower($query->getClientOriginalExtension());
 
-        if ($query->getSize() > 5100000) {
-            abort('406', 'max file size:5MB ');
+        if ($query->getSize() > 5242880) { // 5 MiB
+            abort('406', 'Max file size is 5 MB.');
         }
 
         if (! in_array($ext, $allowExt)) {

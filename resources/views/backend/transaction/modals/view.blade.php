@@ -125,7 +125,7 @@
                     <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                 </span>
             </label>
-            <textarea name="message" class="summernote form-control mb-0" rows="6" placeholder="">{{ $data->approval_cause}}</textarea>
+            <textarea name="message" class="summernote form-control mb-0" rows="6" placeholder="">{!! str_replace(['{', '}'], ['<', '>'], $data->approval_cause ?? 'none') !!} </textarea>
         </div>
     </form>
 </div>

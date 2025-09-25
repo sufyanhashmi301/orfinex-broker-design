@@ -131,7 +131,7 @@
                                 </span>
                             </label>
                             <input
-                                type="text"
+                                type="number"
                                 name="employee_id"
                                 class="form-control mb-0"
                                 value="{{ $staff->employee_id }}"

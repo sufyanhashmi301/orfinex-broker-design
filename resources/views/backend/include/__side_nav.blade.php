@@ -250,7 +250,7 @@
         {{-- *************************************************************  Staff Management ********************************************************* --}}
         @canany(['staff-list', 'staff-create', 'staff-edit'])
             <li>
-                <a href="{{ route('admin.staff.index') }}" class="navItem {{ isActive('admin.staff*') }}">
+                <a href="{{ route('admin.staff.index') }}" class="navItem {{ request()->routeIs('admin.staff*') && !request()->routeIs('admin.staff.security') ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:user-cog"></iconify-icon>
                         <span>{{ __('Manage Staffs') }}</span>

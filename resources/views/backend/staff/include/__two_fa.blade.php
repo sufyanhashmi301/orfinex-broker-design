@@ -19,7 +19,7 @@
 
             {{--                <img src="{{ $inlineUrl }}">--}}
 
-            <p class="dark:text-white py-2">
+            <p class="form-label !mb-0">
                 @if($user->two_fa)
                     {{ __('Enter Your Password') }}
                 @else
@@ -29,10 +29,19 @@
 
             <form action="{{ route('admin.staff.action-2fa') }}" method="POST">
                 @csrf
-
-                <div class="input-area">
-                    <input type="password" name="one_time_password" class="form-control !text-lg">
+                <div id="otp-wrapper" class="flex gap-2">
+                    @for ($i = 0; $i < 6; $i++)
+                        <input
+                            type="text"
+                            maxlength="1"
+                            class="w-16 h-16 text-center text-xl font-semibold rounded-md border border-gray-300 focus:ring focus:ring-indigo-500 focus:border-indigo-500 otp-input"
+                            required
+                        />
+                    @endfor
                 </div>
+
+                <input type="hidden" name="one_time_password" id="one_time_password">
+                    
                 <div class="buttons mt-10">
                     @if($user->two_fa)
                         <button type="submit" class="btn btn-dark" value="disable" name="status">{{ __('Disable 2FA') }}

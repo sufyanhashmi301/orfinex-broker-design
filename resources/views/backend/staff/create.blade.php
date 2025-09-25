@@ -61,10 +61,12 @@
                                 </span>
                             </label>
                             <input
-                                type="text"
+                                type="number"
                                 name="employee_id"
                                 class="form-control mb-0"
                                 placeholder="Employee ID"
+                                min="1"
+                                step="1"
                             />
                         </div>
                     </div>
@@ -110,7 +112,7 @@
                             <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                         </span>
                     </label>
-                    <input type="text" name="date_of_joining" class="form-control dateOfBirth" placeholder="2006-12-19">
+                    <input type="text" name="date_of_birth" class="form-control flatpickr dateOfBirth" placeholder="2006-12-19">
                 </div>
                 <div class="input-area">
                     <label for="" class="form-label">

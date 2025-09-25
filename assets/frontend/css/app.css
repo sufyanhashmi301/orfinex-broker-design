@@ -16328,6 +16328,14 @@ ul.custom-list ul li{
     padding-left: 0px;
     padding-right: 0px;
   }
+  .lg\:py-12{
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  .lg\:px-10{
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
   .lg\:px-16{
     padding-left: 4rem;
     padding-right: 4rem;

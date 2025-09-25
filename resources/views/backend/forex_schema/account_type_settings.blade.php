@@ -53,13 +53,17 @@
                     <ul class="list-disc ml-4 pl-5 space-y-1">
                         <li>
                             <span class="font-semibold">{{ __('Universal Global (enabled):') }}</span>
-                            {{ __('Always visible to all users. If enable universal global it Overrides country, tag, and IB rebate rules. Shown as “Universal Global” in listings.') }}
+                            {{ __('Always visible to all users. If you enable universal global it overrides country, tag, and IB rebate rules. Shown as “Universal Global” in listings.') }}
                         </li>
                         <li>
                             <span class="font-semibold">{{ __('Global:') }}</span>
                             {{ __('Visibility follows settings and matching above rules. Additionally, if a user does not match any country, tag, or IB rule, these Global accounts are still shown as a fallback. Shown as “Global” in listings.') }}
                         </li>
                     </ul>
+                </div>
+                <div class="border-t pt-3 mt-2 space-y-2">
+                <h4 class="card-title">{{ __('New Users') }}</h4>
+                    <p>{{ __('For new users who are not yet associated with any IB group, rebate rule, country, or tag, all Global and Universal Global account types are visible. Once they become associated with an IB group, rebate rule, country, or tag, the above visibility rules and settings will apply.') }}</p>
                 </div>
             </div>
         </div>

@@ -23,6 +23,7 @@ class ThemeController extends Controller
         $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
         $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
         $this->middleware('permission:provider-logo-settings', ['only' => ['providerLogo']]);
+        $this->middleware('permission:admin-auth-logo-settings', ['only' => ['adminAuthLogo']]);
         $this->middleware('permission:auth-covers-settings', ['only' => ['authCovers']]);
     }
 
@@ -45,12 +46,20 @@ class ThemeController extends Controller
     }
 
     public function providerLogo(Request $request)
-{
-    return view('backend.setting.branding.provider_logo', [
-        'section' => 'provider_logo',
-        'fields' => config('setting.provider_logo')
-    ]);
-}
+    {
+        return view('backend.setting.branding.provider_logo', [
+            'section' => 'provider_logo',
+            'fields' => config('setting.provider_logo')
+        ]);
+    }
+
+    public function adminAuthLogo(Request $request)
+    {
+        return view('backend.setting.branding.admin_auth_logo', [
+            'section' => 'admin_auth_logo',
+            'fields' => config('setting.admin_auth_logo')
+        ]);
+    }
 
     public function authCovers()
     {

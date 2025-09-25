@@ -27,7 +27,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('guest:admin')->except(['logout', 'show2FAVerification']);
+        // Allow these actions even if already authenticated (needed for 2FA flows)
+        $this->middleware('guest:admin')->except(['logout', 'authenticate', 'show2FAVerification', 'resend2FA', 'switchToGA']);
     }
 
     public function loginView()
@@ -103,14 +104,32 @@ class AuthController extends Controller
                     return back();
                 }
                 
-                // Generate and send 2FA code
+                // Store session info for next step
+                $request->session()->put([
+                    'admin_2fa_id' => $admin->id,
+                    'admin_2fa_email' => $admin->email,
+                    'admin_credentials' => $credentials,
+                    'remember' => $request->has('remember')
+                ]);
+
+                // If Google Authenticator is enabled for this admin, prioritize GA first
+                if ($admin->two_fa) {
+                    // Mark GA session as not yet authenticated and keep admin logged in
+                    session([
+                        config('google2fa.session_var') => [
+                            'auth_passed' => false,
+                        ],
+                    ]);
+                    // Keep admin authenticated so they can access GA PIN screen
+                    return redirect()->route('admin.staff.2fa.pin');
+                }
+
+                // Otherwise, email OTP flow
                 $codeRecord = Admin2FACode::generateCode($admin->id, $admin->email);
-                
                 if (!$codeRecord) {
                     notify()->error('Unable to generate verification code.');
                     return back();
                 }
-                
                 $shortcodes = [
                     '[[verification_code]]' => $codeRecord->code,
                     '[[otp_validity]]' => '1',
@@ -118,36 +137,13 @@ class AuthController extends Controller
                     '[[site_title]]' => setting('site_title', 'global'),
                     '[[site_url]]' => route('home')
                 ];
-                
                 try {
-                    \Log::info('Sending initial 2FA email', [
-                        'admin_id' => $admin->id,
-                        'email' => $admin->email,
-                        'code' => $codeRecord->code
-                    ]);
-                    
                     $this->mailNotify($admin->email, 'admin_2fa_verification', $shortcodes);
-                    
-                    \Log::info('Initial 2FA email sent successfully');
                 } catch (\Exception $e) {
-                    \Log::error('Failed to send initial 2FA email', [
-                        'error' => $e->getMessage(),
-                        'admin_id' => $admin->id,
-                        'email' => $admin->email
-                    ]);
                     notify()->error('Failed to send verification email: ' . $e->getMessage());
                     return back();
                 }
-                
-                // Store admin info in session
-                $request->session()->put([
-                    'admin_2fa_id' => $admin->id,
-                    'admin_2fa_email' => $admin->email,
-                    'admin_credentials' => $credentials,
-                    'remember' => $request->has('remember')
-                ]);
-                
-                // Logout temporarily and show 2FA form
+
                 $this->guard()->logout();
                 notify()->success('Verification code sent to your email.');
                 return redirect()->route('admin.2fa.verifylogin');
@@ -179,6 +175,11 @@ class AuthController extends Controller
         ->first();
 
     if (!$codeRecord) {
+        // If user came from GA flow with force_email_2fa, redirect back to verify page instead of generic back()
+        if ($request->session()->get('force_email_2fa')) {
+            notify()->warning('No active verification code found. Please request a new one.');
+            return redirect()->route('admin.2fa.verifylogin')->with('status', 'invalid-code');
+        }
         notify()->warning('No active verification code found. Please request a new one.');
         return back()->with('status', 'invalid-code');
     }
@@ -192,19 +193,27 @@ class AuthController extends Controller
         ]);
         
         notify()->warning('Invalid verification code. The code has been expired. Please request a new one.');
+        if ($request->session()->get('force_email_2fa')) {
+            return redirect()->route('admin.2fa.verifylogin')->with('status', 'invalid-code');
+        }
         return back()->with('status', 'invalid-code');
     }
 
     // If code matches, mark as used
     $codeRecord->markAsUsed();
 
-    // Retrieve stored credentials and log in
+    // If already logged in (e.g., came from GA flow), skip re-login
     $credentials = $request->session()->get('admin_credentials');
     $remember = $request->session()->get('remember', false);
 
-    if ($this->guard()->attempt($credentials, $remember)) {
+    $alreadyLoggedIn = $this->guard()->check();
+    $loginSuccess = $alreadyLoggedIn ? true : $this->guard()->attempt($credentials, $remember);
+
+    if ($loginSuccess) {
         $request->session()->regenerate();
-        $request->session()->forget(['admin_2fa_id', 'admin_2fa_email', 'admin_credentials', 'remember']);
+        $request->session()->forget(['admin_2fa_id', 'admin_2fa_email', 'admin_credentials', 'remember', 'force_email_2fa']);
+        // Clear GA session var as well
+        session([config('google2fa.session_var') => ['auth_passed' => true]]);
         
         AdminLoginActivity::add();
         notify()->success('Two-factor authentication successful. Welcome back!');
@@ -229,7 +238,30 @@ class AuthController extends Controller
         if (!$request->session()->has('admin_2fa_id')) {
             return redirect()->route('admin.login');
         }
-    
+        
+        // If accessed with switch param from GA screen, generate and send code then show verify view
+        if ($request->boolean('switch')) {
+            $adminId = $request->session()->get('admin_2fa_id');
+            $email = $request->session()->get('admin_2fa_email');
+            if ($adminId && $email) {
+                $request->session()->put('force_email_2fa', true);
+                $codeRecord = Admin2FACode::generateCode($adminId, $email);
+                if ($codeRecord) {
+                    $admin = \App\Models\Admin::find($adminId);
+                    if ($admin) {
+                        $shortcodes = [
+                            '[[verification_code]]' => $codeRecord->code,
+                            '[[otp_validity]]' => '1',
+                            '[[admin_name]]' => $admin->name,
+                            '[[site_title]]' => setting('site_title', 'global'),
+                            '[[site_url]]' => route('home')
+                        ];
+                        try { $this->mailNotify($email, 'admin_2fa_verification', $shortcodes); } catch (\Exception $e) {}
+                    }
+                }
+            }
+        }
+
         $adminId = $request->session()->get('admin_2fa_id');
         
         // Check if admin is restricted
@@ -247,8 +279,12 @@ class AuthController extends Controller
         $isRestricted = Admin2FACode::isRestricted($adminId);
         $remainingTime = Admin2FACode::getRemainingRestrictionTime($adminId);
         $resendAttempts = Admin2FACode::getResendAttempts($adminId);
-    
-        return view('backend.auth.verify-2fa', compact('isRestricted', 'remainingTime', 'resendAttempts'));
+
+        // Determine if GA is enabled for this admin to decide showing back button
+        $admin = \App\Models\Admin::find($adminId);
+        $hasGoogle = $admin && (bool) $admin->two_fa;
+
+        return view('backend.auth.verify-2fa', compact('isRestricted', 'remainingTime', 'resendAttempts', 'hasGoogle'));
     }
 
     public function resend2FA(Request $request)
@@ -268,7 +304,16 @@ class AuthController extends Controller
             $minutes = floor(($remainingTime % 3600) / 60);
             
             notify()->warning("Too many resend attempts. Please wait {$hours}h {$minutes}m before trying again.");
+            // If switching from GA to Email, show email verify page
+            if ($request->has('switch_to_email')) {
+                return redirect()->route('admin.2fa.verifylogin')->with('status', 'restricted');
+            }
             return back()->with('status', 'restricted');
+        }
+
+        // If user clicked from GA screen to switch to email OTP, mark session to allow email flow
+        if ($request->has('switch_to_email')) {
+            $request->session()->put('force_email_2fa', true);
         }
 
         // Generate new code first (this will create or update the tracking record)
@@ -329,8 +374,23 @@ class AuthController extends Controller
             ]);
             notify()->error('Failed to send email: ' . $e->getMessage());
         }
-        
+        // If user clicked switch on GA screen, take them to email verify page
+        if ($request->has('switch_to_email')) {
+            return redirect()->route('admin.2fa.verifylogin')->with('status', 'verification-link-sent');
+        }
         return back()->with('status', 'verification-link-sent');
+    }
+
+    public function switchToGA(Request $request)
+    {
+        // Clear the force email flag and reset GA pending flag, then go to GA PIN
+        $request->session()->forget('force_email_2fa');
+        session([
+            config('google2fa.session_var') => [
+                'auth_passed' => false,
+            ],
+        ]);
+        return redirect()->route('admin.staff.2fa.pin');
     }
 
     protected function guard()

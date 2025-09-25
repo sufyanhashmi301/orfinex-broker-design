@@ -108,97 +108,114 @@ class IpnController extends Controller
     }
     public function match2payIpn(Request $request)
     {
-        // Get all the input data from the request
-        $input = $request->all();
-
-        // Extract the payment ID from the Match2Pay request
-        $paymentId = $input['paymentId'] ?? null;
-        $cryptoTransactionInfo = $input['cryptoTransactionInfo'][0] ?? null; // Get the first transaction info
-
-        // Find the transaction in the database using the payment ID
-        $txnInfo = Transaction::tnx($paymentId);
-
-        // Check if the paymentId exists in the request
-        if (!$paymentId || !$txnInfo) {
-            // If not, update the transaction with an invalid status and redirect with an error
-            $txnInfo->update([
-                'status' => TxnStatus::Failed,
-                'approval_cause' => __('Invalid payment ID'),
+        try {
+            // Log the incoming request for debugging
+            Log::info('Match2Pay IPN received', [
+                'method' => $request->method(),
+                'headers' => $request->headers->all(),
+                'body' => $request->all(),
+                'raw_content' => $request->getContent(),
             ]);
 
-            return redirect()
-                ->route('user.deposit.now')
-                ->with('error', __('Invalid payment ID.'));
+            // Get all the input data from the request
+            $input = $request->all();
+
+            // Extract the payment ID from the Match2Pay request
+            $paymentId = $input['paymentId'] ?? null;
+            $cryptoTransactionInfo = $input['cryptoTransactionInfo'][0] ?? null; // Get the first transaction info
+
+            // Check if the paymentId exists in the request
+            if (!$paymentId) {
+                Log::error('Match2Pay IPN: Missing payment ID', ['input' => $input]);
+                return response()->json(['error' => 'Invalid payment ID'], 400);
             }
 
-        // Extract relevant fields from the cryptoTransactionInfo
-        $status = $input['status'] ?? null;
-        $confirmations = $cryptoTransactionInfo['confirmations'] ?? null;
-        $txid = $cryptoTransactionInfo['txid'] ?? null;
+            // Find the transaction in the database using the payment ID
+            $txnInfo = Transaction::tnx($paymentId);
+            
+            if (!$txnInfo) {
+                Log::error('Match2Pay IPN: Transaction not found', ['paymentId' => $paymentId]);
+                return response()->json(['error' => 'Transaction not found'], 404);
+            }
 
-        // Handle different transaction statuses (PENDING, DONE, FAILED)
-        switch ($status) {
-            case 'PENDING':
-                // Handle pending payments
-                $txnInfo->update([
-                    'status' => TxnStatus::Pending,
-//                    'txid' => $txid,
-                    'manual_field_data' => $input,
-                    'approval_cause' => __('Transaction is pending'),
-                ]);
+            // Extract relevant fields from the cryptoTransactionInfo
+            $status = $input['status'] ?? null;
+            $confirmations = $cryptoTransactionInfo['confirmations'] ?? null;
+            $txid = $cryptoTransactionInfo['txid'] ?? null;
 
-//                return redirect()
-//                    ->route('user.deposit.now')
-//                    ->with('info', 'Payment is pending. Please wait for confirmation.');
+            // Handle different transaction statuses (PENDING, DONE, FAILED)
+            switch ($status) {
+                case 'PENDING':
+                    // Handle pending payments
+                    $txnInfo->update([
+                        'status' => TxnStatus::Pending,
+                        'manual_field_data' => $input,
+                        'approval_cause' => __('Transaction is pending'),
+                    ]);
+                    
+                    Log::info('Match2Pay IPN: Transaction set to pending', ['paymentId' => $paymentId]);
+                    return response()->json(['status' => 'success', 'message' => 'Transaction pending']);
 
-            case 'DONE':
-                $txnInfo->update([
-//                    'txid' => $txid,
-                    'amount' => $input['finalAmount'],
-//                    'charge' => $input['processingFee'],
-                    'final_amount' => $input['finalAmount'],
-                    'pay_amount' => $input['netAmount'],
-                    'pay_currency' => $input['transactionCurrency'],
-                    'manual_field_data' => $input,
-                    'approval_cause' => __('Transaction is Completed'),
-                ]);
-                // Call the payment success method
-                self::paymentSuccess($paymentId);
+                case 'DONE':
+                    // Start database transaction to prevent race conditions
+                    return DB::transaction(function() use ($txnInfo, $input, $paymentId) {
+                        // Check if already processed
+                        if ($txnInfo->status == TxnStatus::Success) {
+                            Log::info('Match2Pay IPN: Transaction already successful', ['paymentId' => $paymentId]);
+                            return response()->json(['status' => 'success', 'message' => 'Already processed']);
+                        }
 
-//                $txnInfo->update([
-//                    'status' => TxnStatus::Completed,
-//                    'txid' => $txid,
-//                    'confirmations' => $confirmations,
-//                    'approval_cause' => 'Transaction completed successfully',
-//                ]);
+                        $txnInfo->update([
+                            'amount' => $input['finalAmount'],
+                            'final_amount' => $input['finalAmount'],
+                            'pay_amount' => $input['netAmount'],
+                            'pay_currency' => $input['transactionCurrency'],
+                            'manual_field_data' => $input,
+                            'approval_cause' => __('Transaction is Completed'),
+                        ]);
 
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('success', __('Payment approved and processed successfully.'));
+                        // Call the payment success method
+                        self::paymentSuccess($paymentId);
+                        
+                        Log::info('Match2Pay IPN: Transaction completed successfully', ['paymentId' => $paymentId]);
+                        return response()->json(['status' => 'success', 'message' => 'Payment processed successfully']);
+                    });
 
-            case 'DECLINED':
-                // Handle declined payments
-                $declineReason = $cryptoTransactionInfo['decline_reason'] ?? __('Unknown reason');
-                $txnInfo->update([
-                    'status' => TxnStatus::Failed,
-                    'approval_cause' => __("Transaction declined: $declineReason"),
-                ]);
+                case 'DECLINED':
+                    // Handle declined payments
+                    $declineReason = $cryptoTransactionInfo['decline_reason'] ?? __('Unknown reason');
+                    $txnInfo->update([
+                        'status' => TxnStatus::Failed,
+                        'approval_cause' => __("Transaction declined: $declineReason"),
+                    ]);
+                    
+                    Log::info('Match2Pay IPN: Transaction declined', [
+                        'paymentId' => $paymentId, 
+                        'reason' => $declineReason
+                    ]);
+                    return response()->json(['status' => 'declined', 'message' => 'Payment declined']);
 
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('error', __("Payment declined. Reason: $declineReason."));
-
-            default:
-                // Handle unknown or invalid statuses
-                $txnInfo->update([
-                    'status' => TxnStatus::Failed,
-                    'approval_cause' => __('Unknown status received'),
-                ]);
-
-                return redirect()
-                    ->route('user.deposit.now')
-                    ->with('error', __('Unknown error occurred during payment processing.'));
-                }
+                default:
+                    // Handle unknown or invalid statuses
+                    $txnInfo->update([
+                        'status' => TxnStatus::Failed,
+                        'approval_cause' => __('Unknown status received'),
+                    ]);
+                    
+                    Log::warning('Match2Pay IPN: Unknown status received', [
+                        'paymentId' => $paymentId,
+                        'status' => $status
+                    ]);
+                    return response()->json(['status' => 'error', 'message' => 'Unknown status'], 400);
+            }
+        } catch (\Exception $e) {
+            Log::error('Match2Pay IPN: Exception occurred', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->all()
+            ]);
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
     }
 
     public function cryptomusIpn(Request $request)

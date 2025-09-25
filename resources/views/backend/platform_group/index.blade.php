@@ -18,6 +18,11 @@
                 {{ __('Add Group Manually') }}
             </a>
             @endcan
+            @can('mt5-groups-delete')
+            <a href="javascript:;" class="btn btn-sm btn-danger inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#resetAllGroupsModal">
+                {{ __('Reset All Groups') }}
+            </a>
+            @endcan
         </div>
     </div>
     <div class="innerMenu card p-6 mb-5">
@@ -52,5 +57,8 @@
     <!-- Modal for delete manual group -->
     @can('manual-group-delete')
         @include('backend.platform_group.modal.__delete')
+    @endcan
+     @can('mt5-groups-delete')
+        @include('backend.platform_group.modal.__reset_all')
     @endcan
 @endsection

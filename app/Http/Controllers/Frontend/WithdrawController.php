@@ -134,54 +134,97 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
 
-        // Check if OTP verification is required for account creation
-        if (setting('withdraw_account_otp', 'withdraw_settings')) {
-            $user = Auth::user();
-            
-            // Check if user can create withdraw account
-            $accountStatus = $this->userAccountCreationService->canCreateWithdrawAccount($user);
-            
-            if (!$accountStatus['can_create']) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $accountStatus['message'],
-                    'is_restricted' => true,
-                    'remaining_time' => $accountStatus['remaining_time'],
-                    'formatted_time' => $accountStatus['formatted_time']
-                ], 400);
+        $user = Auth::user();
+        $withdrawAccountOtpEnabled = (bool) setting('withdraw_account_otp', 'withdraw_settings');
+        $twoFaEnabledForUser = (bool) setting('fa_verification', 'permission') && (bool) $user->two_fa;
+
+        // If either OTP or GA is enabled, we require verification before creating the account
+        if ($withdrawAccountOtpEnabled || $twoFaEnabledForUser) {
+            // Check restriction status first
+            if ($withdrawAccountOtpEnabled) {
+                $accountStatus = $this->userAccountCreationService->canCreateWithdrawAccount($user);
+                if (!$accountStatus['can_create']) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $accountStatus['message'],
+                        'is_restricted' => true,
+                        'remaining_time' => $accountStatus['remaining_time'],
+                        'formatted_time' => $accountStatus['formatted_time']
+                    ], 400);
+                }
             }
-            
+
             // Store form data in session
             $formData = [
                 'withdraw_method_id' => $request->input('withdraw_method_id'),
                 'method_name' => $request->input('method_name'),
                 'credentials' => $request->input('credentials'),
             ];
-            
             Session::put('withdraw_account_form_data', $formData);
-            
-            // Send OTP
-            $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
-            
-            if ($otpResult['status'] === 'error') {
+
+            $verificationMethod = $request->input('verification_method'); // 'otp' or 'ga'
+
+            // Both enabled: follow selected method; default to OTP when unspecified
+            if ($withdrawAccountOtpEnabled && $twoFaEnabledForUser) {
+                if ($verificationMethod === 'ga') {
+                    return response()->json([
+                        'status' => 'success',
+                        'show_ga' => true,
+                        'message' => __('Please verify with your Google Authenticator to continue.')
+                    ]);
+                }
+
+                // Default/OTP path: send OTP
+                $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
+                if ($otpResult['status'] === 'error') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $otpResult['message'],
+                        'is_restricted' => $otpResult['message'] && (str_contains($otpResult['message'], 'restricted') || str_contains($otpResult['message'], 'Too many'))
+                    ], 400);
+                }
+
+                $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+                $otpMessage = $withdrawAccountApproval
+                    ? __('OTP has been sent to your email. Please verify it to create your withdraw account. It will be reviewed by admin for approval.')
+                    : __('OTP has been sent to your email. Please verify it to create your withdraw account.');
+
                 return response()->json([
-                    'status' => 'error',
-                    'message' => $otpResult['message'],
-                    'is_restricted' => $otpResult['message'] && (str_contains($otpResult['message'], 'restricted') || str_contains($otpResult['message'], 'Too many'))
-                ], 400);
+                    'status' => 'success',
+                    'message' => $otpMessage,
+                    'show_modal' => true
+                ]);
             }
-            
-            // Return JSON response for modal
-            $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
-            $otpMessage = $withdrawAccountApproval 
-                ? __('OTP has been sent to your email. Please verify it to create your withdraw account. It will be reviewed by admin for approval.')
-                : __('OTP has been sent to your email. Please verify it to create your withdraw account.');
-            
-            return response()->json([
-                'status' => 'success',
-                'message' => $otpMessage,
-                'show_modal' => true
-            ]);
+
+            // Only OTP enabled
+            if ($withdrawAccountOtpEnabled && !$twoFaEnabledForUser) {
+                $otpResult = $this->userAccountCreationService->sendWithdrawAccountOtp($user, 5);
+                if ($otpResult['status'] === 'error') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $otpResult['message'],
+                        'is_restricted' => $otpResult['message'] && (str_contains($otpResult['message'], 'restricted') || str_contains($otpResult['message'], 'Too many'))
+                    ], 400);
+                }
+                $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+                $otpMessage = $withdrawAccountApproval
+                    ? __('OTP has been sent to your email. Please verify it to create your withdraw account. It will be reviewed by admin for approval.')
+                    : __('OTP has been sent to your email. Please verify it to create your withdraw account.');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $otpMessage,
+                    'show_modal' => true
+                ]);
+            }
+
+            // Only GA enabled
+            if ($twoFaEnabledForUser && !$withdrawAccountOtpEnabled) {
+                return response()->json([
+                    'status' => 'success',
+                    'show_ga' => true,
+                    'message' => __('Please verify with your Google Authenticator to continue.')
+                ]);
+            }
         }
 
         // Proceed with account creation
@@ -282,6 +325,66 @@ class WithdrawController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => __('Failed to create account. Please try again.')
+            ], 400);
+        }
+    }
+
+    public function verifyGaForAccountCreation(Request $request)
+    {
+        $request->validate([
+            'one_time_password' => 'required|digits:6',
+        ]);
+
+        $user = Auth::user();
+        if (!$user || !$user->two_fa || empty($user->google2fa_secret)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Two-factor authentication is not enabled for your account.'),
+            ], 400);
+        }
+
+        $formData = Session::get('withdraw_account_form_data');
+        if (!$formData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Form data not found. Please try again.'),
+            ], 400);
+        }
+
+        $google2fa = app('pragmarx.google2fa');
+        $isValid = false;
+        try {
+            $isValid = (bool) $google2fa->verifyKey($user->google2fa_secret, $request->input('one_time_password'));
+        } catch (\Throwable $e) {
+            $isValid = false;
+        }
+
+        if (!$isValid) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Invalid authenticator code.'),
+            ], 400);
+        }
+
+        $newRequest = new Request($formData);
+        try {
+            $this->createWithdrawAccount($newRequest);
+            Session::forget('withdraw_account_form_data');
+
+            $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
+            $successMessage = $withdrawAccountApproval
+                ? __('Account created successfully! It will be reviewed by admin for approval.')
+                : __('Account created successfully!');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $successMessage,
+                'redirect' => route('user.withdraw.account.index'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Failed to create account. Please try again.'),
             ], 400);
         }
     }
@@ -612,46 +715,89 @@ class WithdrawController extends Controller
             return redirect()->back()->withInput();
         }
 
-        if (setting('withdraw_otp', 'withdraw_settings')) {
-            $user = Auth::user();
-
-            $transactionType = TxnType::Withdraw->value;
-                $userOtp = UserOtp::where('user_id', $user->id)->where('type', $transactionType)->first();
-
-                if ($userOtp && $userOtp->verified && $userOtp->expires_at > Carbon::now()) {
-
-                    $userOtp->delete();
-                    return $this->processWithdrawal($validationResult);
-
-                } else {
-                    $withdrawalData = [
-                        'target_id' => $request->input('target_id'),
-                        'account_type' => $request->input('account_type'),
-                        'withdraw_account' => $request->input('withdraw_account'),
-                        'amount' => $request->input('amount'),
-                    ];
-
-                    Session::put('withdrawal_data', $withdrawalData);
-                    $transactionType = TxnType::Withdraw->value;
-                    $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
-
-                    $this->otpService->sendOtp($user, $transactionType, $otpValidityMinutes);
-
-                    notify()->info(__('OTP has been sent. Please verify it to proceed.'), 'OTP Sent');
-                    return redirect()->back()->withInput();
-
-                }
-            } else {
-            try {
-                DB::beginTransaction();
-                // Create the transaction before attempting the withdrawal (even if the withdrawal fails later)
+        // Recent GA verification allows proceeding directly
+        $gaSession = session('ga_verified_withdraw');
+        if (is_array($gaSession) && ($gaSession['verified'] ?? false)) {
+            $expiresAt = isset($gaSession['expires_at']) ? Carbon::parse($gaSession['expires_at']) : null;
+            if ($expiresAt && Carbon::now()->lt($expiresAt)) {
+                session()->forget('ga_verified_withdraw');
                 return $this->processWithdrawal($validationResult);
+            }
+            session()->forget('ga_verified_withdraw');
+        }
 
-            } catch (Exception $e) {
-                DB::rollBack();
-                notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
+        $user = Auth::user();
+        $withdrawOtpEnabled = (bool) setting('withdraw_otp', 'withdraw_settings');
+        $twoFaEnabledForUser = (bool) setting('fa_verification', 'permission') && (bool) $user->two_fa;
+
+        // Both OTP and GA enabled -> prompt on UI, do NOT send OTP yet (send after user selects Email OTP)
+        if ($withdrawOtpEnabled && $twoFaEnabledForUser) {
+            $withdrawalData = [
+                'target_id' => $request->input('target_id'),
+                'account_type' => $request->input('account_type'),
+                'withdraw_account' => $request->input('withdraw_account'),
+                'amount' => $request->input('amount'),
+            ];
+
+            Session::put('withdrawal_data', $withdrawalData);
+            Session::put('withdraw_auth_required', true);
+            Session::put('withdraw_auth_options', ['otp' => true, 'ga' => true]);
+
+            notify()->info(__('Choose a verification method to continue.'), __('Verification Required'));
+            return redirect()->back()->withInput();
+        }
+
+        // Only GA enabled -> prompt GA on UI
+        if (!$withdrawOtpEnabled && $twoFaEnabledForUser) {
+            $withdrawalData = [
+                'target_id' => $request->input('target_id'),
+                'account_type' => $request->input('account_type'),
+                'withdraw_account' => $request->input('withdraw_account'),
+                'amount' => $request->input('amount'),
+            ];
+            Session::put('withdrawal_data', $withdrawalData);
+            Session::put('withdraw_auth_required', true);
+            Session::put('withdraw_auth_options', ['otp' => false, 'ga' => true]);
+
+            notify()->info(__('Authenticate with your Google Authenticator to continue.'), __('Verification Required'));
+            return redirect()->back()->withInput();
+        }
+
+        // Only OTP enabled -> current behavior
+        if ($withdrawOtpEnabled) {
+            $transactionType = TxnType::Withdraw->value;
+            $userOtp = UserOtp::where('user_id', $user->id)->where('type', $transactionType)->first();
+
+            if ($userOtp && $userOtp->verified && $userOtp->expires_at > Carbon::now()) {
+                $userOtp->delete();
+                return $this->processWithdrawal($validationResult);
+            } else {
+                $withdrawalData = [
+                    'target_id' => $request->input('target_id'),
+                    'account_type' => $request->input('account_type'),
+                    'withdraw_account' => $request->input('withdraw_account'),
+                    'amount' => $request->input('amount'),
+                ];
+
+                Session::put('withdrawal_data', $withdrawalData);
+                $transactionType = TxnType::Withdraw->value;
+                $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
+
+                $this->otpService->sendOtp($user, $transactionType, $otpValidityMinutes);
+
+                notify()->info(__('OTP has been sent. Please verify it to proceed.'), 'OTP Sent');
                 return redirect()->back()->withInput();
             }
+        }
+
+        // None enabled -> proceed
+        try {
+            DB::beginTransaction();
+            return $this->processWithdrawal($validationResult);
+        } catch (Exception $e) {
+            DB::rollBack();
+            notify()->error(__('An error occurred while processing your withdrawal. Please try again later.'), 'Error');
+            return redirect()->back()->withInput();
         }
     }
         public
@@ -694,6 +840,49 @@ class WithdrawController extends Controller
             'message' => __('OTP successfully verified. Proceed with the transaction.')
         ], 200);
     }
+
+        public
+        function verifyGaForWithdraw(Request $request)
+        {
+            $request->validate([
+                'one_time_password' => 'required|digits:6',
+            ]);
+
+            $user = Auth::user();
+            if (!$user || !$user->two_fa || empty($user->google2fa_secret)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Two-factor authentication is not enabled for your account.'),
+                ], 400);
+            }
+
+            $google2fa = app('pragmarx.google2fa');
+            $isValid = false;
+            try {
+                $isValid = (bool) $google2fa->verifyKey($user->google2fa_secret, $request->input('one_time_password'));
+            } catch (\Throwable $e) {
+                $isValid = false;
+            }
+
+            if (!$isValid) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Invalid authenticator code.'),
+                ], 400);
+            }
+
+            session([
+                'ga_verified_withdraw' => [
+                    'verified' => true,
+                    'expires_at' => Carbon::now()->addMinutes(2)->toDateTimeString(),
+                ],
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Authenticator verified. Proceeding with withdrawal.'),
+            ]);
+        }
 
         public
         function validateWithdrawal(Request $request)
@@ -912,7 +1101,7 @@ class WithdrawController extends Controller
                     ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
                 ) {
                         $isDeducted = true; // Deduction applied
-                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
                         if (!$updateResult) {
                             DB::rollBack();
                             notify()->error('Failed to update transaction. Please try again.');
@@ -939,11 +1128,11 @@ class WithdrawController extends Controller
                     $isDeducted = true;  // Mark deduction as applied for wallet
 
                     // Update transaction status
-                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
                 }
             } else {
                 // If deduction feature is disabled, mark the transaction as pending
-                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
+                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
             }
 
             // Ensure $txnInfo->manual_field_data is decoded as an array

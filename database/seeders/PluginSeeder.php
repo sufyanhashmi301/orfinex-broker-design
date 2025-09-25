@@ -30,6 +30,7 @@ class PluginSeeder extends Seeder
         $exchangeRateApiExists = Plugin::where('name', 'Currency Exchange API')->exists();
         $feednaxApiExists = Plugin::where('name', 'Feednax Exchange API')->exists();
         $veriffExists = Plugin::where('name', 'Veriff (Automated KYC)')->exists();
+        $calendlyExists = Plugin::where('name', 'Calendly')->exists();
 
         $plugins = [];
         // Add this to the $plugins array before the insert
@@ -252,6 +253,21 @@ class PluginSeeder extends Seeder
                     'base_url' => 'https://api.veriff.com',
                     // 'integration_id' => '',
                     // 'level_name' => 'Level 2 Verification'
+                ]),
+                'status' => 0,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
+
+        if (!$calendlyExists) {
+            $plugins[] = [
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/calendly.webp',
+                'type' => 'system',
+                'name' => 'Calendly',
+                'description' => 'Virtual availability and booking app used to schedule meetings, appointments, and events for individuals and organizations.',
+                'data' => json_encode([
+                    'link' => 'https://calendly.com/your-username/30min'
                 ]),
                 'status' => 0,
                 'created_at' => Carbon::now(),

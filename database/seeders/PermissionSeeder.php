@@ -301,6 +301,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
             ['category' => 'Website Setting', 'name' => 'provider-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'auth-covers-settings'],
+            ['category' => 'Website Setting', 'name' => 'admin-auth-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-create-settings'],
@@ -328,6 +329,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
 
             ['category' => 'Platform Groups Setting', 'name' => 'mt5-group-list'],
+            ['category' => 'Platform Groups Setting', 'name' => 'mt5-groups-delete'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-list'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-create'],
             ['category' => 'Platform Groups Setting', 'name' => 'manual-group-edit'],

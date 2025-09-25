@@ -556,7 +556,7 @@ return [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'admin_2fa_enabled', // unique name for field
-                'label' => 'Admin Two-Factor Authentication', // you know what label it is
+                'label' => 'Admin Email Two-Factor Authentication', // you know what label it is
                 'description' => 'Enable two-factor authentication for admin login using email verification codes',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
@@ -934,6 +934,27 @@ return [
                 'data' => 'boolean',
                 'name' => 'provider_logo_status',
                 'label' => 'Enable Custom Logo',
+                'rules' => '',
+                'value' => 1,
+            ],
+        ]
+    ],
+    'admin_auth_logo' => [
+        'title' => 'Admin Auth Logo Settings',
+        'elements' => [
+            [
+                'type' => 'file',
+                'data' => 'string',
+                'name' => 'admin_auth_logo_image',
+                'label' => 'Admin Auth Logo Image',
+                'rules' => 'mimes:jpeg,jpg,png,svg|max:2048',
+                'value' => 'backend/images/brokeret_logo.png',
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'admin_auth_logo_status',
+                'label' => 'Enable Admin Auth Logo',
                 'rules' => '',
                 'value' => 1,
             ],
@@ -2385,6 +2406,38 @@ return [
                 'name' => 'is_mobile_dashboard_quick_link',
                 'label' => 'Enable Mobile Dashboard Quick Links',
                 'description' => 'Show or hide quick links section on the dashboard',
+                'rules' => 'required',
+                'value' => true,
+            ],
+        ],
+    ],
+    'contact_widget' => [
+        'title' => 'Contact Widget',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_deposit_page',
+                'label' => 'Enable Deposit Page',
+                'description' => 'Show or hide contact widget on the deposit page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_withdraw_page',
+                'label' => 'Enable Withdraw Page',
+                'description' => 'Show or hide contact widget on the withdraw page',
+                'rules' => 'required',
+                'value' => true,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'contact_widget_transfer_page',
+                'label' => 'Enable Transfer Page',
+                'description' => 'Show or hide contact widget on the transfer page',
                 'rules' => 'required',
                 'value' => true,
             ],

@@ -293,11 +293,9 @@ class PaymentDepositController extends Controller
                         'error' => $e->getMessage(),
                         'user_id' => auth()->id()
                     ]);
-                    throw new ValidationException(
-                        Validator::make([], [])
-                            ->errors()
-                            ->add("fields.{$key}", 'File upload failed: ' . $e->getMessage())
-                    );
+                    throw ValidationException::withMessages([
+                        "fields.{$key}" => ['File upload failed: ' . $e->getMessage()],
+                    ]);
                 }
             } elseif (is_array($value)) {
                 // For checkbox arrays

@@ -113,8 +113,8 @@
                 $('.select2').select2();
                 $('.flatpickr').flatpickr();
                 $(".dateOfBirth").flatpickr({
-                    dateFormat: "d.m.Y",
-                    maxDate: "15.12.2017"
+                    dateFormat: "Y-m-d",
+                    maxDate: "2022-12-15"
                 });
                 tippy('.shift-Away', {
                     placement: "top",
@@ -155,8 +155,8 @@
                 $('.select2').select2();
                 $('.flatpickr').flatpickr();
                 $(".dateOfBirth").flatpickr({
-                    dateFormat: "d.m.Y",
-                    maxDate: "15.12.2017"
+                    dateFormat: "Y-m-d",
+                    maxDate: "2022-12-15"
                 });
                 tippy('.shift-Away', {
                     placement: "top",
@@ -195,8 +195,8 @@
                         $('.select2').select2();
                         $('.flatpickr').flatpickr();
                         $(".dateOfBirth").flatpickr({
-                            dateFormat: "d.m.Y",
-                            maxDate: "15.12.2017"
+                            dateFormat: "Y-m-d",
+                            maxDate: "2022-12-15"
                         });
                     } else {
                         tNotify('error', response.message);
@@ -285,8 +285,8 @@
                     $('.select2').select2();
                     $('.flatpickr').flatpickr();
                     $(".dateOfBirth").flatpickr({
-                        dateFormat: "d.m.Y",
-                        maxDate: "15.12.2017"
+                        dateFormat: "Y-m-d",
+                        maxDate: "2022-12-15"
                     });
                 },
                 error: function (xhr, status, error) {

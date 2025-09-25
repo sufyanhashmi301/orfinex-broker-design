@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\IBMiddleware;
+use App\Http\Middleware\IpnMiddleware;
 use App\Http\Middleware\PaymentAccessMiddleware;
 use App\Http\Middleware\PaymentGatewayHeaders;
 use App\Http\Middleware\SecureHeaders1Middleware;
@@ -88,6 +89,7 @@ class Kernel extends HttpKernel
         'secure_header' => SecureHeaders1Middleware::class,
         'payment_access' => PaymentAccessMiddleware::class,
         'payment_gateway_headers' => PaymentGatewayHeaders::class,
+        'ipn' => IpnMiddleware::class,
 
 
 

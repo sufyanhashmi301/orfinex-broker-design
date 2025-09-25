@@ -70,8 +70,11 @@
                                             </label>
                                         </div>
                                         <label class="form-label !w-auto pt-0 !mb-0 ml-4">
-                                        {{ __('Global Account:') }}
-                                    </label>
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="When enabled, this IB Group can show Global category accounts from linked rebate rules only if 'Show Global Accounts with Ib Rebate Rules' is enabled. ">
+                                                {{ __('Global Account:') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
                                     <div class="form-switch ps-0" style="line-height: 0;">
                                         <input class="form-check-input" type="hidden" value="0" name="is_global_account">
                                         <label class="deposit-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
@@ -79,6 +82,12 @@
                                             <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
+                                    @php $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings'); @endphp
+                                    @if(!$showGlobalWithIbRebateRules)
+                                    <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">
+                                        <strong>Show Global Accounts with Ib Rebate Rules setting is off in account type settings</strong> thats why if here in any ib group if global account active its not effective with that ib group no global account visible only universal globals are visible. <a href="{{ route('admin.settingsAccountType') }}" target="_blank" rel="noopener" class="underline">Open Account Type Settings</a>.
+                                    </p>
+                                    @endif
                                     </div>
                                 </div>
                             </div>

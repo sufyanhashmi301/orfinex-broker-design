@@ -41,6 +41,22 @@ class SettingController extends Controller
         $input = $request->all();
         $user = Auth::user();
         
+        // Determine if phone value actually changed and is substantive (ignoring formatting)
+        $submittedPhoneRaw = $request->input('formatted_phone') ?: $request->input('phone');
+        $existingPhoneRaw = $user->phone ?? '';
+        $stripPhone = function ($value) {
+            return preg_replace('/[^\d\+]/', '', (string) ($value ?? ''));
+        };
+        $onlyDigits = function ($value) {
+            return preg_replace('/\D+/', '', (string) ($value ?? ''));
+        };
+        $isSubstantivePhone = function ($value) use ($onlyDigits) {
+            // Treat as substantive only if it has at least 6 digits
+            return strlen($onlyDigits($value)) >= 6;
+        };
+        $didChangePhone = $isSubstantivePhone($submittedPhoneRaw)
+            && ($stripPhone($submittedPhoneRaw) !== $stripPhone($existingPhoneRaw));
+
         // Get setting permissions for each field
         $nameEditEnabled = (bool) setting('customer_name_edit', 'customer_permission');
         $phoneEditEnabled = (bool) setting('customer_phone_edit', 'customer_permission');
@@ -70,7 +86,11 @@ class SettingController extends Controller
             $validationRules['email'] = 'required|email|max:255|unique:users,email,'.$user->id;
         }
         
-        if ($phoneEditEnabled || !$user->phone) {
+        // Decide whether we should validate the phone field at all
+        // Only when the phone value actually changed
+        $shouldValidatePhone = $didChangePhone;
+
+        if ($shouldValidatePhone) {
             $phoneRules = ['required', 'string', 'max:255'];
             if ($isPhoneRestricted) {
                 $phoneRules[] = 'unique:users,phone,' . $user->id;
@@ -96,8 +116,16 @@ class SettingController extends Controller
 
 
         // Cross-validate phone using helper and normalize to E.164 against selected country
-        $validator->after(function ($v) use ($request, $user) {
+        $validator->after(function ($v) use ($request, $user, $shouldValidatePhone, $isSubstantivePhone) {
+            // Only validate/normalize phone if it is being edited or required
+            if (!$shouldValidatePhone) {
+                return;
+            }
             $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+            // If phone not provided and not required beyond this point, skip
+            if ($rawPhone === null || $rawPhone === '' || !$isSubstantivePhone($rawPhone)) {
+                return;
+            }
             $countryRaw = (string) $request->input('country', $user->country);
             $validation = validateAndNormalizePhone($rawPhone, $countryRaw, $user->country);
             if (!$validation['valid']) {
@@ -153,8 +181,8 @@ class SettingController extends Controller
             $data['email'] = $input['email'];
         }
         
-        if ($phoneEditEnabled || !$user->phone) {
-            // Save E.164 normalized phone
+        // Save phone only if it actually changed
+        if ($didChangePhone && !empty($phoneToStore)) {
             $data['phone'] = $phoneToStore;
         }
         
@@ -274,7 +302,22 @@ class SettingController extends Controller
 
         if ($request->status == 'disable') {
 
-            if (Hash::check(request('one_time_password'), $user->password)) {
+            $inputCodeOrPassword = (string) $request->input('one_time_password');
+
+            // Accept either the user's account password OR a valid Google Authenticator OTP to disable 2FA
+            $google2fa = app('pragmarx.google2fa');
+            $isValidPassword = Hash::check($inputCodeOrPassword, $user->password);
+            $isValidOtp = false;
+
+            if (!empty($user->google2fa_secret) && $inputCodeOrPassword !== '') {
+                try {
+                    $isValidOtp = (bool) $google2fa->verifyKey($user->google2fa_secret, $inputCodeOrPassword);
+                } catch (\Throwable $e) {
+                    $isValidOtp = false;
+                }
+            }
+
+            if ($isValidPassword || $isValidOtp) {
                 $user->update([
                     'two_fa' => 0,
                 ]);
@@ -283,7 +326,7 @@ class SettingController extends Controller
                 return redirect()->back();
             }
 
-            notify()->warning(__('Wrong Your Password'));
+            notify()->warning(__('Incorrect password or one-time code'));
 
             return redirect()->back();
 

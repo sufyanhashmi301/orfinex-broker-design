@@ -178,6 +178,12 @@
                                 </label>
                             </div>
                         </div>
+                        @if($field['name'] == 'show_global_accounts_with_ib_rebate_rules')
+                            <p class="text-xs text-slate-500 mt-2">
+                                After enabling this setting, manage Global account access from
+                                <a href="{{ route('admin.ib-group.index') }}" target="_blank" rel="noopener" class="underline">IB Groups</a>.
+                            </p>
+                        @endif
                     </div>
                 @else
                     <div class="input-area">

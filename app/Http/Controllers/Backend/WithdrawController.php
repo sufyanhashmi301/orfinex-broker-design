@@ -399,7 +399,7 @@ class WithdrawController extends Controller
             if (isset($input['approve'])) {
                 $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                 if ($txn) {
-                    // $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
+                    $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
                     notify()->success('Approve successfully');
                 }else{
                     notify()->error('Failed to update transaction. Please try again.');
@@ -428,7 +428,7 @@ class WithdrawController extends Controller
 
                     $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                     if ($txn) {
-                        // $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+                        $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
                     }else{
                         notify()->error('Failed to update transaction. Please try again.');
                         return redirect()->back();
@@ -902,7 +902,7 @@ class WithdrawController extends Controller
 
                 if ($template) {
                     try {
-                        // $this->mailNotify($account->user->email, 'withdraw_account_approval', $shortcodes);
+                        $this->mailNotify($account->user->email, 'withdraw_account_approval', $shortcodes);
                         \Log::info('Withdraw account approval email sent successfully');
                     } catch (\Exception $e) {
                         \Log::error('Failed to send withdraw account approval email: ' . $e->getMessage());
@@ -955,7 +955,7 @@ class WithdrawController extends Controller
 
                 if ($template) {
                     try {
-                        // $this->mailNotify($account->user->email, 'withdraw_account_rejection', $shortcodes);
+                        $this->mailNotify($account->user->email, 'withdraw_account_rejection', $shortcodes);
                         \Log::info('Withdraw account rejection email sent successfully');
                     } catch (\Exception $e) {
                         \Log::error('Failed to send withdraw account rejection email: ' . $e->getMessage());
@@ -1355,14 +1355,14 @@ class WithdrawController extends Controller
 
         if ($request->is_auto_approve == true) {
             Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, $approvalCause);
-            // $this->mailNotify($txnInfo->user->email, 'user_auto_approve_withdrawal', $shortcodes);
+            $this->mailNotify($txnInfo->user->email, 'user_auto_approve_withdrawal', $shortcodes);
             notify()->success('Withdrawal approved automatically');
             return redirect()->back();
         }
 
         // Send notifications
-        // $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
-        // $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
+        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
+        $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
         $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 

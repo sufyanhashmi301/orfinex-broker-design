@@ -18,6 +18,10 @@
                 $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
                 $withdrawAccountOtp = setting('withdraw_account_otp', 'withdraw_settings');
             @endphp
+
+            @php
+                $twoFaEnabledForUser = setting('fa_verification', 'permission') && auth()->user()->two_fa;
+            @endphp
             
             @if($withdrawAccountOtp)
                 <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
@@ -89,6 +93,38 @@
     <!-- Include OTP Modals -->
     @include('frontend::withdraw.modal.__account_creation_otp_form')
     @include('frontend::withdraw.modal.__account_creation_cancel_otp')
+    @include('frontend::withdraw.account.modal.__ga_form')
+    <!-- Choice Modal -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+         id="accountCreationAuthChoiceModal"
+         tabindex="-1"
+         aria-labelledby="accountCreationAuthChoiceModalLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body px-6 py-6 text-center">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-primary text-primary bg-opacity-30 mb-5" style="--tw-bg-opacity: 0.3;">
+                        <iconify-icon class="text-4xl" icon="lucide:shield-check"></iconify-icon>
+                    </div>
+                    <div class="title mb-2">
+                        <h4 class="text-xl font-medium dark:text-white capitalize" id="accountCreationAuthChoiceModalLabel">
+                            {{ __('Select Verification Method') }}
+                        </h4>
+                    </div>
+                    <p class="dark:text-slate-100">{{ __('Choose how you want to verify account creation.') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+                        <button type="button" class="btn btn-dark w-full inline-flex items-center justify-center" id="accountCreationChooseOtpBtn">
+                            {{ __('Email OTP') }}
+                        </button>
+                        <button type="button" class="btn btn-primary w-full inline-flex items-center justify-center" id="accountCreationChooseGaBtn">
+                            {{ __('Authenticator App') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script>
@@ -113,52 +149,131 @@
         $('#withdrawAccountForm').on('submit', function(e) {
             e.preventDefault();
             
+            const bothMethodsEnabled = @json($withdrawAccountOtp && $twoFaEnabledForUser);
+            const onlyGaEnabled = @json(!$withdrawAccountOtp && $twoFaEnabledForUser);
+            const onlyOtpEnabled = @json($withdrawAccountOtp && !$twoFaEnabledForUser);
+
+            const form = this;
+            const formData = new FormData(form);
+
+            if (bothMethodsEnabled) {
+                $('#accountCreationAuthChoiceModal').modal('show');
+                // attach one-time handlers for choice
+                $('#accountCreationChooseGaBtn').off('click').on('click', function() {
+                    formData.set('verification_method', 'ga');
+                    $('#accountCreationAuthChoiceModal').modal('hide');
+                    submitAccountCreationForm(formData);
+                });
+                $('#accountCreationChooseOtpBtn').off('click').on('click', function() {
+                    formData.set('verification_method', 'otp');
+                    // Show loader and disable choice button while sending OTP
+                    var $btn = $(this);
+                    var originalHtml = $btn.html();
+                    $btn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Sending...") }}');
+                    if (typeof $('#page-loader').show === 'function') { $('#page-loader').show(); }
+                    $('#accountCreationAuthChoiceModal').modal('hide');
+                    submitAccountCreationForm(formData, $btn, originalHtml);
+                });
+                return;
+            }
+
+            if (onlyGaEnabled) {
+                formData.set('verification_method', 'ga');
+                submitAccountCreationForm(formData);
+                return;
+            }
+
             // Check if OTP is required
             @if($withdrawAccountOtp)
                 // Submit form via AJAX to get OTP
-                const formData = new FormData(this);
-
                 // Set loading state on submit button
                 const $submitBtn = $('#submitWithdrawAccountBtn');
                 const originalBtnHtml = $submitBtn.html();
                 $submitBtn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Processing...") }}');
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            tNotify('success', response.message);
-                            // Show OTP modal
-                            $('#accountCreationOtpModal').modal('show');
-                        }
-                    },
-                    error: function(xhr) {
-                        const response = xhr.responseJSON;
-                        if (response && response.message) {
-                            {{-- tNotify('error', response.message); --}}
-                            
-                            // Check if it's a restriction message
-                            if (response.is_restricted || response.message.includes('restricted') || response.message.includes('Too many')) {
-                                // Show restriction message as notification instead of alert
-                                tNotify('error', response.message);
-                            }
-                        } else {
-                            tNotify('error', '{{ __("An error occurred. Please try again.") }}');
-                        }
-                    },
-                    complete: function() {
-                        // Reset loading state on submit button
-                        $submitBtn.prop('disabled', false).html(originalBtnHtml);
-                    }
-                });
+                submitAccountCreationForm(formData, $submitBtn, originalBtnHtml);
             @else
                 // Submit form normally if OTP is not required
                 this.submit();
             @endif
+        });
+
+        function submitAccountCreationForm(formData, $submitBtn = $('#submitWithdrawAccountBtn'), originalBtnHtml = $('#submitWithdrawAccountBtn').html()) {
+            $.ajax({
+                url: $('#withdrawAccountForm').attr('action'),
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        if (response.show_ga) {
+                            $('#accountCreationGaModal').modal('show');
+                        } else if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            tNotify('success', response.message || '');
+                            $('#accountCreationOtpModal').modal('show');
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    if (response && response.message) {
+                        if (response.is_restricted || (response.message.includes && (response.message.includes('restricted') || response.message.includes('Too many')))) {
+                            tNotify('error', response.message);
+                        } else {
+                            tNotify('error', response.message);
+                        }
+                    } else {
+                        tNotify('error', '{{ __("An error occurred. Please try again.") }}');
+                    }
+                },
+                complete: function() {
+                    if ($submitBtn && originalBtnHtml) {
+                        $submitBtn.prop('disabled', false).html(originalBtnHtml);
+                    }
+                    if (typeof $('#page-loader').hide === 'function') { $('#page-loader').hide(); }
+                }
+            });
+        }
+        // Ensure modals are in body to avoid overlay/pointer issues
+        (function ensureModalParents(){
+            $('#accountCreationAuthChoiceModal, #accountCreationGaModal, #accountCreationOtpModal, #confirmAccountCreationCancelModal').appendTo('body');
+        })();
+
+        // GA verification for account creation
+        $('.accountCreationGaSubmitBtn').on('click', function() {
+            const code = $('#accountCreationGaInput').val();
+            if (!code || code.length !== 6) {
+                tNotify('error', '{{ __("Please enter a valid 6-digit OTP") }}');
+                return;
+            }
+            $(this).prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verifying...") }}');
+            $.ajax({
+                url: '{{ route("user.withdraw.account.verify-ga.post") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    one_time_password: code
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        tNotify('success', response.message);
+                        $('#accountCreationGaModal').modal('hide');
+                        setTimeout(function() {
+                            window.location.href = response.redirect || '{{ route("user.withdraw.account.index") }}';
+                        }, 1200);
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON || {};
+                    tNotify('error', response.message || '{{ __("Invalid authenticator code.") }}');
+                    $('#accountCreationGaInput').val('').focus();
+                },
+                complete: function() {
+                    $('.accountCreationGaSubmitBtn').prop('disabled', false).html('<iconify-icon icon="lucide:check" class="ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verify") }}');
+                }
+            });
         });
 
         // Auto-focus OTP input when modal opens
@@ -223,7 +338,7 @@
                         }, 1500);
                     }
                 },
-                                                    error: function(xhr) {
+                error: function(xhr) {
                     const response = xhr.responseJSON;
                     if (response && response.message) {
                         tNotify('error', response.message);
@@ -316,6 +431,53 @@
             $('#accountCreationOtpInput').val('').prop('disabled', false);
             $('.accountCreationOtpSubmitBtn').prop('disabled', false).html('<iconify-icon icon="lucide:check" class="ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verify OTP") }}');
             $('#resendAccountCreationOtpBtn').prop('disabled', false).removeClass('disabled').html('{{ __("Resend") }}');
+        });
+
+        $('#accountCreationGaModal').on('show.bs.modal', function () {
+            let $inputs = $(".otp-input");
+
+            // unbind first to prevent duplicate bindings
+            $inputs.off();
+
+            // move to next on input
+            $inputs.on("input", function () {
+                let $this = $(this);
+                let value = $this.val().replace(/\D/g, ""); // allow only digits
+                $this.val(value);
+
+                if (value.length === 1) {
+                    $this.next(".otp-input").focus().select();
+                }
+
+                updateHiddenInput();
+            });
+
+            // move to prev on backspace
+            $inputs.on("keydown", function (e) {
+                if (e.key === "Backspace" && !$(this).val()) {
+                    $(this).prev(".otp-input").focus().select();
+                }
+            });
+
+            // allow paste of full OTP
+            $inputs.first().on("paste", function (e) {
+                let paste = (e.originalEvent || e).clipboardData.getData("text").trim();
+                if (/^\d+$/.test(paste) && paste.length === $inputs.length) {
+                    $inputs.each(function (i) {
+                        $(this).val(paste[i]);
+                    });
+                    updateHiddenInput();
+                    $inputs.last().focus();
+                }
+            });
+
+            function updateHiddenInput() {
+                let otp = "";
+                $inputs.each(function () {
+                    otp += $(this).val();
+                });
+                $("#accountCreationGaInput").val(otp);
+            }
         });
     </script>
 @endsection

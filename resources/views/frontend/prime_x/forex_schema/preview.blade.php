@@ -40,7 +40,7 @@
             </h4>
             <div class="card h-auto">
                 <div class="card-body p-6">
-                    <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post"
+                    <form id="create-forex-account-form" class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post"
                           enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="account_type" id="account-type" value="real">
@@ -351,6 +351,20 @@
             $('#enter-main-password').on('input', function () {
                 var password = $(this).val();
                 checkPassword(password, 'main', 'create-forex-account');
+            });
+
+            // Prevent double submission: disable button after first valid submit
+            var isCreatingAccount = false;
+            $('#create-forex-account-form').on('submit', function (e) {
+                if (isCreatingAccount) {
+                    e.preventDefault();
+                    return false;
+                }
+                isCreatingAccount = true;
+                var $btn = $('#create-forex-account');
+                $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                $btn.data('original-text', $btn.text());
+                $btn.text('{{ __("Creating...") }}');
             });
         });
     </script>

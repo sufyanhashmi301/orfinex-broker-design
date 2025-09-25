@@ -102,19 +102,29 @@ class StaffController extends Controller
     {
         // Validate the input
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'name' => 'required',
-            'email' => 'required|email|unique:admins,email',
-            'password' => 'required|same:confirm-password',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:admins,email',
+            'password' => 'required|string|min:8|same:confirm-password',
+            'confirm-password' => 'required_with:password|string|min:8',
             'role' => 'required',
             'status' => 'boolean',
-            'department_id' => 'nullable|integer',
-            'designation_id' => 'nullable|integer',
+            'employee_id' => 'nullable|integer|min:1',
+            'department_id' => 'nullable|exists:departments,id',
+            'designation_id' => 'nullable|exists:designations,id',
             'date_of_joining' => 'nullable|date',
-            'work_phone' => 'nullable|string',
-            'phone' => 'nullable|string',
-            'key' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
+            'marital_status' => 'nullable|in:single,married',
+            'employment_type' => 'nullable|in:permanent,on contract,temporary,trainee',
+            'employment_status' => 'nullable|in:active,terminated,deceased,resigned,probation,notice period',
+            'source_of_hire' => 'nullable|in:direct,referral,web,newspaper',
+            'location' => 'nullable|string|max:255',
+            'work_phone' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'key' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -139,6 +149,7 @@ class StaffController extends Controller
             $input['department_id'] = $input['department_id'] ?: null;
             $input['designation_id'] = $input['designation_id'] ?: null;
             $input['date_of_joining'] = $input['date_of_joining'] ?: null;
+            $input['date_of_birth'] = $input['date_of_birth'] ?: null;
             $input['work_phone'] = $input['work_phone'] ?: null;
             $input['phone'] = $input['phone'] ?: null;
 
@@ -196,13 +207,29 @@ class StaffController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'email' => 'required|email|unique:admins,email,' . $id,
-                'password' => 'nullable|same:confirm-password',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:admins,email,' . $id,
+                'password' => 'nullable|string|min:8|same:confirm-password',
+                'confirm-password' => 'required_with:password|string|min:8',
                 'role' => 'nullable',
                 'status' => 'boolean',
-                'department' => 'nullable|exists:departments,id',
-                'designation' => 'nullable|exists:designations,id',
+                'employee_id' => 'nullable|integer|min:1',
+                'department_id' => 'nullable|exists:departments,id',
+                'designation_id' => 'nullable|exists:designations,id',
+                'date_of_joining' => 'nullable|date',
+                'date_of_birth' => 'nullable|date',
+                'gender' => 'nullable|in:male,female,other',
+                'marital_status' => 'nullable|in:single,married',
+                'employment_type' => 'nullable|in:permanent,on contract,temporary,trainee',
+                'employment_status' => 'nullable|in:active,terminated,deceased,resigned,probation,notice period',
+                'source_of_hire' => 'nullable|in:direct,referral,web,newspaper',
+                'location' => 'nullable|string|max:255',
+                'work_phone' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:255',
+                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'key' => 'nullable|string|max:255',
             ]);
 
             if ($validator->fails()) {
@@ -230,6 +257,8 @@ class StaffController extends Controller
             $input['employee_id'] = $request->input('employee_id') ?: null;
             $input['department_id'] = $request->input('department_id') ?: null;
             $input['designation_id'] = $request->input('designation_id') ?: null;
+            $input['date_of_joining'] = $request->input('date_of_joining') ?: null;
+            $input['date_of_birth'] = $request->input('date_of_birth') ?: null;
             unset($input['department'], $input['designation']);
 
             if (!empty($input['password'])) {

@@ -32,7 +32,7 @@
                     <li>
                         <h5 class="text-sm font-semibold">{{ __('Show Global Accounts with IB Rebate Rules') }}</h5>
                         <ul class="list-disc ml-4 pl-5 space-y-1">
-                            <li><span class="font-semibold">{{ __('Enabled:') }}</span> {{ __('Global accounts will also appear for users within the IB network.') }}</li>
+                            <li><span class="font-semibold">{{ __('Enabled:') }}</span> {{ __('Global accounts will also appear for users within the IB network as per ib group settings.') }}</li>
                             <li><span class="font-semibold">{{ __('Disabled:') }}</span> {{ __('Global accounts will be hidden; users will only see accounts tied to their IB group.') }}</li>
                         </ul>
                     </li>

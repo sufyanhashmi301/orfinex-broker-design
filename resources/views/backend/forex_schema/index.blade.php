@@ -131,9 +131,9 @@
                                             </div>
                                         @endif
 
-                                        @if($categorySlug === 'global_account' && $schema->is_global)
+                                        @if($categorySlug === 'global_account')
                                             <div>
-                                                <span class="font-medium">{{ __('Global') }}</span>
+                                                <span class="font-medium">{{ $schema->is_global ? __('Universal Global') : __('Global') }}</span>
                                             </div>
                                         @endif
 

@@ -71,7 +71,7 @@
                             </label>
                             <div class="flex flex-col ml-5">
                                 <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
-                                    {{ __('Set as Global Account') }}
+                                    {{ __('Set as Universal Global Account') }}
                                 </span>
                                 <span class="text-xs font-Inter font-normal text-slate-600">
                                     {{ __('This will override the country, tag and ib rebate rules restrictions and will be shown to all users.') }}

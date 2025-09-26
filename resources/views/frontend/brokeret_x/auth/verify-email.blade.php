@@ -26,13 +26,24 @@
     <form method="POST" action="{{ route('verification.verify.code') }}" class="space-y-4">
         @csrf
 
-        <x-frontend::forms.field
-            type="text"
-            fieldId="verification_code"
-            fieldLabel="{{ __('Code') }}"
-            fieldName="verification_code"
-            fieldPlaceholder="{{ __('Enter 4 digits code!') }}"
-        />
+        <x-frontend::forms.label for="verification_code" fieldLabel="{{ __('Code') }}" fieldRequired />
+        <div x-data="otpInput(4)" x-init="$nextTick(() => init())" class="flex gap-2">
+            <template x-for="(digit, index) in digits" :key="index">
+                <input
+                    type="text"
+                    maxlength="1"
+                    class="otp-input w-14 h-14 text-center border rounded dark:bg-dark-900 shadow-theme-xs
+                        focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800
+                        border-gray-300 bg-transparent text-gray-800 focus:ring-3 focus:outline-hidden
+                        dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                    @input="onInput($event, index)"
+                    @keydown="onKeydown($event, index)"
+                    @paste="onPaste($event)">
+            </template>
+
+            <input type="hidden" name="verification_code" :value="otp">
+        </div>
+
         <x-frontend::forms.button type="submit" class="w-full" size="md" variant="primary">
             {{ __('Verify Code') }}
         </x-frontend::forms.button>
@@ -67,4 +78,54 @@
         </p>
     </div>
     
+@endsection
+@section('script')
+    <script>
+        function otpInput(length) {
+            return {
+                length,
+                digits: Array(length).fill(""),
+                inputs: [],
+
+                init() {
+                    this.inputs = this.$el.querySelectorAll('.otp-input');
+                },
+
+                get otp() {
+                    return this.digits.join('');
+                },
+
+                onInput(e, i) {
+                    let v = e.target.value.replace(/\D/g, '').slice(-1);
+                    this.digits[i] = v;
+                    e.target.value = v;
+
+                    if (v && i < this.length - 1) {
+                        this.inputs[i + 1].focus();
+                    }
+                },
+
+                onKeydown(e, i) {
+                    if (e.key === 'Backspace' && !this.digits[i] && i > 0) {
+                        this.inputs[i - 1].focus();
+                    }
+                },
+
+                onPaste(e) {
+                    e.preventDefault();
+                    const data = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                    if (!data) return;
+
+                    [...data].forEach((ch, idx) => {
+                        if (idx < this.length) {
+                            this.digits[idx] = ch;
+                            this.inputs[idx].value = ch;
+                        }
+                    });
+
+                    this.inputs[Math.min(data.length - 1, this.length - 1)].focus();
+                }
+            }
+        }
+    </script>
 @endsection

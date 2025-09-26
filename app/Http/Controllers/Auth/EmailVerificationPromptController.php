@@ -19,7 +19,8 @@ class EmailVerificationPromptController extends Controller
     {
 
         if (! setting('email_verification', 'permission')) {
-            return redirect()->route('user.dashboard');
+            // return redirect()->route('user.dashboard');
+            return redirect()->intended(RouteServiceProvider::getThemeSpecificHome());
         }
         $user = $request->user();
 
@@ -33,7 +34,8 @@ class EmailVerificationPromptController extends Controller
 
         // Check if user is already verified first
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(RouteServiceProvider::HOME);
+            // return redirect()->intended(RouteServiceProvider::HOME);
+            return redirect()->intended(RouteServiceProvider::getThemeSpecificHome());
         }
 
         // Try to send email verification notification with error handling

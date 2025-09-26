@@ -567,8 +567,11 @@ class WithdrawController extends Controller
                     ->orWhereJsonContains('country', 'All');
             })->get();
 
+        $user = Auth::user();
+        $withdrawAccountOtp = (bool) setting('withdraw_account_otp', 'withdraw_settings');
+        $twoFaEnabledForUser = (bool) setting('fa_verification', 'permission') && (bool) $user->two_fa;
 
-        return view('frontend::withdraw.account.create', compact('withdrawMethods'));
+        return view('frontend::withdraw.account.create', compact('withdrawMethods', 'withdrawAccountOtp', 'twoFaEnabledForUser'));
     }
 
     /**

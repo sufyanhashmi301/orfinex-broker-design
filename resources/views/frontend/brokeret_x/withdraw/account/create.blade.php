@@ -142,6 +142,9 @@
                 // Verification data
                 selectedVerificationMethod: null,
                 hasGoogleAuthenticator: @json(auth()->check() && auth()->user()->google2fa_secret ? true : false),
+                withdrawAccountOtp: @json($withdrawAccountOtp),
+                twoFaEnabledForUser: @json($twoFaEnabledForUser),
+  
                 otpInput: '',
                 isResendingOtp: false,
                 
@@ -425,12 +428,22 @@
 
                 // Initialize verification flow
                 startVerification() {
-                    if (this.hasGoogleAuthenticator) {
-                        // Show choice modal if user has both options
+                    // Check if both OTP and 2FA are enabled
+                    if (this.withdrawAccountOtp && this.twoFaEnabledForUser) {
                         this.isVerificationChoiceModalOpen = true;
-                    } else {
-                        // Directly send OTP if no GA is set up
+                        return;
+                    }
+                    
+                    // Check if only OTP is enabled
+                    if (this.withdrawAccountOtp && !this.twoFaEnabledForUser) {
                         this.sendOtp();
+                        return;
+                    }
+                    
+                    // Check if only 2FA is enabled
+                    if (!this.withdrawAccountOtp && this.twoFaEnabledForUser) {
+                        this.modals.ga = true;
+                        return;
                     }
                 }
             }

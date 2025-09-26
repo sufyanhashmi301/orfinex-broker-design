@@ -1,71 +1,126 @@
 @extends('frontend::user.setting.index')
 @section('title')
-    {{ __('Create Withdraw Account') }}
+    {{ __('Withdraw Account') }}
 @endsection
 @section('settings-content')
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div>
-            <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-1">
-                @yield('title')
-            </h2>
-            <p class="text-gray-800 text-theme-sm dark:text-white/90">
-                {{ __("Set up a new withdrawal payment method for your account.") }}
-            </p>
-        </div>
-    </div>
-
     <div x-data="withdrawMethodSelector()">
-        <form action="{{ route('user.withdraw.account.store') }}" method="post" enctype="multipart/form-data">
-            @csrf
-            
-            <!-- Form Fields -->
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 selectMethodRow">
-                <div class="input-area selectMethodCol">
-                    <x-frontend::forms.label 
-                        fieldId="selectMethod"
-                        fieldLabel="{{ __('Choose Payment Method') }}"
-                        fieldRequired="true"
-                    />
-                    <x-frontend::forms.select
-                        fieldId="selectMethod"
-                        fieldName="withdraw_method_id"
-                        :placeholder="__('Select Payment Method')"
-                        x-model="selectedMethodId"
-                        @change="loadMethodFields">
-                        @foreach($withdrawMethods as $method)
-                            <option value="{{ $method->id }}">
-                                {{ $method->name }} ({{ ucwords($method->type) }})
-                            </option>
-                        @endforeach
-                    </x-frontend::forms.select>
-                    
-                    <!-- Loading indicator -->
-                    <div x-show="loading" class="mt-2 flex items-center text-sm text-gray-500">
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        {{ __('Loading payment method details...') }}
-                    </div>
-                    
-                    <!-- Error message -->
-                    <div x-show="error" x-text="error" class="mt-2 text-sm text-red-500"></div>
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <div>
+                <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-1">
+                    {{ __('Create Withdraw Account') }}
+                </h2>
+                <p class="text-gray-800 text-theme-sm dark:text-white/90">
+                    {{ __("Set up a new withdrawal payment method for your account.") }}
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12">
+            <div class="col-span-12 lg:col-span-7">
+                <div class="lg:max-w-xl">
+                    <form action="{{ route('user.withdraw.account.store') }}" method="post" enctype="multipart/form-data" @submit.prevent="startVerification">
+                        @csrf
+                        
+                        <!-- Form Fields -->
+                        <div class="selectMethodRow">
+                            <div class="input-area selectMethodCol">
+                                <x-frontend::forms.label 
+                                    fieldId="selectMethod"
+                                    fieldLabel="{{ __('Choose Payment Method') }}"
+                                    fieldRequired="true"
+                                />
+                                <x-frontend::forms.select
+                                    fieldId="selectMethod"
+                                    fieldName="withdraw_method_id"
+                                    :placeholder="__('Select Payment Method')"
+                                    x-model="selectedMethodId"
+                                    @change="loadMethodFields">
+                                    @foreach($withdrawMethods as $method)
+                                        <option value="{{ $method->id }}">
+                                            {{ $method->name }} ({{ ucwords($method->type) }})
+                                        </option>
+                                    @endforeach
+                                </x-frontend::forms.select>
+                                
+                                <!-- Loading indicator -->
+                                <div x-show="loading" class="mt-2 flex items-center text-sm text-gray-500">
+                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    {{ __('Loading payment method details...') }}
+                                </div>
+                                
+                                <!-- Error message -->
+                                <div x-show="error" x-text="error" class="mt-2 text-sm text-red-500"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dynamic method fields container with proper grid layout -->
+                        <template x-if="methodFields">
+                            <div class="space-y-5 mt-5" x-html="methodFields"></div>
+                        </template>
+
+                        <!-- Submit Button -->
+                        <div class="buttons mt-6">
+                            <x-frontend::forms.button type="submit" size="md" variant="primary" icon="square-pen" icon-position="left">
+                                {{ __('Create Withdraw Account') }}
+                            </x-frontend::forms.button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-            <!-- Dynamic method fields container with proper grid layout -->
-            <template x-if="methodFields">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-6" x-html="methodFields"></div>
-            </template>
+            <div class="col-span-12 lg:col-span-5">
+                <div class="lg:border-l border-gray-200 dark:border-gray-800 lg:ps-5">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-white/90 mb-3">
+                            {{ __('Terms') }}
+                        </h3>
+                        <ul class="space-y-3.5">
+                            <li class="flex gap-2">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">{{ __('Two-Factor Authentication Required') }}</span>
+                                <span class="text-sm text-gray-700 dark:text-gray-400">
+                                    {{ setting('withdraw_account_otp', 'withdraw_settings') ? __('Yes') : __('No') }}
+                                </span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">{{ __('Manual Approval Required') }}</span>
+                                <span class="text-sm text-gray-700 dark:text-gray-400">
+                                    {{ setting('withdraw_account_approval', 'withdraw_settings') ? __('Yes') : __('No') }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
 
-            <!-- Submit Button -->
-            <div class="buttons mt-6">
-                <x-frontend::forms.button type="submit" size="md" variant="primary" icon="square-pen" icon-position="left">
-                    {{ __('Create Withdraw Account') }}
-                </x-frontend::forms.button>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-white/90 mb-3">
+                            {{ __('FAQ') }}
+                        </h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <x-frontend::text-link href="javascript:void(0)">
+                                    {{ __('How do I verify my account?') }}
+                                </x-frontend::text-link>
+                            </li>
+                            <li>
+                                <x-frontend::text-link href="javascript:void(0)">
+                                    {{ __('How do I deposit with EasyPaisa?') }}
+                                </x-frontend::text-link>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
+        
+        <!-- Include OTP Modals -->
+        @include('frontend::withdraw.account.modal.__varification_choice')
+        @include('frontend::withdraw.account.modal.__otp_form')
+        @include('frontend::withdraw.account.modal.__cancel_otp')
+        @include('frontend::withdraw.account.modal.__ga_form')
+        
     </div>
+
 @endsection
 @section('script')
     <script>
@@ -75,6 +130,23 @@
                 methodFields: null,
                 loading: false,
                 error: null,
+                
+                // Modal states
+                isVerificationChoiceModalOpen: false,
+                isOtpModalOpen: false,
+                isCancelModalOpen: false,
+                modals: {
+                    ga: false
+                },
+                
+                // Verification data
+                selectedVerificationMethod: null,
+                hasGoogleAuthenticator: @json(auth()->check() && auth()->user()->google2fa_secret ? true : false),
+                otpInput: '',
+                isResendingOtp: false,
+                
+                // Google Authenticator inputs
+                gaInputs: ['', '', '', '', '', ''],
                 
                 async loadMethodFields() {
                     // Clear previous state
@@ -122,6 +194,243 @@
                         this.error = '{{ __("Failed to load payment method details. Please try again.") }}';
                     } finally {
                         this.loading = false;
+                    }
+                },
+
+                // Verification Choice Modal Methods
+                selectVerificationMethod(method) {
+                    this.selectedVerificationMethod = method;
+                },
+
+                proceedWithVerification() {
+                    if (!this.selectedVerificationMethod) return;
+                    
+                    this.isVerificationChoiceModalOpen = false;
+                    
+                    if (this.selectedVerificationMethod === 'email') {
+                        this.sendOtp();
+                    } else if (this.selectedVerificationMethod === 'ga') {
+                        this.modals.ga = true;
+                    }
+                },
+
+                // OTP Methods
+                async sendOtp() {
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.account.resend-otp") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            this.isOtpModalOpen = true;
+                            notify().success(data.message);
+                        } else {
+                            // Handle error response
+                            console.log('OTP Error Response:', data);
+                            notify().error(data.message || 'Failed to send OTP');
+                        }
+                    } catch (error) {
+                        notify().error('Failed to send OTP. Please try again.');
+                    }
+                },
+
+                async submitOtp() {
+                    if (!this.otpInput || this.otpInput.length < 4) {
+                        notify().error('Please enter a valid OTP');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-otp.post") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                otp: this.otpInput
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            this.isOtpModalOpen = false;
+                            this.otpInput = '';
+                            
+                            notify().success(data.message);
+                            
+                            // Submit the form after successful verification
+                            this.submitFormAfterVerification();
+                        } else {
+                            notify().error(data.message);
+                            this.otpInput = '';
+                        }
+                    } catch (error) {
+                        notify().error('An error occurred during OTP verification. Please try again.');
+                        this.otpInput = '';
+                    }
+                },
+
+                async resendOtp() {
+                    this.isResendingOtp = true;
+                    
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.account.resend-otp") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            notify().success(data.message);
+                        } else {
+                            notify().error(data.message || 'Failed to resend OTP');
+                        }
+                    } catch (error) {
+                        notify().error('An error occurred while resending the OTP. Please try again.');
+                    } finally {
+                        this.isResendingOtp = false;
+                    }
+                },
+
+                // Cancel Modal Methods
+                showCancelModal() {
+                    this.isCancelModalOpen = true;
+                },
+
+                confirmCancel() {
+                    this.isOtpModalOpen = false;
+                    this.isCancelModalOpen = false;
+                    this.modals.ga = false;
+                    this.otpInput = '';
+                    this.gaInputs = ['', '', '', '', '', ''];
+                    this.selectedVerificationMethod = null;
+                },
+
+                // Google Authenticator Methods
+                updateGaInput(index, value) {
+                    // Only allow digits
+                    if (!/^\d*$/.test(value)) return;
+                    
+                    this.gaInputs[index] = value;
+                    
+                    // Auto-focus next input
+                    if (value && index < 5) {
+                        const nextInput = document.querySelector(`[data-ga-index="${index + 1}"]`);
+                        if (nextInput) nextInput.focus();
+                    }
+                },
+
+                handleGaKeydown(index, event) {
+                    // Handle backspace
+                    if (event.key === 'Backspace' && !this.gaInputs[index] && index > 0) {
+                        const prevInput = document.querySelector(`[data-ga-index="${index - 1}"]`);
+                        if (prevInput) {
+                            prevInput.focus();
+                            this.gaInputs[index - 1] = '';
+                        }
+                    }
+                    
+                    // Handle arrow keys
+                    if (event.key === 'ArrowLeft' && index > 0) {
+                        const prevInput = document.querySelector(`[data-ga-index="${index - 1}"]`);
+                        if (prevInput) prevInput.focus();
+                    } else if (event.key === 'ArrowRight' && index < 5) {
+                        const nextInput = document.querySelector(`[data-ga-index="${index + 1}"]`);
+                        if (nextInput) nextInput.focus();
+                    }
+                },
+
+                handleGaPaste(event) {
+                    event.preventDefault();
+                    const pastedData = event.clipboardData.getData('text').replace(/\D/g, '');
+                    
+                    if (pastedData.length === 6) {
+                        for (let i = 0; i < 6; i++) {
+                            this.gaInputs[i] = pastedData[i] || '';
+                        }
+                    }
+                },
+
+                async submitGa() {
+                    const gaCode = this.gaInputs.join('');
+                    
+                    if (gaCode.length !== 6) {
+                        notify().error('Please enter the complete 6-digit code');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-ga.post") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                code: gaCode
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            this.modals.ga = false;
+                            this.gaInputs = ['', '', '', '', '', ''];
+                            
+                            notify().success(data.message);
+                            
+                            // Submit the form after successful verification
+                            this.submitFormAfterVerification();
+                        } else {
+                            this.modals.ga = false;
+                            notify().error(data.message);
+                            this.gaInputs = ['', '', '', '', '', ''];
+                        }
+                    } catch (error) {
+                        this.modals.ga = false;
+                        notify().error('An error occurred during verification. Please try again.');
+                        this.gaInputs = ['', '', '', '', '', ''];
+                    }
+                },
+
+                // Form submission after verification
+                submitFormAfterVerification() {
+                    const form = document.querySelector('form[action*="withdraw.account.store"]');
+                    if (form) {
+                        // Add a hidden field to indicate verification was completed
+                        const verifiedInput = document.createElement('input');
+                        verifiedInput.type = 'hidden';
+                        verifiedInput.name = 'verification_completed';
+                        verifiedInput.value = '1';
+                        form.appendChild(verifiedInput);
+                        
+                        // Submit the form
+                        form.submit();
+                    } else {
+                        notify().error('Form submission error');
+                    }
+                },
+
+                // Initialize verification flow
+                startVerification() {
+                    if (this.hasGoogleAuthenticator) {
+                        // Show choice modal if user has both options
+                        this.isVerificationChoiceModalOpen = true;
+                    } else {
+                        // Directly send OTP if no GA is set up
+                        this.sendOtp();
                     }
                 }
             }

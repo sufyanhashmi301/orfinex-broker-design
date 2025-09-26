@@ -78,13 +78,14 @@
 
     @yield('settings-content')
 
-    <!-- Modal for Edit Phone -->
-    @include('frontend::.user.setting.profile.modal.__edit_phone')
-
-    <!-- Modal for Edit Email -->
-    @include('frontend::.user.setting.profile.modal.__edit_address')
-
 @endsection
+@push('style')
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+@endpush
 @section('script')
     @yield('settings-script')
 @endsection

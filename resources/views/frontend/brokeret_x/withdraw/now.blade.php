@@ -2,6 +2,13 @@
 @section('title')
     {{ __('Withdraw Now') }}
 @endsection
+@push('style')
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+@endpush
 @section('content')
     @php
         use Carbon\Carbon;
@@ -20,7 +27,7 @@
     <div x-data="withdrawForm()">
         <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12">
             <div class="col-span-12 lg:col-span-7">
-                <div class="max-w-xl">
+                <div class="lg:max-w-xl">
                     <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm" @submit="handleSubmit">
                         @csrf
                         <input type="hidden" name="account_type" x-model="accountType">

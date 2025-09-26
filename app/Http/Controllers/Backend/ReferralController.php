@@ -133,7 +133,7 @@ class ReferralController extends Controller
                     $updatedCount = $this->userIbNetworkService->syncMeta($childUser, 'is_part_of_master_ib', $isPartOfMasterIB);
                     
                     DB::commit();
-                    notify()->success("Referral created successfully. Updated is_part_of_master_ib for {$updatedCount} users.");
+                    notify()->success('Referral created successfully');
                 } else {
                     DB::commit();
                     notify()->success('Referral created successfully');
@@ -213,7 +213,7 @@ class ReferralController extends Controller
                 
                 DB::commit();
                 
-                notify()->success("Referral deleted successfully. Removed is_part_of_master_ib from {$removedCount} users.");
+                notify()->success('Referral deleted successfully');
                 
             } catch (\Exception $e) {
                 DB::rollBack();

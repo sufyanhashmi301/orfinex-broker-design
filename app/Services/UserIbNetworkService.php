@@ -63,4 +63,40 @@ class UserIbNetworkService
 
         return $updated;
     }
+
+    /**
+     * Remove a specific meta key from the user and their full network
+     */
+    public function removeMetaFromNetwork(User $user, string $metaKey): int
+    {
+        $userIds = $this->getNetworkUserIds($user);
+        $removed = 0;
+
+        foreach ($userIds as $userId) {
+            $target = User::find($userId);
+            if ($target) {
+                $deletedCount = $target->user_metas()
+                    ->where('meta_key', $metaKey)
+                    ->delete();
+                
+                if ($deletedCount > 0) {
+                    $removed++;
+                }
+            }
+        }
+
+        return $removed;
+    }
+
+    /**
+     * Remove a specific meta key from a single user
+     */
+    public function removeMetaFromUser(User $user, string $metaKey): bool
+    {
+        $deletedCount = $user->user_metas()
+            ->where('meta_key', $metaKey)
+            ->delete();
+
+        return $deletedCount > 0;
+    }
 }

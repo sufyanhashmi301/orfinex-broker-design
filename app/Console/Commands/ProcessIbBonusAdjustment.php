@@ -19,7 +19,7 @@ class ProcessIbBonusAdjustment extends Command
     public function handle()
     {
         // Define the start date (2025-04-08) and current date.
-        $startDate   = Carbon::parse('2025-04-08')->startOfDay();
+        $startDate   = Carbon::parse('2025-09-23')->startOfDay();
         $currentDate = Carbon::now();
 
         // Array to hold detailed reports for accounts and insufficient funds.

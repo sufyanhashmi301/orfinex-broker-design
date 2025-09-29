@@ -24,11 +24,11 @@
         </div>
     </div>
 
-    <div x-data="withdrawForm()">
+    <div x-data="withdrawVerification()">
         <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12">
             <div class="col-span-12 lg:col-span-7">
                 <div class="lg:max-w-xl">
-                    <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm" @submit="handleSubmit">
+                    <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm" @submit.prevent="startVerification">
                         @csrf
                         <input type="hidden" name="account_type" x-model="accountType">
                         <div class="space-y-5">
@@ -142,7 +142,7 @@
                             </li>
                             <li class="flex gap-2">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">{{ __('Fee') }}</span>
-                                <span id="display-fee" class="text-sm text-gray-700 dark:text-gray-400">
+                                <span class="text-sm text-gray-700 dark:text-gray-400" x-text="info.charge ? (info.charge_type === 'percentage' ? info.charge + '%' : info.charge + ' ' + info.pay_currency) : '{{ __('No Fee') }}'">
                                     {{ __('No Fee') }}
                                 </span>
                             </li>
@@ -151,20 +151,46 @@
 
                     <div>
                         <h3 class="text-lg font-medium text-gray-800 dark:text-white/90 mb-3">
-                            {{ __('FAQ') }}
+                            {{ __('Account Details') }}
                         </h3>
-                        <ul class="space-y-1">
-                            <li>
-                                <x-frontend::text-link href="javascript:void(0)">
-                                    {{ __('How do I verify my account?') }}
-                                </x-frontend::text-link>
-                            </li>
-                            <li>
-                                <x-frontend::text-link href="javascript:void(0)">
-                                    {{ __('How do I deposit with EasyPaisa?') }}
-                                </x-frontend::text-link>
-                            </li>
-                        </ul>
+                        @if($selectedAccount)
+                            @php
+                                $selectedAccountData = $accounts->where('id', $selectedAccount)->first();
+                                $credentials = $selectedAccountData ? json_decode($selectedAccountData->credentials, true) : [];
+                            @endphp
+                            
+                            @if($selectedAccountData)
+                                <div class="space-y-3">
+                                    @if($credentials)
+                                        @foreach($credentials as $key => $credential)
+                                            <div class="flex gap-2">
+                                                <span class="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                                                    {{ ucwords(str_replace('_', ' ', $key)) }}
+                                                </span>
+                                                <span class="text-sm text-gray-700 dark:text-gray-400 break-all">
+                                                    @if(is_array($credential))
+                                                        {{ $credential['value'] ?? '' }}
+                                                    @else
+                                                        {{ $credential }}
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+                                
+                                <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="flex gap-2 mb-2">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ __('Method') }}</span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-400">{{ $selectedAccountData->method_name }}</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ __('Currency') }}</span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-400">{{ $selectedAccountData->method->currency ?? $currency }}</span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
@@ -177,18 +203,20 @@
 
         {{-- Modal for OTP (only if OTP is enabled) --}}
         @if(setting('withdraw_otp', 'misc'))
+            <!-- Include OTP Modals -->
             @include('frontend::withdraw.modal.__otp_form')
-
-            {{-- Modal for Cancel--}}
             @include('frontend::withdraw.modal.__cancel_otp')
         @endif
+
+        @include('frontend::withdraw.modal.__varification_choice')
+        @include('frontend::withdraw.modal.__ga_form')
     </div>
 
 @endsection
 
 @section('script')
     <script>
-        function withdrawForm() {
+        function withdrawVerification() {
             return {
                 // Data properties
                 selectedTargetId: '{{ old('target_id') }}',
@@ -202,16 +230,30 @@
                 // UI state
                 isConversionHidden: true,
                 processingTime: '',
-                withdrawAmountRange: '',
                 conversionRate: '',
                 
-                // OTP related
-                otpInput: '',
+                // Verification settings
+                withdrawOtp: @json((bool) setting('withdraw_otp', 'withdraw_settings')),
+                twoFaEnabledForUser: @json((bool) setting('fa_verification', 'permission') && (bool) auth()->user()->two_fa),
+                
+                // Modal state variables
+                isVerificationChoiceModalOpen: false,
                 isOtpModalOpen: @json(session('otp') && Carbon::now()->lt(session('otp_expiration')) ? true : false),
                 isCancelModalOpen: false,
+                modals: {
+                    ga: false
+                },
+                
+                // Verification variables
+                selectedVerificationMethod: null,
+                hasGoogleAuthenticator: @json(auth()->check() && auth()->user()->google2fa_secret ? true : false),
+                
+                // Input variables
+                otpInput: '',
+                gaInputs: ['', '', '', '', '', ''],
                 isResendingOtp: false,
                 isSubmitting: false,
-                isOtpEnabled: @json((bool) setting('withdraw_otp', 'misc')),
+                
 
                 init() {
                     // Initialize old values
@@ -241,13 +283,6 @@
                 validateDouble(value) {
                     return value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
                 },
-
-                // Calculate percentage
-                calPercentage(amount, percentage) {
-                    return (parseFloat(amount) * parseFloat(percentage)) / 100;
-                },
-
-
 
                 handleTradingAccountChange() {
                     const selectedOption = this.$el.querySelector('#tradingAccount option:checked');
@@ -292,46 +327,7 @@
                             this.handleAmountChange();
                         }
                         
-                        // Add HTML rows to the table
-                        if (data.html) {
-                            const updateDOM = () => {
-                                let tableBody = this.$el?.querySelector('.selectDetailsTbody') || 
-                                               document.querySelector('.selectDetailsTbody');
-                                
-                                if (tableBody) {
-                                    const existingRows = Array.from(tableBody.children);
-                                    const tempTable = document.createElement('table');
-                                    tempTable.innerHTML = `<tbody>${data.html}</tbody>`;
-                                    const newRows = Array.from(tempTable.querySelectorAll('tr'));
-                                    
-                                    if (newRows.length > 0) {
-                                        const fragment = document.createDocumentFragment();
-                                        
-                                        // Keep the first row, add new rows
-                                        if (existingRows.length > 0) {
-                                            fragment.appendChild(existingRows[0].cloneNode(true));
-                                        }
-                                        
-                                        newRows.forEach(row => {
-                                            fragment.appendChild(row.cloneNode(true));
-                                        });
-                                        
-                                        // Replace all content at once to minimize reflow
-                                        tableBody.innerHTML = '';
-                                        tableBody.appendChild(fragment);
-                                    }
-                                }
-                            };
-                            
-                            // Use requestIdleCallback when available for better performance
-                            if (window.requestIdleCallback) {
-                                requestIdleCallback(updateDOM, { timeout: 100 });
-                            } else {
-                                requestAnimationFrame(updateDOM);
-                            }
-                        }
                         
-                        this.withdrawAmountRange = this.info.range || '';
                         this.processingTime = this.info.processing_time || '';
                         
                     } catch (error) {
@@ -343,27 +339,10 @@
                     // Validate input
                     this.amount = this.validateDouble(this.amount);
                     
-                    if (!this.info.charge) return;
-                    
-                    const charge = this.info.charge_type === 'percentage' 
-                        ? this.calPercentage(this.amount, this.info.charge) 
-                        : this.info.charge;
-                    
-                    // Update UI elements that use these values using requestAnimationFrame for better performance
-                    requestAnimationFrame(() => {
-                        const withdrawFeeEl = document.querySelector('.withdrawFee');
-                        const payAmountEl = document.querySelector('.pay-amount');
-                        
-                        if (withdrawFeeEl) {
-                            withdrawFeeEl.textContent = charge;
-                        }
-                        if (payAmountEl) {
-                            const payAmount = parseFloat(((this.amount * this.info.rate) - (charge * this.info.rate)).toFixed(4));
-                            payAmountEl.textContent = `${payAmount} ${this.info.pay_currency}`;
-                        }
-                    });
-                    
-                    this.convertedAmount = parseFloat((this.amount * (this.info.rate || 1)).toFixed(4)).toString();
+                    // Calculate converted amount if rate is available
+                    if (this.info.rate) {
+                        this.convertedAmount = parseFloat((this.amount * this.info.rate).toFixed(4)).toString();
+                    }
                 },
 
                 handleConvertedAmountChange() {
@@ -371,25 +350,8 @@
                     
                     if (!this.info.rate) return;
                     
+                    // Calculate original amount from converted amount
                     this.amount = parseFloat((this.convertedAmount / this.info.rate).toFixed(4)).toString();
-                    
-                    const charge = this.info.charge_type === 'percentage' 
-                        ? this.calPercentage(this.amount, this.info.charge) 
-                        : this.info.charge;
-                    
-                    // Update UI elements using requestAnimationFrame for better performance
-                    requestAnimationFrame(() => {
-                        const withdrawFeeEl = document.querySelector('.withdrawFee');
-                        const payAmountEl = document.querySelector('.pay-amount');
-                        
-                        if (withdrawFeeEl) {
-                            withdrawFeeEl.textContent = charge;
-                        }
-                        if (payAmountEl) {
-                            const payAmount = parseFloat(((this.amount * this.info.rate) - (charge * this.info.rate)).toFixed(4));
-                            payAmountEl.textContent = `${payAmount} ${this.info.pay_currency}`;
-                        }
-                    });
                 },
 
                 async submitOtp() {
@@ -422,12 +384,16 @@
                             this.submitFormAfterOtp();
                         }
                     } catch (error) {
+                        console.error('OTP verification error:', error);
                         if (typeof tNotify !== 'undefined') {
                             tNotify('error', 'An error occurred during OTP verification. Please try again.');
                         }
                         this.otpInput = '';
                     }
                 },
+
+                // Note: OTP sending is handled by backend during form submission
+                // This method is kept for potential future use but not called in current flow
 
                 async resendOtp() {
                     this.isResendingOtp = true;
@@ -470,114 +436,52 @@
                     this.otpInput = ''; // Clear OTP input when canceling
                 },
 
-                async handleSubmit(event) {
-                    event.preventDefault(); // Prevent default form submission
+                // Smart verification flow - main logic
+                startVerification() {
+                    // Validate required fields first
+                    if (!this.validateForm()) {
+                        return;
+                    }
                     
-                    if (this.isSubmitting) return; // Prevent double submission
-                    
-                    // Validate required fields before submission
+                    // For withdrawals, always submit form and let backend handle verification
+                    // Backend will redirect back with session data if verification is needed
+                    this.submitFormDirectly();
+                },
+
+                // Validate form fields
+                validateForm() {
                     if (!this.selectedTargetId) {
                         if (typeof tNotify !== 'undefined') {
                             tNotify('error', 'Please select an account to withdraw from');
                         }
-                        return;
+                        return false;
                     }
                     
                     if (!this.selectedWithdrawAccount) {
                         if (typeof tNotify !== 'undefined') {
                             tNotify('error', 'Please select a withdraw method');
                         }
-                        return;
+                        return false;
                     }
                     
                     if (!this.amount || parseFloat(this.amount) <= 0) {
                         if (typeof tNotify !== 'undefined') {
                             tNotify('error', 'Please enter a valid amount');
                         }
-                        return;
+                        return false;
                     }
                     
-                    // Check if OTP is enabled in settings
-                    if (this.isOtpEnabled) {
-                        // Show OTP modal for withdrawal verification
-                        this.isOtpModalOpen = true;
-                        return;
-                    } else {
-                        // OTP is disabled, submit form directly
-                        const form = document.getElementById('withdrawForm');
-                        if (form) {
-                            // Remove the Alpine.js submit handler temporarily
-                            form.removeAttribute('@submit');
-                            // Submit the form normally
-                            form.submit();
-                        }
-                        return;
-                    }
-                    
-                    // Set loading state
-                    this.isSubmitting = true;
-                    
-                    // Try to submit the form first (disabled for now)
-                    try {
-                        const form = document.getElementById('withdrawForm');
-                        const formData = new FormData(form);
-                        
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json'
-                            }
-                        });
-                        
-                        let result;
-                        const responseText = await response.text();
-                        
-                        try {
-                            result = JSON.parse(responseText);
-                        } catch (e) {
-                            
-                            // If we get HTML back, it might be a successful redirect
-                            if (responseText.includes('<!doctype') || responseText.includes('<html')) {
-                                if (typeof tNotify !== 'undefined') {
-                                    tNotify('success', 'Withdrawal submitted successfully');
-                                }
-                                window.location.reload();
-                                return;
-                            } else {
-                                throw new Error('Server returned invalid response format.');
-                            }
-                        }
-                        
-                        if (result.status === 'otp_required') {
-                            // Backend is requesting OTP verification
-                            this.isSubmitting = false; // Reset loading state
-                            this.isOtpModalOpen = true;
-                        } else if (result.status === 'success') {
-                            // Form submitted successfully without OTP
-                            if (typeof tNotify !== 'undefined') {
-                                tNotify('success', result.message);
-                            }
-                            
-                            // Redirect if provided, otherwise reload
-                            if (result.redirect_url) {
-                                window.location.href = result.redirect_url;
-                            } else {
-                                window.location.reload();
-                            }
-                        } else if (result.status === 'error') {
-                            // Backend returned an error
-                            this.isSubmitting = false; // Reset loading state
-                            if (typeof tNotify !== 'undefined') {
-                                tNotify('error', result.message);
-                            }
-                        }
-                    } catch (error) {
-                        this.isSubmitting = false; // Reset loading state
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'An error occurred while processing your withdrawal');
-                        }
+                    return true;
+                },
+
+                // Submit form without verification
+                submitFormDirectly() {
+                    const form = document.getElementById('withdrawForm');
+                    if (form) {
+                        // Remove Alpine.js submit handler temporarily
+                        form.removeAttribute('@submit.prevent');
+                        // Submit the form normally
+                        form.submit();
                     }
                 },
 
@@ -595,6 +499,117 @@
                             tNotify('error', 'Form submission error');
                         }
                     }
+                },
+
+                // Show cancel modal
+                showCancelModal() {
+                    this.isCancelModalOpen = true;
+                },
+
+                // Method selection for verification choice modal
+                selectVerificationMethod(method) {
+                    this.selectedVerificationMethod = method;
+                },
+
+                // Note: Verification choice is handled by backend for withdrawals
+                // This method is kept for modal compatibility but not used in current flow
+                proceedWithVerification() {
+                    // This method is not used in the current withdraw flow
+                    // Backend handles all verification logic
+                },
+
+                // Google Authenticator input handling
+                updateGaInput(index, value) {
+                    if (value.length <= 1 && /^\d*$/.test(value)) {
+                        this.gaInputs[index] = value;
+                        
+                        // Auto-focus next input
+                        if (value && index < 5) {
+                            const nextInput = document.querySelector(`input[data-ga-index="${index + 1}"]`);
+                            if (nextInput) nextInput.focus();
+                        }
+                    }
+                },
+
+                handleGaKeydown(index, event) {
+                    // Handle backspace to move to previous input
+                    if (event.key === 'Backspace' && !this.gaInputs[index] && index > 0) {
+                        const prevInput = document.querySelector(`input[data-ga-index="${index - 1}"]`);
+                        if (prevInput) {
+                            prevInput.focus();
+                            this.gaInputs[index - 1] = '';
+                        }
+                    }
+                },
+
+                handleGaPaste(event) {
+                    event.preventDefault();
+                    const pastedData = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+                    
+                    for (let i = 0; i < 6; i++) {
+                        this.gaInputs[i] = pastedData[i] || '';
+                    }
+                    
+                    // Focus the last filled input or the first empty one
+                    const lastIndex = Math.min(pastedData.length - 1, 5);
+                    const targetInput = document.querySelector(`input[data-ga-index="${lastIndex}"]`);
+                    if (targetInput) targetInput.focus();
+                },
+
+                // Submit Google Authenticator code
+                async submitGa() {
+                    const gaCode = this.gaInputs.join('');
+                    if (gaCode.length !== 6) {
+                        notify().error('Please enter a complete 6-digit code');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('{{ route("user.withdraw.ga.verify") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                ga_code: gaCode
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            this.modals.ga = false;
+                            this.gaInputs = ['', '', '', '', '', ''];
+                            
+                            notify().success(data.message);
+                            
+                            // Submit the form after successful verification
+                            this.submitFormDirectly();
+                        } else {
+                            notify().error(data.message || 'Google Authenticator verification failed');
+                            this.gaInputs = ['', '', '', '', '', ''];
+                        }
+                    } catch (error) {
+                        console.error('GA verification error:', error);
+                        notify().error('An error occurred during Google Authenticator verification. Please try again.');
+                        this.gaInputs = ['', '', '', '', '', ''];
+                    }
+                },
+
+                // Confirm cancel action
+                confirmCancel() {
+                    this.isOtpModalOpen = false;
+                    this.isCancelModalOpen = false;
+                    this.isVerificationChoiceModalOpen = false;
+                    this.modals.ga = false;
+                    this.otpInput = '';
+                    this.gaInputs = ['', '', '', '', '', ''];
+                    this.selectedVerificationMethod = null;
                 }
             }
         }

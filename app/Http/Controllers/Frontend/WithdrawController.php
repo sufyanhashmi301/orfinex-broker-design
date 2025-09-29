@@ -1236,8 +1236,13 @@ class WithdrawController extends Controller
 
         public function withdraw()
         {
-
             $gatewayCode = request()->get('gateway_code', '');
+            
+            if (empty($gatewayCode)) {
+                notify()->error('Please select a valid withdraw method');
+                return redirect()->route('user.withdraw.methods');
+            }
+            
             $selectedAccount = get_hash($gatewayCode);
 
             $accounts = WithdrawAccount::with(['method', 'method.gateway'])
@@ -1251,7 +1256,18 @@ class WithdrawController extends Controller
 
             if (!$selectedAccount){
                 notify()->error('Please select a valid withdraw method');
-                return redirect()->back();
+                return redirect()->route('user.withdraw.methods');
+            }
+            
+            // Verify that the selected account exists and belongs to the user
+            $accountExists = WithdrawAccount::where('id', $selectedAccount)
+                ->where('user_id', \Auth::id())
+                ->where('status', WithdrawAccount::STATUS_APPROVED)
+                ->exists();
+                
+            if (!$accountExists) {
+                notify()->error('Invalid or unauthorized withdraw account');
+                return redirect()->route('user.withdraw.methods');
             }
 
             $forexAccounts = ForexAccount::with('schema')->traderType()
@@ -1260,8 +1276,10 @@ class WithdrawController extends Controller
                 ->where('status', ForexAccountStatus::Ongoing)
                 ->orderBy('id', 'desc')
                 ->get();
+                
+            $currency = setting('currency', 'global');
 
-            return view('frontend::withdraw.now', compact('accounts', 'forexAccounts', 'selectedAccount'));
+            return view('frontend::withdraw.now', compact('accounts', 'forexAccounts', 'selectedAccount', 'currency'));
         }
 
         public

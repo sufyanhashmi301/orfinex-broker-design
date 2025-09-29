@@ -3,7 +3,7 @@
     {{ __('Withdraw Account') }}
 @endsection
 @section('settings-content')
-    <div x-data="withdrawMethodSelector()">
+    <div x-data="withdrawAccountVerification()">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
             <div>
                 <h2 class="text-title-sm font-bold text-gray-800 dark:text-white/90 mb-1">
@@ -63,7 +63,7 @@
 
                         <!-- Submit Button -->
                         <div class="buttons mt-6">
-                            <x-frontend::forms.button type="submit" size="md" variant="primary" icon="square-pen" icon-position="left">
+                            <x-frontend::forms.button type="submit" class="w-full" size="md" variant="primary" icon="square-pen" icon-position="left">
                                 {{ __('Create Withdraw Account') }}
                             </x-frontend::forms.button>
                         </div>
@@ -114,17 +114,17 @@
         </div>
         
         <!-- Include OTP Modals -->
-        @include('frontend::withdraw.account.modal.__varification_choice')
+        @include('frontend::withdraw.modal.__varification_choice')
         @include('frontend::withdraw.account.modal.__otp_form')
-        @include('frontend::withdraw.account.modal.__cancel_otp')
-        @include('frontend::withdraw.account.modal.__ga_form')
+        @include('frontend::withdraw.modal.__cancel_otp')
+        @include('frontend::withdraw.modal.__ga_form')
         
     </div>
 
 @endsection
 @section('script')
     <script>
-        function withdrawMethodSelector() {
+        function withdrawAccountVerification() {
             return {
                 selectedMethodId: '',
                 methodFields: null,
@@ -142,8 +142,8 @@
                 // Verification data
                 selectedVerificationMethod: null,
                 hasGoogleAuthenticator: @json(auth()->check() && auth()->user()->google2fa_secret ? true : false),
-                withdrawAccountOtp: @json($withdrawAccountOtp),
-                twoFaEnabledForUser: @json($twoFaEnabledForUser),
+                withdrawAccountOtp: @json($withdrawAccountOtp ?? false),
+                twoFaEnabledForUser: @json($twoFaEnabledForUser ?? false),
   
                 otpInput: '',
                 isResendingOtp: false,
@@ -205,22 +205,84 @@
                     this.selectedVerificationMethod = method;
                 },
 
-                proceedWithVerification() {
+                async proceedWithVerification() {
                     if (!this.selectedVerificationMethod) return;
                     
                     this.isVerificationChoiceModalOpen = false;
                     
                     if (this.selectedVerificationMethod === 'email') {
-                        this.sendOtp();
+                        // Send OTP first, then show modal
+                        await this.sendOtpForWithdrawAccountCreation();
+                        this.isOtpModalOpen = true;
                     } else if (this.selectedVerificationMethod === 'ga') {
+                        // Show GA modal directly
                         this.modals.ga = true;
                     }
                 },
 
-                // OTP Methods
-                async sendOtp() {
+                async submitFormWithVerificationMethod(method) {
+                    const form = document.querySelector('form[action*="withdraw.account.store"]');
+                    if (!form) return;
+                    
+                    // Prepare form data
+                    const formData = new FormData(form);
+                    formData.append('verification_method', method);
+                    
                     try {
-                        const response = await fetch('{{ route("user.withdraw.account.resend-otp") }}', {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        // Check if response is JSON
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
+                            
+                            if (data.status === 'success') {
+                                if (data.show_modal) {
+                                    // OTP was sent, show OTP modal
+                                    this.isOtpModalOpen = true;
+                                    if (typeof notify !== 'undefined') {
+                                        notify().success(data.message);
+                                    }
+                                } else if (data.show_ga) {
+                                    // Show GA modal
+                                    this.modals.ga = true;
+                                    if (typeof notify !== 'undefined') {
+                                        notify().info(data.message);
+                                    }
+                                } else if (data.redirect) {
+                                    // Account created successfully, redirect
+                                    window.location.href = data.redirect;
+                                }
+                            } else {
+                                // Handle error
+                                if (typeof notify !== 'undefined') {
+                                    notify().error(data.message || 'An error occurred');
+                                }
+                            }
+                        } else {
+                            // Response is HTML (redirect), follow it
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        console.error('Form submission error:', error);
+                        if (typeof notify !== 'undefined') {
+                            notify().error('An error occurred while processing your request');
+                        }
+                    }
+                },
+
+                // OTP Methods (for resend functionality only)
+
+                async sendOtpForWithdrawAccountCreation() {
+                    try {
+                        const response = await fetch('{{ route('user.withdraw.account.resend-otp') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -230,16 +292,39 @@
                         
                         const data = await response.json();
                         
-                        if (data.status === 'success') {
-                            this.isOtpModalOpen = true;
-                            notify().success(data.message);
-                        } else {
-                            // Handle error response
-                            console.log('OTP Error Response:', data);
-                            notify().error(data.message || 'Failed to send OTP');
+                        if (data.success && typeof tNotify !== 'undefined') {
+                            tNotify('success', data.message || 'OTP has been sent to your email.');
                         }
                     } catch (error) {
-                        notify().error('Failed to send OTP. Please try again.');
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'Failed to send OTP. Please try again.');
+                        }
+                    }
+                },
+
+                async resendOtp() {
+                    this.isResendingOtp = true;
+                    
+                    try {
+                        const response = await fetch('{{ route('user.withdraw.account.resend-otp') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('success', data.message);
+                        }
+                    } catch (error) {
+                        if (typeof tNotify !== 'undefined') {
+                            tNotify('error', 'An error occurred while resending the OTP. Please try again.');
+                        }
+                    } finally {
+                        this.isResendingOtp = false;
                     }
                 },
 
@@ -261,6 +346,10 @@
                             })
                         });
                         
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
                         const data = await response.json();
                         
                         if (data.status === 'success') {
@@ -272,38 +361,13 @@
                             // Submit the form after successful verification
                             this.submitFormAfterVerification();
                         } else {
-                            notify().error(data.message);
+                            notify().error(data.message || 'OTP verification failed');
                             this.otpInput = '';
                         }
                     } catch (error) {
+                        console.error('OTP verification error:', error);
                         notify().error('An error occurred during OTP verification. Please try again.');
                         this.otpInput = '';
-                    }
-                },
-
-                async resendOtp() {
-                    this.isResendingOtp = true;
-                    
-                    try {
-                        const response = await fetch('{{ route("user.withdraw.account.resend-otp") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.status === 'success') {
-                            notify().success(data.message);
-                        } else {
-                            notify().error(data.message || 'Failed to resend OTP');
-                        }
-                    } catch (error) {
-                        notify().error('An error occurred while resending the OTP. Please try again.');
-                    } finally {
-                        this.isResendingOtp = false;
                     }
                 },
 
@@ -374,6 +438,12 @@
                         return;
                     }
                     
+                    // Validate that all inputs are digits
+                    if (!/^\d{6}$/.test(gaCode)) {
+                        notify().error('Please enter only numbers');
+                        return;
+                    }
+                    
                     try {
                         const response = await fetch('{{ route("user.withdraw.account.verify-ga.post") }}', {
                             method: 'POST',
@@ -385,6 +455,10 @@
                                 code: gaCode
                             })
                         });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
                         
                         const data = await response.json();
                         
@@ -398,12 +472,13 @@
                             this.submitFormAfterVerification();
                         } else {
                             this.modals.ga = false;
-                            notify().error(data.message);
+                            notify().error(data.message || 'Google Authenticator verification failed');
                             this.gaInputs = ['', '', '', '', '', ''];
                         }
                     } catch (error) {
                         this.modals.ga = false;
                         notify().error('An error occurred during verification. Please try again.');
+                        console.error('GA verification error:', error);
                         this.gaInputs = ['', '', '', '', '', ''];
                     }
                 },
@@ -426,25 +501,94 @@
                     }
                 },
 
-                // Initialize verification flow
-                startVerification() {
-                    // Check if both OTP and 2FA are enabled
+                // Smart verification flow - main logic
+                async startVerification() {
+                    // Check both settings and route accordingly
                     if (this.withdrawAccountOtp && this.twoFaEnabledForUser) {
+                        // Both active → Show choice modal
                         this.isVerificationChoiceModalOpen = true;
-                        return;
-                    }
-                    
-                    // Check if only OTP is enabled
-                    if (this.withdrawAccountOtp && !this.twoFaEnabledForUser) {
-                        this.sendOtp();
-                        return;
-                    }
-                    
-                    // Check if only 2FA is enabled
-                    if (!this.withdrawAccountOtp && this.twoFaEnabledForUser) {
+                    } else if (this.withdrawAccountOtp && !this.twoFaEnabledForUser) {
+                        // Only OTP → Send OTP first, then show modal
+                        await this.sendOtpForWithdrawAccountCreation();
+                        this.isOtpModalOpen = true;
+                    } else if (!this.withdrawAccountOtp && this.twoFaEnabledForUser) {
+                        // Only 2FA → Show GA modal directly
                         this.modals.ga = true;
-                        return;
+                    } else {
+                        // Neither → Submit form directly
+                        this.submitFormDirectly();
                     }
+                },
+
+                // Submit form without verification
+                async submitFormDirectly() {
+                    const form = document.querySelector('form[action*="withdraw.account.store"]');
+                    if (!form) return;
+                    
+                    // Prepare form data
+                    const formData = new FormData(form);
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        // Check if response is JSON
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
+                            
+                            if (data.status === 'success') {
+                                if (data.redirect) {
+                                    // Account created successfully, redirect
+                                    window.location.href = data.redirect;
+                                } else {
+                                    // Success message
+                                    if (typeof notify !== 'undefined') {
+                                        notify().success(data.message || 'Account created successfully');
+                                    }
+                                }
+                            } else {
+                                // Handle error
+                                if (typeof notify !== 'undefined') {
+                                    notify().error(data.message || 'An error occurred');
+                                }
+                            }
+                        } else {
+                            // Response is HTML (redirect), follow it
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        console.error('Form submission error:', error);
+                        if (typeof notify !== 'undefined') {
+                            notify().error('An error occurred while processing your request');
+                        }
+                    }
+                },
+
+                // Method selection for verification choice modal
+                selectVerificationMethod(method) {
+                    this.selectedVerificationMethod = method;
+                },
+
+                // Show cancel modal
+                showCancelModal() {
+                    this.isCancelModalOpen = true;
+                },
+
+                // Confirm cancel action
+                confirmCancel() {
+                    this.isOtpModalOpen = false;
+                    this.isCancelModalOpen = false;
+                    this.modals.ga = false;
+                    this.otpInput = '';
+                    this.gaInputs = ['', '', '', '', '', ''];
+                    this.selectedVerificationMethod = null;
                 }
             }
         }

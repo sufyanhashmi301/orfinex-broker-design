@@ -460,7 +460,7 @@
                     }
                     
                     try {
-                        const response = await fetch('{{ route("user.withdraw.account.verify-ga") }}', {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-ga.post") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

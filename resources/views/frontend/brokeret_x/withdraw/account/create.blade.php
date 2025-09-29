@@ -314,15 +314,25 @@
                             }
                         });
                         
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                            throw new Error('Server returned non-JSON response');
+                        }
+                        
                         const data = await response.json();
                         
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('success', data.message);
+                        if (data.status === 'success') {
+                            notify().success(data.message);
+                        } else {
+                            notify().error(data.message || 'Failed to resend OTP');
                         }
                     } catch (error) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'An error occurred while resending the OTP. Please try again.');
-                        }
+                        console.error('Resend OTP error:', error);
+                        notify().error('An error occurred while resending the OTP. Please try again.');
                     } finally {
                         this.isResendingOtp = false;
                     }
@@ -335,7 +345,7 @@
                     }
                     
                     try {
-                        const response = await fetch('{{ route("user.withdraw.account.verify-otp.post") }}', {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-otp") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -348,6 +358,11 @@
                         
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                            throw new Error('Server returned non-JSON response');
                         }
                         
                         const data = await response.json();
@@ -445,7 +460,7 @@
                     }
                     
                     try {
-                        const response = await fetch('{{ route("user.withdraw.account.verify-ga.post") }}', {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-ga") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -458,6 +473,11 @@
                         
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                            throw new Error('Server returned non-JSON response');
                         }
                         
                         const data = await response.json();
@@ -480,6 +500,9 @@
                         notify().error('An error occurred during verification. Please try again.');
                         console.error('GA verification error:', error);
                         this.gaInputs = ['', '', '', '', '', ''];
+                    } finally {
+                        // Always close the modal in case of error
+                        this.modals.ga = false;
                     }
                 },
 

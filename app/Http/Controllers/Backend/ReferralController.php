@@ -16,17 +16,23 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Services\UserIbNetworkService;
 
 class ReferralController extends Controller
 {
+    protected UserIbNetworkService $userIbNetworkService;
+
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserIbNetworkService $userIbNetworkService)
     {
+        $this->userIbNetworkService = $userIbNetworkService;
         $this->middleware('permission:target-manage', ['only' => ['target', 'targetStore', 'targetUpdate']]);
         $this->middleware('permission:referral-list|referral-create|referral-edit|referral-delete', ['only' => ['index', 'store']]);
         $this->middleware('permission:referral-create', ['only' => ['store']]);
@@ -81,7 +87,6 @@ class ReferralController extends Controller
 
     public function addDirectReferral(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'ref_id' => 'required',
             'user_id' => 'required',
@@ -94,40 +99,56 @@ class ReferralController extends Controller
         }
 
         $input = $request->all();
-//        dd($input);
 
         $pUser = User::find($input['ref_id']);
         $pUser->getReferrals();
-        $referral = ReferralLink::where('user_id',$input['ref_id'])->first();
-//        dd($referral);
+        $referral = ReferralLink::where('user_id', $input['ref_id'])->first();
+        
         if (!is_null($referral)) {
-            //remove referrals & IB
-            ReferralRelationship::where('user_id',$input['user_id'])->delete();
-            $childUser = User::find($input['user_id']);
-            remove_child_agent($childUser);
+            try {
+                // Begin transaction for data consistency
+                DB::beginTransaction();
 
-            //add referrals & IB
-            ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $input['user_id']]);
-            User::find($input['user_id'])->update([
-                'ref_id' => $referral->user->id,
-            ]);
-            add_child_agent($pUser);
+                $childUser = User::find($input['user_id']);
+                
+                // Remove existing referrals & IB relationships
+                ReferralRelationship::where('user_id', $input['user_id'])->delete();
+                remove_child_agent($childUser);
+                
+                // Remove existing is_part_of_master_ib meta from the child user and their network
+                $this->userIbNetworkService->removeMetaFromNetwork($childUser, 'is_part_of_master_ib');
 
-            $isPartOfMasterIB = user_meta('is_part_of_master_ib', null, $pUser);
+                // Add new referrals & IB relationships
+                ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $input['user_id']]);
+                User::find($input['user_id'])->update([
+                    'ref_id' => $referral->user->id,
+                ]);
+                add_child_agent($pUser);
 
-            if ($isPartOfMasterIB) {
-                $childUser->user_metas()->updateOrCreate(
-                    ['meta_key' => 'is_part_of_master_ib'],
-                    ['meta_value' => $isPartOfMasterIB]
-                );
+                // Check if the new parent is part of master IB and propagate to child network
+                $isPartOfMasterIB = user_meta('is_part_of_master_ib', null, $pUser);
+
+                if ($isPartOfMasterIB) {
+                    // Use the service to sync meta to the entire child network
+                    $updatedCount = $this->userIbNetworkService->syncMeta($childUser, 'is_part_of_master_ib', $isPartOfMasterIB);
+                    
+                    DB::commit();
+                    notify()->success('Referral created successfully');
+                } else {
+                    DB::commit();
+                    notify()->success('Referral created successfully');
+                }
+
+                return redirect()->back();
+                
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error adding direct referral: ' . $e->getMessage());
+                notify()->error('Error creating referral: ' . $e->getMessage());
+                return redirect()->back();
             }
-
-            notify()->success('Referral created successfully');
-
-            return redirect()->back();
-        }else{
+        } else {
             notify()->error('Did not find referral link of parent user. Please try again');
-
             return redirect()->back();
         }
     }
@@ -173,15 +194,37 @@ class ReferralController extends Controller
         $referral = User::find($request->id);
 
         if (null != $referral) {
-            $referral->ref_id = null;
-            $referral->save();
-            ReferralRelationship::where('user_id',$request->id)->delete();
-            remove_child_agent($referral);
+            try {
+                // Begin transaction for data consistency
+                DB::beginTransaction();
+
+                // Remove referral relationship
+                $referral->ref_id = null;
+                $referral->save();
+                
+                // Delete referral relationship record
+                ReferralRelationship::where('user_id', $request->id)->delete();
+                
+                // Remove child agent (existing functionality)
+                remove_child_agent($referral);
+                
+                // Remove is_part_of_master_ib meta from the user and their network
+                $removedCount = $this->userIbNetworkService->removeMetaFromNetwork($referral, 'is_part_of_master_ib');
+                
+                DB::commit();
+                
+                notify()->success('Referral deleted successfully');
+                
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error deleting direct referral: ' . $e->getMessage());
+                notify()->error('Error deleting referral: ' . $e->getMessage());
+            }
+        } else {
+            notify()->error('User not found');
         }
-        notify()->success('Referral Delete successfully');
 
         return redirect()->back();
-
     }
 
     /**

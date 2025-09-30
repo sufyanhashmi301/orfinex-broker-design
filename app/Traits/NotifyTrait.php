@@ -50,6 +50,8 @@ trait NotifyTrait
                     'site_link' => route('home'),
                     'is_risk_warning' => $template->is_risk_warning,
                     'is_disclaimer' => $template->is_disclaimer,
+                    'use_custom_html' => $template->use_custom_html,
+                    'custom_html_content' => str_replace($find, $replace, $template->custom_html_content),
                 ];
 //dd($details,$code);
                 if ($code == 'email_verification') {

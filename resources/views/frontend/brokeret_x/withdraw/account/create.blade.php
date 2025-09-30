@@ -345,7 +345,7 @@
                     }
                     
                     try {
-                        const response = await fetch('{{ route("user.withdraw.account.verify-otp") }}', {
+                        const response = await fetch('{{ route("user.withdraw.account.verify-otp.post") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -472,12 +472,18 @@
                         });
                         
                         if (!response.ok) {
+                            const responseText = await response.text();
+                            console.error(`HTTP ${response.status} error:`, responseText);
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         
                         const contentType = response.headers.get('content-type');
                         if (!contentType || !contentType.includes('application/json')) {
-                            throw new Error('Server returned non-JSON response');
+                            const responseText = await response.text();
+                            console.error('Non-JSON response received:', responseText);
+                            console.error('Content-Type:', contentType);
+                            console.error('Response URL:', response.url);
+                            throw new Error('Server returned non-JSON response. Check console for details.');
                         }
                         
                         const data = await response.json();

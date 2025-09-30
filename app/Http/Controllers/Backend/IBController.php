@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class IBController extends Controller
@@ -905,37 +906,62 @@ class IBController extends Controller
     public function rejectIbMember(Request $request)
     {
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
-//       dd($userID);
         $isReload = ($request->get('reload')) ? $request->get('reload') : false;
 
         $user = User::find($userID);
         if (!blank($user)) {
-            $user->ib_status = IBStatus::REJECTED;
-            $user->ib_group_id = null;
-            $user->save();
+            try {
+                DB::beginTransaction();
 
-            $this->userIbNetworkService->syncMeta(
-                $user,
-                'is_part_of_master_ib',
-                $user->ib_group_id
-            );
+                // Update user status
+                $user->ib_status = IBStatus::REJECTED;
+                $user->ib_group_id = null;
+                $user->save();
 
-            $ibGroup = null;
-            $this->manageUserRebateRules($user, $ibGroup);
+                // Update is_part_of_master_ib based on nearest approved parent IB
+                $updatedCount = $this->userIbNetworkService->updateMasterIbBasedOnParent($user);
 
-            $shortcodes = [
-                '[[full_name]]' => $user->full_name,
-                '[[email]]' => $user->email,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[status]]' => IBStatus::REJECTED,
-            ];
-            $this->mailNotify($user->email, 'ib_reject_action', $shortcodes);
-            $this->smsNotify('ib_reject_action', $shortcodes, $user->phone);
-            $this->pushNotify('ib_reject_action', $shortcodes, route('user.referral'), $user->id);
+                // Remove rebate rules
+                $ibGroup = null;
+                $this->manageUserRebateRules($user, $ibGroup);
 
-            return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
+                DB::commit();
+
+                // Send notifications
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::REJECTED,
+                ];
+                $this->mailNotify($user->email, 'ib_reject_action', $shortcodes);
+                $this->smsNotify('ib_reject_action', $shortcodes, $user->phone);
+                $this->pushNotify('ib_reject_action', $shortcodes, route('user.referral'), $user->id);
+
+                return response()->json([
+                    'title' => 'Account rejected for IB', 
+                    'success' => __('User has been successfully rejected as IB Member.'), 
+                    'reload' => $isReload
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error rejecting IB member: ' . $e->getMessage());
+                
+                return response()->json([
+                    'title' => 'Error', 
+                    'error' => __('Error rejecting IB member: ') . $e->getMessage(), 
+                    'reload' => false
+                ], 500);
+            }
         }
+
+        return response()->json([
+            'title' => 'Error', 
+            'error' => __('User not found.'), 
+            'reload' => false
+        ], 404);
     }
 
     public function saveForm(Request $request)

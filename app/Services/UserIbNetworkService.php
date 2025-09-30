@@ -63,4 +63,83 @@ class UserIbNetworkService
 
         return $updated;
     }
+
+    /**
+     * Remove a specific meta key from the user and their full network
+     */
+    public function removeMetaFromNetwork(User $user, string $metaKey): int
+    {
+        $userIds = $this->getNetworkUserIds($user);
+        $removed = 0;
+
+        foreach ($userIds as $userId) {
+            $target = User::find($userId);
+            if ($target) {
+                $deletedCount = $target->user_metas()
+                    ->where('meta_key', $metaKey)
+                    ->delete();
+                
+                if ($deletedCount > 0) {
+                    $removed++;
+                }
+            }
+        }
+
+        return $removed;
+    }
+
+    /**
+     * Remove a specific meta key from a single user
+     */
+    public function removeMetaFromUser(User $user, string $metaKey): bool
+    {
+        $deletedCount = $user->user_metas()
+            ->where('meta_key', $metaKey)
+            ->delete();
+
+        return $deletedCount > 0;
+    }
+
+    /**
+     * Find the nearest approved parent IB by traversing up the referral chain
+     */
+    public function findNearestApprovedParentIb(User $user): ?User
+    {
+        $currentUser = $user;
+        
+        // Traverse up the referral chain
+        while ($currentUser->ref_id) {
+            $parent = User::find($currentUser->ref_id);
+            
+            if (!$parent) {
+                break; // No parent found, stop traversing
+            }
+            
+            // Check if this parent is an approved IB with a group ID
+            if ($parent->ib_status === 'approved' && !is_null($parent->ib_group_id)) {
+                return $parent;
+            }
+            
+            // Move up to the next level
+            $currentUser = $parent;
+        }
+        
+        return null; // No approved parent IB found
+    }
+
+    /**
+     * Update is_part_of_master_ib for user and network based on nearest approved parent IB
+     */
+    public function updateMasterIbBasedOnParent(User $user): int
+    {
+        $nearestApprovedParent = $this->findNearestApprovedParentIb($user);
+        
+        if ($nearestApprovedParent) {
+            // Found an approved parent IB, sync with their IB group ID
+            return $this->syncMeta($user, 'is_part_of_master_ib', $nearestApprovedParent->ib_group_id);
+        } else {
+            // No approved parent IB found, remove the meta
+            return $this->removeMetaFromNetwork($user, 'is_part_of_master_ib');
+        }
+    }
 }

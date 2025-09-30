@@ -108,6 +108,8 @@ class EmailTemplateController extends Controller
             'status' => $input['status'] ?? 0,
             'is_disclaimer' => $input['is_disclaimer'] ?? 0,
             'is_risk_warning' => $input['is_risk_warning'] ?? 0,
+            'use_custom_html' => $input['use_custom_html'] ?? 0,
+            'custom_html_content' => $input['custom_html_content'] ?? null,
         ];
 
 

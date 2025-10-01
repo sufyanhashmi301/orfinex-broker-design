@@ -70,10 +70,9 @@
                     <div class="flex items-center space-x-4">
                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Dynamic Template') }}</span>
                         <div class="form-switch leading-none ps-0">
-                            <input type="hidden" value="0" name="use_custom_html">
                             <label
                                 class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer template-mode-toggle">
-                                <input type="checkbox" name="use_custom_html" value="1" class="sr-only peer" @checked($template->use_custom_html)>
+                                <input type="checkbox" id="template-mode-checkbox" class="sr-only peer" @checked($template->use_custom_html)>
                                 <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                             </label>
                         </div>
@@ -85,6 +84,10 @@
                         @csrf
                         <input type="hidden" name="page" value="{{ request('page') }}">
                         <input type="hidden" name="id" value="{{ $template->id }}">
+                        
+                        <!-- Template Mode Hidden Inputs -->
+                        <input type="hidden" value="0" name="use_custom_html" id="use_custom_html_hidden">
+                        <input type="hidden" name="use_custom_html" value="1" id="use_custom_html_value" @if(!$template->use_custom_html) disabled @endif>
 
                         <div id="dynamic-template-section" style="{{ $template->use_custom_html ? 'display: none;' : '' }}">
                             <div class="input-area grid grid-cols-12 gap-5 mb-6">
@@ -163,8 +166,8 @@
 
                                     <div class="input-area mb-5" id="secondary_message__body">
                                         <textarea name="bottom_body" class="summernote bottom-body"  cols="30" rows="8">
-                                        {{ br2nl($template->bottom_body) }}
-                                    </textarea>
+                                            {{ br2nl($template->bottom_body) }}
+                                        </textarea>
                                         <input type="hidden" name="html_bottom_body" class="html-bottom-body"/>
 
                                     </div>
@@ -238,8 +241,39 @@
                                         <p class="text-gray-400 dark:text-gray-400 text-sm">{{ __('Write your complete HTML email template') }}</p>
                                     </div>
                                 </div>
-                                
-                                <textarea name="custom_html_content" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-green-400 font-mono text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200" rows="20" placeholder="Enter your custom HTML code here...">{{ $template->custom_html_content }}</textarea>
+                                <div id="editorWrapper">
+                                    <div class="custom-editor-container">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" onclick="viewResult()">
+                                                <iconify-icon icon="lucide:eye"></iconify-icon>
+                                                {{ __('View Result') }}
+                                            </button>
+                                            <button type="button" class="editor-btn" onclick="toggleFullscreen()">
+                                                <iconify-icon icon="lucide:maximize"></iconify-icon>
+                                                {{ __('Fullscreen') }}
+                                            </button>
+                                            <span class="editor-info">
+                                                {{ __('Lines') }}: <span id="lineCount">1</span> | 
+                                                {{ __('Characters') }}: <span id="charCount">0</span>
+                                            </span>
+                                        </div>
+                                        <div class="editor-wrapper">
+                                            <div class="line-numbers" id="lineNumbers">1</div>
+                                            <textarea 
+                                                name="custom_html_content" 
+                                                id="htmlEditor" 
+                                                class="html-editor"
+                                                placeholder="Enter your custom HTML code here..."
+                                                spellcheck="false">
+                                                {{ old('custom_html_content', str_replace(['{', '}'], ['<', '>'], $template->custom_html_content ?? '')) }}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Preview -->
+                                <div id="previewWrapper" class="border rounded p-4 bg-white" style="display:none;">
+                                    <div id="previewArea"></div>
+                                </div>
                                 
                                 <div class="flex items-center gap-3">
                                     <iconify-icon icon="lucide:file-code" class="text-2xl text-green-400"></iconify-icon>
@@ -310,6 +344,173 @@
     </div>
 </div>
 @endsection
+
+@section('style')
+<style>
+    /* Custom HTML Editor Styles */
+    .custom-editor-container {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .editor-toolbar {
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+    }
+
+    .editor-btn {
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: #374151;
+        transition: all 0.2s;
+    }
+
+    .editor-btn:hover {
+        background: #f3f4f6;
+        border-color: #9ca3af;
+    }
+
+    .editor-info {
+        margin-left: auto;
+        color: #6b7280;
+        font-size: 11px;
+    }
+
+    .editor-wrapper {
+        display: flex;
+        position: relative;
+        height: 400px;
+    }
+
+    .line-numbers {
+        background: #f8fafc;
+        border-right: 1px solid #e5e7eb;
+        color: #9ca3af;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 18px;
+        padding: 12px 8px;
+        text-align: right;
+        user-select: none;
+        min-width: 40px;
+        white-space: pre;
+        overflow: hidden;
+    }
+
+    .html-editor {
+        flex: 1;
+        border: none;
+        outline: none;
+        resize: none;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 18px;
+        padding: 12px;
+        background: #ffffff;
+        color: #1f2937;
+        tab-size: 2;
+        white-space: pre;
+        overflow-wrap: normal;
+        overflow-x: auto;
+    }
+
+    .html-editor:focus {
+        background: #fefefe;
+    }
+
+    /* Syntax highlighting classes */
+    .html-tag { color: #dc2626; }
+    .html-attr { color: #059669; }
+    .html-string { color: #7c3aed; }
+    .html-comment { color: #6b7280; font-style: italic; }
+
+    /* Fullscreen mode */
+    .editor-fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        background: white;
+        padding: 20px;
+    }
+
+    .editor-fullscreen .editor-wrapper {
+        height: calc(100vh - 120px);
+    }
+
+    /* Dark mode support */
+    .dark .custom-editor-container {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .dark .editor-toolbar {
+        background: #111827;
+        border-color: #374151;
+    }
+
+    .dark .editor-btn {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+
+    .dark .editor-btn:hover {
+        background: #4b5563;
+    }
+
+    .dark .line-numbers {
+        background: #111827;
+        border-color: #374151;
+        color: #6b7280;
+    }
+
+    .dark .html-editor {
+        background: #1f2937;
+        color: #f9fafb;
+    }
+
+    .dark .html-editor:focus {
+        background: #1f2937;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .editor-wrapper {
+            height: 300px;
+        }
+        
+        .editor-toolbar {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .editor-info {
+            margin-left: 0;
+            width: 100%;
+            margin-top: 4px;
+        }
+    }
+</style>
+@endsection
+
 @section('script')
     <script>
         $('.summernote').summernote({
@@ -331,6 +532,14 @@
             // $('.html-message-body').val($('.note-editable').html().replace(/</g, '{').replace(/>/g, '}'))
             $('.html-bottom-body').val(bottom.replace(/</g, '{').replace(/>/g, '}'))
             // $('.html-bottom-body').val(bottom);
+
+            // ✅ ADD BACK: Process Custom HTML field
+            var customHtmlEditor = document.getElementById('htmlEditor');
+            if (customHtmlEditor && customHtmlEditor.value) {
+                var encodedHtml = customHtmlEditor.value.replace(/</g, '{').replace(/>/g, '}');
+                customHtmlEditor.value = encodedHtml;
+            }
+
             $('#form-submit').submit()
 
         });
@@ -356,19 +565,145 @@
                 }, 2000);
 
             });
+
         });
 
          // Template mode toggle functionality
-         $('.template-mode-toggle input[type="checkbox"]').on('change', function() {
+         $('#template-mode-checkbox').on('change', function() {
              if ($(this).is(':checked')) {
                  // Switch to Custom HTML mode
                  $('#dynamic-template-section').slideUp();
                  $('#custom-html-section').slideDown();
+                 // Enable the hidden input for custom HTML
+                 $('#use_custom_html_value').prop('disabled', false);
              } else {
                  // Switch to Dynamic Template mode
                  $('#custom-html-section').slideUp();
                  $('#dynamic-template-section').slideDown();
+                 // Disable the hidden input for custom HTML
+                 $('#use_custom_html_value').prop('disabled', true);
              }
          });
+
+         // Custom HTML Editor Implementation
+         const htmlEditor = document.getElementById('htmlEditor');
+         const lineNumbers = document.getElementById('lineNumbers');
+         const lineCount = document.getElementById('lineCount');
+         const charCount = document.getElementById('charCount');
+         let isFullscreen = false;
+
+         // Update line numbers and stats
+         function updateEditor() {
+             const lines = htmlEditor.value.split('\n');
+             const lineNumbersText = lines.map((_, index) => index + 1).join('\n');
+             lineNumbers.textContent = lineNumbersText;
+             
+             // Update stats
+             lineCount.textContent = lines.length;
+             charCount.textContent = htmlEditor.value.length;
+             
+             // Sync scroll
+             lineNumbers.scrollTop = htmlEditor.scrollTop;
+         }
+
+         // View Result - Open preview in new window
+         function viewResult() {
+             let htmlContent = htmlEditor.value;
+             
+             // Replace template variables with sample data
+             htmlContent = htmlContent
+                 .replace(/\[\[site_title\]\]/g, 'Your Site Name')
+                 .replace(/\[\[site_url\]\]/g, 'https://yoursite.com')
+                 .replace(/\[\[user_name\]\]/g, 'John Doe')
+                 .replace(/\[\[user_email\]\]/g, 'john@example.com')
+                 .replace(/\[\[message\]\]/g, 'This is a sample message for preview purposes.')
+                 .replace(/\[\[action_url\]\]/g, 'https://yoursite.com/action')
+                 .replace(/\[\[amount\]\]/g, '$100.00')
+                 .replace(/\[\[date\]\]/g, new Date().toLocaleDateString())
+                 .replace(/\[\[company_name\]\]/g, 'Your Company')
+                 .replace(/\[\[support_email\]\]/g, 'support@yoursite.com')
+                 .replace(/\[\[current_year\]\]/g, new Date().getFullYear());
+             
+             // Open in new window
+             const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+             previewWindow.document.write(htmlContent);
+             previewWindow.document.close();
+         }
+
+         // Toggle fullscreen
+         function toggleFullscreen() {
+             const container = document.querySelector('.custom-editor-container');
+             const btn = event.target.closest('.editor-btn');
+             const icon = btn.querySelector('iconify-icon');
+             
+             if (!isFullscreen) {
+                 container.classList.add('editor-fullscreen');
+                 icon.setAttribute('icon', 'lucide:minimize');
+                 btn.innerHTML = '<iconify-icon icon="lucide:minimize"></iconify-icon> Exit Fullscreen';
+                 isFullscreen = true;
+             } else {
+                 container.classList.remove('editor-fullscreen');
+                 icon.setAttribute('icon', 'lucide:maximize');
+                 btn.innerHTML = '<iconify-icon icon="lucide:maximize"></iconify-icon> Fullscreen';
+                 isFullscreen = false;
+             }
+         }
+
+         // Initialize editor
+         $(document).ready(function() {
+             // Update editor on input
+             htmlEditor.addEventListener('input', updateEditor);
+             htmlEditor.addEventListener('scroll', () => {
+                 lineNumbers.scrollTop = htmlEditor.scrollTop;
+             });
+             
+             // Initial update
+             updateEditor();
+             
+             // Tab key support
+             htmlEditor.addEventListener('keydown', function(e) {
+                 if (e.key === 'Tab') {
+                     e.preventDefault();
+                     const start = this.selectionStart;
+                     const end = this.selectionEnd;
+                     
+                     this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+                     this.selectionStart = this.selectionEnd = start + 2;
+                     updateEditor();
+                 }
+             });
+
+             // Code View Mode
+             $("#codeBtn").on("click", function() {
+                 $("#editorWrapper").show();
+                 $("#previewWrapper").hide();
+                 $(this).addClass("bg-blue-600 text-white").removeClass("bg-gray-200 text-black");
+                 $("#previewBtn").addClass("bg-gray-200 text-black").removeClass("bg-blue-600 text-white");
+                 updateEditor();
+             });
+
+             // Preview Mode
+             $("#previewBtn").on("click", function() {
+                 let htmlContent = htmlEditor.value;
+                 
+                 // Replace template variables with sample data for preview
+                 htmlContent = htmlContent
+                     .replace(/\[\[site_title\]\]/g, 'Your Site Name')
+                     .replace(/\[\[site_url\]\]/g, 'https://yoursite.com')
+                     .replace(/\[\[user_name\]\]/g, 'John Doe')
+                     .replace(/\[\[user_email\]\]/g, 'john@example.com')
+                     .replace(/\[\[message\]\]/g, 'This is a sample message for preview purposes.')
+                     .replace(/\[\[action_url\]\]/g, 'https://yoursite.com/action')
+                     .replace(/\[\[amount\]\]/g, '$100.00')
+                     .replace(/\[\[date\]\]/g, new Date().toLocaleDateString());
+                 
+                 $("#previewArea").html(htmlContent);
+                 $("#editorWrapper").hide();
+                 $("#previewWrapper").show();
+                 $(this).addClass("bg-blue-600 text-white").removeClass("bg-gray-200 text-black");
+                 $("#codeBtn").addClass("bg-gray-200 text-black").removeClass("bg-blue-600 text-white");
+             });
+         });
+
     </script>
 @endsection

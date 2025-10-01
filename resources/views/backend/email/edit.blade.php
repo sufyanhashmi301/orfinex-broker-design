@@ -89,30 +89,30 @@
                         <input type="hidden" value="0" name="use_custom_html" id="use_custom_html_hidden">
                         <input type="hidden" name="use_custom_html" value="1" id="use_custom_html_value" @if(!$template->use_custom_html) disabled @endif>
 
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Leave it blank if you don't need the title">
+                                    {{ __('Email Type') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                                <input type="text" name="title" class="form-control" value="{{ $template->title }}" required/>
+                            </div>
+                        </div>
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label">
+                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Here the Email Subject will come">
+                                    {{ __('Email Subject') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                                <input type="text" name="subject" class="form-control" value="{{ $template->subject }}"
+                                    required/>
+                            </div>
+                        </div>
                         <div id="dynamic-template-section" style="{{ $template->use_custom_html ? 'display: none;' : '' }}">
-                            <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                                <label for="" class="md:col-span-3 col-span-12 form-label">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Leave it blank if you don't need the title">
-                                        {{ __('Email Type') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                    </span>
-                                </label>
-                                <div class="md:col-span-9 col-span-12">
-                                    <input type="text" name="title" class="form-control" value="{{ $template->title }}" required/>
-                                </div>
-                            </div>
-                            <div class="input-area grid grid-cols-12 gap-5 mb-6">
-                                <label for="" class="md:col-span-3 col-span-12 form-label">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Here the Email Subject will come">
-                                        {{ __('Email Subject') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                    </span>
-                                </label>
-                                <div class="md:col-span-9 col-span-12">
-                                    <input type="text" name="subject" class="form-control" value="{{ $template->subject }}"
-                                        required/>
-                                </div>
-                            </div>
                             <div class="input-area grid grid-cols-12 gap-5 mb-6">
                                 <label for="" class="md:col-span-3 col-span-12 form-label">
                                     <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Write the main Messages here">
@@ -171,125 +171,124 @@
                                         <input type="hidden" name="html_bottom_body" class="html-bottom-body"/>
 
                                     </div>
-
-                                    <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
-                                        <div class="flex items-center space-x-7 flex-wrap">
-                                            <label class="form-label !w-auto pt-0">
-                                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this template">
-                                                    {{ __('Template Status') }}
-                                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                                </span>
-                                            </label>
-                                            <div class="form-switch ps-0">
-                                                <input type="hidden" value="0" name="status">
-                                                <label
-                                                    class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input type="checkbox" name="status" value="1" class="sr-only peer"
-                                                        @checked($template->status)>
-                                                    <span
-                                                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center space-x-7 flex-wrap">
-                                            <label class="form-label !w-auto pt-0">
-                                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a disclaimer message to the email">
-                                                    {{ __('Disclaimer') }}
-                                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                                </span>
-                                            </label>
-                                            <div class="form-switch ps-0">
-                                                <input type="hidden" value="0" name="is_disclaimer">
-                                                <label
-                                                    class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input type="checkbox" name="is_disclaimer" value="1"
-                                                        class="sr-only peer" @checked($template->is_disclaimer)>
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center space-x-7 flex-wrap">
-                                            <label class="form-label !w-auto pt-0">
-                                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a risk-related note to the email footer">
-                                                    {{ __('Risk Warning') }}
-                                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                                </span>
-                                            </label>
-                                            <div class="form-switch ps-0">
-                                                <input type="hidden" value="0" name="is_risk_warning">
-                                                <label
-                                                    class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input type="checkbox" name="is_risk_warning" value="1"
-                                                        class="sr-only peer" @checked($template->is_risk_warning)>
-                                                    <span
-                                                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-
                         <!-- Custom HTML Section -->
                         <div id="custom-html-section" style="{{ $template->use_custom_html ? '' : 'display: none;' }}">
-                            <div class="space-y-4">
-                                <div class="flex items-center gap-3">
-                                    <iconify-icon icon="lucide:file-code" class="text-2xl text-green-400"></iconify-icon>
-                                    <div>
-                                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white">{{ __('Custom HTML Editor') }}</h4>
-                                        <p class="text-gray-400 dark:text-gray-400 text-sm">{{ __('Write your complete HTML email template') }}</p>
-                                    </div>
-                                </div>
-                                <div id="editorWrapper">
-                                    <div class="custom-editor-container">
-                                        <div class="editor-toolbar">
-                                            <button type="button" class="editor-btn" onclick="viewResult()">
-                                                <iconify-icon icon="lucide:eye"></iconify-icon>
-                                                {{ __('View Result') }}
-                                            </button>
-                                            <button type="button" class="editor-btn" onclick="toggleFullscreen()">
-                                                <iconify-icon icon="lucide:maximize"></iconify-icon>
-                                                {{ __('Fullscreen') }}
-                                            </button>
-                                            <span class="editor-info">
-                                                {{ __('Lines') }}: <span id="lineCount">1</span> | 
-                                                {{ __('Characters') }}: <span id="charCount">0</span>
-                                            </span>
+                            <div class="grid grid-cols-12 gap-5 mb-6">
+                                <label for="" class="md:col-span-3 col-span-12 form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter your custom HTML code here">
+                                        {{ __('Custom HTML') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <div class="md:col-span-9 col-span-12 space-y-5">
+                                    <div id="editorWrapper">
+                                        <div class="custom-editor-container">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" onclick="viewResult()">
+                                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                                    {{ __('View Result') }}
+                                                </button>
+                                                <button type="button" class="editor-btn" onclick="toggleFullscreen()">
+                                                    <iconify-icon icon="lucide:maximize"></iconify-icon>
+                                                    {{ __('Fullscreen') }}
+                                                </button>
+                                                <span class="editor-info">
+                                                    {{ __('Lines') }}: <span id="lineCount">1</span> | 
+                                                    {{ __('Characters') }}: <span id="charCount">0</span>
+                                                </span>
+                                            </div>
+                                            <div class="editor-wrapper">
+                                                <div class="line-numbers" id="lineNumbers">1</div>
+                                                <textarea 
+                                                    name="custom_html_content" 
+                                                    id="htmlEditor" 
+                                                    class="html-editor"
+                                                    placeholder="Enter your custom HTML code here..."
+                                                    spellcheck="false">
+                                                    {{ old('custom_html_content', $template->getDecodedCustomHtml()) }}
+                                                </textarea>
+                                            </div>
                                         </div>
-                                        <div class="editor-wrapper">
-                                            <div class="line-numbers" id="lineNumbers">1</div>
-                                            <textarea 
-                                                name="custom_html_content" 
-                                                id="htmlEditor" 
-                                                class="html-editor"
-                                                placeholder="Enter your custom HTML code here..."
-                                                spellcheck="false">
-                                                {{ old('custom_html_content', $template->getDecodedCustomHtml()) }}
-                                            </textarea>
-                                        </div>
                                     </div>
-                                </div>
-                                <!-- Preview -->
-                                <div id="previewWrapper" class="border rounded p-4 bg-white" style="display:none;">
-                                    <div id="previewArea"></div>
-                                </div>
-                                
-                                <div class="flex items-center gap-3">
-                                    <iconify-icon icon="lucide:file-code" class="text-2xl text-green-400"></iconify-icon>
+                                    <!-- Preview -->
+                                    <div id="previewWrapper" class="border rounded p-4 bg-white" style="display:none;">
+                                        <div id="previewArea"></div>
+                                    </div>
+
                                     <div>
-                                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white">{{ __('Example Template') }}</h4>
-                                        <p class="text-gray-400 dark:text-gray-400 text-sm">
+                                        <p class="form-label">
                                             {{ __('Example template for the HTML email template') }}
                                         </p>
+                                        <div class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-slate-500 text-xs overflow-x-auto">
+                                            @include('backend.email.include.__example_html')
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-green-400 text-xs overflow-x-auto">
-                                    @include('backend.email.include.__example_html')
                                 </div>
                             </div>
                         </div>
-
+                        <div class="grid grid-cols-12 gap-5 mb-6">
+                            <div class="md:col-span-3 col-span-12"></div>
+                            <div class="md:col-span-9 col-span-12">
+                                <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Toggle to activate or deactivate this template">
+                                                {{ __('Template Status') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="status">
+                                            <label
+                                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="status" value="1" class="sr-only peer"
+                                                    @checked($template->status)>
+                                                <span
+                                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a disclaimer message to the email">
+                                                {{ __('Disclaimer') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="is_disclaimer">
+                                            <label
+                                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="is_disclaimer" value="1"
+                                                    class="sr-only peer" @checked($template->is_disclaimer)>
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enable to append a risk-related note to the email footer">
+                                                {{ __('Risk Warning') }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="is_risk_warning">
+                                            <label
+                                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="is_risk_warning" value="1"
+                                                    class="sr-only peer" @checked($template->is_risk_warning)>
+                                                <span
+                                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="flex justify-end items-center mt-8 pt-6 border-t border-gray-200 dark:border-slate-600">
                             <button type="button" class="btn btn-dark inline-flex items-center justify-center email-template-form">
                                 <span class="flex items-center">

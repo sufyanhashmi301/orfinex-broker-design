@@ -50,6 +50,8 @@ trait NotifyTrait
                     'site_link' => route('home'),
                     'is_risk_warning' => $template->is_risk_warning,
                     'is_disclaimer' => $template->is_disclaimer,
+                    'use_custom_html' => $template->use_custom_html,
+                    'custom_html_content' => str_replace($find, $replace, $template->getDecodedCustomHtml()),
                 ];
 //dd($details,$code);
                 if ($code == 'email_verification') {
@@ -67,6 +69,7 @@ trait NotifyTrait
             throw $e;
         }
     }
+
 
     //============================= push notification template helper ===================================================
     protected function pushNotify($code, $shortcodes, $action, $userId, $soundType = 'default')

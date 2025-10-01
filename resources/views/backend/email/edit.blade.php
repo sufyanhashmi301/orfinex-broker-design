@@ -265,7 +265,7 @@
                                                 class="html-editor"
                                                 placeholder="Enter your custom HTML code here..."
                                                 spellcheck="false">
-                                                {{ old('custom_html_content', str_replace(['{', '}'], ['<', '>'], $template->custom_html_content ?? '')) }}
+                                                {{ old('custom_html_content', $template->getDecodedCustomHtml()) }}
                                             </textarea>
                                         </div>
                                     </div>

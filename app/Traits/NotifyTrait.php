@@ -53,12 +53,6 @@ trait NotifyTrait
                     'use_custom_html' => $template->use_custom_html,
                     'custom_html_content' => str_replace($find, $replace, $template->getDecodedCustomHtml()),
                 ];
-//dd($details,$code);
-                if ($code == 'email_verification') {
-                    return (new MailMessage)
-                        ->subject($details['subject'])
-                        ->markdown('backend.mail.user-mail-send', ['details' => $details]);
-                }
 
                 return Mail::to($email)->send(new MailSend($details));
             }

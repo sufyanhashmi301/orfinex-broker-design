@@ -56,20 +56,20 @@ class   AccountsController extends Controller
 {
     $loggedInUser = auth()->user(); // Get the logged-in user
 
-    // Check permission to view all users
-    $canViewAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
-
-    // Get accessible user IDs using the helper
-    $attachedUserIds = $canViewAllUsers ? [] : getAccessibleUserIds()->pluck('id')->toArray();
+    // Get accessible user IDs using the helper (includes branch filtering)
+    $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
     // Start Forex Account query
     $data = ForexAccount::query()
         ->with('schema')
         ->where('account_type', $type);
 
-    // Filter by accessible users (if not super-admin)
-    if (!$canViewAllUsers && !empty($attachedUserIds)) {
-        $data->whereIn('user_id', $attachedUserIds);
+    // Apply user filtering based on accessible users
+    if (!empty($accessibleUserIds)) {
+        $data->whereIn('user_id', $accessibleUserIds);
+    } elseif (!$loggedInUser->hasRole('Super-Admin')) {
+        // If no accessible users and not Super-Admin, show no results
+        $data->where('user_id', -1);
     }
 
     // Apply individual user filter (if ID passed)
@@ -134,8 +134,12 @@ class   AccountsController extends Controller
     $unActiveAccountsQuery = ForexAccount::where('account_type', $type)
         ->where('status', '!=', ForexAccountStatus::Ongoing);
 
-    if (!$canViewAllUsers && !empty($attachedUserIds)) {
-        $unActiveAccountsQuery->whereIn('user_id', $attachedUserIds);
+    // Apply user filtering for inactive accounts as well
+    if (!empty($accessibleUserIds)) {
+        $unActiveAccountsQuery->whereIn('user_id', $accessibleUserIds);
+    } elseif (!$loggedInUser->hasRole('Super-Admin')) {
+        // If no accessible users and not Super-Admin, show no results
+        $unActiveAccountsQuery->where('user_id', -1);
     }
 
     $unActiveAccounts = $unActiveAccountsQuery->count();

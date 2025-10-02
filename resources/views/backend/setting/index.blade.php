@@ -39,6 +39,13 @@
                         </a>
                     </li>
                     @endcanany
+                    @can('branch-list')
+                    <li>
+                        <a href="{{ route('admin.branches.index') }}" class="navItem {{ isActive('admin.branches*') }}">
+                            {{ __('Branches') }}
+                        </a>
+                    </li>
+                @endcan
                     @canany(['all-countries-list','blacklist-countries-list'])
                     <li>
                         <a href="{{ route('admin.country.all') }}" class="text-sm text-slate-900 dark:text-slate-300">

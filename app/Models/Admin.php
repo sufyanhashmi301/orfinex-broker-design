@@ -79,6 +79,49 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Note::class, 'admin_id');
     }
+
+    /**
+     * Get the branches assigned to this admin
+     */
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'admin_branches')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Check if admin has access to a specific branch
+     */
+    public function hasAccessToBranch($branchId)
+    {
+        // Super-Admin has access to all branches
+        if ($this->hasRole('Super-Admin')) {
+            return true;
+        }
+
+        return $this->branches()->where('branch_id', $branchId)->exists();
+    }
+
+    /**
+     * Assign branches to this admin
+     */
+    public function assignToBranches(array $branchIds)
+    {
+        return $this->branches()->sync($branchIds);
+    }
+
+    /**
+     * Get accessible branch IDs for this admin
+     */
+    public function getAccessibleBranchIds()
+    {
+        // Super-Admin has access to all branches
+        if ($this->hasRole('Super-Admin')) {
+            return Branch::pluck('id')->toArray();
+        }
+
+        return $this->branches()->pluck('branch_id')->toArray();
+    }
     public function getRememberToken()
     {
         return null;

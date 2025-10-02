@@ -27,7 +27,6 @@
                 </span>
             </a>
         </li>
-
         {{-- *************************************************************  Customer Management ********************************************************* --}}
         @canany(['customer-list', 'customer-mail-send'])
             <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.user*', 'admin.notification*']) }}">
@@ -191,21 +190,24 @@
                     <ul class="sidebar-submenu">
                         @can('withdraw-account-pending')
                             <li class="">
-                                <a href="{{ route('admin.withdraw.pending.accounts') }}" class="{{ isActive('admin.withdraw.pending.accounts') }}">
+                                <a href="{{ route('admin.withdraw.pending.accounts') }}"
+                                    class="{{ isActive('admin.withdraw.pending.accounts') }}">
                                     {{ __('Pending Accounts') }}
                                 </a>
                             </li>
-                            @endcan
-                            @can('withdraw-account-approve')
+                        @endcan
+                        @can('withdraw-account-approve')
                             <li class="">
-                                <a href="{{ route('admin.withdraw.approved.accounts') }}" class="{{ isActive('admin.withdraw.approved.accounts') }}">
+                                <a href="{{ route('admin.withdraw.approved.accounts') }}"
+                                    class="{{ isActive('admin.withdraw.approved.accounts') }}">
                                     {{ __('Approved Accounts') }}
                                 </a>
                             </li>
-                            @endcan
-                            @can('withdraw-account-rejected')
+                        @endcan
+                        @can('withdraw-account-rejected')
                             <li class="">
-                                <a href="{{ route('admin.withdraw.rejected.accounts') }}" class="{{ isActive('admin.withdraw.rejected.accounts') }}">
+                                <a href="{{ route('admin.withdraw.rejected.accounts') }}"
+                                    class="{{ isActive('admin.withdraw.rejected.accounts') }}">
                                     {{ __('Rejected Accounts') }}
                                 </a>
                             </li>
@@ -250,7 +252,8 @@
         {{-- *************************************************************  Staff Management ********************************************************* --}}
         @canany(['staff-list', 'staff-create', 'staff-edit'])
             <li>
-                <a href="{{ route('admin.staff.index') }}" class="navItem {{ request()->routeIs('admin.staff*') && !request()->routeIs('admin.staff.security') ? 'active' : '' }}">
+                <a href="{{ route('admin.staff.index') }}"
+                    class="navItem {{ request()->routeIs('admin.staff*') && !request()->routeIs('admin.staff.security') ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:user-cog"></iconify-icon>
                         <span>{{ __('Manage Staffs') }}</span>
@@ -262,7 +265,8 @@
 
         {{-- *************************************************************  Plan Management ********************************************************* --}}
         @canany(['account-type-list'])
-            <li class="{{ isActive(['admin.schedule*', 'admin.accountType*', 'admin.ibAccountType*', 'admin.settingsAccountType*']) }}">
+            <li
+                class="{{ isActive(['admin.schedule*', 'admin.accountType*', 'admin.ibAccountType*', 'admin.settingsAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
@@ -291,13 +295,14 @@
                         </a>
                     </li>
 
-                   
+
                     <li>
-                        <a href="{{ route('admin.settingsAccountType') }}" class="{{ isActive('admin.settingsAccountType*') }}">
+                        <a href="{{ route('admin.settingsAccountType') }}"
+                            class="{{ isActive('admin.settingsAccountType*') }}">
                             {{ __('Account Type Settings') }}
                         </a>
                     </li>
-                  
+
 
                     {{--                        @can('schema-edit') --}}
                     {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}"> --}}
@@ -352,7 +357,8 @@
         @canany(['active-positions', 'net-positions-accounts', 'net-positions-groups', 'older-positions-days'])
 
             <li>
-                <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
+                <a href="{{ route('admin.activePositions') }}"
+                    class="navItem {{ isActive('admin.activePositions') }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
                         <span>{{ __('Risk Hub') }}</span>
@@ -407,7 +413,8 @@
                 <ul class="sidebar-submenu">
                     @canany(['ib-list', 'ib-action'])
                         <li>
-                            <a href="{{ route('admin.ib.pending.list') }}" class="{{ isActive('admin.ib.pending.list') }}">
+                            <a href="{{ route('admin.ib.pending.list') }}"
+                                class="{{ isActive('admin.ib.pending.list') }}">
                                 {{ __('Pending IB') }}
                             </a>
                         </li>

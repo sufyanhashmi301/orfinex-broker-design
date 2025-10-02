@@ -542,9 +542,20 @@ class WithdrawController extends Controller
         $filters = $request->only(['username', 'email', 'created_at']);
 
         if ($request->ajax()) {
+            // Get accessible user IDs using the helper (includes branch filtering)
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
+
             $data = WithdrawAccount::where('status', 'pending')
                 ->with(['user', 'method'])
                 ->latest();
+
+            // Apply user filtering based on accessible users
+            if (!empty($accessibleUserIds)) {
+                $data->whereIn('user_id', $accessibleUserIds);
+            } elseif (!auth()->user()->hasRole('Super-Admin')) {
+                // If no accessible users and not Super-Admin, show no results
+                $data->where('user_id', -1);
+            }
 
             // Apply filters
             if (!empty($filters['username'])) {
@@ -635,9 +646,20 @@ class WithdrawController extends Controller
         $filters = $request->only(['username', 'email', 'created_at']);
 
         if ($request->ajax()) {
+            // Get accessible user IDs using the helper (includes branch filtering)
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
+
             $data = WithdrawAccount::where('status', 'approved')
                 ->with(['user', 'method'])
                 ->latest();
+
+            // Apply user filtering based on accessible users
+            if (!empty($accessibleUserIds)) {
+                $data->whereIn('user_id', $accessibleUserIds);
+            } elseif (!auth()->user()->hasRole('Super-Admin')) {
+                // If no accessible users and not Super-Admin, show no results
+                $data->where('user_id', -1);
+            }
 
             // Apply filters
             if (!empty($filters['username'])) {
@@ -728,9 +750,20 @@ class WithdrawController extends Controller
         $filters = $request->only(['username', 'email', 'created_at']);
 
         if ($request->ajax()) {
+            // Get accessible user IDs using the helper (includes branch filtering)
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
+
             $data = WithdrawAccount::where('status', 'rejected')
                 ->with(['user', 'method'])
                 ->latest();
+
+            // Apply user filtering based on accessible users
+            if (!empty($accessibleUserIds)) {
+                $data->whereIn('user_id', $accessibleUserIds);
+            } elseif (!auth()->user()->hasRole('Super-Admin')) {
+                // If no accessible users and not Super-Admin, show no results
+                $data->where('user_id', -1);
+            }
 
             // Apply filters
             if (!empty($filters['username'])) {

@@ -1108,6 +1108,7 @@ class WithdrawController extends Controller
                     'login_title' => $account->login,
                     'equity' => get_mt5_account_equity($account->login),
                     'account_name' => $account->account_name,
+                    'currency' => $account->schema->is_cent_account ? $account->currency . ' (Cents)' : $account->currency,
                 ];
             }),
             'wallets' => $wallets->map(function ($wallet) {

@@ -87,7 +87,9 @@ class   AccountsController extends Controller
             ->addIndexColumn()
             ->addColumn('ib_number', 'backend.user.include.__ib_number')
             ->addColumn('username', 'backend.transaction.include.__user')
-            ->addColumn('balance', 'backend.investment.include.__balance_mt5')
+            ->addColumn('balance', function($account) {
+                return view('backend.investment.include.__balance_mt5', ['account' => $account])->render();
+            })
             ->addColumn('equity', 'backend.investment.include.__equity_mt5')
             ->addColumn('credit', 'backend.investment.include.__credit_mt5')
             ->addColumn('schema', function($account) {

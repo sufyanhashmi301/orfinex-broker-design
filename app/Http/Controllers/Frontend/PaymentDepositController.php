@@ -47,7 +47,7 @@ class PaymentDepositController extends Controller
         // Get previously used dates for suggestions
         $previouslyUsedDates = $this->getPreviouslyUsedDates($depositQuestions);
 
-        return view('frontend.prime_x.payment-deposit.index', compact('latestRequest', 'depositQuestions', 'previouslyUsedDates'));
+        return view('frontend::payment-deposit.index', compact('latestRequest', 'depositQuestions', 'previouslyUsedDates'));
     }
 
     /**
@@ -183,7 +183,7 @@ class PaymentDepositController extends Controller
             ->with('approvedBy')
             ->findOrFail($id);
 
-        return view('frontend.prime_x.payment-deposit.show', compact('request'));
+        return view('frontend::payment-deposit.show', compact('request'));
     }
 
     /**

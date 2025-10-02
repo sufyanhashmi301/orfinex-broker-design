@@ -28,19 +28,29 @@
     ];
 
     $alertClasses = $typeClasses[$type] ?? $typeClasses['info'];
-    $alertIcon = $icon ?? $iconMap[$type];
+    
+    // Handle icon logic
+    if ($icon) {
+        // Use default icon for type
+        $alertIcon = $iconMap[$type];
+    } else {
+        // No icon
+        $alertIcon = null;
+    }
+    
     $iconColor = $iconColors[$type] ?? $iconColors['info'];
 @endphp
 
 <div {{ $attributes->merge(['class' => "rounded-xl border p-4 {$alertClasses}"]) }} role="alert">
     <div class="flex items-start gap-3">
-        @if($alertIcon)
+        {{-- Show icon when icon prop is provided --}}
+        @if($icon && $alertIcon)
             <div class="-mt-0.5 {{ $iconColor }}">
                 <i data-lucide="{{ $alertIcon }}" class="w-5 h-5"></i>
             </div>
         @endif
         
-        <div>
+        <div class="flex-1">
             @if($title)
                 <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">
                     {{ $title }}
@@ -52,7 +62,7 @@
             </div>
         </div>
 
-        @if($dismissible)
+        @if($dismissible && $dismissible !== 'false')
             <div class="ms-auto">
                 <button type="button" 
                     class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:opacity-75 transition-opacity"

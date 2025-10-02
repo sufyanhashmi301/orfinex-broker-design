@@ -209,59 +209,50 @@ class DashboardController extends Controller
 
     public function staffDashboard()
 {
-       $loggedInUser = auth()->user();
-    $showAllUsers = $loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff');
+    $loggedInUser = auth()->user();
     
     $transaction = new Transaction();
     $user = new User();
     $admin = new Admin();
 
-    // Get the query builder first
+    // Get the query builder first with branch filtering applied
     $userQuery = getAccessibleUserIds();
     
-    // Check if we should show all users or if there are any accessible users
-    $hasAccessibleUsers = $showAllUsers || $userQuery->exists();
+    // Get accessible user IDs (this already includes branch filtering)
+    $accessibleUserIds = $userQuery->pluck('id')->toArray();
+    $hasAccessibleUsers = !empty($accessibleUserIds);
     
-    // Get the user IDs only if we're not showing all users and there are accessible users
-    $attachedUserIds = $showAllUsers ? null : ($hasAccessibleUsers ? $userQuery->pluck('id')->toArray() : [-1]);
-
-    if (!$showAllUsers) {
-        $user = $user->whereIn('id', $attachedUserIds);
-        $transaction = $transaction->whereIn('user_id', $attachedUserIds);
+    // If no accessible users, use [-1] to ensure no results
+    if (!$hasAccessibleUsers) {
+        $accessibleUserIds = [-1];
     }
 
-    // Update all your queries to use this pattern:
+    // Apply user filtering to all queries
+    $user = $user->whereIn('id', $accessibleUserIds);
+    $transaction = $transaction->whereIn('user_id', $accessibleUserIds);
+
+    // Update all your queries to use accessible user IDs:
     $totalDeposit = (new Transaction)->totalDeposit()
-        ->when(!$showAllUsers, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->sum('amount');
 
     $totalIbBonus = (new Transaction)->totalIbBonus()
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->sum('amount');
 
     $totalWithdraw = (new Transaction)->totalWithdraw()
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->sum('amount');
 
     $totalProfit = (new Transaction)->totalProfit()
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->sum('amount');
 
     $totalSend = Transaction::where('status', TxnStatus::Success)
         ->where(function ($query) {
             $query->where('type', TxnType::SendMoney);
         })
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->sum('amount');
 
     $activeUser = $user->where('status', 1)->count();
@@ -272,33 +263,23 @@ class DashboardController extends Controller
     $totalGateway = Gateway::where('status', true)->count();
     $withdrawCount = Transaction::where('type', TxnType::Withdraw)
         ->where('status', 'pending')
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->count();
 
     $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
     $depositCount = Transaction::where('type', TxnType::ManualDeposit)
         ->where('status', 'pending')
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->count();
 
-    $totalReferral = ReferralRelationship::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-        $query->whereIn('user_id', $attachedUserIds);
-    })->count();
+    $totalReferral = ReferralRelationship::whereIn('user_id', $accessibleUserIds)->count();
 
     $totalLiveForexAccounts = ForexAccount::where('account_type', 'real')
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->count();
 
     $totalDemoForexAccounts = ForexAccount::where('account_type', 'demo')
-        ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })
+        ->whereIn('user_id', $accessibleUserIds)
         ->count();
 
     $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
@@ -307,21 +288,16 @@ class DashboardController extends Controller
         ->take(5)
         ->get();
 
-    $totalTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-        $query->whereIn('user_id', $attachedUserIds);
-    })->count();
+    $totalTickets = Ticket::whereIn('user_id', $accessibleUserIds)->count();
 
-    $closedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-        $query->whereIn('user_id', $attachedUserIds);
-    })->where('assigned_to', $loggedInUser->id)->closed()->count();
+    $closedTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->closed()->count();
 
-    $openTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-        $query->whereIn('user_id', $attachedUserIds);
-    })->where('assigned_to', $loggedInUser->id)->opened()->count();
+    $openTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->opened()->count();
 
-    $resolvedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-        $query->whereIn('user_id', $attachedUserIds);
-    })->where('assigned_to', $loggedInUser->id)->resolved()->count();
+    $resolvedTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->resolved()->count();
 
     $symbol = setting('currency_symbol', 'global');
 
@@ -338,8 +314,22 @@ class DashboardController extends Controller
         'total_ib_bonus' => $totalIbBonus,
         'total_withdraw' => $totalWithdraw,
         'total_referral' => $totalReferral,
-        'deposit_bonus' => (new Transaction)->totalDepositBonus(),
-        'investment_bonus' => (new Transaction)->totalInvestBonus(),
+        'deposit_bonus' => Transaction::where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('target_id', '!=', null)
+                    ->where('target_type', 'deposit')
+                    ->where('type', TxnType::Referral);
+            })
+            ->whereIn('user_id', $accessibleUserIds)
+            ->sum('amount'),
+        'investment_bonus' => Transaction::where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('target_id', '!=', null)
+                    ->where('target_type', 'investment')
+                    ->where('type', TxnType::Referral);
+            })
+            ->whereIn('user_id', $accessibleUserIds)
+            ->sum('amount'),
         'total_gateway' => $totalGateway,
         'total_live_forex_accounts' => $totalLiveForexAccounts,
         'total_demo_forex_accounts' => $totalDemoForexAccounts,

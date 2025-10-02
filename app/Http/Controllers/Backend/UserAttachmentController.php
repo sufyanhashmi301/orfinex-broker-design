@@ -27,9 +27,28 @@ class UserAttachmentController extends Controller
     }
     public function index($staffId)
     {
-        $staff = Admin::find($staffId);
+        $staff = Admin::with('branches')->find($staffId);
         $roles = Role::whereNot('name', 'Super-Admin')->get();
-        $users = User::whereNotIn('id', $staff->users->pluck('id')->toArray())->get();
+        
+        // Get users not already attached to this staff member
+        $attachedUserIds = $staff->users->pluck('id')->toArray();
+        
+        // Get staff's assigned branch IDs
+        $staffBranchIds = $staff->branches->pluck('id')->toArray();
+        
+        // If staff has branch restrictions, only show users from those branches
+        if (!empty($staffBranchIds) && !$staff->hasRole('Super-Admin')) {
+            $users = User::whereNotIn('id', $attachedUserIds)
+                ->whereHas('user_metas', function ($query) use ($staffBranchIds) {
+                    $query->where('meta_key', 'branch_id')
+                          ->whereIn('meta_value', array_map('strval', $staffBranchIds));
+                })
+                ->get();
+        } else {
+            // No branch restriction - show all users (existing behavior)
+            $users = User::whereNotIn('id', $attachedUserIds)->get();
+        }
+        
         $ibGroups = IbGroup::all();
         $schemas = ForexSchema::orderBy('priority','asc')->traderType()->get();
 

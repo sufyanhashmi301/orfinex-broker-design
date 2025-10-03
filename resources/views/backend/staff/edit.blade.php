@@ -484,26 +484,31 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
-                            <span class="shift-Away inline-flex items-center gap-1"
-                                data-tippy-content="The password of the staff">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The password of the staff">
                                 {{ __('Password') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline"
-                                    class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input type="password" name="password" class="form-control mb-0" placeholder="Password" />
+                        <div class="relative">
+                            <input type="password" name="password" id="password" class="form-control mb-0" placeholder="Password" />
+                            <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="password">
+                                <iconify-icon class="text-lg" icon="heroicons:eye"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">
-                            <span class="shift-Away inline-flex items-center gap-1"
-                                data-tippy-content="The confirm password of the staff">
+                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The confirm password of the staff">
                                 {{ __('Confirm Password') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline"
-                                    class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input type="password" name="confirm-password" class="form-control mb-0"
-                            placeholder="Confirm Password" />
+                        <div class="relative">
+                            <input type="password" name="confirm-password" id="confirm-password" class="form-control mb-0" placeholder="Confirm Password" />
+                            <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="confirm-password">
+                                <iconify-icon class="text-lg" icon="heroicons:eye"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
                     <div class="input-area lg:col-span-3">
                         <div class="flex items-center space-x-7 flex-wrap">

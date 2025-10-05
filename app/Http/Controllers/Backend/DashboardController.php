@@ -18,147 +18,112 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth:admin']);
-        $this->middleware('role:Super-Admin', ['only' => ['dashboard']]);
-        $this->middleware('permission:show-all-users-by-default-to-staff', ['only' => ['staffDashboard']]);
-    }
-
     public function dashboard()
     {
-        // Date range for statistics
+
+        $loggedInUser = auth()->user(); // Get the logged-in user
+        if (!$loggedInUser->hasRole('Super-Admin')) {
+            return redirect()->route('admin.staff.dashboard');
+        }
+        $transaction = new Transaction();
+        $user = new User();
+        $admin = new Admin();
+
+        $totalDeposit = $transaction->totalDeposit();
+
+        $totalSend = Transaction::where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::SendMoney);
+        })->sum('amount');
+
+        $activeUser = $user->where('status', 1)->count();
+
+        $totalStaff = $admin->count();
+
+        $latestUser = $user->latest()->take(5)->get();
+
+        $latestInvest = Invest::with('schema')->take(5)->latest()->get();
+
+        $totalGateway = Gateway::where('status', true)->count();
+
+        $withdrawCount = Transaction::where(function ($query) {
+            $query->where('type', TxnType::Withdraw)
+                ->where('status', 'pending');
+        })->count();
+
+        $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
+
+        $depositCount = Transaction::where(function ($query) {
+            $query->where('type', TxnType::ManualDeposit)
+                ->where('status', 'pending');
+        })->count();
+
+        $totalReferral = ReferralRelationship::count();
+
+        // ============================= Start dashboard statistics =============================================
+
+        $schemeStatistics = Invest::whereNot('status', 'canceled')->get()->groupBy('schema.name')->map(function ($group) {
+            return $group->count();
+        })->toArray();
+        
+        $totalDepositStatistics = Transaction::select('type', DB::raw('SUM(amount) as total'))
+        ->whereIn('type', [
+            TxnType::Deposit,
+            TxnType::DemoDeposit,
+            TxnType::VoucherDeposit,
+        ])->where('status', TxnStatus::Success)->groupBy('type')->pluck('total', 'type')->toArray();
+        
         $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
         $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();
-        $dateFilter = [request()->start_date ? $startDate : $startDate->subDays(1), $endDate->addDays(1)];
         $dateArray = array_fill_keys(generate_date_range_array($startDate, $endDate), 0);
 
+        $dateFilter = [request()->start_date ? $startDate : $startDate->subDays(1), $endDate->addDays(1)];
 
-        // Get latest users with eager loading
-        $latestUsers = User::latest()
-            ->take(5)
-            ->get();
+        $depositStatistics = $totalDeposit->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
 
-        // Get ticket statistics with eager loading
-        $tickets = Ticket::with(['user', 'assignedToUser', 'categories', 'labels'])
-            ->latest()
-            ->take(5)
-            ->get();
+        $depositStatistics = array_replace($dateArray, $depositStatistics);
 
-        // Get login activities with eager loading
-        $loginActivities = LoginActivities::select('agent', DB::raw('COUNT(*) as count'))
-            ->groupBy('agent')
-            ->get()
-            ->map(function($activity) {
-                $agent = new \Jenssegers\Agent\Agent();
-                $agent->setUserAgent($activity->agent);
-                return [
-                    'browser' => $agent->browser(),
-                    'platform' => $agent->platform(),
-                    'count' => $activity->count
-                ];
-            })
-            ->groupBy(function($item) {
-                return $item['browser'] . '|' . $item['platform'];
-            })
-            ->map(function($group) {
-                return [
-                    'browser' => explode('|', $group->first()['browser'])[0],
-                    'platform' => explode('|', $group->first()['platform'])[0],
-                    'count' => $group->sum('count')
-                ];
-            })
-            ->values();
 
-        // Get transaction statistics by type with eager loading
-        $schemaStats = Transaction::with(['user', 'staff', 'depositMethod', 'withdrawMethod'])
-            ->select([
-                'type',
-                DB::raw('SUM(CASE WHEN status = "success" THEN amount ELSE 0 END) as total_deposit')
-            ])
-            ->whereIn('type', [TxnType::Deposit, TxnType::ManualDeposit, TxnType::VoucherDeposit])
-            ->groupBy('type')
-            ->get()
-            ->mapWithKeys(function ($item) {
-                $name = match($item->type->value) {
-                    TxnType::Deposit->value => 'Direct Deposit',
-                    TxnType::ManualDeposit->value => 'Manual Deposit',
-                    TxnType::VoucherDeposit->value => 'Voucher Deposit',
-                    default => ucfirst(str_replace('_', ' ', $item->type->value))
-                };
-                return [$name => $item->total_deposit];
-            })
-            ->toArray();
 
-        // Get transaction statistics with eager loading
-        $transactionStats = Transaction::with(['user', 'staff', 'depositMethod', 'withdrawMethod'])
-            ->select([
-                DB::raw('COUNT(CASE WHEN (type = "withdraw" OR type = "withdraw_auto") AND status = "pending" THEN 1 END) as withdraw_count'),
-                DB::raw('COUNT(CASE WHEN type = "manual_deposit" AND status = "pending" THEN 1 END) as deposit_count'),
-                DB::raw('SUM(CASE WHEN status = "success" AND type = "send_money" THEN amount ELSE 0 END) as total_send'),
-                DB::raw('SUM(CASE WHEN status = "success" AND (type = "manual_deposit" OR type = "deposit" OR type = "voucher_deposit") THEN amount ELSE 0 END) as total_deposit'),
-                DB::raw('SUM(CASE WHEN status = "success" AND (type = "withdraw" OR type = "withdraw_auto") THEN amount ELSE 0 END) as total_withdraw'),
-                DB::raw('SUM(CASE WHEN status = "success" AND type = "ib_bonus" THEN amount ELSE 0 END) as total_ib_bonus'),
-                DB::raw('SUM(CASE WHEN status = "success" AND (type = "interest" OR type = "bonus" OR type = "signup_bonus") THEN amount ELSE 0 END) as total_profit'),
-                DB::raw('SUM(CASE WHEN status = "success" AND type = "deposit" THEN amount ELSE 0 END) as total_investment')
-            ])->first();
+        $investStatistics = $transaction->totalInvestment()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
 
-        // Get daily statistics with eager loading
-        $dailyStats = Transaction::with(['user', 'staff'])
-            ->select(
-                DB::raw('DATE(created_at) as date'),
-                'type',
-                DB::raw('SUM(amount) as total')
-            )
-            ->where('status', TxnStatus::Success)
-            ->whereBetween('created_at', $dateFilter)
-            ->groupBy('date', 'type')
-            ->get();
+        $investStatistics = array_replace($dateArray, $investStatistics);
 
-        // Process daily statistics maintaining model scope conditions
-        $depositStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['deposit', 'manual_deposit', 'voucher_deposit']));
-        $investStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['deposit']));
-        $withdrawStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['withdraw', 'withdraw_auto']));
-        $profitStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['interest', 'bonus', 'signup_bonus']));
-        $ibBonusStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['ib_bonus']));
-        $demoDepositStatistics = array_replace($dateArray, $this->processDailyStats($dailyStats, ['demo_deposit']));
+        $withdrawStatistics = $transaction->totalWithdraw()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $withdrawStatistics = array_replace($dateArray, $withdrawStatistics);
 
-        // Get user statistics
-        $userStats = User::select(
-            DB::raw('COUNT(*) as total_users'),
-            DB::raw('COUNT(CASE WHEN status = 1 THEN 1 END) as active_users'),
-            DB::raw('COUNT(CASE WHEN kyc = ' . KYCStatus::Pending->value . ' THEN 1 END) as kyc_count')
-        )->first();
+        $profitStatistics = $transaction->totalProfit()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $profitStatistics = array_replace($dateArray, $profitStatistics);
+        
+        $ibBonusStatistics = $transaction->totalIbBonus()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $ibBonusStatistics = array_replace($dateArray, $ibBonusStatistics);
 
-        // Get latest investments with eager loading
-        $latestInvests = Invest::with('schema')->latest()->take(5)->get();
+        $demoDepositStatistics = $transaction->totalDemoDeposit()->whereBetween('created_at', $dateFilter)->get()->groupBy('day')->map(function ($group) {
+            return $group->sum('amount');
+        })->toArray();
+        $demoDepositStatistics = array_replace($dateArray, $demoDepositStatistics);
 
-        // Get scheme statistics
-        $schemeStatistics = Invest::whereNot('status', 'canceled')
-            ->select('schema_id', DB::raw('COUNT(*) as count'))
-            ->groupBy('schema_id')
-            ->get()
-            ->pluck('count', 'schema_id')
-            ->toArray();
+        // ============================= End dashboard statistics =============================================
 
-        // Get forex account counts
-        $forexStats = ForexAccount::select(
-            DB::raw('COUNT(CASE WHEN account_type = "real" THEN 1 END) as live_count'),
-            DB::raw('COUNT(CASE WHEN account_type = "demo" THEN 1 END) as demo_count')
-        )->first();
+        $browser = LoginActivities::all()->groupBy('browser')->map(function ($browser) {
+            return $browser->count();
+        })->toArray();
+        $platform = LoginActivities::all()->groupBy('platform')->map(function ($platform) {
+            return $platform->count();
+        })->toArray();
 
-        // Get ticket statistics
-        $ticketStats = Ticket::selectRaw('
-            COUNT(*) as total_tickets,
-            COUNT(CASE WHEN status = "open" THEN 1 END) as open_tickets,
-            COUNT(CASE WHEN status = "closed" THEN 1 END) as closed_tickets
-        ')->first();
-
-        // Get country statistics
         $country = User::select('country', DB::raw('count(*) as count'))
             ->groupBy('country')
             ->orderByDesc('count')
@@ -166,19 +131,34 @@ class DashboardController extends Controller
             ->pluck('count', 'country')
             ->toArray();
 
+        $symbol = setting('currency_symbol','global');
+
+        $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
+            ->latest()
+            ->take(5)
+            ->get();
+        $closedTickets = Ticket::closed()->count();
+        $openTickets = Ticket::opened()->count();
+        $resolvedTickets = Ticket::resolved()->count();
+
         $data = [
-            'withdraw_count' => $transactionStats->withdraw_count,
-            'kyc_count' => $userStats->kyc_count,
-            'deposit_count' => $transactionStats->deposit_count,
-            'register_user' => $userStats->total_users,
-            'active_user' => $userStats->active_users,
-            'latest_user' => $latestUsers,
-            'total_staff' => Admin::count(),
-            'total_deposit' => $transactionStats->total_deposit,
-            'total_send' => $transactionStats->total_send,
-            'total_ib_bonus' => $transactionStats->total_ib_bonus,
-            'total_withdraw' => $transactionStats->total_withdraw,
-            'total_referral' => ReferralRelationship::count(),
+            'withdraw_count' => $withdrawCount,
+            'kyc_count' => $kycCount,
+            'deposit_count' => $depositCount,
+
+            'register_user' => $user->count(),
+            'active_user' => $activeUser,
+            'latest_user' => $latestUser,
+            'latest_invest' => $latestInvest,
+
+            'total_staff' => $totalStaff,
+
+            'total_deposit' => $transaction->totalDeposit()->sum('amount'),
+            'total_send' => $totalSend,
+            'total_ib_bonus' => $transaction->totalIbBonus()->sum('amount'),
+            'total_withdraw' => $transaction->totalWithdraw()->sum('amount'),
+            'total_referral' => $totalReferral,
+
             'date_label' => $dateArray,
             'deposit_statistics' => $depositStatistics,
             'invest_statistics' => $investStatistics,
@@ -186,246 +166,189 @@ class DashboardController extends Controller
             'profit_statistics' => $profitStatistics,
             'ib_bonus_statistics' => $ibBonusStatistics,
             'demo_deposit_statistics' => $demoDepositStatistics,
+
             'start_date' => isset(request()->start_date) ? $startDate : $startDate->addDays(1)->format('m/d/Y'),
             'end_date' => isset(request()->end_date) ? $endDate : $endDate->subDays(1)->format('m/d/Y'),
+
             'scheme_statistics' => $schemeStatistics,
-            'total_gateway' => Gateway::where('status', true)->count(),
-            'total_live_forex_accounts' => $forexStats->live_count,
-            'total_demo_forex_accounts' => $forexStats->demo_count,
-            'browser' => $loginActivities->groupBy('browser')->map->sum('count')->toArray(),
-            'platform' => $loginActivities->groupBy('platform')->map->sum('count')->toArray(),
-            'country' => $country,
-            'symbol' => setting('currency_symbol', 'global'),
-            'latest_tickets' => $tickets,
-            'closed_tickets' => $ticketStats->closed_tickets,
-            'open_tickets' => $ticketStats->open_tickets,
-            'resolved_tickets' => $ticketStats->total_tickets - ($ticketStats->open_tickets + $ticketStats->closed_tickets),
-            'total_ticket' => $ticketStats->total_tickets,
-        ];
-
-        if (request()->ajax()) {
-            return response()->json([
-                'date_label' => $dateArray,
-                'deposit_statistics' => $depositStatistics,
-                'invest_statistics' => $investStatistics,
-                'withdraw_statistics' => $withdrawStatistics,
-                'profit_statistics' => $profitStatistics,
-                'ib_bonus_statistics' => $ibBonusStatistics,
-                'demo_deposit_statistics' => $demoDepositStatistics,
-                'symbol' => setting('currency_symbol', 'global')
-            ]);
-        }
-
-        return view('backend.dashboard', compact('dateArray'))
-            ->with([
-                'data' => [
-                    'withdraw_count' => $transactionStats->withdraw_count ?? 0,
-                    'kyc_count' => $userStats->kyc_count,
-                    'deposit_count' => $transactionStats->deposit_count ?? 0,
-                    'register_user' => $userStats->total_users ?? 0,
-                    'active_user' => $userStats->active_users ?? 0,
-                    'latest_user' => $latestUsers,
-                    'total_staff' => Admin::count(),
-                    'total_deposit' => $transactionStats->total_deposit ?? 0,
-                    'total_withdraw' => $transactionStats->total_withdraw ?? 0,
-                    'total_referral' => ReferralRelationship::count(),
-                    'total_send' => $transactionStats->total_send ?? 0,
-                    'total_ib_bonus' => $transactionStats->total_ib_bonus ?? 0,
-                    'total_live_forex_accounts' => $forexStats->live_count ?? 0,
-                    'total_demo_forex_accounts' => $forexStats->demo_count ?? 0,
-                    'total_gateway' => Gateway::where('status', true)->count(),
-                    'total_ticket' => $ticketStats->total_tickets ?? 0,
-                    'browser' => $loginActivities->groupBy('browser')->map->sum('count')->toArray(),
-                    'platform' => $loginActivities->groupBy('platform')->map->sum('count')->toArray(),
-                    'country' => $country,
-                    'symbol' => setting('currency_symbol', 'global'),
-                    'latest_tickets' => $tickets,
-                    'open_tickets' => $ticketStats->open_tickets ?? 0,
-                    'closed_tickets' => $ticketStats->closed_tickets ?? 0,
-                    'resolved_tickets' => $ticketStats->total_tickets - (($ticketStats->open_tickets ?? 0) + ($ticketStats->closed_tickets ?? 0)),
-                    // Chart data
-                    'date_label' => $dateArray,
-                    'deposit_statistics' => $depositStatistics,
-                    'invest_statistics' => $investStatistics,
-                    'withdraw_statistics' => $withdrawStatistics,
-                    'profit_statistics' => $profitStatistics,
-                    'ib_bonus_statistics' => $ibBonusStatistics,
-                    'demo_deposit_statistics' => $demoDepositStatistics,
-                    // Schema chart data
-                    'total_deposit_statistics' => $schemaStats,
-                    // Date range
-                    'start_date' => $startDate->format('Y-m-d'),
-                    'end_date' => $endDate->format('Y-m-d')
-                ],
-                'currencySymbol' => setting('currency_symbol', 'global')
-            ]);
-    }
-
-    /**
-     * Process daily statistics by transaction types
-     */
-    private function processDailyStats($stats, array $types): array
-    {
-        return $stats->whereIn('type', $types)
-            ->groupBy('date')
-            ->map(function ($group) {
-                return $group->sum('total');
-            })
-            ->toArray();
-    }
-
-    public function staffDashboard()
-    {
-        $loggedInUser = Auth::guard('admin')->user();
-        $showAllUsers = true; // Permission is handled by middleware
-
-        $transaction = new Transaction();
-        $user = new User();
-        $admin = new Admin();
-
-        // Get the query builder first
-        $userQuery = getAccessibleUserIds();
-        
-        // Check if we should show all users or if there are any accessible users
-        $hasAccessibleUsers = $showAllUsers || $userQuery->exists();
-        
-        // Get the user IDs only if we're not showing all users and there are accessible users
-        $attachedUserIds = $showAllUsers ? null : ($hasAccessibleUsers ? $userQuery->pluck('id')->toArray() : [-1]);
-
-        if (!$showAllUsers) {
-            $user = $user->whereIn('id', $attachedUserIds);
-            $transaction = $transaction->whereIn('user_id', $attachedUserIds);
-        }
-
-        // Update all your queries to use this pattern:
-        $totalDeposit = (new Transaction)->totalDeposit()
-            ->when(!$showAllUsers, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->sum('amount');
-
-        $totalIbBonus = (new Transaction)->totalIbBonus()
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->sum('amount');
-
-        $totalWithdraw = (new Transaction)->totalWithdraw()
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->sum('amount');
-
-        $totalProfit = (new Transaction)->totalProfit()
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->sum('amount');
-
-        $totalSend = Transaction::where('status', TxnStatus::Success)
-            ->where(function ($query) {
-                $query->where('type', TxnType::SendMoney);
-            })
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->sum('amount');
-
-        $activeUser = $user->where('status', 1)->count();
-        $totalStaff = $admin->count();
-
-        $latestUser = $user->latest()->take(5)->get();
-
-        $totalGateway = Gateway::where('status', true)->count();
-        $withdrawCount = Transaction::where('type', TxnType::Withdraw)
-            ->where('status', 'pending')
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->count();
-
-        $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
-        $depositCount = Transaction::where('type', TxnType::ManualDeposit)
-            ->where('status', 'pending')
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->count();
-
-        $totalReferral = ReferralRelationship::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })->count();
-
-        $totalLiveForexAccounts = ForexAccount::where('account_type', 'real')
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->count();
-
-        $totalDemoForexAccounts = ForexAccount::where('account_type', 'demo')
-            ->when($attachedUserIds, function ($query) use ($attachedUserIds) {
-                $query->whereIn('user_id', $attachedUserIds);
-            })
-            ->count();
-
-        $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
-            ->where('assigned_to', auth()->user()->id)
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $totalTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })->count();
-
-        $closedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })->where('assigned_to', $loggedInUser->id)->closed()->count();
-
-        $openTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })->where('assigned_to', $loggedInUser->id)->opened()->count();
-
-        $resolvedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
-            $query->whereIn('user_id', $attachedUserIds);
-        })->where('assigned_to', $loggedInUser->id)->resolved()->count();
-
-        $symbol = setting('currency_symbol', 'global');
-
-        $data = [
-            'withdraw_count' => $withdrawCount,
-            'kyc_count' => $kycCount,
-            'deposit_count' => $depositCount,
-            'register_user' => $user->count(),
-            'active_user' => $activeUser,
-            'latest_user' => $latestUser,
-            'total_staff' => $totalStaff,
-            'total_deposit' => $totalDeposit,
-            'total_send' => $totalSend,
-            'total_ib_bonus' => $totalIbBonus,
-            'total_withdraw' => $totalWithdraw,
-            'total_referral' => $totalReferral,
-            'deposit_bonus' => (new Transaction)->totalDepositBonus(),
-            'investment_bonus' => (new Transaction)->totalInvestBonus(),
+            'total_deposit_statistics' => $totalDepositStatistics,
+            'deposit_bonus' => $transaction->totalDepositBonus(),
+            'investment_bonus' => $transaction->totalInvestBonus(),
             'total_gateway' => $totalGateway,
-            'total_live_forex_accounts' => $totalLiveForexAccounts,
-            'total_demo_forex_accounts' => $totalDemoForexAccounts,
+            'total_ticket' => Ticket::count(),
+            'total_live_forex_accounts' => ForexAccount::where('account_type', 'real')->count(),
+            'total_demo_forex_accounts' => ForexAccount::where('account_type', 'demo')->count(),
+
+            'browser' => $browser,
+            'platform' => $platform,
+            'country' => $country,
             'symbol' => $symbol,
 
-            'total_ticket' => $totalTickets,
             'latest_tickets' => $tickets,
             'closed_tickets' => $closedTickets,
             'open_tickets' => $openTickets,
             'resolved_tickets' => $resolvedTickets,
-
         ];
 
+
+
         if (request()->ajax()) {
-            return response()->json($data);
+            $date = [
+                'date_label' => $dateArray,
+                'deposit_statistics' => $depositStatistics,
+                'demo_deposit_statistics' => $demoDepositStatistics,
+                'withdraw_statistics' => $withdrawStatistics,
+                'ib_bonus_statistics' => $ibBonusStatistics,
+                'symbol' => $symbol,
+            ];
+            return response()->json($date);
         }
 
-        return view('backend.staff_dashboard', compact('data'));
+        return view('backend.dashboard', compact('data'));
     }
+
+    public function staffDashboard()
+{
+    $loggedInUser = auth()->user();
+    
+    $transaction = new Transaction();
+    $user = new User();
+    $admin = new Admin();
+
+    // Get the query builder first with branch filtering applied
+    $userQuery = getAccessibleUserIds();
+    
+    // Get accessible user IDs (this already includes branch filtering)
+    $accessibleUserIds = $userQuery->pluck('id')->toArray();
+    $hasAccessibleUsers = !empty($accessibleUserIds);
+    
+    // If no accessible users, use [-1] to ensure no results
+    if (!$hasAccessibleUsers) {
+        $accessibleUserIds = [-1];
+    }
+
+    // Apply user filtering to all queries
+    $user = $user->whereIn('id', $accessibleUserIds);
+    $transaction = $transaction->whereIn('user_id', $accessibleUserIds);
+
+    // Update all your queries to use accessible user IDs:
+    $totalDeposit = (new Transaction)->totalDeposit()
+        ->whereIn('user_id', $accessibleUserIds)
+        ->sum('amount');
+
+    $totalIbBonus = (new Transaction)->totalIbBonus()
+        ->whereIn('user_id', $accessibleUserIds)
+        ->sum('amount');
+
+    $totalWithdraw = (new Transaction)->totalWithdraw()
+        ->whereIn('user_id', $accessibleUserIds)
+        ->sum('amount');
+
+    $totalProfit = (new Transaction)->totalProfit()
+        ->whereIn('user_id', $accessibleUserIds)
+        ->sum('amount');
+
+    $totalSend = Transaction::where('status', TxnStatus::Success)
+        ->where(function ($query) {
+            $query->where('type', TxnType::SendMoney);
+        })
+        ->whereIn('user_id', $accessibleUserIds)
+        ->sum('amount');
+
+    $activeUser = $user->where('status', 1)->count();
+    $totalStaff = $admin->count();
+
+    $latestUser = $user->latest()->take(5)->get();
+
+    $totalGateway = Gateway::where('status', true)->count();
+    $withdrawCount = Transaction::where('type', TxnType::Withdraw)
+        ->where('status', 'pending')
+        ->whereIn('user_id', $accessibleUserIds)
+        ->count();
+
+    $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
+    $depositCount = Transaction::where('type', TxnType::ManualDeposit)
+        ->where('status', 'pending')
+        ->whereIn('user_id', $accessibleUserIds)
+        ->count();
+
+    $totalReferral = ReferralRelationship::whereIn('user_id', $accessibleUserIds)->count();
+
+    $totalLiveForexAccounts = ForexAccount::where('account_type', 'real')
+        ->whereIn('user_id', $accessibleUserIds)
+        ->count();
+
+    $totalDemoForexAccounts = ForexAccount::where('account_type', 'demo')
+        ->whereIn('user_id', $accessibleUserIds)
+        ->count();
+
+    $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
+        ->where('assigned_to', auth()->user()->id)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    $totalTickets = Ticket::whereIn('user_id', $accessibleUserIds)->count();
+
+    $closedTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->closed()->count();
+
+    $openTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->opened()->count();
+
+    $resolvedTickets = Ticket::whereIn('user_id', $accessibleUserIds)
+        ->where('assigned_to', $loggedInUser->id)->resolved()->count();
+
+    $symbol = setting('currency_symbol', 'global');
+
+    $data = [
+        'withdraw_count' => $withdrawCount,
+        'kyc_count' => $kycCount,
+        'deposit_count' => $depositCount,
+        'register_user' => $user->count(),
+        'active_user' => $activeUser,
+        'latest_user' => $latestUser,
+        'total_staff' => $totalStaff,
+        'total_deposit' => $totalDeposit,
+        'total_send' => $totalSend,
+        'total_ib_bonus' => $totalIbBonus,
+        'total_withdraw' => $totalWithdraw,
+        'total_referral' => $totalReferral,
+        'deposit_bonus' => Transaction::where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('target_id', '!=', null)
+                    ->where('target_type', 'deposit')
+                    ->where('type', TxnType::Referral);
+            })
+            ->whereIn('user_id', $accessibleUserIds)
+            ->sum('amount'),
+        'investment_bonus' => Transaction::where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('target_id', '!=', null)
+                    ->where('target_type', 'investment')
+                    ->where('type', TxnType::Referral);
+            })
+            ->whereIn('user_id', $accessibleUserIds)
+            ->sum('amount'),
+        'total_gateway' => $totalGateway,
+        'total_live_forex_accounts' => $totalLiveForexAccounts,
+        'total_demo_forex_accounts' => $totalDemoForexAccounts,
+        'symbol' => $symbol,
+
+        'total_ticket' => $totalTickets,
+        'latest_tickets' => $tickets,
+        'closed_tickets' => $closedTickets,
+        'open_tickets' => $openTickets,
+        'resolved_tickets' => $resolvedTickets,
+
+    ];
+
+    if (request()->ajax()) {
+        return response()->json($data);
+    }
+
+    return view('backend.staff_dashboard', compact('data'));
+}
 
 
 

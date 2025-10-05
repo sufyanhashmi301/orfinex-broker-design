@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
@@ -56,6 +57,7 @@ class StaffController extends Controller
         $roles = Role::all();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
+        $branches = Branch::where('status', 1)->get();
 
         // Count active and inactive staff
         $activeStaffCount = Admin::where('status', true)->count();
@@ -75,7 +77,7 @@ class StaffController extends Controller
             ]);
         }
 
-        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers', 'branches'));
 
     }
 
@@ -85,8 +87,9 @@ class StaffController extends Controller
             $roles = Role::all();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
+            $branches = Branch::where('status', 1)->get();
 
-            $view = view('backend.staff.create', compact('roles', 'departments', 'designations'))->render();
+            $view = view('backend.staff.create', compact('roles', 'departments', 'designations', 'branches'))->render();
 
             // Send back the view HTML as a response
             return response()->json(['html' => $view]);
@@ -125,6 +128,7 @@ class StaffController extends Controller
             'phone' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'key' => 'nullable|string|max:255',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         if ($validator->fails()) {
@@ -161,6 +165,12 @@ class StaffController extends Controller
             $admin = Admin::create($input);
             $admin->assignRole($request->input('role'));
 
+            // Handle branch assignment (only for non-Super-Admin roles)
+            if ($request->input('role') !== 'Super-Admin' && $request->filled('branch_id')) {
+                $branchId = $request->input('branch_id');
+                $admin->branches()->sync([$branchId]);
+            }
+
             DB::commit();
 
             notify()->success('Staff created successfully');
@@ -182,12 +192,13 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $staff = Admin::find($id);
+        $staff = Admin::with('branches')->find($id);
         $roles = Role::all();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
+        $branches = Branch::where('status', 1)->get();
 
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'branches'))->render();
     }
 
 
@@ -230,6 +241,7 @@ class StaffController extends Controller
                 'phone' => 'nullable|string|max:255',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'key' => 'nullable|string|max:255',
+                'branch_id' => 'nullable|exists:branches,id',
             ]);
 
             if ($validator->fails()) {
@@ -279,13 +291,28 @@ class StaffController extends Controller
                 $staff->assignRole($request->input('role'));
             }
 
+            // Handle branch assignment (only for non-Super-Admin roles)
+            $currentRole = $staff->roles->first()->name ?? $request->input('role');
+            if ($currentRole !== 'Super-Admin') {
+                if ($request->filled('branch_id')) {
+                    $branchId = $request->input('branch_id');
+                    $staff->branches()->sync([$branchId]);
+                } else {
+                    // If no branch is selected, remove all branch assignments
+                    $staff->branches()->sync([]);
+                }
+            }
+
             DB::commit();
 
             $roles = Role::all();
             $departments = Department::with('children')->whereNull('parent_id')->get();
             $designations = Designation::with('children')->whereNull('parent_id')->get();
+            $branches = Branch::where('status', 1)->get();
 
-            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+            // Refresh the staff with branches relationship
+            $staff = $staff->fresh(['branches']);
+            $updatedStaff = view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'branches'))->render();
             notify()->success('Staff updated successfully!');
 
             return response()->json([

@@ -19,6 +19,9 @@ class ForexSchemaController extends Controller
             $user = auth()->user();
             $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
+            // Get user's branch assignment
+            $userBranchId = getUserBranchId($user->id, $user);
+
             // Settings: control visibility of global accounts in different contexts
             $showGlobalByCountryAndTags = setting('show_global_accounts_with_country_tags', 'account_type_settings');
             $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
@@ -29,8 +32,21 @@ class ForexSchemaController extends Controller
                 ->where('meta_key', 'is_part_of_master_ib')
                 ->value('meta_value');
     
-            // Base query for all schemas
+            // Base query for all schemas with branch filtering
             $baseQuery = ForexSchema::active()->traderType();
+
+            // Apply branch filtering logic
+            if ($userBranchId) {
+                // User has specific branch assigned: show account types assigned to that branch + unassigned account types
+                $baseQuery->where(function($query) use ($userBranchId) {
+                    $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                        $branchQuery->where('branch_id', $userBranchId);
+                    })->orWhereDoesntHave('branches');
+                });
+            } else {
+                // User has no branch assigned: show only account types with no branch assignments
+                $baseQuery->whereDoesntHave('branches');
+            }
 
             // Prepare result collection
             $schemas = collect();
@@ -215,13 +231,30 @@ class ForexSchemaController extends Controller
         $id = get_hash($id);
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+
+        // Get user's branch assignment
+        $userBranchId = getUserBranchId($user->id, $user);
         
         // Get user's master IB status
         $isPartOfMasterIb = UserMeta::where('user_id', $user->id)
             ->where('meta_key', 'is_part_of_master_ib')
             ->value('meta_value');
         
+        // Base query for all schemas with branch filtering
         $baseQuery = ForexSchema::active()->traderType();
+
+        // Apply branch filtering logic
+        if ($userBranchId) {
+            // User has specific branch assigned: show account types assigned to that branch + unassigned account types
+            $baseQuery->where(function($query) use ($userBranchId) {
+                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                    $branchQuery->where('branch_id', $userBranchId);
+                })->orWhereDoesntHave('branches');
+            });
+        } else {
+            // User has no branch assigned: show only account types with no branch assignments
+            $baseQuery->whereDoesntHave('branches');
+        }
         
         if (!$isPartOfMasterIb) {
             // Non-IB users: Global accounts + tag/country matching accounts

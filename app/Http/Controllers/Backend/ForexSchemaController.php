@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
 use App\Models\ForexSchema;
 use App\Models\RebateRule;
 use App\Models\Schedule;
@@ -48,7 +49,7 @@ class ForexSchemaController extends Controller
      */
     public function index(Request $request)
     {
-        $schemas = ForexSchema::with(['accountCategories', 'rebateRules'])
+        $schemas = ForexSchema::with(['accountCategories', 'rebateRules', 'branches'])
             ->orderBy('priority', 'asc')
             ->traderType();
     
@@ -126,7 +127,8 @@ class ForexSchemaController extends Controller
     {
         $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
         $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
-        return view('backend.forex_schema.create', compact('accountTypeCategories', 'rebateRules'));
+        $branches = Branch::where('status', 1)->get();
+        return view('backend.forex_schema.create', compact('accountTypeCategories', 'rebateRules', 'branches'));
     }
 
     public function manageLevel()
@@ -231,6 +233,11 @@ class ForexSchemaController extends Controller
             $schema->rebateRules()->sync($input['rebate_rules']);
         }
 
+        // Attach branches if provided
+        if (!empty($input['branches'])) {
+            $schema->branches()->sync($input['branches']);
+        }
+
         notify()->success('schema created successfully');
         return redirect()->route('admin.accountType.index');
     }
@@ -243,11 +250,13 @@ class ForexSchemaController extends Controller
      */
     public function edit($id)
     {
-        $schema = ForexSchema::find($id);
+        $schema = ForexSchema::with('branches')->find($id);
         $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
         $attachedRebateRules = $schema->rebateRules->pluck('id')->toArray();
         $accountTypeCategories = AccountTypeCategory::where('status', true)->get();
-        return view('backend.forex_schema.edit', compact('schema', 'accountTypeCategories', 'rebateRules', 'attachedRebateRules'));
+        $branches = Branch::where('status', 1)->get();
+        $attachedBranches = $schema->branches->pluck('id')->toArray();
+        return view('backend.forex_schema.edit', compact('schema', 'accountTypeCategories', 'rebateRules', 'attachedRebateRules', 'branches', 'attachedBranches'));
     }
 
     /**
@@ -331,6 +340,9 @@ class ForexSchemaController extends Controller
         $schema->update($finalData);
 
         $schema->rebateRules()->sync($input['rebate_rules'] ?? []);
+
+        // Sync branches
+        $schema->branches()->sync($input['branches'] ?? []);
 
         notify()->success('schema Update successfully');
 

@@ -41,12 +41,12 @@ class MultiLevelRebateDistribution extends Command
             ReferralRelationship::with('referralLink')
                 ->chunkById(500, function ($referrals) {
                     foreach ($referrals as $referral) {
-                        try {
+                        // try {
                             ProcessReferralRebate::dispatch($referral->id);
 //                            Log::info("Successfully dispatched referral ID: {$referral->id}");
-                        } catch (Throwable $e) {
-//                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
-                        }
+//                         } catch (Throwable $e) {
+// //                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
+//                         }
                     }
                 });
         } catch (Throwable $e) {
@@ -59,7 +59,7 @@ class MultiLevelRebateDistribution extends Command
 
     public function processReferralRelationship($referral)
     {
-//        dd($referral->user);
+    //    dd($referral->user);
         $parentData = $this->getValidParent($referral->user);
 
         if (!$parentData) return;
@@ -82,8 +82,9 @@ class MultiLevelRebateDistribution extends Command
         foreach ($accounts as $account) {
             $symbols = $this->getUserAssignedSymbols($parent, $account);
             $lastDealTime = $this->getLastDeal($childUserId, $account->login);
+            // dd($lastDealTime);
             $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
-//            dd($deals);
+        //    dd($deals);
 
             if (!$deals->isEmpty()) {
                 $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
@@ -113,7 +114,7 @@ class MultiLevelRebateDistribution extends Command
                 'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
                 'time' => $deal->Time
             ]);
-
+// dd($metaDeal);
             $this->distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account);
         }
     }
@@ -121,6 +122,7 @@ class MultiLevelRebateDistribution extends Command
     protected function distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account)
     {
         $distribution = $this->calculateRebate($metaDeal->symbol, $parent, $level, $account);
+        // dd($distribution);   
         if (empty($distribution)) return;
 
         $currentUser = $referral->referralLink->user->id;
@@ -149,10 +151,10 @@ class MultiLevelRebateDistribution extends Command
             $account = get_user_account($userId, AccountBalanceType::IB_WALLET);
             $walletId = $account->wallet_id;
             $description = "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login} of {$childUser->full_name}";
-
+// dd('sd');
             // Check for duplicates
             if (IBTransactionService::isDuplicate($userId, $childUserId, $description, $amount)) continue;
-
+            // C
             // Create transaction
             $transaction = IBTransactionService::new(
                 $amount, 0, $amount, 'system',
@@ -161,10 +163,11 @@ class MultiLevelRebateDistribution extends Command
                 $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
                 $description, $walletId, TxnTargetType::Wallet->value
             );
-
+// dd($transaction);
             $this->safeAddBalance($transaction);
         }
 
+        // C
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
     }
@@ -172,26 +175,34 @@ class MultiLevelRebateDistribution extends Command
     protected function safeAddBalance($transaction, $retries = 3)
     {
         for ($i = 0; $i < $retries; $i++) {
-            try {
+            // try {
                 DB::transaction(function () use ($transaction) {
                     $account = \App\Models\Account::where('wallet_id', $transaction->target_id)
                         ->lockForUpdate()
                         ->firstOrFail();
+                        // dd($account);
 
                     $wallet = new WalletService();
                     $ledgerBalance = $wallet->getLedgerBalance($account->id);
+                    // dd($ledgerBalance,$transaction);
                     $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
-
+// dd($ledgerBalance,$transaction);
                     if ($transaction->target_type == TxnTargetType::Wallet->value) {
                         $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount));
                         $account->save();
+                        
+                        // Update user's ib_balance column
+                        DB::table('users')
+                            ->where('id', $transaction->user_id)
+                            ->increment('ib_balance', $transaction->amount);
+                        
                     }
                 });
                 return;
-            } catch (Throwable $e) {
-                if ($i === $retries - 1) throw $e;
-                usleep(100000); // wait 100ms before retry
-            }
+            // } catch (Throwable $e) {
+            //     if ($i === $retries - 1) throw $e;
+            //     usleep(100000); // wait 100ms before retry
+            // }
         }
     }
 
@@ -268,7 +279,7 @@ class MultiLevelRebateDistribution extends Command
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
             ->whereIn('Symbol', $symbols)
-            ->where('Time', '>', $lastTime)
+            // ->where('Time', '>', $lastTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')
             ->get();

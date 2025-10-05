@@ -72,6 +72,7 @@ class WalletService
      */
     public function createCreditLedgerEntry($transaction, $ledgerBalance)
     {
+        // dd($transaction->type);
         if ($transaction->type === TxnType::IbBonus->value) {
             return null; // skip ledger entry for IB bonus
         }
@@ -169,7 +170,6 @@ class WalletService
     public function getLedgerBalance($accountId)
     {
         $account = Account::where('id', $accountId)->lockForUpdate()->first();
-        
         if($account->balance === AccountBalanceType::IB_WALLET) {
             return $account->amount;
         }

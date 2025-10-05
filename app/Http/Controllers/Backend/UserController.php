@@ -213,8 +213,12 @@ class UserController extends Controller
                 if (!$user) {
                     return back()->with('error', 'User not found');
                 }
+                
+                // Get filters from request (same as display logic)
+                $filters = $request->only(['created_at', 'status', 'type', 'amount_min', 'amount_max', 'tnx', 'description', 'login', 'deal', 'order', 'symbol', 'date_filter']);
+                
                 $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
-                return Excel::download(new ibTransactionsUsersExport($userId), $fileName);
+                return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
         default:
             return Excel::download(new UsersExport($request), 'users.xlsx');
     }
@@ -1222,41 +1226,31 @@ if (!empty($filters['staff_name'])) {
     public function ibBonus($id, Request $request)
     {
         if ($request->ajax()) {
-            $year = Carbon::now()->year;
-            $table = 'ib_transactions_'.$year;
-            $data = DB::table($table)->where('user_id', $id);
-
-        // Date Range Filter
-        if (!empty($request->created_at)) {
-            $dates = explode(' to ', $request->created_at);
-            if (count($dates) == 2) {
-                $start = Carbon::parse($dates[0])->startOfDay();
-                $end = Carbon::parse($dates[1])->endOfDay();
-                $data->where(function ($query) use ($start, $end) {
-                    $query->where(function ($q) use ($start, $end) {
-                        $q->whereRaw("JSON_EXTRACT(manual_field_data, '$.time') IS NOT NULL")
-                            ->whereBetween(DB::raw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')), '%Y-%m-%dT%H:%i:%s.000000Z')"), [$start, $end]);
-                    })->orWhereBetween('created_at', [$start, $end]);
-                });
+            // Prepare filters from request
+            $filters = $request->only(['created_at', 'status', 'type', 'amount_min', 'amount_max', 'tnx', 'description', 'login', 'deal', 'order', 'symbol', 'date_filter']);
+            
+            // Get IB transactions from quarter tables (past 3 months if no filters, 1 year if filters applied)
+            $data = \App\Services\IBTransactionQueryService::getUserIBTransactions($id, $filters);
+            
+            // Get summary data for display
+            $summary = \App\Services\IBTransactionQueryService::getUserIBTransactionsSummary($id, $filters);
+            
+            // Get user's lifetime IB balance (already contains total of all IB transactions received)
+            $user = \App\Models\User::find($id);
+            $lifetimeIBBalance = $user ? $user->ib_balance : 0;
+            
+            // Get current IB wallet balance
+            $currentIBWalletBalance = 0;
+            if ($user) {
+                $ibWalletAccount = get_user_account($user->id, \App\Enums\AccountBalanceType::IB_WALLET);
+                $currentIBWalletBalance = $ibWalletAccount ? $ibWalletAccount->amount : 0;
             }
-        }
-
-
-        // Field filters
-        foreach (['login', 'deal', 'order', 'symbol'] as $field) {
-            if (!empty($request->$field)) {
-                $value = $request->$field;
-//                dd($value);
-
-                if (in_array($field, ['login', 'deal', 'order'])) {
-                    $data->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) AS UNSIGNED) = ?", [$value]);
-                } else {
-                    $data->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.\"$field\"')) LIKE ?", ["%$value%"]);
-                }
+            
+            if (!$data) {
+                return Datatables::of(collect([]))->make(true);
             }
-        }
 
-        return Datatables::of($data->latest())
+        return Datatables::of($data->orderBy('created_at', 'desc'))
             ->addIndexColumn()
             ->editColumn('status', 'backend.user.include.__txn_status')
             ->editColumn('type', 'backend.user.include.__txn_type')
@@ -1268,16 +1262,38 @@ if (!empty($filters['staff_name'])) {
                         return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
                     }
                 }
-                return $row->created_at;
+                return \Carbon\Carbon::parse($row->created_at)->format('M d, Y h:i A');
+            })
+            ->addColumn('deal_info', function ($row) {
+                if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                    $manualData = json_decode($row->manual_field_data, true);
+                    if (is_array($manualData)) {
+                        $deal = $manualData['deal'] ?? '-';
+                        $symbol = $manualData['symbol'] ?? '-';
+                        $login = $manualData['login'] ?? '-';
+                        return "<small>Deal: {$deal}<br>Symbol: {$symbol}<br>Login: {$login}</small>";
+                    }
+                }
+                return '-';
             })
             ->addColumn('action', function ($row) {
                 return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                            <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                            <button class="action-btn" data-bs-toggle="tooltip" title="View Details">
                                 <iconify-icon icon="lucide:eye"></iconify-icon>
                             </button>
                         </span>';
             })
-            ->rawColumns(['status', 'created_at','type', 'final_amount', 'action'])
+            ->rawColumns(['status', 'created_at', 'type', 'final_amount', 'deal_info', 'action'])
+            ->with([
+                'summary' => [
+                    'ib_balance' => number_format($lifetimeIBBalance, 2),
+                    'current_ib_wallet_balance' => number_format($currentIBWalletBalance, 2),
+                    'total_amount' => number_format($summary['total_amount'], 2),
+                    'total_count' => number_format($summary['total_count']),
+                    'filter_start_date' => $summary['filter_start_date'] ? $summary['filter_start_date']->format('M d, Y') : null,
+                    'filter_end_date' => $summary['filter_end_date'] ? $summary['filter_end_date']->format('M d, Y') : null,
+                ]
+            ])
             ->make(true);
     }
     }

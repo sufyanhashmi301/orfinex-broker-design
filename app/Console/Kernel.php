@@ -11,6 +11,21 @@ use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
 use App\Console\Commands\CreateIBTransactionsTableYearly;
+use App\Console\Commands\CreateIBTransactionsTable4Month;
+use App\Console\Commands\CopyIBTransactions4Month;
+use App\Console\Commands\ScheduleIBTransactions4Month;
+use App\Console\Commands\TestIBTransactions4Month;
+use App\Console\Commands\MigrateAllIBTransactions;
+use App\Console\Commands\TestQuarterIntegration;
+use App\Console\Commands\HighPerformanceIBMigration;
+use App\Console\Commands\ParallelIBMigration;
+use App\Console\Commands\MigrationWorker;
+use App\Console\Commands\IBMigrationMenu;
+use App\Console\Commands\FixIBTransactionDates;
+use App\Console\Commands\AutoIBMigration;
+use App\Console\Commands\TestIBQuarterSystem;
+use App\Console\Commands\RecalculateIBBalances;
+use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 
 use Illuminate\Console\Scheduling\Schedule;
@@ -31,7 +46,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
+        // Legacy yearly table creation (keeping for backward compatibility)
         $schedule->command('ib:create-transactions-table')->yearlyOn(12, 31, '23:59');
+        
+        // 4-month based IB transactions management (automatic)
+        $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();
 
     }
 
@@ -59,6 +78,21 @@ class Kernel extends ConsoleKernel
         SyncForexAccountsViaEmail::class,
         MultiLevelRebateDistribution::class,
         CreateIBTransactionsTableYearly::class,
+        CreateIBTransactionsTable4Month::class,
+        CopyIBTransactions4Month::class,
+        ScheduleIBTransactions4Month::class,
+        TestIBTransactions4Month::class,
+        MigrateAllIBTransactions::class,
+        TestQuarterIntegration::class,
+        HighPerformanceIBMigration::class,
+        ParallelIBMigration::class,
+        MigrationWorker::class,
+        IBMigrationMenu::class,
+        FixIBTransactionDates::class,
+        AutoIBMigration::class,
+        TestIBQuarterSystem::class,
+        RecalculateIBBalances::class,
+        DebugUserIBTransactions::class,
 
     ];
 }

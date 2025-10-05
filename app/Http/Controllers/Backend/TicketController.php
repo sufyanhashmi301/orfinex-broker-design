@@ -36,19 +36,24 @@ class TicketController extends Controller
     $loggedInUser = auth()->user();
     $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
 
-    // Ticket counts
+    // Get accessible user IDs using the helper (includes branch filtering)
     $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
-    if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+    // Ticket counts - filter by ticket creator's branch, not assigned staff
+    if (!empty($accessibleUserIds)) {
+        $totalTickets = Ticket::whereIn('user_id', $accessibleUserIds)->count();
+        $closedTickets = Ticket::whereIn('user_id', $accessibleUserIds)->closed()->count();
+        $openTickets = Ticket::whereIn('user_id', $accessibleUserIds)->opened()->count();
+        $resolvedTickets = Ticket::whereIn('user_id', $accessibleUserIds)->resolved()->count();
+    } elseif (!$loggedInUser->hasRole('Super-Admin')) {
+        // If no accessible users and not Super-Admin, show no results
+        $totalTickets = $closedTickets = $openTickets = $resolvedTickets = 0;
+    } else {
+        // Super-Admin sees all tickets
         $totalTickets = Ticket::count();
         $closedTickets = Ticket::closed()->count();
         $openTickets = Ticket::opened()->count();
         $resolvedTickets = Ticket::resolved()->count();
-    } else {
-        $totalTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->count();
-        $closedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->closed()->count();
-        $openTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->opened()->count();
-        $resolvedTickets = Ticket::whereIn('assigned_to', $accessibleUserIds)->resolved()->count();
     }
 
     // Ajax call
@@ -61,9 +66,12 @@ class TicketController extends Controller
             }
         }
 
-        // Apply user accessibility filter to ticket query
-        if (!$loggedInUser->hasRole('Super-Admin') && !$loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $ticketQuery->whereIn('assigned_to', $accessibleUserIds);
+        // Apply user accessibility filter to ticket query based on ticket creator's branch
+        if (!empty($accessibleUserIds)) {
+            $ticketQuery->whereIn('user_id', $accessibleUserIds);
+        } elseif (!$loggedInUser->hasRole('Super-Admin')) {
+            // If no accessible users and not Super-Admin, show no results
+            $ticketQuery->where('user_id', -1);
         }
 
         $data = $ticketQuery->get();

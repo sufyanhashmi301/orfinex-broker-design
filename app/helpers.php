@@ -1981,13 +1981,32 @@ if (!function_exists('get_recursive_equity_details')) {
 if (!function_exists('getAccessibleUserIds')) {
     function getAccessibleUserIds(array $filters = []): \Illuminate\Database\Eloquent\Builder
     {
-        $loggedInUser = auth()->user();
+        $loggedInUser = auth('admin')->user();
 
-        // Case 1: Super Admin or has permission to view all
-        if ($loggedInUser->hasRole('Super-Admin') || $loggedInUser->can('show-all-users-by-default-to-staff')) {
+        // Get staff's assigned branch IDs (top level filter)
+        $staffBranchIds = $loggedInUser->branches()->pluck('branches.id')->toArray();
+        $hasBranchRestriction = !empty($staffBranchIds) && !$loggedInUser->hasRole('Super-Admin');
+
+        // Case 1: Super Admin - no restrictions
+        if ($loggedInUser->hasRole('Super-Admin')) {
             return User::applyFilters($filters);
         }
 
+        // Case 2: Staff with "show all users" permission
+        if ($loggedInUser->can('show-all-users-by-default-to-staff')) {
+            if ($hasBranchRestriction) {
+                // Show all users within assigned branches only
+                return User::whereHas('user_metas', function ($q) use ($staffBranchIds) {
+                    $q->where('meta_key', 'branch_id')
+                      ->whereIn('meta_value', array_map('strval', $staffBranchIds));
+                })->applyFilters($filters);
+            } else {
+                // No branch restriction - show all users (existing behavior)
+                return User::applyFilters($filters);
+            }
+        }
+
+        // Case 3: Staff without "show all users" permission - use attached users
         $finalUserIds = collect();
 
         // Add directly attached users
@@ -1998,8 +2017,16 @@ if (!function_exists('getAccessibleUserIds')) {
         if ($loggedInUser->relationLoaded('teamMembers') || method_exists($loggedInUser, 'teamMembers')) {
             foreach ($loggedInUser->teamMembers as $teamMember) {
                 if ($teamMember->can('show-all-users-by-default-to-staff')) {
-                    // If any child staff has permission, include all users
-                    return User::applyFilters($filters);
+                    if ($hasBranchRestriction) {
+                        // Team member has "show all" permission but we still apply branch filter
+                        return User::whereHas('user_metas', function ($q) use ($staffBranchIds) {
+                            $q->where('meta_key', 'branch_id')
+                              ->whereIn('meta_value', array_map('strval', $staffBranchIds));
+                        })->applyFilters($filters);
+                    } else {
+                        // No branch restriction - show all users
+                        return User::applyFilters($filters);
+                    }
                 }
 
                 // Otherwise, merge their attached users
@@ -2008,9 +2035,19 @@ if (!function_exists('getAccessibleUserIds')) {
             }
         }
 
-        // If we collected user IDs, return them with filters
+        // Apply branch filtering to attached users if staff has branch restrictions
         if ($finalUserIds->isNotEmpty()) {
-            return User::whereIn('id', $finalUserIds->unique())->applyFilters($filters);
+            $query = User::whereIn('id', $finalUserIds->unique());
+            
+            if ($hasBranchRestriction) {
+                // Further filter attached users by branch assignment
+                $query = $query->whereHas('user_metas', function ($q) use ($staffBranchIds) {
+                    $q->where('meta_key', 'branch_id')
+                      ->whereIn('meta_value', array_map('strval', $staffBranchIds));
+                });
+            }
+            
+            return $query->applyFilters($filters);
         }
 
         // Otherwise, return empty result
@@ -2041,6 +2078,153 @@ if (!function_exists('applyStaffNameFilter')) {
                       ->orWhere('email', 'like', '%' . $staffName . '%');
                 });
             }
+        });
+    }
+}
+
+// Branch System Helper Functions
+if (!function_exists('isBranchSystemEnabled')) {
+    /**
+     * Check if branch system is enabled
+     * @return bool
+     */
+    function isBranchSystemEnabled(): bool
+    {
+        return (bool) sys_settings('branch_system_enabled', false);
+    }
+}
+
+if (!function_exists('shouldApplyBranchFilter')) {
+    /**
+     * Determine if branch filtering should be applied
+     * @return bool
+     */
+    function shouldApplyBranchFilter(): bool
+    {
+        if (!isBranchSystemEnabled()) {
+            return false;
+        }
+
+        $admin = auth('admin')->user();
+        if (!$admin) {
+            return false;
+        }
+
+        // Super-Admin is exempt from branch filtering
+        return !$admin->hasRole('Super-Admin');
+    }
+}
+
+if (!function_exists('getCurrentUserBranchIds')) {
+    /**
+     * Get branch IDs accessible by current admin
+     * @return array
+     */
+    function getCurrentUserBranchIds(): array
+    {
+        $admin = auth('admin')->user();
+        if (!$admin) {
+            return [];
+        }
+
+        if ($admin->hasRole('Super-Admin')) {
+            return \App\Models\Branch::pluck('id')->toArray();
+        }
+
+        return $admin->branches()->pluck('branches.id')->toArray();
+    }
+}
+
+if (!function_exists('getUserBranchId')) {
+    /**
+     * Get user's assigned branch ID using the common user_meta function
+     * @param int|null $userId
+     * @param \App\Models\User|null $user
+     * @return int|null
+     */
+    function getUserBranchId($userId = null, $user = null): ?int
+    {
+        // If user object is provided, use it; otherwise get user by ID
+        if ($user === null && $userId !== null) {
+            $user = \App\Models\User::find($userId);
+        }
+        
+        $branchId = user_meta('branch_id', null, $user);
+        return $branchId ? (int) $branchId : null;
+    }
+}
+
+if (!function_exists('setUserBranchId')) {
+    /**
+     * Set user's branch ID in user_metas using the same pattern as other meta values
+     * @param int $userId
+     * @param int|null $branchId
+     * @return bool
+     */
+    function setUserBranchId(int $userId, ?int $branchId): bool
+    {
+        $user = \App\Models\User::find($userId);
+        if (!$user) {
+            return false;
+        }
+
+        if ($branchId === null) {
+            // Remove branch assignment
+            return $user->user_metas()->where('meta_key', 'branch_id')->delete() > 0;
+        }
+
+        // Update or create branch assignment using the same pattern
+        $user->user_metas()->updateOrCreate(
+            ['meta_key' => 'branch_id'],
+            ['meta_value' => (string) $branchId]
+        );
+
+        return true;
+    }
+}
+
+if (!function_exists('applyBranchFilter')) {
+    /**
+     * Apply branch filtering to query for models with direct branch_id column
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $branchColumn
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    function applyBranchFilter($query, string $branchColumn = 'branch_id')
+    {
+        if (!shouldApplyBranchFilter()) {
+            return $query;
+        }
+
+        $branchIds = getCurrentUserBranchIds();
+        if (empty($branchIds)) {
+            return $query->where('id', -1); // No access
+        }
+
+        return $query->whereIn($branchColumn, $branchIds);
+    }
+}
+
+if (!function_exists('applyUserBranchFilter')) {
+    /**
+     * Apply branch filtering to User queries based on user_metas
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    function applyUserBranchFilter($query)
+    {
+        if (!shouldApplyBranchFilter()) {
+            return $query;
+        }
+
+        $branchIds = getCurrentUserBranchIds();
+        if (empty($branchIds)) {
+            return $query->where('id', -1); // No access
+        }
+
+        return $query->whereHas('user_metas', function ($q) use ($branchIds) {
+            $q->where('meta_key', 'branch_id')
+              ->whereIn('meta_value', array_map('strval', $branchIds));
         });
     }
 }

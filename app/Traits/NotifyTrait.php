@@ -10,6 +10,7 @@ use App\Models\PushNotificationTemplate;
 use App\Models\SmsTemplate;
 use Exception;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -18,9 +19,8 @@ trait NotifyTrait
     use SmsTrait;
 
     //============================= mail template helper ===================================================
-    protected function mailNotify($email, $code, $shortcodes = null)
+    protected function mailNotify($email, $code, $shortcodes = null, $throwOnFailure = false)
     {
-
         try {
             $template = EmailTemplate::where('status', true)->where('code', $code)->first();
 //        dd($template);
@@ -53,20 +53,25 @@ trait NotifyTrait
                     'use_custom_html' => $template->use_custom_html,
                     'custom_html_content' => str_replace($find, $replace, $template->getDecodedCustomHtml()),
                 ];
-//dd($details,$code);
-                if ($code == 'email_verification') {
-                    return (new MailMessage)
-                        ->subject($details['subject'])
-                        ->markdown('backend.mail.user-mail-send', ['details' => $details]);
-                }
 
                 return Mail::to($email)->send(new MailSend($details));
             }
         } catch (Exception $e) {
-//            notify()->error('SMTP connection failed', 'Error');
+            // Log the mail failure for debugging purposes
+            Log::warning('Mail notification failed', [
+                'email' => $email,
+                'template_code' => $code,
+                'error_message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             
-            // Re-throw the exception so it can be caught by calling code
-            throw $e;
+            // Only throw exception if explicitly requested (for critical emails)
+            if ($throwOnFailure) {
+                throw $e;
+            }
+            
+            // Silently fail for non-critical emails - return false to indicate failure
+            return false;
         }
     }
 

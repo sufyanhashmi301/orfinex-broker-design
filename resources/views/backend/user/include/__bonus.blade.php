@@ -41,9 +41,11 @@
 
                         <div class="input-area">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Select the account to add or subtract bonus from">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Select the account to add or subtract bonus from">
                                     {{ __('Select Account') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <select class="select2 form-control w-100" name="target_id" id="tradingAccount_bonus">
@@ -51,7 +53,8 @@
                                 @foreach ($realForexAccounts as $forexAccount)
                                     <option value="{{ $forexAccount->login }}" data-type="forex">
                                         {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                        ({{ get_mt5_account_equity($forexAccount->login) }} {{ $forexAccount->currency }})
+                                        ({{ get_mt5_account_equity($forexAccount->login) }}
+                                        {{ $forexAccount->schema->is_cent_account ? $forexAccount->currency . ' (Cents)' : $forexAccount->currency }})
                                     </option>
                                 @endforeach
                                 @if ($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
@@ -65,31 +68,38 @@
 
                         <div class="input-area">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter the amount to add or subtract from the account">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Enter the amount to add or subtract from the account">
                                     {{ __('Amount') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <div class="joint-input relative">
-                                <span class="absolute text-sm left-0 top-1/2 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center px-2">
+                                <span
+                                    class="absolute text-sm left-0 top-1/2 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center px-2">
                                     {{ setting('site_currency', 'global') }}
                                 </span>
-                                <input type="text" placeholder="Enter Amount" name="amount" oninput="this.value = validateDouble(this.value)" class="form-control !pl-12">
+                                <input type="text" placeholder="Enter Amount" name="amount"
+                                    oninput="this.value = validateDouble(this.value)" class="form-control !pl-12">
                             </div>
                         </div>
 
                         <div class="input-area">
                             <label for="" class="form-label">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Enter a comment message for the transaction">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Enter a comment message for the transaction">
                                     {{ __('Comment Message') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
                             <textarea name="comment" class="form-control mb-0" placeholder="Comment Message" rows="6"></textarea>
                         </div>
                     </div>
                     <div class="input-area text-right mt-10">
-                        <button type="submit" class="btn bonus-apply-now btn-dark inline-flex items-center justify-center">
+                        <button type="submit"
+                            class="btn bonus-apply-now btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Apply Now') }}
                         </button>
@@ -111,4 +121,3 @@
         </div>
     </div>
 </div>
-

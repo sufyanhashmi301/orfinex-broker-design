@@ -196,6 +196,14 @@ class PermissionSeeder extends Seeder
             ['category' => 'Company Settings', 'name' => 'company-permissions-setting'],
             ['category' => 'Company Settings', 'name' => 'company-permissions-edit'],
 
+            ['category' => 'Branch Management', 'name' => 'branch-list'],
+            ['category' => 'Branch Management', 'name' => 'branch-create'],
+            ['category' => 'Branch Management', 'name' => 'branch-edit'],
+            ['category' => 'Branch Management', 'name' => 'branch-delete'],
+            ['category' => 'Branch Management', 'name' => 'branch-export'],
+            ['category' => 'Branch Management', 'name' => 'staff-branch-assign'],
+            ['category' => 'Branch Management', 'name' => 'staff-branch-view'],
+
             ['category' => 'Company Departments Setting', 'name' => 'departments-list'],
             ['category' => 'Company Departments Setting', 'name' => 'department-create'],
             ['category' => 'Company Departments Setting', 'name' => 'department-edit'],

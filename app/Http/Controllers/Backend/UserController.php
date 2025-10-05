@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\Account;
 use App\Models\Bonus;
+use App\Models\Branch;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -123,11 +124,14 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
             ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
             ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('branch_name', function ($row) {
+                return view('backend.user.include.__branch', compact('row'))->render();
+            })
             ->addColumn('staff_name', function ($row) {
                 return view('backend.user.include.__staff')->with('staff', $row->staff);
             })
             ->addColumn('action', 'backend.user.include.__action')
-            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
             ->make(true);
     }
 
@@ -224,13 +228,16 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 })                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
  $staffMembers = Admin::whereDoesntHave('roles', function($query) {
@@ -270,11 +277,14 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 $staffMembers = Admin::whereDoesntHave('roles', function($query) {
@@ -336,11 +346,14 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
             ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
             ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('branch_name', function ($row) {
+                return view('backend.user.include.__branch', compact('row'))->render();
+            })
             ->addColumn('staff_name', function ($row) {
                 return view('backend.user.include.__staff')->with('staff', $row->staff);
             })
             ->addColumn('action', 'backend.user.include.__action')
-            ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+            ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
             ->make(true);
     }
 
@@ -398,11 +411,14 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -449,13 +465,16 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
 //                ->editColumn('status', 'backend.user.include.__status')
                ->addColumn('action', 'backend.user.include.__grace_action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -560,6 +579,7 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
+        $branches = Branch::where('status', 1)->get();
 
         return view('backend.user.edit', compact(
             'users',
@@ -575,7 +595,8 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             'kycStatus',
             'bonuses',
             'ibGroups',
-            'referrals'
+            'referrals',
+            'branches'
         ));
     }
 
@@ -1225,7 +1246,16 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             $user->riskProfileTags()->sync($input['risk_profile_tags']);
         }
 
-
+        // Handle branch assignment
+        if ($request->has('branch_id')) {
+            $branchId = $request->input('branch_id');
+            if (!empty($branchId)) {
+                setUserBranchId($user->id, $branchId);
+            } else {
+                // Remove branch assignment if empty
+                setUserBranchId($user->id, null);
+            }
+        }
 
         // Redirect with success message
         notify()->success('User Info Updated Successfully', 'success');

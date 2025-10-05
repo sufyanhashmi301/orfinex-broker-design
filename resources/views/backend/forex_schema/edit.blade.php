@@ -4,7 +4,8 @@
 @endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4
+            class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Edit Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -14,7 +15,8 @@
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.update',$schema->id)}}" method="post" enctype="multipart/form-data" class="account_form space-y-5">
+    <form action="{{ route('admin.accountType.update', $schema->id) }}" method="post" enctype="multipart/form-data"
+        class="account_form space-y-5">
         @method('PUT')
         @csrf
         <div class="grid grid-cols-12 gap-5">
@@ -23,19 +25,11 @@
                     <div class="card-body p-6">
                         <div class="input-area">
                             <div class="wrap-custom-file">
-                                <input
-                                    type="file"
-                                    name="icon"
-                                    id="schema-icon"
-                                    accept=".gif, .jpg, .png"
-
-                                />
-                                <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($schema->icon) }})">
-                                    <img
-                                        class="upload-icon"
-                                        src="{{ asset('global/materials/upload.svg')}}"
-                                        alt=""
-                                    />
+                                <input type="file" name="icon" id="schema-icon" accept=".gif, .jpg, .png" />
+                                <label for="schema-icon" class="file-ok"
+                                    style="background-image: url({{ asset($schema->icon) }})">
+                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}"
+                                        alt="" />
                                     <span>{{ __('Update Avatar') }}</span>
                                 </label>
                             </div>
@@ -54,9 +48,12 @@
                                         {{ __('Choose how this account type should be categorized.') }}
                                     </span>
                                 </label>
-                                <select name="account_category_id" id="accountTypeCategory" class="form-control w-full" data-placeholder="Select Account Type Category">
-                                    @foreach($accountTypeCategories as $category)
-                                        <option value="{{ $category->id }}" data-slug="{{ $category->slug }}" data-description="{{ $category->description }}" @if($schema->account_category_id == $category->id) selected @endif>
+                                <select name="account_category_id" id="accountTypeCategory" class="form-control w-full"
+                                    data-placeholder="Select Account Type Category">
+                                    @foreach ($accountTypeCategories as $category)
+                                        <option value="{{ $category->id }}" data-slug="{{ $category->slug }}"
+                                            data-description="{{ $category->description }}"
+                                            @if ($schema->account_category_id == $category->id) selected @endif>
                                             {{ $category->title }}
                                         </option>
                                     @endforeach
@@ -65,9 +62,13 @@
                         </div>
                         <div id="global_account" class="input-area flex items-center hidden">
                             <input type="hidden" value="0" name="is_global">
-                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="checkbox" id="isGlobalInput" name="is_global" value="1" class="sr-only peer" {{ old('is_global', $schema->is_global ?? 0) ? 'checked' : '' }}>
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></div>
+                            <label
+                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                <input type="checkbox" id="isGlobalInput" name="is_global" value="1"
+                                    class="sr-only peer" {{ old('is_global', $schema->is_global ?? 0) ? 'checked' : '' }}>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500">
+                                </div>
                             </label>
                             <div class="flex flex-col ml-5">
                                 <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
@@ -86,17 +87,19 @@
                                         {{ __('Visible to users based on IB Group rebate rule configuration.') }}
                                     </span>
                                 </label>
-                                <select name="rebate_rules[]" id="rebateRuleSelect" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
-                                    @foreach( $rebateRules as $rule)
+                                <select name="rebate_rules[]" id="rebateRuleSelect" class="select2 form-control w-full h-9"
+                                    placeholder="Manage Country" multiple>
+                                    @foreach ($rebateRules as $rule)
                                         <option value="{{ $rule['id'] }}"
                                             {{ in_array($rule->id, old('rebate_rules', $attachedRebateRules)) ? 'selected' : '' }}
                                             class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                            {{ $rule['title']  }}
+                                            {{ $rule['title'] }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+
                         <div id="country_and_tags" class="grid grid-cols-1 md:grid-cols-2 gap-5 hidden">
                             <div class="input-area">
                                 <label class="form-label" for="">
@@ -105,12 +108,14 @@
                                         {{ __('Choose countries to display this forex scheme. Select "All" to show it globally.') }}
                                     </span>
                                 </label>
-                                <select name="country[]" id="countrySelect" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
-                                    <option value="All" @selected( null != $schema->country && in_array('All',json_decode($schema->country,true)))>
+                                <select name="country[]" id="countrySelect" class="select2 form-control w-full h-9"
+                                    placeholder="Manage Country" multiple>
+                                    <option value="All" @selected(null != $schema->country && in_array('All', json_decode($schema->country, true)))>
                                         {{ __('All') }}
                                     </option>
-                                    @foreach( getCountries() as $country)
-                                        <option value="{{$country['name']}}"  @selected( null != $schema->country && in_array($country['name'],json_decode($schema->country,true)))>{{$country['name']}}</option>
+                                    @foreach (getCountries() as $country)
+                                        <option value="{{ $country['name'] }}" @selected(null != $schema->country && in_array($country['name'], json_decode($schema->country, true)))>
+                                            {{ $country['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -121,12 +126,14 @@
                                         {{ __('Choose the tags where you would like this account type to be shown') }}
                                     </span>
                                 </label>
-                                <select name="tags[]" id="tagSelect" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
-                                    <option value="All" @selected( null != $schema->tags && in_array('All',json_decode($schema->tags,true)))>
+                                <select name="tags[]" id="tagSelect" class="select2 form-control w-full h-9"
+                                    placeholder="Manage Tags" multiple>
+                                    <option value="All" @selected(null != $schema->tags && in_array('All', json_decode($schema->tags, true)))>
                                         {{ __('All') }}
                                     </option>
-                                    @foreach( getRiskProfileTag() as $tag)
-                                        <option value="{{$tag->name}}"  @selected( null != $tag->name && in_array($tag->name, json_decode($schema->tags ?? '[]', true)))>{{$tag->name}} </option>
+                                    @foreach (getRiskProfileTag() as $tag)
+                                        <option value="{{ $tag->name }}" @selected(null != $tag->name && in_array($tag->name, json_decode($schema->tags ?? '[]', true)))>
+                                            {{ $tag->name }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -150,115 +157,120 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The title of the account type">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The title of the account type">
                                 {{ __('Title') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="title"
-                            value="{{$schema->title}}"
-                            class="form-control"
-                            placeholder="Forex Account Title"
-                        />
+                        <input type="text" name="title" value="{{ $schema->title }}" class="form-control"
+                            placeholder="Forex Account Title" />
                         @error('title')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type badge">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The account type badge">
                                 {{ __('Account Type Badge') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="badge"
-                            value="{{$schema->badge}}"
-                            placeholder="Account Type Badge"
-                        />
+                        <input type="text" class="form-control" name="badge" value="{{ $schema->badge }}"
+                            placeholder="Account Type Badge" />
                         @error('badge')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The priority of the account type">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The priority of the account type">
                                 {{ __('Priority') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="priority"
-                            value="{{$schema->priority}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="Priority e.g 1,2,3.."
-                        />
+                        <input type="text" name="priority" value="{{ $schema->priority }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="Priority e.g 1,2,3.." />
                         @error('priority')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account creation limit of the account type">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The account creation limit of the account type">
                                 {{ __('Account Creation Limit') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="account_limit"
-                            value="{{$schema->account_limit}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="Account Limit"
-
-                        />
+                        <input type="text" name="account_limit" value="{{ $schema->account_limit }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="Account Limit" />
                         @error('account_limit')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
+
+                    {{-- Branch Assignment Section --}}
+                    <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The range start of the account type (Min 5 digits)">
-                                {{ __('Range Start') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="Select branches where this account type will be available">
+                                {{ __('Assign Branches') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="start_range"
-                            value="{{$schema->start_range}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="Start Range"
+                        <select name="branches[]" id="branchSelect" class="select2 form-control w-full h-9"
+                            placeholder="Select Branches" multiple>
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                    {{ in_array($branch->id, old('branches', $attachedBranches)) ? 'selected' : '' }}
+                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                    {{ $branch->name }} ({{ $branch->code }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <span class="text-xs font-Inter font-normal text-slate-600 block mt-1">
+                            {{ __('Leave empty to make available for all branches.') }}
+                        </span>
+                    </div>
 
-                        />
+                    <div class="input-area @if (!setting('is_forex_group_range', 'global')) hidden @endif">
+                        <label class="form-label" for="">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The range start of the account type (Min 5 digits)">
+                                {{ __('Range Start') }}
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
+                            </span>
+                        </label>
+                        <input type="text" name="start_range" value="{{ $schema->start_range }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="Start Range" />
                         @error('start_range')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
+                    <div class="input-area @if (!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The range end of the account type (Min 5 digits)">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The range end of the account type (Min 5 digits)">
                                 {{ __('Range End') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="end_range"
-                            value="{{$schema->end_range}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="End Range"
-
-                        />
+                        <input type="text" name="end_range" value="{{ $schema->end_range }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="End Range" />
                         @error('end_range')
                             <span class="error">{{ $message }}</span>
                         @enderror
@@ -266,7 +278,8 @@
                 </div>
             </div>
         </div>
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4
+            class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Key Features') }}
         </h4>
         <div class="card">
@@ -274,91 +287,74 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type spread">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The account type spread">
                                 {{ __('Account Type Spread') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            class="form-control keyFeatureInput"
-                            placeholder="Account Type Spread"
-                            name="spread"
-                            value="{{$schema->spread}}"
-                        />
+                        <input type="text" class="form-control keyFeatureInput" placeholder="Account Type Spread"
+                            name="spread" value="{{ $schema->spread }}" />
                         @error('spread')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The account type commission">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The account type commission">
                                 {{ __('Account Type Commission') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Account Type Commission"
-                            name="commission"
-                            value="{{$schema->commission}}"
-                        />
+                        <input type="text" class="form-control" placeholder="Account Type Commission"
+                            name="commission" value="{{ $schema->commission }}" />
                         @error('commission')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The leverage of the account type">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The leverage of the account type">
                                 {{ __('Leverage') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="leverage"
-                            class="form-control"
-                            placeholder="leverage e.g 10,20,50"
-                            value="{{$schema->leverage}}"
-                        />
+                        <input type="text" name="leverage" class="form-control" placeholder="leverage e.g 10,20,50"
+                            value="{{ $schema->leverage }}" />
                         @error('leverage')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The first minimum deposit of the account type">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The first minimum deposit of the account type">
                                 {{ __('First Min Deposit') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="first_min_deposit"
-                            value="{{$schema->first_min_deposit}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="Min deposit"
-
-                        />
+                        <input type="text" name="first_min_deposit" value="{{ $schema->first_min_deposit }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="Min deposit" />
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The minimum amount in wallet (On Creation)">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="The minimum amount in wallet (On Creation)">
                                 {{ __('Min Amount in wallet') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <input
-                            type="text"
-                            name="min_amount"
-                            value="{{$schema->min_amount}}"
-                            oninput="this.value = validateDouble(this.value)"
-                            class="form-control"
-                            placeholder="Min Amount"
-
-                        />
+                        <input type="text" name="min_amount" value="{{ $schema->min_amount }}"
+                            oninput="this.value = validateDouble(this.value)" class="form-control"
+                            placeholder="Min Amount" />
                         @error('min_amount')
                             <span class="error">{{ $message }}</span>
                         @enderror
@@ -369,50 +365,53 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
+                <h4
+                    class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
                     {{ __('Live Account') }}
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The platform group">
                                     {{ __('Platform Group') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                <option value="">{{ __('Select Group')}}</option>
+                            <select name="real_swap_free" id="" class="select2 form-control w-full"
+                                data-placeholder="Group">
+                                <option value="">{{ __('Select Group') }}</option>
 
-                                @foreach(\App\Models\PlatformGroup::all() as $group)
-                                    <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
+                                @foreach (\App\Models\PlatformGroup::all() as $group)
+                                    <option value="{{ $group->group }}" @if ($group->group == $schema->real_swap_free) selected @endif>
+                                        {{ $group->group }}</option>
                                 @endforeach
                             </select>
                             @error('real_swap_free')
                                 <span class="error">{{ $message }}</span>
                             @enderror
-{{--                        <div class="input-area">--}}
-{{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
-{{--                            <input--}}
-{{--                                type="text"--}}
-{{--                                name="real_swap_free"--}}
-{{--                                value="{{$schema->real_swap_free}}"--}}
-{{--                                class="form-control"--}}
-{{--                                placeholder="Platform Group"--}}
-{{--                            />--}}
+                            {{--                        <div class="input-area"> --}}
+                            {{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label> --}}
+                            {{--                            <input --}}
+                            {{--                                type="text" --}}
+                            {{--                                name="real_swap_free" --}}
+                            {{--                                value="{{$schema->real_swap_free}}" --}}
+                            {{--                                class="form-control" --}}
+                            {{--                                placeholder="Platform Group" --}}
+                            {{--                            /> --}}
                         </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
-                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input
-                                            type="checkbox"
-                                            name="is_real_islamic"
-                                            value="1"
-                                            class="sr-only peer"
-                                            @if($schema->is_real_islamic) checked @endif
-                                        >
-                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox"
+                                        data-target="#live-islamic-group">
+                                        <input type="checkbox" name="is_real_islamic" value="1"
+                                            class="sr-only peer" @if ($schema->is_real_islamic) checked @endif>
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0 !mb-0">
@@ -420,91 +419,102 @@
                                 </label>
                             </div>
                         </div>
-                        <div id="live-islamic-group" class="@if(!$schema->is_real_islamic) hidden @endif">
+                        <div id="live-islamic-group" class="@if (!$schema->is_real_islamic) hidden @endif">
 
                             <div class="input-area">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group (Islamic)">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="The platform group (Islamic)">
                                         {{ __('Platform Group (Islamic)') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
-                                <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                    <option value="">{{ __('Select Group')}}</option>
+                                <select name="real_islamic" id="" class="select2 form-control w-full"
+                                    data-placeholder="Group">
+                                    <option value="">{{ __('Select Group') }}</option>
 
-                                    @foreach(\App\Models\PlatformGroup::all() as $group)
-                                        <option value="{{$group->group}}" @if($group->group == $schema->real_islamic) selected @endif>{{ $group->group}}</option>
+                                    @foreach (\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{ $group->group }}"
+                                            @if ($group->group == $schema->real_islamic) selected @endif>{{ $group->group }}</option>
                                     @endforeach
                                 </select>
                                 @error('real_islamic')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
-{{--                                <input--}}
-{{--                                    type="text"--}}
-{{--                                    name="real_islamic"--}}
-{{--                                    value="{{$schema->real_islamic}}"--}}
-{{--                                    class="form-control"--}}
-{{--                                    placeholder="Platform Group (Islamic)"--}}
-{{--                                />--}}
+                                {{--                                <input --}}
+                                {{--                                    type="text" --}}
+                                {{--                                    name="real_islamic" --}}
+                                {{--                                    value="{{$schema->real_islamic}}" --}}
+                                {{--                                    class="form-control" --}}
+                                {{--                                    placeholder="Platform Group (Islamic)" --}}
+                                {{--                                /> --}}
                             </div>
                         </div>
 
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server (Live)">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The trading server (Live)">
                                     {{ __('Trading Server (Live) ') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ setting('live_server','platform_api') }}" readonly>
+                            <input type="text" class="form-control" name="live_server"
+                                placeholder="Trading Server Live" value="{{ setting('live_server', 'platform_api') }}"
+                                readonly>
 
                         </div>
                     </div>
                 </div>
             </div>
             <div>
-                <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
+                <h4
+                    class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
                     {{ __('Demo Account') }}
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The platform group">
                                     {{ __('Platform Group') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                <option value="">{{ __('Select Group')}}</option>
+                            <select name="demo_swap_free" id="" class="select2 form-control w-full"
+                                data-placeholder="Group">
+                                <option value="">{{ __('Select Group') }}</option>
 
-                                @foreach(\App\Models\PlatformGroup::all() as $group)
-                                    <option value="{{$group->group}}" @if($group->group == $schema->demo_swap_free) selected @endif>{{ $group->group}}</option>
+                                @foreach (\App\Models\PlatformGroup::all() as $group)
+                                    <option value="{{ $group->group }}" @if ($group->group == $schema->demo_swap_free) selected @endif>
+                                        {{ $group->group }}</option>
                                 @endforeach
                             </select>
                             @error('demo_swap_free')
                                 <span class="error">{{ $message }}</span>
                             @enderror
-{{--                            <input--}}
-{{--                                type="text"--}}
-{{--                                name="demo_swap_free"--}}
-{{--                                value="{{$schema->demo_swap_free}}"--}}
-{{--                                class="form-control"--}}
-{{--                                placeholder="Platform Group"--}}
-{{--                            />--}}
+                            {{--                            <input --}}
+                            {{--                                type="text" --}}
+                            {{--                                name="demo_swap_free" --}}
+                            {{--                                value="{{$schema->demo_swap_free}}" --}}
+                            {{--                                class="form-control" --}}
+                            {{--                                placeholder="Platform Group" --}}
+                            {{--                            /> --}}
                         </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
-                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#demo-islamic-group">
-                                        <input
-                                            type="checkbox"
-                                            name="is_demo_islamic"
-                                            value="1"
-                                            class="sr-only peer"
-                                            @if($schema->is_demo_islamic) checked @endif
-                                        >
-                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox"
+                                        data-target="#demo-islamic-group">
+                                        <input type="checkbox" name="is_demo_islamic" value="1"
+                                            class="sr-only peer" @if ($schema->is_demo_islamic) checked @endif>
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
                                 <label class="form-label !w-auto pt-0 !mb-0">
@@ -512,77 +522,86 @@
                                 </label>
                             </div>
                         </div>
-                        <div id="demo-islamic-group" class="@if(!$schema->is_demo_islamic) hidden @endif">
+                        <div id="demo-islamic-group" class="@if (!$schema->is_demo_islamic) hidden @endif">
                             <div class="input-area">
                                 <label class="form-label" for="">
-                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The platform group (Islamic)">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="The platform group (Islamic)">
                                         {{ __('Platform Group (Islamic)') }}
-                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
                                     </span>
                                 </label>
-                                <select name="demo_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                    <option value="">{{ __('Select Group')}}</option>
+                                <select name="demo_islamic" id="" class="select2 form-control w-full"
+                                    data-placeholder="Group">
+                                    <option value="">{{ __('Select Group') }}</option>
 
-                                    @foreach(\App\Models\PlatformGroup::all() as $group)
-                                        <option value="{{$group->group}}" @if($group->group == $schema->demo_islamic) selected @endif>{{ $group->group}}</option>
+                                    @foreach (\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{ $group->group }}"
+                                            @if ($group->group == $schema->demo_islamic) selected @endif>{{ $group->group }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('demo_islamic')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
-{{--                                <input--}}
-{{--                                    type="text"--}}
-{{--                                    name="demo_islamic"--}}
-{{--                                    value="{{$schema->demo_islamic}}"--}}
-{{--                                    class="form-control"--}}
-{{--                                    placeholder="Platform Group (Islamic)"--}}
-{{--                                />--}}
+                                {{--                                <input --}}
+                                {{--                                    type="text" --}}
+                                {{--                                    name="demo_islamic" --}}
+                                {{--                                    value="{{$schema->demo_islamic}}" --}}
+                                {{--                                    class="form-control" --}}
+                                {{--                                    placeholder="Platform Group (Islamic)" --}}
+                                {{--                                /> --}}
                             </div>
                         </div>
-                        
+
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The trading server (Demo)">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The trading server (Demo)">
                                     {{ __('Trading Server (Demo) ') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
+                            <input type="text" class="form-control" name="demo_server"
+                                placeholder="Trading Server Demo" value="{{ setting('demo_server', 'platform_api') }}"
+                                readonly>
                         </div>
-                         <div class="input-area mt-4">
-                             <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The deposit amount (For Demo)">
+                        <div class="input-area mt-4">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The deposit amount (For Demo)">
                                     {{ __('Deposit Amount (For Demo)') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
-                             </label>
-                             <input
-                                 type="number"
-                                 step="0.01"
-                                 name="demo_deposit_amount"
-                                 value="{{ $schema->demo_deposit_amount }}"
-                                 class="form-control"
-                                 placeholder="Enter fixed deposit amount"
-                             />
-                             <span class="text-xs text-gray-500">This amount will be automatically deposited when creating demo account.</span>
-                             @error('demo_deposit_amount')
-                                 <span class="error">{{ $message }}</span>
-                             @enderror
-                         </div>
+                            </label>
+                            <input type="number" step="0.01" name="demo_deposit_amount"
+                                value="{{ $schema->demo_deposit_amount }}" class="form-control"
+                                placeholder="Enter fixed deposit amount" />
+                            <span class="text-xs text-gray-500">This amount will be automatically deposited when creating
+                                demo account.</span>
+                            @error('demo_deposit_amount')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4
+            class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('More Details') }}
         </h4>
         <div class="card">
             <div class="card-body p-6">
                 <div class="input-area mb-5">
                     <label for="" class="form-label">
-                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail of the account type">
+                        <span class="shift-Away inline-flex items-center gap-1"
+                            data-tippy-content="The detail of the account type">
                             {{ __('Detail') }}
                             <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
                         </span>
@@ -592,7 +611,8 @@
                             {{ $schema->desc }}
                         </textarea>
                     </div>
-                    <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
+                    <input type="hidden" name="desc"
+                        value="{{ str_replace(['<', '>'], ['{', '}'], $schema->desc) }}">
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-12 lg:col-span-12 col-span-12">
@@ -600,27 +620,22 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The withdraw of the account type">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="The withdraw of the account type">
                                             {{ __('Withdraw') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_withdraw"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_withdraw"
-                                                value="1"
-                                                class="sr-only peer"
-                                                @checked($schema->is_withdraw)
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_withdraw">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_withdraw" value="1"
+                                                class="sr-only peer" @checked($schema->is_withdraw)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -628,27 +643,22 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The internal transfer of the account type">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="The internal transfer of the account type">
                                             {{ __('Internal Transfer') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_internal_transfer"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_internal_transfer"
-                                                value="1"
-                                                class="sr-only peer"
-                                                @checked($schema->is_internal_transfer)
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_internal_transfer">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_internal_transfer" value="1"
+                                                class="sr-only peer" @checked($schema->is_internal_transfer)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -656,27 +666,22 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The external transfer of the account type">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="The external transfer of the account type">
                                             {{ __('External Transfer') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_external_transfer"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_external_transfer"
-                                                value="1"
-                                                class="sr-only peer"
-                                                @checked($schema->is_external_transfer)
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_external_transfer">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_external_transfer" value="1"
+                                                class="sr-only peer" @checked($schema->is_external_transfer)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -684,71 +689,62 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0 !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The cent account of the account type">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="The cent account of the account type">
                                             {{ __('Cent Account') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_cent_account"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_cent_account"
-                                                value="1"
-                                                class="sr-only peer"
-                                                @checked($schema->is_cent_account)
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_cent_account">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_cent_account" value="1"
+                                                class="sr-only peer" @checked($schema->is_cent_account)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-area">
-            <div class="flex items-center space-x-7 flex-wrap">
-                <label class="form-label !w-auto pt-0 !mb-0">
-                    {{ __('Update Trading Password') }}
-                </label>
-                <div class="form-switch ps-0" style="line-height:0;">
-                    <input
-                        class="form-check-input"
-                        type="hidden"
-                        value="0"
-                        name="is_update_trading_password"
-                    >
-                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            name="is_update_trading_password"
-                            value="1"
-                            class="sr-only peer"
-                            @checked($schema->is_update_trading_password)
-                        >
-                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <label class="form-label !w-auto pt-0 !mb-0">
+                                        {{ __('Update Trading Password') }}
+                                    </label>
+                                    <div class="form-switch ps-0" style="line-height:0;">
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_update_trading_password">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_update_trading_password" value="1"
+                                                class="sr-only peer" @checked($schema->is_update_trading_password)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <br>
-                 <div class="grid grid-cols-12 gap-5 items-center">
-    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-        <div class="input-area">
-            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                <option value="1" @if($schema->status == 1) selected @endif>{{ __('Active') }}</option>
-                <option value="0" @if($schema->status == 0) selected @endif>{{ __('Deactivate') }}</option>
-            </select>
-        </div>
-    </div>
-   
-</div>
+                <div class="grid grid-cols-12 gap-5 items-center">
+                    <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+                        <div class="input-area">
+                            <select name="status" id="" class="select2 form-control w-full"
+                                data-placeholder="Status">
+                                <option value="1" @if ($schema->status == 1) selected @endif>
+                                    {{ __('Active') }}</option>
+                                <option value="0" @if ($schema->status == 0) selected @endif>
+                                    {{ __('Deactivate') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                         {{ __('Update Schema') }}
@@ -772,7 +768,8 @@
             font-size: 0.875rem;
             line-height: 1.25rem;
         }
-        .bootstrap-tagsinput .tag.label-info{
+
+        .bootstrap-tagsinput .tag.label-info {
             padding-top: 0.25rem;
             padding-bottom: 0.25rem;
             padding-left: 0.5rem;
@@ -817,6 +814,7 @@
             const globalToggle = $('#isGlobalInput');
             const allCategoryBlocks = ['#global_account', '#ib_rebate_rules', '#country_and_tags'];
             const initialGlobalChecked = globalToggle.is(':checked');
+
             function updateAccountTypeCategory(selectedValue) {
                 const isGlobalCategory = selectedValue === 'global_account';
                 // Hide all blocks
@@ -842,7 +840,7 @@
             updateAccountTypeCategory(categorySelect.find('option:selected').data('slug'));
 
             // Add change listener
-            categorySelect.on('change', function () {
+            categorySelect.on('change', function() {
                 const slug = $(this).find('option:selected').data('slug');
                 // Reset field values only on change
                 countrySelect.val(null).trigger('change');

@@ -402,9 +402,13 @@
 
 
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
+@endsection
+
 @section('script')
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
-      <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {

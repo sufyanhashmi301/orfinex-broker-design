@@ -99,6 +99,21 @@
             $('#staff-list__container, .mobile-close-overlay').removeClass('in');
         });
 
+        $('body').on('click', '.toggle-password', function() {
+            const inputId = $(this).data('toggle');
+            const input = $('#' + inputId);
+            const type = input.attr('type') === 'password' ? 'text' : 'password';
+            input.attr('type', type);
+            
+            // Toggle the icon
+            const icon = $(this).find('iconify-icon');
+            if (type === 'text') {
+                icon.attr('icon', 'heroicons:eye-slash');
+            } else {
+                icon.attr('icon', 'heroicons:eye');
+            }
+        });
+
         $('body').on('click', '#create-staff', function (event) {
             "use strict";
             event.preventDefault();

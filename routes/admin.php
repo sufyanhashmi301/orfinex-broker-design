@@ -69,6 +69,7 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
+use App\Http\Controllers\Backend\BranchController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
 use App\Http\Controllers\Backend\PlatformApiController;
@@ -168,6 +169,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
     Route::post('ib-group/export', [IBGroupController::class, 'export'])->name('ib-group.export');
+
+    //===============================  Branches ==================================
+    Route::resource('branches', BranchController::class);
+    Route::post('branches/export', [BranchController::class, 'export'])->name('branches.export');
 
 
 //===============================  Risk Profile Tag ==================================

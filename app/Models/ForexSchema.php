@@ -98,6 +98,11 @@ class ForexSchema extends Model
         return $this->belongsToMany(RebateRule::class, 'forex_schema_rebate_rule', 'forex_schema_id', 'rebate_rule_id')->withTimestamps();
     }
 
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'forex_schema_branches', 'forex_schema_id', 'branch_id')->withTimestamps();
+    }
+
     public function forexAccounts()
 	{
 		return $this->hasMany(ForexAccount::class);

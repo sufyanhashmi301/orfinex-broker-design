@@ -218,10 +218,16 @@ class RegisteredUserController extends Controller
         }
 
         // Check if the referral code belongs to an Admin (Staff)
-        $admin = Admin::where('referral_code', $referralCode)->first();
+        $admin = Admin::with('branches')->where('referral_code', $referralCode)->first();
         if ($admin) {
             // Attach the new user under the referring staff (admin)
             $admin->users()->attach($user->id);
+
+            // Auto-assign branch if admin has a branch assigned
+            if ($admin->branches && $admin->branches->count() > 0) {
+                $adminBranchId = $admin->branches->first()->id;
+                setUserBranchId($user->id, $adminBranchId);
+            }
 
             // Send notification to Admin (Optional)
             $shortcodes = [
@@ -250,6 +256,12 @@ class RegisteredUserController extends Controller
                         ['meta_key' => 'is_part_of_master_ib'],
                         ['meta_value' => $isPartOfMasterIb]
                     );
+                }
+
+                // Auto-assign branch if referrer has a branch assigned
+                $referrerBranchId = getUserBranchId($referrer->id, $referrer);
+                if ($referrerBranchId) {
+                    setUserBranchId($user->id, $referrerBranchId);
                 }
             }
         }

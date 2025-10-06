@@ -95,6 +95,7 @@ class IBTransactionQueryService
             
             $query = DB::table($tableName)
                 ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
                 ->whereBetween('created_at', [$startDate, $endDate]);
             
             // Apply filters to each table query
@@ -153,6 +154,7 @@ class IBTransactionQueryService
             }
             
             $query = DB::table($tableName)
+                ->where('type', 'ib_bonus')
                 ->whereBetween('created_at', [$startDate, $endDate]);
             
             // Apply filters to each table query

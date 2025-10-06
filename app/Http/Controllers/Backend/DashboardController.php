@@ -28,9 +28,9 @@ class DashboardController extends Controller
         if (!$loggedInUser->hasRole('Super-Admin')) {
             return redirect()->route('admin.staff.dashboard');
         }
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            return redirect()->route('admin.user.active');
-        }
+        // if ($loggedInUser->hasRole('Super-Admin')) {
+        //     return redirect()->route('admin.user.active');
+        // }
         $transaction = new Transaction();
         $user = new User();
         $admin = new Admin();

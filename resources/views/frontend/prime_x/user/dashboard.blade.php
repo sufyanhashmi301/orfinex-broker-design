@@ -70,70 +70,74 @@
 
     <div class="md:block hidden desktop-screen-show">
         @include('frontend::user.include.__user_card')
-        <div class="grid {{ setting('user_tickets_feature', 'customer_permission') ? 'lg:grid-cols-6' : 'lg:grid-cols-5' }} md:grid-cols-3 grid-cols-2 gap-3 mb-3">
-            <a href="{{ route('user.deposit.methods') }}" class="card loaderBtn">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="heroicons-outline:download"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Deposit') }}
-                    </div>
-                </div>
-            </a>
-            <a href="{{ route('user.withdraw.view') }}" class="card loaderBtn">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Withdraw') }}
-                    </div>
-                </div>
-            </a>
-            <a href="{{ route('user.transfer') }}" class="card loaderBtn">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Transfer') }}
-                    </div>
-                </div>
-            </a>
-            <a href="{{ route('user.forex-account-logs') }}" class="card loaderBtn">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="uil:chart-line"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Accounts') }}
-                    </div>
-                </div>
-            </a>
-            <a href="{{ route('user.kyc') }}" class="card loaderBtn">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Verification') }}
-                    </div>
-                </div>
-            </a>
-            @if(setting('user_tickets_feature', 'customer_permission'))
-                <a href="{{ route('user.ticket.index') }}" class="card loaderBtn">
+        @if(setting('is_desktop_dashboard_quick_link', 'user_dashboard'))
+            <div class="flex flex-wrap gap-3 mb-3">
+                <a href="{{ route('user.deposit.methods') }}" class="flex-1 card loaderBtn">
                     <div class="card-body flex flex-col items-center justify-center p-8">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+                            <iconify-icon icon="heroicons-outline:download"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Support') }}
+                            {{ __('Deposit') }}
                         </div>
                     </div>
                 </a>
-            @endif
-        </div>
+                <a href="{{ route('user.withdraw.view') }}" class="flex-1 card loaderBtn">
+                    <div class="card-body flex flex-col items-center justify-center p-8">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                            <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
+                        </div>
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ __('Withdraw') }}
+                        </div>
+                    </div>
+                </a>
+                @if(setting('is_internal_transfer', 'transfer_internal') || setting('is_external_transfer', 'transfer_external'))
+                    <a href="{{ route('user.transfer') }}" class="flex-1 card loaderBtn">
+                        <div class="card-body flex flex-col items-center justify-center p-8">
+                            <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                                <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
+                            </div>
+                            <div class="text-lg text-slate-900 dark:text-white font-medium">
+                                {{ __('Transfer') }}
+                            </div>
+                        </div>
+                    </a>
+                @endif
+                <a href="{{ route('user.forex-account-logs') }}" class="flex-1 card loaderBtn">
+                    <div class="card-body flex flex-col items-center justify-center p-8">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                            <iconify-icon icon="uil:chart-line"></iconify-icon>
+                        </div>
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ __('Accounts') }}
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ route('user.kyc') }}" class="flex-1 card loaderBtn">
+                    <div class="card-body flex flex-col items-center justify-center p-8">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                            <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
+                        </div>
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ __('Verification') }}
+                        </div>
+                    </div>
+                </a>
+                @if(setting('user_tickets_feature', 'customer_permission'))
+                    <a href="{{ route('user.ticket.index') }}" class="flex-1 card loaderBtn">
+                        <div class="card-body flex flex-col items-center justify-center p-8">
+                            <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                                <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+                            </div>
+                            <div class="text-lg text-slate-900 dark:text-white font-medium">
+                                {{ __('Support') }}
+                            </div>
+                        </div>
+                    </a>
+                @endif
+            </div>
+        @endif
 
         <div class="grid grid-cols-12 gap-3 mb-3">
             <div class="lg:col-span-7 col-span-12">

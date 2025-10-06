@@ -15,11 +15,11 @@ class AutoIBMigration extends Command
      * @var string
      */
     protected $signature = 'ib:auto-migration 
-                            {--chunk-size=2000 : Records per chunk}
-                            {--batch-size=500 : Records per batch insert}
-                            {--memory-limit=2G : PHP memory limit}
-                            {--max-iterations=50 : Maximum iterations to prevent infinite loop}
-                            {--check-interval=30 : Seconds to wait between iterations}
+                            {--chunk-size=5000 : Records per chunk}
+                            {--batch-size=1000 : Records per batch insert}
+                            {--memory-limit=400M : PHP memory limit}
+                            {--max-iterations=1000 : Maximum iterations to prevent infinite loop}
+                            {--check-interval=3 : Seconds to wait between iterations}
                             {--dry-run : Test without making changes}';
 
     /**

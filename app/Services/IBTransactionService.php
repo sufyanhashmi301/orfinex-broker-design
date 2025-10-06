@@ -65,21 +65,21 @@ class IBTransactionService
         $tableName = IBTransactionPeriodService::getTableName($currentPeriod);
         // dd($tableName);
 
-        // Create the 4-month period table if it doesn't exist
-        if (!self::createIBTransactionTable4Month($currentPeriod)) {
-            throw new \Exception("Failed to create IB transactions table for period {$currentPeriod}");
-        }
+        // // Create the 4-month period table if it doesn't exist
+        // if (!self::createIBTransactionTable4Month($currentPeriod)) {
+        //     throw new \Exception("Failed to create IB transactions table for period {$currentPeriod}");
+        // }
 
-        // Auto-create next quarter table if we're in the last month of current period
-        if (IBTransactionPeriodService::shouldCreateNextPeriodTable($transactionDate)) {
-            try {
-                $nextPeriod = IBTransactionPeriodService::getNextPeriod($currentPeriod);
-                self::createIBTransactionTable4Month($nextPeriod);
-            } catch (\Exception $e) {
-                // Log but don't fail - next period table creation is not critical
-                \Log::warning("Failed to create next period table: " . $e->getMessage());
-            }
-        }
+        // // Auto-create next quarter table if we're in the last month of current period
+        // if (IBTransactionPeriodService::shouldCreateNextPeriodTable($transactionDate)) {
+        //     try {
+        //         $nextPeriod = IBTransactionPeriodService::getNextPeriod($currentPeriod);
+        //         self::createIBTransactionTable4Month($nextPeriod);
+        //     } catch (\Exception $e) {
+        //         // Log but don't fail - next period table creation is not critical
+        //         \Log::warning("Failed to create next period table: " . $e->getMessage());
+        //     }
+        // }
 
         $tnx = uniqid('IB');
         // dd($tnx);

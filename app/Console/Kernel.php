@@ -46,7 +46,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
-        // Legacy yearly table creation (keeping for backward compatibility)
         
         // 4-month based IB transactions management (automatic)
         $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();

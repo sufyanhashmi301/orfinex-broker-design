@@ -344,7 +344,7 @@ class IBTransactionQueryService
         $summary = DB::query()->fromSub($query, 'ib_transactions')
             ->select([
                 DB::raw('COUNT(*) as total_count'),
-                DB::raw('SUM(CAST(amount AS DECIMAL(15,2))) as total_amount'),
+                DB::raw('SUM(CAST(final_amount AS DECIMAL(15,2))) as total_amount'),
             ])
             ->first();
             

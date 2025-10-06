@@ -26,7 +26,7 @@ class ProcessReferralRebate implements ShouldQueue
 
     public function handle(): void
     {
-        // try {
+        try {
             $referral = ReferralRelationship::with('referralLink', 'user')->findOrFail($this->referralId);
 
             DB::transaction(function () use ($referral) {
@@ -34,8 +34,8 @@ class ProcessReferralRebate implements ShouldQueue
                 $command->processReferralRelationship($referral);
             }, 3);
 
-        // } catch (Throwable $e) {
-        //     Log::error("Failed rebate processing for referral ID {$this->referralId}: {$e->getMessage()}");
-        // }
+        } catch (Throwable $e) {
+            Log::error("Failed rebate processing for referral ID {$this->referralId}: {$e->getMessage()}");
+        }
     }
 }

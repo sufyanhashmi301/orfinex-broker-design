@@ -41,12 +41,12 @@ class MultiLevelRebateDistribution extends Command
             ReferralRelationship::with('referralLink')
                 ->chunkById(500, function ($referrals) {
                     foreach ($referrals as $referral) {
-                        // try {
+                        try {
                             ProcessReferralRebate::dispatch($referral->id);
 //                            Log::info("Successfully dispatched referral ID: {$referral->id}");
-//                         } catch (Throwable $e) {
-// //                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
-//                         }
+                        } catch (Throwable $e) {
+//                            Log::error("Failed to dispatch rebate job for referral ID {$referral->id}: {$e->getMessage()}");
+                        }
                     }
                 });
         } catch (Throwable $e) {
@@ -80,6 +80,7 @@ class MultiLevelRebateDistribution extends Command
             ->get();
 
         foreach ($accounts as $account) {
+            // dd($account);
             $symbols = $this->getUserAssignedSymbols($parent, $account);
             $lastDealTime = $this->getLastDeal($childUserId, $account->login);
             // dd($lastDealTime);
@@ -170,6 +171,7 @@ class MultiLevelRebateDistribution extends Command
         // C
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
+        // dd('s');
     }
 
     protected function safeAddBalance($transaction, $retries = 3)
@@ -279,7 +281,7 @@ class MultiLevelRebateDistribution extends Command
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
             ->whereIn('Symbol', $symbols)
-            // ->where('Time', '>', $lastTime)
+            ->where('Time', '>', $lastTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')
             ->get();

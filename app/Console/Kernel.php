@@ -10,7 +10,6 @@ use App\Console\Commands\MultiLevelRebateDistribution;
 use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
-use App\Console\Commands\CreateIBTransactionsTableYearly;
 use App\Console\Commands\CreateIBTransactionsTable4Month;
 use App\Console\Commands\CopyIBTransactions4Month;
 use App\Console\Commands\ScheduleIBTransactions4Month;
@@ -75,7 +74,6 @@ class Kernel extends ConsoleKernel
         Commands\UpdateTokenRates::class,
         SyncForexAccountsViaEmail::class,
         MultiLevelRebateDistribution::class,
-        CreateIBTransactionsTableYearly::class,
         CreateIBTransactionsTable4Month::class,
         CopyIBTransactions4Month::class,
         ScheduleIBTransactions4Month::class,

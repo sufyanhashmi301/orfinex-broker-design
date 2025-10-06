@@ -907,6 +907,7 @@ if (!empty($filters['staff_name'])) {
             'comment' => 'nullable|string|max:500',
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => 'nullable|date',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         if ($validator->fails()) {
@@ -958,6 +959,13 @@ if (!empty($filters['staff_name'])) {
         // Sync risk profile tags using pivot table
         if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
             $user->riskProfileTags()->sync($input['risk_profile_tags']);
+        }
+
+        // Handle branch assignment using the helper function
+        if ($request->has('branch_id') && auth()->user()->can('staff-branch-assign')) {
+            $branchId = $request->input('branch_id');
+            // Use the existing helper function to set/update branch assignment
+            setUserBranchId($user->id, $branchId ? (int) $branchId : null);
         }
 
         // Redirect with success message

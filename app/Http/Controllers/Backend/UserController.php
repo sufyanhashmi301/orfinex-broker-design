@@ -27,6 +27,7 @@ use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Branch;
 use App\Models\KycLevel;
 use App\Models\Lead;
 use App\Scopes\ExcludeGracePeriodScope;
@@ -159,13 +160,26 @@ class UserController extends Controller
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
 
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'branch_name', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.all');
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
+        return view('backend.user.all', compact('staffMembers'));
     }
 
     public function export(Request $request, $type = null)
@@ -298,14 +312,27 @@ if (!empty($filters['staff_name'])) {
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'branch_name', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.active_user');
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
+        return view('backend.user.active_user', compact('staffMembers'));
     }
 
     /**
@@ -383,12 +410,25 @@ if (!empty($filters['staff_name'])) {
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'branch_name', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.disabled_user');
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
+        return view('backend.user.disabled_user', compact('staffMembers'));
     }
 
     public function withBalance(Request $request)
@@ -438,13 +478,27 @@ if (!empty($filters['staff_name'])) {
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'branch_name', 'credit', 'action'])
                 ->make(true);
         }
 
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
         return view('backend.user.with_balance', [
-            'riskProfileTags' => $riskProfileTags
+            'riskProfileTags' => $riskProfileTags,
+            'staffMembers' => $staffMembers
         ]);
     }
 
@@ -496,13 +550,27 @@ if (!empty($filters['staff_name'])) {
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'branch_name', 'credit', 'action'])
                 ->make(true);
         }
 
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
         return view('backend.user.without_balance', [
-            'riskProfileTags' => $riskProfileTags
+            'riskProfileTags' => $riskProfileTags,
+            'staffMembers' => $staffMembers
         ]);
     }
 
@@ -580,14 +648,27 @@ if (!empty($filters['staff_name'])) {
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
+                ->addColumn('branch_name', function ($row) {
+                    $branchId = user_meta('branch_id', null, $row);
+                    if ($branchId) {
+                        $branch = Branch::find($branchId);
+                        return $branch ? $branch->name : '-';
+                    }
+                    return '-';
+                })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
 //                ->editColumn('status', 'backend.user.include.__status')
                ->addColumn('action', 'backend.user.include.__grace_action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'branch_name', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.grace_users');
+        // Get staff members for the filter dropdown
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        
+        return view('backend.user.grace_users', compact('staffMembers'));
     }
     public function updateGracePeriod(Request $request)
 {
@@ -686,6 +767,9 @@ if (!empty($filters['staff_name'])) {
             ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
+        
+        // Get active branches for branch assignment
+        $branches = Branch::where('status', 1)->get();
 
         return view('backend.user.edit', compact(
             'users',
@@ -700,7 +784,8 @@ if (!empty($filters['staff_name'])) {
             'kycLevels',
             'kycStatus',
             'bonuses',
-            'ibGroups'
+            'ibGroups',
+            'branches'
         ));
     }
 

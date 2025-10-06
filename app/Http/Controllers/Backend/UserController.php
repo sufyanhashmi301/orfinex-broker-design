@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\Account;
 use App\Models\Bonus;
+use App\Models\Branch;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -27,7 +28,7 @@ use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Admin;
-use App\Models\Branch;
+use App\Models\Ledger;
 use App\Models\KycLevel;
 use App\Models\Lead;
 use App\Scopes\ExcludeGracePeriodScope;
@@ -96,88 +97,43 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();
-        $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+    $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+        if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
+        }
+    }
+$staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
+    if ($request->ajax()) {
+       $data = getAccessibleUserIds($filters);
 
-        if ($request->ajax()) {
-         // Check if the logged-in user is a Super-Admin
-         if ($loggedInUser->hasRole('Super-Admin')) {
-            $data = User::applyFilters($filters);
-        }
-        // Check if the user has the "show-all-users-by-default-to-staff" permission
-        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $data = User::applyFilters($filters);
-        }
-        else {
-            // Get the attached users if the user is not a Super-Admin
-            $attachedUserIds = $loggedInUser->users->pluck('id');
+     if (!empty($filters['staff_name'])) {
+         $data = applyStaffNameFilter($data, $filters['staff_name']);
+     }
 
-            if ($attachedUserIds->isNotEmpty()) {
-                // Show only attached users
-                $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
-            } else {
-                // If no users are attached, show nothing (empty dataset)
-                $data = User::where('id', -1); // Return an empty result set
-            }
-        }
- // Apply staff name filter if present
- if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
-        }
-    });
-}
-        $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
+            })
+            ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('branch_name', function ($row) {
+                return view('backend.user.include.__branch', compact('row'))->render();
+            })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
-                })
-
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'branch_name', 'status', 'action'])
+            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
-
-        // Get staff members for the filter dropdown
-        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-            $query->where('name', 'Super-Admin');
-        })->get();
         
         return view('backend.user.all', compact('staffMembers'));
     }
@@ -228,8 +184,14 @@ class UserController extends Controller
                     return back()->with('error', 'User not found');
                 }
                 
-                // Get filters from request (same as display logic)
-                $filters = $request->only(['created_at', 'status', 'type', 'amount_min', 'amount_max', 'tnx', 'description', 'login', 'deal', 'order', 'symbol', 'date_filter']);
+            // Get filter parameters
+            $filters = [
+                'login' => $request->login,
+                'deal' => $request->deal,
+                'symbol' => $request->symbol,
+                'date_filter' => $request->date_filter,
+                'created_at' => $request->created_at,
+            ];
                 
                 $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
                 return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
@@ -247,61 +209,19 @@ class UserController extends Controller
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
+        if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
+        }
+    }
+         $filters['status'] = 1;
         if ($request->ajax()) {
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::where('status', 1)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::where('status', 1)->latest();
-            }
-            // Otherwise, show only attached users
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::where('status', 1)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
-// Apply staff name filter if present
+            $data = getAccessibleUserIds($filters);
 if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
         }
-    });
-}
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
-
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -309,29 +229,21 @@ if (!empty($filters['staff_name'])) {
                 })                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
-                })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'branch_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
-
-        // Get staff members for the filter dropdown
         $staffMembers = Admin::whereDoesntHave('roles', function($query) {
             $query->where('name', 'Super-Admin');
         })->get();
-        
         return view('backend.user.active_user', compact('staffMembers'));
     }
 
@@ -346,58 +258,17 @@ if (!empty($filters['staff_name'])) {
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
-
-             // Super-Admin sees all disabled users
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            $data = User::where('status', 0)->latest();
+              if (!empty($filters['global_search']) ){
+        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+            $filters['phone'] = $filters['global_search'];
+            $filters['global_search'] = '';
         }
-        // If user has permission "show-all-users-by-default-to-staff", show all disabled users
-        elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-            $data = User::where('status', 0)->latest();
-        }
-        // Otherwise, show only attached disabled users
-        else {
-            $attachedUserIds = $loggedInUser->users->pluck('id');
-
-            if ($attachedUserIds->isNotEmpty()) {
-                $data = User::where('status', 0)
-                    ->whereIn('id', $attachedUserIds)
-                    ->latest();
-            } else {
-                // No attached users = No results
-                $data = User::where('id', -1); // Returns an empty dataset
-            }
-        }
-        // Apply staff name filter if present
+    }
+            $filters['status'] = 0;
+         $data = getAccessibleUserIds($filters);
  if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
-            });
-        }
-    });
-}
-            $data->applyFilters($filters);
-
+              $data = applyStaffNameFilter($data, $filters['staff_name']);
+          }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -407,19 +278,14 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit','staff_name', 'branch_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -434,108 +300,110 @@ if (!empty($filters['staff_name'])) {
     public function withBalance(Request $request)
     {
         $loggedInUser = auth()->user();
+    $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+    
+    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+        $query->where('name', 'Super-Admin');
+    })->get();
+    
         $riskProfileTags = RiskProfileTag::all();
+
         if ($request->ajax()) {
+        // Handle phone number detection in global search
+
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+
             $forexAccountIds = DB::connection('mt5_db')
                 ->table('mt5_accounts')
                 ->whereIn('Login', $realForexAccounts)
                 ->where('Balance', '>', 0)
                 ->pluck('Login');
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-            // Super-Admin sees all users with balance
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users with balance
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // Otherwise, show only attached users with balance
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+        $userIdsWithBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::whereIn('id', $userIds)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
+        $accessibleUsersQuery = getAccessibleUserIds($filters);
+
+        // Apply filters
+        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance);
+
+          if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+            });
+        }
+
+        // Handle staff filter
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
             }
 
-            return Datatables::of($data)
+        return Datatables::of($data->latest())
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
+            })
+            ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+            ->addColumn('branch_name', function ($row) {
+                return view('backend.user.include.__branch', compact('row'))->render();
+            })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'branch_name', 'credit', 'action'])
+            ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-
-        // Get staff members for the filter dropdown
-        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-            $query->where('name', 'Super-Admin');
-        })->get();
         
         return view('backend.user.with_balance', [
-            'riskProfileTags' => $riskProfileTags,
-            'staffMembers' => $staffMembers
-        ]);
+        'riskProfileTags' => $riskProfileTags
+    ], compact('staffMembers'));
     }
 
 
     public function withOutBalance(Request $request)
     {
         $loggedInUser = auth()->user();
+            $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+    
+    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+        $query->where('name', 'Super-Admin');
+    })->get();
         $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+
             $forexAccountIds = DB::connection('mt5_db')
                 ->table('mt5_accounts')
                 ->whereIn('Login', $realForexAccounts)
                 ->where('Balance', '<=', 0)
                 ->pluck('Login');
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            
+        $userIdsWithoutBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-            // Super-Admin sees all users without balance
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users without balance
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::whereIn('id', $userIds)->latest();
-            }
-            // Otherwise, show only attached users without balance
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+        // ✅ Apply the helper here:
+        $accessibleUsersQuery = getAccessibleUserIds();
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::whereIn('id', $userIds)
-                        ->whereIn('id', $attachedUserIds)
-                        ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
+        // ✅ Filter by users without balance
+        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithoutBalance)->latest();
+         if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
+            });
+        }
+
+// Handle staff filter
+        if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
             }
 
             return Datatables::of($data)
@@ -547,95 +415,51 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'staff_name', 'branch_name', 'credit', 'action'])
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
-
-        // Get staff members for the filter dropdown
-        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-            $query->where('name', 'Super-Admin');
-        })->get();
         
         return view('backend.user.without_balance', [
-            'riskProfileTags' => $riskProfileTags,
-            'staffMembers' => $staffMembers
-        ]);
+            'riskProfileTags' => $riskProfileTags
+        ], compact('staffMembers'));
     }
 
     public function gracePeriodUsers(Request $request)
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+$staffMembers = Admin::whereDoesntHave('roles', function($query) {
+    $query->where('name', 'Super-Admin');
+})->get();
 //        dd($request->all());
         if ($request->ajax()) {
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                    ->where('in_grace_period', true)->latest();
-            }
-            // If user has permission "show-all-users-by-default-to-staff", show all users
-            elseif ($loggedInUser->can('show-all-users-by-default-to-staff')) {
-                $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                    ->where('in_grace_period', true)->latest();
-            }
-            // Otherwise, show only attached users
-            else {
-                $attachedUserIds = $loggedInUser->users->pluck('id');
+            // ✅ Use helper to get accessible user query
+        $accessibleUsersQuery = getAccessibleUserIds();
 
-                if ($attachedUserIds->isNotEmpty()) {
-                    $data = User::withoutGlobalScope(ExcludeGracePeriodScope::class)
-                        ->where('in_grace_period', true)->where('status', 1)
-                        ->whereIn('id', $attachedUserIds)
+        // ✅ Remove global scope and filter grace period
+        $data = $accessibleUsersQuery
+            ->withoutGlobalScope(ExcludeGracePeriodScope::class)
+            ->where('in_grace_period', true)
                         ->latest();
-                } else {
-                    // No attached users = No results
-                    $data = User::where('id', -1); // Returns an empty dataset
-                }
-            }
-// Apply staff name filter if present
-if (!empty($filters['staff_name'])) {
-    $data->whereHas('staff', function($query) use ($filters) {
-        $searchTerm = $filters['staff_name'];
-
-        // Check if search term contains a space (possible first + last name)
-        if (str_contains($searchTerm, ' ')) {
-            $nameParts = explode(' ', $searchTerm, 2);
-            $query->where(function($subQuery) use ($nameParts) {
-                $subQuery->where(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[0].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[1].'%');
-                    })
-                    ->orWhere(function($q) use ($nameParts) {
-                        $q->where('first_name', 'like', '%'.$nameParts[1].'%')
-                          ->where('last_name', 'like', '%'.$nameParts[0].'%');
-                    });
-            });
-        } else {
-            // Single term search
-            $query->where(function($subQuery) use ($searchTerm) {
-                $subQuery->where('first_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('last_name', 'like', '%'.$searchTerm.'%')
-                        ->orWhere('email', 'like', '%'.$searchTerm.'%');
+            if (!empty($filters['global_search'])) {
+            $searchTerm = $filters['global_search'];
+            $data->where(function($query) use ($searchTerm) {
+                $query->Where('username', 'like', "%$searchTerm%")
+                      ->orWhere('email', 'like', "%$searchTerm%")
+                      ->orWhere('phone', 'like', "%$searchTerm%");
             });
         }
-    });
-}
-
-            // Apply additional filters if any
-            $data->applyFilters($filters);
+if (!empty($filters['staff_name'])) {
+            $data = applyStaffNameFilter($data, $filters['staff_name']);
+        }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -645,28 +469,18 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
-                })
-                ->addColumn('branch_name', function ($row) {
-                    $branchId = user_meta('branch_id', null, $row);
-                    if ($branchId) {
-                        $branch = Branch::find($branchId);
-                        return $branch ? $branch->name : '-';
-                    }
-                    return '-';
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
 //                ->editColumn('status', 'backend.user.include.__status')
                ->addColumn('action', 'backend.user.include.__grace_action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'staff_name', 'branch_name', 'status', 'action'])
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
-
-        // Get staff members for the filter dropdown
-        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-            $query->where('name', 'Super-Admin');
-        })->get();
         
         return view('backend.user.grace_users', compact('staffMembers'));
     }
@@ -711,6 +525,8 @@ if (!empty($filters['staff_name'])) {
         }
 
         $user = User::find($id);
+
+        $referrals = $this->getAllReferrals($user);
 
         // If user not found, redirect back with an error message
         if (!$user) {
@@ -767,8 +583,6 @@ if (!empty($filters['staff_name'])) {
             ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
-        
-        // Get active branches for branch assignment
         $branches = Branch::where('status', 1)->get();
 
         return view('backend.user.edit', compact(
@@ -785,35 +599,481 @@ if (!empty($filters['staff_name'])) {
             'kycStatus',
             'bonuses',
             'ibGroups',
+            'referrals',
             'branches'
         ));
     }
 
     public function destroy(Request $request, $id)
     {
-        // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
+        try {
+            // Validate the admin key input
+            $request->validate([
+                'admin_key' => 'required|string|min:1|max:255'
+            ], [
+                'admin_key.required' => 'Super-Admin key is required for user deletion.',
+                'admin_key.string' => 'Super-Admin key must be a valid string.',
+                'admin_key.min' => 'Super-Admin key cannot be empty.',
+                'admin_key.max' => 'Super-Admin key is too long.'
+            ]);
+
+            // Fetch the Super-Admin from the database
         $superAdmin = Admin::where('name', 'Super Admin')->first();
 
-        // Check if the Super-Admin key exists in the database and the input matches
-        if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
-            // If the key doesn't match, notify error
-            notify()->error('Invalid Super-Admin key. Deletion denied.');
-            return redirect()->back();  // Redirect back to the previous page
-        }
+            // Check if Super-Admin exists
+            if (!$superAdmin) {
+                $errorMessage = 'System error: Super-Admin not found. Please contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput();
+            }
 
-        // Proceed with deleting the user if the key matches
+            // Check if Super-Admin has a key set
+            if (empty($superAdmin->key)) {
+                $errorMessage = 'System error: Super-Admin key not configured. Please contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput();
+            }
+
+            // Verify the provided key matches
+            if ($request->input('admin_key') !== $superAdmin->key) {
+                $errorMessage = 'Invalid Super-Admin key. Access denied.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error',
+                        'errors' => ['admin_key' => ['The provided Super-Admin key is incorrect.']]
+                    ], 422);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back()->withInput()->withErrors(['admin_key' => 'The provided Super-Admin key is incorrect.']);
+            }
+
+            // Find the user to delete
         $user = User::find($id);
+            if (!$user) {
+                $errorMessage = 'User not found. The user may have already been deleted.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error',
+                        'redirect' => route('admin.user.index')
+                    ], 404);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->route('admin.user.index');
+            }
 
-        // Ensure the user exists before attempting to delete
-        if ($user) {
+            // Store user info for logging before deletion
+            $deletedUserInfo = [
+                'id' => $user->id,
+                'name' => $user->name ?? 'N/A',
+                'email' => $user->email ?? 'N/A',
+                'created_at' => $user->created_at ?? 'N/A'
+            ];
+
+            // Begin transaction for cascade deletion
+            \DB::beginTransaction();
+            
+            try {
+                // Perform cascade deletion of all related data
+                $this->cascadeDeleteUserData($user);
+                
+                // Finally delete the user
             $user->delete();
-            notify()->success('User deleted successfully');
-        } else {
-            notify()->error('User not found.');
+                
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollback();
+                
+                $errorMessage = 'Failed to delete user and related data. Please try again or contact system administrator.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'type' => 'error'
+                    ], 500);
+                }
+                
+                notify()->error($errorMessage);
+                return redirect()->back();
         }
 
-        // Redirect to the user listing page after the operation
+            $successMessage = 'User and all associated data deleted successfully. User: ' . ($deletedUserInfo['name'] ?? 'N/A') . ' (' . ($deletedUserInfo['email'] ?? 'N/A') . ')';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $successMessage,
+                    'type' => 'success',
+                    'redirect' => route('admin.user.index')
+                ], 200);
+            }
+            
+            notify()->success($successMessage);
         return redirect()->route('admin.user.index');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed. Please check your input and try again.',
+                    'type' => 'error',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
+            notify()->error('Validation failed. Please check your input and try again.');
+            return redirect()->back()->withErrors($e->errors())->withInput();
+
+        } catch (\Exception $e) {
+            // Handle any unexpected errors
+            $errorMessage = 'An unexpected error occurred. Please try again or contact system administrator.';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'type' => 'error'
+                ], 500);
+            }
+            
+            notify()->error($errorMessage);
+            return redirect()->back()->withInput();
+        }
+    }
+
+    /**
+     * Cascade delete all user-related data
+     * 
+     * @param User $user
+     * @return void
+     */
+    private function cascadeDeleteUserData(User $user)
+    {
+        $userId = $user->id;
+        $deletionCounts = [];
+
+        // First, delete ledgers that reference user's transactions and accounts
+        // This is critical as ledgers have foreign key constraints to both transactions and accounts
+        $userTransactionIds = $user->transaction()->pluck('id')->toArray();
+        $userAccountIds = $user->accounts()->pluck('id')->toArray();
+        
+        // Delete ledgers referencing user's transactions
+        $ledgerTransactionCount = 0;
+        if (!empty($userTransactionIds)) {
+            $ledgerTransactionCount = Ledger::whereIn('transaction_id', $userTransactionIds)->count();
+            Ledger::whereIn('transaction_id', $userTransactionIds)->delete();
+        }
+        
+        // Delete ledgers referencing user's accounts  
+        $ledgerAccountCount = 0;
+        if (!empty($userAccountIds)) {
+            $ledgerAccountCount = Ledger::whereIn('account_id', $userAccountIds)->count();
+            Ledger::whereIn('account_id', $userAccountIds)->delete();
+        }
+        
+        $deletionCounts['ledgers_by_transaction'] = $ledgerTransactionCount;
+        $deletionCounts['ledgers_by_account'] = $ledgerAccountCount;
+
+        // Delete bonus_deductions that reference user's transactions or bonus_transactions
+        $bonusDeductionCount = 0;
+        if (\Schema::hasTable('bonus_deductions')) {
+            $bonusDeductionDeleteCount = 0;
+            
+            // Delete bonus_deductions that reference withdraw transactions from this user
+            if (!empty($userTransactionIds)) {
+                $bonusDeductionDeleteCount += \DB::table('bonus_deductions')
+                    ->whereIn('withdraw_transaction_id', $userTransactionIds)
+                    ->count();
+                \DB::table('bonus_deductions')
+                    ->whereIn('withdraw_transaction_id', $userTransactionIds)
+                    ->delete();
+            }
+            
+            // Delete bonus_deductions that reference bonus_transactions from this user
+            if (\Schema::hasTable('bonus_transactions') && (!empty($userTransactionIds) || !empty($userAccountIds))) {
+                $userBonusTransactionIds = [];
+                
+                if (!empty($userTransactionIds)) {
+                    $userBonusTransactionIds = array_merge($userBonusTransactionIds, 
+                        \DB::table('bonus_transactions')->whereIn('transaction_id', $userTransactionIds)->pluck('id')->toArray());
+                }
+                
+                if (!empty($userAccountIds)) {
+                    $userBonusTransactionIds = array_merge($userBonusTransactionIds, 
+                        \DB::table('bonus_transactions')->whereIn('account_id', $userAccountIds)->pluck('id')->toArray());
+                }
+                
+                $userBonusTransactionIds = array_unique($userBonusTransactionIds);
+                
+                if (!empty($userBonusTransactionIds)) {
+                    $bonusDeductionDeleteCount += \DB::table('bonus_deductions')
+                        ->whereIn('bonus_transaction_id', $userBonusTransactionIds)
+                        ->count();
+                    \DB::table('bonus_deductions')
+                        ->whereIn('bonus_transaction_id', $userBonusTransactionIds)
+                        ->delete();
+                }
+            }
+            
+            $bonusDeductionCount = $bonusDeductionDeleteCount;
+        }
+        $deletionCounts['bonus_deductions'] = $bonusDeductionCount;
+
+        // Delete bonus_transactions that reference user's transactions and accounts
+        $bonusTransactionCount = 0;
+        if (\Schema::hasTable('bonus_transactions')) {
+            $bonusTransactionDeleteCount = 0;
+            
+            // Delete by transaction_id
+            if (!empty($userTransactionIds)) {
+                $bonusTransactionDeleteCount += \DB::table('bonus_transactions')
+                    ->whereIn('transaction_id', $userTransactionIds)
+                    ->count();
+                \DB::table('bonus_transactions')
+                    ->whereIn('transaction_id', $userTransactionIds)
+                    ->delete();
+            }
+            
+            // Delete by account_id 
+            if (!empty($userAccountIds)) {
+                $bonusTransactionDeleteCount += \DB::table('bonus_transactions')
+                    ->whereIn('account_id', $userAccountIds)
+                    ->count();
+                \DB::table('bonus_transactions')
+                    ->whereIn('account_id', $userAccountIds)
+                    ->delete();
+            }
+            
+            $bonusTransactionCount = $bonusTransactionDeleteCount;
+        }
+        $deletionCounts['bonus_transactions'] = $bonusTransactionCount;
+
+        // Now safely delete Transactions
+        $transactionCount = $user->transaction()->count();
+        $user->transaction()->delete();
+        $deletionCounts['transactions'] = $transactionCount;
+
+        // Delete Forex Accounts (soft delete)
+        $forexCount = $user->ForexAccounts()->count();
+        $user->ForexAccounts()->delete(); // This will soft delete
+        $deletionCounts['forex_accounts'] = $forexCount;
+
+        // Now safely delete Accounts (wallet balances)
+        $accountCount = $user->accounts()->count();
+        $user->accounts()->delete();
+        $deletionCounts['accounts'] = $accountCount;
+
+        // Delete User Metas
+        $metaCount = $user->user_metas()->count();
+        $user->user_metas()->delete();
+        $deletionCounts['user_metas'] = $metaCount;
+
+        // Delete MetaTransactions
+        $metaTransactionCount = $user->metaTransaction()->count();
+        $user->metaTransaction()->delete();
+        $deletionCounts['meta_transactions'] = $metaTransactionCount;
+
+        // Delete MetaDeals
+        $metaDealCount = $user->metaDeals()->count();
+        $user->metaDeals()->delete();
+        $deletionCounts['meta_deals'] = $metaDealCount;
+
+        // Delete Notes
+        $noteCount = $user->notes()->count();
+        $user->notes()->delete();
+        $deletionCounts['notes'] = $noteCount;
+
+        // Delete Tickets (using HasTickets trait)
+        $ticketCount = \DB::table('tickets')->where('user_id', $userId)->count();
+        \DB::table('tickets')->where('user_id', $userId)->delete();
+        $deletionCounts['tickets'] = $ticketCount;
+
+        // Delete Leverage Updates
+        $leverageCount = $user->leverageUpdates()->count();
+        $user->leverageUpdates()->delete();
+        $deletionCounts['leverage_updates'] = $leverageCount;
+
+        // Delete IB Question Answers
+        try {
+            if ($user->ibQuestionAnswers) {
+                $user->ibQuestionAnswers()->delete();
+                $deletionCounts['ib_question_answers'] = 1;
+            } else {
+                $deletionCounts['ib_question_answers'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['ib_question_answers'] = 0;
+        }
+
+        // Delete Risk Profile Tag relationships (check if table exists first)
+        $riskTagCount = 0;
+        if (\Schema::hasTable('risk_profile_tag_user')) {
+            $riskTagCount = $user->riskProfileTags()->count();
+            $user->riskProfileTags()->detach();
+        }
+        $deletionCounts['risk_profile_tags'] = $riskTagCount;
+
+        // Delete Referral Relationship
+        try {
+            if ($user->referralRelationship) {
+                $user->referralRelationship()->delete();
+                $deletionCounts['referral_relationship'] = 1;
+            } else {
+                $deletionCounts['referral_relationship'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['referral_relationship'] = 0;
+        }
+
+        // Delete Referral Links
+        try {
+            if ($user->getReferral()) {
+                $user->getReferral()->delete();
+                $deletionCounts['referral_links'] = 1;
+            } else {
+                $deletionCounts['referral_links'] = 0;
+            }
+        } catch (\Exception $e) {
+            $deletionCounts['referral_links'] = 0;
+        }
+
+        // Update referrals to remove this user as referrer
+        $referralUpdateCount = User::where('ref_id', $userId)->count();
+        User::where('ref_id', $userId)->update(['ref_id' => null]);
+        $deletionCounts['referral_updates'] = $referralUpdateCount;
+
+        // Delete Bonus relationships (check if table exists first)
+        $bonusCount = 0;
+        if (\Schema::hasTable('bonus_user')) {
+            $bonusCount = $user->bonuses()->count();
+            $user->bonuses()->detach();
+        }
+        $deletionCounts['bonus_relationships'] = $bonusCount;
+
+        // Delete Customer Group relationships (check if table exists first)
+        $customerGroupCount = 0;
+        if (\Schema::hasTable('customer_group_has_customers')) {
+            $customerGroupCount = $user->customerGroups()->count();
+            $user->customerGroups()->detach();
+        }
+        $deletionCounts['customer_groups'] = $customerGroupCount;
+
+        // Delete Staff User relationships (check if table exists first)
+        $staffCount = 0;
+        if (\Schema::hasTable('staff_user')) {
+            $staffCount = $user->staff()->count();
+            $user->staff()->detach();
+        }
+        $deletionCounts['staff_relationships'] = $staffCount;
+
+        // Delete additional user-related records that might exist
+        $this->deleteAdditionalUserData($userId, $deletionCounts);
+
+        // Cascade deletion completed
+    }
+
+    /**
+     * Delete additional user-related data from junction tables and other references
+     * 
+     * @param int $userId
+     * @param array &$deletionCounts
+     * @return void
+     */
+    private function deleteAdditionalUserData($userId, &$deletionCounts)
+    {
+        // Delete from user_otps table
+        $otpCount = 0;
+        if (\Schema::hasTable('user_otps')) {
+            $otpCount = \DB::table('user_otps')->where('user_id', $userId)->count();
+            \DB::table('user_otps')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_otps'] = $otpCount;
+
+        // Delete from user_language table
+        $languageCount = 0;
+        if (\Schema::hasTable('user_language')) {
+            $languageCount = \DB::table('user_language')->where('user_id', $userId)->count();
+            \DB::table('user_language')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_language'] = $languageCount;
+
+        // Delete from rebate_records table
+        $rebateCount = 0;
+        if (\Schema::hasTable('rebate_records')) {
+            $rebateCount = \DB::table('rebate_records')->where('user_id', $userId)->count();
+            \DB::table('rebate_records')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['rebate_records'] = $rebateCount;
+
+        // Delete from user_ib_rules table
+        $ibRulesCount = 0;
+        if (\Schema::hasTable('user_ib_rules')) {
+            $ibRulesCount = \DB::table('user_ib_rules')->where('user_id', $userId)->count();
+            \DB::table('user_ib_rules')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['user_ib_rules'] = $ibRulesCount;
+
+        // Delete from old_transactions table if it exists
+        if (\Schema::hasTable('old_transactions')) {
+            $oldTxnCount = \DB::table('old_transactions')->where('user_id', $userId)->count();
+            \DB::table('old_transactions')->where('user_id', $userId)->delete();
+            $deletionCounts['old_transactions'] = $oldTxnCount;
+        }
+
+        // Delete from kyc_user pivot table if it exists
+        if (\Schema::hasTable('kyc_user')) {
+            $kycUserCount = \DB::table('kyc_user')->where('user_id', $userId)->count();
+            \DB::table('kyc_user')->where('user_id', $userId)->delete();
+            $deletionCounts['kyc_user'] = $kycUserCount;
+        }
+
+        // Delete any sessions for this user
+        $sessionCount = 0;
+        if (\Schema::hasTable('sessions')) {
+            $sessionCount = \DB::table('sessions')->where('user_id', $userId)->count();
+            \DB::table('sessions')->where('user_id', $userId)->delete();
+        }
+        $deletionCounts['sessions'] = $sessionCount;
+
+        // Delete personal access tokens if using Sanctum
+        if (\Schema::hasTable('personal_access_tokens')) {
+            $tokenCount = \DB::table('personal_access_tokens')
+                ->where('tokenable_type', User::class)
+                ->where('tokenable_id', $userId)
+                ->count();
+            \DB::table('personal_access_tokens')
+                ->where('tokenable_type', User::class)
+                ->where('tokenable_id', $userId)
+                ->delete();
+            $deletionCounts['personal_access_tokens'] = $tokenCount;
+        }
     }
 
     /**
@@ -890,12 +1150,21 @@ if (!empty($filters['staff_name'])) {
         $isPhone = (bool) getPageSetting('phone_show');
 
         // Validation
+        $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+        
+        $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+        
+        // Add unique validation if phone restriction is enabled (regardless of phone_show)
+        if ($isPhoneRestricted) {
+            $phoneRules[] = Rule::unique('users', 'phone')->ignore($id);
+        }
+        
         $validator = Validator::make($request->all(), [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
             'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users,username,' . $id],
-            'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+            'phone' => $phoneRules,
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
             'email_verified_at' => 'nullable|date',
             'gender' => 'in:male,female,other|nullable',
@@ -907,8 +1176,22 @@ if (!empty($filters['staff_name'])) {
             'comment' => 'nullable|string|max:500',
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => 'nullable|date',
-            'branch_id' => 'nullable|exists:branches,id',
         ]);
+
+        // Cross-validate phone using helper and normalize to E.164
+        $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
+            $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+            $countryRaw = $request->input('country');
+            if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
+                // Backend: allow phone country to be independent from selected country
+                $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null, false);
+                if (!$validation['valid']) {
+                    $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                    return;
+                }
+                $request->merge(['__normalized_phone' => $validation['e164']]);
+            }
+        });
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
@@ -932,12 +1215,18 @@ if (!empty($filters['staff_name'])) {
             'comment',
             'password',
         ]);
+
+        // Handle phone number: use normalized E.164 if present
+        $phone = $request->input('__normalized_phone') ?? ($request->phone ?? $user->phone);
+        
+
+       
         $data = [
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'country' => $input['country'] ?? $user->country,
             'username' => $input['username'],
-            'phone' => $input['phone'] ?? $user->phone,
+            'phone' => $phone,
             'email' => $input['email'],
             'gender' => $input['gender'] ?? $user->gender,
             'city' => $input['city'] ?? $user->city,
@@ -961,11 +1250,15 @@ if (!empty($filters['staff_name'])) {
             $user->riskProfileTags()->sync($input['risk_profile_tags']);
         }
 
-        // Handle branch assignment using the helper function
-        if ($request->has('branch_id') && auth()->user()->can('staff-branch-assign')) {
+        // Handle branch assignment
+        if ($request->has('branch_id')) {
             $branchId = $request->input('branch_id');
-            // Use the existing helper function to set/update branch assignment
-            setUserBranchId($user->id, $branchId ? (int) $branchId : null);
+            if (!empty($branchId)) {
+                setUserBranchId($user->id, $branchId);
+            } else {
+                // Remove branch assignment if empty
+                setUserBranchId($user->id, null);
+            }
         }
 
         // Redirect with success message
@@ -1101,7 +1394,9 @@ if (!empty($filters['staff_name'])) {
                     ];
                     $response = $this->forexApiService->balanceOperation($data);
 
-                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                    if (!($response['success'] && 
+                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            )) {
                         throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
 
@@ -1121,7 +1416,9 @@ if (!empty($filters['staff_name'])) {
                     ];
                     $response = $this->forexApiService->balanceOperation($data);
 
-                    if (!($response['success'] && ($response['result']['responseCode'] == 10009))) {
+                    if (!($response['success'] && 
+                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            )) {
                         throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }
@@ -1228,7 +1525,11 @@ if (!empty($filters['staff_name'])) {
      */
     public function mailSendAll()
     {
-        return view('backend.user.mail_send_all');
+    $ibGroups = IbGroup::where('status', 1)->get();
+    $forexSchemas = ForexSchema::where('status', 1)->orderBy('title')->get();
+    $users = User::where('status', 1)->get(['id', 'first_name', 'last_name', 'email']);
+
+    return view('backend.user.mail_send_all', compact('ibGroups', 'forexSchemas', 'users'));
     }
 
     /**
@@ -1244,16 +1545,16 @@ if (!empty($filters['staff_name'])) {
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+        // Flash all input including the Select2 values
+        $request->flash();
+        return redirect()->back()->withErrors($validator);
         }
 
         try {
-
+        // Prepare email content
             $input = [
                 'subject' => $request->subject,
-                'message' => str_replace(['{', '}'], ['<', '>'], $message),
+            'message' => str_replace(['{', '}'], ['<', '>'], $request->message),
             ];
 
             $shortcodes = [
@@ -1263,30 +1564,94 @@ if (!empty($filters['staff_name'])) {
                 '[[site_url]]' => route('home'),
             ];
 
+        // Handle single user case (from user list action)
             if (isset($request->id)) {
                 $user = User::find($request->id);
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
 
                 $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
 
                 $this->mailNotify($user->email, 'user_mail', $shortcodes);
-            } else {
-                $users = User::where('status', 1)->get();
 
-                foreach ($users as $user) {
-                    $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
-
-                    $this->mailNotify($user->email, 'user_mail', $shortcodes);
-                }
-            }
-            $status = 'success';
-            $message = __('Mail Send Successfully');
-        } catch (Exception $e) {
-
-            $status = 'warning';
-            $message = __('something is wrong');
+            notify()->success(__('Email sent successfully to :name', ['name' => $user->full_name]));
+            return redirect()->back();
         }
 
-        notify()->$status($message, $status);
+        // Bulk email case
+        $ibGroups = $request->input('ib_groups', []);
+        $accountTypes = $request->input('account_types', []);
+        $selectedUsers = $request->input('users', []);
+
+        // Start building the query
+        $query = User::where('status', 1);
+
+        // If specific users are selected
+        if (!empty($selectedUsers)) {
+            if (!in_array('all', $selectedUsers)) {
+                $query->whereIn('id', $selectedUsers);
+            }
+        }
+        // Apply IB group and account type filters
+        else {
+            // Filter by IB groups (including network)
+            if (!empty($ibGroups)) {
+                if (in_array('all', $ibGroups)) {
+                    $query->where(function($q) {
+                        $q->whereHas('ibGroup')
+                          ->orWhereHas('user_metas', function($q) {
+                              $q->where('meta_key', 'is_part_of_master_ib');
+                          });
+                    });
+            } else {
+                    $query->where(function($q) use ($ibGroups) {
+                        $q->whereHas('ibGroup', function($q) use ($ibGroups) {
+                            $q->whereIn('id', $ibGroups);
+                        })
+                        ->orWhereHas('user_metas', function($q) use ($ibGroups) {
+                            $q->where('meta_key', 'is_part_of_master_ib')
+                              ->whereIn('meta_value', $ibGroups);
+                        });
+                    });
+                }
+            }
+
+            // Filter by account types
+           if (!empty($accountTypes)) {
+                if (in_array('all', $accountTypes)) {
+                    $query->whereHas('forexAccounts');
+                } else {
+                    $query->whereHas('forexAccounts', function($q) use ($accountTypes) {
+                        $q->whereIn('forex_schema_id', $accountTypes);
+                    });
+                }
+            }
+        }
+
+        // Get users and send emails
+        $users = $query->get();
+        $sentCount = 0;
+
+                foreach ($users as $user) {
+            try {
+                $userShortcodes = array_merge($shortcodes, [
+                    '[[full_name]]' => $user->full_name
+                ]);
+
+                $this->mailNotify($user->email, 'user_mail', $userShortcodes);
+                $sentCount++;
+            } catch (\Exception $e) {
+                \Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+            }
+        }
+
+        notify()->success(__('Emails sent successfully to :count recipients', ['count' => $sentCount]));
+
+    } catch (\Exception $e) {
+        \Log::error('Mail sending failed: ' . $e->getMessage());
+        notify()->error(__('Failed to send emails: :error', ['error' => $e->getMessage()]));
+    }
 
         return redirect()->back();
     }
@@ -1301,6 +1666,7 @@ if (!empty($filters['staff_name'])) {
         if ($request->ajax()) {
             $data = Transaction::where('user_id', $id)
                 ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
                 ->latest();
 
             return Datatables::of($data)
@@ -1445,12 +1811,21 @@ public function store(Request $request)
 
         // Validate the request data
         try {
-            $validatedData = $request->validate([
+            $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+            
+            $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+            
+            // Add unique validation if phone restriction is enabled (regardless of phone_show)
+            if ($isPhoneRestricted) {
+                $phoneRules[] = 'unique:users,phone';
+            }
+            
+            $validator = Validator::make($request->all(), [
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
                 'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
-                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'phone' => $phoneRules,
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'email_verified_at' => 'nullable|date',
                 'gender' => 'in:male,female,other|nullable',
@@ -1479,6 +1854,27 @@ public function store(Request $request)
                 'kyc_level' => 'nullable|in:1,3,5',
             'kyc_id' => 'nullable|exists:kycs,id',
             ]);
+
+            // Cross-validate phone using helper and normalize to E.164
+            $validator->after(function ($v) use ($request, $isPhone, $isCountry) {
+                $rawPhone = $request->input('formatted_phone') ?: $request->input('phone');
+                $countryRaw = (string) $request->input('country');
+                if (($isPhone || !is_null($rawPhone)) && !empty($rawPhone)) {
+                    $validation = validateAndNormalizePhone($rawPhone, $countryRaw, null);
+                    if (!$validation['valid']) {
+                        $v->errors()->add('phone', $validation['error'] ?? 'Invalid phone number.');
+                        return;
+                    }
+                    $request->merge(['__normalized_phone' => $validation['e164']]);
+                }
+            });
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator->errors())->withInput();
+            }
+
+            // if needed elsewhere
+            $validatedData = $validator->validated();
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -1511,8 +1907,22 @@ public function store(Request $request)
 
         // Set country and phone depending on settings and input
        $country = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[0] : ($location->country_code ?? '');
-$phone = $isPhone ? (($isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '')) . ' ' . ($input['phone'] ?? '')) : ($location->dial_code ?? '') . ' ' . ($input['phone'] ?? '');
-        // Generate a username if it’s not provided
+       
+       // Handle phone number with country code from intlTelInput using normalized value if present
+       if (!empty($request->input('__normalized_phone'))) {
+           $phone = $request->input('__normalized_phone');
+       } elseif ($isPhone && !empty($input['phone'])) {
+           if (strpos($input['phone'], '+') === 0) {
+               $phone = $input['phone'];
+           } else {
+               $dialCode = $isCountry && !empty($input['country']) ? explode(':', $input['country'])[1] : ($location->dial_code ?? '');
+               $phone = trim($dialCode . ' ' . $input['phone']);
+           }
+       } else {
+           $phone = trim(($location->dial_code ?? '') . ' ' . ($input['phone'] ?? ''));
+       }
+
+        // Generate a username if it's not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 
         // Get the ranking
@@ -1626,12 +2036,21 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         // Validate the request data
         try {
+            $isPhoneRestricted = (bool) setting('phone_number_restriction', 'permission');
+            
+            $phoneRules = [Rule::requiredIf($isPhone), 'string', 'max:255'];
+            
+            // Add unique validation if phone restriction is enabled (regardless of phone_show)
+            if ($isPhoneRestricted) {
+                $phoneRules[] = 'unique:users,phone';
+            }
+            
             $validatedData = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
                 'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
-                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'phone' => $phoneRules,
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'email_verified_at' => 'nullable|date',
                 'gender' => 'in:male,female,other|nullable',
@@ -1690,9 +2109,23 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         // Set country and phone depending on settings and input
         $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
-        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+        
+        // Handle phone number with country code from intlTelInput
+        if ($isPhone && !empty($input['phone'])) {
+            // Check if phone already contains country code (from intlTelInput)
+            if (strpos($input['phone'], '+') === 0) {
+                // Phone already has country code, use as is
+                $phone = $input['phone'];
+            } else {
+                // Add country code from country selection or location
+                $dialCode = $isCountry ? explode(':', $input['country'])[1] : $location->dial_code;
+                $phone = $dialCode . ' ' . $input['phone'];
+            }
+        } else {
+            $phone = $location->dial_code . ' ' . ($input['phone'] ?? '');
+        }
 
-        // Generate a username if it’s not provided
+        // Generate a username if it's not provided
         $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
 
         // Get the ranking
@@ -1768,16 +2201,20 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
     public function searchUsers(Request $request)
     {
-        $search = $request->get('q');
+        $search = $request->get('q', $request->get('term')); // safe fallback
 
-        // Fetch users based on the search query, ordered by first name
-        $users = User::where('first_name', 'LIKE', "%{$search}%")
+        $query = User::query();
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
             ->orWhere('last_name', 'LIKE', "%{$search}%")
-            ->orWhere('email', 'LIKE', "%{$search}%")
-            ->limit(10)
-            ->get();
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
 
-        // Format the response for Select2
+        $users = $query->limit(10)->get();
+
         return response()->json([
             'results' => $users->map(function($user) {
                 return [
@@ -1789,6 +2226,7 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             })
         ]);
     }
+
     public function runMasterIbDistribution(Request $request, $userId)
     {
         $request->validate([
@@ -1835,4 +2273,17 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             return redirect()->back();
         }
     }
+
+    public function getAllReferrals(User $user)
+    {
+        $all = collect();
+
+        foreach ($user->referrals as $referral) {
+            $all->push($referral);
+            $all = $all->merge($this->getAllReferrals($referral));
+        }
+
+        return $all;
+    }
+
 }

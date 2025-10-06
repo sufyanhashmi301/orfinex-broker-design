@@ -116,6 +116,7 @@ class DebugCRMFiltering extends Command
             // Build query exactly like CRM does
             $query = DB::table($tableName)
                 ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
                 ->whereBetween('created_at', [$startDate, $endDate]);
             
             $count = $query->count();
@@ -131,6 +132,7 @@ class DebugCRMFiltering extends Command
             // Check date range of records in this table
             $dateRange = DB::table($tableName)
                 ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
                 ->select([
                     DB::raw('MIN(created_at) as earliest'),
                     DB::raw('MAX(created_at) as latest'),

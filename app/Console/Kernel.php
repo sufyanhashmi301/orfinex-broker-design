@@ -27,6 +27,7 @@ use App\Console\Commands\RecalculateIBBalances;
 use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\DebugIBQueryDifference;
 use App\Console\Commands\DebugCRMFiltering;
+use App\Console\Commands\DebugSummaryCalculation;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 
 use Illuminate\Console\Scheduling\Schedule;
@@ -93,6 +94,7 @@ class Kernel extends ConsoleKernel
         DebugUserIBTransactions::class,
         DebugIBQueryDifference::class,
         DebugCRMFiltering::class,
+        DebugSummaryCalculation::class,
 
     ];
 }

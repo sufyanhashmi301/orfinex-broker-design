@@ -30,8 +30,6 @@ return new class extends Migration
             
             $table->text('terms_link');
             $table->text('description');
-            
-            $table->string('first_or_every_deposit');
 
             $table->integer('status')->default(0);
 

@@ -95,6 +95,7 @@ class IBTransactionQueryService
             
             $query = DB::table($tableName)
                 ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
                 ->whereBetween('created_at', [$startDate, $endDate]);
             
             // Apply filters to each table query
@@ -153,6 +154,7 @@ class IBTransactionQueryService
             }
             
             $query = DB::table($tableName)
+                ->where('type', 'ib_bonus')
                 ->whereBetween('created_at', [$startDate, $endDate]);
             
             // Apply filters to each table query
@@ -329,6 +331,9 @@ class IBTransactionQueryService
             }
         }
         
+        // Get all quarter tables that might contain data in this date range
+        $quarterTables = self::getQuarterTablesForDateRange($startDate, $endDate);
+        
         $query = self::getUserIBTransactions($userId, $filters);
         
         if (!$query) {
@@ -340,17 +345,34 @@ class IBTransactionQueryService
             ];
         }
         
-        // Get summary data
-        $summary = DB::query()->fromSub($query, 'ib_transactions')
-            ->select([
-                DB::raw('COUNT(*) as total_count'),
-                DB::raw('SUM(CAST(amount AS DECIMAL(15,2))) as total_amount'),
-            ])
-            ->first();
+        // Get summary data - Use individual table queries to avoid union query issues with fromSub
+        $totalAmount = 0;
+        $totalCount = 0;
+        
+        foreach ($quarterTables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+            
+            $tableQuery = DB::table($tableName)
+                ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
+                ->whereBetween('created_at', [$startDate, $endDate]);
+            
+            // Apply filters to each table query
+            $tableQuery = self::applyFilters($tableQuery, $filters);
+            
+            // Get count and sum for this table
+            $tableCount = $tableQuery->count();
+            $tableSum = $tableQuery->sum('final_amount');
+            
+            $totalCount += $tableCount;
+            $totalAmount += $tableSum;
+        }
             
         return [
-            'total_amount' => $summary->total_amount ?? 0,
-            'total_count' => $summary->total_count ?? 0,
+            'total_amount' => $totalAmount ?? 0,
+            'total_count' => $totalCount ?? 0,
             'filter_start_date' => $startDate,
             'filter_end_date' => $endDate,
         ];

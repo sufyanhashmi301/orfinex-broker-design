@@ -331,6 +331,9 @@ class IBTransactionQueryService
             }
         }
         
+        // Get all quarter tables that might contain data in this date range
+        $quarterTables = self::getQuarterTablesForDateRange($startDate, $endDate);
+        
         $query = self::getUserIBTransactions($userId, $filters);
         
         if (!$query) {
@@ -342,10 +345,30 @@ class IBTransactionQueryService
             ];
         }
         
-        // Get summary data - Use direct calculation instead of fromSub to avoid union query issues
-        $allRecords = $query->get();
-        $totalAmount = $allRecords->sum('final_amount');
-        $totalCount = $allRecords->count();
+        // Get summary data - Use individual table queries to avoid union query issues with fromSub
+        $totalAmount = 0;
+        $totalCount = 0;
+        
+        foreach ($quarterTables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+            
+            $tableQuery = DB::table($tableName)
+                ->where('user_id', $userId)
+                ->where('type', 'ib_bonus')
+                ->whereBetween('created_at', [$startDate, $endDate]);
+            
+            // Apply filters to each table query
+            $tableQuery = self::applyFilters($tableQuery, $filters);
+            
+            // Get count and sum for this table
+            $tableCount = $tableQuery->count();
+            $tableSum = $tableQuery->sum('final_amount');
+            
+            $totalCount += $tableCount;
+            $totalAmount += $tableSum;
+        }
             
         return [
             'total_amount' => $totalAmount ?? 0,

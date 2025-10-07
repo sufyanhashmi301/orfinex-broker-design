@@ -342,17 +342,14 @@ class IBTransactionQueryService
             ];
         }
         
-        // Get summary data
-        $summary = DB::query()->fromSub($query, 'ib_transactions')
-            ->select([
-                DB::raw('COUNT(*) as total_count'),
-                DB::raw('SUM(CAST(final_amount AS DECIMAL(15,2))) as total_amount'),
-            ])
-            ->first();
+        // Get summary data - Use direct calculation instead of fromSub to avoid union query issues
+        $allRecords = $query->get();
+        $totalAmount = $allRecords->sum('final_amount');
+        $totalCount = $allRecords->count();
             
         return [
-            'total_amount' => $summary->total_amount ?? 0,
-            'total_count' => $summary->total_count ?? 0,
+            'total_amount' => $totalAmount ?? 0,
+            'total_count' => $totalCount ?? 0,
             'filter_start_date' => $startDate,
             'filter_end_date' => $endDate,
         ];

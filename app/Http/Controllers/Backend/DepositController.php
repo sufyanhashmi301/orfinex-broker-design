@@ -241,11 +241,32 @@ class DepositController extends Controller
         $data = Transaction::query()
             ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
             ->whereIn('type', [TxnType::ManualDeposit])
-            ->whereIn('user_id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('user_id', $accessibleUserIds);
 
         // Apply additional filters
         $data->applyFilters($filters);
+
+        // Select sortable projections for username, action_by and signed amount
+        $data = $data->select('transactions.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'transactions.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('admins')
+                    ->whereColumn('admins.id', 'transactions.action_by')
+                    ->selectRaw('MIN(admins.name)'),
+                'action_by_sort'
+            )
+            ->selectRaw("(
+                CASE
+                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                        THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                END
+            ) as signed_amount");
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -257,6 +278,17 @@ class DepositController extends Controller
             })
             ->addColumn('username', 'backend.transaction.include.__user')
             ->addColumn('action', 'backend.deposit.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('created_at', 'transactions.created_at $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('tnx', 'transactions.tnx $1')
+            ->orderColumn('target_id', 'transactions.target_id $1')
+            ->orderColumn('amount', 'signed_amount $1')
+            ->orderColumn('final_amount', 'signed_amount $1')
+            ->orderColumn('charge', 'transactions.charge $1')
+            ->orderColumn('method', 'transactions.method $1')
+            ->orderColumn('action_by', 'action_by_sort $1')
+            ->orderColumn('status', 'transactions.status $1')
             ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
             ->make(true);
     }
@@ -281,11 +313,32 @@ class DepositController extends Controller
                 $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Deposit);
             })
-            ->whereIn('user_id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('user_id', $accessibleUserIds);
 
         // ✅ Apply filters (if any)
         $data->applyFilters($filters);
+
+        // Select sortable projections for username, action_by and signed final amount
+        $data = $data->select('transactions.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'transactions.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('admins')
+                    ->whereColumn('admins.id', 'transactions.action_by')
+                    ->selectRaw('MIN(admins.name)'),
+                'action_by_sort'
+            )
+            ->selectRaw("(
+                CASE
+                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                        THEN -1 * CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                    ELSE CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                END
+            ) as signed_final_amount");
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -303,6 +356,17 @@ class DepositController extends Controller
             })
             ->addColumn('username', 'backend.transaction.include.__user')
             ->addColumn('action', 'backend.transaction.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('created_at', 'transactions.created_at $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('tnx', 'transactions.tnx $1')
+            ->orderColumn('target_id', 'transactions.target_id $1')
+            ->orderColumn('final_amount', 'signed_final_amount $1')
+            ->orderColumn('amount', 'signed_final_amount $1')
+            ->orderColumn('method', 'transactions.method $1')
+            ->orderColumn('charge', 'transactions.charge $1')
+            ->orderColumn('action_by', 'action_by_sort $1')
+            ->orderColumn('status', 'transactions.status $1')
             ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
             ->make(true);
     }

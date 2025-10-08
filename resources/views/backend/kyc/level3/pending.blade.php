@@ -108,6 +108,9 @@
     @endcan
     <!-- Modal for Pending KYC Details -->
 @endsection
+@section('style')
+    @include('components.datatables.sort-icons', ['selector' => '#pending-kyc-dataTable'])
+@endsection
 @section('script')
     <script>
         (function ($) {
@@ -121,6 +124,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'desc']],
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -146,10 +150,10 @@
                 },
                 columns: [
                     {data: 'updated_at', name: 'updated_at'},
-                    {data: 'user', name: 'user',orderable : false},
-                    {data: 'type', name: 'type',orderable : false},
-                    {data: 'status', name: 'status',orderable : false},
-                    {data: 'action', name: 'action',orderable : false},
+                    {data: 'user', name: 'user'},
+                    {data: 'type', name: 'type'},
+                    {data: 'status', name: 'status'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
             $('#filter').click(function () {

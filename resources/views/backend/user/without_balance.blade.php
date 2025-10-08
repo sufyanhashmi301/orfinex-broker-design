@@ -125,7 +125,9 @@
     @include('backend.user.include.__configure_modal')
     @include('backend.user.include.__reset_password')
 @endsection
-
+@section('style')
+    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
+@endsection
 @section('customers-script')
     <script>
         (function($) {
@@ -140,6 +142,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",

@@ -276,7 +276,9 @@
     <!-- Modal for Account unarchive -->
     @include('backend.investment.modal.__unarchive_account')
 @endsection
-
+@section('style')
+    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
+@endsection
 @section('script')
     @include('backend.investment.fx-js')
     <script>
@@ -291,6 +293,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",

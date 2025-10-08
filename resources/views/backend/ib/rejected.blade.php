@@ -117,7 +117,9 @@
     @include('backend.ib.modal.__ib_reject')
     @include('backend.ib.modal.__ib_detail')
 @endsection
-
+@section('style')
+    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
+@endsection
 @section('script')
     <script>
         (function ($) {
@@ -140,6 +142,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'desc']],
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",

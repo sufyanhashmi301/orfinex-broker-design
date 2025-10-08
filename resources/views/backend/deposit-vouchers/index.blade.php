@@ -49,6 +49,9 @@
     @include('backend.deposit-vouchers.include.__edit')
     @include('backend.deposit-vouchers.include.__delete')
 @endsection
+@section('style')
+    @include('components.datatables.sort-icons', ['selector' => '#deposit-vouchers-table'])
+@endsection
 
 @section('script')
 <script>
@@ -66,6 +69,7 @@
             searching: false,
             lengthChange: false,
             info: true,
+            order: [[3, 'desc']],
             language: {
                 lengthMenu: "Show _MENU_ entries",
                 info: "Showing _START_ to _END_ of _TOTAL_ entries",

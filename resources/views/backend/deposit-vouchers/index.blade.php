@@ -49,9 +49,6 @@
     @include('backend.deposit-vouchers.include.__edit')
     @include('backend.deposit-vouchers.include.__delete')
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#deposit-vouchers-table'])
-@endsection
 
 @section('script')
 <script>

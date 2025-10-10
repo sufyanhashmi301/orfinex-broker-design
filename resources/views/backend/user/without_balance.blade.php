@@ -125,9 +125,7 @@
     @include('backend.user.include.__configure_modal')
     @include('backend.user.include.__reset_password')
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
+
 @section('customers-script')
     <script>
         (function($) {

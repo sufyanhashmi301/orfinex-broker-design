@@ -113,6 +113,14 @@ class DepositController extends Controller
             $methodCode = $gateway->gateway_code . '-' . strtolower($input['currency']);
         }
 
+        // Prevent creating duplicate auto methods with the same gateway + currency
+        if (($input['type'] ?? null) === 'auto' && isset($methodCode)) {
+            if (DepositMethod::where('gateway_code', $methodCode)->exists()) {
+                notify()->error(__('This automatic method for the selected gateway and currency already exists.'), 'Error');
+                return redirect()->back()->withInput();
+            }
+        }
+
         $data = [
             'logo' => isset($input['logo']) ? self::imageUploadTrait($input['logo']) : null,
             'name' => $input['name'],

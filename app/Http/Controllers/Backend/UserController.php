@@ -2288,6 +2288,25 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
                 $staff->users()->syncWithoutDetaching([$user->id]);
             }
         }
+        // Send admin notification to configured user_site_email (system-created)
+        try {
+            $adminEmail = setting('user_site_email', 'global');
+            if (!empty($adminEmail)) {
+                $creator = auth()->user();
+                $creatorFullName = trim(($creator->first_name ?? '') . ' ' . ($creator->last_name ?? '')) ?: ($creator->name ?? '');
+                $shortcodes = [
+                    '[[full_name]]' => $user->first_name . ' ' . $user->last_name,
+                    '[[email]]' => $user->email,
+                    '[[created_by_name]]' => $creatorFullName,
+                    '[[created_by_email]]' => $creator->email ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+                $this->mailNotify($adminEmail, 'admin_new_user_registered_system', $shortcodes);
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send new user admin email: ' . $e->getMessage());
+        }
          notify()->success('Customer created successfully', 'success');
         // Redirect to the user index with success message
         return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');

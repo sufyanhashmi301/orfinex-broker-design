@@ -154,16 +154,16 @@ class MultiLevelRebateDistribution extends Command
             $walletId = $account->wallet_id;
             $description = "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login} of {$childUser->full_name}";
 // dd('sd');
-            // Check for duplicates
-            if (IBTransactionService::isDuplicate($userId, $childUserId, $description, $amount)) continue;
-            // C
+            // Check for duplicates in the correct period based on meta deal time
+            $dealPeriod = \App\Services\IBTransactionPeriodService::getCurrentPeriod($metaDeal->time);
+            if (IBTransactionService::isDuplicateInPeriod($userId, $childUserId, $description, $amount, $dealPeriod)) continue;
             // Create transaction
             $transaction = IBTransactionService::new(
                 $amount, 0, $amount, 'system',
                 $description,
                 TxnType::IbBonus, TxnStatus::Success, base_currency(),
                 $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
-                $description, $walletId, TxnTargetType::Wallet->value
+                'none', $walletId, TxnTargetType::Wallet->value, false, $metaDeal->time
             );
 // dd($transaction);
             $this->safeAddBalance($transaction);

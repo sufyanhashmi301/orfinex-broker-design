@@ -144,7 +144,6 @@
         }).DataTable({
             dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'ip>",
             paging: true,
-            ordering: true,
             info: true,
             searching: true,
             lengthChange: true,
@@ -160,6 +159,7 @@
             },
             serverSide: true,
             autoWidth: false,
+            order: [[1, 'asc']], // Sort by full_name column by default
             ajax: {
                 url: "{{ route('admin.staff.attachedUsers', $staff->id) }}",
                 data: function (d) {
@@ -171,14 +171,19 @@
                     data: 'id', 
                     render: function(data, type, row) {
                         return '<input type="checkbox" class="user-checkbox" value="'+data+'">';
-                    }, 
-                    orderable: false, 
-                    searchable: false,
-                    className: 'text-center'
+                    },
+                    className: 'text-center',
+                    orderable: false,
+                    searchable: false
                 },
-                { data: 'full_name', name: 'full_name' },
-                { data: 'email', name: 'email' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'full_name', name: 'full_name'},
+                { data: 'email', name: 'email'},
+                { 
+                    data: 'action', 
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
             ]
         });
 

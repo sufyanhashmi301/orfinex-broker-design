@@ -129,7 +129,6 @@
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -138,12 +137,9 @@
                         </table>
                     </div>
                 </div>
-                <div id="ib-processingIndicator"
-                    class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 hidden z-10">
-                    <div class="text-center">
-                        <iconify-icon class="spining-icon text-5xl dark:text-slate-100"
-                            icon="lucide:loader"></iconify-icon>
-                    </div>
+                <div class="processingIndicator text-center">
+                    {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
                 </div>
             </div>
         </div>
@@ -176,12 +172,13 @@
         $(document).ready(function() {
             const table = $('#user-ib-transaction-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('#ib-processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -243,9 +240,12 @@
                             data: 'status',
                             name: 'status'
                         },
+
                         {
                             data: 'action',
-                            name: 'action'
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         },
                     ]
                 });
@@ -341,20 +341,6 @@
                 $('#export-ib-bonus-symbol').val($('#ib-bonus-symbol').val());
                 $('#export-ib-bonus-date-filter').val($('#ib-bonus-date-filter').val());
                 $('#export-ib-bonus-created-at').val($('#ib-bonus-created-at').val());
-            });
-            // 👁️ Modal action
-            $('body').on('click', '#deposit-action', function() {
-                $('.deposit-action').empty();
-                const id = $(this).data('id');
-                $.ajax({
-                    url: '{{ route('admin.transactions.view', ':id') }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('.deposit-action').append(response);
-                        imagePreview();
-                        $('#transaction-action-modal').modal('show');
-                    }
-                });
             });
         });
         flatpickr(".flatpickr-master-ib", {

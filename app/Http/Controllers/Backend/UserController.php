@@ -97,41 +97,90 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();
-    $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+
         if (!empty($filters['global_search']) ){
-        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
-            $filters['phone'] = $filters['global_search'];
-            $filters['global_search'] = '';
+            if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+                $filters['phone'] = $filters['global_search'];
+                $filters['global_search'] = '';
+            }
         }
-    }
-$staffMembers = Admin::whereDoesntHave('roles', function($query) {
-    $query->where('name', 'Super-Admin');
-})->get();
-    if ($request->ajax()) {
-       $data = getAccessibleUserIds($filters);
 
-     if (!empty($filters['staff_name'])) {
-         $data = applyStaffNameFilter($data, $filters['staff_name']);
-     }
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
 
+        if ($request->ajax()) {
+            $data = getAccessibleUserIds($filters);
+
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
+            $data = $data->select('users.*')
+            ->selectSub(
+                ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+                    ->whereColumn('user_id', 'users.id')
+                    ->where('account_type', 'real')
+                    ->where('status', ForexAccountStatus::Ongoing),
+                'sum_balance'
+            )
+            ->selectSub(
+                ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+                    ->whereColumn('user_id', 'users.id')
+                    ->where('account_type', 'real')
+                    ->where('status', ForexAccountStatus::Ongoing),
+                'sum_equity'
+            )
+            ->selectSub(
+                ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+                    ->whereColumn('user_id', 'users.id')
+                    ->where('account_type', 'real')
+                    ->where('status', ForexAccountStatus::Ongoing),
+                'sum_credit'
+            )
+            ->selectSub(
+                DB::table('admins')
+                    ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+                    ->whereColumn('staff_user.user_id', 'users.id')
+                    ->selectRaw('MIN(CONCAT(admins.first_name, " ", admins.last_name))'),
+                'staff_name_sort'
+            )
+            ->selectSub(
+                DB::table('branches')
+                    ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+                    ->whereColumn('user_metas.user_id', 'users.id')
+                    ->where('user_metas.meta_key', 'branch_id')
+                    ->selectRaw('MIN(branches.name)'),
+                'branch_name_sort'
+            );
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-            })
-            ->editColumn('kyc', 'backend.user.include.__kyc')
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-            ->addColumn('branch_name', function ($row) {
-                return view('backend.user.include.__branch', compact('row'))->render();
-            })
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                // Server-side ordering mappings
+                ->orderColumn('username', 'users.first_name $1')
+                ->orderColumn('country', 'users.country $1')
+                ->orderColumn('status', 'users.status $1')
+                ->orderColumn('kyc', 'users.kyc $1')
+                ->orderColumn('balance', 'sum_balance $1')
+                ->orderColumn('equity', 'sum_equity $1')
+                ->orderColumn('credit', 'sum_credit $1')
+                ->orderColumn('staff_name', 'staff_name_sort $1')
+                ->orderColumn('branch_name', 'branch_name_sort $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
         
@@ -139,41 +188,29 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
     }
 
     public function export(Request $request, $type = null)
-{
-    switch ($type) {
-        case 'active':
-            return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
-        case 'disabled':
-            return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
-        case 'withbalance':
-            return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
-        case 'withoutbalance':
-            return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
-        case 'refferal':
-            // Only for referral exports we need user_id
-            $userId = $request->user_id;
-            if (!$userId) {
-                return back()->with('error', 'User ID is required for referral export');
-            }
-            $user = User::find($userId);
-            if (!$user) {
-                return back()->with('error', 'User not found');
-            }
-            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
-            return Excel::download(new RefferalUsersExport($userId), $fileName);
-        case 'transaction':
-            // Only for transaction exports we need user_id
-            $userId = $request->user_id;
-            if (!$userId) {
-                return back()->with('error', 'User ID is required for transaction export');
-            }
-            $user = User::find($userId);
-            if (!$user) {
-                return back()->with('error', 'User not found');
-            }
-            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
-            return Excel::download(new TransactionsUsersExport($userId), $fileName);
-        case 'ibtransaction':
+    {
+        switch ($type) {
+            case 'active':
+                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
+            case 'disabled':
+                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+            case 'withbalance':
+                return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
+            case 'withoutbalance':
+                return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
+            case 'refferal':
+                // Only for referral exports we need user_id
+                $userId = $request->user_id;
+                if (!$userId) {
+                    return back()->with('error', 'User ID is required for referral export');
+                }
+                $user = User::find($userId);
+                if (!$user) {
+                    return back()->with('error', 'User not found');
+                }
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
+                return Excel::download(new RefferalUsersExport($userId), $fileName);
+            case 'transaction':
                 // Only for transaction exports we need user_id
                 $userId = $request->user_id;
                 if (!$userId) {
@@ -183,22 +220,34 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 if (!$user) {
                     return back()->with('error', 'User not found');
                 }
-                
-            // Get filter parameters
-            $filters = [
-                'login' => $request->login,
-                'deal' => $request->deal,
-                'symbol' => $request->symbol,
-                'date_filter' => $request->date_filter,
-                'created_at' => $request->created_at,
-            ];
-                
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
+                return Excel::download(new TransactionsUsersExport($userId), $fileName);
+            case 'ibtransaction':
+                    // Only for transaction exports we need user_id
+                    $userId = $request->user_id;
+                    if (!$userId) {
+                        return back()->with('error', 'User ID is required for transaction export');
+                    }
+                    $user = User::find($userId);
+                    if (!$user) {
+                        return back()->with('error', 'User not found');
+                    }
+                    
+                // Get filter parameters
+                $filters = [
+                    'login' => $request->login,
+                    'deal' => $request->deal,
+                    'symbol' => $request->symbol,
+                    'date_filter' => $request->date_filter,
+                    'created_at' => $request->created_at,
+                ];
+                    
                 $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
                 return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
-        default:
-            return Excel::download(new UsersExport($request), 'users.xlsx');
+            default:
+                return Excel::download(new UsersExport($request), 'users.xlsx');
+        }
     }
-}
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -210,18 +259,57 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
         if (!empty($filters['global_search']) ){
-        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
-            $filters['phone'] = $filters['global_search'];
-            $filters['global_search'] = '';
+            if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+                $filters['phone'] = $filters['global_search'];
+                $filters['global_search'] = '';
+            }
         }
-    }
-         $filters['status'] = 1;
+        $filters['status'] = 1;
         if ($request->ajax()) {
 
             $data = getAccessibleUserIds($filters);
-if (!empty($filters['staff_name'])) {
-            $data = applyStaffNameFilter($data, $filters['staff_name']);
-        }
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
+            
+            // Prepare sortable computed columns
+            $data = $data->select('users.*')
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_balance'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_equity'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_credit'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+                        ->whereColumn('staff_user.user_id', 'users.id')
+                        ->selectRaw("MIN(CONCAT(admins.first_name, ' ', admins.last_name))"),
+                    'staff_name_sort'
+                    )
+                    ->selectSub(
+                        DB::table('branches')
+                            ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+                            ->whereColumn('user_metas.user_id', 'users.id')
+                            ->where('user_metas.meta_key', 'branch_id')
+                            ->selectRaw('MIN(branches.name)'),
+                        'branch_name_sort'
+                );
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -238,7 +326,17 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                // Server-side ordering mappings
+                ->orderColumn('username', 'users.first_name $1')
+                ->orderColumn('country', 'users.country $1')
+                ->orderColumn('status', 'users.status $1')
+                ->orderColumn('kyc', 'users.kyc $1')
+                ->orderColumn('balance', 'sum_balance $1')
+                ->orderColumn('equity', 'sum_equity $1')
+                ->orderColumn('credit', 'sum_credit $1')
+                ->orderColumn('staff_name', 'staff_name_sort $1')
+                ->orderColumn('branch_name', 'branch_name_sort $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'branch_name', 'credit', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
         $staffMembers = Admin::whereDoesntHave('roles', function($query) {
@@ -246,6 +344,7 @@ if (!empty($filters['staff_name'])) {
         })->get();
         return view('backend.user.active_user', compact('staffMembers'));
     }
+
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -269,6 +368,44 @@ if (!empty($filters['staff_name'])) {
  if (!empty($filters['staff_name'])) {
               $data = applyStaffNameFilter($data, $filters['staff_name']);
           }
+            // Prepare sortable computed columns
+            $data = $data->select('users.*')
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_balance'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_equity'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_credit'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+                        ->whereColumn('staff_user.user_id', 'users.id')
+                        ->selectRaw("MIN(CONCAT(admins.first_name, ' ', admins.last_name))"),
+                    'staff_name_sort'
+                    )
+                    ->selectSub(
+                        DB::table('branches')
+                            ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+                            ->whereColumn('user_metas.user_id', 'users.id')
+                            ->where('user_metas.meta_key', 'branch_id')
+                            ->selectRaw('MIN(branches.name)'),
+                        'branch_name_sort'
+                );
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -285,7 +422,17 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                // Server-side ordering mappings
+                ->orderColumn('username', 'users.first_name $1')
+                ->orderColumn('country', 'users.country $1')
+                ->orderColumn('status', 'users.status $1')
+                ->orderColumn('kyc', 'users.kyc $1')
+                ->orderColumn('balance', 'sum_balance $1')
+                ->orderColumn('equity', 'sum_equity $1')
+                ->orderColumn('credit', 'sum_credit $1')
+                ->orderColumn('staff_name', 'staff_name_sort $1')
+                ->orderColumn('branch_name', 'branch_name_sort $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name','staff_name', 'status', 'action'])
                 ->make(true);
         }
 
@@ -296,7 +443,6 @@ if (!empty($filters['staff_name'])) {
         
         return view('backend.user.disabled_user', compact('staffMembers'));
     }
-
     public function withBalance(Request $request)
     {
         $loggedInUser = auth()->user();
@@ -339,7 +485,44 @@ if (!empty($filters['staff_name'])) {
         if (!empty($filters['staff_name'])) {
             $data = applyStaffNameFilter($data, $filters['staff_name']);
             }
-
+ // Prepare sortable computed columns
+ $data = $data->select('users.*')
+ ->selectSub(
+     ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+         ->whereColumn('user_id', 'users.id')
+         ->where('account_type', 'real')
+         ->where('status', ForexAccountStatus::Ongoing),
+     'sum_balance'
+ )
+ ->selectSub(
+     ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+         ->whereColumn('user_id', 'users.id')
+         ->where('account_type', 'real')
+         ->where('status', ForexAccountStatus::Ongoing),
+     'sum_equity'
+ )
+ ->selectSub(
+     ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+         ->whereColumn('user_id', 'users.id')
+         ->where('account_type', 'real')
+         ->where('status', ForexAccountStatus::Ongoing),
+     'sum_credit'
+ )
+ ->selectSub(
+     DB::table('admins')
+         ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+         ->whereColumn('staff_user.user_id', 'users.id')
+         ->selectRaw("MIN(CONCAT(admins.first_name, ' ', admins.last_name))"),
+     'staff_name_sort'
+     )
+     ->selectSub(
+         DB::table('branches')
+             ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+             ->whereColumn('user_metas.user_id', 'users.id')
+             ->where('user_metas.meta_key', 'branch_id')
+             ->selectRaw('MIN(branches.name)'),
+         'branch_name_sort'
+ );
         return Datatables::of($data->latest())
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -357,6 +540,16 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
+                 // Server-side ordering mappings
+            ->orderColumn('username', 'users.first_name $1')
+            ->orderColumn('country', 'users.country $1')
+            ->orderColumn('status', 'users.status $1')
+            ->orderColumn('kyc', 'users.kyc $1')
+            ->orderColumn('balance', 'sum_balance $1')
+            ->orderColumn('equity', 'sum_equity $1')
+            ->orderColumn('credit', 'sum_credit $1')
+            ->orderColumn('staff_name', 'staff_name_sort $1')
+            ->orderColumn('branch_name', 'branch_name_sort $1')
             ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
@@ -406,6 +599,45 @@ if (!empty($filters['staff_name'])) {
             $data = applyStaffNameFilter($data, $filters['staff_name']);
             }
 
+            // Prepare sortable computed columns
+            $data = $data->select('users.*')
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_balance'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_equity'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_credit'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+                        ->whereColumn('staff_user.user_id', 'users.id')
+                        ->selectRaw("MIN(CONCAT(admins.first_name, ' ', admins.last_name))"),
+                    'staff_name_sort'
+                    )
+                    ->selectSub(
+                        DB::table('branches')
+                            ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+                            ->whereColumn('user_metas.user_id', 'users.id')
+                            ->where('user_metas.meta_key', 'branch_id')
+                            ->selectRaw('MIN(branches.name)'),
+                        'branch_name_sort'
+                );
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -422,6 +654,16 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('username', 'users.first_name $1')
+                ->orderColumn('country', 'users.country $1')
+                ->orderColumn('status', 'users.status $1')
+                ->orderColumn('kyc', 'users.kyc $1')
+                ->orderColumn('balance', 'sum_balance $1')
+                ->orderColumn('equity', 'sum_equity $1')
+                ->orderColumn('credit', 'sum_credit $1')
+                ->orderColumn('staff_name', 'staff_name_sort $1')
+                ->orderColumn('branch_name', 'branch_name_sort $1')
                 ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
                 ->make(true);
         }
@@ -461,6 +703,45 @@ if (!empty($filters['staff_name'])) {
             $data = applyStaffNameFilter($data, $filters['staff_name']);
         }
 
+            // Prepare sortable computed columns
+            $data = $data->select('users.*')
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(balance), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_balance'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(equity), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_equity'
+                )
+                ->selectSub(
+                    ForexAccount::selectRaw('COALESCE(SUM(credit), 0)')
+                        ->whereColumn('user_id', 'users.id')
+                        ->where('account_type', 'real')
+                        ->where('status', ForexAccountStatus::Ongoing),
+                    'sum_credit'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->join('staff_user', 'admins.id', '=', 'staff_user.staff_id')
+                        ->whereColumn('staff_user.user_id', 'users.id')
+                        ->selectRaw("MIN(CONCAT(admins.first_name, ' ', admins.last_name))"),
+                    'staff_name_sort'
+                    )
+                    ->selectSub(
+                        DB::table('branches')
+                            ->join('user_metas', 'branches.id', '=', 'user_metas.meta_value')
+                            ->whereColumn('user_metas.user_id', 'users.id')
+                            ->where('user_metas.meta_key', 'branch_id')
+                            ->selectRaw('MIN(branches.name)'),
+                        'branch_name_sort'
+                );
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
@@ -478,6 +759,15 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('kyc', 'backend.user.include.__kyc')
 //                ->editColumn('status', 'backend.user.include.__status')
                ->addColumn('action', 'backend.user.include.__grace_action')
+                // Server-side ordering mappings
+                ->orderColumn('username', 'users.first_name $1')
+                ->orderColumn('country', 'users.country $1')
+                ->orderColumn('kyc', 'users.kyc $1')
+                ->orderColumn('balance', 'sum_balance $1')
+                ->orderColumn('equity', 'sum_equity $1')
+                ->orderColumn('credit', 'sum_credit $1')
+                ->orderColumn('staff_name', 'staff_name_sort $1')
+                ->orderColumn('branch_name', 'branch_name_sort $1')
                 ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
                 ->make(true);
         }
@@ -1664,10 +1954,11 @@ if (!empty($filters['staff_name'])) {
     public function transaction($id, Request $request)
     {
         if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)
-                ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
-                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
-                ->latest();
+            $data = Transaction::where('transactions.user_id', $id)
+                ->where('transactions.type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->where('transactions.status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
+                ->with('staff') // Eager load staff relationship
+                ->select('transactions.*'); // Required for proper join ordering
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -1676,6 +1967,11 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
                 ->addColumn('action_by', function ($row) {
                     return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->orderColumn('action_by', function ($query, $direction) {
+                    $query->leftJoin('admins as staff_admins', 'transactions.action_by', '=', 'staff_admins.id')
+                        ->orderBy('staff_admins.name', $direction)
+                        ->select('transactions.*');
                 })
                 ->rawColumns(['status', 'type','action_by', 'final_amount'])
                 ->make(true);
@@ -1735,14 +2031,7 @@ if (!empty($filters['staff_name'])) {
                 }
                 return '-';
             })
-            ->addColumn('action', function ($row) {
-                return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                            <button class="action-btn" data-bs-toggle="tooltip" title="View Details">
-                                <iconify-icon icon="lucide:eye"></iconify-icon>
-                            </button>
-                        </span>';
-            })
-            ->rawColumns(['status', 'created_at', 'type', 'final_amount', 'deal_info', 'action'])
+            ->rawColumns(['status', 'created_at', 'type', 'final_amount', 'deal_info'])
             ->with([
                 'summary' => [
                     'ib_balance' => number_format($lifetimeIBBalance, 2),

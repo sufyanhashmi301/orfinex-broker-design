@@ -83,6 +83,27 @@ class   AccountsController extends Controller
 
     // Return Datatables if Ajax
     if ($request->ajax()) {
+        // Prepare sortable computed columns
+        $data = $data->select('forex_accounts.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'forex_accounts.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'forex_accounts.user_id')
+                    ->selectRaw('MIN(users.ib_login)'),
+                'ib_login_sort'
+            )
+            ->selectSub(
+                DB::table('forex_schemas')
+                    ->whereColumn('forex_schemas.id', 'forex_accounts.forex_schema_id')
+                    ->selectRaw('MIN(forex_schemas.title)'),
+                'schema_title_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('ib_number', 'backend.user.include.__ib_number')
@@ -98,6 +119,17 @@ class   AccountsController extends Controller
             })
             ->addColumn('status', 'backend.investment.include.__status')
             ->addColumn('action', 'backend.investment.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('login', 'CAST(forex_accounts.login AS UNSIGNED) $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('schema', 'schema_title_sort $1')
+            ->orderColumn('group', 'forex_accounts.group $1')
+            ->orderColumn('currency', 'forex_accounts.currency $1')
+            ->orderColumn('leverage', 'forex_accounts.leverage $1')
+            ->orderColumn('balance', 'forex_accounts.balance $1')
+            ->orderColumn('ib_number', 'ib_login_sort $1')
+            ->orderColumn('status', 'forex_accounts.status $1')
+            ->orderColumn('created_at', 'forex_accounts.created_at $1')
             ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
             ->make(true);
     }

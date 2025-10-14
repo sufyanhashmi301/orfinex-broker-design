@@ -59,6 +59,7 @@ class IBTransactionService
 
     public static function new($amount, $charge, $finalAmount, $method, $description, string|TxnType $type, string|TxnStatus $status, $currency = null, $payAmount = null, $userId = null, $fromUserId = null, $relatedModel = 'User', array $manualFieldData = [], string $approvalCause = 'none', $targetId = null, $targetType = null, $isLevel = false, $transactionDate = null)
     {
+        // dd($transactionDate);
         // Use provided transaction date or current date
         $transactionDate = $transactionDate ? Carbon::parse($transactionDate) : Carbon::now();
         $currentPeriod = IBTransactionPeriodService::getCurrentPeriod($transactionDate);
@@ -81,7 +82,7 @@ class IBTransactionService
         //     }
         // }
 
-        $tnx = uniqid('IB');
+        $tnx = uniqid('IBX');
         // dd($tnx);
 
         // Use database transaction to ensure data consistency
@@ -107,7 +108,7 @@ class IBTransactionService
                 'approval_cause' => $approvalCause,
                 'status' => $status,
                 'created_at' => $transactionDate->toDateTimeString(),
-                'updated_at' => $transactionDate->toDateTimeString()
+                'updated_at' => Carbon::now()->toDateTimeString()
             ]);
 
         });

@@ -22,6 +22,7 @@ use App\Models\Level;
 use App\Models\Transaction;
 use App\Services\WalletService;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -39,7 +40,7 @@ class MultiLevelRebateDistribution extends Command
     {
         try {
             ReferralRelationship::with('referralLink')
-                ->chunkById(500, function ($referrals) {
+                ->chunkById(10, function ($referrals) {
                     foreach ($referrals as $referral) {
                         try {
                             ProcessReferralRebate::dispatch($referral->id);
@@ -112,7 +113,7 @@ class MultiLevelRebateDistribution extends Command
                 'symbol' => $deal->Symbol,
                 'volume' => $deal->Volume,
                 'volume_closed' => $deal->VolumeClosed,
-                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
+                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 8, RoundingMode::HALF_UP),
                 'time' => $deal->Time
             ]);
 // dd($metaDeal);
@@ -141,13 +142,13 @@ class MultiLevelRebateDistribution extends Command
 
         $hierarchy = array_reverse($hierarchy);
         $childUser = User::find($childUserId);
-
+// dd($hierarchy);
         foreach ($hierarchy as $index => $userId) {
             $levelIndex = ++$index;
             if (!isset($distribution[$levelIndex]) || $distribution[$levelIndex] <= 0) continue;
 
             $share = $distribution[$levelIndex];
-            $amount = $share * $metaDeal->lot_share;
+            $amount = BigDecimal::of($share)->multipliedBy(BigDecimal::of($metaDeal->lot_share))->toFloat();
 
             $account = get_user_account($userId, AccountBalanceType::IB_WALLET);
             $walletId = $account->wallet_id;
@@ -190,7 +191,7 @@ class MultiLevelRebateDistribution extends Command
                     $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
 // dd($ledgerBalance,$transaction);
                     if ($transaction->target_type == TxnTargetType::Wallet->value) {
-                        $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount));
+                    $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount))->toFloat();
                         $account->save();
                         
                         // Update user's ib_balance column

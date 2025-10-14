@@ -129,7 +129,6 @@
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -243,10 +242,6 @@
                             data: 'status',
                             name: 'status'
                         },
-                        {
-                            data: 'action',
-                            name: 'action'
-                        },
                     ]
                 });
 
@@ -341,20 +336,6 @@
                 $('#export-ib-bonus-symbol').val($('#ib-bonus-symbol').val());
                 $('#export-ib-bonus-date-filter').val($('#ib-bonus-date-filter').val());
                 $('#export-ib-bonus-created-at').val($('#ib-bonus-created-at').val());
-            });
-            // 👁️ Modal action
-            $('body').on('click', '#deposit-action', function() {
-                $('.deposit-action').empty();
-                const id = $(this).data('id');
-                $.ajax({
-                    url: '{{ route('admin.transactions.view', ':id') }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('.deposit-action').append(response);
-                        imagePreview();
-                        $('#transaction-action-modal').modal('show');
-                    }
-                });
             });
         });
         flatpickr(".flatpickr-master-ib", {

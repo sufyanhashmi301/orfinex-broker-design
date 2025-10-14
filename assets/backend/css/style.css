@@ -156,7 +156,7 @@
     flex-direction: column;
     min-height: calc(100vh - 385px);
 }
-#processingIndicator {
+#processingIndicator, .processingIndicator {
     position: absolute;
     top: calc(50% - 54px);
     left: calc(50% - 54px);

@@ -138,12 +138,9 @@
                         </table>
                     </div>
                 </div>
-                <div id="ib-processingIndicator"
-                    class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 hidden z-10">
-                    <div class="text-center">
-                        <iconify-icon class="spining-icon text-5xl dark:text-slate-100"
-                            icon="lucide:loader"></iconify-icon>
-                    </div>
+                <div class="processingIndicator text-center">
+                    {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
                 </div>
             </div>
         </div>
@@ -176,12 +173,13 @@
         $(document).ready(function() {
             const table = $('#user-ib-transaction-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('#ib-processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -245,7 +243,9 @@
                         },
                         {
                             data: 'action',
-                            name: 'action'
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         },
                     ]
                 });

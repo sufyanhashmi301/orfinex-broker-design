@@ -87,12 +87,13 @@ class WalletService
 
         $ledger->credit = $transaction->amount;
         $ledger->account_id = $accountId;
-        $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
-//dd($balance,$ledgerBalance);
-        if ($balance < BigDecimal::of(0.00)) {
-//            dd($balance);
+        $balanceDecimal = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
+        
+        if ($balanceDecimal->isLessThan(BigDecimal::of(0.00))) {
             throw new \Exception(__("Unprocessable transaction."));
         }
+        
+        $balance = $balanceDecimal->toFloat();
 
         $ledger->balance = $balance;
 //        dd($ledger);
@@ -118,12 +119,14 @@ class WalletService
         $ledger->account_id = $account->id;
 
         // Deduct the amount from the ledger balance
-        $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
-//dd($balance);
+        $balanceDecimal = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
+        
         // Ensure that balance does not go below zero
-        if ($balance->isLessThan(BigDecimal::of(0.00))) {
+        if ($balanceDecimal->isLessThan(BigDecimal::of(0.00))) {
             throw new \Exception(__("Unprocessable transaction. Insufficient balance."));
         }
+        
+        $balance = $balanceDecimal->toFloat();
 
         // Update the balance in the ledger
         $ledger->balance = $balance;
@@ -144,21 +147,13 @@ class WalletService
         $ledger = Ledger::where('account_id', $transaction->account_to)->orderBy('id', 'DESC')->first();
         $ledger->account_id = $transaction->account_to;
 //            dd($ledgerBalance,BigDecimal::of($transaction->total));
-        $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->total));
-//            dd($ledgerBalance,$balance);
-//        }
-//
-//        if ($transaction->calc == TransactionCalcType::CREDIT) {
-//            $ledger->credit = $transaction->total;
-//            $ledger->account_id = $transaction->account_to;
-//            $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
-//        }
-//        dd($balance,BigDecimal::of(0.00));
-
-        if ($balance < BigDecimal::of(0.00)) {
-//            dd($balance);
+        $balanceDecimal = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->total));
+        
+        if ($balanceDecimal->isLessThan(BigDecimal::of(0.00))) {
             throw new \Exception(__("Unprocessable transaction."));
         }
+        
+        $balance = $balanceDecimal->toFloat();
 
         $ledger->balance = $balance;
 //        dd($ledger);

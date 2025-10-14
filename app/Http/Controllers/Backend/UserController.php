@@ -2021,14 +2021,7 @@ if (!empty($filters['staff_name'])) {
                 }
                 return '-';
             })
-            ->addColumn('action', function ($row) {
-                return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
-                            <button class="action-btn" data-bs-toggle="tooltip" title="View Details">
-                                <iconify-icon icon="lucide:eye"></iconify-icon>
-                            </button>
-                        </span>';
-            })
-            ->rawColumns(['status', 'created_at', 'type', 'final_amount', 'deal_info', 'action'])
+            ->rawColumns(['status', 'created_at', 'type', 'final_amount', 'deal_info'])
             ->with([
                 'summary' => [
                     'ib_balance' => number_format($lifetimeIBBalance, 2),

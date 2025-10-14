@@ -20,7 +20,7 @@
                 @endcan
             </div>
         </div>
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -45,6 +45,10 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="processingIndicator text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
         </div>
     </div>
@@ -112,36 +116,38 @@
     <script>
         (function ($) {
             "use strict";
-            var table = $('#user-forex-account-dataTable').DataTable();
-            table.destroy();
-            var table = $('#user-forex-account-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+            var table = $('#user-forex-account-dataTable')
+                .on('processing.dt', function(e, settings, processing) {
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
+                }).DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    searching: false,
+                    lengthChange: false,
+                    info: true,
+                    order: [[0, 'desc']],
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:"
                     },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.forex-accounts',['type'=>'real',$user->id]) }}",
-                columns: [
-                    // {data: 'icon', name: 'icon'},
-                    {data: 'schema', name: 'schema'},
-                    {data: 'login', name: 'login'},
-                    {data: 'group', name: 'group'},
-                    {data: 'balance', name: 'balance'},
-                    {data: 'equity', name: 'equity'},
-                    {data: 'credit', name: 'credit'},
-                    {data: 'action', name: 'action'},
-                ]
+                    processing: true,
+                    serverSide: true,
+                    autoWidth: false,
+                    ajax: "{{ route('admin.forex-accounts',['type'=>'real',$user->id]) }}",
+                    columns: [
+                        // {data: 'icon', name: 'icon'},
+                        {data: 'schema', name: 'schema'},
+                        {data: 'login', name: 'login'},
+                        {data: 'group', name: 'group'},
+                        {data: 'balance', name: 'balance'},
+                        {data: 'equity', name: 'equity'},
+                        {data: 'credit', name: 'credit'},
+                        {data: 'action', name: 'action'},
+                    ]
             });
         })(jQuery);
 

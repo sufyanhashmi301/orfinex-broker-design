@@ -418,6 +418,13 @@
 
             // Phone field initialization is handled in __basic_info.blade.php
             // No duplicate initialization needed here
+
+            // Clear admin key input when modal is shown
+            $('#deleteConfirmationModall').on('shown.bs.modal', function() {
+                $('#admin_key').val('').removeClass('is-invalid');
+                $('#admin-key-error').hide().text('');
+            });
+
         });
 
         $('#bonus-form').on('submit', function() {

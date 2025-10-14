@@ -108,9 +108,7 @@
     @endcan
     <!-- Modal for Pending KYC Details -->
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#pending-kyc-dataTable'])
-@endsection
+
 @section('script')
     <script>
         (function ($) {

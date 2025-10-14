@@ -114,9 +114,7 @@
     @include('backend.ib.modal.__ib_reject')
     @include('backend.ib.modal.__ib_detail')
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
+
 @section('script')
     <script>
         (function ($) {

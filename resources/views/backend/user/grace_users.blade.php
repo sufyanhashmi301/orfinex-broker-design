@@ -128,9 +128,7 @@
     @endcan
     <!-- Modal for Send Email-->
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
+
 @section('customers-script')
     <script>
         (function($) {

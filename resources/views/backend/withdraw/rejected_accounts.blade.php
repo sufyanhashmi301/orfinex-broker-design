@@ -95,9 +95,7 @@
         </div>
     </div>
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
+
 @section('script')
     <script>
         (function ($) {

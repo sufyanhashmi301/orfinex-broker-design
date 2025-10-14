@@ -321,7 +321,9 @@ class ReferralController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('ref_id', $id)->latest();
+            $data = User::where('users.ref_id', $id)
+                ->with('realTradingAccounts') // Eager load to prevent N+1
+                ->select('users.*');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -343,9 +345,12 @@ class ReferralController extends Controller
                         return "Login: {$account->login}, Balance: " . (is_numeric($equity) ? number_format($equity, 2) : $equity);
                     })->implode('<br>');
                 })
-
                 ->editColumn('balance', 'backend/user/include/__total_balance_mt5')
                 ->addColumn('action', 'backend.user.include.__direct_referral_action')
+                ->orderColumn('avatar', function ($query, $direction) {
+                    $query->orderBy('users.first_name', $direction)
+                          ->orderBy('users.last_name', $direction);
+                })
                 ->rawColumns(['avatar', 'kyc','real_forex_accounts','balance', 'status', 'action'])
                 ->make(true);
         }

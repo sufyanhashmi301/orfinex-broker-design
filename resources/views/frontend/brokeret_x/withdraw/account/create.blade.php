@@ -145,12 +145,27 @@
                 withdrawAccountOtp: @json($withdrawAccountOtp ?? false),
                 twoFaEnabledForUser: @json($twoFaEnabledForUser ?? false),
   
-                otpInput: '',
+                otpInputs: ['', '', '', ''],  // 4-digit OTP
                 isResendingOtp: false,
+                
+                // OTP Timer
+                otpExpiryTime: @json(setting('withdraw_otp_expires', 'withdraw_settings') ?? 10) * 60,  // in seconds
+                otpTimer: null,
                 
                 // Google Authenticator inputs
                 gaInputs: ['', '', '', '', '', ''],
                 
+                init() {
+                    // Watch OTP modal state
+                    this.$watch('isOtpModalOpen', (value) => {
+                        if (value) {
+                            this.startOtpTimer();
+                        } else {
+                            this.stopOtpTimer();
+                        }
+                    });
+                },
+
                 async loadMethodFields() {
                     // Clear previous state
                     this.methodFields = null;
@@ -327,6 +342,18 @@
                         
                         if (data.status === 'success') {
                             notify().success(data.message);
+                            
+                            // Reset timer when new OTP sent
+                            this.startOtpTimer();
+                            
+                            // Clear inputs for new code
+                            this.otpInputs = ['', '', '', ''];
+                            
+                            // Focus first input
+                            this.$nextTick(() => {
+                                const firstInput = document.querySelector('[data-otp-index="0"]');
+                                if (firstInput) firstInput.focus();
+                            });
                         } else {
                             notify().error(data.message || 'Failed to resend OTP');
                         }
@@ -339,8 +366,10 @@
                 },
 
                 async submitOtp() {
-                    if (!this.otpInput || this.otpInput.length < 4) {
-                        notify().error('Please enter a valid OTP');
+                    const otpCode = this.otpInputs.join('');
+                    
+                    if (otpCode.length !== 4) {
+                        notify().error('Please enter the complete 4-digit code');
                         return;
                     }
                     
@@ -352,7 +381,7 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             body: JSON.stringify({
-                                otp: this.otpInput
+                                verification_code: otpCode
                             })
                         });
                         
@@ -369,20 +398,48 @@
                         
                         if (data.status === 'success') {
                             this.isOtpModalOpen = false;
-                            this.otpInput = '';
+                            this.otpInputs = ['', '', '', ''];
                             
                             notify().success(data.message);
                             
                             // Submit the form after successful verification
                             this.submitFormAfterVerification();
                         } else {
-                            notify().error(data.message || 'OTP verification failed');
-                            this.otpInput = '';
+                            // Handle error response from backend
+                            const errorMessage = data.message || 'OTP verification failed';
+                            notify().error(errorMessage);
+                            
+                            // Check if session expired
+                            if (data.expired && data.redirect) {
+                                setTimeout(() => {
+                                    notify().warning('{{ __("Redirecting to form...") }}');
+                                    window.location.href = data.redirect;
+                                }, 2000);
+                                return;
+                            }
+                            
+                            // Clear inputs on error
+                            this.otpInputs = ['', '', '', ''];
+                            
+                            // Focus first input for re-entry
+                            this.$nextTick(() => {
+                                const firstInput = document.querySelector('[data-otp-index="0"]');
+                                if (firstInput) firstInput.focus();
+                            });
+                            
+                            // If OTP expired, suggest resending
+                            if (errorMessage.toLowerCase().includes('expired') && !data.expired) {
+                                setTimeout(() => {
+                                    if (confirm('{{ __("OTP has expired. Would you like to request a new one?") }}')) {
+                                        this.resendOtp();
+                                    }
+                                }, 500);
+                            }
                         }
                     } catch (error) {
                         console.error('OTP verification error:', error);
                         notify().error('An error occurred during OTP verification. Please try again.');
-                        this.otpInput = '';
+                        this.otpInputs = ['', '', '', ''];
                     }
                 },
 
@@ -395,9 +452,105 @@
                     this.isOtpModalOpen = false;
                     this.isCancelModalOpen = false;
                     this.modals.ga = false;
-                    this.otpInput = '';
+                    this.otpInputs = ['', '', '', ''];
                     this.gaInputs = ['', '', '', '', '', ''];
                     this.selectedVerificationMethod = null;
+                    this.stopOtpTimer();
+                },
+
+                // OTP Timer methods
+                startOtpTimer() {
+                    // Reset timer
+                    this.otpExpiryTime = @json(setting('withdraw_otp_expires', 'withdraw_settings') ?? 10) * 60;
+                    
+                    // Clear existing timer if any
+                    if (this.otpTimer) {
+                        clearInterval(this.otpTimer);
+                    }
+                    
+                    // Start countdown
+                    this.otpTimer = setInterval(() => {
+                        if (this.otpExpiryTime > 0) {
+                            this.otpExpiryTime--;
+                        } else {
+                            this.stopOtpTimer();
+                        }
+                    }, 1000);
+                },
+
+                stopOtpTimer() {
+                    if (this.otpTimer) {
+                        clearInterval(this.otpTimer);
+                        this.otpTimer = null;
+                    }
+                },
+
+                formatTime(seconds) {
+                    const minutes = Math.floor(seconds / 60);
+                    const secs = seconds % 60;
+                    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+                },
+
+                // OTP input handling methods
+                updateOtpInput(index, value) {
+                    // Only allow digits
+                    if (!/^\d*$/.test(value)) return;
+                    
+                    this.otpInputs[index] = value;
+                    
+                    // Auto-focus next input
+                    if (value && index < 3) {
+                        const nextInput = document.querySelector(`[data-otp-index="${index + 1}"]`);
+                        if (nextInput) nextInput.focus();
+                    }
+                    
+                    // Auto-submit when all 4 digits entered
+                    if (index === 3 && value && this.otpInputs.every(digit => digit !== '')) {
+                        this.$nextTick(() => {
+                            this.submitOtp();
+                        });
+                    }
+                },
+
+                handleOtpKeydown(index, event) {
+                    // Handle backspace
+                    if (event.key === 'Backspace' && !this.otpInputs[index] && index > 0) {
+                        const prevInput = document.querySelector(`[data-otp-index="${index - 1}"]`);
+                        if (prevInput) {
+                            prevInput.focus();
+                            this.otpInputs[index - 1] = '';
+                        }
+                    }
+                    
+                    // Handle arrow keys
+                    if (event.key === 'ArrowLeft' && index > 0) {
+                        const prevInput = document.querySelector(`[data-otp-index="${index - 1}"]`);
+                        if (prevInput) prevInput.focus();
+                    } else if (event.key === 'ArrowRight' && index < 3) {
+                        const nextInput = document.querySelector(`[data-otp-index="${index + 1}"]`);
+                        if (nextInput) nextInput.focus();
+                    }
+                },
+
+                handleOtpPaste(event) {
+                    event.preventDefault();
+                    const pastedData = event.clipboardData.getData('text').replace(/\D/g, '');
+                    
+                    if (pastedData.length === 4) {
+                        for (let i = 0; i < 4; i++) {
+                            this.otpInputs[i] = pastedData[i] || '';
+                        }
+                        
+                        // Focus the last input
+                        const lastInput = document.querySelector('[data-otp-index="3"]');
+                        if (lastInput) {
+                            lastInput.focus();
+                            // Auto-submit after paste
+                            this.$nextTick(() => {
+                                this.submitOtp();
+                            });
+                        }
+                    }
                 },
 
                 // Google Authenticator Methods

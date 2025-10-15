@@ -154,13 +154,15 @@ class WithdrawController extends Controller
                 }
             }
 
-            // Store form data in session
+            // Store form data in session with explicit save
             $formData = [
                 'withdraw_method_id' => $request->input('withdraw_method_id'),
                 'method_name' => $request->input('method_name'),
                 'credentials' => $request->input('credentials'),
+                '_timestamp' => time(),  // Add timestamp for debugging
             ];
             Session::put('withdraw_account_form_data', $formData);
+            Session::save();  // Force session save for AJAX requests
 
             $verificationMethod = $request->input('verification_method'); // 'otp' or 'ga'
 
@@ -290,12 +292,24 @@ class WithdrawController extends Controller
 
         // OTP is valid, proceed with account creation
         $formData = Session::get('withdraw_account_form_data');
+        
         if (!$formData) {
+            \Log::warning('Withdraw account form data not found in session', [
+                'user_id' => $user->id,
+                'session_id' => Session::getId(),
+                'all_session_keys' => array_keys(Session::all())
+            ]);
+            
             return response()->json([
                 'status' => 'error',
-                'message' => __('Form data not found. Please try again.')
+                'message' => __('Session expired. Please start the process again.'),
+                'expired' => true,  // Flag to handle differently on frontend
+                'redirect' => route('user.withdraw.account.create')
             ], 400);
         }
+        
+        // Remove timestamp before processing
+        unset($formData['_timestamp']);
 
         // Create a new request with the stored form data
         $newRequest = new Request($formData);
@@ -345,11 +359,21 @@ class WithdrawController extends Controller
 
         $formData = Session::get('withdraw_account_form_data');
         if (!$formData) {
+            \Log::warning('Withdraw account form data not found in session (GA verification)', [
+                'user_id' => $user->id,
+                'session_id' => Session::getId()
+            ]);
+            
             return response()->json([
                 'status' => 'error',
-                'message' => __('Form data not found. Please try again.'),
+                'message' => __('Session expired. Please start the process again.'),
+                'expired' => true,
+                'redirect' => route('user.withdraw.account.create')
             ], 400);
         }
+        
+        // Remove timestamp before processing
+        unset($formData['_timestamp']);
 
         $google2fa = app('pragmarx.google2fa');
         $isValid = false;

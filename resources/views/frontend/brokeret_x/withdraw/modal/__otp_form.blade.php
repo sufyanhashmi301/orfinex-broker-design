@@ -27,17 +27,37 @@
                 {{ __('We have sent a verification code via email') }}
             </p>
             <form method="post" class="mt-5" @submit.prevent="submitOtp">
-                <div class="input-area">
-                    <input type="text" name="otp" id="otpInput" x-model="otpInput" 
-                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" 
-                    placeholder="Enter OTP"
-                    aria-label="Enter OTP code"
-                    autocomplete="one-time-code"
-                    inputmode="numeric"
-                    maxlength="6">
+                <div class="flex gap-2 justify-center mt-5" role="group" aria-label="OTP code input">
+                    <template x-for="(digit, index) in otpInputs" :key="index">
+                        <input
+                            type="text"
+                            maxlength="1"
+                            :data-otp-index="index"
+                            x-model="otpInputs[index]"
+                            @input="updateOtpInput(index, $event.target.value)"
+                            @keydown="handleOtpKeydown(index, $event)"
+                            @paste="handleOtpPaste($event)"
+                            class="w-14 h-14 text-center text-2xl font-semibold rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 transition-all"
+                            :aria-label="`Digit ${index + 1} of 4`"
+                            autocomplete="one-time-code"
+                            inputmode="numeric"
+                            pattern="[0-9]"
+                            required
+                        />
+                    </template>
                 </div>
                 
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                <!-- Expiry Timer -->
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+                    <template x-if="otpExpiryTime > 0">
+                        <span>{{ __('Code expires in') }}: <span class="font-semibold" x-text="formatTime(otpExpiryTime)"></span></span>
+                    </template>
+                    <template x-if="otpExpiryTime <= 0">
+                        <span class="text-warning-600 dark:text-warning-400">{{ __('Code expired') }}</span>
+                    </template>
+                </div>
+                
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
                     {{ __("Don't received code ?") }}
                     <a href="javascript:;" @click="resendOtp" class="text-brand-500 hover:text-brand-600 dark:text-brand-400" :disabled="isResendingOtp">
                         <span x-show="!isResendingOtp">{{ __('Resend') }}</span>

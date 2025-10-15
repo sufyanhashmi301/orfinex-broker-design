@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('rebate:distribution')->everyTenMinutes()->withoutOverlapping();
-        $schedule->command('ib:remove-duplicates')->everyTenMinutes()->withoutOverlapping();
+        $schedule->command('ib:remove-duplicates')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();

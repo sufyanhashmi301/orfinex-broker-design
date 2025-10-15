@@ -16,7 +16,7 @@
                 <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-primary bg-opacity-[14%] text-white" role="alert">
                     <div class="flex items-center space-x-3 rtl:space-x-reverse">
                         <p class="flex-1 text-primary font-Inter" style="color: white">
-                            You can get commission by growing your netwrok using this link.
+                            {{ __('You can get commission by growing your netwrok using this link.')}}
                         </p>
                         <div class="flex-0 text-xl cursor-pointer text-primary">
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">

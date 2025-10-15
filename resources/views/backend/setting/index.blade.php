@@ -41,7 +41,7 @@
                     @endcanany
                     @can('branch-list')
                     <li>
-                        <a href="{{ route('admin.branches.index') }}" class="navItem {{ isActive('admin.branches*') }}">
+                        <a href="{{ route('admin.branches.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Branches') }}
                         </a>
                     </li>

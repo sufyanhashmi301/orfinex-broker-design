@@ -210,6 +210,22 @@ class RegisteredUserController extends Controller
             $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
             $this->smsNotify('new_user', $shortcodes, $user->phone);
         }
+
+        // Notify admin about new registration
+        try {
+            $adminEmail = setting('user_site_email', 'global');
+            if (!empty($adminEmail)) {
+                $adminShortcodes = [
+                    '[[full_name]]' => $input['first_name'] . ' ' . $input['last_name'],
+                    '[[email]]' => $input['email'],
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+                $this->mailNotify($adminEmail, 'admin_new_user_registered_user', $adminShortcodes);
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send admin new user registration email: ' . $e->getMessage());
+        }
     }
     private function handleReferral($referralCode, User $user, $schemaID = null)
     {

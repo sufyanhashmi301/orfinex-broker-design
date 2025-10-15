@@ -3,7 +3,7 @@
         <h4 class="card-title mb-3">{{ __('2FA Security') }}</h4>
         <div class="progress-steps-form space-y-3">
             <p class="dark:text-white">{{ __('Two Factor Authentication (2FA) Strengthens Access Security By Requiring Two Methods (also Referred To As Factors) To Verify Your Identity. Two Factor Authentication Protects Against Phishing, Social Engineering And Password Brute Force Attacks And Secures Your Logins From Attackers Exploiting Weak Or Stolen Credentials.') }}</p>
-            <p class="dark:text-white">{{ __('Scane the QR code with you Google Authenticator App') }}</p>
+            <p class="dark:text-white">{{ __('Scan the QR code with you Google Authenticator App') }}</p>
 
             @php
                 $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());

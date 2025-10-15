@@ -416,6 +416,15 @@ return [
             [
                 'type' => 'email', // input fields type
                 'data' => 'string', // data type, string, int, boolean
+                'name' => 'user_site_email', // unique name for field
+                'label' => 'New User Notification', // you know what label it is
+                'description' => 'Default email used for new users notifications',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'admin@tdevs.co', // default value if you want
+            ],
+            [
+                'type' => 'email', // input fields type
+                'data' => 'string', // data type, string, int, boolean
                 'name' => 'support_email', // unique name for field
                 'label' => 'Support Email', // you know what label it is
                 'description' => 'Email address for customer support inquiries',

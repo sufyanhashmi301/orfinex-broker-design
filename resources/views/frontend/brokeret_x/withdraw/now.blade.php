@@ -728,7 +728,7 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             body: JSON.stringify({
-                                ga_code: gaCode
+                                one_time_password: gaCode
                             })
                         });
                         

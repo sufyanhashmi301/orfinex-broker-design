@@ -63,14 +63,16 @@ class OtpService
             ];
         }
 
-        if ($userOtp->expires_at < Carbon::now()) {
+        // Use isPast() for consistent and reliable expiration checking
+        if ($userOtp->expires_at->isPast()) {
             return [
                 'status' => 'error',
                 'message' => __('Your OTP has expired. Please request a new one.')
             ];
         }
 
-        if ($userOtp->otp != $otp) {
+        // Validate OTP (ensure both are strings for comparison)
+        if ((string)$userOtp->otp !== (string)$otp) {
             return [
                 'status' => 'error',
                 'message' => __('The OTP you entered is incorrect. Please try again.')

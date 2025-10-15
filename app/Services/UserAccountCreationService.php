@@ -55,7 +55,7 @@ class UserAccountCreationService
             }
 
             // Create new OTP record
-            UserOtp::create([
+            $createdOtp = UserOtp::create([
                 'user_id' => $user->id,
                 'type' => 'withdraw_account_creation',
                 'otp' => $otp,
@@ -102,8 +102,13 @@ class UserAccountCreationService
                 ];
             }
 
+            // Log OTP validation attempt for debugging
+            $currentTime = Carbon::now();
+            $secondsUntilExpiry = $userOtp->expires_at->diffInSeconds($currentTime, false);
+
             // Check if OTP is expired
-            if (Carbon::now()->isAfter($userOtp->expires_at)) {
+            // Use isPast() which is more semantic and reliable for checking expiration
+            if ($userOtp->expires_at->isPast()) {
                 $userOtp->delete();
                 return [
                     'status' => 'error',
@@ -121,8 +126,8 @@ class UserAccountCreationService
                 ];
             }
 
-            // Validate OTP
-            if ($userOtp->otp !== $otpInput) {
+            // Validate OTP (ensure both are strings for comparison)
+            if ((string)$userOtp->otp !== (string)$otpInput) {
                 $userOtp->incrementFailedAttempts();
                 
                 // Check if 3 failed attempts reached

@@ -18,7 +18,7 @@
         <div class="grid grid-cols-12 gap-y-12 lg:gap-y-5 lg:gap-x-12">
             <div class="col-span-12 lg:col-span-7">
                 <div class="lg:max-w-xl">
-                    <form action="{{ route('user.withdraw.account.store') }}" method="post" enctype="multipart/form-data" @submit.prevent="startVerification">
+                    <form id="withdrawAccountForm" action="{{ route('user.withdraw.account.store') }}" method="post" enctype="multipart/form-data" @submit.prevent="startVerification">
                         @csrf
                         
                         <!-- Form Fields -->
@@ -225,19 +225,25 @@
                     
                     this.isVerificationChoiceModalOpen = false;
                     
-                    if (this.selectedVerificationMethod === 'email') {
-                        // Send OTP first, then show modal
-                        await this.sendOtpForWithdrawAccountCreation();
-                        this.isOtpModalOpen = true;
-                    } else if (this.selectedVerificationMethod === 'ga') {
-                        // Show GA modal directly
-                        this.modals.ga = true;
-                    }
+                    // Submit form to store endpoint with selected verification method
+                    await this.submitFormWithVerificationMethod(this.selectedVerificationMethod === 'email' ? 'otp' : 'ga');
                 },
 
                 async submitFormWithVerificationMethod(method) {
-                    const form = document.querySelector('form[action*="withdraw.account.store"]');
-                    if (!form) return;
+                    console.log('submitFormWithVerificationMethod called with method:', method);
+                    
+                    // Try multiple methods to find the form
+                    let form = document.getElementById('withdrawAccountForm') || 
+                               document.querySelector('form[action*="withdraw.account.store"]') ||
+                               document.querySelector('form[method="post"]');
+                    
+                    if (!form) {
+                        console.error('Form not found in submitFormWithVerificationMethod');
+                        notify().error('Form not found. Please refresh the page.');
+                        return;
+                    }
+                    
+                    console.log('Form found:', form.id || form.action);
                     
                     // Prepare form data
                     const formData = new FormData(form);
@@ -250,7 +256,8 @@
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'X-Requested-With': 'XMLHttpRequest'
-                            }
+                            },
+                            credentials: 'same-origin'
                         });
                         
                         // Check if response is JSON
@@ -280,6 +287,11 @@
                                 if (typeof notify !== 'undefined') {
                                     notify().error(data.message || 'An error occurred');
                                 }
+                                
+                                // If there's a restriction, optionally show details
+                                if (data.is_restricted && data.formatted_time) {
+                                    console.log('Restricted until:', data.formatted_time);
+                                }
                             }
                         } else {
                             // Response is HTML (redirect), follow it
@@ -301,8 +313,10 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            credentials: 'same-origin'
                         });
                         
                         const data = await response.json();
@@ -325,8 +339,10 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            credentials: 'same-origin'
                         });
                         
                         if (!response.ok) {
@@ -378,8 +394,10 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
                             },
+                            credentials: 'same-origin', // Include cookies for session handling
                             body: JSON.stringify({
                                 verification_code: otpCode
                             })
@@ -402,8 +420,12 @@
                             
                             notify().success(data.message);
                             
-                            // Submit the form after successful verification
-                            this.submitFormAfterVerification();
+                            // Redirect to the specified URL (account already created by backend)
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, 1000); // Small delay to show success message
+                            }
                         } else {
                             // Handle error response from backend
                             const errorMessage = data.message || 'OTP verification failed';
@@ -617,10 +639,12 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
                             },
+                            credentials: 'same-origin',
                             body: JSON.stringify({
-                                code: gaCode
+                                one_time_password: gaCode
                             })
                         });
                         
@@ -647,8 +671,12 @@
                             
                             notify().success(data.message);
                             
-                            // Submit the form after successful verification
-                            this.submitFormAfterVerification();
+                            // Redirect to the specified URL (account already created by backend)
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, 1000); // Small delay to show success message
+                            }
                         } else {
                             this.modals.ga = false;
                             notify().error(data.message || 'Google Authenticator verification failed');
@@ -665,24 +693,6 @@
                     }
                 },
 
-                // Form submission after verification
-                submitFormAfterVerification() {
-                    const form = document.querySelector('form[action*="withdraw.account.store"]');
-                    if (form) {
-                        // Add a hidden field to indicate verification was completed
-                        const verifiedInput = document.createElement('input');
-                        verifiedInput.type = 'hidden';
-                        verifiedInput.name = 'verification_completed';
-                        verifiedInput.value = '1';
-                        form.appendChild(verifiedInput);
-                        
-                        // Submit the form
-                        form.submit();
-                    } else {
-                        notify().error('Form submission error');
-                    }
-                },
-
                 // Smart verification flow - main logic
                 async startVerification() {
                     // Check both settings and route accordingly
@@ -690,22 +700,190 @@
                         // Both active → Show choice modal
                         this.isVerificationChoiceModalOpen = true;
                     } else if (this.withdrawAccountOtp && !this.twoFaEnabledForUser) {
-                        // Only OTP → Send OTP first, then show modal
-                        await this.sendOtpForWithdrawAccountCreation();
-                        this.isOtpModalOpen = true;
+                        // Only OTP → Submit form to store endpoint (which saves data and sends OTP)
+                        await this.submitFormAndShowOtpModal();
                     } else if (!this.withdrawAccountOtp && this.twoFaEnabledForUser) {
-                        // Only 2FA → Show GA modal directly
-                        this.modals.ga = true;
+                        // Only 2FA → Submit form to store endpoint (which saves data)
+                        await this.submitFormAndShowGaModal();
                     } else {
                         // Neither → Submit form directly
-                        this.submitFormDirectly();
+                        await this.submitFormDirectly();
+                    }
+                },
+                
+                // Submit form to store endpoint and show OTP modal
+                async submitFormAndShowOtpModal() {
+                    
+                    // Try multiple methods to find the form
+                    let form = document.getElementById('withdrawAccountForm') || 
+                               document.querySelector('form[action*="withdraw.account.store"]') ||
+                               document.querySelector('form[method="post"]') ||
+                               this.$el.closest('div').querySelector('form');
+                    
+                    console.log('Form search result:', form);
+                    
+                    if (!form) {
+                        console.error('Form not found in submitFormAndShowOtpModal');
+                        console.log('Available forms:', document.querySelectorAll('form'));
+                        notify().error('Form not found. Please refresh the page.');
+                        return;
+                    }
+                    
+                    console.log('Form found:', form.id || form.action);
+                    
+                    // Validate form
+                    if (!form.checkValidity()) {
+                        console.log('Form validation failed');
+                        form.reportValidity();
+                        return;
+                    }
+                    
+                    // Get CSRF token
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+                    const formData = new FormData(form);
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'same-origin'
+                        });
+                        
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
+                            
+                            if (data.status === 'success' && data.show_modal) {
+                                // OTP sent successfully, show modal
+                                this.isOtpModalOpen = true;
+                                notify().success(data.message || 'OTP has been sent to your email');
+                            } else if (data.status === 'error') {
+                                // Handle error
+                                notify().error(data.message || 'An error occurred');
+                                
+                                // Show validation errors if present
+                                if (data.errors) {
+                                    Object.values(data.errors).flat().forEach(error => {
+                                        notify().error(error);
+                                    });
+                                }
+                            } else {
+                                notify().warning('Unexpected response. Please try again.');
+                            }
+                        } else {
+                            // Non-JSON response
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    } catch (error) {
+                        notify().error('An error occurred while processing your request');
+                    }
+                },
+                
+                // Submit form to store endpoint and show GA modal
+                async submitFormAndShowGaModal() {
+                    console.log('submitFormAndShowGaModal called');
+                    
+                    // Try multiple methods to find the form
+                    let form = document.getElementById('withdrawAccountForm') || 
+                               document.querySelector('form[action*="withdraw.account.store"]') ||
+                               document.querySelector('form[method="post"]');
+                    
+                    if (!form) {
+                        console.error('Form not found in submitFormAndShowGaModal');
+                        console.log('Available forms:', document.querySelectorAll('form'));
+                        notify().error('Form not found. Please refresh the page.');
+                        return;
+                    }
+                    
+                    console.log('Form found:', form.id || form.action);
+                    
+                    // Validate form
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+                    
+                    // Get CSRF token
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+                    const formData = new FormData(form);
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'same-origin'
+                        });
+                        
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
+                            
+                            if (data.status === 'success' && data.show_ga) {
+                                // Show GA modal
+                                this.modals.ga = true;
+                                notify().info(data.message || 'Please verify with your Google Authenticator');
+                            } else if (data.status === 'error') {
+                                // Handle error
+                                notify().error(data.message || 'An error occurred');
+                                
+                                // Show validation errors if present
+                                if (data.errors) {
+                                    Object.values(data.errors).flat().forEach(error => {
+                                        notify().error(error);
+                                    });
+                                }
+                            } else {
+                                notify().warning('Unexpected response. Please try again.');
+                            }
+                        } else {
+                            // Non-JSON response
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    } catch (error) {
+                        notify().error('An error occurred while processing your request');
                     }
                 },
 
                 // Submit form without verification
                 async submitFormDirectly() {
-                    const form = document.querySelector('form[action*="withdraw.account.store"]');
-                    if (!form) return;
+                    // Try multiple methods to find the form
+                    let form = document.getElementById('withdrawAccountForm') || 
+                               document.querySelector('form[action*="withdraw.account.store"]') ||
+                               document.querySelector('form[method="post"]');
+                    
+                    if (!form) {
+                        notify().error('Form not found. Please refresh the page.');
+                        return;
+                    }
+                    
+                    console.log('Form found:', form.id || form.action);
+                    
+                    // Validate form has required fields
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+                    
+                    // Get CSRF token from meta tag or form
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
                     
                     // Prepare form data
                     const formData = new FormData(form);
@@ -715,9 +893,11 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'same-origin'
                         });
                         
                         // Check if response is JSON
@@ -728,28 +908,41 @@
                             if (data.status === 'success') {
                                 if (data.redirect) {
                                     // Account created successfully, redirect
-                                    window.location.href = data.redirect;
+                                    notify().success(data.message || 'Account created successfully');
+                                    setTimeout(() => {
+                                        window.location.href = data.redirect;
+                                    }, 500);
                                 } else {
                                     // Success message
-                                    if (typeof notify !== 'undefined') {
-                                        notify().success(data.message || 'Account created successfully');
-                                    }
+                                    notify().success(data.message || 'Account created successfully');
                                 }
                             } else {
                                 // Handle error
-                                if (typeof notify !== 'undefined') {
-                                    notify().error(data.message || 'An error occurred');
+                                notify().error(data.message || 'An error occurred');
+                                
+                                // Log validation errors if present
+                                if (data.errors) {
+                                    Object.values(data.errors).flat().forEach(error => {
+                                        notify().error(error);
+                                    });
                                 }
                             }
                         } else {
                             // Response is HTML (redirect), follow it
-                            window.location.reload();
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else {
+                                window.location.reload();
+                            }
                         }
                     } catch (error) {
                         console.error('Form submission error:', error);
-                        if (typeof notify !== 'undefined') {
-                            notify().error('An error occurred while processing your request');
-                        }
+                        notify().error('An error occurred while processing your request. Submitting normally...');
+                        
+                        // Fallback: Submit form normally if AJAX fails
+                        setTimeout(() => {
+                            form.submit();
+                        }, 1000);
                     }
                 },
 
@@ -768,7 +961,7 @@
                     this.isOtpModalOpen = false;
                     this.isCancelModalOpen = false;
                     this.modals.ga = false;
-                    this.otpInput = '';
+                    this.otpInputs = ['', '', '', ''];
                     this.gaInputs = ['', '', '', '', '', ''];
                     this.selectedVerificationMethod = null;
                 }

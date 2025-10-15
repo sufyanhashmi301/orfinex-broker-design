@@ -42,7 +42,7 @@
                             <li>
                                 <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
                                     <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                                    {{ __('Upadte') }}
+                                    {{ __('Update') }}
                                 </a>
                             </li>
                             <li>

@@ -108,19 +108,99 @@
                     }
                 }
             }
+
+            // Determine Level 2 KYC Status
+            $level2Status = '';
+            $level2StatusBadge = '';
+            $level2SubmittedDate = '';
+
+            // Check all possible Level 2 related statuses
+            if (
+                in_array($user->kyc, [
+                    \App\Enums\KYCStatus::Level2->value,
+                    \App\Enums\KYCStatus::PendingLevel3->value,
+                    \App\Enums\KYCStatus::RejectLevel3->value,
+                    \App\Enums\KYCStatus::Level3->value,
+                ])
+            ) {
+                // Level 2 is verified if user reached Level2 or beyond
+                $level2Status = __('Verified');
+                $level2StatusBadge = 'badge badge-success';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::Pending->value) {
+                $level2Status = __('Pending');
+                $level2StatusBadge = 'badge badge-warning';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::Rejected->value) {
+                $level2Status = __('Rejected');
+                $level2StatusBadge = 'badge badge-danger';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::Resubmit->value) {
+                $level2Status = __('Resubmit Required');
+                $level2StatusBadge = 'badge badge-warning';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::Level1->value) {
+                $level2Status = __('Level 1');
+                $level2StatusBadge = 'badge badge-info';
+            }
+
+            // Get submission date from credential if available and format it
+            $originalCredential = json_decode($user->kyc_credential, true);
+            if (isset($originalCredential['kyc_time_of_time'])) {
+                try {
+                    $level2SubmittedDate = \Carbon\Carbon::parse($originalCredential['kyc_time_of_time'])->format(
+                        'F d Y h:i',
+                    );
+                } catch (\Exception $e) {
+                    $level2SubmittedDate = $originalCredential['kyc_time_of_time'];
+                }
+            }
         @endphp
 
         @if ($hasLevel2Images)
             <div class="card basicTable_wrapper mt-5">
                 <div class="card-header">
-                    <div>
-                        <h4 class="card-title">{{ __('Level 2 KYC Documents') }}</h4>
-                        <p class="card-text">
-                            {{ __('Uploaded documents for Level 2 KYC verification') }}
-                        </p>
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h4 class="card-title flex items-center gap-2">
+                                {{ __('Level 2 KYC Documents') }}
+                                @if ($level2Status)
+                                    <div class="{{ $level2StatusBadge }}">{{ $level2Status }}</div>
+                                @endif
+                            </h4>
+                            <p class="card-text">
+                                {{ __('Uploaded documents for Level 2 KYC verification') }}
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-6">
+                    {{-- Status Information Section --}}
+                    @if ($level2SubmittedDate || $level2Status)
+                        <div
+                            class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 mb-6 border border-slate-200 dark:border-slate-700">
+                            <h5
+                                class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                                <iconify-icon icon="lucide:info" class="text-lg"></iconify-icon>
+                                {{ __('Verification Status Details') }}
+                            </h5>
+                            <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
+                                @if ($level2Status)
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-slate-600 dark:text-slate-400 text-sm">{{ __('Current Status:') }}</span>
+                                        <div class="{{ $level2StatusBadge }}">{{ $level2Status }}</div>
+                                    </div>
+                                @endif
+                                @if ($level2SubmittedDate)
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-slate-600 dark:text-slate-400 text-sm">{{ __('Submitted On:') }}</span>
+                                        <span
+                                            class="text-slate-900 dark:text-slate-100 text-sm font-medium">{{ $level2SubmittedDate }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Documents Grid --}}
                     <ul class="grid md:grid-cols-2 grid-cols-1 gap-5">
                         @foreach ($kycCredentialLevel2 as $key => $value)
                             @if (file_exists('assets/' . $value))
@@ -160,19 +240,89 @@
                     }
                 }
             }
+
+            // Determine Level 3 KYC Status
+            $level3Status = '';
+            $level3StatusBadge = '';
+            $level3SubmittedDate = '';
+
+            // Check all possible Level 3 related statuses
+            if ($user->kyc == \App\Enums\KYCStatus::Level3->value) {
+                // Level 3 is verified/approved
+                $level3Status = __('Verified');
+                $level3StatusBadge = 'badge badge-success';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::PendingLevel3->value) {
+                $level3Status = __('Pending');
+                $level3StatusBadge = 'badge badge-warning';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::RejectLevel3->value) {
+                $level3Status = __('Rejected');
+                $level3StatusBadge = 'badge badge-danger';
+            } elseif ($user->kyc == \App\Enums\KYCStatus::Resubmit->value) {
+                $level3Status = __('Resubmit Required');
+                $level3StatusBadge = 'badge badge-warning';
+            }
+
+            // Get submission date from credential if available and format it
+            $originalCredential3 = json_decode($user->kyc_level3_credential, true);
+            if (isset($originalCredential3['kyc_time_of_time'])) {
+                try {
+                    $level3SubmittedDate = \Carbon\Carbon::parse($originalCredential3['kyc_time_of_time'])->format(
+                        'F d Y h:i',
+                    );
+                } catch (\Exception $e) {
+                    $level3SubmittedDate = $originalCredential3['kyc_time_of_time'];
+                }
+            }
         @endphp
 
         @if ($hasLevel3Images)
             <div class="card basicTable_wrapper mt-5">
                 <div class="card-header">
-                    <div>
-                        <h4 class="card-title">{{ __('Level 3 KYC Documents') }}</h4>
-                        <p class="card-text">
-                            {{ __('Uploaded documents for Level 3 KYC verification') }}
-                        </p>
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h4 class="card-title flex items-center gap-2">
+                                {{ __('Level 3 KYC Documents') }}
+                                @if ($level3Status)
+                                    <div class="{{ $level3StatusBadge }}">{{ $level3Status }}</div>
+                                @endif
+                            </h4>
+                            <p class="card-text">
+                                {{ __('Uploaded documents for Level 3 KYC verification') }}
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-6">
+                    {{-- Status Information Section --}}
+                    @if ($level3SubmittedDate || $level3Status)
+                        <div
+                            class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 mb-6 border border-slate-200 dark:border-slate-700">
+                            <h5
+                                class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                                <iconify-icon icon="lucide:info" class="text-lg"></iconify-icon>
+                                {{ __('Verification Status Details') }}
+                            </h5>
+                            <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
+                                @if ($level3Status)
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-slate-600 dark:text-slate-400 text-sm">{{ __('Current Status:') }}</span>
+                                        <div class="{{ $level3StatusBadge }}">{{ $level3Status }}</div>
+                                    </div>
+                                @endif
+                                @if ($level3SubmittedDate)
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-slate-600 dark:text-slate-400 text-sm">{{ __('Submitted On:') }}</span>
+                                        <span
+                                            class="text-slate-900 dark:text-slate-100 text-sm font-medium">{{ $level3SubmittedDate }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Documents Grid --}}
                     <ul class="grid md:grid-cols-2 grid-cols-1 gap-5">
                         @foreach ($kycCredentialLevel3 as $key => $value)
                             @if (file_exists('assets/' . $value))

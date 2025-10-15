@@ -51,20 +51,20 @@ const launchWebSdk = (accessToken) => {
         .on('{{ __('idCheck.onApplicantStatusChanged') }}', (payload) => {
             console.log('{{ __('onStepCompleted') }}', payload);
             if (payload.confirmed === true && '{{auth()->user()->kyc}}' < '4') {
-                $.ajax({
-                    url: "{{ route('user.kyc.status') }}",
-                    method: 'POST',
-                    success: function(response) {
-                        if (response.status ===200) {
-                            console.log(response.success);
-                        } else {
-                            console.log(response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('{{ __('Error updating KYC status:') }}', error);
-                    }
-                });
+                // $.ajax({
+                //     //url: "{{ route('user.kyc.status') }}",
+                //     method: 'POST',
+                //     success: function(response) {
+                //         if (response.status ===200) {
+                //             console.log(response.success);
+                //         } else {
+                //             console.log(response.error);
+                //         }
+                //     },
+                //     error: function(xhr, status, error) {
+                //         console.error('{{ __('Error updating KYC status:') }}', error);
+                //     }
+                // });
             }
         })
         .on('{{ __('idCheck.onError') }}', (error) => {

@@ -88,6 +88,25 @@
                                 <input type="text" name="popup_btn_link" class="form-control" value="{{ setting('popup_btn_link', 'popup') }}" placeholder="e.g., https://example.com">
                             </div>
                             <div class="input-area">
+                                <label for="" class="form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Alignment of the button (left, center, right)">
+                                        {{ __('Button Alignment') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <select name="popup_btn_alignment" class="form-control">
+                                    <option value="left" @if(setting('popup_btn_alignment', 'popup') == 'left') selected @endif>
+                                        {{ __('Left') }}
+                                    </option>
+                                    <option value="center" @if(setting('popup_btn_alignment', 'popup') == 'center') selected @endif>
+                                        {{ __('Center') }}
+                                    </option>
+                                    <option value="right" @if(setting('popup_btn_alignment', 'popup') == 'right') selected @endif>
+                                        {{ __('Right') }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="input-area">
                                 <button type="submit" class="btn btn-dark block-btn">
                                     <span class="flex items-center">
                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

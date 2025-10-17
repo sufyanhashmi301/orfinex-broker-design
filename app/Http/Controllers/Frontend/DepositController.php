@@ -249,6 +249,14 @@ class DepositController extends GatewayController
                 ];
                 $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
                 $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+                try {
+                    $emails = getAttachedStaffAdminEmails($user->id);
+                    foreach ($emails as $email) {
+                        $this->mailNotify($email, 'manual_deposit_request', $shortcodes, true);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
                 $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
 
             }

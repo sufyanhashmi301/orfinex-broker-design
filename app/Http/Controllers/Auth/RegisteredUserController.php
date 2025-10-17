@@ -211,17 +211,25 @@ class RegisteredUserController extends Controller
             $this->smsNotify('new_user', $shortcodes, $user->phone);
         }
 
-        // Notify admin about new registration
+        // Notify admin(s) about new registration
         try {
-            $adminEmail = setting('user_site_email', 'global');
-            if (!empty($adminEmail)) {
+            $rawAdminEmails = (string) setting('user_site_email', 'global');
+            if (!empty($rawAdminEmails)) {
                 $adminShortcodes = [
                     '[[full_name]]' => $input['first_name'] . ' ' . $input['last_name'],
                     '[[email]]' => $input['email'],
                     '[[site_title]]' => setting('site_title', 'global'),
                     '[[site_url]]' => route('home'),
                 ];
-                $this->mailNotify($adminEmail, 'admin_new_user_registered_user', $adminShortcodes);
+                $emails = collect(preg_split('/[;,]/', $rawAdminEmails))
+                    ->map(function ($e) { return trim($e); })
+                    ->filter(function ($e) { return !empty($e); })
+                    ->unique()
+                    ->values();
+
+                foreach ($emails as $email) {
+                    $this->mailNotify($email, 'admin_new_user_registered_user', $adminShortcodes);
+                }
             }
         } catch (\Exception $e) {
             \Log::warning('Failed to send admin new user registration email: ' . $e->getMessage());

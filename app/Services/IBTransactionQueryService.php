@@ -32,12 +32,13 @@ class IBTransactionQueryService
                      !empty($filters['order']) || 
                      !empty($filters['symbol']);
         
-        // Get date range (default: past 3 months if no filters, otherwise past 1 year)
-        $endDate = Carbon::now();
+        // Get date range (default: past 10 days if no filters, otherwise past 1 year)
+        // Add 1 day buffer to end date to account for timezone differences
+        $endDate = Carbon::now()->addDay()->endOfDay();
         if ($hasFilters) {
-            $startDate = $endDate->copy()->subYear(); // 1 year for filtered searches
+            $startDate = Carbon::now()->subYear()->startOfDay(); // 1 year for filtered searches
         } else {
-            $startDate = $endDate->copy()->subMonths(3); // 3 months for default view
+            $startDate = Carbon::now()->subDays(10)->startOfDay(); // 10 days for default view
         }
         
         // Handle predefined date filter first
@@ -47,23 +48,27 @@ class IBTransactionQueryService
             switch ($filters['date_filter']) {
                 case '3_days':
                     $startDate = $today->copy()->subDays(3)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '5_days':
                     $startDate = $today->copy()->subDays(5)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
+                    break;
+                case '10_days':
+                    $startDate = $today->copy()->subDays(10)->startOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '15_days':
                     $startDate = $today->copy()->subDays(15)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '1_month':
                     $startDate = $today->copy()->subMonth()->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '3_months':
                     $startDate = $today->copy()->subMonths(3)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
             }
         }
@@ -287,11 +292,12 @@ class IBTransactionQueryService
                      !empty($filters['symbol']);
         
         // Calculate the filter date range (same logic as getUserIBTransactions)
-        $endDate = Carbon::now();
+        // Add 1 day buffer to end date to account for timezone differences
+        $endDate = Carbon::now()->addDay()->endOfDay();
         if ($hasFilters) {
-            $startDate = $endDate->copy()->subYear(); // 1 year for filtered searches
+            $startDate = Carbon::now()->subYear()->startOfDay(); // 1 year for filtered searches
         } else {
-            $startDate = $endDate->copy()->subMonths(3); // 3 months for default view
+            $startDate = Carbon::now()->subDays(10)->startOfDay(); // 10 days for default viewsh
         }
         
         // Handle predefined date filter first
@@ -301,23 +307,27 @@ class IBTransactionQueryService
             switch ($filters['date_filter']) {
                 case '3_days':
                     $startDate = $today->copy()->subDays(3)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '5_days':
                     $startDate = $today->copy()->subDays(5)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
+                    break;
+                case '10_days':
+                    $startDate = $today->copy()->subDays(10)->startOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '15_days':
                     $startDate = $today->copy()->subDays(15)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '1_month':
                     $startDate = $today->copy()->subMonth()->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
                 case '3_months':
                     $startDate = $today->copy()->subMonths(3)->startOfDay();
-                    $endDate = $today->copy()->endOfDay();
+                    $endDate = $today->copy()->addDay()->endOfDay(); // Add 1 day buffer for timezone differences
                     break;
             }
         }

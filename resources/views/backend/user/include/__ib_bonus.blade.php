@@ -44,6 +44,7 @@
                             <option value="">{{ __('Select Days') }}</option>
                             <option value="3_days">{{ __('Last 3 Days') }}</option>
                             <option value="5_days">{{ __('Last 5 Days') }}</option>
+                            <option value="10_days">{{ __('Last 10 Days') }}</option>
                             <option value="15_days">{{ __('Last 15 Days') }}</option>
                             <option value="1_month">{{ __('Last 1 Month') }}</option>
                             <option value="3_months">{{ __('Last 3 Months') }}</option>
@@ -137,12 +138,9 @@
                         </table>
                     </div>
                 </div>
-                <div id="ib-processingIndicator"
-                    class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 hidden z-10">
-                    <div class="text-center">
-                        <iconify-icon class="spining-icon text-5xl dark:text-slate-100"
-                            icon="lucide:loader"></iconify-icon>
-                    </div>
+                <div class="processingIndicator text-center">
+                    {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
                 </div>
             </div>
         </div>
@@ -175,12 +173,13 @@
         $(document).ready(function() {
             const table = $('#user-ib-transaction-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('#ib-processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -241,7 +240,7 @@
                         {
                             data: 'status',
                             name: 'status'
-                        },
+                        }
                     ]
                 });
 
@@ -291,6 +290,10 @@
                     },
                     '5_days': {
                         start: formatDate(new Date(today.getTime() - 5 * 24 * 60 * 60 * 1000)),
+                        end: formatDate(today)
+                    },
+                    '10_days': {
+                        start: formatDate(new Date(today.getTime() - 10 * 24 * 60 * 60 * 1000)),
                         end: formatDate(today)
                     },
                     '15_days': {

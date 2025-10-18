@@ -44,6 +44,7 @@
                             <option value="">{{ __('Select Days') }}</option>
                             <option value="3_days">{{ __('Last 3 Days') }}</option>
                             <option value="5_days">{{ __('Last 5 Days') }}</option>
+                            <option value="10_days">{{ __('Last 10 Days') }}</option>
                             <option value="15_days">{{ __('Last 15 Days') }}</option>
                             <option value="1_month">{{ __('Last 1 Month') }}</option>
                             <option value="3_months">{{ __('Last 3 Months') }}</option>
@@ -239,14 +240,7 @@
                         {
                             data: 'status',
                             name: 'status'
-                        },
-
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        },
+                        }
                     ]
                 });
 
@@ -296,6 +290,10 @@
                     },
                     '5_days': {
                         start: formatDate(new Date(today.getTime() - 5 * 24 * 60 * 60 * 1000)),
+                        end: formatDate(today)
+                    },
+                    '10_days': {
+                        start: formatDate(new Date(today.getTime() - 10 * 24 * 60 * 60 * 1000)),
                         end: formatDate(today)
                     },
                     '15_days': {

@@ -1714,7 +1714,15 @@ if (!empty($filters['staff_name'])) {
             ->editColumn('status', 'backend.user.include.__txn_status')
             ->editColumn('type', 'backend.user.include.__txn_type')
             ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-            ->editColumn('created_at', 'backend.user.include.__txn_created_at')
+            ->editColumn('created_at', function ($row) {
+                // if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
+                //     $manualData = json_decode($row->manual_field_data, true);
+                //     if (is_array($manualData) && isset($manualData['time'])) {
+                //         return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                //     }
+                // }
+                return \Carbon\Carbon::parse($row->created_at)->format('M d, Y h:i A');
+            })
             ->addColumn('deal_info', function ($row) {
                 if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
                     $manualData = json_decode($row->manual_field_data, true);

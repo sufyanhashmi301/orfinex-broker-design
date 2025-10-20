@@ -12,9 +12,9 @@
                     stroke="rgba({{ implode(' ', getColorFromSettings('danger_color')) }})" stroke-opacity="0.66"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
+            <h4 class="text-xl font-medium text-slate-900 dark:text-white mb-2">
                 {{ __('You don\'t have any Archive account.') }}
-            </p>
+            </h4>
         </div>
     </div>
 @else

@@ -72,7 +72,7 @@
                     <h4 class="card-title">{{ __('Add Deposit') }}</h4>
                 </div>
                 <div class="card-body p-6 pt-3">
-                    <form action="{{ route('admin.deposit.now') }}" method="post">
+                    <form action="{{ route('admin.deposit.now') }}" method="post" id="depositForm">
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area">
@@ -215,9 +215,9 @@
                             @endcan
                         </div>
                         <div class="action-btns text-right mt-10">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                {{ __('Proceed to Payment') }}
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center space-x-2" data-loading-text="Processing...">
+                                <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                                <span>{{ __('Proceed to Payment') }}</span>
                             </button>
                         </div>
                     </form>
@@ -567,6 +567,7 @@
             });
 
         });
+        
         $(document).ready(function() {
             $('.filter-toggle-btn').click(function() {
                 const $content = $('#filters_div');
@@ -580,6 +581,18 @@
                 }
             });
         });
-        // });
+
+        $(document).on('submit', '#depositForm', function () {
+            
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            // Start loading
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
+
+        });
+
     </script>
 @endsection

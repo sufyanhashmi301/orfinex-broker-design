@@ -427,8 +427,13 @@
 
         });
 
-        $('#bonus-form').on('submit', function() {
-            $('.bonus-apply-now').prop('disabled', true)
+        $(document).on('submit', '#bonus-form', function() {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
         })
 
         function confirmDelete(tagId, tagName) {
@@ -709,5 +714,15 @@
                 @endif
             });
         });
+
+        $(document).on('submit', '#balanceForm', function () {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
+        });
+
     </script>
 @endsection

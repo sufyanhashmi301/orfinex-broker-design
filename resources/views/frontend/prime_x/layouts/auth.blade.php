@@ -19,6 +19,18 @@
                 </div>
                 <div class="right-column relative">
                     <div class="inner-content h-full flex flex-col bg-white dark:bg-slate-800">
+                        @if(setting('company_website', 'common_settings') && setting('company_website', 'common_settings') !== '')
+                            <div class="auth-header py-5">
+                                <div class="w-full max-w-lg mx-auto">
+                                    <a href="{{ setting('company_website', 'common_settings') }}" class="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-slate-900 dark:text-gray-400">
+                                        <svg class="stroke-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                            <path d="M12.7083 5L7.5 10.2083L12.7083 15.4167" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        {{ __('Back to website') }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                         <div class="h-full flex flex-col justify-center">
                             <div class="w-full max-w-lg mx-auto">
                                 <div class="mobile-logo text-center mb-6 lg:hidden block">

@@ -29,9 +29,8 @@
                     placeholder="Created At Range" readonly>
             </div>
             <div class="input-area relative">
-                <button type="button" id="ib-bonus-filter-btn"
-                    class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                <button type="button" id="ib-bonus-filter-btn" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal">
+                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="mdi:filter-outline"></iconify-icon>
                     {{ __('Filter') }}
                 </button>
             </div>
@@ -44,10 +43,8 @@
             <input type="hidden" name="date_filter" id="export-ib-bonus-date-filter">
             <input type="hidden" name="created_at" id="export-ib-bonus-created-at">
             <div class="input-area relative mb-1">
-                <button type="submit"
-                    class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
-                        icon="lets-icons:export-fill"></iconify-icon>
+                <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-300 !font-normal">
+                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                     {{ __('Export') }}
                 </button>
             </div>
@@ -137,9 +134,9 @@
                         <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                    <h4 class="text-xl font-medium text-slate-900 dark:text-white mb-2">
                         {{ __("You don't have any transactions yet.") }}
-                    </p>
+                    </h4>
                  
                 </div>
             @else

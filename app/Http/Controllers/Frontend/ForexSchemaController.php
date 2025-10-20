@@ -130,8 +130,23 @@ class ForexSchemaController extends Controller
                         $ruleSchemas = $rule->forexSchemas()
                             ->where('status', true)
                             ->traderType()
-                            ->active()
-                            ->get();
+                            ->active();
+                        
+                        // INDEPENDENT BRANCH FILTER: Apply branch filtering to IB rebate rule schemas
+                        if ($userBranchId) {
+                            // User has branch: show account types assigned to that branch + unassigned account types
+                            $ruleSchemas->where(function($query) use ($userBranchId) {
+                                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                                    $branchQuery->where('branch_id', $userBranchId);
+                                })->orWhereDoesntHave('branches');
+                            });
+                        } else {
+                            // User has no branch: show only universal account types (no branch assignment)
+                            $ruleSchemas->whereDoesntHave('branches');
+                        }
+                        
+                        $ruleSchemas = $ruleSchemas->get();
+                        
                         if ($ruleSchemas->count() > 0) {
                             $hasIbRuleSchemas = true;
                         }
@@ -280,8 +295,22 @@ class ForexSchemaController extends Controller
                     $ruleSchemas = $rule->forexSchemas()
                         ->where('status', true)
                         ->traderType()
-                        ->active()
-                        ->get();
+                        ->active();
+                    
+                    // INDEPENDENT BRANCH FILTER: Apply branch filtering to IB rebate rule schemas
+                    if ($userBranchId) {
+                        // User has branch: show account types assigned to that branch + unassigned account types
+                        $ruleSchemas->where(function($query) use ($userBranchId) {
+                            $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                                $branchQuery->where('branch_id', $userBranchId);
+                            })->orWhereDoesntHave('branches');
+                        });
+                    } else {
+                        // User has no branch: show only universal account types (no branch assignment)
+                        $ruleSchemas->whereDoesntHave('branches');
+                    }
+                    
+                    $ruleSchemas = $ruleSchemas->get();
                     $schemas = $schemas->merge($ruleSchemas);
                 }
                 

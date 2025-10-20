@@ -46,6 +46,7 @@ class Kernel extends ConsoleKernel
         $rebateMinutes = (int) setting('ib_distribution_time', 'features', 1);
         $rebateMinutes = max(1, $rebateMinutes);
         $schedule->command('rebate:distribution')->cron("*/{$rebateMinutes} * * * *")->withoutOverlapping();
+        // $schedule->command('rebate:distribution')->everyTenMinutes()->withoutOverlapping();
         $schedule->command('ib:remove-duplicates')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();

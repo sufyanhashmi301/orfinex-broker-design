@@ -4,11 +4,26 @@
 @endsection
 @section('content')
     <div class="card p-6 mb-5 space-y-3">
+     @php
+        $newAccountTitle = __('Open New Account');
+        $requestedType = request()->get('type');
+        if ($requestedType === 'real') {
+            $newAccountTitle = __('Open New Real Account');
+        } elseif ($requestedType === 'demo') {
+            $newAccountTitle = __('Open New Demo Account');
+        }
+    @endphp
         <h3 class="card-title">
-            {{ __('Choose Account Type') }}
+            {{$newAccountTitle }}
         </h3>
+        @php
+            $liveApproval = setting('live_account_creation','features');
+            $demoApproval = setting('demo_account_creation','features');
+        @endphp
+        <div id="approval-alert" class="py-3 px-4 rounded-md bg-warning-500 bg-opacity-30 text-warning-900 hidden" style="background-color:#FEF3C7; color:#92400E;"></div>
+        @php $requestedType = request('type'); @endphp
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="account-type-tabs">
-            @if($schema->real_swap_free || $schema->real_islamic)
+            @if(($schema->real_swap_free || $schema->real_islamic) && $requestedType !== 'demo')
                 <li class="nav-item">
                     <a href="javascript:;"
                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100"
@@ -18,7 +33,7 @@
                 </li>
             @endif
 
-            @if($schema->demo_swap_free || $schema->demo_islamic)
+            @if(($schema->demo_swap_free || $schema->demo_islamic) && $requestedType !== 'real')
                 <li class="nav-item">
                     <a href="javascript:;"
                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100"
@@ -184,8 +199,15 @@
                 var demoIslamic = '{{ $schema->demo_islamic }}';   // Get from backend
 
                 var selectedAccountType = 'real'; // Default to real account
+                var requestedType = '{{ request('type') }}';
 
-                // Check if real or demo values are filled
+                // If a type was requested via query, honor it if available
+                if (requestedType === 'real' && (realSwapFree || realIslamic)) {
+                    selectedAccountType = 'real';
+                } else if (requestedType === 'demo' && (demoSwapFree || demoIslamic)) {
+                    selectedAccountType = 'demo';
+                } else {
+                    // Check if real or demo values are filled
                 if (realSwapFree || realIslamic) {
                     selectedAccountType = 'real'; // If any real account value is present
                 } else if (demoSwapFree || demoIslamic) {
@@ -195,6 +217,7 @@
                 // If both real and demo have values, pre-select real
                 if ((realSwapFree || realIslamic) && (demoSwapFree || demoIslamic)) {
                     selectedAccountType = 'real';
+                }
                 }
 
                 // Update the UI based on the selected account type
@@ -217,8 +240,21 @@
                 $('#account-description').text(descriptionText);
             }
 
+            function updateApprovalAlert(accountType){
+                var $alert = $('#approval-alert');
+                var show = false; var text = '';
+                if(accountType === 'real' && {{ $liveApproval ? 'true' : 'false' }}){
+                    show = true; text = '{{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                }
+                if(accountType === 'demo' && {{ $demoApproval ? 'true' : 'false' }}){
+                    show = true; text = '{{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                }
+                if(show){ $alert.removeClass('hidden').text(text); } else { $alert.addClass('hidden').text(''); }
+            }
+
             // Call the function to update account type based on the values
             updateAccountTypeBasedOnValues();
+            updateApprovalAlert($('#account-type').val());
 
             // Handle account type switching when clicking on tabs
             $('#account-type-tabs .nav-link').on('click', function () {
@@ -229,6 +265,7 @@
                 
                 // Update the description text when switching tabs
                 updateAccountDescription(accountType);
+                updateApprovalAlert(accountType);
             });
 
             function updateLeverageAndDeposit(result) {
@@ -277,6 +314,7 @@
                 
                 // Update the description text when switching tabs
                 updateAccountDescription(accountType);
+                updateApprovalAlert(accountType);
             });
 
             {{--$("#select-schema").on('change', function (e) {--}}

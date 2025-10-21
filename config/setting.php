@@ -1782,6 +1782,24 @@ return [
                     'placeholder' => 'Enter minutes',
                 ],
             ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "live_account_creation", // unique name for field
+                "label" => "Live Account Admin Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for live account creation.",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
+            ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "demo_account_creation", // unique name for field
+                "label" => "Demo Account Admin Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for demo account creation.",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
+            ]
 //            [
 //                'type' => 'radio', // Change type to 'radio'
 //                'data' => 'string',

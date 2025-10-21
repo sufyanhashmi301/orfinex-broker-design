@@ -182,6 +182,29 @@ class ForexAccountController extends GatewayController
         }
 //        dd($traderType,$group,$server);
 
+        // If manual approval is enabled, do NOT call platform APIs here; create local pending record only
+        $manualApproval = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+
+        if ($manualApproval) {
+            // Save local pending account and exit
+            $data = [
+                'group' => $group,
+                'leverage' => $request->leverage,
+                'master_password' => $password,
+            ];
+            $this->saveAccount($request, $schema, 0, $accountType, $user, $data, $server);
+            // Email notification: Pending approval
+            $pendingShortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[plan_name]]' => $schema->title,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+            try { $this->mailNotify($user->email, 'user_forex_account_pending', $pendingShortcodes); } catch (\Exception $e) { /* ignore if template missing */ }
+            notify()->success(__('Your account request has been submitted for approval.'), 'success');
+            return redirect()->route('user.forex-account-logs');
+        }
+
         if ($traderType == TraderType::MT5) {
             $data = [
                 "login" => $login,
@@ -340,12 +363,24 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
             $accountData['currency'] = setting('site_currency', 'global');
             $accountData['group'] = $data['group'];
             $accountData['leverage'] = $data['leverage'];
-            $accountData['status'] = ForexAccountStatus::Ongoing;
+            $status = ForexAccountStatus::Ongoing;
+            if ($accountType === 'real' && setting('live_account_creation', 'features')) {
+                $status = ForexAccountStatus::Pending;
+            }
+            if ($accountType === 'demo' && setting('demo_account_creation', 'features')) {
+                $status = ForexAccountStatus::Pending;
+            }
+            $accountData['status'] = $status;
             $accountData['server'] = $server;
             $accountData['created_by'] = $user->id;
             $accountData['first_min_deposit_paid'] = 0;
             $accountData['trader_type'] = $schema->trader_type;
             $accountData['trading_platform'] = $schema->trader_type;
+            if (isset($data['master_password'])) {
+                $accountData['meta'] = json_encode([
+                    'master_password' => $data['master_password'],
+                ]);
+            }
 
             return ForexAccount::create($accountData);
         });
@@ -428,11 +463,16 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
         if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            sync_forex_accounts(auth()->id());
         }
-        $realForexAccounts = ForexAccount::realActiveAccount()->traderType()
+        $realForexAccounts = ForexAccount::where('user_id', auth()->id())
+            ->where('account_type', 'real')
+            ->traderType()
+            ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending, ForexAccountStatus::Canceled])
             ->orderBy('balance', 'desc')
             ->get();
-//        dd($realForexAccounts);
-        $demoForexAccounts = ForexAccount::demoActiveAccount()->traderType()
+        $demoForexAccounts = ForexAccount::where('user_id', auth()->id())
+            ->where('account_type', 'demo')
+            ->traderType()
+            ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending, ForexAccountStatus::Canceled])
             ->orderBy('balance', 'desc')
             ->get();
         $archiveForexAccounts = ForexAccount::archiveAccount()->traderType()

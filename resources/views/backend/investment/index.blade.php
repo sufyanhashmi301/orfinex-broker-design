@@ -276,9 +276,7 @@
     <!-- Modal for Account unarchive -->
     @include('backend.investment.modal.__unarchive_account')
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
+
 @section('script')
     @include('backend.investment.fx-js')
     <script>
@@ -354,7 +352,9 @@
                         },
                         {
                             data: 'action',
-                            name: 'action'
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         },
                     ]
                 });

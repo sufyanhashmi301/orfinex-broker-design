@@ -26,6 +26,7 @@ use App\Console\Commands\TestIBQuarterSystem;
 use App\Console\Commands\RecalculateIBBalances;
 use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
+use App\Console\Commands\RemoveDuplicateIBTransactions;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -40,10 +41,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
         // Dynamically schedule rebate distribution based on settings (in minutes)
         $rebateMinutes = (int) setting('ib_distribution_time', 'features', 1);
         $rebateMinutes = max(1, $rebateMinutes);
         $schedule->command('rebate:distribution')->cron("*/{$rebateMinutes} * * * *")->withoutOverlapping();
+        // $schedule->command('rebate:distribution')->everyTenMinutes()->withoutOverlapping();
+        $schedule->command('ib:remove-duplicates')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
@@ -92,6 +96,7 @@ class Kernel extends ConsoleKernel
         TestIBQuarterSystem::class,
         RecalculateIBBalances::class,
         DebugUserIBTransactions::class,
+        RemoveDuplicateIBTransactions::class,
 
     ];
 }

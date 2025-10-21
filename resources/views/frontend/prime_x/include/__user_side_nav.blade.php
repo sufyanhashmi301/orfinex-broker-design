@@ -98,7 +98,7 @@
                 class="navItem loaderBtn {{ isActive('user.payment-deposit*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
-                    <span>{{ __('Custom Account') }}</span>
+                    <span>{{ __('Set Up Wires') }}</span>
                 </span>
             </a>
         </li>

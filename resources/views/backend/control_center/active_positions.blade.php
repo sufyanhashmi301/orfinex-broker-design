@@ -75,6 +75,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'timeCreate']],
                 autoWidth: false,
                 language: {
                     lengthMenu: "Show _MENU_ entries",

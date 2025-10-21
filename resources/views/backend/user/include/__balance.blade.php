@@ -26,7 +26,7 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.user.balance-update', $user->id) }}" method="post">
+                <form action="{{ route('admin.user.balance-update', $user->id) }}" method="post" id="balanceForm">
                     @csrf
                     <input type="hidden" name="target_type" id="selectedAccountType_balance" value="">
                     <div class="space-y-5">
@@ -95,21 +95,18 @@
                         </div>
                     </div>
                     <div class="input-area text-right mt-10">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Apply Now') }}
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center space-x-2" data-loading-text="Processing...">
+                            <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                            <span>{{ __('Apply Now') }}</span>
                         </button>
                         <a href="#" data-bs-dismiss="modal" class="btn inline-flex justify-center btn-danger">
-                            <span class="flex items-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                {{ __('Cancel') }}
+                            <span class="flex items-center space-x-2">
+                                <iconify-icon class="text-xl" icon="lucide:x"></iconify-icon>
+                                <span>{{ __('Cancel') }}</span>
                             </span>
                         </a>
                     </div>
                 </form>
-
-
-
             </div>
         </div>
     </div>

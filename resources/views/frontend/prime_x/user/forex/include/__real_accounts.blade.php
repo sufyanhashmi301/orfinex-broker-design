@@ -1,6 +1,6 @@
 @if (count($realForexAccounts) == 0)
     <div class="card py-10 px-10">
-        <div class="flex items-center justify-center flex-col gap-3">
+        <div class="max-w-2xl mx-auto flex items-center justify-center flex-col gap-3">
             <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M26 19.875V30.9167" stroke="rgba({{ implode(' ', getColorFromSettings('danger_color')) }})"
                     stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -12,9 +12,14 @@
                     stroke="rgba({{ implode(' ', getColorFromSettings('danger_color')) }})" stroke-opacity="0.66"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
-                {{ __('You don\'t have any Real account.') }}
-            </p>
+            <div class="text-center">
+                <h4 class="text-xl font-medium text-slate-900 dark:text-white mb-2">
+                    {{ __('You have not opened a real account yet.') }}
+                </h4>
+                <p class="font-normal text-sm text-slate-500 dark:text-slate-300">
+                    {{ __(' To do so, ensure you have completed your KYC verification and then click on the open new account button on this screen')}}
+                </p>
+            </div>
         </div>
     </div>
 @else

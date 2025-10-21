@@ -934,6 +934,19 @@ return [
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'popup_btn_alignment', // unique name for field
+                'label' => 'Button Alignment', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => 'right', // default value if you want
+                'options' => [
+                    'left' => 'Left',
+                    'center' => 'Center',
+                    'right' => 'Right',
+                ],
+            ]
         ]
     ],
      'provider_logo' => [

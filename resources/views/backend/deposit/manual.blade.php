@@ -101,9 +101,6 @@
 
     <!-- Modal for Pending Deposit Approval -->
 @endsection
-@section('style')
-    @include('components.datatables.sort-icons', ['selector' => '#dataTable'])
-@endsection
 
 @section('script')
     <script>

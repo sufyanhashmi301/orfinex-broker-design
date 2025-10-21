@@ -147,8 +147,8 @@ class MT5DatabaseService
                 ->table($table)
                 ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
                 ->where('Login', $login)
-                ->whereIn('Symbol', $symbols)
-                ->where('Time', '>', $lastTime)
+                // ->whereIn('Symbol', $symbols)
+                // ->where('Time', '>', $lastTime)
                 ->where('Volume', '>', 0)
                 ->whereColumn('Volume', 'VolumeClosed')
                 ->get();

@@ -788,7 +788,9 @@ class   AccountsController extends Controller
                 // email notify user approved
                 $this->mailNotify($account->user->email, 'user_forex_account_approved', [
                     '[[full_name]]' => $account->user->full_name,
-                    '[[login]]' => $account->login,
+                    '[[login]]' => $result['login'] ?? $account->login,
+                    '[[password]]' => $result['password'] ?? '',
+                    '[[server]]' => $result['server'] ?? ($account->server ?? ''),
                     '[[plan_name]]' => optional($account->schema)->title,
                     '[[message]]' => $request->comment ?? '',
                     '[[site_title]]' => setting('site_title', 'global'),

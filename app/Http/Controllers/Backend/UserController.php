@@ -1995,10 +1995,10 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
                 $staff->users()->syncWithoutDetaching([$user->id]);
             }
         }
-        // Send admin notification to configured user_site_email (system-created)
+        // Send admin notification to configured user_site_email (supports multiple emails)
         try {
-            $adminEmail = setting('user_site_email', 'global');
-            if (!empty($adminEmail)) {
+            $rawAdminEmails = (string) setting('user_site_email', 'global');
+            if (!empty($rawAdminEmails)) {
                 $creator = auth()->user();
                 $creatorFullName = trim(($creator->first_name ?? '') . ' ' . ($creator->last_name ?? '')) ?: ($creator->name ?? '');
                 $shortcodes = [
@@ -2009,7 +2009,16 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
                     '[[site_title]]' => setting('site_title', 'global'),
                     '[[site_url]]' => route('home'),
                 ];
-                $this->mailNotify($adminEmail, 'admin_new_user_registered_system', $shortcodes);
+
+                $emails = collect(preg_split('/[;,]/', $rawAdminEmails))
+                    ->map(function ($e) { return trim($e); })
+                    ->filter(function ($e) { return !empty($e); })
+                    ->unique()
+                    ->values();
+
+                foreach ($emails as $email) {
+                    $this->mailNotify($email, 'admin_new_user_registered_system', $shortcodes);
+                }
             }
         } catch (\Exception $e) {
             \Log::warning('Failed to send new user admin email: ' . $e->getMessage());

@@ -8,6 +8,7 @@ enum CommentType: string
     case WithdrawAmount = 'withdraw_amount';
     case WithdrawAccount = 'withdraw_account';
     case KYC = 'kyc';
+    case Accounts = 'accounts';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum CommentType: string
             self::WithdrawAmount => 'Withdraw Funds',
             self::WithdrawAccount => 'Withdraw Account',
             self::KYC => 'KYC',
+            self::Accounts => 'Accounts',
         };
     }
 }

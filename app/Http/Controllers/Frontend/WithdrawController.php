@@ -482,7 +482,14 @@ class WithdrawController extends Controller
                 if (!empty($adminEmail)) {
                     try { $this->mailNotify($adminEmail, 'withdraw_account_request', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
-
+                try {
+                    $emails = getAttachedStaffAdminEmails($user->id);
+                    foreach ($emails as $email) {
+                        $this->mailNotify($email, 'withdraw_account_request', $shortcodes, true);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
                 // Push notification to admin (only if a matching push template exists)
                 try { $this->pushNotify('withdraw_account_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw'); } catch (\Exception $e) { /* silently ignore */ }
             }
@@ -1186,6 +1193,14 @@ class WithdrawController extends Controller
             // Send notifications
             $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
             $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
+            try {
+                $emails = getAttachedStaffAdminEmails($user->id);
+                foreach ($emails as $email) {
+                    $this->mailNotify($email, 'withdraw_request', $shortcodes, true);
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            }
             $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
             $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 

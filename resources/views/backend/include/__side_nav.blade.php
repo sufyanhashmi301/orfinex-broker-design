@@ -319,38 +319,96 @@
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:contact-2"></iconify-icon>
-                        <span>{{ __('Accounts') }}</span>
+                        <span>{{ __('Live Accounts') }}</span>
                     </span>
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{ route('admin.forex-accounts', ['type' => 'real']) }}"
-                            class="{{ isActive('admin.forex-accounts', ['type' => 'real']) }}">
-                            {{ __('Live Accounts') }}
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'real','status'=>'pending']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'real']) && request('status')=='pending' ? 'active' : '' }}">
+                            {{ __('Pending Live Accounts') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.forex-accounts', ['type' => 'demo']) }}"
-                            class="{{ isActive('admin.forex-accounts', ['type' => 'demo']) }}">
-                            {{ __('Demo Accounts') }}
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'real','status'=>'ongoing']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'real']) && request('status')=='ongoing' ? 'active' : '' }}">
+                            {{ __('Approved Live Accounts') }}
                         </a>
                     </li>
-                    @can('leverage-list')
-                        <li>
-                            <a href="{{ route('admin.all-leverage') }}" class="{{ isActive('admin.all-leverage') }}">
-                                {{ __('All Leverage') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.pending-leverage') }}"
-                                class="{{ isActive('admin.pending-leverage') }}">
-                                {{ __('Pending Leverage') }}
-                            </a>
-                        </li>
-                    @endcan
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'real','status'=>'canceled']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'real']) && request('status')=='canceled' ? 'active' : '' }}">
+                            {{ __('Rejected Live Accounts') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'real','status'=>'archive']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'real']) && request('status')=='archive' ? 'active' : '' }}">
+                            {{ __('Archive Live Accounts') }}
+                        </a>
+                    </li>
                 </ul>
+            </li>
 
+            <li class="">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:contact-2"></iconify-icon>
+                        <span>{{ __('Demo Accounts') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'demo','status'=>'pending']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'demo']) && request('status')=='pending' ? 'active' : '' }}">
+                            {{ __('Pending Demo Accounts') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'demo','status'=>'ongoing']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'demo']) && request('status')=='ongoing' ? 'active' : '' }}">
+                            {{ __('Approved Demo Accounts') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'demo','status'=>'canceled']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'demo']) && request('status')=='canceled' ? 'active' : '' }}">
+                            {{ __('Rejected Demo Accounts') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.forex-accounts', ['type' => 'demo','status'=>'archive']) }}"
+                            class="{{ isActive('admin.forex-accounts', ['type' => 'demo']) && request('status')=='archive' ? 'active' : '' }}">
+                            {{ __('Archive Demo Accounts') }}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
+
+        @can('leverage-list')
+            <li class="">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:sliders"></iconify-icon>
+                        <span>{{ __('Leverage') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('admin.all-leverage') }}" class="{{ isActive('admin.all-leverage') }}">
+                            {{ __('All Leverage') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.pending-leverage') }}" class="{{ isActive('admin.pending-leverage') }}">
+                            {{ __('Pending Leverage') }}
+                        </a>
+                    </li>
+                </ul>
             </li>
         @endcan
 

@@ -14,6 +14,7 @@ use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
+use App\Services\AdminForexAccountApprovalService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -97,6 +98,12 @@ class   AccountsController extends Controller
                     ->selectRaw('MIN(users.ib_login)'),
                 'ib_login_sort'
             )
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'forex_accounts.user_id')
+                        ->selectRaw('MIN(users.email)'),
+                    'user_email_sort'
+                )
             ->selectSub(
                 DB::table('forex_schemas')
                     ->whereColumn('forex_schemas.id', 'forex_accounts.forex_schema_id')
@@ -186,7 +193,8 @@ class   AccountsController extends Controller
         'unActiveAccounts' => $unActiveAccounts,
     ];
 
-    return view('backend.investment.index', compact('data', 'type'));
+    $status = $request->get('status');
+    return view('backend.investment.index', compact('data', 'type', 'status'));
 }
 
 
@@ -738,6 +746,58 @@ class   AccountsController extends Controller
             ],
             'forex_schema_id' => 'sometimes|exists:forex_schemas,id',
         ]);
+
+        // Approve/Reject via status change
+        if ($request->has('set_status')) {
+            $request->validate([
+                'login' => ['required', 'integer'],
+                'set_status' => ['required', 'in:ongoing,canceled']
+            ]);
+            $account = ForexAccount::where('login', $request->login)->first();
+            if (!$account) {
+                return response()->json(['error' => __('Invalid forex account!'), 'reload' => false]);
+            }
+
+            if ($request->set_status === ForexAccountStatus::Canceled) {
+                $meta = $account->meta ? (json_decode($account->meta, true) ?: []) : [];
+                if ($request->filled('comment')) { $meta['last_action_comment'] = $request->comment; }
+                $account->meta = json_encode($meta);
+                $account->status = ForexAccountStatus::Canceled;
+                $account->save();
+                // email notify user rejected
+                $this->mailNotify($account->user->email, 'user_forex_account_rejected', [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[login]]' => $account->login,
+                    '[[plan_name]]' => optional($account->schema)->title,
+                    '[[message]]' => $request->comment ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ]);
+                return response()->json(['success' => __('Account rejected successfully.'), 'reload' => true]);
+            }
+
+            // Approve: create account at platform then set to ongoing
+            $service = app(AdminForexAccountApprovalService::class);
+            // store comment, then approve
+            $meta = $account->meta ? (json_decode($account->meta, true) ?: []) : [];
+            if ($request->filled('comment')) { $meta['last_action_comment'] = $request->comment; }
+            $account->meta = json_encode($meta);
+            $account->save();
+            $result = $service->approve($account);
+            if ($result['success']) {
+                // email notify user approved
+                $this->mailNotify($account->user->email, 'user_forex_account_approved', [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[login]]' => $account->login,
+                    '[[plan_name]]' => optional($account->schema)->title,
+                    '[[message]]' => $request->comment ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ]);
+                return response()->json(['success' => $result['message'], 'reload' => true]);
+            }
+            return response()->json(['error' => $result['message'], 'reload' => false]);
+        }
 
         // Call respective methods based on the provided input
         if ($request->leverage) {

@@ -414,11 +414,20 @@ return [
                 'value' => 'admin@tdevs.co', // default value if you want
             ],
             [
-                'type' => 'email', // input fields type
+                'type' => 'text', // input fields type (allow multiple comma-separated emails)
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'user_site_email', // unique name for field
                 'label' => 'New User Notification', // you know what label it is
-                'description' => 'Default email used for new users notifications',
+                'description' => 'Comma-separated email addresses to notify on new user registration. e.g. abc@gmail.com, xyz@gmail.com',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'admin@tdevs.co', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type (allow multiple comma-separated emails)
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'staff_site_email', // unique name for field
+                'label' => 'New Staff Notification', // you know what label it is
+                'description' => 'Comma-separated email addresses to notify on new staff registration. e.g. abc@gmail.com, xyz@gmail.com',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'admin@tdevs.co', // default value if you want
             ],
@@ -1773,6 +1782,24 @@ return [
                     'placeholder' => 'Enter minutes',
                 ],
             ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "live_account_creation", // unique name for field
+                "label" => "Live Account Admin Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for live account creation.",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
+            ],
+            [
+                "type" => "checkbox", // input fields type
+                "data" => "boolean", // data type, string, int, boolean
+                "name" => "demo_account_creation", // unique name for field
+                "label" => "Demo Account Admin Approval", // you know what label it is
+                "description" => "Enable this to require manual admin approval for demo account creation.",
+                "rules" => "required", // validation rule of laravel
+                "value" => 0, // default value if you want
+            ]
 //            [
 //                'type' => 'radio', // Change type to 'radio'
 //                'data' => 'string',

@@ -362,8 +362,8 @@ class KycController extends Controller
 
         // Send approval email
         $this->mailNotify($user->email, 'kyc_approve_level_2', $shortcodes);
-
         notify()->success('KYC Approved Successfully');
+
     } elseif ($status == \App\Enums\KYCStatus::Rejected->value) {
         // Reject KYC
         $user->update([
@@ -373,13 +373,13 @@ class KycController extends Controller
 
         // Send rejection email
         $this->mailNotify($user->email, 'kyc_reject_level_2', $shortcodes);
-
         notify()->success('KYC Rejected Successfully');
+        
     }
 
     // Send push and SMS notifications
-    $this->pushNotify('kyc_status_update', $shortcodes, route('user.kyc'), $user->id);
-    $this->smsNotify('kyc_status_update', $shortcodes, $user->phone);
+    $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
+    $this->smsNotify('kyc_action', $shortcodes, $user->phone);
 
     return redirect()->route('admin.kyc.all');
 }

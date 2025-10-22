@@ -123,21 +123,19 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="table-td text-center py-12">
+                                        <td colspan="5" class="text-center py-12">
                                             <div class="flex flex-col items-center justify-center">
-                                                <div
-                                                    class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
-                                                    <iconify-icon icon="lucide:file-plus"
-                                                        class="text-3xl text-slate-400"></iconify-icon>
+                                                <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+                                                    <iconify-icon icon="lucide:file-plus" class="text-3xl text-slate-400"></iconify-icon>
                                                 </div>
-                                                <h4 class="text-slate-500 dark:text-slate-400 font-medium mb-2">
-                                                    {{ __('No Forms Found') }}</h4>
+                                                <h4 class="text-2xl text-slate-500 dark:text-slate-400 font-medium mb-2">
+                                                    {{ __('No Forms Found') }}
+                                                </h4>
                                                 <p class="text-slate-400 text-sm mb-4">
                                                     {{ __('Create your first payment deposit form to get started.') }}</p>
                                                 <a href="{{ route('admin.payment-deposit-form.create') }}"
-                                                    class="btn btn-sm btn-primary">
-                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2"
-                                                        icon="lucide:plus"></iconify-icon>
+                                                    class="btn btn-primary inline-flex items-center justify-center">
+                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                                                     {{ __('Create Form') }}
                                                 </a>
                                             </div>

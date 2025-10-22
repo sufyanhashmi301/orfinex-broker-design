@@ -111,7 +111,7 @@
                                 placeholder="{{ __('Enter any additional instructions for the user (optional)') }}"></textarea>
                         </div>
                     </form>
-                    <div class="text-right pt-3">
+                    <div class="text-right pt-10">
                         <button type="button" id="reApproveSubmitBtn"
                             class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"
@@ -120,8 +120,7 @@
                                 id="reApproveLoader"></iconify-icon>
                             <span id="reApproveText">{{ __('Re-approve Request') }}</span>
                         </button>
-                        <button type="button" class="btn btn-secondary inline-flex items-center justify-center"
-                            data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                             {{ __('Cancel') }}
                         </button>

@@ -110,6 +110,15 @@ class AdminForexAccountApprovalService
 
             // Update local record
             $this->finalizeAccount($account, $mt5Login, $server);
+            // Immediately purge any stored master_password from meta
+            if (!empty($account->meta)) {
+                $meta = json_decode($account->meta, true) ?: [];
+                if (isset($meta['master_password'])) {
+                    unset($meta['master_password']);
+                    $account->meta = !empty($meta) ? json_encode($meta) : null;
+                    $account->save();
+                }
+            }
 
             // Demo auto deposit
             if ($accountType === 'demo' && ($schema->demo_deposit_amount ?? 0) > 0) {
@@ -121,7 +130,13 @@ class AdminForexAccountApprovalService
                 ]);
             }
 
-            return ['success' => true, 'message' => __('Account approved and created successfully.')];
+            return [
+                'success' => true,
+                'message' => __('Account approved and created successfully.'),
+                'login' => $mt5Login,
+                'password' => $password,
+                'server' => $server,
+            ];
         }
 
         if ($traderType === TraderType::X9) {
@@ -152,6 +167,15 @@ class AdminForexAccountApprovalService
                 return ['success' => false, 'message' => __('Platform creation failed with invalid response.')];
             }
             $this->finalizeAccount($account, $login, $server);
+            // Immediately purge any stored master_password from meta
+            if (!empty($account->meta)) {
+                $meta = json_decode($account->meta, true) ?: [];
+                if (isset($meta['master_password'])) {
+                    unset($meta['master_password']);
+                    $account->meta = !empty($meta) ? json_encode($meta) : null;
+                    $account->save();
+                }
+            }
 
             // Demo auto deposit
             if ($accountType === 'demo' && ($schema->demo_deposit_amount ?? 0) > 0) {
@@ -162,7 +186,13 @@ class AdminForexAccountApprovalService
                     'TransactionComments' => 'auto/demo/deposit/' . time(),
                 ]);
             }
-            return ['success' => true, 'message' => __('Account approved and created successfully.')];
+            return [
+                'success' => true,
+                'message' => __('Account approved and created successfully.'),
+                'login' => $login,
+                'password' => $password,
+                'server' => $server,
+            ];
         }
 
         return ['success' => false, 'message' => __('Unsupported trader type.')];

@@ -28,53 +28,59 @@ class GatewayServiceProvider extends ServiceProvider
         if (Schema::hasTable('gateways')) {
             //=============== paypal ==============
             $paypalCredential = gateway_info('paypal');
+            if ($paypalCredential) {
+                $paypalInfo = [
+                    'paypal.mode' => $paypalCredential->mode,
+                ];
+
+                if ($paypalCredential->mode != 'sandbox') {
+                    $paypalInfo = array_merge($paypalInfo, [
+                        'paypal.live.app_id' => $paypalCredential->app_id,
+                        'paypal.live.client_id' => $paypalCredential->client_id,
+                        'paypal.live.client_secret' => $paypalCredential->client_secret,
+                    ]);
+                } else {
+                    $paypalInfo = array_merge($paypalInfo, [
+                        'paypal.sandbox.app_id' => $paypalCredential->app_id,
+                        'paypal.sandbox.client_id' => $paypalCredential->client_id,
+                        'paypal.sandbox.client_secret' => $paypalCredential->client_secret,
+                    ]);
+                }
+
+                config()->set($paypalInfo);
+            }
+
+            $mollieCredential = gateway_info('mollie');
+            if ($mollieCredential) {
+                Mollie::api()->setApiKey($mollieCredential->api_key);
+            }
+
             $paystackCredential = gateway_info('paystack');
-            $perfectmoneyCredential = gateway_info('perfectmoney');
-            $coinbaseCredential = gateway_info('coinbase');
-            $coinremitterCredential = gateway_info('coinremitter');
-
-            $paypalInfo = [
-                'paypal.mode' => $paypalCredential->mode,
-            ];
-
-            if ($paypalCredential->mode != 'sandbox') {
-                $paypalInfo = array_merge($paypalInfo, [
-                    'paypal.live.app_id' => $paypalCredential->app_id,
-                    'paypal.live.client_id' => $paypalCredential->client_id,
-                    'paypal.live.client_secret' => $paypalCredential->client_secret,
-                ]);
-            } else {
-                $paypalInfo = array_merge($paypalInfo, [
-                    'paypal.sandbox.app_id' => $paypalCredential->app_id,
-                    'paypal.sandbox.client_id' => $paypalCredential->client_id,
-                    'paypal.sandbox.client_secret' => $paypalCredential->client_secret,
+            if ($paystackCredential) {
+                config()->set([
+                    'paystack.publicKey' => $paystackCredential->public_key,
+                    'paystack.merchantEmail' => $paystackCredential->merchant_email,
+                    'paystack.secretKey' => $paystackCredential->secret_key,
                 ]);
             }
 
-            config()->set($paypalInfo);
+            $perfectmoneyCredential = gateway_info('perfectmoney');
+            if ($perfectmoneyCredential) {
+                config()->set([
+                    'perfectmoney.account_id' => $perfectmoneyCredential->PM_ACCOUNTID,
+                    'perfectmoney.passphrase' => $perfectmoneyCredential->PM_PASSPHRASE,
+                    'perfectmoney.marchant_id' => $perfectmoneyCredential->PM_MARCHANTID,
+                ]);
+            }
 
-            $mollieCredential = gateway_info('mollie');
-            Mollie::api()->setApiKey($mollieCredential->api_key);
-
-            config()->set([
-                'paystack.publicKey' => $paystackCredential->public_key,
-                'paystack.merchantEmail' => $paystackCredential->merchant_email,
-                'paystack.secretKey' => $paystackCredential->secret_key,
-            ]);
-
-            config()->set([
-                'perfectmoney.account_id' => $perfectmoneyCredential->PM_ACCOUNTID,
-                'perfectmoney.passphrase' => $perfectmoneyCredential->PM_PASSPHRASE,
-                'perfectmoney.marchant_id' => $perfectmoneyCredential->PM_MARCHANTID,
-            ]);
-
-            config()->set([
-                'coinbase.apiKey' => $coinbaseCredential->apiKey,
-                'coinbase.webhookSecret' => $coinbaseCredential->webhookSecret,
-                'coinbase.apiVersion' => $coinbaseCredential->apiVersion,
-            ]);
-
-
+            $coinbaseCredential = gateway_info('coinbase');
+            if ($coinbaseCredential) {
+                config()->set([
+                    'coinbase.apiKey' => $coinbaseCredential->apiKey,
+                    'coinbase.webhookSecret' => $coinbaseCredential->webhookSecret,
+                    'coinbase.apiVersion' => $coinbaseCredential->apiVersion,
+                ]);
+            }
         }
     }
 }

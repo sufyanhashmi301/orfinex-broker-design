@@ -33,7 +33,7 @@
                         </div>
 
                         <!-- Step 1 -->
-                        <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                        <div class="relative z-1 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
                             @if($user->kyc >= \App\Enums\KYCStatus::Level1->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
                             @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
                                 <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
@@ -43,7 +43,7 @@
                         </div>
 
                         <!-- Step 2 -->
-                        <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                        <div class="relative z-1 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
                             @if($user->kyc >= \App\Enums\KYCStatus::Level2->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
                             @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
                                 <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
@@ -54,7 +54,7 @@
 
                     @if($totalActiveLevels == 3)
                         <!-- Step 3 -->
-                            <div class="relative z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
+                            <div class="relative z-1 w-8 h-8 flex items-center justify-center bg-white dark:bg-dark border-2 rounded-full
                                 @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) border-primary text-primary @else border-slate-300 text-slate-400 @endif">
                                 @if($user->kyc >= \App\Enums\KYCStatus::Level3->value)
                                     <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>

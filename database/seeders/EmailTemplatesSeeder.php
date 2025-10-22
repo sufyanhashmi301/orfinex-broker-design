@@ -61,7 +61,7 @@ class EmailTemplatesSeeder extends Seeder
                 'bottom_status' => 0,
                 'bottom_title' => 'Account Approved',
                 'bottom_body' => 'Login [[login]] is ready to trade.',
-                'short_codes' => json_encode(["[[full_name]]","[[login]]","[[plan_name]]","[[message]]","[[site_title]]","[[site_url]]"]),
+                'short_codes' => json_encode(["[[full_name]]","[[login]]","[[password]]","[[server]]","[[plan_name]]","[[message]]","[[site_title]]","[[site_url]]"]),
                 'note' => '',
                 'support_link' => '',
                 'warning_content' => '',

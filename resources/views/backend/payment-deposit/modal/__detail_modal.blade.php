@@ -24,12 +24,6 @@
                     <div id="detailContent">
                         <!-- Content will be loaded via AJAX -->
                     </div>
-                    <div class="text-right pt-3">
-                        <button type="button" class="btn btn-secondary inline-flex items-center justify-center" data-bs-dismiss="modal">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                            {{ __('Close') }}
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

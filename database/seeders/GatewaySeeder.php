@@ -15,7 +15,7 @@ class GatewaySeeder extends Seeder
      */
     public function run()
     {
-        Gateway::truncate();
+        // Gateway::truncate();
 
         $paypalCredentials = [
             'client_id' => '',

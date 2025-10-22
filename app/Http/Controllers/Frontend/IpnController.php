@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Session;
 use Modules\Payment\Monnify\Monnify;
 use Mollie\Laravel\Facades\Mollie;
 use Payment\Securionpay\SecurionpayTxn;
+use Payment\Jenapay\JenapayTxn;
 use Paystack;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Txn;
@@ -611,6 +612,81 @@ class IpnController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json(['error' => 'Internal server error'], 500);
+        }
+    }
+
+    public function jenapayIpn(Request $request)
+    {
+        try {
+            $data = $request->all();
+            
+            // Log the callback for debugging
+            Log::info('JenaPay IPN received', $data);
+
+            // Extract hash from request
+            $receivedHash = $data['hash'] ?? '';
+
+            // Create JenapayTxn instance to verify signature
+            $jenapayTxn = new JenapayTxn((object)[]);
+            
+            if (!$jenapayTxn->verifyCallbackSignature($data, $receivedHash)) {
+                Log::warning('JenaPay: Invalid callback signature', $data);
+                return response('fail', 400);
+            }
+
+            // Extract transaction details
+            $orderNumber = $data['order']['number'] ?? '';
+            $paymentStatus = $data['payment_status'] ?? '';
+            $paymentId = $data['payment_id'] ?? '';
+
+            // Update transaction with payment ID if available
+            if ($paymentId) {
+                $transaction = Transaction::tnx($orderNumber);
+                if ($transaction) {
+                    $transaction->update([
+                        'tnx' => $paymentId,
+                        'manual_field_data' => $data
+                    ]);
+                }
+            }
+
+            // Handle different payment statuses
+            switch ($paymentStatus) {
+                case 'success':
+                case 'completed':
+                    self::paymentSuccess($orderNumber);
+                    return response('OK', 200);
+                    
+                case 'failed':
+                case 'declined':
+                    $transaction = Transaction::tnx($orderNumber);
+                    if ($transaction) {
+                        $transaction->update([
+                            'status' => TxnStatus::Failed,
+                            'approval_cause' => 'Payment failed or declined'
+                        ]);
+                    }
+                    return response('OK', 200);
+                    
+                case 'pending':
+                    // Keep transaction as pending
+                    return response('OK', 200);
+                    
+                default:
+                    Log::warning('JenaPay: Unknown payment status', [
+                        'status' => $paymentStatus,
+                        'data' => $data
+                    ]);
+                    return response('OK', 200);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Error processing JenaPay IPN', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $request->all()
+            ]);
+            return response('fail', 500);
         }
     }
 

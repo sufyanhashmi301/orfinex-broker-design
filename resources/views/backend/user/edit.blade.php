@@ -715,7 +715,7 @@
             });
         });
 
-        $(document).on('submit', '#balanceForm', function () {
+        $(document).on('submit', '#balanceForm, #bonus-form, #statusUpdateForm', function () {
             const $form = $(this);
             const $btn = $form.find('[type=submit]');
 

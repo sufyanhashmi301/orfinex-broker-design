@@ -85,6 +85,7 @@
           data-invest_password="{{$account->invest_password}}">{{ __('Change trading password') }}</a>
       </li>
       @endif
+      @if($account->schema->is_update_investor_password)
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-password"
           href=""
@@ -92,6 +93,7 @@
           data-bs-toggle="modal"
           data-bs-target="#changeInvestorPass" data-login="{{$account->login}}">{{ __('Change investor password') }}</a>
       </li>
+       @endif
       <li>
           @if($account->status == \App\Enums\ForexAccountStatus::Archive)
               <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white archive-login" href=""

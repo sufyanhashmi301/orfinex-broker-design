@@ -173,6 +173,7 @@ class ForexSchemaController extends Controller
             'min_amount' => 'nullable|integer|min:0|max:500000',
             'priority' => 'required|integer',
             'is_update_trading_password' => 'required|boolean',
+            'is_update_investor_password' => 'required|boolean',
             'demo_deposit_amount' => 'nullable|numeric|min:0|max:50000000',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
@@ -223,6 +224,7 @@ class ForexSchemaController extends Controller
             'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : null,
             'is_global' => $input['is_global'],
             'is_update_trading_password' => $input['is_update_trading_password'] ?? 0,
+            'is_update_investor_password' => $input['is_update_investor_password'] ?? 0,
 
         ];
 //        dd($finalData);
@@ -283,6 +285,7 @@ class ForexSchemaController extends Controller
             'min_amount' => 'required|integer|min:0|max:500000',
             'priority' => 'required|integer',
             'is_update_trading_password' => 'required|boolean',
+            'is_update_investor_password' => 'required|boolean',
             'demo_deposit_amount' => 'nullable|numeric|min:0',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
@@ -335,6 +338,7 @@ class ForexSchemaController extends Controller
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
             'is_global' => $input['is_global'],
             'is_update_trading_password' => $input['is_update_trading_password'] ?? 0,
+            'is_update_investor_password' => $input['is_update_investor_password'] ?? 0,
         ];
 
         $schema->update($finalData);

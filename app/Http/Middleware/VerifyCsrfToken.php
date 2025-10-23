@@ -16,7 +16,8 @@ class VerifyCsrfToken extends Middleware
         '*gateway/coingate/callback',
         '*ipn*',
         'ipn/uniwire',
-        // 'ipn/match2pay',
+        'ipn/match2pay',
+        'ipn/jenapay',
         'webhook/*',//for sumsub webhook receive,veriff webhook receive
         'webhook/sumsub',
         '*telegram/webhook',

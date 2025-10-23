@@ -36,16 +36,23 @@ class AdminForexAccountApprovalService
         $server = $this->getServer($accountType, $traderType);
         $group = $account->group; // Was chosen at request time
         $password = null;
+        $investorPassword = null;
         // meta is stored as JSON string in DB; decode safely
         if (!empty($account->meta)) {
             $meta = json_decode($account->meta, true);
             if (is_array($meta) && !empty($meta['master_password'])) {
                 $password = (string) $meta['master_password'];
             }
+            if (is_array($meta) && !empty($meta['investor_password'])) {
+                $investorPassword = (string) $meta['investor_password'];
+            }
         }
         if (!$password) {
             // Generate a compliant temporary password (8–20 chars, 4 types)
             $password = $this->generateCompliantPassword();
+        }
+        if (!$investorPassword) {
+            $investorPassword = 'Inv@Pass1!';
         }
 
         // Prepare login within range if applicable (MT5 only)
@@ -78,7 +85,7 @@ class AdminForexAccountApprovalService
                 'phonePassword' => 'SNNH@2024@bol',
                 'status' => 'RE',
                 'masterPassword' => $password,
-                'investorPassword' => 'SNNH@2024@bol'
+                'investorPassword' => $investorPassword
             ];
 
             $retryCount = 0; $maxRetries = 3; $success = false; $response = null; $loginTry = $loginPreferred;
@@ -110,11 +117,19 @@ class AdminForexAccountApprovalService
 
             // Update local record
             $this->finalizeAccount($account, $mt5Login, $server);
-            // Immediately purge any stored master_password from meta
+            // Immediately purge any stored master_password or investor_password from meta
             if (!empty($account->meta)) {
                 $meta = json_decode($account->meta, true) ?: [];
+                $changed = false;
                 if (isset($meta['master_password'])) {
                     unset($meta['master_password']);
+                    $changed = true;
+                }
+                if (isset($meta['investor_password'])) {
+                    unset($meta['investor_password']);
+                    $changed = true;
+                }
+                if ($changed) {
                     $account->meta = !empty($meta) ? json_encode($meta) : null;
                     $account->save();
                 }
@@ -135,6 +150,7 @@ class AdminForexAccountApprovalService
                 'message' => __('Account approved and created successfully.'),
                 'login' => $mt5Login,
                 'password' => $password,
+                'investor_password' => $investorPassword,
                 'server' => $server,
             ];
         }
@@ -153,7 +169,7 @@ class AdminForexAccountApprovalService
                 'email' => $account->user->email,
                 'company' => setting('site_title', 'global'),
                 'master_password' => $password,
-                'investor_password' => 'Inv@Pass1!'
+                'investor_password' => $investorPassword
             ];
             $x9 = new x9ApiService();
             $response = $x9->createUser($data);
@@ -167,11 +183,13 @@ class AdminForexAccountApprovalService
                 return ['success' => false, 'message' => __('Platform creation failed with invalid response.')];
             }
             $this->finalizeAccount($account, $login, $server);
-            // Immediately purge any stored master_password from meta
+            // Immediately purge any stored master_password or investor_password from meta
             if (!empty($account->meta)) {
                 $meta = json_decode($account->meta, true) ?: [];
-                if (isset($meta['master_password'])) {
-                    unset($meta['master_password']);
+                $changed = false;
+                if (isset($meta['master_password'])) { unset($meta['master_password']); $changed = true; }
+                if (isset($meta['investor_password'])) { unset($meta['investor_password']); $changed = true; }
+                if ($changed) {
                     $account->meta = !empty($meta) ? json_encode($meta) : null;
                     $account->save();
                 }

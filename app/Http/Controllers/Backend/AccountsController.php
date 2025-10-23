@@ -790,6 +790,7 @@ class   AccountsController extends Controller
                     '[[full_name]]' => $account->user->full_name,
                     '[[login]]' => $result['login'] ?? $account->login,
                     '[[password]]' => $result['password'] ?? '',
+                    '[[investor_password]]' => $result['investor_password'] ?? '',
                     '[[server]]' => $result['server'] ?? ($account->server ?? ''),
                     '[[plan_name]]' => optional($account->schema)->title,
                     '[[message]]' => $request->comment ?? '',

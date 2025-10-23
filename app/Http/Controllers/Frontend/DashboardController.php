@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $transactions = Transaction::where('user_id', $user->id)
             ->where('status', '!=', \App\Enums\TxnStatus::None); // Exclude none status
 
-        $recentTransactions = $transactions->where('type', '!=', TxnType::IbBonus)->latest()->take(5)->get();
+        $recentTransactions = $transactions->where('type', '!=', TxnType::IbBonus)->latest()->take(3)->get();
 
         $referral = $user->getReferrals()->first();
 

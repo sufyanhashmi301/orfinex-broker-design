@@ -798,6 +798,10 @@ if (!function_exists('gateway_info')) {
     {
         $info = Gateway::where('gateway_code', $code)->first();
 
+        if (!$info || !$info->credentials) {
+            return null;
+        }
+
         return json_decode($info->credentials);
     }
 }

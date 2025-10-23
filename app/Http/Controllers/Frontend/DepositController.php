@@ -131,7 +131,7 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
-        try {
+        // try {composer dump-autoload
             DB::beginTransaction();
             if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
                 abort('403', __('Deposit Disabled Now'));
@@ -261,11 +261,11 @@ class DepositController extends GatewayController
 
             }
             return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
-        } catch (Exception $e) {
-            DB::rollBack();
-            notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
-            return redirect()->back()->withInput();
-        }
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     notify()->error(__('An error occurred while processing your deposit. Please try again later.'), 'Error');
+        //     return redirect()->back()->withInput();
+        // }
     }
 
 

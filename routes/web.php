@@ -282,6 +282,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('paytm', 'paytmIpn')->name('paytm');
     Route::post('razorpay', 'razorpayIpn')->name('razorpay');
     Route::post('twocheckout', 'twocheckoutIpn')->name('twocheckout');
+    Route::post('jenapay', 'jenapayIpn')->name('jenapay');
 });
 
 //site others

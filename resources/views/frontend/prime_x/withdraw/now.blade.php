@@ -74,7 +74,7 @@
                                         class="btn-link inline-flex items-center justify-center mb-2"
                                         style="min-width: fit-content;">
                                         <iconify-icon icon="lucide:plus"></iconify-icon>
-                                        {{ __('Add New Account') }}
+                                        {{ __('Add New Withdrawal Account') }}
                                     </a>
                                 </div>
                                 <div class="input-group select2-lg">

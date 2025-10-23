@@ -1,7 +1,7 @@
 @extends('frontend::send_money.index')
 @section('send_money_content')
     <div class="progress-steps-form">
-        <form action="{{ route('user.send-money.now') }}" method="post">
+        <form action="{{ route('user.send-money.now') }}" method="post" id="externalTransferForm">
             @csrf
             <input type="hidden" name="target_type" id="selectedAccountType" value="forex"> <!-- Default to forex -->
             <input type="hidden" name="receiver_type" id="selectedReceiverAccountType" value="forex">
@@ -112,9 +112,8 @@
                                         </tbody>
                                     </table>
                                     <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                        <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
-                                            {{ __('Transfer Now') }}
-                                            <i class="anticon anticon-double-right"></i>
+                                        <button type="submit" class="btn w-full inline-flex justify-center btn-primary space-x-2" data-loading-text="Processing...">
+                                            <span>{{ __('Transfer Now') }}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -163,6 +162,15 @@
                 finalCharge = charge;
             }
             $('.previewCharge').text(finalCharge);
+        });
+
+        $(document).on('submit', '#externalTransferForm', function () {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
         });
     </script>
 @endsection

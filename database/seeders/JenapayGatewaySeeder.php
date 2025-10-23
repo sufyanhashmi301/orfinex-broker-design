@@ -16,7 +16,7 @@ class JenapayGatewaySeeder extends Seeder
     public function run()
     {
         $jenapayCredentials = [
-            'merchant_key' => '5b637114-889b-11f0-8307-5ef95a1588b9',
+            'merchant_key' => '5b637114-889b-11f0-8307-5ef95a1588b91',
             'merchant_pass' => 'db0a76026e927c1f43eeb5e24043f7a5',
             'api_url' => 'https://checkout.jenapay.com',
         ];
@@ -35,7 +35,7 @@ class JenapayGatewaySeeder extends Seeder
             DB::table('gateways')->insert([
                 'gateway_code' => 'jenapay',
                 'name' => 'JenaPay',
-                'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/jenapay.svg',
+                'logo' => 'https://jenapay.com/wp-content/uploads/2023/09/Jena-Pay-Logo-1.png',
                 'status' => false, // Disabled by default
                 'credentials' => json_encode($jenapayCredentials),
                 'supported_currencies' => json_encode($jenapayCurrencies),

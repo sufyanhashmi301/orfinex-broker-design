@@ -66,6 +66,11 @@ class TicketController extends Controller
             }
         }
 
+        // If a specific user id is provided via route, restrict to that user
+        if (!is_null($id)) {
+            $ticketQuery->where('user_id', $id);
+        }
+
         // Apply user accessibility filter to ticket query based on ticket creator's branch
         if (!empty($accessibleUserIds)) {
             $ticketQuery->whereIn('user_id', $accessibleUserIds);

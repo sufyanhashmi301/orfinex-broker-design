@@ -354,7 +354,7 @@
                     <!-- ticket -->
                     @canany(['customer-tickets-list'])
                         @include('backend.user.include.__ticket')
-                    @endcan
+                    @endcanany
                     @can('customer-notes-list')
                         @include('backend.user.notes.index')
                     @endcan

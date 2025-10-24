@@ -154,8 +154,14 @@
                         </div>
                         <div class="flex justify-between items-center mt-3">
                             <p class="account-balance mb-0 dark:text-white">
-                                @php $lb = (float) $account->balance; @endphp
-                                <span class="text-lg font-semibold">{{ $lb > 0 ? $lb : '-' }}</span>
+                                @php $lb = get_mt5_account_balance($account->login); $lb = is_null($lb) ? null : (float) $lb; @endphp
+                                <span class="text-lg font-semibold">
+                                    @if($isApproved)
+                                        {{ is_null($lb) ? 0 : $lb }}
+                                    @else
+                                        -
+                                    @endif
+                                </span>
                                 <span>{{ $account->schema->is_cent_account ? $account->currency . ' (Cents)' : $account->currency }}</span>
                             </p>
                             <div class="action-btns flex items-center gap-3">

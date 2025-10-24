@@ -33,12 +33,20 @@
                     <iconify-icon class="text-lg" icon="heroicons:list-bullet"></iconify-icon>
                 </button>
             </div>
-            <a href="{{route('user.schema')}}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
-                <span class="flex items-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
-                    <span>{{ __('Open New Account') }}</span>
-                </span>
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('user.schema', ['type' => 'real']) }}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
+                        <span>{{ __('Open New Real Account') }}</span>
+                    </span>
+                </a>
+                <a href="{{ route('user.schema', ['type' => 'demo']) }}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
+                        <span>{{ __('Open New Demo Account') }}</span>
+                    </span>
+                </a>
+            </div>
         </div>
     </div>
     <div class="grid grid-cols-12 gap-6">
@@ -154,5 +162,57 @@
             $(this).addClass('active');
             $('.list-view-btn').removeClass('active');
         });
+           // Status details modal
+        (function($){
+            'use strict';
+            $('body').on('click', '.dropdown-status-details', function(){
+                var $el = $(this);
+                $('#sdAccountName').text($el.data('account_name'));
+                $('#sdLogin').text($el.data('login'));
+                $('#sdSchema').text($el.data('schema_title'));
+                $('#sdServer').text($el.data('server'));
+                $('#sdType').text($el.data('account_type'));
+                $('#sdLeverage').text($el.data('leverage'));
+                $('#sdBalance').text($el.data('balance') + ' ');
+                $('#sdEquity').text($el.data('equity'));
+                $('#statusDetailsStatus').text($el.data('status'));
+                var comment = $el.data('comment') || '';
+                $('#statusDetailsComment').html(comment || '{{ __('No status message available.') }}');
+                $('#statusDetailsModal').modal('show');
+            });
+        })(jQuery);
     </script>
+     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="statusDetailsModal" tabindex="-1" aria-labelledby="statusDetailsModal" aria-hidden="true">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-2xl w-full pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="relative bg-white rounded-lg shadow dark:bg-dark">
+                    <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
+                        <h3 class="text-xl font-medium dark:text-white capitalize">{{ __('Status details') }}</h3>
+                        <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                            <svg aria-hidden="true" class="w-5 h-5 fill-black dark:fill-white" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">{{ __('Close modal') }}</span>
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-5">
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded">
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Account Name:') }} <strong id="sdAccountName"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Number:') }} <strong id="sdLogin"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Platform:') }} <strong id="sdPlatform">MT5</strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Schema:') }} <strong id="sdSchema"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Server:') }} <strong id="sdServer"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Account Type:') }} <strong id="sdType"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Leverage:') }} <strong id="sdLeverage"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Balance:') }} <strong id="sdBalance"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Equity:') }} <strong id="sdEquity"></strong></li>
+                            <li class="list-group-item dark:text-slate-300 block py-2 px-3">{{ __('Current status:') }} <strong id="statusDetailsStatus"></strong></li>
+                        </ul>
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Description') }}</label>
+                            <div id="statusDetailsComment" class="prose dark:prose-invert"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

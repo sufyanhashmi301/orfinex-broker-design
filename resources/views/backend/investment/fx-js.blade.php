@@ -210,14 +210,19 @@
                     // setTimeout(function () {
                     //     location.reload();
                     // }, 900);
+                    // restore button text if loading state was applied
+                    if (btn && btn.data('original-text')) { btn.html(btn.data('original-text')); }
+                    if (btn) { btn.prop('disabled', false); }
                 } else if (res.errors) {
                     tNotify('warning', res.message);
                     // NioApp.Form.errors(res, true);
+                    if (btn && btn.data('original-text')) { btn.html(btn.data('original-text')); }
                     btn.prop('disabled', false);
                 }
             },
             error: function (data) {
                 // console.log(data,'data')
+                if (btn && btn.data('original-text')) { btn.html(btn.data('original-text')); }
                 btn.prop('disabled', false);
                 tNotify('warning', data.responseJSON.message);
                 // NioApp.Form.errors(res, true);
@@ -227,6 +232,101 @@
             }
         })
     }
+
+    // Open account action modal (for pending/rejected)
+    $('body').on('click', '.open-account-action-modal', function () {
+        var login = $(this).data('login');
+        var id = $(this).data('id');
+        var status = $(this).data('status');
+        var accountType = $(this).data('account_type') || '-';
+        var group = $(this).data('group') || '-';
+        var username = $(this).data('username') || '-';
+        var email = $(this).data('email') || '';
+        var comment = $(this).data('comment') || '';
+        $('#account-action-login').text(login);
+        $('#account-action-login-id').val(login);
+        $('#account-action-id').val(id);
+        $('#account-action-type').text(accountType);
+        $('#account-action-group').text(group);
+        var displayUser = username;
+        if (email) { displayUser = username + ' (' + email + ')'; }
+        $('#account-action-username').text(displayUser);
+        $('#accountActionModal').modal('show');
+        // Prefill comment dropdown if needed; content loaded in blade include
+        var $approve = $('.approve-account-modal');
+        var $reject = $('.reject-account-modal');
+        // Reset first
+        $approve.prop('disabled', false);
+        $reject.prop('disabled', false);
+        if (status === 'canceled') {
+            $reject.prop('disabled', true);
+            // Ensure approve is enabled in rejected list
+            $approve.prop('disabled', false);
+        } else if (status === 'ongoing') {
+            $approve.prop('disabled', true);
+        }
+        if (typeof tinymce !== 'undefined' && tinymce.activeEditor) {
+            tinymce.activeEditor.setContent(comment);
+        }
+        $('#account-comment-message').val(comment);
+    });
+
+    // Prefill message from accounts comments
+    $(document).on('change', '#account-comment-select', function(){
+        var desc = $(this).find('option:selected').data('description') || '';
+        try { if (typeof desc === 'string') { desc = JSON.parse(desc); } } catch(e) {}
+        if (typeof tinymce !== 'undefined' && tinymce.activeEditor) {
+            tinymce.activeEditor.setContent(desc);
+        }
+        $('#account-comment-message').val(desc);
+    });
+
+    $('body').on('click', '.approve-account-modal', function(){
+        var btn = $(this);
+        btn.prop('disabled', true);
+        // show inline loader on button
+        if (!btn.data('original-text')) { btn.data('original-text', btn.html()); }
+        btn.html('<iconify-icon class="animate-spin mr-1" icon="lucide:loader"></iconify-icon> Processing...');
+        // also disable reject button to prevent double action
+        $('.reject-account-modal').prop('disabled', true);
+        let formData = new FormData();
+        formData.append('id', $('#account-action-id').val());
+        formData.append('login', $('#account-action-login-id').val());
+        formData.append('set_status', 'ongoing');
+        formData.append('comment', $('#account-comment-message').val());
+        update_user_info(formData, btn);
+    });
+    $('body').on('click', '.reject-account-modal', function(){
+        var btn = $(this);
+        btn.prop('disabled', true);
+        if (!btn.data('original-text')) { btn.data('original-text', btn.html()); }
+        btn.html('<iconify-icon class="animate-spin mr-1" icon="lucide:loader"></iconify-icon> Processing...');
+        // also disable approve button to prevent double action
+        $('.approve-account-modal').prop('disabled', true);
+        let formData = new FormData();
+        formData.append('id', $('#account-action-id').val());
+        formData.append('login', $('#account-action-login-id').val());
+        formData.append('set_status', 'canceled');
+        formData.append('comment', $('#account-comment-message').val());
+        update_user_info(formData, btn);
+    });
+    // Approve / Reject Accounts
+    $('body').on('click', '.approve-account', function () {
+        var btn = $(this);
+        btn.prop('disabled', true);
+        let formData = new FormData();
+        formData.append('login', btn.data('login'));
+        formData.append('set_status', 'ongoing');
+        update_user_info(formData, btn);
+    });
+    $('body').on('click', '.reject-account', function () {
+        var btn = $(this);
+        btn.prop('disabled', true);
+        let formData = new FormData();
+        formData.append('login', btn.data('login'));
+        formData.append('set_status', 'canceled');
+        update_user_info(formData, btn);
+    });
 
     $('body').on('click', '.copyBtn', function () {
         var targetSelector = $(this).data('target');

@@ -93,9 +93,9 @@
 
                     </div>
                     <div class="buttons text-right mt-4">
-                        <button type="submit" class="btn inline-flex justify-center btn-primary">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
-                            {{ __('Update Withdraw Account') }}
+                        <button type="submit" class="btn inline-flex justify-center btn-primary space-x-2">
+                            <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                            <span>{{ __('Update Withdraw Account') }}</span>
                         </button>
                     </div>
                 </form>

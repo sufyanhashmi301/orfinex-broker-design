@@ -147,6 +147,13 @@
                 search: "Search:"
             },
             autoWidth: false,
+            columnDefs: [
+                {
+                    targets: 8,
+                    orderable: false,
+                    searchable: false
+                }
+            ]
         });
 
 

@@ -15,9 +15,12 @@ use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\UserIbRule;
 use App\Models\Transaction;
+use App\Services\IBTransactionPeriodService;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MultiLevelIBController extends Controller
@@ -49,15 +52,13 @@ class MultiLevelIBController extends Controller
         $affiliateBalance = $account->amount;
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $totalIbBonus = Transaction::where('type', TxnType::IbBonus)
-            ->where('user_id', $user_id)
-            ->sum('amount');
+        // Total commission = ONLY ib_balance (not historical transactions)
+        $totalIbBonusWithBalance = $user->ib_balance;
 
-        $currentMonthIbBonus = Transaction::where('type', TxnType::IbBonus)
-            ->where('user_id', $user_id)
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->sum('amount');
+        // Calculate LAST 30 DAYS IB bonus from quarterly tables (may span 2 quarters)
+        // Example: Oct 16 will get Sep 16 - Oct 16 (could be 10 days in current quarter + 20 days in previous quarter)
+        // Note: This does NOT include ib_balance, only transactions from quarterly tables
+        $currentMonthIbBonusWithBalance = $this->getCurrentMonthIbCommissionFromQuarters($user_id);
 
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
@@ -85,8 +86,8 @@ class MultiLevelIBController extends Controller
             'monthly_rebate' =>  $user->totalRebate(30),
             'net_rebate' =>  $user->totalRebate(),
             'net_referrals_volume' =>  $this->getReferralsNetVolume($user),
-            'total_ib_bonus' => $totalIbBonus,
-            'current_month_ib_bonus' => $currentMonthIbBonus,
+            'total_ib_bonus' => $totalIbBonusWithBalance,
+            'current_month_ib_bonus' => $currentMonthIbBonusWithBalance,
             'total_lots' => $this->getReferralsLotShare($user)['total'],
             'current_month_lots' => $this->getReferralsLotShare($user)['current_month'],
         ];
@@ -320,5 +321,76 @@ class MultiLevelIBController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Get last 30 days IB commission from quarterly tables
+     * IMPORTANT: This calculates commission for the LAST 30 DAYS (not current month)
+     * The last 30 days may span across 2 quarters
+     * 
+     * Example: If today is Oct 16, we get transactions from Sep 16 to Oct 16
+     * - Current quarter (2025_q3) might have: Oct 1-16 (16 days)
+     * - Previous quarter (2025_q2) might have: Sep 16-30 (14 days)
+     *
+     * @param int $userId
+     * @return float
+     */
+    private function getCurrentMonthIbCommissionFromQuarters($userId)
+    {
+        try {
+            $totalCommission = 0;
+            
+            // Calculate date range for last 30 days
+            $endDate = now();
+            $startDate = now()->subDays(30);
+            
+            \Log::info("Calculating last 30 days commission for user {$userId} from {$startDate->toDateString()} to {$endDate->toDateString()}");
+            
+            // Get current quarter period
+            $currentPeriod = IBTransactionPeriodService::getCurrentPeriod();
+            $currentTableName = IBTransactionPeriodService::getTableName($currentPeriod);
+            
+            // Check current quarter table for last 30 days
+            if (Schema::hasTable($currentTableName)) {
+                $commission = DB::table($currentTableName)
+                    ->where('user_id', $userId)
+                    ->where('type', TxnType::IbBonus->value)
+                    ->where('created_at', '>=', $startDate)
+                    // ->where('created_at', '<=', $endDate)
+                    ->sum('amount');
+                
+                $totalCommission += $commission;
+                
+                \Log::info("Current quarter ({$currentPeriod}) - Last 30 days commission for user {$userId}: {$commission}");
+            }
+            
+            // ALWAYS check previous quarter for last 30 days
+            // Because the 30-day period will almost always span into the previous quarter
+            try {
+                $previousPeriod = IBTransactionPeriodService::getPreviousPeriod($currentPeriod);
+                $previousTableName = IBTransactionPeriodService::getTableName($previousPeriod);
+                
+                if (Schema::hasTable($previousTableName)) {
+                    $previousCommission = DB::table($previousTableName)
+                        ->where('user_id', $userId)
+                        ->where('type', TxnType::IbBonus->value)
+                        ->where('created_at', '>=', $startDate)
+                        // ->where('created_at', '<=', $endDate)
+                        ->sum('amount');
+                    
+                    $totalCommission += $previousCommission;
+                    
+                    \Log::info("Previous quarter ({$previousPeriod}) - Last 30 days commission for user {$userId}: {$previousCommission}");
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Error checking previous quarter for last 30 days commission: ' . $e->getMessage());
+            }
+            
+            \Log::info("Total last 30 days commission for user {$userId}: {$totalCommission}");
+            return $totalCommission;
+        } catch (\Exception $e) {
+            \Log::error('Error calculating last 30 days IB commission: ' . $e->getMessage());
+            return 0;
+        }
     }
 }

@@ -85,7 +85,22 @@ class WithdrawController extends Controller
             'icon' => 'plus',
             'route' => route('admin.withdraw.method.create', $type),
         ];
-        $withdrawMethods = WithdrawMethod::whereType($type)->get();
+        
+        $loggedInUser = auth('admin')->user();
+        $staffBranchIds = $loggedInUser->branches()->pluck('branches.id')->toArray();
+        
+        $withdrawMethodsQuery = WithdrawMethod::whereType($type)->with('branches');
+        
+        // Apply branch filtering for non-Super-Admin staff
+        if (!$loggedInUser->hasRole('Super-Admin') && !empty($staffBranchIds)) {
+            $withdrawMethodsQuery->where(function($query) use ($staffBranchIds) {
+                $query->whereHas('branches', function($branchQuery) use ($staffBranchIds) {
+                    $branchQuery->whereIn('branch_id', $staffBranchIds);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+        
+        $withdrawMethods = $withdrawMethodsQuery->get();
 
         return view('backend.withdraw.method', compact('withdrawMethods', 'button', 'type'));
     }
@@ -102,8 +117,9 @@ class WithdrawController extends Controller
         ];
         $gateways = Gateway::where('status', true)->whereNot('is_withdraw', '=', '0')->get();
         $rates_with_countries = Rate::with('country')->get();
+        $branches = \App\Models\Branch::where('status', 1)->get();
 
-        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries'));
+        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries', 'branches'));
     }
 
     /**
@@ -171,6 +187,12 @@ class WithdrawController extends Controller
         ];
 
         $withdrawMethod = WithdrawMethod::create($data);
+        
+        // Sync branches if provided
+        if (!empty($input['branches'])) {
+            $withdrawMethod->branches()->sync($input['branches']);
+        }
+        
         notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Created'));
 
         return redirect()->route('admin.withdraw.method.list', $input['type']);
@@ -189,10 +211,12 @@ class WithdrawController extends Controller
             'route' => route('admin.withdraw.method.list', $type),
         ];
 
-        $withdrawMethod = WithdrawMethod::find(\request('id'));
+        $withdrawMethod = WithdrawMethod::with('branches')->find(\request('id'));
         $supported_currencies = Gateway::find($withdrawMethod->gateway_id)->supported_currencies ?? [];
+        $branches = \App\Models\Branch::where('status', 1)->get();
+        $attachedBranches = $withdrawMethod->branches->pluck('id')->toArray();
 
-        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies'));
+        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies', 'branches', 'attachedBranches'));
     }
 
     /**
@@ -245,6 +269,14 @@ class WithdrawController extends Controller
         }
 
         $withdrawMethod->update($data);
+        
+        // Sync branches if provided
+        if (isset($input['branches'])) {
+            $withdrawMethod->branches()->sync($input['branches']);
+        } else {
+            $withdrawMethod->branches()->detach();
+        }
+        
         notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Updated'));
 
         return redirect()->route('admin.withdraw.method.list', $withdrawMethod->type);
@@ -266,11 +298,26 @@ class WithdrawController extends Controller
         // ✅ Base query for pending withdrawals
         $data = Transaction::where('type', TxnType::Withdraw)
             ->where('status', 'pending')
-            ->whereIn('user_id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('user_id', $accessibleUserIds);
 
         // Apply additional filters if any
         $data = $data->applyFilters($filters);
+
+        // Select sortable projections for username and signed amount
+        $data = $data->select('transactions.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'transactions.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectRaw("(
+                CASE
+                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                        THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                END
+            ) as signed_amount");
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -282,6 +329,16 @@ class WithdrawController extends Controller
             })
             ->addColumn('username', 'backend.transaction.include.__user')
             ->addColumn('action', 'backend.withdraw.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('created_at', 'transactions.created_at $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('description', 'transactions.description $1')
+            ->orderColumn('tnx', 'transactions.tnx $1')
+            ->orderColumn('target_id', 'transactions.target_id $1')
+            ->orderColumn('amount', 'signed_amount $1')
+            ->orderColumn('charge', 'transactions.charge $1')
+            ->orderColumn('method', 'transactions.method $1')
+            ->orderColumn('status', 'transactions.status $1')
             ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
             ->make(true);
     }
@@ -312,12 +369,33 @@ class WithdrawController extends Controller
             })
             ->when($userIds !== 'all', function ($query) use ($userIds) {
                 $query->whereIn('user_id', $userIds);
-            })
-            ->latest();
+            });
 
 
             // Apply additional filters if any
             $data = $data->applyFilters($filters);
+
+            // Select sortable projections for username, action_by and signed amount
+            $data = $data->select('transactions.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'transactions.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->whereColumn('admins.id', 'transactions.action_by')
+                        ->selectRaw('MIN(admins.name)'),
+                    'action_by_sort'
+                )
+                ->selectRaw("(
+                    CASE
+                        WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                            THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                        ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    END
+                ) as signed_amount");
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -335,6 +413,17 @@ class WithdrawController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'transactions.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('description', 'transactions.description $1')
+                ->orderColumn('tnx', 'transactions.tnx $1')
+                ->orderColumn('target_id', 'transactions.target_id $1')
+                ->orderColumn('amount', 'signed_amount $1')
+                ->orderColumn('charge', 'transactions.charge $1')
+                ->orderColumn('method', 'transactions.method $1')
+                ->orderColumn('action_by', 'action_by_sort $1')
+                ->orderColumn('status', 'transactions.status $1')
                 ->rawColumns(['created_at', 'action_by','status', 'type', 'amount', 'username', 'action'])
                 ->make(true);
         }
@@ -546,8 +635,7 @@ class WithdrawController extends Controller
             $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
             $data = WithdrawAccount::where('status', 'pending')
-                ->with(['user', 'method'])
-                ->latest();
+                ->with(['user', 'method']);
 
             // Apply user filtering based on accessible users
             if (!empty($accessibleUserIds)) {
@@ -588,6 +676,15 @@ class WithdrawController extends Controller
                 }
             }
 
+            // Select sortable projections
+            $data = $data->select('withdraw_accounts.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'withdraw_accounts.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                );
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
@@ -612,6 +709,11 @@ class WithdrawController extends Controller
                     </div>';
                 })
                 ->editColumn('status', 'backend.withdraw.include.__account_status')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'withdraw_accounts.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('method_name', 'withdraw_accounts.method_name $1')
+                ->orderColumn('status', 'withdraw_accounts.status $1')
                 ->addColumn('action', function ($row) {
                     return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
                         <iconify-icon icon="lucide:edit"></iconify-icon>
@@ -650,8 +752,7 @@ class WithdrawController extends Controller
             $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
             $data = WithdrawAccount::where('status', 'approved')
-                ->with(['user', 'method'])
-                ->latest();
+                ->with(['user', 'method']);
 
             // Apply user filtering based on accessible users
             if (!empty($accessibleUserIds)) {
@@ -692,6 +793,15 @@ class WithdrawController extends Controller
                 }
             }
 
+            // Select sortable projections
+            $data = $data->select('withdraw_accounts.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'withdraw_accounts.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                );
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
@@ -716,6 +826,11 @@ class WithdrawController extends Controller
                     </div>';
                 })
                 ->editColumn('status', 'backend.withdraw.include.__account_status')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'withdraw_accounts.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('method_name', 'withdraw_accounts.method_name $1')
+                ->orderColumn('status', 'withdraw_accounts.status $1')
                 ->addColumn('action', function ($row) {
                     return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
                         <iconify-icon icon="lucide:edit"></iconify-icon>
@@ -754,8 +869,7 @@ class WithdrawController extends Controller
             $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
 
             $data = WithdrawAccount::where('status', 'rejected')
-                ->with(['user', 'method'])
-                ->latest();
+                ->with(['user', 'method']);
 
             // Apply user filtering based on accessible users
             if (!empty($accessibleUserIds)) {
@@ -796,6 +910,15 @@ class WithdrawController extends Controller
                 }
             }
 
+            // Select sortable projections
+            $data = $data->select('withdraw_accounts.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'withdraw_accounts.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                );
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
@@ -820,6 +943,11 @@ class WithdrawController extends Controller
                     </div>';
                 })
                 ->editColumn('status', 'backend.withdraw.include.__account_status')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'withdraw_accounts.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('method_name', 'withdraw_accounts.method_name $1')
+                ->orderColumn('status', 'withdraw_accounts.status $1')
                 ->addColumn('action', function ($row) {
                     return '<button type="button" class="action-btn text-primary account-action-btn" data-id="' . the_hash($row->id) . '" data-account-name="' . $row->method_name . '">
                         <iconify-icon icon="lucide:edit"></iconify-icon>

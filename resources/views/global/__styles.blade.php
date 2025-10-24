@@ -50,7 +50,7 @@
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
-    .sidebar-menu .sidebar-submenu > li > a:hover, .sidebar-menu .sidebar-submenu > li > a.active {
+    .sidebar-menu .sidebar-submenu > li > a:hover, .sidebar-menu .sidebar-submenu > li > a.active, .sidebar-menu .sidebar-submenu > li.active > a:hover, .sidebar-menu .sidebar-submenu > li.active > a.navItem {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -65,20 +65,20 @@
         content: var(--tw-content);
         --tw-ring-opacity: 0.2;
     }
-    .sidebar-menu .sidebar-submenu > li > a.active::before {
+    .sidebar-menu .sidebar-submenu > li > a.active::before, .sidebar-menu .sidebar-submenu > li.active > a:hover::before, .sidebar-menu .sidebar-submenu > li.active > a.navItem::before, .sidebar-menu .sidebar-submenu > li.active > a.navItem:hover::before {
         background-color: rgb({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-bg-opacity));
         content: var(--tw-content);
         --tw-bg-opacity: 1;
         background-color: rgb({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-bg-opacity));
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a::before {
+    .dark .sidebar-menu .sidebar-submenu > li > a::before, .dark .sidebar-menu .sidebar-submenu > li.active > a.navItem::before {
         --tw-border-opacity: .80;
         border-color: rgb({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-border-opacity));
         --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-ring-opacity));
         content: var(--tw-content);
         --tw-ring-opacity: 0.2;
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a.active::before {
+    .dark .sidebar-menu .sidebar-submenu > li > a.active::before, .dark .sidebar-menu .sidebar-submenu > li.active > a:hover::before, .dark .sidebar-menu .sidebar-submenu > li.active > a.navItem::before, .dark .sidebar-menu .sidebar-submenu > li.active > a.navItem:hover::before {
         background-color: rgb({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-bg-opacity));
         content: var(--tw-content);
         --tw-bg-opacity: 1;

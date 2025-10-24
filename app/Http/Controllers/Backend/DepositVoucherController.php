@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DepositVoucher;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -22,7 +23,16 @@ class DepositVoucherController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = DepositVoucher::with('user')->latest();
+            $data = DepositVoucher::with('user');
+
+            // Select sortable projections
+            $data = $data->select('deposit_vouchers.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'deposit_vouchers.used_by')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'used_by_sort'
+                );
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -39,6 +49,13 @@ class DepositVoucherController extends Controller
                 )
                 ->addColumn('used_by', 'backend.deposit-vouchers.include.__user')
                 ->addColumn('action', 'backend.deposit-vouchers.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('title', 'deposit_vouchers.title $1')
+                ->orderColumn('code', 'deposit_vouchers.code $1')
+                ->orderColumn('amount', 'deposit_vouchers.amount $1')
+                ->orderColumn('expiry_date', 'deposit_vouchers.expiry_date $1')
+                ->orderColumn('status', 'deposit_vouchers.status $1')
+                ->orderColumn('used_by', 'used_by_sort $1')
                 ->rawColumns(['title', 'code', 'status', 'used_by', 'action'])
                 ->make(true);
         }

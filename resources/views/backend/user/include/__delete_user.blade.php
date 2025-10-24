@@ -52,13 +52,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        // Clear admin key input when modal is shown
-        $('#deleteConfirmationModall').on('shown.bs.modal', function() {
-            $('#admin_key').val('').removeClass('is-invalid');
-            $('#admin-key-error').hide().text('');
-        });
-    });
-</script>

@@ -27,7 +27,7 @@
                 @endcan
             </div>
         </div>
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -54,6 +54,10 @@
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
 </div>
@@ -61,36 +65,39 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-transaction-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+            var table = $('#user-transaction-dataTable')
+                .on('processing.dt', function(e, settings, processing) {
+                    $('#processingIndicator').css('display', processing ? 'block' : 'none');
+                }).DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    searching: false,
+                    lengthChange: false,
+                    info: true,
+                    order: [[0, 'desc']],
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:"
                     },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.user.transaction',$user->id) }}",
-                columns: [
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'description', name: 'description'},
-                    {data: 'tnx', name: 'tnx'},
-                    {data: 'type', name: 'type'},
-                    {data: 'target_id', name: 'target_id'},
-                    {data: 'final_amount', name: 'final_amount'},
-                    {data: 'method', name: 'method'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action_by', name: 'action_by'},
-
-                ]
+                    processing: true,
+                    serverSide: true,
+                    autoWidth: false,
+                    ajax: "{{ route('admin.user.transaction',$user->id) }}",
+                    columns: [
+                        {data: 'created_at', name: 'created_at', orderable: true},
+                        {data: 'description', name: 'description', orderable: true},
+                        {data: 'tnx', name: 'tnx', orderable: true},
+                        {data: 'type', name: 'type', orderable: true},
+                        {data: 'target_id', name: 'target_id', orderable: true},
+                        {data: 'final_amount', name: 'final_amount', orderable: true},
+                        {data: 'method', name: 'method', orderable: true},
+                        {data: 'status', name: 'status', orderable: true},
+                        {data: 'action_by', name: 'action_by', orderable: true},
+                    ]
             });
         })(jQuery);
     </script>

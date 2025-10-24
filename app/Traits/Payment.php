@@ -24,6 +24,7 @@ use Payment\Coinremitter\CoinremitterTxn;
 use Payment\Cryptomus\CryptomusTxn;
 use Payment\Flutterwave\FlutterwaveTxn;
 use Payment\Instamojo\InstamojoTxn;
+use Payment\Jenapay\JenapayTxn;
 use Payment\Match2pay\Match2payTxn;
 use Payment\Mollie\MollieTxn;
 use Payment\Monnify\MonnifyTxn;
@@ -205,6 +206,7 @@ trait Payment
             'bridgerpay' => BridgerpayTxn::class,
             'match2pay' => Match2payTxn::class,     
             'uniwire' => UniwireTxn::class,
+            'jenapay' => JenapayTxn::class,
 
         ];
 // dd($gateway,$gatewayMap,$txnInfo);

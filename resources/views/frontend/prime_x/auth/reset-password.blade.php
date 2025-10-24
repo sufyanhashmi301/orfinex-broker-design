@@ -15,16 +15,14 @@
                 @foreach($errors->all() as $error)
                     <strong>{{ $error }}</strong>
                 @endforeach
-                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                        aria-label="{{ __('Close') }}"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}"></button>
             </div>
         @endif
 
         @if(session('status'))
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>{{ session('status') }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                        aria-label="{{ __('Close') }}"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}"></button>
             </div>
         @endif
         <form method="POST" action="{{ route('password.update') }}" class="space-y-4">

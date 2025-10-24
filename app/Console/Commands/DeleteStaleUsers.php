@@ -39,6 +39,7 @@ class DeleteStaleUsers extends Command
             $inactiveUsers = \App\Models\User::withoutGlobalScope(ExcludeGracePeriodScope::class)
                 ->where('in_grace_period', false)
                 ->whereNull('email_verified_at')
+                ->where('created_at', '<', now()->subDays(setting('user_removal_grace_period', 'customer_misc')))
                 ->whereDoesntHave('transaction')
                 ->whereDoesntHave('ForexAccounts')
                 ->get();

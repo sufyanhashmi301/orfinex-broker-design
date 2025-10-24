@@ -23,6 +23,11 @@ class DepositMethod extends Model
         return $this->belongsTo(Gateway::class, 'gateway_id');
     }
 
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'deposit_method_branches', 'deposit_method_id', 'branch_id')->withTimestamps();
+    }
+
     public function scopeCode($query, $code)
     {
         return $query->where('gateway_code', $code);

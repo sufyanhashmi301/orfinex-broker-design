@@ -51,6 +51,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Txn;
@@ -571,8 +572,17 @@ if (!empty($filters['staff_name'])) {
         if ($isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
-            foreach ($ibGroup->rebateRules as $rule) {
-                $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+            if ($ibGroup && $ibGroup->rebateRules) {
+                foreach ($ibGroup->rebateRules as $rule) {
+                    $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+                }
+            } else {
+                // Log warning if IbGroup not found or has no rebate rules
+                if (!$ibGroup) {
+                    Log::warning("IbGroup not found for user {$user->id} with is_part_of_master_ib: {$isPartOfMasterIb}");
+                } elseif (!$ibGroup->rebateRules) {
+                    Log::warning("IbGroup {$ibGroup->id} has no rebate rules for user {$user->id}");
+                }
             }
 
         }

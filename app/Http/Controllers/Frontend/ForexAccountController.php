@@ -68,6 +68,23 @@ class ForexAccountController extends GatewayController
                         }
                     },
                 ],
+                'investor_password' => [
+                    function ($attribute, $value, $fail) use ($request) {
+                        $schema = ForexSchema::find(get_hash($request->schema_id));
+                        if ($schema && $schema->is_update_investor_password) {
+                            if (empty($value)) {
+                                $fail(__('The investor password field is required.'));
+                                return;
+                            }
+                            if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/', (string) $value)) {
+                                $fail(__('The investor password must be 8–20 chars, include upper, lower, digit and special: ! @ # $ % & * ( ) : { } | < >'));
+                            }
+                            if (strlen((string) $value) < 8 || strlen((string) $value) > 20) {
+                                $fail(__('The investor password must be between 8 and 20 characters.'));
+                            }
+                        }
+                    },
+                ],
                 'is_islamic' => [
                     function ($attribute, $value, $fail) use ($request) {
                         $schema = ForexSchema::find(get_hash($request->schema_id));
@@ -174,6 +191,7 @@ class ForexAccountController extends GatewayController
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
+        $investorPasswordInput = ($schema->is_update_investor_password ? ($request->investor_password ?: 'Inv@Pass1!') : 'Inv@Pass1!');
         if($user->phone){
             $phone = $user->phone;
         }else{
@@ -191,6 +209,7 @@ class ForexAccountController extends GatewayController
                 'group' => $group,
                 'leverage' => $request->leverage,
                 'master_password' => $password,
+                'investor_password' => $schema->is_update_investor_password ? $investorPasswordInput : null,
             ];
             $this->saveAccount($request, $schema, 0, $accountType, $user, $data, $server);
             // Email notification: Pending approval
@@ -228,7 +247,7 @@ class ForexAccountController extends GatewayController
                 "phonePassword" => 'SNNH@2024@bol',
                 "status" => "RE",
                 "masterPassword" => $password,
-                "investorPassword" => 'SNNH@2024@bol'
+                "investorPassword" => $schema->is_update_investor_password ? $investorPasswordInput : 'SNNH@2024@bol'
             ];
 
             $retryCount = 0;
@@ -269,7 +288,7 @@ class ForexAccountController extends GatewayController
 
                     // Save account in DB
                     $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
-                    $this->sendNotification($user,$mt5Login,$password,$schema,$server);
+                    $this->sendNotification($user,$mt5Login,$password,$schema,$server, $schema->is_update_investor_password ? $investorPasswordInput : 'Inv@Pass1!');
 if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
     $this->forexApiService->balanceOperationDemo([
         'login' => $mt5Login,
@@ -303,7 +322,7 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
 //            "agent" => 0,
                 "company" => setting('site_title', 'global'),
                 "master_password" => $password,
-                "investor_password" => 'SNNH@2024@bol'
+                "investor_password" => $schema->is_update_investor_password ? $investorPasswordInput : 'SNNH@2024@bol'
             ];
 //        dd($data);
             $forexApiService = new x9ApiService();
@@ -324,7 +343,7 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
                 //save account in DB
                 $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
-                $this->sendNotification($user,$mt5Login,$password,$schema,$server);
+                $this->sendNotification($user,$mt5Login,$password,$schema,$server, $schema->is_update_investor_password ? $investorPasswordInput : 'Inv@Pass1!');
                 if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
                     (new x9ApiService())->balanceOperationDemo([
                         'login' => $mt5Login,
@@ -376,11 +395,10 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
             $accountData['first_min_deposit_paid'] = 0;
             $accountData['trader_type'] = $schema->trader_type;
             $accountData['trading_platform'] = $schema->trader_type;
-            if (isset($data['master_password'])) {
-                $accountData['meta'] = json_encode([
-                    'master_password' => $data['master_password'],
-                ]);
-            }
+            $meta = [];
+            if (isset($data['master_password'])) { $meta['master_password'] = $data['master_password']; }
+            if (isset($data['investor_password']) && $data['investor_password']) { $meta['investor_password'] = $data['investor_password']; }
+            if (!empty($meta)) { $accountData['meta'] = json_encode($meta); }
 
             return ForexAccount::create($accountData);
         });
@@ -391,12 +409,13 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
         return ForexAccount::where('trader_type' , $traderType)->where('login' , $login)->exists();
     }
 
-    public function sendNotification($user,$mt5Login,$password,$schema,$server)
+    public function sendNotification($user,$mt5Login,$password,$schema,$server, $investorPassword = null)
     {
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[login]]' => $mt5Login,
             '[[password]]' => $password,
+            '[[investor_password]]' => $investorPassword,
             '[[plan_name]]' => $schema->title,
             '[[server]]' => $server,
             '[[site_title]]' => setting('site_title', 'global'),

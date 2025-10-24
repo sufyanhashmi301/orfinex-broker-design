@@ -272,6 +272,32 @@
                             </div>
                         @endif
 
+                        <div class="md:col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Select branches where this deposit method will be available">
+                                        {{ __('Assign Branches') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <select name="branches[]" id="branchSelect" class="select2 form-control w-full h-9"
+                                    placeholder="Select Branches" multiple>
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->id }}"
+                                            {{ in_array($branch->id, old('branches', [])) ? 'selected' : '' }}
+                                            class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $branch->name }} ({{ $branch->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-xs font-Inter font-normal text-slate-600 block mt-1">
+                                    {{ __('Leave empty to make available for all branches.') }}
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
@@ -317,6 +343,7 @@
                                 </div>
                             </div>
                         @endif
+
                         <div class="md:col-span-2 text-right mt-10">
                             <button type="submit" class="btn btn-dark">
                                 {{ __('Save Changes') }}

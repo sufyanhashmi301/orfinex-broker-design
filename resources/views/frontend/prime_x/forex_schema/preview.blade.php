@@ -131,6 +131,30 @@
                                 </li>
                             </ul>
                         </div>
+                        @if($schema->is_update_investor_password)
+                        <div class="input-area" id="investor-password-wrapper" style="display:none;">
+                            <label class="form-label" for="enter-investor-password">
+                                {{ __('Investor Password:') }}
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]"
+                                   placeholder="{{ __('Enter Investor Password') }}" aria-label="{{ __('Investor Password') }}"
+                                   name="investor_password" id="enter-investor-password" aria-describedby="basic-addon1">
+                            <ul>
+                                <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-invest">
+                                    {{ __('Use from 8 to 20 characters') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-invest">
+                                    {{ __('Use both uppercase and lowercase letters') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-invest">
+                                    {{ __('At least one number') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-invest">
+                                    {{ __('At least one special character(!@#$%&*():{}|<>)') }}
+                                </li>
+                            </ul>
+                        </div>
+                        @endif
                         <div class="mt-4">
                             <button type="submit" class="btn inline-flex justify-center btn-primary mr-3" id="create-forex-account">
                                 {{ __('Create Account') }}
@@ -255,6 +279,8 @@
             // Call the function to update account type based on the values
             updateAccountTypeBasedOnValues();
             updateApprovalAlert($('#account-type').val());
+            // Show investor password field if enabled on schema
+            $('#investor-password-wrapper').toggle({{ $schema->is_update_investor_password ? 'true' : 'false' }});
 
             // Handle account type switching when clicking on tabs
             $('#account-type-tabs .nav-link').on('click', function () {
@@ -267,6 +293,16 @@
                 updateAccountDescription(accountType);
                 updateApprovalAlert(accountType);
             });
+
+            // Toggle investor password field when schema requires updating investor password
+            function toggleInvestorPasswordField() {
+                var shouldShow = {{ $schema->is_update_investor_password ? 'true' : 'false' }};
+                if (shouldShow) {
+                    $('#investor-password-wrapper').toggle($('#account-type').val() === 'real' || $('#account-type').val() === 'demo');
+                }
+            }
+            toggleInvestorPasswordField();
+            $('#account-type-tabs .nav-link').on('click', function () { toggleInvestorPasswordField(); });
 
             function updateLeverageAndDeposit(result) {
                 // Assuming result contains these fields
@@ -389,6 +425,10 @@
             $('#enter-main-password').on('input', function () {
                 var password = $(this).val();
                 checkPassword(password, 'main', 'create-forex-account');
+            });
+            $('#enter-investor-password').on('input', function () {
+                var password = $(this).val();
+                checkPassword(password, 'invest', 'create-forex-account');
             });
 
             // Prevent double submission: disable button after first valid submit

@@ -85,7 +85,22 @@ class WithdrawController extends Controller
             'icon' => 'plus',
             'route' => route('admin.withdraw.method.create', $type),
         ];
-        $withdrawMethods = WithdrawMethod::whereType($type)->get();
+        
+        $loggedInUser = auth('admin')->user();
+        $staffBranchIds = $loggedInUser->branches()->pluck('branches.id')->toArray();
+        
+        $withdrawMethodsQuery = WithdrawMethod::whereType($type)->with('branches');
+        
+        // Apply branch filtering for non-Super-Admin staff
+        if (!$loggedInUser->hasRole('Super-Admin') && !empty($staffBranchIds)) {
+            $withdrawMethodsQuery->where(function($query) use ($staffBranchIds) {
+                $query->whereHas('branches', function($branchQuery) use ($staffBranchIds) {
+                    $branchQuery->whereIn('branch_id', $staffBranchIds);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+        
+        $withdrawMethods = $withdrawMethodsQuery->get();
 
         return view('backend.withdraw.method', compact('withdrawMethods', 'button', 'type'));
     }
@@ -102,8 +117,9 @@ class WithdrawController extends Controller
         ];
         $gateways = Gateway::where('status', true)->whereNot('is_withdraw', '=', '0')->get();
         $rates_with_countries = Rate::with('country')->get();
+        $branches = \App\Models\Branch::where('status', 1)->get();
 
-        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries'));
+        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries', 'branches'));
     }
 
     /**
@@ -171,6 +187,12 @@ class WithdrawController extends Controller
         ];
 
         $withdrawMethod = WithdrawMethod::create($data);
+        
+        // Sync branches if provided
+        if (!empty($input['branches'])) {
+            $withdrawMethod->branches()->sync($input['branches']);
+        }
+        
         notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Created'));
 
         return redirect()->route('admin.withdraw.method.list', $input['type']);
@@ -189,10 +211,12 @@ class WithdrawController extends Controller
             'route' => route('admin.withdraw.method.list', $type),
         ];
 
-        $withdrawMethod = WithdrawMethod::find(\request('id'));
+        $withdrawMethod = WithdrawMethod::with('branches')->find(\request('id'));
         $supported_currencies = Gateway::find($withdrawMethod->gateway_id)->supported_currencies ?? [];
+        $branches = \App\Models\Branch::where('status', 1)->get();
+        $attachedBranches = $withdrawMethod->branches->pluck('id')->toArray();
 
-        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies'));
+        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies', 'branches', 'attachedBranches'));
     }
 
     /**
@@ -245,6 +269,14 @@ class WithdrawController extends Controller
         }
 
         $withdrawMethod->update($data);
+        
+        // Sync branches if provided
+        if (isset($input['branches'])) {
+            $withdrawMethod->branches()->sync($input['branches']);
+        } else {
+            $withdrawMethod->branches()->detach();
+        }
+        
         notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Updated'));
 
         return redirect()->route('admin.withdraw.method.list', $withdrawMethod->type);

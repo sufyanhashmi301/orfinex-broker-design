@@ -363,6 +363,33 @@
                                 </div>
                             </div>
                         @endif
+
+                        <div class="md:col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Select branches where this deposit method will be available">
+                                        {{ __('Assign Branches') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <select name="branches[]" id="branchSelect" class="select2 form-control w-full h-9"
+                                    placeholder="Select Branches" multiple>
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->id }}"
+                                            {{ in_array($branch->id, old('branches', $attachedBranches ?? [])) ? 'selected' : '' }}
+                                            class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $branch->name }} ({{ $branch->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-xs font-Inter font-normal text-slate-600 block mt-1">
+                                    {{ __('Leave empty to make available for all branches.') }}
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="input-area">
                             <label for="" class="form-label invisible">
                                 {{ __('Status') }}

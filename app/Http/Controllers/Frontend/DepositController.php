@@ -39,11 +39,29 @@ class DepositController extends GatewayController
     }
     public function depositMethods()
     {
-        $gateways = DepositMethod::where('status', 1)
-            ->where(function($query) {
-                $query->whereJsonContains('country', auth()->user()->country)
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $gatewaysQuery = DepositMethod::where('status', 1)
+            ->with('branches')
+            ->where(function($query) use ($user) {
+                $query->whereJsonContains('country', $user->country)
                     ->orWhereJsonContains('country', 'All');
-            })->get();
+            });
+            
+        // Apply branch filtering
+        if ($userBranchId) {
+            $gatewaysQuery->where(function($query) use ($userBranchId) {
+                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                    $branchQuery->where('branch_id', $userBranchId);
+                });
+            });
+        } else {
+            // User has no branch, show only methods with no branch assignments
+            $gatewaysQuery->whereDoesntHave('branches');
+        }
+        
+        $gateways = $gatewaysQuery->get();
 
         // Check if request deposit accounts is enabled
         $isRequestDepositMode = setting('deposit_account_mode', 'features') === 'request_deposit_accounts';
@@ -92,6 +110,29 @@ class DepositController extends GatewayController
 
         // Check if the selected gateway is manual type and if request deposit accounts is enabled
         $gateway = DepositMethod::code($gatewayCode)->first();
+        
+        // Validate that user has access to this deposit method based on their branch
+        if ($gateway) {
+            $user = auth()->user();
+            $userBranchId = getUserBranchId($user->id, $user);
+            
+            // Check if user's branch allows access to this method
+            $hasAccess = false;
+            
+            if ($userBranchId) {
+                // User has a branch - check if method is assigned to their branch or has no branch restrictions
+                $hasAccess = $gateway->branches()->where('branch_id', $userBranchId)->exists() || 
+                            $gateway->branches()->count() == 0;
+            } else {
+                // User has no branch - only allow methods with no branch restrictions
+                $hasAccess = $gateway->branches()->count() == 0;
+            }
+            
+            if (!$hasAccess) {
+                notify()->error('This deposit method is not available for your branch');
+                return redirect()->route('user.deposit.methods');
+            }
+        }
         if ($gateway && $gateway->type == \App\Enums\GatewayType::Manual->value) {
             if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
                 // Only check for payment deposit request if this method has custom bank details enabled
@@ -170,6 +211,30 @@ class DepositController extends GatewayController
             }
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+            
+            // Validate that user has access to this deposit method based on their branch
+            if ($gatewayInfo) {
+                $user = auth()->user();
+                $userBranchId = getUserBranchId($user->id, $user);
+                
+                // Check if user's branch allows access to this method
+                $hasAccess = false;
+                
+                if ($userBranchId) {
+                    // User has a branch - check if method is assigned to their branch or has no branch restrictions
+                    $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
+                                $gatewayInfo->branches()->count() == 0;
+                } else {
+                    // User has no branch - only allow methods with no branch restrictions
+                    $hasAccess = $gatewayInfo->branches()->count() == 0;
+                }
+                
+                if (!$hasAccess) {
+                    notify()->error('This deposit method is not available for your branch');
+                    return redirect()->route('user.deposit.methods');
+                }
+            }
+            
             $amount = $input['amount'];
     //        dd($amount);
 
@@ -453,6 +518,30 @@ class DepositController extends GatewayController
 
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+            
+            // Validate that user has access to this deposit method based on their branch
+            if ($gatewayInfo) {
+                $user = auth()->user();
+                $userBranchId = getUserBranchId($user->id, $user);
+                
+                // Check if user's branch allows access to this method
+                $hasAccess = false;
+                
+                if ($userBranchId) {
+                    // User has a branch - check if method is assigned to their branch or has no branch restrictions
+                    $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
+                                $gatewayInfo->branches()->count() == 0;
+                } else {
+                    // User has no branch - only allow methods with no branch restrictions
+                    $hasAccess = $gatewayInfo->branches()->count() == 0;
+                }
+                
+                if (!$hasAccess) {
+                    notify()->error('This deposit method is not available for your branch');
+                    return redirect()->route('user.deposit.methods');
+                }
+            }
+            
             $amount = $voucher->amount;
 
             // Determine whether it's a forex account or a wallet

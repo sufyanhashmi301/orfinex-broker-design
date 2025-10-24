@@ -66,7 +66,21 @@ class DepositController extends Controller
             'route' => route('admin.deposit.method.create', $type),
         ];
 
-        $depositMethods = DepositMethod::where('type', $type)->get();
+        $loggedInUser = auth('admin')->user();
+        $staffBranchIds = $loggedInUser->branches()->pluck('branches.id')->toArray();
+        
+        $depositMethodsQuery = DepositMethod::where('type', $type)->with('branches');
+        
+        // Apply branch filtering for non-Super-Admin staff
+        if (!$loggedInUser->hasRole('Super-Admin') && !empty($staffBranchIds)) {
+            $depositMethodsQuery->where(function($query) use ($staffBranchIds) {
+                $query->whereHas('branches', function($branchQuery) use ($staffBranchIds) {
+                    $branchQuery->whereIn('branch_id', $staffBranchIds);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+        
+        $depositMethods = $depositMethodsQuery->get();
 
         return view('backend.deposit.method_list', compact('depositMethods', 'button', 'type'));
     }
@@ -76,8 +90,9 @@ class DepositController extends Controller
         $gateways = Gateway::where('status', true)->get();
         $rates_with_countries = Rate::with('country')->get();
         $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
+        $branches = \App\Models\Branch::where('status', 1)->get();
 
-        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled'));
+        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled', 'branches'));
     }
 
     public function methodStore(Request $request)
@@ -143,6 +158,12 @@ class DepositController extends Controller
         ];
 
         $depositMethod = DepositMethod::create($data);
+        
+        // Sync branches if provided
+        if (!empty($input['branches'])) {
+            $depositMethod->branches()->sync($input['branches']);
+        }
+        
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
 
         return redirect()->route('admin.deposit.method.list', $depositMethod->type);
@@ -151,11 +172,13 @@ class DepositController extends Controller
     public function methodEdit($type)
     {
         $gateways = Gateway::where('status', true)->get();
-        $method = DepositMethod::find(\request('id'));
+        $method = DepositMethod::with('branches')->find(\request('id'));
         $supported_currencies = Gateway::find($method->gateway_id)->supported_currencies ?? [];
         $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
+        $branches = \App\Models\Branch::where('status', 1)->get();
+        $attachedBranches = $method->branches->pluck('id')->toArray();
 
-        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled'));
+        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled', 'branches', 'attachedBranches'));
     }
 
     public function methodUpdate($id, Request $request)
@@ -228,6 +251,14 @@ class DepositController extends Controller
         }
 
         $depositMethod->update($data);
+        
+        // Sync branches if provided
+        if (isset($input['branches'])) {
+            $depositMethod->branches()->sync($input['branches']);
+        } else {
+            $depositMethod->branches()->detach();
+        }
+        
         notify()->success($depositMethod->name . ' ' . __(' Method Updated'));
         return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
 
@@ -511,13 +542,26 @@ class DepositController extends Controller
 //        dd($id);
         try {
             // Find the method by its ID and delete it
-            $method = DepositMethod::findOrFail($id);
+            $method = DepositMethod::with('branches')->findOrFail($id);
+            
+            // Check if method is associated with existing transactions
             if(Transaction::where('method',$method->gateway_code)->exists()){
                 notify()->error(__('This method is associated with existing transactions, and therefore cannot be deleted: :method', ['method' => $method->name]), 'Error');
                 return redirect()->back();
             }
+            
+            // Get branch count for logging
+            $branchCount = $method->branches->count();
+            $methodName = $method->name;
+            
+            // Delete the method (cascade will automatically delete branch relationships)
             $method->delete();
-            notify()->success('Successfully deleted method');
+            
+            $message = $branchCount > 0 
+                ? "Successfully deleted method '{$methodName}' and {$branchCount} branch assignment(s)"
+                : "Successfully deleted method '{$methodName}'";
+                
+            notify()->success($message);
 
             return redirect()->back();
         } catch (\Exception $e) {

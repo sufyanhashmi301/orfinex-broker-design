@@ -112,7 +112,7 @@ class RegisteredUserController extends Controller
                 'ranking_id' => $rank->id,
                 'rankings' => json_encode([$rank->id]),
                 'email_verified_at' => now(),
-                'in_grace_period' => setting('grace_period', 'customer_misc', false) && !$socialUser->getEmail(),
+                'in_grace_period' => setting('grace_period', 'customer_misc') && !$socialUser->getEmail(),
             ]
         );
 

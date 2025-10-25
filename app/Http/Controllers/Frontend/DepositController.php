@@ -52,13 +52,19 @@ class DepositController extends GatewayController
         // Apply branch filtering
         if ($userBranchId) {
             $gatewaysQuery->where(function($query) use ($userBranchId) {
-                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                    $branchQuery->where('branch_id', $userBranchId);
-                });
+                $query->where('is_global', true)
+                    ->orWhere(function($subQuery) use ($userBranchId) {
+                        $subQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                            $branchQuery->where('branch_id', $userBranchId);
+                        });
+                    });
             });
         } else {
-            // User has no branch, show only methods with no branch assignments
-            $gatewaysQuery->whereDoesntHave('branches');
+            // User has no branch, show global methods and methods with no branch assignments
+            $gatewaysQuery->where(function($query) {
+                $query->where('is_global', true)
+                    ->orWhereDoesntHave('branches');
+            });
         }
         
         $gateways = $gatewaysQuery->get();
@@ -119,7 +125,10 @@ class DepositController extends GatewayController
             // Check if user's branch allows access to this method
             $hasAccess = false;
             
-            if ($userBranchId) {
+            if ($gateway->is_global) {
+                // Global methods are available to all users
+                $hasAccess = true;
+            } elseif ($userBranchId) {
                 // User has a branch - check if method is assigned to their branch or has no branch restrictions
                 $hasAccess = $gateway->branches()->where('branch_id', $userBranchId)->exists() || 
                             $gateway->branches()->count() == 0;
@@ -220,7 +229,10 @@ class DepositController extends GatewayController
                 // Check if user's branch allows access to this method
                 $hasAccess = false;
                 
-                if ($userBranchId) {
+                if ($gatewayInfo->is_global) {
+                    // Global methods are available to all users
+                    $hasAccess = true;
+                } elseif ($userBranchId) {
                     // User has a branch - check if method is assigned to their branch or has no branch restrictions
                     $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
                                 $gatewayInfo->branches()->count() == 0;
@@ -527,7 +539,10 @@ class DepositController extends GatewayController
                 // Check if user's branch allows access to this method
                 $hasAccess = false;
                 
-                if ($userBranchId) {
+                if ($gatewayInfo->is_global) {
+                    // Global methods are available to all users
+                    $hasAccess = true;
+                } elseif ($userBranchId) {
                     // User has a branch - check if method is assigned to their branch or has no branch restrictions
                     $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
                                 $gatewayInfo->branches()->count() == 0;

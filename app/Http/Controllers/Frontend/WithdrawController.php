@@ -67,26 +67,8 @@ class WithdrawController extends Controller
         $userBranchId = getUserBranchId($user->id, $user);
         
         $accountsQuery = WithdrawAccount::where('user_id', $user->id)
-            ->whereHas('method', function($query) use ($userBranchId) {
+            ->whereHas('method', function($query) {
                 $query->where('status', true);
-                
-                // Apply branch filtering to the method
-                if ($userBranchId) {
-                    $query->where(function($methodQuery) use ($userBranchId) {
-                        $methodQuery->where('is_global', true)
-                            ->orWhere(function($subQuery) use ($userBranchId) {
-                                $subQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                                    $branchQuery->where('branch_id', $userBranchId);
-                                });
-                            })->orWhereDoesntHave('branches');
-                    });
-                } else {
-                    // User has no branch, show global methods and accounts with methods that have no branch assignments
-                    $query->where(function($methodQuery) {
-                        $methodQuery->where('is_global', true)
-                            ->orWhereDoesntHave('branches');
-                    });
-                }
             });
             
         $accounts = $accountsQuery->get();
@@ -157,31 +139,6 @@ class WithdrawController extends Controller
         }
         
         // Validate that user has access to this withdraw method based on their branch
-        $withdrawMethod = WithdrawMethod::find($request->withdraw_method_id);
-        if ($withdrawMethod) {
-            $user = auth()->user();
-            $userBranchId = getUserBranchId($user->id, $user);
-            
-            // Check if user's branch allows access to this method
-            $hasAccess = false;
-            
-            if ($withdrawMethod->is_global) {
-                // Global methods are available to all users
-                $hasAccess = true;
-            } elseif ($userBranchId) {
-                // User has a branch - check if method is assigned to their branch or has no branch restrictions
-                $hasAccess = $withdrawMethod->branches()->where('branch_id', $userBranchId)->exists() || 
-                            $withdrawMethod->branches()->count() == 0;
-            } else {
-                // User has no branch - only allow methods with no branch restrictions
-                $hasAccess = $withdrawMethod->branches()->count() == 0;
-            }
-            
-            if (!$hasAccess) {
-                notify()->error('This withdraw method is not available for your branch');
-                return redirect()->route('user.withdraw.account.create');
-            }
-        }
 
         $user = Auth::user();
         $withdrawAccountOtpEnabled = (bool) setting('withdraw_account_otp', 'withdraw_settings');
@@ -630,18 +587,31 @@ class WithdrawController extends Controller
         // Apply branch filtering
         if ($userBranchId) {
             $withdrawMethodsQuery->where(function($query) use ($userBranchId) {
-                $query->where('is_global', true)
-                    ->orWhere(function($subQuery) use ($userBranchId) {
-                        $subQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                            $branchQuery->where('branch_id', $userBranchId);
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
                         });
-                    });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
             });
         } else {
-            // User has no branch, show global methods and methods with no branch assignments
+            // User has no branch - show methods with no branch restrictions AND global methods
             $withdrawMethodsQuery->where(function($query) {
-                $query->where('is_global', true)
-                    ->orWhereDoesntHave('branches');
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
             });
         }
         
@@ -670,18 +640,31 @@ class WithdrawController extends Controller
         // Apply branch filtering
         if ($userBranchId) {
             $withdrawMethodsQuery->where(function($query) use ($userBranchId) {
-                $query->where('is_global', true)
-                    ->orWhere(function($subQuery) use ($userBranchId) {
-                        $subQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                            $branchQuery->where('branch_id', $userBranchId);
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
                         });
-                    });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
             });
         } else {
-            // User has no branch, show global methods and methods with no branch assignments
+            // User has no branch - show methods with no branch restrictions AND global methods
             $withdrawMethodsQuery->where(function($query) {
-                $query->where('is_global', true)
-                    ->orWhereDoesntHave('branches');
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
             });
         }
         
@@ -720,31 +703,6 @@ class WithdrawController extends Controller
         }
         
         // Validate that user has access to this withdraw method based on their branch
-        $withdrawMethod = WithdrawMethod::find($request->withdraw_method_id);
-        if ($withdrawMethod) {
-            $user = auth()->user();
-            $userBranchId = getUserBranchId($user->id, $user);
-            
-            // Check if user's branch allows access to this method
-            $hasAccess = false;
-            
-            if ($withdrawMethod->is_global) {
-                // Global methods are available to all users
-                $hasAccess = true;
-            } elseif ($userBranchId) {
-                // User has a branch - check if method is assigned to their branch or has no branch restrictions
-                $hasAccess = $withdrawMethod->branches()->where('branch_id', $userBranchId)->exists() || 
-                            $withdrawMethod->branches()->count() == 0;
-            } else {
-                // User has no branch - only allow methods with no branch restrictions
-                $hasAccess = $withdrawMethod->branches()->count() == 0;
-            }
-            
-            if (!$hasAccess) {
-                notify()->error('This withdraw method is not available for your branch');
-                return redirect()->route('user.withdraw.account.index');
-            }
-        }
 
         $input = $request->all();
 
@@ -1366,20 +1324,8 @@ class WithdrawController extends Controller
             
             $accountsQuery = WithdrawAccount::where('user_id', $user->id)
                 ->where('status', WithdrawAccount::STATUS_APPROVED)
-                ->whereHas('method', function($query) use ($userBranchId) {
+                ->whereHas('method', function($query) {
                     $query->where('status', true);
-                    
-                    // Apply branch filtering to the method
-                    if ($userBranchId) {
-                        $query->where(function($methodQuery) use ($userBranchId) {
-                            $methodQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                                $branchQuery->where('branch_id', $userBranchId);
-                            });
-                        });
-                    } else {
-                        // User has no branch, show only accounts with methods that have no branch assignments
-                        $query->whereDoesntHave('branches');
-                    }
                 });
                 
             $accounts = $accountsQuery->get();

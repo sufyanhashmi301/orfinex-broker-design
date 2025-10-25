@@ -296,6 +296,29 @@
                             </div>
                         </div>
 
+                        <div class="xl:col-span-6 col-span-12">
+                            <div class="input-area relative flex items-center space-x-7">
+                                <label class="form-label !w-auto" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Enable this to restrict the method to only users with no branch or specifically assigned branches">
+                                        {{ __('Global Access') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <div class="form-switch ps-0">
+                                    <input class="form-check-input" type="hidden" value="0" name="is_global" />
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="is_global" value="1" class="sr-only peer"
+                                            @if ($withdrawMethod->is_global ?? false) checked @endif />
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         @if ($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate"

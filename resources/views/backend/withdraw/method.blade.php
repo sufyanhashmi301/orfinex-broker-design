@@ -97,11 +97,14 @@
                         <li class="flex items-center justify-between text-sm">
                             <span class="text-slate-400 mr-1">{{ __('Branches') }}</span>
                             <div class="text-right">
+                                @if ($method->is_global)
+                                    <span class="badge badge-success text-xs mr-1 mb-1">{{ __('Global') }}</span>
+                                @endif
                                 @if ($method->branches && $method->branches->count() > 0)
                                     @foreach ($method->branches as $branch)
                                         <span class="badge badge-secondary text-xs mr-1 mb-1">{{ $branch->name }}</span>
                                     @endforeach
-                                @else
+                                @elseif (!$method->is_global)
                                     <span class="text-slate-500 text-xs">{{ __('N/A') }}</span>
                                 @endif
                             </div>

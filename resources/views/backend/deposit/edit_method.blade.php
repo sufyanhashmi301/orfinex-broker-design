@@ -423,7 +423,7 @@
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <label class="form-label !w-auto pt-0">
                                     <span class="shift-Away inline-flex items-center gap-1"
-                                        data-tippy-content="Enable this to make the method available to all users regardless of branch">
+                                        data-tippy-content="Enable this to restrict the method to only users with no branch or specifically assigned branches">
                                         {{ __('Global Access') }}
                                         <iconify-icon icon="mdi:information-slab-circle-outline"
                                             class="text-[16px]"></iconify-icon>

@@ -52,18 +52,31 @@ class DepositController extends GatewayController
         // Apply branch filtering
         if ($userBranchId) {
             $gatewaysQuery->where(function($query) use ($userBranchId) {
-                $query->where('is_global', true)
-                    ->orWhere(function($subQuery) use ($userBranchId) {
-                        $subQuery->whereHas('branches', function($branchQuery) use ($userBranchId) {
-                            $branchQuery->where('branch_id', $userBranchId);
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
                         });
-                    });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
             });
         } else {
-            // User has no branch, show global methods and methods with no branch assignments
+            // User has no branch - show methods with no branch restrictions AND global methods
             $gatewaysQuery->where(function($query) {
-                $query->where('is_global', true)
-                    ->orWhereDoesntHave('branches');
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
             });
         }
         
@@ -117,31 +130,6 @@ class DepositController extends GatewayController
         // Check if the selected gateway is manual type and if request deposit accounts is enabled
         $gateway = DepositMethod::code($gatewayCode)->first();
         
-        // Validate that user has access to this deposit method based on their branch
-        if ($gateway) {
-            $user = auth()->user();
-            $userBranchId = getUserBranchId($user->id, $user);
-            
-            // Check if user's branch allows access to this method
-            $hasAccess = false;
-            
-            if ($gateway->is_global) {
-                // Global methods are available to all users
-                $hasAccess = true;
-            } elseif ($userBranchId) {
-                // User has a branch - check if method is assigned to their branch or has no branch restrictions
-                $hasAccess = $gateway->branches()->where('branch_id', $userBranchId)->exists() || 
-                            $gateway->branches()->count() == 0;
-            } else {
-                // User has no branch - only allow methods with no branch restrictions
-                $hasAccess = $gateway->branches()->count() == 0;
-            }
-            
-            if (!$hasAccess) {
-                notify()->error('This deposit method is not available for your branch');
-                return redirect()->route('user.deposit.methods');
-            }
-        }
         if ($gateway && $gateway->type == \App\Enums\GatewayType::Manual->value) {
             if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
                 // Only check for payment deposit request if this method has custom bank details enabled
@@ -221,31 +209,6 @@ class DepositController extends GatewayController
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
             
-            // Validate that user has access to this deposit method based on their branch
-            if ($gatewayInfo) {
-                $user = auth()->user();
-                $userBranchId = getUserBranchId($user->id, $user);
-                
-                // Check if user's branch allows access to this method
-                $hasAccess = false;
-                
-                if ($gatewayInfo->is_global) {
-                    // Global methods are available to all users
-                    $hasAccess = true;
-                } elseif ($userBranchId) {
-                    // User has a branch - check if method is assigned to their branch or has no branch restrictions
-                    $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
-                                $gatewayInfo->branches()->count() == 0;
-                } else {
-                    // User has no branch - only allow methods with no branch restrictions
-                    $hasAccess = $gatewayInfo->branches()->count() == 0;
-                }
-                
-                if (!$hasAccess) {
-                    notify()->error('This deposit method is not available for your branch');
-                    return redirect()->route('user.deposit.methods');
-                }
-            }
             
             $amount = $input['amount'];
     //        dd($amount);
@@ -531,31 +494,6 @@ class DepositController extends GatewayController
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
             
-            // Validate that user has access to this deposit method based on their branch
-            if ($gatewayInfo) {
-                $user = auth()->user();
-                $userBranchId = getUserBranchId($user->id, $user);
-                
-                // Check if user's branch allows access to this method
-                $hasAccess = false;
-                
-                if ($gatewayInfo->is_global) {
-                    // Global methods are available to all users
-                    $hasAccess = true;
-                } elseif ($userBranchId) {
-                    // User has a branch - check if method is assigned to their branch or has no branch restrictions
-                    $hasAccess = $gatewayInfo->branches()->where('branch_id', $userBranchId)->exists() || 
-                                $gatewayInfo->branches()->count() == 0;
-                } else {
-                    // User has no branch - only allow methods with no branch restrictions
-                    $hasAccess = $gatewayInfo->branches()->count() == 0;
-                }
-                
-                if (!$hasAccess) {
-                    notify()->error('This deposit method is not available for your branch');
-                    return redirect()->route('user.deposit.methods');
-                }
-            }
             
             $amount = $voucher->amount;
 

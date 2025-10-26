@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Frontend;
 use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\User;
+
 use App\Models\Kyc;
 use App\Models\KycLevel;
 use App\Models\KycSubLevel;
@@ -223,7 +226,17 @@ class KycController extends Controller
         ];
 
         $this->mailNotify($user->email, 'kyc_request_level_2', $shortcodes);
-        $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request', $shortcodes);
+        $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_2', $shortcodes);
+
+        // Also notify all staff attached to this user (if any)
+        try {
+            $emails = getAttachedStaffAdminEmails($user->id);
+            foreach ($emails as $email) {
+                $this->mailNotify($email, 'admin_kyc_request_level_2', $shortcodes, true);
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Failed to notify staff for KYC level 2 request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
         notify()->success(__(' KYC Updated'));
         return redirect()->route('user.kyc');
@@ -313,6 +326,16 @@ class KycController extends Controller
 
         $this->mailNotify($user->email, 'kyc_request_level_3', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_3', $shortcodes);
+
+        // Also notify all staff attached to this user (if any) for Level 3
+        try {
+            $emails = getAttachedStaffAdminEmails($user->id);
+            foreach ($emails as $email) {
+                $this->mailNotify($email, 'admin_kyc_request_level_3', $shortcodes, true);
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Failed to notify staff for KYC level 3 request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
 
         notify()->success(__(' KYC Updated'));

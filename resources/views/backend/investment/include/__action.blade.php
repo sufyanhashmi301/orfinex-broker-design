@@ -1,11 +1,23 @@
+@php
+    $isReviewList = in_array($status ?? '', [\App\Enums\ForexAccountStatus::Pending, \App\Enums\ForexAccountStatus::Canceled]);
+    $metaArray = [];
+    if(isset($meta)){
+        $metaArray = is_array($meta) ? $meta : (json_decode($meta, true) ?: []);
+    }
+    $storedComment = $metaArray['last_action_comment'] ?? '';
+@endphp
 <div class="flex space-x-3 rtl:space-x-reverse">
+    @if($isReviewList)
+        <a href="javascript:;" class="action-btn open-account-action-modal" data-id="{{ $id }}" data-login="{{ $login }}" data-status="{{ $status }}" data-account_type="{{ $account_type }}" data-group="{{ $group ?? '' }}" data-username="{{ $username_sort ?? ($username ?? '') }}" data-email="{{ $user->email ?? '' }}" data-comment="{{ $storedComment }}">
+            <iconify-icon icon="mdi:eye"></iconify-icon>
+        </a>
+    @else
     @can('accounts-trades-view')
         <a href="javascript:;" class="action-btn open-trades-modal" data-login="{{ $login }}">
-        <iconify-icon icon="fluent:apps-list-24-filled"></iconify-icon>
-    </a>
+            <iconify-icon icon="fluent:apps-list-24-filled"></iconify-icon>
+        </a>
     @endcan
     @can('accounts-action')
-
     <a href="{{route('admin.user.edit',$user_id)}}" class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Edit User">
         <iconify-icon icon="lucide:edit-3"></iconify-icon>
     </a>
@@ -104,5 +116,6 @@
         </ul>
     </div>
     @endcan
+    @endif
 </div>
 

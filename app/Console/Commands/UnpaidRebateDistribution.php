@@ -11,12 +11,13 @@ use App\Models\ReferralRelationship;
 use App\Models\User;
 use App\Services\WalletService;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Exception;
-use Txn;
+use App\Facades\Txn\Txn;
 
 class UnpaidRebateDistribution extends Command
 {
@@ -132,9 +133,10 @@ class UnpaidRebateDistribution extends Command
                 if ($share > 0) {
                     $userAccount = get_user_account($userId, AccountBalanceType::IB_WALLET);
                     $targetId = $userAccount->wallet_id;
-                    $amount = $share * $metaDeal->lot_share;
+                    $amount = BigDecimal::of($share)->multipliedBy(BigDecimal::of($metaDeal->lot_share))->toFloat();
 
-                    $transaction = Txn::new(
+                    $txn = new Txn();
+                    $transaction = $txn->new(
                         $amount, 0, $amount, 'system',
                         "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login}",
                         TxnType::IbBonus, TxnStatus::Success, base_currency(),
@@ -210,7 +212,7 @@ class UnpaidRebateDistribution extends Command
         $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
 
         if ($transaction->target_type == TxnTargetType::Wallet->value) {
-        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
+        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount))->toFloat();
         $userAccount->save();
     }
     }

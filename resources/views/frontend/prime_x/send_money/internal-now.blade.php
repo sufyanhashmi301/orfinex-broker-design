@@ -1,7 +1,7 @@
 @extends('frontend::send_money.index-internal')
 @section('send_money_content_internal')
     <div class="progress-steps-form">
-        <form action="{{ route('user.send-money.internal-now') }}" method="post">
+        <form action="{{ route('user.send-money.internal-now') }}" method="post" id="internalTransferForm">
             @csrf
             <input type="hidden" name="target_type" id="selectedAccountType" value="">
             <input type="hidden" name="receiver_type" id="selectedReceiverAccountType" value="">
@@ -126,9 +126,8 @@
                                         </tbody>
                                     </table>
                                     <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                        <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
-                                            {{ __('Transfer Now') }}
-                                            <i class="anticon anticon-double-right"></i>
+                                        <button type="submit" class="btn w-full inline-flex justify-center btn-primary space-x-2" data-loading-text="Processing...">
+                                            <span>{{ __('Transfer Now') }}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -198,6 +197,15 @@
             var selectedOption = $(this).find('option:selected');
             var selectedAccountType = selectedOption.data('type');
             $('#selectedAccountType').val(selectedAccountType);
+        });
+
+        $(document).on('submit', '#internalNowForm', function () {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
         });
     </script>
 @endsection

@@ -126,7 +126,7 @@
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-100">
-                            {{ __('This Month') }}
+                            {{ __('Last 30 Days') }}
                         </p>
                     </div>
                 </div>

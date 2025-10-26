@@ -219,8 +219,7 @@ class KycController extends Controller
 
         // Use the helper to get the accessible users with filters
         $data = getAccessibleUserIds($filters)
-            ->where('kyc', KYCStatus::Pending->value)
-            ->latest('updated_at');
+            ->where('kyc', KYCStatus::Pending->value);
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('time', 'backend.kyc.include.__time')
@@ -228,6 +227,11 @@ class KycController extends Controller
             ->addColumn('type', 'backend.kyc.include.__type')
             ->editColumn('status', 'backend.kyc.include.__status')
             ->addColumn('action', 'backend.kyc.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('updated_at', 'users.updated_at $1')
+            ->orderColumn('time', 'users.updated_at $1')
+            ->orderColumn('user', 'users.first_name $1')
+            ->orderColumn('status', 'users.kyc $1')
             ->rawColumns(['time', 'user', 'type', 'status', 'action'])
             ->make(true);
     }
@@ -244,8 +248,7 @@ class KycController extends Controller
  // Get users the logged-in user is allowed to access (based on roles/permissions/attachment)
         $data = getAccessibleUserIds($filters)
             ->whereNotNull('kyc_level3_credential')
-            ->where('kyc', KYCStatus::PendingLevel3->value)
-            ->latest('updated_at');
+            ->where('kyc', KYCStatus::PendingLevel3->value);
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -258,6 +261,11 @@ class KycController extends Controller
                 })
                 ->editColumn('status', 'backend.kyc.include.__statuslevel3')
                 ->addColumn('action', 'backend.kyc.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('updated_at', 'users.updated_at $1')
+                ->orderColumn('time', 'users.updated_at $1')
+                ->orderColumn('user', 'users.first_name $1')
+                ->orderColumn('status', 'users.kyc $1')
                 ->rawColumns(['time', 'user', 'type', 'status', 'action'])
                 ->make(true);
         }
@@ -289,6 +297,10 @@ class KycController extends Controller
             ->addColumn('type', 'backend.kyc.include.__type')
             ->addColumn('status', 'backend.kyc.include.__status')
             ->addColumn('action', 'backend.kyc.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('time', 'users.updated_at $1')
+            ->orderColumn('user', 'users.first_name $1')
+            ->orderColumn('status', 'users.kyc $1')
             ->rawColumns(['time', 'user', 'type', 'status', 'action'])
             ->make(true);
     }
@@ -518,6 +530,10 @@ public function actionLevel3Now(Request $request)
             ->addColumn('type', 'backend.kyc.include.__type')
             ->addColumn('status', 'backend.kyc.include.__status')
             ->addColumn('action', 'backend.kyc.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('time', 'users.updated_at $1')
+            ->orderColumn('user', 'users.first_name $1')
+            ->orderColumn('status', 'users.kyc $1')
             ->rawColumns(['time', 'user', 'type', 'status', 'action'])
             ->make(true);
     }

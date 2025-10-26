@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\TxnType;
+use App\Enums\AccountBalanceType;
 use App\Http\Controllers\Controller;
 use App\Models\AdvertisementMaterial;
 use App\Models\IbQuestion;
@@ -15,8 +16,12 @@ use App\Models\User;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -122,51 +127,122 @@ class ReferralController extends Controller
 
     public function history()
     {
-        $query = Transaction::where('user_id', auth()->user()->id)->where('type', '=', 'ib_bonus');;
-
-        if (request('transaction_date')) {
-            $filter = request('transaction_date');
-
-            $dateRange = match ($filter) {
-                '3_days' => [Carbon::now()->subDays(3)->startOfDay(), Carbon::now()->endOfDay()],
-                '5_days' => [Carbon::now()->subDays(5)->startOfDay(), Carbon::now()->endOfDay()],
-                '15_days' => [Carbon::now()->subDays(15)->startOfDay(), Carbon::now()->endOfDay()],
-                '1_month' => [Carbon::now()->subMonth()->startOfDay(), Carbon::now()->endOfDay()],
-                '3_months' => [Carbon::now()->subMonths(3)->startOfDay(), Carbon::now()->endOfDay()],
-                default => null,
-            };
-
-            if ($dateRange) {
-                $query->where(function ($q) use ($dateRange) {
-                    $start = $dateRange[0]->toDateTimeString();
-                    $end = $dateRange[1]->toDateTimeString();
-
-                    $q->whereRaw("
-                COALESCE(
-                    JSON_UNQUOTE(JSON_EXTRACT(manual_field_data, '$.time')),
-                    created_at
-                ) BETWEEN ? AND ?
-            ", [$start, $end]);
-                });
-            }
+        // Prepare filters from request (same logic as admin side)
+        $filters = request()->only([
+            'login', 'deal', 'symbol', 'date_filter', 'created_at',
+            'transaction_date', 'transaction_status' // Legacy support
+        ]);
+        
+        // Map legacy frontend filter names to backend filter names for backward compatibility
+        if (isset($filters['transaction_date'])) {
+            $filters['date_filter'] = $filters['transaction_date'];
+            unset($filters['transaction_date']);
         }
-
-
-        if (request('transaction_status')) {
-            $query->where('status', request('transaction_status'));
+        if (isset($filters['transaction_status'])) {
+            $filters['status'] = $filters['transaction_status'];
+            unset($filters['transaction_status']);
         }
-
-        $transactions = $query->orderBy('created_at', 'desc')->paginate(10)->appends(request()->query());
-
+        
+        // Use the same service as admin side for consistency
+        $query = \App\Services\IBTransactionQueryService::getUserIBTransactions(auth()->user()->id, $filters);
+        
+        if (!$query) {
+            $transactions = new LengthAwarePaginator([], 0, 10);
+        } else {
+            // Get current page from request
+            $currentPage = Paginator::resolveCurrentPage();
+            $perPage = 10;
+            
+            // For union queries, we need to wrap in a subquery and then paginate
+            // This is more efficient than loading all results
+            $subQuery = $query->orderBy('created_at', 'desc');
+            
+            // Get total count by wrapping the union query
+            $total = DB::query()->fromSub($subQuery, 'sub')->count();
+            
+            // Get paginated results by applying offset and limit to the subquery
+            $offset = ($currentPage - 1) * $perPage;
+            $results = DB::query()
+                ->fromSub($subQuery, 'sub')
+                ->offset($offset)
+                ->limit($perPage)
+                ->get();
+            
+            // Create paginator
+            $transactions = new LengthAwarePaginator(
+                $results,
+                $total,
+                $perPage,
+                $currentPage,
+                [
+                    'path' => request()->url(),
+                    'pageName' => 'page',
+                ]
+            );
+            
+            // Append query parameters to pagination links
+            $transactions->appends(request()->query());
+        }
+        
+        // Get summary data for display (same as admin side)
+        $summary = \App\Services\IBTransactionQueryService::getUserIBTransactionsSummary(auth()->user()->id, $filters);
+        
+        // Get user's lifetime IB balance and current IB wallet balance
+        $user = auth()->user();
+        $lifetimeIBBalance = $user ? $user->ib_balance : 0;
+        
+        // Get current IB wallet balance
+        $currentIBWalletBalance = 0;
+        if ($user) {
+            $ibWalletAccount = get_user_account($user->id, \App\Enums\AccountBalanceType::IB_WALLET);
+            $currentIBWalletBalance = $ibWalletAccount ? $ibWalletAccount->amount : 0;
+        }
+        
         if (request()->ajax()) {
             return response()->json([
-                'html' => view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render(),
+                'html' => view('frontend::referral.include.__ib_transaction_row', compact('transactions'))->render(),  
+                'html_mobile' => view('frontend::referral.include.__mobile_ib_transaction_row', compact('transactions'))->render(),
                 'pagination' => (string) $transactions->links(),
                 'total' => $transactions->total(),
+                'summary' => [
+                    'ib_balance' => number_format($lifetimeIBBalance, 2),
+                    'current_ib_wallet_balance' => number_format($currentIBWalletBalance, 2),
+                    'total_amount' => number_format($summary['total_amount'], 2),
+                    'total_count' => number_format($summary['total_count']),
+                    'filter_start_date' => $summary['filter_start_date'] ? $summary['filter_start_date']->format('M d, Y') : null,
+                    'filter_end_date' => $summary['filter_end_date'] ? $summary['filter_end_date']->format('M d, Y') : null,
+                ]
             ]);
         }
 
-        return view('frontend::referral.index', compact('transactions'));
+        return view('frontend::referral.index', compact('transactions', 'summary', 'lifetimeIBBalance', 'currentIBWalletBalance'));
+    }
+
+    public function exportHistory()
+    {
+        // Get filters from request (same as display logic)
+        $filters = request()->only([
+            'login', 'deal', 'symbol', 'date_filter', 'created_at',
+            'transaction_date', 'transaction_status' // Legacy support
+        ]);
+        
+        // Map legacy frontend filter names to backend filter names for backward compatibility
+        if (isset($filters['transaction_date'])) {
+            $filters['date_filter'] = $filters['transaction_date'];
+            unset($filters['transaction_date']);
+        }
+        if (isset($filters['transaction_status'])) {
+            $filters['status'] = $filters['transaction_status'];
+            unset($filters['transaction_status']);
+        }
+        
+        $user = auth()->user();
+        $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-ib-transactions.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\ibTransactionsUsersExport($user->id, $filters), 
+            $fileName
+        );
     }
 
     public function network() {

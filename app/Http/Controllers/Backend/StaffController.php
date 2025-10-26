@@ -7,11 +7,13 @@ use App\Models\Admin;
 use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\EmailTemplate;
 use App\Models\User;
 use App\Models\IbGroup;
 use App\Models\ForexSchema;
 use App\Models\ForexAccount;
 use App\Traits\ImageUpload;
+use App\Traits\NotifyTrait;
 use Arr;
 use DB;
 use Hash;
@@ -29,7 +31,7 @@ use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
 {
-    use ImageUpload;
+    use ImageUpload, NotifyTrait;
 
     /**
      * Display a listing of the resource.
@@ -172,6 +174,35 @@ class StaffController extends Controller
             }
 
             DB::commit();
+
+            // Notify configured staff_site_email recipients about new staff creation
+            try {
+                $rawStaffEmails = (string) setting('staff_site_email', 'global');
+                if (!empty($rawStaffEmails)) {
+                    $creator = Auth::guard('admin')->user();
+                    $creatorFullName = trim(($creator->first_name ?? '') . ' ' . ($creator->last_name ?? '')) ?: ($creator->name ?? '');
+                    $shortcodes = [
+                        '[[full_name]]' => trim(($input['first_name'] ?? '') . ' ' . ($input['last_name'] ?? '')) ?: ($input['name'] ?? ''),
+                        '[[email]]' => $input['email'] ?? '',
+                        '[[created_by_name]]' => $creatorFullName,
+                        '[[created_by_email]]' => $creator->email ?? '',
+                        '[[site_title]]' => setting('site_title', 'global'),
+                        '[[site_url]]' => url('/'),
+                    ];
+
+                    $emails = collect(preg_split('/[;,]/', $rawStaffEmails))
+                        ->map(function ($e) { return trim($e); })
+                        ->filter(function ($e) { return !empty($e); })
+                        ->unique()
+                        ->values();
+
+                    foreach ($emails as $email) {
+                        $this->mailNotify($email, 'admin_new_staff_created', $shortcodes);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Failed to send staff creation emails: ' . $e->getMessage());
+            }
 
             notify()->success('Staff created successfully');
             return redirect()->route('admin.staff.index');

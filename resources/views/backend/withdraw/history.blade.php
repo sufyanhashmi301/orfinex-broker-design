@@ -95,19 +95,19 @@
         </div>
     </div>
 
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
-            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
-              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-body popup-body">
-                        <div class="popup-body-text deposit-action">
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-xl w-full pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body popup-body">
+                    <div class="popup-body-text deposit-action">
 
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-  @endsection
-
+    </div>
+@endsection
+  
 @section('script')
     <script>
         (function ($) {
@@ -121,6 +121,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'desc']],
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -155,7 +156,7 @@
                     {data: 'method', name: 'method'},
                     {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
 

@@ -1,11 +1,20 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Open New Account') }}
+    @php
+        $newAccountTitle = __('Open New Account');
+        $requestedType = request()->get('type');
+        if ($requestedType === 'real') {
+            $newAccountTitle = __('Open New Real Account');
+        } elseif ($requestedType === 'demo') {
+            $newAccountTitle = __('Open New Demo Account');
+        }
+    @endphp
+    {{ $newAccountTitle }}
 @endsection
 @section('content')
 <div class="flex justify-between flex-wrap items-center mb-5">
     <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-        {{ __('Open New Account') }}
+        {{ $newAccountTitle }}
     </h4>
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
         <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
@@ -14,6 +23,21 @@
         {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">{{ __('Get Bonus') }}</a> --}}
     </div>
 </div>
+@php $reqType = request('type'); @endphp
+@if(($reqType === 'real' && setting('live_account_creation','features')) || ($reqType === 'demo' && setting('demo_account_creation','features')))
+<div class="py-3 px-4 rounded-md mb-5 bg-warning-500 bg-opacity-30 text-warning-900" style="background-color:#FEF3C7; color:#92400E;">
+    <div class="flex items-center">
+        <iconify-icon class="text-xl mr-2" icon="lucide:info"></iconify-icon>
+        <span>
+            @if($reqType === 'real')
+                {{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}
+            @else
+                {{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}
+            @endif
+        </span>
+    </div>
+    </div>
+@endif
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
     @foreach($schemas as $schema)
     <div class="card relative border dark:border-slate-700">
@@ -71,7 +95,7 @@
                     @endif
                 </ul>
             </div>
-            <a href="{{ route('user.schema.preview', the_hash($schema->id)) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
+            <a href="{{ route('user.schema.preview', the_hash($schema->id)) }}@if(request('type'))?type={{ request('type') }}@endif" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
                 {{ __('Create Account') }}
             </a>
         </div>

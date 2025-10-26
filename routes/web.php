@@ -212,6 +212,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
         Route::get('referral/history', [ReferralController::class, 'history'])->name('referral.history');
+        Route::post('referral/history/export', [ReferralController::class, 'exportHistory'])->name('referral.history.export');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
     //    Route::get('referral/advertisement-material', function () {
@@ -281,6 +282,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('paytm', 'paytmIpn')->name('paytm');
     Route::post('razorpay', 'razorpayIpn')->name('razorpay');
     Route::post('twocheckout', 'twocheckoutIpn')->name('twocheckout');
+    Route::post('jenapay', 'jenapayIpn')->name('jenapay');
 });
 
 //site others
@@ -411,6 +413,7 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
+Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 
 // Veriff KYC Routes
 Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');

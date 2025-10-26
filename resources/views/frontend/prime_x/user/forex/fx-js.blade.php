@@ -355,16 +355,57 @@
 
     //account info in modal
     $('body').on('click', '.dropdown-account-info', function () {
-        $('#account-info-login').text($(this).data('login'));
-        $('#account-info__login').text($(this).data('login'));
+        var login = $(this).data('login');
+        var schema = $(this).data('schema_title');
+        var type = $(this).data('account_type');
+        var status = $(this).data('status');
+        var comment = $(this).data('comment') || '';
+
+        // Conditional login display
+        if (status === 'ongoing' || status === 'archive') {
+            $('#account-info-login').text(login || 0);
+            $('#account-info__login').text(login || 0);
+        } else {
+            $('#account-info-login').text('-');
+            $('#account-info__login').text('-');
+        }
         $('#account-info-account_name').text($(this).data('account_name'));
         $('#account-info-server').text($(this).data('server'));
-        $('#account-schema-title').text($(this).data('schema_title'));
-        $('#account-type').text($(this).data('account_type'));
+        $('#account-schema-title').text(schema || '-');
+        $('#account-type').text(type || '-');
         $('#account-info-leverage').text($(this).data('leverage'));
-        $('#account-info-balance').text($(this).data('balance'));
+
+        var balData = $(this).data('balance');
+        var bal = (balData === '' || balData === null || typeof balData === 'undefined') ? NaN : parseFloat(balData);
+        if (status === 'ongoing' || status === 'archive') {
+            $('#account-info-balance').text(isNaN(bal) ? 0 : bal);
+        } else {
+            $('#account-info-balance').text('-');
+        }
         $('#account-info-free-margin').text($(this).data('free-margin'));
-        $('#account-info-equity').text($(this).data('equity'));
+        var eqData = $(this).data('equity');
+        var eq = (eqData === '' || eqData === null || typeof eqData === 'undefined') ? NaN : parseFloat(eqData);
+        if (status === 'ongoing' || status === 'archive') {
+            $('#account-info-equity').text(isNaN(eq) ? 0 : eq);
+        } else {
+            $('#account-info-equity').text('-');
+        }
+
+        var label = (status === 'ongoing') ? 'Approved' : ((status === 'canceled') ? 'Rejected' : 'Pending');
+        var cls, inlineStyle = '';
+        if (status === 'ongoing') {
+            cls = 'bg-success-500 text-success-900 bg-opacity-30';
+            inlineStyle = '';
+        } else if (status === 'canceled') {
+            cls = 'bg-danger-500 text-danger-900 bg-opacity-30';
+            inlineStyle = '';
+        } else {
+            cls = 'bg-warning-500 text-warning-900 bg-opacity-30';
+            inlineStyle = 'background-color:#FEF3C7; color:#92400E;';
+        }
+        var $badge = $('#account-status-badge');
+        $badge.removeClass().addClass('badge ml-auto ' + cls).attr('style', inlineStyle).text(label);
+        $('#account-status-comment').html(comment || '');
     });
 
     //update user leverage

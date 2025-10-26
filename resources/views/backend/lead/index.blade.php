@@ -72,6 +72,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -88,10 +89,10 @@
                         url: "{{ route('admin.lead.index') }}",
                     },
                     columns: [
-                        {data: 'username', name: 'username'},
-                        {data: 'client_email', name: 'client_email'},
-                        {data: 'owner', name: 'owner'},
-                        {data: 'created_at', name: 'created_at'},
+                        {data: 'username', name: 'username', orderable: true},
+                        {data: 'client_email', name: 'client_email', orderable: true},
+                        {data: 'owner', name: 'owner', orderable: true},
+                        {data: 'created_at', name: 'created_at', orderable: true},
                         {data: 'action', name: 'action', orderable: false, searchable: false},
                     ]
                 });

@@ -14,6 +14,7 @@ use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
+use App\Services\AdminForexAccountApprovalService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -83,6 +84,33 @@ class   AccountsController extends Controller
 
     // Return Datatables if Ajax
     if ($request->ajax()) {
+        // Prepare sortable computed columns
+        $data = $data->select('forex_accounts.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'forex_accounts.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'forex_accounts.user_id')
+                    ->selectRaw('MIN(users.ib_login)'),
+                'ib_login_sort'
+            )
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'forex_accounts.user_id')
+                        ->selectRaw('MIN(users.email)'),
+                    'user_email_sort'
+                )
+            ->selectSub(
+                DB::table('forex_schemas')
+                    ->whereColumn('forex_schemas.id', 'forex_accounts.forex_schema_id')
+                    ->selectRaw('MIN(forex_schemas.title)'),
+                'schema_title_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('ib_number', 'backend.user.include.__ib_number')
@@ -98,6 +126,17 @@ class   AccountsController extends Controller
             })
             ->addColumn('status', 'backend.investment.include.__status')
             ->addColumn('action', 'backend.investment.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('login', 'CAST(forex_accounts.login AS UNSIGNED) $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('schema', 'schema_title_sort $1')
+            ->orderColumn('group', 'forex_accounts.group $1')
+            ->orderColumn('currency', 'forex_accounts.currency $1')
+            ->orderColumn('leverage', 'forex_accounts.leverage $1')
+            ->orderColumn('balance', 'forex_accounts.balance $1')
+            ->orderColumn('ib_number', 'ib_login_sort $1')
+            ->orderColumn('status', 'forex_accounts.status $1')
+            ->orderColumn('created_at', 'forex_accounts.created_at $1')
             ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
             ->make(true);
     }
@@ -154,7 +193,8 @@ class   AccountsController extends Controller
         'unActiveAccounts' => $unActiveAccounts,
     ];
 
-    return view('backend.investment.index', compact('data', 'type'));
+    $status = $request->get('status');
+    return view('backend.investment.index', compact('data', 'type', 'status'));
 }
 
 
@@ -706,6 +746,61 @@ class   AccountsController extends Controller
             ],
             'forex_schema_id' => 'sometimes|exists:forex_schemas,id',
         ]);
+
+        // Approve/Reject via status change
+        if ($request->has('set_status')) {
+            $request->validate([
+                'login' => ['required', 'integer'],
+                'set_status' => ['required', 'in:ongoing,canceled']
+            ]);
+            $account = ForexAccount::where('login', $request->login)->first();
+            if (!$account) {
+                return response()->json(['error' => __('Invalid forex account!'), 'reload' => false]);
+            }
+
+            if ($request->set_status === ForexAccountStatus::Canceled) {
+                $meta = $account->meta ? (json_decode($account->meta, true) ?: []) : [];
+                if ($request->filled('comment')) { $meta['last_action_comment'] = $request->comment; }
+                $account->meta = json_encode($meta);
+                $account->status = ForexAccountStatus::Canceled;
+                $account->save();
+                // email notify user rejected
+                $this->mailNotify($account->user->email, 'user_forex_account_rejected', [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[login]]' => $account->login,
+                    '[[plan_name]]' => optional($account->schema)->title,
+                    '[[message]]' => $request->comment ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ]);
+                return response()->json(['success' => __('Account rejected successfully.'), 'reload' => true]);
+            }
+
+            // Approve: create account at platform then set to ongoing
+            $service = app(AdminForexAccountApprovalService::class);
+            // store comment, then approve
+            $meta = $account->meta ? (json_decode($account->meta, true) ?: []) : [];
+            if ($request->filled('comment')) { $meta['last_action_comment'] = $request->comment; }
+            $account->meta = json_encode($meta);
+            $account->save();
+            $result = $service->approve($account);
+            if ($result['success']) {
+                // email notify user approved
+                $this->mailNotify($account->user->email, 'user_forex_account_approved', [
+                    '[[full_name]]' => $account->user->full_name,
+                    '[[login]]' => $result['login'] ?? $account->login,
+                    '[[password]]' => $result['password'] ?? '',
+                    '[[investor_password]]' => $result['investor_password'] ?? '',
+                    '[[server]]' => $result['server'] ?? ($account->server ?? ''),
+                    '[[plan_name]]' => optional($account->schema)->title,
+                    '[[message]]' => $request->comment ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ]);
+                return response()->json(['success' => $result['message'], 'reload' => true]);
+            }
+            return response()->json(['error' => $result['message'], 'reload' => false]);
+        }
 
         // Call respective methods based on the provided input
         if ($request->leverage) {

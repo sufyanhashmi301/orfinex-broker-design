@@ -1,7 +1,7 @@
 @extends('frontend::deposit.index')
 @section('deposit_content')
     <div class="progress-steps-form mb-6">
-        <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data" id="depositForm">
             @csrf
             <input type="hidden" name="gateway_code" value="{{ $gatewayCode }}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
@@ -121,8 +121,8 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
-                                    {{ __('Proceed to Payment') }}
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary space-x-2" data-loading-text="Processing...">
+                                    <span>{{ __('Proceed to Payment') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -252,6 +252,14 @@
 
             });
 
+            $(document).on('submit', '#depositForm', function () {
+                const $form = $(this);
+                const $btn = $form.find('[type=submit]');
+
+                $btn.buttonLoading(true, {
+                    text: '<span class="text-sm">Please wait...</span>'
+                });
+            });
         });
     </script>
 @endsection

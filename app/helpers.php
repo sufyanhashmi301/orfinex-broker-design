@@ -480,7 +480,7 @@ if (!function_exists('setting')) {
         return is_null($value) ? value($default) : $value;
     }
 }
-if (!function_exists('getSettingCreatedAt')) {
+if (!function_exists('getSettingByColumn')) {
     function getSettingByColumn($key, $attribute = 'created_at')
     {
         $setting = \App\Models\Setting::where('name', $key)->first();
@@ -798,6 +798,10 @@ if (!function_exists('gateway_info')) {
     {
         $info = Gateway::where('gateway_code', $code)->first();
 
+        if (!$info || !$info->credentials) {
+            return null;
+        }
+
         return json_decode($info->credentials);
     }
 }
@@ -851,66 +855,27 @@ if (!function_exists('safe')) {
     }
 }
 
-function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
-{
-    $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
-    if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
-        $referrer = \App\Models\User::find($user->ref_id);
+if (!function_exists('creditReferralBonus')) {
+    function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
+    {
+        $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
+        if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
+            $referrer = \App\Models\User::find($user->ref_id);
 
-        $bounty = $LevelReferral->bounty;
-        $amount = (float)($mainAmount * $bounty) / 100;
-
-        $fromUserReferral = $fromUser == null ? $user : $fromUser;
-
-        $description = ucwords($type) . ' Referral Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in referral account ' . $user->multi_ib_login;
-
-        $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
-
-        $referrer->profit_balance += $amount;
-        $referrer->save();
-
-        $forexApiService = new ForexApiService();
-        $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
-        $data = [
-            'login' => $user->multi_ib_login,
-            'Amount' => $amount,
-            'type' => 1,//deposit
-            'TransactionComments' => $comment
-        ];
-        $forexApiService->balanceOperation($data);
-//        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
-        creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
-    }
-}
-
-function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
-{
-    $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
-//   dd($user->ref_id);
-    if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
-        $referrer = \App\Models\User::find($user->ref_id);
-//        dd($referrer);
-
-        if ($referrer->is_multi_ib) {
             $bounty = $LevelReferral->bounty;
             $amount = (float)($mainAmount * $bounty) / 100;
-//dd($amount);
+
             $fromUserReferral = $fromUser == null ? $user : $fromUser;
 
-            $forexApiTrait = new class {
-                use ForexApiTrait;
-            };
-            if (!isset($referrer->multi_ib_login)) {
-                createMultiIBAccount($referrer);
-                $referrer = $referrer->fresh();
-            }
-            $description = ucwords(str_replace('_', ' ', $type)) . ' Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $referrer->multi_ib_login;
-            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+            $description = ucwords($type) . ' Referral Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in referral account ' . $user->multi_ib_login;
 
-            $referrer->multi_ib_balance += $amount;
+            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+
+            $referrer->profit_balance += $amount;
             $referrer->save();
+
             $forexApiService = new ForexApiService();
-            $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
+            $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
             $data = [
                 'login' => $user->multi_ib_login,
                 'Amount' => $amount,
@@ -918,70 +883,115 @@ function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = 
                 'TransactionComments' => $comment
             ];
             $forexApiService->balanceOperation($data);
-//            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
+    //        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
+            creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
         }
-        creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
 
-function createMultiIBAccount($user)
-{
-    $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
-//        dd($ibSchema);
-    if (!$ibSchema) {
+if (!function_exists('creditMultiIbBonus')) {
+    function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
+    {
+        $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
+    //   dd($user->ref_id);
+        if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
+            $referrer = \App\Models\User::find($user->ref_id);
+    //        dd($referrer);
+
+            if ($referrer->is_multi_ib) {
+                $bounty = $LevelReferral->bounty;
+                $amount = (float)($mainAmount * $bounty) / 100;
+    //dd($amount);
+                $fromUserReferral = $fromUser == null ? $user : $fromUser;
+
+                $forexApiTrait = new class {
+                    use ForexApiTrait;
+                };
+                if (!isset($referrer->multi_ib_login)) {
+                    createMultiIBAccount($referrer);
+                    $referrer = $referrer->fresh();
+                }
+                $description = ucwords(str_replace('_', ' ', $type)) . ' Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $referrer->multi_ib_login;
+                $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+
+                $referrer->multi_ib_balance += $amount;
+                $referrer->save();
+                $forexApiService = new ForexApiService();
+                $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
+                $data = [
+                    'login' => $user->multi_ib_login,
+                    'Amount' => $amount,
+                    'type' => 1,//deposit
+                    'TransactionComments' => $comment
+                ];
+                $forexApiService->balanceOperation($data);
+    //            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
+            }
+            creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
+        }
+    }
+}
+
+if (!function_exists('createMultiIBAccount')) {
+    function createMultiIBAccount($user)
+    {
+        $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
+    //        dd($ibSchema);
+        if (!$ibSchema) {
+            return false;
+        }
+        $group = $ibSchema->group;
+
+        $server = config('forextrading.server');
+        $password = 'SNNH@2024@bol';
+        $investPassword = 'SNNH@2024@bol';
+        $name = $user->full_name;
+        if (!$name) {
+            $name = 'abc';
+        }
+        $phone = $user->phone;
+        if (!$phone) {
+            $phone = 12345678;
+        }
+        $country = $user->country;
+        if (!$country) {
+            $country = 'UAE';
+        }
+        $dataArray = array(
+            'Name' => $name,
+            'Leverage' => 1,
+            'Group' => $group,
+            'MasterPassword' => $password,
+            'InvestorPassword' => $investPassword,
+    //            'PhonePassword' => $password,
+            'Email' => $user->email,
+            'Phone' => $phone,
+            'Country' => $country,
+        );
+        $dataArray['Login'] = 0;
+        $dataArray['Language'] = 0;
+        $dataArray['Rights'] = 'USER_RIGHT_ALL';
+        $dataArray['Status'] = 'YES';
+        $URL = config('forextrading.createUserUrl');
+    //        dd($dataArray,$URL);
+        $forexApiTrait = new class {
+            use ForexApiTrait;
+        };
+        $response = $forexApiTrait->sendApiPostRequest($URL, $dataArray);
+    //        dd($response->object());
+    //        if ($response->serverError() || $response->failed()) {
+    //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
+    //        }
+
+        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
+            $resData = $response->object();
+            $user->multi_ib_login = $resData->Login;
+            $user->save();
+            return $resData->Login;
+        }
         return false;
+        //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
     }
-    $group = $ibSchema->group;
-
-    $server = config('forextrading.server');
-    $password = 'SNNH@2024@bol';
-    $investPassword = 'SNNH@2024@bol';
-    $name = $user->full_name;
-    if (!$name) {
-        $name = 'abc';
-    }
-    $phone = $user->phone;
-    if (!$phone) {
-        $phone = 12345678;
-    }
-    $country = $user->country;
-    if (!$country) {
-        $country = 'UAE';
-    }
-    $dataArray = array(
-        'Name' => $name,
-        'Leverage' => 1,
-        'Group' => $group,
-        'MasterPassword' => $password,
-        'InvestorPassword' => $investPassword,
-//            'PhonePassword' => $password,
-        'Email' => $user->email,
-        'Phone' => $phone,
-        'Country' => $country,
-    );
-    $dataArray['Login'] = 0;
-    $dataArray['Language'] = 0;
-    $dataArray['Rights'] = 'USER_RIGHT_ALL';
-    $dataArray['Status'] = 'YES';
-    $URL = config('forextrading.createUserUrl');
-//        dd($dataArray,$URL);
-    $forexApiTrait = new class {
-        use ForexApiTrait;
-    };
-    $response = $forexApiTrait->sendApiPostRequest($URL, $dataArray);
-//        dd($response->object());
-//        if ($response->serverError() || $response->failed()) {
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-//        }
-
-    if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
-        $resData = $response->object();
-        $user->multi_ib_login = $resData->Login;
-        $user->save();
-        return $resData->Login;
-    }
-    return false;
-    //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
 }
 
 if (!function_exists('first_min_deposit')) {
@@ -2052,6 +2062,79 @@ if (!function_exists('getAccessibleUserIds')) {
 
         // Otherwise, return empty result
         return User::where('id', -1); // Always false condition
+    }
+}
+
+if (!function_exists('getAttachedStaffAdminEmails')) {
+    /**
+     * Get unique staff admin emails attached to the given user via staff_user pivot.
+     * @param int $userId
+     * @return \Illuminate\Support\Collection
+     */
+    function getAttachedStaffAdminEmails(int $userId)
+    {
+        return DB::table('staff_user')
+            ->join('admins', 'staff_user.staff_id', '=', 'admins.id')
+            ->where('staff_user.user_id', $userId)
+            ->pluck('admins.email')
+            ->filter()
+            ->unique()
+            ->values();
+    }
+}
+
+if (!function_exists('notify_attached_staff_admins')) {
+    /**
+     * Notify all staff admins attached to a user using a template code.
+     * Expects $notifier to provide mailNotify($email, $code, $shortcodes, $throwOnFailure).
+     * @param object $notifier Controller/service using NotifyTrait
+     * @param int $userId Target user id
+     * @param string $templateCode Email template code
+     * @param array $shortcodes Shortcodes for template replacement
+     * @param bool $throwOnFailure If true, rethrow on mail send failures
+     * @return int Number of emails attempted
+     */
+    function notify_attached_staff_admins($notifierOrUserId, int $userId = null, string $templateCode = '', array $shortcodes = [], bool $throwOnFailure = false): int
+    {
+        try {
+            // Backward-compatible signature handling
+            if (is_int($notifierOrUserId) && $userId === null) {
+                $userId = $notifierOrUserId;
+                $notifier = new class {
+                    use \App\Traits\NotifyTrait;
+                    public function send($email, $code, $shortcodes, $throwOnFailure) { return $this->mailNotify($email, $code, $shortcodes, $throwOnFailure); }
+                };
+            } else {
+                $notifier = $notifierOrUserId;
+            }
+
+            $emails = getAttachedStaffAdminEmails($userId);
+            Log::info('notify_attached_staff_admins', [
+                'user_id' => $userId,
+                'template' => $templateCode,
+                'count' => $emails->count(),
+            ]);
+
+            foreach ($emails as $email) {
+                if (method_exists($notifier, 'mailNotify')) {
+                    $notifier->mailNotify($email, $templateCode, $shortcodes, $throwOnFailure);
+                } elseif (method_exists($notifier, 'send')) {
+                    $notifier->send($email, $templateCode, $shortcodes, $throwOnFailure);
+                }
+            }
+
+            return $emails->count();
+        } catch (\Throwable $e) {
+            Log::warning('notify_attached_staff_admins_failed', [
+                'user_id' => $userId,
+                'template' => $templateCode,
+                'error' => $e->getMessage(),
+            ]);
+            if ($throwOnFailure) {
+                throw $e;
+            }
+            return 0;
+        }
     }
 }
 

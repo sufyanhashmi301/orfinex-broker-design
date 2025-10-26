@@ -18,6 +18,14 @@
                 <p class="dark:text-slate-100">
                     {{ __('We have sent a verification code via email') }}
                 </p>
+                <div class="p-3 font-normal font-Inter text-sm text-left rounded-md bg-warning-500 bg-opacity-[14%] mt-3">
+                    <span class="font-medium">
+                        {{ __('Note: ') }}
+                    </span>
+                    <span class="text-slate-500 dark:text-slate-400">
+                        {{ __('some email providers may deliver this email to your Spam or Junk folder. Please check there if you do not see it in your inbox.') }}
+                    </span>
+                </div>
                 <form method="post" class="mt-5" id="accountCreationOtpForm">
                     @csrf
                     <div class="input-area">

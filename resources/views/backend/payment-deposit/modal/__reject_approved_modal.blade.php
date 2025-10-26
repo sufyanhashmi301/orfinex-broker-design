@@ -71,9 +71,9 @@
                             </div>
                         </div>
                     </form>
-                    <div class="text-right pt-3">
+                    <div class="text-right pt-10">
                         <button type="submit" form="rejectApprovedForm"
-                            class="btn btn-danger inline-flex items-center justify-center mr-2"
+                            class="btn btn-primary inline-flex items-center justify-center mr-2"
                             id="rejectApprovedSubmitBtn">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"
                                 id="rejectApprovedIcon"></iconify-icon>
@@ -81,7 +81,7 @@
                                 id="rejectApprovedLoader"></iconify-icon>
                             <span id="rejectApprovedText">{{ __('Reject Request') }}</span>
                         </button>
-                        <button type="button" class="btn btn-secondary inline-flex items-center justify-center"
+                        <button type="button" class="btn btn-danger inline-flex items-center justify-center"
                             data-bs-dismiss="modal">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                             {{ __('Cancel') }}

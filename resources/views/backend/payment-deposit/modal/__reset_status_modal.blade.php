@@ -52,7 +52,7 @@
                             </p>
                         </div>
                     </form>
-                    <div class="text-right pt-3">
+                    <div class="text-right pt-10">
                         <button type="button" id="resetStatusSubmitBtn"
                             class="btn btn-warning inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:refresh-cw"

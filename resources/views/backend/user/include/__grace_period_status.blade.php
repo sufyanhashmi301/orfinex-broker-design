@@ -23,14 +23,16 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer flex justify-end p-4 border-t">
-                    <button type="submit" class="btn btn-primary" id="save-grace-status-btn">
-                        {{ __('Save Changes') }}
-                    </button>
-                    <button type="button" class="btn btn-outline-dark ml-2" data-bs-dismiss="modal">
-                        {{ __('Cancel') }}
-                    </button>
+                    <div class="input-area text-right mt-10">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center space-x-2" id="save-grace-status-btn" data-loading-text="Processing...">
+                            <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                            <span>{{ __('Save Changes') }}</span>
+                        </button>
+                        <button type="button" class="btn inline-flex justify-center btn-danger ml-2" data-bs-dismiss="modal">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            <span>{{ __('Cancel') }}</span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

@@ -43,9 +43,11 @@ class LeadController extends Controller
         if ($request->ajax()) {
 
             if ($loggedInUser->hasRole('Super-Admin')) {
-                $leads = Lead::with('owner');
+                $leads = Lead::with('owner')->select('leads.*');
             } else {
-                $leads = Lead::whereIn('lead_owner', [$loggedInUser->id])->with('owner');
+                $leads = Lead::whereIn('leads.lead_owner', [$loggedInUser->id])
+                    ->with('owner')
+                    ->select('leads.*');
             }
 
             return Datatables::of($leads)
@@ -56,6 +58,16 @@ class LeadController extends Controller
                 })
                 ->editColumn('owner', 'backend.lead.include.__owner')
                 ->addColumn('action', 'backend.lead.include.__action')
+                ->orderColumn('username', function ($query, $direction) {
+                    $query->orderBy('leads.first_name', $direction)
+                          ->orderBy('leads.last_name', $direction);
+                })
+                ->orderColumn('owner', function ($query, $direction) {
+                    $query->leftJoin('admins', 'leads.lead_owner', '=', 'admins.id')
+                          ->orderBy('admins.first_name', $direction)
+                          ->orderBy('admins.last_name', $direction)
+                          ->select('leads.*');
+                })
                 ->rawColumns(['username', 'client_email', 'owner', 'action'])
                 ->make(true);
 

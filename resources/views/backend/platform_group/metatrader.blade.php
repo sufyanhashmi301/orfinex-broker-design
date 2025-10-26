@@ -72,13 +72,13 @@
                     autoWidth: false,
                     ajax: "{{ route('admin.platformGroups') }}",
                     columns: [
-                        {data: 'Group_ID', name: 'ID',orderable : false},
-                        {data: 'Group', name: 'group',orderable : false},
-                        {data: 'Currency', name: 'currency',orderable : false},
-                        {data: 'CurrencyDigits', name: 'currencyDigits',orderable : false},
-                        {data: 'MarginCall', name: 'marginCall',orderable : false},
-                        {data: 'MarginStopOut', name: 'marginStopOut',orderable : false},
-                        {data: 'action', name: 'action',orderable : false},
+                        {data: 'Group_ID', name: 'ID', orderable : false},
+                        {data: 'Group', name: 'group'},
+                        {data: 'Currency', name: 'currency'},
+                        {data: 'CurrencyDigits', name: 'currencyDigits'},
+                        {data: 'MarginCall', name: 'marginCall'},
+                        {data: 'MarginStopOut', name: 'marginStopOut'},
+                        {data: 'action', name: 'action', orderable : false, searchable: false},
                     ]
                 });
         })(jQuery);

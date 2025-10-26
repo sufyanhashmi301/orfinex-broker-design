@@ -318,12 +318,9 @@
                     </div>
                     <div class="md:col-span-2">
                         <div class="text-right">
-                            <button type="button" class="btn btn-dark save-btn inline-flex items-center justify-center"
-                                id="submitRequestBtn">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"
-                                    id="submitIcon"></iconify-icon>
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 hidden spining-icon" icon="lucide:loader"
-                                    id="submitLoader"></iconify-icon>
+                            <button type="button" class="btn btn-dark save-btn inline-flex items-center justify-center" id="submitRequestBtn">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send" id="submitIcon"></iconify-icon>
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 hidden spining-icon" icon="lucide:loader" id="submitLoader"></iconify-icon>
                                 <span id="submitText">{{ __('Submit Request') }}</span>
                             </button>
                         </div>
@@ -389,7 +386,7 @@
 
         // Function to reset submit button loading state
         function resetSubmitButton() {
-            $('#submitRequestBtn').prop('disabled', false);
+            $('#submitRequestBtn').prop('disabled', false).removeClass('opacity-75 cursor-not-allowed');
             $('#submitIcon').removeClass('hidden');
             $('#submitLoader').addClass('hidden');
             $('#submitText').text('{{ __('Submit Request') }}');

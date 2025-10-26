@@ -7,8 +7,11 @@
                         <h3 class="text-xl font-medium dark:text-white capitalize" id="account-info-account_name">
                             {{ __('Account Title') }}
                         </h3>
-                        <p class="dark:text-white">
-                            <span id="account-info-login"></span>/<span id="account-schema-title"></span>/<span id="account-type"></span>
+                        <p class="dark:text-white flex items-center gap-2">
+                            <span>
+                                <span id="account-info-login"></span>/<span id="account-schema-title"></span>/<span id="account-type"></span>
+                            </span>
+                            <span id="account-status-badge" class="badge ml-auto"></span>
                         </p>
                     </div>
                     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
@@ -32,19 +35,17 @@
                         <li class="flex items-baseline relative overflow-hidden py-3">
                             <span class="font-medium dark:text-white">{{ __('Balance') }}</span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="ml-auto dark:text-white" id="account-info-balance">16.45</span>
+                            <span class="ml-auto dark:text-white" id="account-info-balance">-</span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-3">
                             <span class="font-medium dark:text-white">{{ __('Free Margin') }}</span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="ml-auto dark:text-white" id="account-info-free-margin">24.68</span>
+                            <span class="ml-auto dark:text-white" id="account-info-free-margin">-</span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-3">
                             <span class="font-medium dark:text-white">{{ __('Equity') }}</span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="ml-auto dark:text-white">
-                                <span id="account-info-equity">24.68</span>
-                            </span>
+                            <span class="ml-auto dark:text-white" id="account-info-equity">-</span>
                         </li>
                         <li class="flex items-center py-3">
                             <div class="flex-1 flex items-baseline mr-2">
@@ -71,6 +72,10 @@
                             </button>
                         </li>
                     </ul>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Description') }}</label>
+                        <div id="account-status-comment" class="prose dark:prose-invert"></div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -78,8 +78,8 @@
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center md:space-x-4 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
-                <div>
-                    <form action="{{ route('user.setting.preference.theme') }}" method="POST">
+                <div class="relative">
+                    <form action="{{ route('user.setting.preference.theme') }}" method="POST" class="mb-0">
                         @csrf
                         @if(auth()->user()->user_theme == 'light')
                             <input type="hidden" name="user_theme" value="dark">

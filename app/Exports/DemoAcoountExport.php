@@ -18,7 +18,7 @@ class DemoAcoountExport implements FromQuery, WithHeadings, WithMapping
     public function __construct($request)
     {
         $this->request = $request;
-        $this->loggedInUser = Auth::user();
+        $this->loggedInUser = Auth::user()->load('users');
 
     }
 
@@ -30,19 +30,19 @@ class DemoAcoountExport implements FromQuery, WithHeadings, WithMapping
         $query = ForexAccount::query()
             ->where('account_type','demo')
             ->applyFilters($filters);
- // Apply user visibility rules (same as in index method)
+        // Apply user visibility rules (same as in index method)
         if ($this->loggedInUser->hasRole('Super-Admin')) {
             // Super-Admin sees all users - no additional filtering needed
         } elseif ($this->loggedInUser->can('show-all-users-by-default-to-staff')) {
             // Staff with permission sees all users - no additional filtering needed
         } else {
             // Regular staff only sees attached users
-            $attachedUserIds = $this->loggedInUser->users->pluck('id');
-            if ($attachedUserIds->isNotEmpty()) {
-                $query->whereIn('id', $attachedUserIds);
+            $attachedUserIds = $this->loggedInUser->users->pluck('id')->toArray();
+            if (!empty($attachedUserIds)) {
+                $query->whereIn('user_id', $attachedUserIds);
             } else {
                 // If no users are attached, return empty result
-                $query->where('id', -1);
+                $query->where('user_id', -1);
             }
         }
         return $query->select('login', 'account_name', 'group', 'currency', 'leverage', 'balance', 'equity', 'credit', 'status');

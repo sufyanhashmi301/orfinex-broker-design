@@ -84,13 +84,26 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.schema') }}" class="navItem loaderBtn {{ isActive('user.schema*') }}">
+        <li class="side-nav-item side-nav-dropdown {{ isActive('user.schema*') }}">
+            <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
                 </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('user.schema', ['type' => 'real']) }}" class="loaderBtn {{ request('type') === 'real' ? 'active' : '' }}">
+                        {{ __('Create Real Account') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.schema', ['type' => 'demo']) }}" class="loaderBtn {{ request('type') === 'demo' ? 'active' : '' }}">
+                        {{ __('Create Demo Account') }}
+                    </a>
+                </li>
+            </ul>
         </li>
         @if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts')
         <li>
@@ -98,7 +111,7 @@
                 class="navItem loaderBtn {{ isActive('user.payment-deposit*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
-                    <span>{{ __('Custom Account') }}</span>
+                    <span>{{ __('Set Up Wires') }}</span>
                 </span>
             </a>
         </li>

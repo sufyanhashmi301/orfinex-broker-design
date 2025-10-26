@@ -14,12 +14,15 @@
                             $popupImage = setting('popup_image', 'popup');
                         @endphp
                         <img src="{{ asset($popupImage) }}" class="w-full" alt="">
-                        <div class="text-right p-5">
-                            <a href="{{ setting('popup_btn_text', 'popup') }}" class="btn btn-dark inline-flex items-center justify-center" target="_blank">
-                                <span>{{ setting('popup_btn_text', 'popup') }}</span>
-                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:circle-chevron-right"></iconify-icon>
-                            </a>
-                        </div>
+                        
+                        @if(setting('popup_btn_text', 'popup'))
+                            <div class="text-{{ setting('popup_btn_alignment', 'popup') }} p-5">
+                                <a href="{{ setting('popup_btn_link', 'popup') }}" class="btn btn-dark inline-flex items-center justify-center" target="_blank">
+                                    <span>{{ setting('popup_btn_text', 'popup') }}</span>
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:circle-chevron-right"></iconify-icon>
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

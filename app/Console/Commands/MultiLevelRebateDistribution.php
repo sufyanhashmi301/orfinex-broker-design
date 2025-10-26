@@ -38,6 +38,8 @@ class MultiLevelRebateDistribution extends Command
 
     public function handle()
     {
+         Log::info("Successfully distributed cron run");
+
         try {
             ReferralRelationship::with('referralLink')
                 ->chunkById(200, function ($referrals) {

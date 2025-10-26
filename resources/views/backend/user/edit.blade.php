@@ -354,7 +354,7 @@
                     <!-- ticket -->
                     @canany(['customer-tickets-list'])
                         @include('backend.user.include.__ticket')
-                    @endcan
+                    @endcanany
                     @can('customer-notes-list')
                         @include('backend.user.notes.index')
                     @endcan
@@ -418,10 +418,22 @@
 
             // Phone field initialization is handled in __basic_info.blade.php
             // No duplicate initialization needed here
+
+            // Clear admin key input when modal is shown
+            $('#deleteConfirmationModall').on('shown.bs.modal', function() {
+                $('#admin_key').val('').removeClass('is-invalid');
+                $('#admin-key-error').hide().text('');
+            });
+
         });
 
-        $('#bonus-form').on('submit', function() {
-            $('.bonus-apply-now').prop('disabled', true)
+        $(document).on('submit', '#bonus-form', function() {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
         })
 
         function confirmDelete(tagId, tagName) {
@@ -702,5 +714,15 @@
                 @endif
             });
         });
+
+        $(document).on('submit', '#balanceForm, #bonus-form, #statusUpdateForm', function () {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
+        });
+
     </script>
 @endsection

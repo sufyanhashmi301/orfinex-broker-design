@@ -28,7 +28,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('SMS For') }}</th>
-                                    <th scope="col" class="table-th"{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
@@ -61,6 +61,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'asc']],
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -75,8 +76,8 @@
                 autoWidth: false,
                 ajax: "{{ route('admin.template.sms.user-template') }}",
                 columns: [
-                    {data: 'name', name: 'name'},
-                    {data: 'status', name: 'status'},
+                    {data: 'name', name: 'name', orderable: true},
+                    {data: 'status', name: 'status', orderable: true},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });

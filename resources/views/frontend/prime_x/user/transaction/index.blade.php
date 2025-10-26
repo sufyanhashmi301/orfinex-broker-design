@@ -176,11 +176,11 @@
                         forex_account: account,
                     },
                     beforeSend: function () {
-                        $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
+                        $('#transaction-table-body').html('<tr><td colspan="7" class="table-td text-center">Loading...</td></tr>');
                     },
                     success: function (response) {
                         if (response.html.trim() === "") {
-                            $('#transaction-table-body').html('<tr><td colspan="7" class="text-center">No transactions found</td></tr>');
+                            $('#transaction-table-body').html('<tr><td colspan="7" class="table-td text-center">No transactions found</td></tr>');
                             $('#mobile-transactions-container').html('<p class="text-center py-4 text-sm text-gray-500">{{ __("No transactions found") }}</p>');
                         } else {
                             $('#transaction-table-body').html(response.html);

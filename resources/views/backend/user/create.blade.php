@@ -3,7 +3,7 @@
     {{ __('New Customer') }}
 @endsection
 @section('content')
-    <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data" id="createUserForm">
         @csrf
         <div class="space-y-5">
             <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -78,7 +78,7 @@
                                 <span class="error" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="input-area relative">
+                        <div class="input-area relative phone-input-wrapper">
                             <label class="form-label">
                                 <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Add your mobile number for contact and verification">
                                     {{ __('Phone') }}
@@ -391,10 +391,10 @@
         </div>
 
         <div class="mt-10">
-            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                <span class="flex items-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                    {{ __('Add New Customer') }}
+            <button type="submit" class="btn btn-dark inline-flex items-center justify-center space-x-2" data-loading-text="Processing...">
+                <span class="flex items-center space-x-2">
+                    <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                    <span>{{ __('Add New Customer') }}</span>
                 </span>
             </button>
         </div>
@@ -403,195 +403,205 @@
 @section('script')
 <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
 <script>
-$(document).ready(function() {
-    // Initialize select2
-    $('.select2').select2();
+    $(document).ready(function() {
+        // Initialize select2
+        $('.select2').select2();
 
-    // Initialize intlTelInput for phone field
-    let phoneIti = null;
-    if (document.getElementById('phone')) {
-        const phoneInput = document.querySelector("#phone");
-        phoneIti = window.intlTelInput(phoneInput, {
-            initialCountry: "ae", // Set UAE as initial country
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        // Initialize intlTelInput for phone field
+        let phoneIti = null;
+        if (document.getElementById('phone')) {
+            const phoneInput = document.querySelector("#phone");
+            phoneIti = window.intlTelInput(phoneInput, {
+                initialCountry: "ae", // Set UAE as initial country
+                showSelectedDialCode: true,
+                utilsScript: "{{ asset('frontend/js/utils.js') }}",
+            });
+            
+            // No syncing from phone country to country select to keep fields independent
+            
+            // Check if there's an old country value (validation error) and set the phone input accordingly
+            const oldCountry = '{{ old("country") }}';
+            if (oldCountry) {
+                // Extract country name from old value (format: "Country Name:+123")
+                const countryName = oldCountry.split(':')[0];
+                
+                // Map country names to ISO codes for intlTelInput
+                const countryCodeMap = {
+                    'Afghanistan': 'af', 'Albania': 'al', 'Algeria': 'dz', 'Andorra': 'ad', 'Angola': 'ao',
+                    'Antigua and Barbuda': 'ag', 'Argentina': 'ar', 'Armenia': 'am', 'Australia': 'au',
+                    'Austria': 'at', 'Azerbaijan': 'az', 'Bahamas': 'bs', 'Bahrain': 'bh', 'Bangladesh': 'bd',
+                    'Barbados': 'bb', 'Belarus': 'by', 'Belgium': 'be', 'Belize': 'bz', 'Benin': 'bj',
+                    'Bhutan': 'bt', 'Bolivia': 'bo', 'Bosnia and Herzegovina': 'ba', 'Botswana': 'bw',
+                    'Brazil': 'br', 'Brunei': 'bn', 'Bulgaria': 'bg', 'Burkina Faso': 'bf', 'Burundi': 'bi',
+                    'Cambodia': 'kh', 'Cameroon': 'cm', 'Canada': 'ca', 'Cape Verde': 'cv', 'Central African Republic': 'cf',
+                    'Chad': 'td', 'Chile': 'cl', 'China': 'cn', 'Colombia': 'co', 'Comoros': 'km',
+                    'Congo': 'cg', 'Costa Rica': 'cr', 'Croatia': 'hr', 'Cuba': 'cu', 'Cyprus': 'cy',
+                    'Czech Republic': 'cz', 'Democratic Republic of the Congo': 'cd', 'Denmark': 'dk',
+                    'Djibouti': 'dj', 'Dominica': 'dm', 'Dominican Republic': 'do', 'East Timor': 'tl',
+                    'Ecuador': 'ec', 'Egypt': 'eg', 'El Salvador': 'sv', 'Equatorial Guinea': 'gq',
+                    'Eritrea': 'er', 'Estonia': 'ee', 'Ethiopia': 'et', 'Fiji': 'fj', 'Finland': 'fi',
+                    'France': 'fr', 'Gabon': 'ga', 'Gambia': 'gm', 'Georgia': 'ge', 'Germany': 'de',
+                    'Ghana': 'gh', 'Greece': 'gr', 'Grenada': 'gd', 'Guatemala': 'gt', 'Guinea': 'gn',
+                    'Guinea-Bissau': 'gw', 'Guyana': 'gy', 'Haiti': 'ht', 'Honduras': 'hn', 'Hungary': 'hu',
+                    'Iceland': 'is', 'India': 'in', 'Indonesia': 'id', 'Iran': 'ir', 'Iraq': 'iq',
+                    'Ireland': 'ie', 'Israel': 'il', 'Italy': 'it', 'Ivory Coast': 'ci', 'Jamaica': 'jm',
+                    'Japan': 'jp', 'Jordan': 'jo', 'Kazakhstan': 'kz', 'Kenya': 'ke', 'Kiribati': 'ki',
+                    'Kuwait': 'kw', 'Kyrgyzstan': 'kg', 'Laos': 'la', 'Latvia': 'lv', 'Lebanon': 'lb',
+                    'Lesotho': 'ls', 'Liberia': 'lr', 'Libya': 'ly', 'Liechtenstein': 'li', 'Lithuania': 'lt',
+                    'Luxembourg': 'lu', 'Macedonia': 'mk', 'Madagascar': 'mg', 'Malawi': 'mw', 'Malaysia': 'my',
+                    'Maldives': 'mv', 'Mali': 'ml', 'Malta': 'mt', 'Marshall Islands': 'mh', 'Mauritania': 'mr',
+                    'Mauritius': 'mu', 'Mexico': 'mx', 'Micronesia': 'fm', 'Moldova': 'md', 'Monaco': 'mc',
+                    'Mongolia': 'mn', 'Montenegro': 'me', 'Morocco': 'ma', 'Mozambique': 'mz', 'Myanmar': 'mm',
+                    'Namibia': 'na', 'Nauru': 'nr', 'Nepal': 'np', 'Netherlands': 'nl', 'New Zealand': 'nz',
+                    'Nicaragua': 'ni', 'Niger': 'ne', 'Nigeria': 'ng', 'North Korea': 'kp', 'Norway': 'no',
+                    'Oman': 'om', 'Pakistan': 'pk', 'Palau': 'pw', 'Panama': 'pa', 'Papua New Guinea': 'pg',
+                    'Paraguay': 'py', 'Peru': 'pe', 'Philippines': 'ph', 'Poland': 'pl', 'Portugal': 'pt',
+                    'Qatar': 'qa', 'Romania': 'ro', 'Russia': 'ru', 'Rwanda': 'rw', 'Saint Kitts and Nevis': 'kn',
+                    'Saint Lucia': 'lc', 'Saint Vincent and the Grenadines': 'vc', 'Samoa': 'ws', 'San Marino': 'sm',
+                    'Sao Tome and Principe': 'st', 'Saudi Arabia': 'sa', 'Senegal': 'sn', 'Serbia': 'rs',
+                    'Seychelles': 'sc', 'Sierra Leone': 'sl', 'Singapore': 'sg', 'Slovakia': 'sk', 'Slovenia': 'si',
+                    'Solomon Islands': 'sb', 'Somalia': 'so', 'South Africa': 'za', 'South Korea': 'kr', 'South Sudan': 'ss',
+                    'Spain': 'es', 'Sri Lanka': 'lk', 'Sudan': 'sd', 'Suriname': 'sr', 'Swaziland': 'sz',
+                    'Sweden': 'se', 'Switzerland': 'ch', 'Syria': 'sy', 'Taiwan': 'tw', 'Tajikistan': 'tj',
+                    'Tanzania': 'tz', 'Thailand': 'th', 'Togo': 'tg', 'Tonga': 'to', 'Trinidad and Tobago': 'tt',
+                    'Tunisia': 'tn', 'Turkey': 'tr', 'Turkmenistan': 'tm', 'Tuvalu': 'tv', 'Uganda': 'ug',
+                    'Ukraine': 'ua', 'United Arab Emirates': 'ae', 'United Kingdom': 'gb', 'United States': 'us',
+                    'Uruguay': 'uy', 'Uzbekistan': 'uz', 'Venezuela': 've', 'Vietnam': 'vn', 'Yemen': 'ye',
+                    'Zambia': 'zm', 'Zimbabwe': 'zw'
+                };
+                
+                const countryCode = countryCodeMap[countryName];
+                if (countryCode) {
+                    phoneIti.setCountry(countryCode);
+                }
+            } else {
+                // Set UAE as default country if no old value
+                phoneIti.setCountry("ae");
+            }
+
+            // No syncing from country select to phone country to keep fields independent
+        }
+
+        // Handle form submission to format phone number
+        $('form').on('submit', function(e) {
+            if (phoneIti) {
+                const phoneNumber = phoneIti.getNumber();
+                if (phoneNumber) {
+                    // Update the phone input with the full formatted number
+                    document.getElementById('phone').value = phoneNumber;
+                }
+            }
         });
-        
-        // No syncing from phone country to country select to keep fields independent
-        
-        // Check if there's an old country value (validation error) and set the phone input accordingly
-        const oldCountry = '{{ old("country") }}';
-        if (oldCountry) {
-            // Extract country name from old value (format: "Country Name:+123")
-            const countryName = oldCountry.split(':')[0];
-            
-            // Map country names to ISO codes for intlTelInput
-            const countryCodeMap = {
-                'Afghanistan': 'af', 'Albania': 'al', 'Algeria': 'dz', 'Andorra': 'ad', 'Angola': 'ao',
-                'Antigua and Barbuda': 'ag', 'Argentina': 'ar', 'Armenia': 'am', 'Australia': 'au',
-                'Austria': 'at', 'Azerbaijan': 'az', 'Bahamas': 'bs', 'Bahrain': 'bh', 'Bangladesh': 'bd',
-                'Barbados': 'bb', 'Belarus': 'by', 'Belgium': 'be', 'Belize': 'bz', 'Benin': 'bj',
-                'Bhutan': 'bt', 'Bolivia': 'bo', 'Bosnia and Herzegovina': 'ba', 'Botswana': 'bw',
-                'Brazil': 'br', 'Brunei': 'bn', 'Bulgaria': 'bg', 'Burkina Faso': 'bf', 'Burundi': 'bi',
-                'Cambodia': 'kh', 'Cameroon': 'cm', 'Canada': 'ca', 'Cape Verde': 'cv', 'Central African Republic': 'cf',
-                'Chad': 'td', 'Chile': 'cl', 'China': 'cn', 'Colombia': 'co', 'Comoros': 'km',
-                'Congo': 'cg', 'Costa Rica': 'cr', 'Croatia': 'hr', 'Cuba': 'cu', 'Cyprus': 'cy',
-                'Czech Republic': 'cz', 'Democratic Republic of the Congo': 'cd', 'Denmark': 'dk',
-                'Djibouti': 'dj', 'Dominica': 'dm', 'Dominican Republic': 'do', 'East Timor': 'tl',
-                'Ecuador': 'ec', 'Egypt': 'eg', 'El Salvador': 'sv', 'Equatorial Guinea': 'gq',
-                'Eritrea': 'er', 'Estonia': 'ee', 'Ethiopia': 'et', 'Fiji': 'fj', 'Finland': 'fi',
-                'France': 'fr', 'Gabon': 'ga', 'Gambia': 'gm', 'Georgia': 'ge', 'Germany': 'de',
-                'Ghana': 'gh', 'Greece': 'gr', 'Grenada': 'gd', 'Guatemala': 'gt', 'Guinea': 'gn',
-                'Guinea-Bissau': 'gw', 'Guyana': 'gy', 'Haiti': 'ht', 'Honduras': 'hn', 'Hungary': 'hu',
-                'Iceland': 'is', 'India': 'in', 'Indonesia': 'id', 'Iran': 'ir', 'Iraq': 'iq',
-                'Ireland': 'ie', 'Israel': 'il', 'Italy': 'it', 'Ivory Coast': 'ci', 'Jamaica': 'jm',
-                'Japan': 'jp', 'Jordan': 'jo', 'Kazakhstan': 'kz', 'Kenya': 'ke', 'Kiribati': 'ki',
-                'Kuwait': 'kw', 'Kyrgyzstan': 'kg', 'Laos': 'la', 'Latvia': 'lv', 'Lebanon': 'lb',
-                'Lesotho': 'ls', 'Liberia': 'lr', 'Libya': 'ly', 'Liechtenstein': 'li', 'Lithuania': 'lt',
-                'Luxembourg': 'lu', 'Macedonia': 'mk', 'Madagascar': 'mg', 'Malawi': 'mw', 'Malaysia': 'my',
-                'Maldives': 'mv', 'Mali': 'ml', 'Malta': 'mt', 'Marshall Islands': 'mh', 'Mauritania': 'mr',
-                'Mauritius': 'mu', 'Mexico': 'mx', 'Micronesia': 'fm', 'Moldova': 'md', 'Monaco': 'mc',
-                'Mongolia': 'mn', 'Montenegro': 'me', 'Morocco': 'ma', 'Mozambique': 'mz', 'Myanmar': 'mm',
-                'Namibia': 'na', 'Nauru': 'nr', 'Nepal': 'np', 'Netherlands': 'nl', 'New Zealand': 'nz',
-                'Nicaragua': 'ni', 'Niger': 'ne', 'Nigeria': 'ng', 'North Korea': 'kp', 'Norway': 'no',
-                'Oman': 'om', 'Pakistan': 'pk', 'Palau': 'pw', 'Panama': 'pa', 'Papua New Guinea': 'pg',
-                'Paraguay': 'py', 'Peru': 'pe', 'Philippines': 'ph', 'Poland': 'pl', 'Portugal': 'pt',
-                'Qatar': 'qa', 'Romania': 'ro', 'Russia': 'ru', 'Rwanda': 'rw', 'Saint Kitts and Nevis': 'kn',
-                'Saint Lucia': 'lc', 'Saint Vincent and the Grenadines': 'vc', 'Samoa': 'ws', 'San Marino': 'sm',
-                'Sao Tome and Principe': 'st', 'Saudi Arabia': 'sa', 'Senegal': 'sn', 'Serbia': 'rs',
-                'Seychelles': 'sc', 'Sierra Leone': 'sl', 'Singapore': 'sg', 'Slovakia': 'sk', 'Slovenia': 'si',
-                'Solomon Islands': 'sb', 'Somalia': 'so', 'South Africa': 'za', 'South Korea': 'kr', 'South Sudan': 'ss',
-                'Spain': 'es', 'Sri Lanka': 'lk', 'Sudan': 'sd', 'Suriname': 'sr', 'Swaziland': 'sz',
-                'Sweden': 'se', 'Switzerland': 'ch', 'Syria': 'sy', 'Taiwan': 'tw', 'Tajikistan': 'tj',
-                'Tanzania': 'tz', 'Thailand': 'th', 'Togo': 'tg', 'Tonga': 'to', 'Trinidad and Tobago': 'tt',
-                'Tunisia': 'tn', 'Turkey': 'tr', 'Turkmenistan': 'tm', 'Tuvalu': 'tv', 'Uganda': 'ug',
-                'Ukraine': 'ua', 'United Arab Emirates': 'ae', 'United Kingdom': 'gb', 'United States': 'us',
-                'Uruguay': 'uy', 'Uzbekistan': 'uz', 'Venezuela': 've', 'Vietnam': 'vn', 'Yemen': 'ye',
-                'Zambia': 'zm', 'Zimbabwe': 'zw'
-            };
-            
-            const countryCode = countryCodeMap[countryName];
-            if (countryCode) {
-                phoneIti.setCountry(countryCode);
-            }
-        } else {
-            // Set UAE as default country if no old value
-            phoneIti.setCountry("ae");
-        }
 
-        // No syncing from country select to phone country to keep fields independent
-    }
-
-    // Handle form submission to format phone number
-    $('form').on('submit', function(e) {
-        if (phoneIti) {
-            const phoneNumber = phoneIti.getNumber();
-            if (phoneNumber) {
-                // Update the phone input with the full formatted number
-                document.getElementById('phone').value = phoneNumber;
+        // Function to toggle KYC fields based on level
+        function toggleKycFields(level) {
+            if (level === '1') {
+                $('#verificationTypeContainer').hide();
+                $('#autoApproveContainer').show();
+            } else if (level === '3' || level === '5') {
+                $('#verificationTypeContainer').show();
+                $('#autoApproveContainer').show();
+            } else {
+                $('#verificationTypeContainer').hide();
+                $('#autoApproveContainer').hide();
             }
         }
-    });
 
-    // Function to toggle KYC fields based on level
-    function toggleKycFields(level) {
-        if (level === '1') {
-            $('#verificationTypeContainer').hide();
-            $('#autoApproveContainer').show();
-        } else if (level === '3' || level === '5') {
-            $('#verificationTypeContainer').show();
-            $('#autoApproveContainer').show();
-        } else {
-            $('#verificationTypeContainer').hide();
-            $('#autoApproveContainer').hide();
+        // Initialize based on old value if exists
+        var oldKycLevel = '{{ old("kyc_level") }}';
+        if (oldKycLevel) {
+            toggleKycFields(oldKycLevel);
         }
-    }
 
-    // Initialize based on old value if exists
-    var oldKycLevel = '{{ old("kyc_level") }}';
-    if (oldKycLevel) {
-        toggleKycFields(oldKycLevel);
-    }
+        $('#kycLevelSelect').on('change', function() {
+            var level = $(this).val();
+            $('.kycData').empty();
+            toggleKycFields(level);
 
-    $('#kycLevelSelect').on('change', function() {
-        var level = $(this).val();
-        $('.kycData').empty();
-        toggleKycFields(level);
+            if (level) {
+                $('#kycTypeSelect').prop('disabled', false).empty().append('<option value="">Select Type</option>');
 
-        if (level) {
-            $('#kycTypeSelect').prop('disabled', false).empty().append('<option value="">Select Type</option>');
+                $.ajax({
+                    url: '{{ route("admin.kyc.kycMethods") }}',
+                    type: "GET",
+                    data: {
+                        kyc_level: level,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if(response.kycs && response.kycs.length > 0) {
+                            $.each(response.kycs, function(index, kyc) {
+                                $('#kycTypeSelect').append(
+                                    $('<option></option>').val(kyc.id).text(kyc.name)
+                                );
+                            });
+                            // Set old value if exists
+                            var oldKycId = '{{ old("kyc_id") }}';
+                            if (oldKycId) {
+                                $('#kycTypeSelect').val(oldKycId).trigger('change');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error loading KYC types:', xhr.responseText);
+                        alert('Failed to load KYC types. Please try again.');
+                    }
+                });
+            } else {
+                $('#kycTypeSelect').prop('disabled', true).val('').trigger('change');
+            }
+        });
+
+        $('#kycTypeSelect').on('change', function() {
+            var id = $(this).val();
+            $('.kycData').empty();
+
+            if (!id) return;
 
             $.ajax({
-                url: '{{ route("admin.kyc.kycMethods") }}',
+                url: '{{ route("admin.kyc.data", "") }}/' + id,
                 type: "GET",
-                data: {
-                    kyc_level: level,
-                    _token: '{{ csrf_token() }}'
-                },
                 success: function(response) {
-                    if(response.kycs && response.kycs.length > 0) {
-                        $.each(response.kycs, function(index, kyc) {
-                            $('#kycTypeSelect').append(
-                                $('<option></option>').val(kyc.id).text(kyc.name)
-                            );
-                        });
-                        // Set old value if exists
-                        var oldKycId = '{{ old("kyc_id") }}';
-                        if (oldKycId) {
-                            $('#kycTypeSelect').val(oldKycId).trigger('change');
-                        }
-                    }
+                    $('.kycData').html(response);
+                    initFileUploads();
                 },
                 error: function(xhr) {
-                    console.error('Error loading KYC types:', xhr.responseText);
-                    alert('Failed to load KYC types. Please try again.');
+                    console.error('Error loading KYC fields:', xhr.responseText);
+                    alert('Failed to load KYC fields. Please try again.');
                 }
             });
-        } else {
-            $('#kycTypeSelect').prop('disabled', true).val('').trigger('change');
+        });
+
+        function initFileUploads() {
+            $('.wrap-custom-file input[type="file"]').each(function() {
+                var $input = $(this);
+                var $label = $input.next('label');
+                var labelVal = $label.html();
+
+                $input.on('change', function(e) {
+                    var fileName = e.target.value.split('\\').pop();
+                    fileName ? $label.find('span').html(fileName) : $label.html(labelVal);
+
+                    if (e.target.files && e.target.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            $label.find('img').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            });
         }
     });
 
-    $('#kycTypeSelect').on('change', function() {
-        var id = $(this).val();
-        $('.kycData').empty();
+    $(document).on('submit', '#createUserForm', function () {
+        const $form = $(this);
+        const $btn = $form.find('[type=submit]');
 
-        if (!id) return;
-
-        $.ajax({
-            url: '{{ route("admin.kyc.data", "") }}/' + id,
-            type: "GET",
-            success: function(response) {
-                $('.kycData').html(response);
-                initFileUploads();
-            },
-            error: function(xhr) {
-                console.error('Error loading KYC fields:', xhr.responseText);
-                alert('Failed to load KYC fields. Please try again.');
-            }
+        $btn.buttonLoading(true, {
+            text: '<span class="text-sm">Please wait...</span>'
         });
     });
 
-    function initFileUploads() {
-        $('.wrap-custom-file input[type="file"]').each(function() {
-            var $input = $(this);
-            var $label = $input.next('label');
-            var labelVal = $label.html();
-
-            $input.on('change', function(e) {
-                var fileName = e.target.value.split('\\').pop();
-                fileName ? $label.find('span').html(fileName) : $label.html(labelVal);
-
-                if (e.target.files && e.target.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        $label.find('img').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-        });
-    }
-});
 </script>
 @endsection

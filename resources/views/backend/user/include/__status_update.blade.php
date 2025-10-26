@@ -120,33 +120,33 @@
 
                             if (isset($user->kyc) && $user->kyc > 0) {
                                 // Determine the appropriate KycLevel based on the user's KYC status
-    if ($user->kyc == 1) {
-        // If KYC is 1, fetch the name from KycLevel where id == 1
-        $kycLevel = \App\Models\KycLevel::where('id', 1)->first();
-    } elseif (in_array($user->kyc, [2, 3, 4])) {
-        // If KYC is 2, 3, or 4, fetch the name from KycLevel where id == 2
-        $kycLevel = \App\Models\KycLevel::where('id', 2)->first();
-    } elseif (in_array($user->kyc, [5, 6, 7])) {
-        // If KYC is 5, 6, or 7, fetch the name from KycLevel where id == 3
-        $kycLevel = \App\Models\KycLevel::where('id', 3)->first();
-    }
+                                if ($user->kyc == 1) {
+                                    // If KYC is 1, fetch the name from KycLevel where id == 1
+                                    $kycLevel = \App\Models\KycLevel::where('id', 1)->first();
+                                } elseif (in_array($user->kyc, [2, 3, 4])) {
+                                    // If KYC is 2, 3, or 4, fetch the name from KycLevel where id == 2
+                                    $kycLevel = \App\Models\KycLevel::where('id', 2)->first();
+                                } elseif (in_array($user->kyc, [5, 6, 7])) {
+                                    // If KYC is 5, 6, or 7, fetch the name from KycLevel where id == 3
+                                    $kycLevel = \App\Models\KycLevel::where('id', 3)->first();
+                                }
 
-    // If we found a matching KycLevel
-    if (isset($kycLevel)) {
-        if (in_array($user->kyc, [1, 4, 7])) {
-            // Only show the KycLevel->name for kyc == 1, 4, or 7
-            $displayName = $kycLevel->name;
-        } else {
-            // Get the KYCStatus enum name
-            $kycStatus = App\Enums\KYCStatus::from($user->kyc)->name;
-            $kycStatusFormatted = ucwords(str_replace('_', ' ', strtolower($kycStatus)));
-            // Show both KycLevel->name and KYCStatus for other values
-            $displayName = $kycLevel->name . ' - ' . $kycStatusFormatted;
-        }
-    } else {
-        // Fallback to just showing the KYCStatus if no KycLevel is found
-        $kycStatus = App\Enums\KYCStatus::from($user->kyc)->name;
-        $displayName = ucwords(str_replace('_', ' ', strtolower($kycStatus)));
+                                // If we found a matching KycLevel
+                                if (isset($kycLevel)) {
+                                    if (in_array($user->kyc, [1, 4, 7])) {
+                                        // Only show the KycLevel->name for kyc == 1, 4, or 7
+                                        $displayName = $kycLevel->name;
+                                    } else {
+                                        // Get the KYCStatus enum name
+                                        $kycStatus = App\Enums\KYCStatus::from($user->kyc)->name;
+                                        $kycStatusFormatted = ucwords(str_replace('_', ' ', strtolower($kycStatus)));
+                                        // Show both KycLevel->name and KYCStatus for other values
+                                        $displayName = $kycLevel->name . ' - ' . $kycStatusFormatted;
+                                    }
+                                } else {
+                                    // Fallback to just showing the KYCStatus if no KycLevel is found
+                                    $kycStatus = App\Enums\KYCStatus::from($user->kyc)->name;
+                                    $displayName = ucwords(str_replace('_', ' ', strtolower($kycStatus)));
                                 }
                             }
                         @endphp
@@ -233,7 +233,7 @@
             </div>
         @endcan
         @can('customer-profile-toggles')
-            <form action="{{ route('admin.user.status-update', $user->id) }}" method="post" class="space-y-5">
+            <form action="{{ route('admin.user.status-update', $user->id) }}" method="post" class="space-y-5" id="statusUpdateForm">
                 @csrf
                 <div class="input-area flex items-center justify-between">
                     <h5 class="form-label">{{ __('Account Status') }}</h5>
@@ -333,8 +333,8 @@
                 </div>
 
                 <div class="input-area">
-                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full">
-                        {{ __('Save Changes') }}
+                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full space-x-2" data-loading-text="Processing...">
+                        <span>{{ __('Save Changes') }}</span>
                     </button>
                 </div>
             </form>

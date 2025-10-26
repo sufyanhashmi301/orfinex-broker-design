@@ -1,6 +1,6 @@
 @if (count($realForexAccounts) == 0)
     <div class="card py-10 px-10">
-        <div class="flex items-center justify-center flex-col gap-3">
+        <div class="max-w-2xl mx-auto flex items-center justify-center flex-col gap-3">
             <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M26 19.875V30.9167" stroke="rgba({{ implode(' ', getColorFromSettings('danger_color')) }})"
                     stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -12,9 +12,14 @@
                     stroke="rgba({{ implode(' ', getColorFromSettings('danger_color')) }})" stroke-opacity="0.66"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
-                {{ __('You don\'t have any Real account.') }}
-            </p>
+            <div class="text-center">
+                <h4 class="text-xl font-medium text-slate-900 dark:text-white mb-2">
+                    {{ __('You have not opened a real account yet.') }}
+                </h4>
+                <p class="font-normal text-sm text-slate-500 dark:text-slate-300">
+                    {{ __(' To do so, ensure you have completed your KYC verification and then click on the open new account button on this screen')}}
+                </p>
+            </div>
         </div>
     </div>
 @else
@@ -31,13 +36,39 @@
                             @include('frontend::.user.forex.dropdown-menu')
                         </div>
                         <ul class="h-full p-3">
+                        <li class="flex items-center py-3">
+                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Status') }}
+                                </span>
+                                <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
+                                    @php
+                                        $label = $account->status === \App\Enums\ForexAccountStatus::Ongoing ? __('Active') : ($account->status === \App\Enums\ForexAccountStatus::Canceled ? __('Rejected') : __('Pending'));
+                                    @endphp
+                                    @php
+                                        $isApproved = $account->status === \App\Enums\ForexAccountStatus::Ongoing;
+                                        $isRejected = $account->status === \App\Enums\ForexAccountStatus::Canceled;
+                                        $labelClass = $isApproved
+                                            ? 'bg-success-500 text-success-900 bg-opacity-30'
+                                            : ($isRejected
+                                                ? 'bg-danger-500 text-danger-900 bg-opacity-30'
+                                                : 'bg-warning-500 text-warning-900 bg-opacity-30');
+                                        $style = $isApproved
+                                            ? ''
+                                            : ($isRejected ? '' : 'background-color:#FEF3C7; color:#92400E;');
+                                    @endphp
+                                    <span class="badge {{ $labelClass }} capitalize" style="{{ $style }}">{{$label}}</span>
+                                </span>
+                            </li>
+                            @php
+                                $isApproved = $account->status === \App\Enums\ForexAccountStatus::Ongoing;
+                            @endphp
                             <li class="flex items-baseline relative overflow-hidden py-3">
                                 <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Number') }}
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                                 <span class="text-right text-slate-600 dark:text-slate-100">
-                                    {{ $account->login }}
+                                    {{ $isApproved ? ($account->login ?: 0) : '-' }}
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
@@ -49,6 +80,7 @@
                                     {{ $account->account_type }}
                                 </span>
                             </li>
+                            
                             <li class="flex items-baseline relative overflow-hidden py-3">
                                 <span class="text-sm text-slate-600 dark:text-slate-100">
                                     {{ __('Platform') }}
@@ -73,8 +105,12 @@
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                                 <span class="text-sm text-right text-slate-600 dark:text-slate-100">
-                                    {{ get_mt5_account_balance($account->login) }}
-                                    {{ $account->schema->is_cent_account ? $account->currency . ' (Cents)' : $account->currency }}
+                                    @php $rb = get_mt5_account_balance($account->login); $rb = is_null($rb) ? null : (float) $rb; @endphp
+                                    @if($isApproved)
+                                        {{ is_null($rb) ? 0 : $rb }} {{ $account->schema->is_cent_account ? $account->currency . ' (Cents)' : $account->currency }}
+                                    @else
+                                        -
+                                    @endif
                                 </span>
                             </li>
                             <li class="flex items-baseline relative overflow-hidden py-3">
@@ -92,7 +128,12 @@
                                 </span>
                                 <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                                 <span class="text-sm text-right text-slate-600 dark:text-slate-100">
-                                    {{ get_mt5_account_equity($account->login) }}
+                                    @php $re = get_mt5_account_equity($account->login); $re = is_null($re) ? null : (float) $re; @endphp
+                                    @if($isApproved)
+                                        {{ is_null($re) ? 0 : $re }}
+                                    @else
+                                        -
+                                    @endif
                                 </span>
                             </li>
                         </ul>
@@ -113,7 +154,14 @@
                         </div>
                         <div class="flex justify-between items-center mt-3">
                             <p class="account-balance mb-0 dark:text-white">
-                                <span class="text-lg font-semibold">{{ $account->balance }}</span>
+                                @php $lb = get_mt5_account_balance($account->login); $lb = is_null($lb) ? null : (float) $lb; @endphp
+                                <span class="text-lg font-semibold">
+                                    @if($isApproved)
+                                        {{ is_null($lb) ? 0 : $lb }}
+                                    @else
+                                        -
+                                    @endif
+                                </span>
                                 <span>{{ $account->schema->is_cent_account ? $account->currency . ' (Cents)' : $account->currency }}</span>
                             </p>
                             <div class="action-btns flex items-center gap-3">

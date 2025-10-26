@@ -8,8 +8,11 @@
         <div class="card-header">
             <h4 class="card-title">@yield('title')</h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
-                    {{ __('Withdraw Accounts') }}
+                <a href="{{ route('user.withdraw.account.index') }}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
+                    <span class="flex items-center">
+                        <iconify-icon icon="lucide:arrow-left" class="text-xl ltr:mr-2 rtl:ml-2"></iconify-icon>
+                        <span>{{ __('Withdraw Accounts') }}</span>
+                    </span>
                 </a>
             </div>
         </div>
@@ -80,9 +83,9 @@
                         </div>
                     </div>
                     <div class="action-buttons text-right mt-4">
-                        <button type="submit" id="submitWithdrawAccountBtn" class="btn inline-flex justify-center btn-primary">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
-                            {{ __('Add New Withdraw Account') }}
+                        <button type="submit" id="submitWithdrawAccountBtn" class="btn inline-flex items-center justify-center btn-primary space-x-2">
+                            <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                            <span>{{ __('Add New Withdraw Account') }}</span>
                         </button>
                     </div>
                 </form>
@@ -169,7 +172,7 @@
                     // Show loader and disable choice button while sending OTP
                     var $btn = $(this);
                     var originalHtml = $btn.html();
-                    $btn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Sending...") }}');
+                    $btn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="text-xl animate-spin"></iconify-icon>{{ __("Sending...") }}');
                     if (typeof $('#page-loader').show === 'function') { $('#page-loader').show(); }
                     $('#accountCreationAuthChoiceModal').modal('hide');
                     submitAccountCreationForm(formData, $btn, originalHtml);
@@ -189,7 +192,7 @@
                 // Set loading state on submit button
                 const $submitBtn = $('#submitWithdrawAccountBtn');
                 const originalBtnHtml = $submitBtn.html();
-                $submitBtn.prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Processing...") }}');
+                $submitBtn.prop('disabled', true).addClass('opacity-75 cursor-not-allowed').html('<iconify-icon icon="lucide:loader-2" class="text-xl animate-spin"></iconify-icon><span>{{ __("Processing...") }}</span>');
                 submitAccountCreationForm(formData, $submitBtn, originalBtnHtml);
             @else
                 // Submit form normally if OTP is not required
@@ -230,7 +233,7 @@
                 },
                 complete: function() {
                     if ($submitBtn && originalBtnHtml) {
-                        $submitBtn.prop('disabled', false).html(originalBtnHtml);
+                        $submitBtn.prop('disabled', false).removeClass('opacity-75 cursor-not-allowed').html(originalBtnHtml);
                     }
                     if (typeof $('#page-loader').hide === 'function') { $('#page-loader').hide(); }
                 }
@@ -248,7 +251,7 @@
                 tNotify('error', '{{ __("Please enter a valid 6-digit OTP") }}');
                 return;
             }
-            $(this).prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verifying...") }}');
+            $(this).prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="text-xl animate-spin"></iconify-icon>{{ __("Verifying...") }}');
             $.ajax({
                 url: '{{ route("user.withdraw.account.verify-ga.post") }}',
                 method: 'POST',
@@ -316,7 +319,7 @@
                 return;
             }
             
-            $(this).prop('disabled', true).html('<iconify-icon icon="lucide:loader-2" class="animate-spin ltr:mr-2 rtl:ml-2"></iconify-icon>{{ __("Verifying...") }}');
+            $(this).prop('disabled', true).addClass('opacity-75 cursor-not-allowed').html('<iconify-icon icon="lucide:loader-2" class="text-xl animate-spin"></iconify-icon>{{ __("Verifying...") }}');
             
             $.ajax({
                 url: '{{ route("user.withdraw.account.verify-otp.post") }}',

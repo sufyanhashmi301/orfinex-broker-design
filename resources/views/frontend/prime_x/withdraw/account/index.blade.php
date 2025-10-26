@@ -18,16 +18,16 @@
         </div>
     @else
         @if($withdrawAccountApproval)
-            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+            <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-warning-500 bg-opacity-[14%] mb-6">
                 <div class="flex items-start">
                     <div class="flex-shrink-0">
-                        <iconify-icon icon="lucide:info" class="text-yellow-600 dark:text-yellow-400 text-xl"></iconify-icon>
+                        <iconify-icon icon="lucide:info" class="text-xl"></iconify-icon>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                        <h3 class="text-sm font-medium">
                             {{ __('Manual Approval Required') }}
                         </h3>
-                        <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                        <div class="mt-2 text-sm">
                             <p>{{ __('New withdraw accounts require admin approval before they can be used. Pending accounts will be reviewed and you will be notified of the result.') }}</p>
                         </div>
                     </div>
@@ -39,8 +39,11 @@
             <div class="card-header">
                 <h4 class="card-title">@yield('title')</h4>
                 <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                    <a href="{{ route('user.withdraw.account.create') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
-                        {{ __('Add New') }}
+                    <a href="{{ route('user.withdraw.account.create') }}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
+                        <span class="flex items-center">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
+                            <span>{{ __('Add New') }}</span>
+                        </span>
                     </a>
                 </div>
             </div>
@@ -92,13 +95,13 @@
                                         <td class="table-td">
                                             <div class="flex items-center space-x-2 rtl:space-x-reverse">
                                                 <button type="button"
-                                                        class="action-btn text-primary view-account-btn"
+                                                        class="action-btn view-account-btn"
                                                         data-account-id="{{ the_hash($account->id) }}"
                                                         data-account-name="{{ $account->method_name }}">
                                                     <iconify-icon icon="lucide:eye"></iconify-icon>
                                                 </button>
                                                 <button type="button"
-                                                        class="action-btn text-danger delete-account-btn"
+                                                        class="action-btn delete-account-btn"
                                                         data-account-id="{{ the_hash($account->id) }}"
                                                         data-account-name="{{ $account->method_name }}">
                                                     <iconify-icon icon="lucide:trash-2"></iconify-icon>
@@ -173,11 +176,6 @@
                     <div id="account-details-content">
                         <!-- Account details will be loaded here -->
                     </div>
-                </div>
-                <div class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-slate-200 dark:border-slate-700 rounded-b-md">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        {{ __('Cancel') }}
-                    </button>
                 </div>
             </div>
         </div>

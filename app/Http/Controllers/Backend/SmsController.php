@@ -30,6 +30,8 @@ class SmsController extends Controller
                 ->addColumn('name', 'backend.sms.include.__name')
                 ->addColumn('status', 'backend.sms.include.__status')
                 ->addColumn('action', 'backend.sms.include.__action')
+                ->orderColumn('name', 'name $1')
+                ->orderColumn('status', 'status $1')
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }
@@ -49,6 +51,8 @@ class SmsController extends Controller
                 ->addColumn('name', 'backend.sms.include.__name')
                 ->addColumn('status', 'backend.sms.include.__status')
                 ->addColumn('action', 'backend.sms.include.__action')
+                ->orderColumn('name', 'name $1')
+                ->orderColumn('status', 'status $1')
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }

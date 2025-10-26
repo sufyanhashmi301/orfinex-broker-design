@@ -113,6 +113,7 @@
     @endcan
     <!-- Modal for Pending KYC Details -->
 @endsection
+
 @section('script')
     <script>
         (function ($) {
@@ -127,6 +128,7 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'desc']],
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -153,7 +155,7 @@
                     {data: 'user', name: 'user'},
                     {data: 'type', name: 'type'},
                     {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
             $('#filter-form').on('keypress', function(e) {

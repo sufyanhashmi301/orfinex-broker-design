@@ -135,8 +135,7 @@ class IBController extends Controller
         // Initialize query
         $data = User::with('ibGroup')
             ->where('ib_status', IBStatus::PENDING)
-            ->whereIn('id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('id', $accessibleUserIds);
 
         // Apply IB Group filter if specified
         if (!empty($request->ib_group)) {
@@ -193,8 +192,22 @@ class IBController extends Controller
         // Apply other filters
         $data->applyFilters($filters);
 
+        // Prepare sortable computed columns
+        $data = $data->select('users.*')
+            ->selectRaw("CONCAT(COALESCE(users.first_name,''),' ',COALESCE(users.last_name,'')) as username_sort")
+            ->selectSub(
+                DB::table('ib_groups')
+                    ->whereColumn('ib_groups.id', 'users.ib_group_id')
+                    ->selectRaw('MIN(name)'),
+                'ib_group_name_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
+            // Server-side ordering mappings
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('ib_group_name', 'ib_group_name_sort $1')
+            ->orderColumn('ib_status', 'users.ib_status $1')
             ->addColumn('username', function ($row) {
                 return view('backend.user.include.__user', compact('row'))->render();
             })
@@ -228,8 +241,7 @@ class IBController extends Controller
         // Initialize query
         $data = User::with('ibGroup')
             ->where('ib_status', IBStatus::APPROVED)
-            ->whereIn('id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('id', $accessibleUserIds);
 
         // Apply IB Group filter if specified
         if (!empty($request->ib_group)) {
@@ -283,8 +295,21 @@ class IBController extends Controller
             ]);
         }
 
+        // Prepare sortable computed columns
+        $data = $data->select('users.*')
+            ->selectRaw("CONCAT(COALESCE(users.first_name,''),' ',COALESCE(users.last_name,'')) as username_sort")
+            ->selectSub(
+                DB::table('ib_groups')
+                    ->whereColumn('ib_groups.id', 'users.ib_group_id')
+                    ->selectRaw('MIN(name)'),
+                'ib_group_name_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('ib_group_name', 'ib_group_name_sort $1')
+            ->orderColumn('ib_status', 'users.ib_status $1')
             ->addColumn('username', function ($row) {
                 return view('backend.user.include.__user', compact('row'))->render();
             })
@@ -321,8 +346,7 @@ class IBController extends Controller
         // Initialize query
         $data = User::with('ibGroup')
             ->where('ib_status', IBStatus::REJECTED)
-            ->whereIn('id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('id', $accessibleUserIds);
 
         // Apply IB Group filter if specified
         if (!empty($request->ib_group)) {
@@ -379,8 +403,21 @@ class IBController extends Controller
         // Apply other filters
         $data->applyFilters($filters);
 
+        // Prepare sortable computed columns
+        $data = $data->select('users.*')
+            ->selectRaw("CONCAT(COALESCE(users.first_name,''),' ',COALESCE(users.last_name,'')) as username_sort")
+            ->selectSub(
+                DB::table('ib_groups')
+                    ->whereColumn('ib_groups.id', 'users.ib_group_id')
+                    ->selectRaw('MIN(name)'),
+                'ib_group_name_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('ib_group_name', 'ib_group_name_sort $1')
+            ->orderColumn('ib_status', 'users.ib_status $1')
             ->addColumn('username', function ($row) {
                 return view('backend.user.include.__user', compact('row'))->render();
             })
@@ -420,8 +457,7 @@ class IBController extends Controller
 
         // Initialize query with accessible users
         $data = User::with('ibGroup')
-            ->whereIn('id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('id', $accessibleUserIds);
 
         // Apply IB Group filter if specified
         if (!empty($request->ib_group)) {
@@ -478,8 +514,21 @@ class IBController extends Controller
         // Apply additional filters
         $data->applyFilters($filters);
 
+        // Prepare sortable computed columns
+        $data = $data->select('users.*')
+            ->selectRaw("CONCAT(COALESCE(users.first_name,''),' ',COALESCE(users.last_name,'')) as username_sort")
+            ->selectSub(
+                DB::table('ib_groups')
+                    ->whereColumn('ib_groups.id', 'users.ib_group_id')
+                    ->selectRaw('MIN(name)'),
+                'ib_group_name_sort'
+            );
+
         return Datatables::of($data)
             ->addIndexColumn()
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('ib_group_name', 'ib_group_name_sort $1')
+            ->orderColumn('ib_status', 'users.ib_status $1')
             ->addColumn('username', function ($row) {
                 return view('backend.user.include.__user', compact('row'))->render();
             })

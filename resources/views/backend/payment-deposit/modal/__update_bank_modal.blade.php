@@ -83,7 +83,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class="text-right pt-3">
+                    <div class="text-right pt-10">
                         <button type="submit" form="updateBankForm"
                             class="btn btn-dark inline-flex items-center justify-center mr-2" id="updateBankSubmitBtn">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"

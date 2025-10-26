@@ -12,23 +12,27 @@
             <div class="max-w-2xl w-full mx-auto">
 
                 {{-- ✅ Display External KYC ID (Read-Only) --}}
-                @if($user->external_kyc_id)
+                @if ($user->external_kyc_id)
                     <div class="alert alert-info text-sm mb-5">
                         <strong>{{ __('External KYC ID:') }}</strong> {{ $user->external_kyc_id }}
                     </div>
                 @endif
 
-                <form action="{{ route('admin.kyc.submit', ['id' => $user->id]) }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('admin.kyc.submit', ['id' => $user->id]) }}" method="post"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="space-y-5">
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="KYC level for the user">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="KYC level for the user">
                                     {{ __('KYC Level') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <select name="kyc_level" id="kycLevelSelect" class="select2 form-control w-full" data-placeholder="Select Level">
+                            <select name="kyc_level" id="kycLevelSelect" class="select2 form-control w-full"
+                                data-placeholder="Select Level">
                                 <option value="">{{ __('Select Level') }}</option>
                                 <option value="1">{{ __('Level 1') }}</option>
                                 <option value="3">{{ __('Level 2') }}</option>
@@ -37,29 +41,38 @@
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Verification type for the user">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="Verification type for the user">
                                     {{ __('Verification Type') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
                                 </span>
                             </label>
-                            <select id="kycTypeSelect" name="kyc_id" class="select2 form-control" data-placeholder="Select Type">
+                            <select id="kycTypeSelect" name="kyc_id" class="select2 form-control"
+                                data-placeholder="Select Type">
                                 <option value="">{{ __('Select Type') }}</option>
                             </select>
                         </div>
-                        @if(Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin'))
+                        @if (Auth::user() && Auth::user()->getRoleNames()->contains('Super-Admin'))
                             <div class="input-area relative">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Auto approve the user's KYC">
+                                        <span class="shift-Away inline-flex items-center gap-1"
+                                            data-tippy-content="Auto approve the user's KYC">
                                             {{ __('Auto Approve') }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                class="text-[16px]"></iconify-icon>
                                         </span>
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
-                                        <input class="form-check-input" type="hidden" value="0" name="is_auto_approve"/>
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_auto_approve" value="1" class="sr-only peer">
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input class="form-check-input" type="hidden" value="0"
+                                            name="is_auto_approve" />
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_auto_approve" value="1"
+                                                class="sr-only peer">
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -79,7 +92,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- Display Level 2 KYC Images --}}
     @if ($user->kyc_credential)

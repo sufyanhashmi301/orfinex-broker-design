@@ -311,3 +311,45 @@ function submit_form(formData,btn,url,appendId=null,modalId=null,datatable=null)
         }
     })
 }
+
+(function ($) {
+    "use strict";
+
+    $.fn.buttonLoading = function (isLoading, options = {}) {
+        const settings = $.extend(
+            { 
+                text: `<span>Processing...</span>`, 
+                spinner: true, 
+                restore: true 
+            },
+            options
+        );
+
+        return this.each(function () {
+            const $btn = $(this);
+
+            if (isLoading) {
+                if ($btn.prop('disabled')) return;
+
+                $btn.data('original-html', $btn.html());
+                const spinner = settings.spinner
+                    ? '<iconify-icon class="text-xl animate-spin" icon="lucide:loader-circle"></iconify-icon>'
+                    : '';
+
+                $btn
+                    .prop('disabled', true)
+                    .addClass('opacity-75 cursor-not-allowed')
+                    .html(spinner + settings.text);
+            } else {
+                $btn
+                    .prop('disabled', false)
+                    .removeClass('opacity-75 cursor-not-allowed');
+
+                if (settings.restore && $btn.data('original-html')) {
+                    $btn.html($btn.data('original-html'));
+                }
+            }
+        });
+    };
+    
+})(jQuery);

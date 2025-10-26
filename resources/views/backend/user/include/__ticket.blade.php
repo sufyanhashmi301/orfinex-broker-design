@@ -8,7 +8,7 @@
         <div class="card-header">
             <h4 class="card-title">{{ __('Support Tickets') }}</h4>
         </div>
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -30,6 +30,10 @@
                     </div>
                 </div>
             </div>
+            <div class="processingIndicator text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
 </div>
@@ -37,30 +41,34 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-ticket-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+            var table = $('#user-ticket-dataTable')
+                .on('processing.dt', function(e, settings, processing) {
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
+                }).DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    searching: false,
+                    lengthChange: false,
+                    info: true,
+                    order: [[0, 'desc']],
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:"
                     },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.ticket.index',$user->id) }}",
-                columns: [
-                    {data: 'title', name: 'title'},
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
+                    processing: true,
+                    serverSide: true,
+                    autoWidth: false,
+                    ajax: "{{ route('admin.ticket.index',$user->id) }}",
+                    columns: [
+                        {data: 'title', name: 'title'},
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'status', name: 'status'},
+                        {data: 'action', name: 'action', orderable: false, searchable: false},
+                    ]
             });
         })(jQuery);
     </script>

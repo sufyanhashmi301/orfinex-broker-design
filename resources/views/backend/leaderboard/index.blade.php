@@ -129,7 +129,7 @@
                     { data: 'network_users', name: 'network_users' },
                     { data: 'incoming_total', name: 'incoming_total' },
                     { data: 'outgoing_total', name: 'outgoing_total' },
-                    { data: 'actions', name: 'actions' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
                 ]
             });
         }

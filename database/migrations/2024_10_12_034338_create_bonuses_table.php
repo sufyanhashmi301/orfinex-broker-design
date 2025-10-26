@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('bonuses', function (Blueprint $table) {
             $table->id();
 
-            $table->string('kyc_slug');
             $table->string('bonus_name');
             
             $table->date('start_date');
@@ -27,15 +26,10 @@ return new class extends Migration
 
             $table->string('process');
 
-            $table->string('bonus_removal_type');
-            $table->string('bonus_removal_amount')->nullable();
-
             $table->string('applicable_by');
             
             $table->text('terms_link');
             $table->text('description');
-            
-            $table->string('first_or_every_deposit');
 
             $table->integer('status')->default(0);
 

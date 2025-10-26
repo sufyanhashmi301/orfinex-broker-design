@@ -26,13 +26,15 @@ class EmailTemplateController extends Controller
 
         if ($request->ajax()) {
 
-            $data = EmailTemplate::query()->where('for', 'Admin')->orderBy('name','asc');
+            $data = EmailTemplate::query()->where('for', 'Admin');
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.email.include.__name')
                 ->addColumn('status', 'backend.email.include.__status')
                 ->addColumn('action', 'backend.email.include.__action')
+                ->orderColumn('name', 'name $1')
+                ->orderColumn('status', 'status $1')
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }
@@ -45,13 +47,15 @@ class EmailTemplateController extends Controller
 
         if ($request->ajax()) {
 
-            $data = EmailTemplate::query()->where('for', 'User')->orderBy('name','asc');
+            $data = EmailTemplate::query()->where('for', 'User');
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.email.include.__name')
                 ->addColumn('status', 'backend.email.include.__status')
                 ->addColumn('action', 'backend.email.include.__action')
+                ->orderColumn('name', 'name $1')
+                ->orderColumn('status', 'status $1')
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }

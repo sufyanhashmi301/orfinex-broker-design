@@ -98,25 +98,18 @@
                         </div>
                     </div>
                     <div class="input-area text-right mt-10">
-                        <button type="submit"
-                            class="btn bonus-apply-now btn-dark inline-flex items-center justify-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Apply Now') }}
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center space-x-2 bonus-apply-now" data-loading-text="Processing...">
+                            <iconify-icon class="text-xl" icon="lucide:check"></iconify-icon>
+                            <span>{{ __('Apply Now') }}</span>
                         </button>
                         <a href="#" data-bs-dismiss="modal" class="btn inline-flex justify-center btn-danger">
-                            <span class="flex items-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                {{ __('Cancel') }}
+                            <span class="flex items-center space-x-2">
+                                <iconify-icon class="text-xl" icon="lucide:x"></iconify-icon>
+                                <span>{{ __('Cancel') }}</span>
                             </span>
                         </a>
-                        <style>
-                            .bonus-apply-now:disabled {
-                                opacity: 0.6;
-                            }
-                        </style>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

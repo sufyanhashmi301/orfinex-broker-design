@@ -39,11 +39,48 @@ class DepositController extends GatewayController
     }
     public function depositMethods()
     {
-        $gateways = DepositMethod::where('status', 1)
-            ->where(function($query) {
-                $query->whereJsonContains('country', auth()->user()->country)
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $gatewaysQuery = DepositMethod::where('status', 1)
+            ->with('branches')
+            ->where(function($query) use ($user) {
+                $query->whereJsonContains('country', $user->country)
                     ->orWhereJsonContains('country', 'All');
-            })->get();
+            });
+            
+        // Apply branch filtering
+        if ($userBranchId) {
+            $gatewaysQuery->where(function($query) use ($userBranchId) {
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
+            });
+        } else {
+            // User has no branch - show methods with no branch restrictions AND global methods
+            $gatewaysQuery->where(function($query) {
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
+            });
+        }
+        
+        $gateways = $gatewaysQuery->get();
 
         // Check if request deposit accounts is enabled
         $isRequestDepositMode = setting('deposit_account_mode', 'features') === 'request_deposit_accounts';
@@ -92,6 +129,7 @@ class DepositController extends GatewayController
 
         // Check if the selected gateway is manual type and if request deposit accounts is enabled
         $gateway = DepositMethod::code($gatewayCode)->first();
+        
         if ($gateway && $gateway->type == \App\Enums\GatewayType::Manual->value) {
             if (setting('deposit_account_mode', 'features') === 'request_deposit_accounts') {
                 // Only check for payment deposit request if this method has custom bank details enabled
@@ -170,6 +208,8 @@ class DepositController extends GatewayController
             }
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+            
+            
             $amount = $input['amount'];
     //        dd($amount);
 
@@ -249,6 +289,14 @@ class DepositController extends GatewayController
                 ];
                 $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
                 $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+                try {
+                    $emails = getAttachedStaffAdminEmails($user->id);
+                    foreach ($emails as $email) {
+                        $this->mailNotify($email, 'manual_deposit_request', $shortcodes, true);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
                 $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
 
             }
@@ -445,6 +493,8 @@ class DepositController extends GatewayController
 
             $input = $request->all();
             $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+            
+            
             $amount = $voucher->amount;
 
             // Determine whether it's a forex account or a wallet

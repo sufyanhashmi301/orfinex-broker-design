@@ -212,6 +212,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
         Route::get('referral/history', [ReferralController::class, 'history'])->name('referral.history');
+        Route::post('referral/history/export', [ReferralController::class, 'exportHistory'])->name('referral.history.export');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
     //    Route::get('referral/advertisement-material', function () {

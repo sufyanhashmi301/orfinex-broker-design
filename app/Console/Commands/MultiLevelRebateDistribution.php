@@ -21,41 +21,26 @@ use App\Models\UserIbRuleLevelShare;
 use App\Models\Level;
 use App\Models\Transaction;
 use App\Services\WalletService;
-use App\Services\MT5DatabaseService;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use App\Facades\Txn\TxnFacade as Txn;
+use App\Services\IBTransactionService;
 
 class MultiLevelRebateDistribution extends Command
 {
     protected $signature = 'rebate:distribution';
     protected $description = 'Multi-Level IB Rebate Distribution';
 
-    protected MT5DatabaseService $mt5DatabaseService;
-
-
-    public function __construct(MT5DatabaseService $mt5DatabaseService)
-    {
-        parent::__construct();
-        $this->mt5DatabaseService = $mt5DatabaseService;
-    }
 
     public function handle()
     {
         try {
-            // Check MT5 database availability before processing
-            if (!$this->mt5DatabaseService->isConnectionAvailable()) {
-                $this->warn('MT5 database is currently unavailable. Skipping rebate distribution to prevent system blocking.');
-                Log::warning('Rebate distribution skipped due to MT5 database unavailability');
-                return 0; // Return success to prevent error escalation
-            }
-
             ReferralRelationship::with('referralLink')
-                ->chunkById(500, function ($referrals) {
+                ->chunkById(10, function ($referrals) {
                     foreach ($referrals as $referral) {
                         try {
                             ProcessReferralRebate::dispatch($referral->id);
@@ -75,7 +60,7 @@ class MultiLevelRebateDistribution extends Command
 
     public function processReferralRelationship($referral)
     {
-//        dd($referral->user);
+    //    dd($referral->user);
         $parentData = $this->getValidParent($referral->user);
 
         if (!$parentData) return;
@@ -96,25 +81,15 @@ class MultiLevelRebateDistribution extends Command
             ->get();
 
         foreach ($accounts as $account) {
-            try {
-                // Check MT5 database availability before processing each account
-                if (!$this->mt5DatabaseService->isConnectionAvailable()) {
-                    Log::info("MT5 database unavailable for account {$account->login}, skipping to prevent timeout");
-                    continue;
-                }
+            // dd($account);
+            $symbols = $this->getUserAssignedSymbols($parent, $account);
+            $lastDealTime = $this->getLastDeal($childUserId, $account->login);
+            // dd($lastDealTime);
+            $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
+        //    dd($deals);
 
-                $symbols = $this->getUserAssignedSymbols($parent, $account);
-                $lastDealTime = $this->getLastDeal($childUserId, $account->login);
-                $deals = $this->getMT5Deals($account->login, $lastDealTime, $symbols);
-//                dd($deals);
-
-                if (!$deals->isEmpty()) {
-                    $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
-                }
-            } catch (Throwable $e) {
-                Log::error("Error processing rebate for account {$account->login}: {$e->getMessage()}");
-                // Continue with next account instead of failing entire process
-                continue;
+            if (!$deals->isEmpty()) {
+                $this->saveAndDistributeDeals($deals, $childUserId, $referral, $parent, $level, $account);
             }
         }
     }
@@ -138,10 +113,10 @@ class MultiLevelRebateDistribution extends Command
                 'symbol' => $deal->Symbol,
                 'volume' => $deal->Volume,
                 'volume_closed' => $deal->VolumeClosed,
-                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
+                'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 8, RoundingMode::HALF_UP),
                 'time' => $deal->Time
             ]);
-
+// dd($metaDeal);
             $this->distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account);
         }
     }
@@ -149,6 +124,7 @@ class MultiLevelRebateDistribution extends Command
     protected function distributeRebate($metaDeal, $childUserId, $referral, $parent, $level, $account)
     {
         $distribution = $this->calculateRebate($metaDeal->symbol, $parent, $level, $account);
+        // dd($distribution);   
         if (empty($distribution)) return;
 
         $currentUser = $referral->referralLink->user->id;
@@ -166,58 +142,70 @@ class MultiLevelRebateDistribution extends Command
 
         $hierarchy = array_reverse($hierarchy);
         $childUser = User::find($childUserId);
-
+// dd($hierarchy);
         foreach ($hierarchy as $index => $userId) {
             $levelIndex = ++$index;
             if (!isset($distribution[$levelIndex]) || $distribution[$levelIndex] <= 0) continue;
 
             $share = $distribution[$levelIndex];
-            $amount = $share * $metaDeal->lot_share;
+            $amount = BigDecimal::of($share)->multipliedBy(BigDecimal::of($metaDeal->lot_share))->toFloat();
 
             $account = get_user_account($userId, AccountBalanceType::IB_WALLET);
             $walletId = $account->wallet_id;
             $description = "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login} of {$childUser->full_name}";
-
-            if (Transaction::isDuplicateIbBonus($userId, $childUserId, $description, $amount)) continue;
-
-            $transaction = Txn::new(
+// dd('sd');
+            // Check for duplicates in the correct period based on meta deal time
+            $dealPeriod = \App\Services\IBTransactionPeriodService::getCurrentPeriod($metaDeal->time);
+            if (IBTransactionService::isDuplicateInPeriod($userId, $childUserId, $description, $amount, $dealPeriod)) continue;
+            // Create transaction
+            $transaction = IBTransactionService::new(
                 $amount, 0, $amount, 'system',
                 $description,
                 TxnType::IbBonus, TxnStatus::Success, base_currency(),
                 $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
-                $description, $walletId, TxnTargetType::Wallet->value
+                'none', $walletId, TxnTargetType::Wallet->value, false, $metaDeal->time
             );
-
+// dd($transaction);
             $this->safeAddBalance($transaction);
         }
 
+        // C
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
+        // dd('s');
     }
 
     protected function safeAddBalance($transaction, $retries = 3)
     {
         for ($i = 0; $i < $retries; $i++) {
-            try {
+            // try {
                 DB::transaction(function () use ($transaction) {
                     $account = \App\Models\Account::where('wallet_id', $transaction->target_id)
                         ->lockForUpdate()
                         ->firstOrFail();
+                        // dd($account);
 
                     $wallet = new WalletService();
                     $ledgerBalance = $wallet->getLedgerBalance($account->id);
+                    // dd($ledgerBalance,$transaction);
                     $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
-
+// dd($ledgerBalance,$transaction);
                     if ($transaction->target_type == TxnTargetType::Wallet->value) {
-                        $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount));
+                    $account->amount = BigDecimal::of($account->amount)->plus(BigDecimal::of($transaction->amount))->toFloat();
                         $account->save();
+                        
+                        // Update user's ib_balance column
+                        DB::table('users')
+                            ->where('id', $transaction->user_id)
+                            ->increment('ib_balance', $transaction->amount);
+                        
                     }
                 });
                 return;
-            } catch (Throwable $e) {
-                if ($i === $retries - 1) throw $e;
-                usleep(100000); // wait 100ms before retry
-            }
+            // } catch (Throwable $e) {
+            //     if ($i === $retries - 1) throw $e;
+            //     usleep(100000); // wait 100ms before retry
+            // }
         }
     }
 
@@ -285,8 +273,19 @@ class MultiLevelRebateDistribution extends Command
 
     protected function getMT5Deals($login, $lastTime, $symbols)
     {
-        // Use the resilient MT5DatabaseService instead of direct DB connection
-        return $this->mt5DatabaseService->getMT5Deals($login, $lastTime, $symbols);
+        $table = 'mt5_deals_' . Carbon::now()->year;
+        //For Qorva
+//        $table = 'mt5_deals';
+
+        return DB::connection('mt5_db')
+            ->table($table)
+            ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
+            ->where('Login', $login)
+            ->whereIn('Symbol', $symbols)
+            ->where('Time', '>', $lastTime)
+            ->where('Volume', '>', 0)
+            ->whereColumn('Volume', 'VolumeClosed')
+            ->get();
     }
 
     protected function getValidParent($user)

@@ -49,6 +49,12 @@ class RealAccountExport implements FromQuery, WithHeadings, WithMapping
             $query->applyFilters($filters);
         }
 
+        // Enforce status if explicitly provided (guards against UI mismatch)
+        $status = $this->request->input('status', $this->request->get('status'));
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
         return $query->select('login', 'account_name', 'group', 'currency', 'leverage', 'balance', 'status');
     }
 

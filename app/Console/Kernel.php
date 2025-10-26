@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
     {
 
         // Dynamically schedule rebate distribution based on settings (in minutes)
-        $rebateMinutes = (int) setting('ib_distribution_time', 'features', 1);
+        $rebateMinutes = (int) setting('ib_distribution_time', 'features');
         $rebateMinutes = max(1, $rebateMinutes);
         $schedule->command('rebate:distribution')->cron("*/{$rebateMinutes} * * * *")->withoutOverlapping();
         // $schedule->command('rebate:distribution')->everyTenMinutes()->withoutOverlapping();

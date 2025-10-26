@@ -79,10 +79,10 @@
                 autoWidth: false,
                 ajax: "{{ route('admin.designations.index') }}",
                 columns: [
-                    {data: 'name', name: 'name',orderable : false},
-                    {data: 'parent_category', name: 'parent_category',orderable : false},
-                    {data: 'status', name: 'status',orderable : false},
-                    {data: 'action', name: 'action',orderable : false},
+                    {data: 'name', name: 'name', orderable : true},
+                    {data: 'parent_category', name: 'parent_category', orderable : false},
+                    {data: 'status', name: 'status', orderable : false},
+                    {data: 'action', name: 'action', orderable : false},
                 ]
             });
         })(jQuery);

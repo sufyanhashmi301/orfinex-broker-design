@@ -94,7 +94,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center p-4 text-slate-600 dark:text-slate-400">
+                                        <td colspan="6" class="table-td text-center">
                                             {{ __("No referrals found for the selected level.") }}
                                         </td>
                                     </tr>

@@ -146,9 +146,8 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit"
-                                    class="withdrawSubmitBtn btn w-full inline-flex justify-center btn-primary">
-                                    {{ __('Withdraw Money') }}
+                                <button type="submit" class="withdrawSubmitBtn btn w-full inline-flex justify-center btn-primary space-x-2" data-loading-text="Processing...">
+                                    <span>{{ __('Withdraw Money') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -312,8 +311,7 @@
                 success: function(response) {
                     if (response.status === 'success') {
                         $('#otpModal').modal('hide');
-                        $('.withdrawSubmitBtn').addClass('cursor-not-allowed light').attr('disabled',
-                            true);;
+
                         tNotify('success', response.message);
 
                         // Submit the form after OTP verification is successful
@@ -534,6 +532,15 @@
                 });
                 $("#gaInput").val(otp);
             }
+        });
+
+        $(document).on('submit', '#withdrawForm', function () {
+            const $form = $(this);
+            const $btn = $form.find('[type=submit]');
+
+            $btn.buttonLoading(true, {
+                text: '<span class="text-sm">Please wait...</span>'
+            });
         });
     </script>
 @endsection

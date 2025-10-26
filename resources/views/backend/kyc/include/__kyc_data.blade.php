@@ -30,33 +30,34 @@
         @php
             $kycComments = \App\Models\Comment::where('type','kyc')->where('status', true)->orderBy('title')->get(['id','title','description']);
         @endphp
-        <div class="input-area">
-            <label class="form-label" for="kyc-comment-select">
-                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __('Pick a template to prefill the message below') }}">
-                    {{ __('Comments') }}
-                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                </span>
-            </label>
-            <select id="kyc-comment-select" class="form-control select2 h-[42px]">
-                <option value="">{{ __('Select a comment') }}</option>
-                @forelse($kycComments as $comment)
-                    <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
-                @empty
-                    <option value="" disabled>{{ __('No active KYC comments') }}</option>
-                @endforelse
-            </select>
-            <p class="text-xs text-slate-400 mt-1">{{ __('Selecting a title will prefill the description. You can edit it further.') }}</p>
+        <div class="space-y-5">
+            <div class="input-area">
+                <label class="form-label" for="kyc-comment-select">
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __('Pick a template to prefill the message below') }}">
+                        {{ __('Comments') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
+                </label>
+                <select id="kyc-comment-select" class="form-control select2 h-[42px]">
+                    <option value="">{{ __('Select a comment') }}</option>
+                    @forelse($kycComments as $comment)
+                        <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
+                    @empty
+                        <option value="" disabled>{{ __('No active KYC comments') }}</option>
+                    @endforelse
+                </select>
+                <p class="text-xs text-slate-400 mt-1">{{ __('Selecting a title will prefill the description. You can edit it further.') }}</p>
+            </div>
+            <div class="input-area">
+                <label for="" class="form-label">
+                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail message of the KYC">
+                        {{ __('Detail Message') }}
+                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                    </span>
+                </label>
+                <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
+            </div>
         </div>
-        <div class="input-area">
-            <label for="" class="form-label">
-                <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="The detail message of the KYC">
-                    {{ __('Detail Message') }}
-                    <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                </span>
-            </label>
-            <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
-        </div>
-    
         <div class="action-btns text-right mt-10">
             @if($kycStatus < \App\Enums\KYCStatus::Level2->value)
             <button type="submit" name="approve" value="1" class="btn btn-dark inline-flex items-center justify-center mr-2">

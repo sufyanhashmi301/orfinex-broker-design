@@ -27,7 +27,7 @@
                 @endcan
             </div>
         </div>
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -52,6 +52,10 @@
                     </div>
                 </div>
             </div>
+            <div class="processingIndicator text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
 </div>
@@ -59,33 +63,37 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-referral-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+            var table = $('#user-referral-dataTable')
+                .on('processing.dt', function(e, settings, processing) {
+                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
+                }).DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    searching: false,
+                    lengthChange: false,
+                    info: true,
+                    order: [[0, 'desc']],
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:"
                     },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
-                columns: [
-                    {data: 'avatar', name: 'avatar'},
-                    {data: 'phone', name: 'phone'},
-                    {data: 'real_forex_accounts', name: 'real_forex_accounts'},
-                    {data: 'balance', name: 'balance'},
-                    {data: 'kyc', name: 'kyc'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
+                    processing: true,
+                    serverSide: true,
+                    autoWidth: false,
+                    ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
+                    columns: [
+                        {data: 'avatar', name: 'avatar', orderable: true},
+                        {data: 'phone', name: 'phone', orderable: false},
+                        {data: 'real_forex_accounts', name: 'real_forex_accounts', orderable: true},
+                        {data: 'balance', name: 'balance', orderable: true},
+                        {data: 'kyc', name: 'kyc', orderable: true},
+                        {data: 'status', name: 'status', orderable: true},
+                        {data: 'action', name: 'action', orderable: false, searchable: false},
+                    ]
             });
         })(jQuery);
 
@@ -120,7 +128,7 @@
             });
         }
 
-        initUserSelect('#countrySelect', $('#addReferralModal'));
+        initUserSelect('#userSelect', $('#addReferralModal'));
 
     </script>
 @endpush

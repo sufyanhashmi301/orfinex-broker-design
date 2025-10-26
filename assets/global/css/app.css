@@ -11355,6 +11355,49 @@ ul.custom-list ul li{
   top: 2px;
 }
 
+table.dataTable thead th.sorting,
+table.dataTable thead th.sorting_asc,
+table.dataTable thead th.sorting_desc {
+    cursor: pointer;
+    position: relative;
+}
+/* Neutral (both arrows) */
+table.dataTable thead th.sorting:before,
+table.dataTable thead th.sorting_asc:before,
+table.dataTable thead th.sorting_desc:before,
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block;
+  opacity: .3;
+  font-family: auto;
+}
+
+table.dataTable thead th.sorting:before,
+table.dataTable thead th.sorting_asc:before,
+table.dataTable thead th.sorting_desc:before {
+  right: 1em;
+  content: "↑";
+}
+
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+  right: .5em;
+  content: "↓";
+}
+
+table.dataTable thead th.sorting.sorting_asc:before {
+  opacity: 1;
+}
+
+table.dataTable thead th.sorting.sorting_desc:after {
+  opacity: 1;
+}
+
 .loginwrapper{
   display: flex;
   width: 100%;
@@ -13474,7 +13517,7 @@ ul.custom-list ul li{
   transition-duration: 500ms;
 }
 
-.sidebar-menu .sidebar-submenu > li > a::before{
+.sidebar-menu .sidebar-submenu > li > a::before, .sidebar-menu .sidebar-submenu > li.active > a.navItem::before {
   position: absolute;
   top: 12px;
   height: 8px;
@@ -13551,7 +13594,7 @@ ul.custom-list ul li{
   color: rgb(17 17 18 / var(--tw-text-opacity));
 }
 
-.sidebar-menu .sidebar-submenu > li > a.active::before{
+.sidebar-menu .sidebar-submenu > li > a.active::before, .sidebar-menu .sidebar-submenu > li.active > a.navItem::before{
   --tw-bg-opacity: 1;
   background-color: rgb(17 17 18 / var(--tw-bg-opacity));
   content: var(--tw-content);
@@ -13565,7 +13608,7 @@ ul.custom-list ul li{
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.dark .sidebar-menu .sidebar-submenu > li > a.active::before{
+.dark .sidebar-menu .sidebar-submenu > li > a.active::before, .dark .sidebar-menu .sidebar-submenu > li.active > a:hover::before{
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   content: var(--tw-content);
   --tw-bg-opacity: 1;
@@ -13577,14 +13620,14 @@ ul.custom-list ul li{
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.semiDark .sidebar-menu .sidebar-submenu > li > a.active::before{
+.semiDark .sidebar-menu .sidebar-submenu > li > a.active::before, .semiDark .sidebar-menu .sidebar-submenu > li.active > a:hover::before{
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   content: var(--tw-content);
   --tw-bg-opacity: 1;
   background-color: rgb(203 213 225 / var(--tw-bg-opacity));
 }
 
-.sidebar-menu > li.active .icon-arrow{
+.sidebar-menu > li.active > a.navItem .icon-arrow, .sidebar-menu > li.active > .sidebar-submenu > li.active > a.navItem .icon-arrow{
   --tw-rotate: 90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   background-color: rgb(160 174 192 / var(--tw-bg-opacity));

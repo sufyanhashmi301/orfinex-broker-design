@@ -106,6 +106,8 @@ class NotificationController extends Controller
                 ->addColumn('name', 'backend.push_notification.include.__name')
                 ->addColumn('status', 'backend.push_notification.include.__status')
                 ->addColumn('action', 'backend.push_notification.include.__action')
+                ->orderColumn('name', 'name $1')
+                ->orderColumn('status', 'status $1')
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }

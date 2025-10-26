@@ -66,7 +66,21 @@ class DepositController extends Controller
             'route' => route('admin.deposit.method.create', $type),
         ];
 
-        $depositMethods = DepositMethod::where('type', $type)->get();
+        $loggedInUser = auth('admin')->user();
+        $staffBranchIds = $loggedInUser->branches()->pluck('branches.id')->toArray();
+        
+        $depositMethodsQuery = DepositMethod::where('type', $type)->with('branches');
+        
+        // Apply branch filtering for non-Super-Admin staff
+        if (!$loggedInUser->hasRole('Super-Admin') && !empty($staffBranchIds)) {
+            $depositMethodsQuery->where(function($query) use ($staffBranchIds) {
+                $query->whereHas('branches', function($branchQuery) use ($staffBranchIds) {
+                    $branchQuery->whereIn('branch_id', $staffBranchIds);
+                })->orWhereDoesntHave('branches');
+            });
+        }
+        
+        $depositMethods = $depositMethodsQuery->get();
 
         return view('backend.deposit.method_list', compact('depositMethods', 'button', 'type'));
     }
@@ -76,8 +90,9 @@ class DepositController extends Controller
         $gateways = Gateway::where('status', true)->get();
         $rates_with_countries = Rate::with('country')->get();
         $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
+        $branches = \App\Models\Branch::where('status', 1)->get();
 
-        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled'));
+        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries', 'autoExchangeRatesEnabled', 'branches'));
     }
 
     public function methodStore(Request $request)
@@ -113,6 +128,14 @@ class DepositController extends Controller
             $methodCode = $gateway->gateway_code . '-' . strtolower($input['currency']);
         }
 
+        // Prevent creating duplicate auto methods with the same gateway + currency
+        if (($input['type'] ?? null) === 'auto' && isset($methodCode)) {
+            if (DepositMethod::where('gateway_code', $methodCode)->exists()) {
+                notify()->error(__('This automatic method for the selected gateway and currency already exists.'), 'Error');
+                return redirect()->back()->withInput();
+            }
+        }
+
         $data = [
             'logo' => isset($input['logo']) ? self::imageUploadTrait($input['logo']) : null,
             'name' => $input['name'],
@@ -129,12 +152,19 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
 
         $depositMethod = DepositMethod::create($data);
+        
+        // Sync branches if provided
+        if (!empty($input['branches'])) {
+            $depositMethod->branches()->sync($input['branches']);
+        }
+        
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
 
         return redirect()->route('admin.deposit.method.list', $depositMethod->type);
@@ -143,11 +173,13 @@ class DepositController extends Controller
     public function methodEdit($type)
     {
         $gateways = Gateway::where('status', true)->get();
-        $method = DepositMethod::find(\request('id'));
+        $method = DepositMethod::with('branches')->find(\request('id'));
         $supported_currencies = Gateway::find($method->gateway_id)->supported_currencies ?? [];
         $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
+        $branches = \App\Models\Branch::where('status', 1)->get();
+        $attachedBranches = $method->branches->pluck('id')->toArray();
 
-        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled'));
+        return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies', 'autoExchangeRatesEnabled', 'branches', 'attachedBranches'));
     }
 
     public function methodUpdate($id, Request $request)
@@ -209,6 +241,7 @@ class DepositController extends Controller
             'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
+            'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? $input['payment_details'] : null,
@@ -220,6 +253,14 @@ class DepositController extends Controller
         }
 
         $depositMethod->update($data);
+        
+        // Sync branches if provided
+        if (isset($input['branches'])) {
+            $depositMethod->branches()->sync($input['branches']);
+        } else {
+            $depositMethod->branches()->detach();
+        }
+        
         notify()->success($depositMethod->name . ' ' . __(' Method Updated'));
         return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
 
@@ -241,11 +282,32 @@ class DepositController extends Controller
         $data = Transaction::query()
             ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
             ->whereIn('type', [TxnType::ManualDeposit])
-            ->whereIn('user_id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('user_id', $accessibleUserIds);
 
         // Apply additional filters
         $data->applyFilters($filters);
+
+        // Select sortable projections for username, action_by and signed amount
+        $data = $data->select('transactions.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'transactions.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('admins')
+                    ->whereColumn('admins.id', 'transactions.action_by')
+                    ->selectRaw('MIN(admins.name)'),
+                'action_by_sort'
+            )
+            ->selectRaw("(
+                CASE
+                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                        THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                END
+            ) as signed_amount");
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -257,6 +319,17 @@ class DepositController extends Controller
             })
             ->addColumn('username', 'backend.transaction.include.__user')
             ->addColumn('action', 'backend.deposit.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('created_at', 'transactions.created_at $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('tnx', 'transactions.tnx $1')
+            ->orderColumn('target_id', 'transactions.target_id $1')
+            ->orderColumn('amount', 'signed_amount $1')
+            ->orderColumn('final_amount', 'signed_amount $1')
+            ->orderColumn('charge', 'transactions.charge $1')
+            ->orderColumn('method', 'transactions.method $1')
+            ->orderColumn('action_by', 'action_by_sort $1')
+            ->orderColumn('status', 'transactions.status $1')
             ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
             ->make(true);
     }
@@ -283,11 +356,32 @@ class DepositController extends Controller
                 $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Deposit);
             })
-            ->whereIn('user_id', $accessibleUserIds)
-            ->latest();
+            ->whereIn('user_id', $accessibleUserIds);
 
         // ✅ Apply filters (if any)
         $data->applyFilters($filters);
+
+        // Select sortable projections for username, action_by and signed final amount
+        $data = $data->select('transactions.*')
+            ->selectSub(
+                DB::table('users')
+                    ->whereColumn('users.id', 'transactions.user_id')
+                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                'username_sort'
+            )
+            ->selectSub(
+                DB::table('admins')
+                    ->whereColumn('admins.id', 'transactions.action_by')
+                    ->selectRaw('MIN(admins.name)'),
+                'action_by_sort'
+            )
+            ->selectRaw("(
+                CASE
+                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                        THEN -1 * CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                    ELSE CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                END
+            ) as signed_final_amount");
 
         return Datatables::of($data)
             ->addIndexColumn()
@@ -305,6 +399,17 @@ class DepositController extends Controller
             })
             ->addColumn('username', 'backend.transaction.include.__user')
             ->addColumn('action', 'backend.transaction.include.__action')
+            // Server-side ordering mappings
+            ->orderColumn('created_at', 'transactions.created_at $1')
+            ->orderColumn('username', 'username_sort $1')
+            ->orderColumn('tnx', 'transactions.tnx $1')
+            ->orderColumn('target_id', 'transactions.target_id $1')
+            ->orderColumn('final_amount', 'signed_final_amount $1')
+            ->orderColumn('amount', 'signed_final_amount $1')
+            ->orderColumn('method', 'transactions.method $1')
+            ->orderColumn('charge', 'transactions.charge $1')
+            ->orderColumn('action_by', 'action_by_sort $1')
+            ->orderColumn('status', 'transactions.status $1')
             ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
             ->make(true);
     }
@@ -441,13 +546,26 @@ class DepositController extends Controller
 //        dd($id);
         try {
             // Find the method by its ID and delete it
-            $method = DepositMethod::findOrFail($id);
+            $method = DepositMethod::with('branches')->findOrFail($id);
+            
+            // Check if method is associated with existing transactions
             if(Transaction::where('method',$method->gateway_code)->exists()){
                 notify()->error(__('This method is associated with existing transactions, and therefore cannot be deleted: :method', ['method' => $method->name]), 'Error');
                 return redirect()->back();
             }
+            
+            // Get branch count for logging
+            $branchCount = $method->branches->count();
+            $methodName = $method->name;
+            
+            // Delete the method (cascade will automatically delete branch relationships)
             $method->delete();
-            notify()->success('Successfully deleted method');
+            
+            $message = $branchCount > 0 
+                ? "Successfully deleted method '{$methodName}' and {$branchCount} branch assignment(s)"
+                : "Successfully deleted method '{$methodName}'";
+                
+            notify()->success($message);
 
             return redirect()->back();
         } catch (\Exception $e) {

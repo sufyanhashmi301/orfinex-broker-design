@@ -2,34 +2,36 @@
     <div class="card overflow-hidden mb-5">
         <div class="card-body py-1">
             <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-                <div class="bg-white dark:bg-secondary p-4">
-                    <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
-                            {{ __('Balance') }}
-                        </p>
-                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                            ${{ auth()->user()->totalForexBalance() }}
-                        </h6>
+                <div class="bg-white dark:bg-dark">
+                    <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                        <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
+                            {{ __('Total Balance') }}
+                        </div>
+                        <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                            {{ mt5_total_balance(auth()->user()->id) }}
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-secondary p-4">
-                    <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
-                            {{ __('Equity') }}
-                        </p>
-                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                            ${{ auth()->user()->totalForexEquity() }}
-                        </h6>
+
+                <div class="bg-white dark:bg-dark">
+                    <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                        <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
+                            {{ __('Current Equity') }}
+                        </div>
+                        <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                            {{ mt5_total_equity(auth()->user()->id) }}
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-secondary p-4">
-                    <div class="text-center space-y-2">
-                        <p class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
+
+                <div class="bg-white dark:bg-dark">
+                    <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                        <div class="text-slate-800 dark:text-slate-100 text-sm mb-1 font-medium">
                             {{ __('Wallet Balance') }}
-                        </p>
-                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                            {{ 0 }}
-                        </h6>
+                        </div>
+                        <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                            {{ user_balance() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -87,23 +89,27 @@
                             placeholder="{{ __('Email Address') }}"
                             @if ($user->email && !setting('customer_email_edit', 'customer_permission')) disabled @endif />
                     </div>
-                    
+
                     <div class="input-area relative phone-input-wrapper">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Phone') }}</label>
                         <input type="text" class="form-control w-full" name="phone" id="phone"
-                             value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"
-                             @if ($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif />
+                            value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"
+                            @if ($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">
-                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Change the country if the user has relocated">
+                            <span class="shift-Away inline-flex items-center gap-1"
+                                data-tippy-content="Change the country if the user has relocated">
                                 {{ __('Country') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                    class="text-[16px]"></iconify-icon>
                             </span>
                         </label>
-                        <select class="select2 form-control w-full" name="country" placeholder="Countries" @if ($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif>
-                            @foreach( getCountries() as $country)
-                                <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
+                        <select class="select2 form-control w-full" name="country" placeholder="Countries"
+                            @if ($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif>
+                            @foreach (getCountries() as $country)
+                                <option value="{{ $country['name'] }}" @selected(null != $user->country && in_array($country['name'], [$user->country]))>
+                                    {{ $country['name'] }}</option>
                             @endforeach
                         </select>
                     </div>

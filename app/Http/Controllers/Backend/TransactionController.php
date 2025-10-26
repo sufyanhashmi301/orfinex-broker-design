@@ -86,7 +86,7 @@ class TransactionController extends Controller
 
             // Apply filters (email, status, etc.)
             $baseQuery->applyFilters($filters);
-            $data = (clone $baseQuery)->latest();
+            $data = (clone $baseQuery);
             $summaryQuery = clone $baseQuery;
             $total = (clone $summaryQuery)->sum('amount');
 
@@ -95,8 +95,41 @@ class TransactionController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
+            // Prepare sortable computed columns
+            $data = $data->select('transactions.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'transactions.user_id')
+                        ->selectRaw("MIN(CONCAT(COALESCE(users.first_name,''),' ',COALESCE(users.last_name,'')))"),
+                    'username_sort'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->whereColumn('admins.id', 'transactions.action_by')
+                        ->selectRaw('MIN(admins.name)'),
+                    'action_by_sort'
+                )
+                ->selectRaw("(
+                    CASE
+                        WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                            THEN -1 * CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                        ELSE CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                    END
+                ) as signed_final_amount");
+
             return Datatables::of($data)
                 ->addIndexColumn()
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'transactions.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('description', 'transactions.description $1')
+                ->orderColumn('tnx', 'transactions.tnx $1')
+                ->orderColumn('type', 'transactions.type $1')
+                ->orderColumn('target_id', 'transactions.target_id $1')
+                ->orderColumn('final_amount', 'signed_final_amount $1')
+                ->orderColumn('method', 'transactions.method $1')
+                ->orderColumn('action_by', 'action_by_sort $1')
+                ->orderColumn('status', 'transactions.status $1')
                 ->addColumn('created_at', function ($row) {
                     return '<span class="text-nowrap">' . $row->created_at . '</span>';
                 })

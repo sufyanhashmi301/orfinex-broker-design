@@ -13,6 +13,7 @@ class DepositMethod extends Model
     protected $casts = [
         'country' => 'array',
         'is_custom_bank_details' => 'boolean',
+        'is_global' => 'boolean',
     ];
     protected $appends = [
         'gateway_logo',
@@ -21,6 +22,11 @@ class DepositMethod extends Model
     public function gateway(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Gateway::class, 'gateway_id');
+    }
+
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'deposit_method_branches', 'deposit_method_id', 'branch_id')->withTimestamps();
     }
 
     public function scopeCode($query, $code)

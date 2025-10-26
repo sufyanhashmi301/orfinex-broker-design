@@ -282,6 +282,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
     Route::post('paytm', 'paytmIpn')->name('paytm');
     Route::post('razorpay', 'razorpayIpn')->name('razorpay');
     Route::post('twocheckout', 'twocheckoutIpn')->name('twocheckout');
+    Route::post('jenapay', 'jenapayIpn')->name('jenapay');
 });
 
 //site others
@@ -412,6 +413,7 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
+Route::post('user/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 
 // Veriff KYC Routes
 Route::get('user/veriff/kyc', [\App\Http\Controllers\VeriffController::class, 'advanceKyc'])->name('user.kyc.veriff');

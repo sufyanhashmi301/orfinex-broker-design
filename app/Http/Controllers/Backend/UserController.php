@@ -51,6 +51,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Txn;
@@ -571,8 +572,17 @@ if (!empty($filters['staff_name'])) {
         if ($isPartOfMasterIb) {
             $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
 
-            foreach ($ibGroup->rebateRules as $rule) {
-                $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+            if ($ibGroup && $ibGroup->rebateRules) {
+                foreach ($ibGroup->rebateRules as $rule) {
+                    $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
+                }
+            } else {
+                // Log warning if IbGroup not found or has no rebate rules
+                if (!$ibGroup) {
+                    Log::warning("IbGroup not found for user {$user->id} with is_part_of_master_ib: {$isPartOfMasterIb}");
+                } elseif (!$ibGroup->rebateRules) {
+                    Log::warning("IbGroup {$ibGroup->id} has no rebate rules for user {$user->id}");
+                }
             }
 
         }
@@ -1994,6 +2004,34 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             if ($staff) {
                 $staff->users()->syncWithoutDetaching([$user->id]);
             }
+        }
+        // Send admin notification to configured user_site_email (supports multiple emails)
+        try {
+            $rawAdminEmails = (string) setting('user_site_email', 'global');
+            if (!empty($rawAdminEmails)) {
+                $creator = auth()->user();
+                $creatorFullName = trim(($creator->first_name ?? '') . ' ' . ($creator->last_name ?? '')) ?: ($creator->name ?? '');
+                $shortcodes = [
+                    '[[full_name]]' => $user->first_name . ' ' . $user->last_name,
+                    '[[email]]' => $user->email,
+                    '[[created_by_name]]' => $creatorFullName,
+                    '[[created_by_email]]' => $creator->email ?? '',
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $emails = collect(preg_split('/[;,]/', $rawAdminEmails))
+                    ->map(function ($e) { return trim($e); })
+                    ->filter(function ($e) { return !empty($e); })
+                    ->unique()
+                    ->values();
+
+                foreach ($emails as $email) {
+                    $this->mailNotify($email, 'admin_new_user_registered_system', $shortcodes);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send new user admin email: ' . $e->getMessage());
         }
          notify()->success('Customer created successfully', 'success');
         // Redirect to the user index with success message

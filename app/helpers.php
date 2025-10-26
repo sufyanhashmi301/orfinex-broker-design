@@ -798,6 +798,10 @@ if (!function_exists('gateway_info')) {
     {
         $info = Gateway::where('gateway_code', $code)->first();
 
+        if (!$info || !$info->credentials) {
+            return null;
+        }
+
         return json_decode($info->credentials);
     }
 }
@@ -2058,6 +2062,79 @@ if (!function_exists('getAccessibleUserIds')) {
 
         // Otherwise, return empty result
         return User::where('id', -1); // Always false condition
+    }
+}
+
+if (!function_exists('getAttachedStaffAdminEmails')) {
+    /**
+     * Get unique staff admin emails attached to the given user via staff_user pivot.
+     * @param int $userId
+     * @return \Illuminate\Support\Collection
+     */
+    function getAttachedStaffAdminEmails(int $userId)
+    {
+        return DB::table('staff_user')
+            ->join('admins', 'staff_user.staff_id', '=', 'admins.id')
+            ->where('staff_user.user_id', $userId)
+            ->pluck('admins.email')
+            ->filter()
+            ->unique()
+            ->values();
+    }
+}
+
+if (!function_exists('notify_attached_staff_admins')) {
+    /**
+     * Notify all staff admins attached to a user using a template code.
+     * Expects $notifier to provide mailNotify($email, $code, $shortcodes, $throwOnFailure).
+     * @param object $notifier Controller/service using NotifyTrait
+     * @param int $userId Target user id
+     * @param string $templateCode Email template code
+     * @param array $shortcodes Shortcodes for template replacement
+     * @param bool $throwOnFailure If true, rethrow on mail send failures
+     * @return int Number of emails attempted
+     */
+    function notify_attached_staff_admins($notifierOrUserId, int $userId = null, string $templateCode = '', array $shortcodes = [], bool $throwOnFailure = false): int
+    {
+        try {
+            // Backward-compatible signature handling
+            if (is_int($notifierOrUserId) && $userId === null) {
+                $userId = $notifierOrUserId;
+                $notifier = new class {
+                    use \App\Traits\NotifyTrait;
+                    public function send($email, $code, $shortcodes, $throwOnFailure) { return $this->mailNotify($email, $code, $shortcodes, $throwOnFailure); }
+                };
+            } else {
+                $notifier = $notifierOrUserId;
+            }
+
+            $emails = getAttachedStaffAdminEmails($userId);
+            Log::info('notify_attached_staff_admins', [
+                'user_id' => $userId,
+                'template' => $templateCode,
+                'count' => $emails->count(),
+            ]);
+
+            foreach ($emails as $email) {
+                if (method_exists($notifier, 'mailNotify')) {
+                    $notifier->mailNotify($email, $templateCode, $shortcodes, $throwOnFailure);
+                } elseif (method_exists($notifier, 'send')) {
+                    $notifier->send($email, $templateCode, $shortcodes, $throwOnFailure);
+                }
+            }
+
+            return $emails->count();
+        } catch (\Throwable $e) {
+            Log::warning('notify_attached_staff_admins_failed', [
+                'user_id' => $userId,
+                'template' => $templateCode,
+                'error' => $e->getMessage(),
+            ]);
+            if ($throwOnFailure) {
+                throw $e;
+            }
+            return 0;
+        }
     }
 }
 

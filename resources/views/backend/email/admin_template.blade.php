@@ -76,10 +76,11 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
+                order: [[0, 'asc']], // Default: Sort by name ascending
                 ajax: "{{ route('admin.email-template') }}",
                 columns: [
-                    {data: 'name', name: 'name'},
-                    {data: 'status', name: 'status'},
+                    {data: 'name', name: 'name', orderable: true},
+                    {data: 'status', name: 'status', orderable: true},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });

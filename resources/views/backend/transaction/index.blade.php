@@ -195,6 +195,8 @@
                 searching: false,
                 lengthChange: false,
                 info: true,
+                order: [[0, 'desc']],
+                
                 language: {
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -237,7 +239,7 @@
                     {data: 'method', name: 'method'},
                     {data: 'action_by', name: 'action_by'},
                     {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
 

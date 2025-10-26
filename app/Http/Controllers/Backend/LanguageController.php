@@ -38,13 +38,15 @@ class LanguageController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Language::orderBy('created_at', 'asc');
+            // Use query() for server-side processing - DO NOT use get()
+            $data = Language::query();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('name', 'backend.language.include.__name')
                 ->editColumn('status', 'backend.language.include.__status')
                 ->addColumn('action', 'backend.language.include.__action')
+                // orderColumn not needed for simple database columns
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }

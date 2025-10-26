@@ -63,11 +63,15 @@ class WithdrawController extends Controller
      */
     public function index()
     {
-        $accounts = WithdrawAccount::where('user_id', auth()->id())
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $accountsQuery = WithdrawAccount::where('user_id', $user->id)
             ->whereHas('method', function($query) {
                 $query->where('status', true);
-            })
-            ->get();
+            });
+            
+        $accounts = $accountsQuery->get();
 
         $withdrawAccountApproval = setting('withdraw_account_approval', 'withdraw_settings');
 
@@ -133,6 +137,8 @@ class WithdrawController extends Controller
             notify()->error($validator->errors()->first(), __('Error'));
             return redirect()->back();
         }
+        
+        // Validate that user has access to this withdraw method based on their branch
 
         $user = Auth::user();
         $withdrawAccountOtpEnabled = (bool) setting('withdraw_account_otp', 'withdraw_settings');
@@ -482,7 +488,14 @@ class WithdrawController extends Controller
                 if (!empty($adminEmail)) {
                     try { $this->mailNotify($adminEmail, 'withdraw_account_request', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
-
+                try {
+                    $emails = getAttachedStaffAdminEmails($user->id);
+                    foreach ($emails as $email) {
+                        $this->mailNotify($email, 'withdraw_account_request', $shortcodes, true);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
                 // Push notification to admin (only if a matching push template exists)
                 try { $this->pushNotify('withdraw_account_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw'); } catch (\Exception $e) { /* silently ignore */ }
             }
@@ -561,12 +574,48 @@ class WithdrawController extends Controller
      */
     public function create()
     {
-        $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function ($query) {
-                $query->whereJsonContains('country', auth()->user()->country)
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $withdrawMethodsQuery = WithdrawMethod::where('status', true)
+            ->with('branches')
+            ->where(function ($query) use ($user) {
+                $query->whereJsonContains('country', $user->country)
                     ->orWhereJsonContains('country', 'All');
-            })->get();
-
+            });
+            
+        // Apply branch filtering
+        if ($userBranchId) {
+            $withdrawMethodsQuery->where(function($query) use ($userBranchId) {
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
+            });
+        } else {
+            // User has no branch - show methods with no branch restrictions AND global methods
+            $withdrawMethodsQuery->where(function($query) {
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
+            });
+        }
+        
+        $withdrawMethods = $withdrawMethodsQuery->get();
 
         return view('frontend::withdraw.account.create', compact('withdrawMethods'));
     }
@@ -579,10 +628,47 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::where(function ($query) {
-            $query->whereJsonContains('country', auth()->user()->country)
-                ->orWhereJsonContains('country', 'All');
-        })->get();
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $withdrawMethodsQuery = WithdrawMethod::with('branches')
+            ->where(function ($query) use ($user) {
+                $query->whereJsonContains('country', $user->country)
+                    ->orWhereJsonContains('country', 'All');
+            });
+            
+        // Apply branch filtering
+        if ($userBranchId) {
+            $withdrawMethodsQuery->where(function($query) use ($userBranchId) {
+                // Non-global methods: show only if assigned to user's specific branch
+                $query->where(function($nonGlobalQuery) use ($userBranchId) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                })
+                // Global methods: show only if assigned to user's specific branch
+                ->orWhere(function($globalQuery) use ($userBranchId) {
+                    $globalQuery->where('is_global', true)
+                        ->whereHas('branches', function($specificBranch) use ($userBranchId) {
+                            $specificBranch->where('branch_id', $userBranchId);
+                        });
+                });
+            });
+        } else {
+            // User has no branch - show methods with no branch restrictions AND global methods
+            $withdrawMethodsQuery->where(function($query) {
+                // Non-global methods with no branch assignments
+                $query->where(function($nonGlobalQuery) {
+                    $nonGlobalQuery->where('is_global', false)
+                        ->whereDoesntHave('branches');
+                })
+                // All global methods (both with and without branch assignments)
+                ->orWhere('is_global', true);
+            });
+        }
+        
+        $withdrawMethods = $withdrawMethodsQuery->get();
         $withdrawAccount = WithdrawAccount::where('id', get_hash($id))
             ->where('user_id', auth()->user()->id)
             ->where('status', WithdrawAccount::STATUS_APPROVED)
@@ -615,6 +701,8 @@ class WithdrawController extends Controller
 
             return redirect()->back();
         }
+        
+        // Validate that user has access to this withdraw method based on their branch
 
         $input = $request->all();
 
@@ -1186,6 +1274,14 @@ class WithdrawController extends Controller
             // Send notifications
             $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
             $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
+            try {
+                $emails = getAttachedStaffAdminEmails($user->id);
+                foreach ($emails as $email) {
+                    $this->mailNotify($email, 'withdraw_request', $shortcodes, true);
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            }
             $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
             $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
@@ -1223,12 +1319,16 @@ class WithdrawController extends Controller
         public
         function withdraw()
         {
-            $accounts = WithdrawAccount::where('user_id', \Auth::id())
+            $user = auth()->user();
+            $userBranchId = getUserBranchId($user->id, $user);
+            
+            $accountsQuery = WithdrawAccount::where('user_id', $user->id)
                 ->where('status', WithdrawAccount::STATUS_APPROVED)
-                ->get();
-            $accounts = $accounts->reject(function ($value, $key) {
-                return !$value->method->status;
-            });
+                ->whereHas('method', function($query) {
+                    $query->where('status', true);
+                });
+                
+            $accounts = $accountsQuery->get();
             $forexAccounts = ForexAccount::with('schema')->traderType()
                 ->where('user_id', auth()->id())
                 ->where('account_type', 'real')

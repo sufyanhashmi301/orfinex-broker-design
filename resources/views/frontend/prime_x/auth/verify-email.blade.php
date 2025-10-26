@@ -9,6 +9,16 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm">
                 {{ __('To start using your account, we need to verify your email address. Please check your inbox for the verification email we just sent.') }}
             </p>
+            <div class="p-3 font-normal font-Inter text-sm rounded-md bg-warning-500 bg-opacity-[14%] mt-3">
+                <div class="flex items-start">
+                    <span class="font-medium">
+                        {{ __('Note: ') }}
+                    </span>
+                    <span class="text-slate-500 dark:text-slate-400">
+                        {{ __('some email providers may deliver this email to your Spam or Junk folder. Please check there if you do not see it in your inbox.') }}
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="text-center space-y-3 mb-5">
             @if (session('status') == 'invalid-code')
@@ -18,8 +28,8 @@
             @endif
             <form method="POST" action="{{ route('verification.verify.code') }}" class="space-y-4">
                 @csrf
-                <div class="fromGroup">
-                    <label class="block capitalize form-label">{{ __('Code') }}</label>
+                <div class="fromGroup text-left">
+                    <label class="block capitalize form-label">{{ __('Verification Code') }}</label>
                     <div class="relative ">
                         <input type="text" name="verification_code" class="form-control py-2 h-[48px]"
                             placeholder="{{ __('Enter 4 digits code!') }}" required>
@@ -32,31 +42,28 @@
         </div>
 
         @if (session('status') == 'verification-link-sent')
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
                 {{ __('A new verification link has been sent to the email address you provided during registration.') }}
             </div>
         @endif
 
         @if (session('error') || isset($emailError))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
                 {{ session('error') ?? $emailError }}
             </div>
         @endif
-        <div class="text-center space-y-3 mb-5">
-            <p class="dark:white text-sm font-semibold">
+        <div class="flex items-center justify-center text-sm mb-5">
+            <p class="mr-1 dark:white">
                 {{ __("Didn't receive the email?") }}
-            </p>
-            <p class="text-slate-500 dark:text-slate-400 text-sm">
-                {{ __('Click the button below to resend the verification code.') }}
             </p>
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
-                <button type="submit" class="btn btn-primary block w-full text-center mb-3">
-                    {{ __('Resend Verification Email') }}
+                <button type="submit" class="btn-link font-medium">
+                    {{ __('Resend Email') }}
                 </button>
             </form>
         </div>
-        <div class="text-center space-y-3">
+        <div class="text-center bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-3">
             <p class="dark:white text-sm font-semibold">
                 {{ __('Need Help?') }}
             </p>
@@ -93,7 +100,7 @@
                 </div>
             @endif
         </div>
-        <div class="flex justify-center font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
+        <div class="flex justify-center font-normal text-slate-500 dark:text-slate-400 mt-10 uppercase text-sm">
             {{ __('Not ready yet? ') }}
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

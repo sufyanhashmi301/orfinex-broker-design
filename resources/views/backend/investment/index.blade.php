@@ -13,9 +13,25 @@
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4
             class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            {{ __('All :type Accounts', ['type' => ucfirst($type)]) }}
+            @php
+                $statusMap = [
+                    'pending' => __('Pending'),
+                    'ongoing' => __('Approved'),
+                    'canceled' => __('Rejected'),
+                    'archive' => __('Archived'),
+                    'archived' => __('Archived'),
+                ];
+                $statusLabel = isset($status) && isset($statusMap[$status]) ? $statusMap[$status] : null;
+                $typeLabel = ucfirst($type);
+            @endphp
+            @if($statusLabel)
+                {{ __('All :status :type Accounts', ['status' => $statusLabel, 'type' => $typeLabel]) }}
+            @else
+                {{ __('All :type Accounts', ['type' => $typeLabel]) }}
+            @endif
         </h4>
     </div>
+    @if(!in_array(($status ?? ''), ['pending','canceled']))
     <div class="innerMenu card p-4 mb-5">
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 gap-x-2">
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
@@ -122,9 +138,11 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="card p-4 mb-5">
         <form id="filter-form" method="POST"
-            action="{{ route('admin.forex-accounts.export', ['type' => $type === 'real' ? 'real' : 'all']) }}">
+            action="{{ route('admin.forex-accounts.export', ['type' => $type === 'real' ? 'real' : 'demo']) }}">
+            <input type="hidden" name="status" value="{{ $status ?? '' }}">
             @csrf
             <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
                 <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
@@ -136,13 +154,7 @@
                         <input type="text" name="login" id="login" class="form-control h-full"
                             placeholder="Account Number">
                     </div>
-                    <div class="flex-1 input-area relative">
-                        <select name="status" class="form-control h-full" id="status">
-                            <option value="">Status</option>
-                            <option value="ongoing">active</option>
-                            <option value="archive">archive</option>
-                        </select>
-                    </div>
+                    <input type="hidden" name="status" id="status" value="{{ $status ?? '' }}">
                     <div class="flex-1 input-area relative">
                         <input type="date" name="created_at" id="created_at" class="form-control h-full"
                             placeholder="Created At">
@@ -159,7 +171,7 @@
                     </div>
                     @can('accounts-export')
                         <div class="input-area relative">
-                            <button type="export"
+                            <button type="submit"
                                 class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                                 <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
                                     icon="lets-icons:export-fill"></iconify-icon>
@@ -189,12 +201,16 @@
                             id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Account Number') }}</th>
+                                    @if(!in_array(($status ?? ''), ['pending','canceled']))
+                                        <th scope="col" class="table-th">{{ __('Account Number') }}</th>
+                                    @endif
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Group') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    @if(!in_array(($status ?? ''), ['pending','canceled']))
+                                        <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    @endif
                                     <th scope="col" class="table-th">{{ __('Agent/IB Number') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Created At') }}</th>
@@ -261,6 +277,72 @@
     <!-- Modal for Demo deposit -->
     @include('backend.investment.modal.__deposit_demo_account')
 
+    @php
+        $accountComments = \App\Models\Comment::where('type', 'accounts')->where('status', true)->orderBy('title')->get(['id','title','description']);
+    @endphp
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="accountActionModal" tabindex="-1" aria-labelledby="accountActionModal" aria-hidden="true">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-2xl w-full pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="relative bg-white rounded-lg shadow dark:bg-dark">
+                    <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
+                        <h3 class="text-xl font-medium dark:text-white capitalize">{{ __('Account Action') }}</h3>
+                        <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                            <svg aria-hidden="true" class="w-5 h-5 fill-black dark:fill-white" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">{{ __('Close modal') }}</span>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <form method="post" onsubmit="return false;">
+                            @csrf
+                            <input type="hidden" id="account-action-login-id" value="">
+                            <input type="hidden" id="account-action-id" value="">
+                            <div class="space-y-5">
+                                <ul class="account-details-list h-full">
+                                    <li class="flex items-baseline relative overflow-hidden py-3">
+                                        <span class="font-medium dark:text-white">{{ __('User') }}</span>
+                                        <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                        <span class="ml-auto dark:text-white" id="account-action-username">-</span>
+                                    </li>
+                                    <li class="flex items-baseline relative overflow-hidden py-3">
+                                        <span class="font-medium dark:text-white">{{ __('Account Type') }}</span>
+                                        <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                        <span class="ml-auto dark:text-white" id="account-action-type">-</span>
+                                    </li>
+                                    <li class="flex items-baseline relative overflow-hidden py-3">
+                                        <span class="font-medium dark:text-white">{{ __('Group') }}</span>
+                                        <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                        <span class="ml-auto dark:text-white" id="account-action-group">-</span>
+                                    </li>
+                                </ul>
+                                
+                                <div class="input-area">
+                                    <label class="form-label" for="account-comment-select">{{ __('Comments') }}</label>
+                                    <select id="account-comment-select" class="form-control select2 h-[42px]">
+                                        <option value="">{{ __('Select a comment') }}</option>
+                                        @forelse($accountComments as $comment)
+                                            <option value="{{ $comment->id }}" data-description='@json($comment->description)'>{{ $comment->title }}</option>
+                                        @empty
+                                            <option value="" disabled>{{ __('No active account comments') }}</option>
+                                        @endforelse
+                                    </select>
+                                    <p class="text-xs text-slate-400 mt-1">{{ __('Selecting a title will prefill the description. You can edit it further.') }}</p>
+                                </div>
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Detail Message') }}</label>
+                                    <textarea id="account-comment-message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}"></textarea>
+                                </div>
+                            </div>
+                            <div class="action-btns text-right mt-10">
+                                <button type="button" class="btn btn-dark inline-flex items-center justify-center mr-2 approve-account-modal">{{ __('Approve') }}</button>
+                                <button type="button" class="btn btn-danger inline-flex items-center justify-center reject-account-modal">{{ __('Reject') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for Account rename -->
     @include('backend.investment.modal.__account_rename')
 
@@ -291,6 +373,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
+                    order: [[0, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -313,10 +396,13 @@
                             d.tag = $('#tag').val();
                         }
                     },
-                    columns: [{
+                    columns: [
+                        @if(!in_array(($status ?? ''), ['pending','canceled']))
+                        {
                             data: 'login',
                             name: 'login'
                         },
+                        @endif
                         {
                             data: 'username',
                             name: 'username'
@@ -333,10 +419,12 @@
                             data: 'leverage',
                             name: 'leverage'
                         },
+                        @if(!in_array(($status ?? ''), ['pending','canceled']))
                         {
                             data: 'balance',
                             name: 'balance'
                         },
+                        @endif
                         {
                             data: 'ib_number',
                             name: 'ib_number'
@@ -351,7 +439,9 @@
                         },
                         {
                             data: 'action',
-                            name: 'action'
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         },
                     ]
                 });

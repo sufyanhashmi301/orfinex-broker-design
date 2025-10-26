@@ -32,13 +32,13 @@
                             <textarea name="rejection_reason" id="rejection_reason" class="form-control" rows="4" required placeholder="Please provide a reason for rejecting this request..."></textarea>
                         </div>
                     </form>
-                    <div class="text-right pt-3">
-                        <button type="submit" form="rejectForm" class="btn btn-danger inline-flex items-center justify-center mr-2" id="rejectSubmitBtn">
+                    <div class="text-right pt-10">
+                        <button type="submit" form="rejectForm" class="btn btn-primary inline-flex items-center justify-center mr-2" id="rejectSubmitBtn">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x" id="rejectIcon"></iconify-icon>
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 hidden spining-icon" icon="lucide:loader" id="rejectLoader"></iconify-icon>
                             <span id="rejectText">{{ __('Reject Request') }}</span>
                         </button>
-                        <button type="button" class="btn btn-secondary inline-flex items-center justify-center" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                             {{ __('Cancel') }}
                         </button>

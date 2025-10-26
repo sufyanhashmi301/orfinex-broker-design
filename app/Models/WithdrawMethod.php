@@ -12,11 +12,17 @@ class WithdrawMethod extends Model
     protected $guarded = ['id'];
     protected $casts = [
         'country' => 'array',
+        'is_global' => 'boolean',
     ];
 
     public function gateway(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Gateway::class, 'gateway_id');
+    }
+
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'withdraw_method_branches', 'withdraw_method_id', 'branch_id')->withTimestamps();
     }
     public function getCountryAttribute($value)
     {

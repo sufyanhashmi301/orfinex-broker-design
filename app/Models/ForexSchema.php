@@ -89,6 +89,7 @@ class ForexSchema extends Model
         'account_category_id',
 		'demo_deposit_amount',
 		'is_update_trading_password',
+		'is_update_investor_password',
 	];
 
     // App\Models\ForexSchema.php

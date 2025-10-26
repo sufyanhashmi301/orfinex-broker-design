@@ -47,7 +47,7 @@
                             <input type="hidden"  name="message_body" value="{{ str_replace(['<', '>'], ['{', '}'], $template->message_body) }}">
                             <p class="paragraph text-sm mb-0 mt-2">
                                 <iconify-icon icon="lucide:alert-triangle"></iconify-icon>{{ __('The Shortcuts you can use') }}
-                                <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
+                                <strong>{{ implode(", ", json_decode($template->short_codes, true) ?? []) }}</strong>
                             </p>
                         </div>
                     </div>

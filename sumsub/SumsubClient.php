@@ -66,9 +66,9 @@ class SumsubClient
         return $response->header('X-Image-Id')[0] ?? '';
     }
 
-    public function getApplicant(string $applicantId): array
+    public function getApplicantStatus(string $applicantId): array
     {
-        $url = '/resources/applicants/' . urlencode($applicantId);
+        $url = '/resources/applicants/' . urlencode($applicantId) . '/requiredIdDocsStatus';
 
         $response = Http::withHeaders([
             'X-App-Token' => $this->appToken,
@@ -79,8 +79,7 @@ class SumsubClient
         return $this->parseBody($response);
     }
 
-
-    public function getAccessToken(string $externalUserId, string $levelName): array
+    public function lgetAccessToken(string $externalUserId, string $levelName): array
     {
         $url = '/resources/accessTokens?' . http_build_query(['userId' => $externalUserId, 'levelName' => $levelName]);
 

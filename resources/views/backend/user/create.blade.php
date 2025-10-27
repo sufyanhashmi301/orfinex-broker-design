@@ -400,6 +400,9 @@
         </div>
     </form>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
+@endsection
 @section('script')
 <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
 <script>
@@ -413,18 +416,22 @@
             const phoneInput = document.querySelector("#phone");
             phoneIti = window.intlTelInput(phoneInput, {
                 initialCountry: "ae", // Set UAE as initial country
+                separateDialCode: true,
                 showSelectedDialCode: true,
+                formatOnDisplay: true,
+                autoPlaceholder: 'polite',
                 utilsScript: "{{ asset('frontend/js/utils.js') }}",
             });
-            
-            // No syncing from phone country to country select to keep fields independent
-            
-            // Check if there's an old country value (validation error) and set the phone input accordingly
+            // Preserve previous selection after validation error
+            const oldPhone = '{{ old("phone") }}';
             const oldCountry = '{{ old("country") }}';
-            if (oldCountry) {
+
+            if (oldPhone) {
+                try { phoneIti.setNumber(oldPhone); } catch(e) {}
+            } else if (oldCountry) {
                 // Extract country name from old value (format: "Country Name:+123")
                 const countryName = oldCountry.split(':')[0];
-                
+
                 // Map country names to ISO codes for intlTelInput
                 const countryCodeMap = {
                     'Afghanistan': 'af', 'Albania': 'al', 'Algeria': 'dz', 'Andorra': 'ad', 'Angola': 'ao',
@@ -469,7 +476,7 @@
                     'Uruguay': 'uy', 'Uzbekistan': 'uz', 'Venezuela': 've', 'Vietnam': 'vn', 'Yemen': 'ye',
                     'Zambia': 'zm', 'Zimbabwe': 'zw'
                 };
-                
+
                 const countryCode = countryCodeMap[countryName];
                 if (countryCode) {
                     phoneIti.setCountry(countryCode);

@@ -1774,7 +1774,7 @@ return [
                 'name' => 'ib_distribution_time',
                 'label' => 'IB Distribution Time (in minutes)',
                 'rules' => 'required|integer|min:1',  // Validation rules
-                'value' => 1,  // Default value (1 minutes)
+                'value' => 5,  // Default value (1 minutes)
                 'attributes' => [
                     'inputmode' => 'numeric',  // Shows numeric keyboard on mobile
                     'pattern' => '[1-9]*',     // HTML5 pattern for numbers only

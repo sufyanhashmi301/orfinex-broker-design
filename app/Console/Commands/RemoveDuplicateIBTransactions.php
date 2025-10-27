@@ -155,7 +155,7 @@ class RemoveDuplicateIBTransactions extends Command
                 
                 DB::commit();
                 
-                Log::info("Removed {$deleted} duplicate transactions for receiver user {$receiverUserId}, deducted {$actualDeducted} from wallet");
+                // Log::info("Removed {$deleted} duplicate transactions for receiver user {$receiverUserId}, deducted {$actualDeducted} from wallet");
                 
             } catch (Throwable $e) {
                 DB::rollBack();
@@ -214,7 +214,7 @@ class RemoveDuplicateIBTransactions extends Command
             }
             
             
-            Log::info("Deducted {$actualDeductAmount} from user {$userId} IB wallet. New balance: {$newBalance}");
+            // Log::info("Deducted {$actualDeductAmount} from user {$userId} IB wallet. New balance: {$newBalance}");
         }
         
         // Return the actual amount deducted for tracking

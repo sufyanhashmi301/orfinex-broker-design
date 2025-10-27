@@ -31,7 +31,7 @@
                                 </span>
                             </label>
                             <div class="relative ">
-                                <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2" data-placeholder="Select User"></select>
+                                <select name="user_id" id="userSelect" class="form-control py-2 h-[48px] w-full mt-2" data-placeholder="Select User"></select>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">

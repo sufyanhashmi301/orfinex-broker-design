@@ -10,7 +10,6 @@ use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -60,23 +59,6 @@ class PaymentDepositController extends Controller
             abort(404, 'Payment deposit requests are not available.');
         }
         
-        // Rate limiting - 3 attempts per hour per user
-        $key = 'payment-deposit-request:' . auth()->id();
-        
-        if (RateLimiter::tooManyAttempts($key, 3)) {
-            $seconds = RateLimiter::availableIn($key);
-            
-            Log::warning('Payment deposit request rate limit exceeded', [
-                'user_id' => auth()->id(),
-                'ip' => $request->ip(),
-                'available_in' => $seconds
-            ]);
-            
-            throw ValidationException::withMessages([
-                'rate_limit' => "Too many payment deposit requests. Please try again in " . 
-                    gmdate('H:i:s', $seconds) . "."
-            ]);
-        }
 
         DB::beginTransaction();
         
@@ -90,7 +72,6 @@ class PaymentDepositController extends Controller
 
             if ($pendingRequest) {
                 DB::rollback();
-                RateLimiter::hit($key, 3600);
                 
                 throw ValidationException::withMessages([
                     'pending_request' => 'You already have a pending payment deposit request. Please wait for admin review.'
@@ -105,7 +86,6 @@ class PaymentDepositController extends Controller
             
             if ($validator->fails()) {
                 DB::rollback();
-                RateLimiter::hit($key, 3600);
                 
                 Log::warning('Payment deposit request validation failed', [
                     'user_id' => auth()->id(),
@@ -132,9 +112,6 @@ class PaymentDepositController extends Controller
 
             DB::commit();
             
-            // Clear rate limiter on successful submission
-            RateLimiter::clear($key);
-            
             Log::info('Payment deposit request submitted successfully', [
                 'user_id' => $user->id,
                 'request_id' => $depositRequest->id,
@@ -152,7 +129,6 @@ class PaymentDepositController extends Controller
             throw $e;
         } catch (\Exception $e) {
             DB::rollback();
-            RateLimiter::hit($key, 3600);
             
             Log::error('Payment deposit request submission failed', [
                 'user_id' => auth()->id(),

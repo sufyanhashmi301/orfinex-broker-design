@@ -40,7 +40,7 @@ class MultiLevelRebateDistribution extends Command
     {
         try {
             ReferralRelationship::with('referralLink')
-                ->chunkById(10, function ($referrals) {
+                ->chunkById(200, function ($referrals) {
                     foreach ($referrals as $referral) {
                         try {
                             ProcessReferralRebate::dispatch($referral->id);

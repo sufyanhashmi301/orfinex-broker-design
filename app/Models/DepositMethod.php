@@ -13,6 +13,7 @@ class DepositMethod extends Model
     protected $casts = [
         'country' => 'array',
         'is_custom_bank_details' => 'boolean',
+        'is_global' => 'boolean',
     ];
     protected $appends = [
         'gateway_logo',

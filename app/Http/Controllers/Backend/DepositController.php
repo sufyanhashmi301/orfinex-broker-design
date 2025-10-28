@@ -48,7 +48,8 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:deposit-list', ['only' => ['pending', 'history']]);
+        // Allow users with deposit-list or deposit-add to access history (used by Add Deposit page)
+        $this->middleware('permission:deposit-list|deposit-add', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
         $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
@@ -342,7 +343,7 @@ class DepositController extends Controller
     public function history(Request $request)
 {
     $loggedInUser = auth()->user();
-    $filters = $request->only(['email', 'status', 'created_at']);
+        $filters = $request->only(['email', 'status', 'created_at']);
 
     if ($request->ajax()) {
         // ✅ Get accessible user IDs using the helper
@@ -355,6 +356,14 @@ class DepositController extends Controller
                     ->orWhere('type', TxnType::Deposit);
             })
             ->whereIn('user_id', $accessibleUserIds);
+
+            // ✅ Filter by selected user from Add Deposit (hashed id)
+            if ($request->filled('user_id')) {
+                $selectedUserId = get_hash($request->input('user_id'));
+                if (!empty($selectedUserId)) {
+                    $data->where('user_id', $selectedUserId);
+                }
+            }
 
         // ✅ Apply filters (if any)
         $data->applyFilters($filters);
@@ -585,14 +594,15 @@ class DepositController extends Controller
         ->whereIn('id', $accessibleUserIds)
         ->get();
 
-    $forexAccounts = ForexAccount::with('schema')
+        $forexAccounts = ForexAccount::with('schema')
         ->traderType()
         ->where('account_type', 'real')
         ->where('status', ForexAccountStatus::Ongoing)
         ->orderBy('id', 'desc')
         ->get();
 
-    return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
+        $currency = setting('site_currency', 'global');
+        return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts', 'currency'));
 }
 
     public function getUserAccounts($userId)

@@ -373,6 +373,14 @@ class WithdrawController extends Controller
                 $query->whereIn('user_id', $userIds);
             });
 
+            // Filter by selected user (hashed id from Add Withdraw)
+            if ($request->filled('user_id')) {
+                $selectedUserId = get_hash($request->input('user_id'));
+                if (!empty($selectedUserId)) {
+                    $data->where('user_id', $selectedUserId);
+                }
+            }
+
 
             // Apply additional filters if any
             $data = $data->applyFilters($filters);

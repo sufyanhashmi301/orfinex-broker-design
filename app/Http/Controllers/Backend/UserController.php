@@ -557,37 +557,195 @@ if (!empty($filters['staff_name'])) {
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $globalSchemas = ForexSchema::active()
-            ->traderType()
-            ->where('is_global', 1)
-            ->get();
+        // Get user's branch assignment
+        $userBranchId = getUserBranchId($user->id, $user);
 
-        $userSchemas = ForexSchema::active()
-            ->traderType()
-            ->relevantForUser($user->country, $tagNames)
-            ->get();
+        // Base query with top-level branch filter and trader type
+        $baseQuery = ForexSchema::active()->traderType();
 
+        if ($userBranchId) {
+            // Specific branch: assigned to that branch or explicitly global
+            $baseQuery->where(function($query) use ($userBranchId) {
+                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                    $branchQuery->where('branch_id', $userBranchId);
+                })->orWhere('is_global', 1);
+            });
+        } else {
+            // No branch: only universal (no branch) or explicitly global
+            $baseQuery->where(function($query) {
+                $query->whereDoesntHave('branches')->orWhere('is_global', 1);
+            });
+        }
+
+        // Settings controlling visibility of global accounts
+        $showGlobalByCountryAndTags = setting('show_global_accounts_with_country_tags', 'account_type_settings');
+        $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
+        $allowGlobalAny = $showGlobalByCountryAndTags || $showGlobalWithIbRebateRules;
+
+        // Prepare schemas result
         $schemas = collect();
 
-        if ($isPartOfMasterIb) {
-            $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
+        // Check if user matches any country/tag based non-global schema
+        $matchesCountryOrTags = $baseQuery->clone()
+            ->where('account_category_id', '!=', 1)
+            ->where(function($query) use ($user, $tagNames) {
+                $query->relevantForUser($user->country, $tagNames);
+            })
+            ->exists();
 
-            if ($ibGroup && $ibGroup->rebateRules) {
-                foreach ($ibGroup->rebateRules as $rule) {
-                    $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
-                }
+        // Non-IB user handling
+        if (!$isPartOfMasterIb) {
+            if (!$matchesCountryOrTags) {
+                // Show all global-category accounts (respecting top-level branch filter)
+                $schemas = $baseQuery->clone()
+                    ->where('account_category_id', 1)
+                    ->get()
+                    ->unique('id')
+                    ->sortBy('priority')
+                    ->values();
             } else {
-                // Log warning if IbGroup not found or has no rebate rules
-                if (!$ibGroup) {
-                    Log::warning("IbGroup not found for user {$user->id} with is_part_of_master_ib: {$isPartOfMasterIb}");
-                } elseif (!$ibGroup->rebateRules) {
-                    Log::warning("IbGroup {$ibGroup->id} has no rebate rules for user {$user->id}");
+                // Composite filter for non-IB users
+                $schemas = $baseQuery
+                    ->where(function($query) use ($user, $tagNames, $allowGlobalAny) {
+                        if ($allowGlobalAny) {
+                            $query->where(function($q) use ($user, $tagNames) {
+                                $q->where('account_category_id', 1)
+                                  ->where(function($globalMatch) use ($user, $tagNames) {
+                                      $globalMatch
+                                          ->where(function($matchQuery) use ($user, $tagNames) {
+                                              $matchQuery->relevantForUser($user->country, $tagNames);
+                                          })
+                                          ->orWhereNull('country')
+                                          ->orWhereJsonLength('country', 0)
+                                          ->orWhereNull('tags')
+                                          ->orWhereJsonLength('tags', 0);
+                                  });
+                            })
+                            ->orWhere(function($subQuery) use ($user, $tagNames) {
+                                $subQuery->where('account_category_id', '!=', 1)
+                                        ->where(function($matchQuery) use ($user, $tagNames) {
+                                            $matchQuery->relevantForUser($user->country, $tagNames);
+                                        });
+                            });
+                        } else {
+                            $query->where(function($subQuery) use ($user, $tagNames) {
+                                $subQuery->where('account_category_id', '!=', 1)
+                                        ->where(function($matchQuery) use ($user, $tagNames) {
+                                            $matchQuery->relevantForUser($user->country, $tagNames);
+                                        });
+                            });
+                        }
+                        // Always include schemas explicitly marked as global
+                        $query->orWhere('is_global', 1);
+                    })
+                    ->get()
+                    ->unique('id')
+                    ->sortBy('priority')
+                    ->values();
+            }
+        }
+
+        // IB-specific handling
+        $globalSchemasFromRules = collect();
+        $globalSchemasFromSetting = collect();
+        $hasIbRuleSchemas = false;
+
+        if ($isPartOfMasterIb) {
+            $ibGroup = IbGroup::with(['rebateRules.forexSchemas' => function($query) {
+                $query->active()->traderType();
+            }])->find($isPartOfMasterIb);
+
+            if ($ibGroup) {
+                $allowGlobalFromIbRules = (bool) $showGlobalWithIbRebateRules && (bool) $ibGroup->is_global_account;
+
+                foreach ($ibGroup->rebateRules as $rule) {
+                    $ruleSchemas = $rule->forexSchemas()
+                        ->where('status', true)
+                        ->traderType()
+                        ->active();
+
+                    if ($userBranchId) {
+                        $ruleSchemas->where(function($query) use ($userBranchId) {
+                            $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                                $branchQuery->where('branch_id', $userBranchId);
+                            })->orWhere('is_global', 1);
+                        });
+                    } else {
+                        $ruleSchemas->where(function($query) {
+                            $query->whereDoesntHave('branches')->orWhere('is_global', 1);
+                        });
+                    }
+
+                    $ruleSchemas = $ruleSchemas->get();
+
+                    if ($ruleSchemas->count() > 0) {
+                        $hasIbRuleSchemas = true;
+                    }
+
+                    if (!$allowGlobalFromIbRules) {
+                        $ruleSchemas = $ruleSchemas->filter(function ($schema) {
+                            return ($schema->is_global == 1) || ($schema->account_category_id != 1);
+                        });
+                    }
+
+                    $schemas = $schemas->merge($ruleSchemas);
+
+                    if ($allowGlobalFromIbRules) {
+                        $globalSchemasFromRules = $globalSchemasFromRules->merge(
+                            $ruleSchemas->where('account_category_id', 1)
+                        );
+                    }
+                }
+
+                if ($allowGlobalFromIbRules) {
+                    $globalSchemasFromSetting = $baseQuery->clone()
+                        ->where('account_category_id', 1)
+                        ->where(function($globalMatch) use ($user, $tagNames) {
+                            $globalMatch
+                                ->where(function($matchQuery) use ($user, $tagNames) {
+                                    $matchQuery->relevantForUser($user->country, $tagNames);
+                                })
+                                ->orWhereNull('country')
+                                ->orWhereJsonLength('country', 0)
+                                ->orWhereNull('tags')
+                                ->orWhereJsonLength('tags', 0);
+                        })
+                        ->whereNotIn('id', $globalSchemasFromRules->pluck('id'))
+                        ->get();
                 }
             }
 
+            // Always include schemas explicitly marked as global
+            $alwaysGlobalSchemas = $baseQuery->clone()
+                ->where('is_global', 1)
+                ->get();
+            $schemas = $schemas->merge($alwaysGlobalSchemas);
         }
 
-        $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
+        if ($isPartOfMasterIb) {
+            $existingSchemaIds = $schemas->merge($globalSchemasFromSetting)->pluck('id')->toArray();
+
+            $additionalSchemas = $baseQuery->clone()
+                ->where('account_category_id', '!=', 1)
+                ->whereNotIn('id', $existingSchemaIds)
+                ->where(function($query) use ($user, $tagNames) {
+                    $query->relevantForUser($user->country, $tagNames);
+                })
+                ->get();
+
+            $schemas = $schemas->merge($additionalSchemas);
+        }
+
+        if ($isPartOfMasterIb && !$hasIbRuleSchemas && !$matchesCountryOrTags) {
+            if (!$allowGlobalFromIbRules) {
+                $schemas = $baseQuery->clone()
+                    ->where('is_global', 1)
+                    ->get();
+                $globalSchemasFromSetting = collect();
+            }
+        }
+
+        $schemas = $schemas->merge($globalSchemasFromSetting)
             ->unique('id')
             ->sortBy('priority')
             ->values();

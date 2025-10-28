@@ -124,7 +124,7 @@
                                                         class="badge badge-secondary mr-1 mb-1">{{ $branch->name }}</span>
                                                 @endforeach
                                             @else
-                                                <span class="text-slate-500">{{ __('All Branches') }}</span>
+                                                <span class="text-slate-500">{{ __('N/A') }}</span>
                                             @endif
                                         </td>
                                         <td class="table-td">

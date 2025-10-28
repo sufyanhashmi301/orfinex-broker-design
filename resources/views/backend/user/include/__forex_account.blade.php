@@ -39,6 +39,7 @@
                                     <option value="{{$plan->id}}"
                                             data-is-real-islamic="{{$plan->is_real_islamic}}"
                                             data-is-demo-islamic="{{$plan->is_demo_islamic}}"
+                                            data-is-update-investor-password="{{$plan->is_update_investor_password}}"
                                             data-first-min-deposit="{{$plan->first_min_deposit}}"
                                             data-leverage="{{$plan->leverage}}">
                                         {{$plan->title}}
@@ -91,17 +92,40 @@
                             </label>
                             <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Main Password') }}" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
                             <ul>
-                                <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-admin-main">
                                     {{ __('Use from 8 to 20 characters') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-admin-main">
                                     {{ __('Use both uppercase and lowercase letters') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-admin-main">
                                     {{ __('At least one number') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-admin-main">
                                     {{ __('At least one special character (!@#$%^&*(),-.?":{}|<>)') }}
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="input-area" id="investor-password-wrapper" style="display:none;">
+                            <label class="form-label" for="enter-investor-password">
+                                {{ __('Investor Password:') }}
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]"
+                                   placeholder="{{ __('Enter Investor Password') }}" aria-label="{{ __('Investor Password') }}"
+                                   name="investor_password" id="enter-investor-password" aria-describedby="basic-addon1">
+                            <ul>
+                                <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-admin-invest">
+                                    {{ __('Use from 8 to 20 characters') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-admin-invest">
+                                    {{ __('Use both uppercase and lowercase letters') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-admin-invest">
+                                    {{ __('At least one number') }}
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-admin-invest">
+                                    {{ __('At least one special character(!@#$%&*():{}|<>)') }}
                                 </li>
                             </ul>
                         </div>

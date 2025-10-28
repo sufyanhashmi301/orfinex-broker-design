@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div id="processingIndicator" class="text-center">
+            <div class="processingIndicator processingIndicator-transactions text-center">
                 {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
                 <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
@@ -67,7 +67,7 @@
             "use strict";
             var table = $('#user-transaction-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('#processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator-transactions').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,

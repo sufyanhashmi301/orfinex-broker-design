@@ -27,7 +27,12 @@
 
                         <label class="form-label" for="">{{ __('Investor Password:') }}</label>
                         <div class="input-form-group">
-                            <input type="password" class="form-control mb-1" name="investorPass" id="update-invest-password" placeholder="{{ __('Enter your password') }}">
+                            <div class="relative">
+                                <input type="password" class="form-control mb-1" name="investorPass" id="update-invest-password" placeholder="{{ __('Enter your password') }}">
+                                <button type="button" class="absolute top-0 right-0 p-2 toggle-password" data-toggle="#update-invest-password">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </div>
                             <ul>
                                 <li class="text-xs mb-1 text-danger" id="length-check-invest">
                                     {{ __('Use from 8 to 20 characters') }}

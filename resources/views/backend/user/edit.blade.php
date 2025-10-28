@@ -399,8 +399,7 @@
     @include('backend.user.include.__delete_direct_referral')
     {{--    @endcan --}}
     <!-- Modal for add referral-->
-
-
+ @include('backend.investment.modal.__account_action')
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
@@ -583,10 +582,37 @@
             })
         });
 
-        $('#enter-main-password').on('input', function() {
-            var password = $(this).val();
-            checkPassword(password, 'main', 'create-forex-account');
+        $('#addForexAccount').on('shown.bs.modal', function() {
+            var $modal = $('#addForexAccount');
+            var $btn = $modal.find('#create-forex-account').prop('disabled', true);
 
+            function isStrongPassword(pwd) {
+                // Match global custom.js rules (min 8 chars, mixed case, number, special)
+                return pwd.length >= 8 && /[a-z]/.test(pwd) && /[A-Z]/.test(pwd) && /\d/.test(pwd) && /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+            }
+
+            function updateCreateButtonState() {
+                var mainPwd = $modal.find('#enter-main-password').val() || '';
+                var investPwd = $modal.find('#enter-investor-password').val() || '';
+                var requireInvest = !!($modal.find('#select-schema option:selected').data('is-update-investor-password')) && $modal.find('#investor-password-wrapper').is(':visible');
+
+                // Update visual hints using global checker
+                if (typeof window.checkPassword === 'function') {
+                    window.checkPassword(mainPwd, 'admin-main', 'create-forex-account');
+                    if (requireInvest) {
+                        window.checkPassword(investPwd, 'admin-invest', 'create-forex-account');
+                    }
+                }
+
+                var validMain = isStrongPassword(mainPwd);
+                var validInvest = requireInvest ? isStrongPassword(investPwd) : true;
+                $btn.prop('disabled', !(validMain && validInvest));
+            }
+
+            $modal.find('#enter-main-password').off('input._pwd').on('input._pwd', updateCreateButtonState);
+            $modal.find('#enter-investor-password').off('input._ipwd').on('input._ipwd', updateCreateButtonState);
+
+            updateCreateButtonState();
         });
 
 
@@ -664,6 +690,17 @@
                                 .is_real_islamic);
                             $(`#${modalId} #select-schema`).data('is-demo-islamic', result
                                 .is_demo_islamic);
+                            // Toggle investor password visibility based on selected option's data attribute
+                            var showInvestor = !!($(`#${modalId} #select-schema option:selected`).data('is-update-investor-password'));
+                            if (showInvestor) {
+                                $(`#${modalId} #investor-password-wrapper`).show();
+                                // Force user to enter investor password by disabling create button until input
+                                $(`#${modalId} #create-forex-account`).prop('disabled', true);
+                                $(`#${modalId} #enter-investor-password`).val('');
+                            } else {
+                                $(`#${modalId} #investor-password-wrapper`).hide();
+                                $(`#${modalId} #enter-investor-password`).val('');
+                            }
                             $(`#${modalId} #islamic-checkbox`).prop('checked', false);
                             updateIslamicCheckboxState(modalId, $(`#${modalId} #account-type`)
                                 .val(), result.is_real_islamic, result.is_demo_islamic);
@@ -677,34 +714,22 @@
                 });
             });
 
-            // Password validation
-            function checkPassword(password, type, submitButtonId) {
-                var lengthCheck = password.length >= 8 && password.length <= 15;
-                var lettersCheck = /[a-z]/.test(password) && /[A-Z]/.test(password);
-                var numberCheck = /\d/.test(password);
-                var specialCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-                $(`#${type}-length-check`).toggleClass('text-danger', !lengthCheck).toggleClass('text-success',
-                    lengthCheck);
-                $(`#${type}-letters-check`).toggleClass('text-danger', !lettersCheck).toggleClass('text-success',
-                    lettersCheck);
-                $(`#${type}-number-check`).toggleClass('text-danger', !numberCheck).toggleClass('text-success',
-                    numberCheck);
-                $(`#${type}-special-check`).toggleClass('text-danger', !specialCheck).toggleClass('text-success',
-                    specialCheck);
-
-                if (lengthCheck && lettersCheck && numberCheck && specialCheck) {
-                    $(submitButtonId).prop('disabled', false);
+            // Ensure investor password visibility is correct when modal opens with pre-selected schema
+            $('#addForexAccount').on('shown.bs.modal', function () {
+                var modalId = 'addForexAccount';
+                var selectedOption = $(`#${modalId} #select-schema option:selected`);
+                var showInvestor = !!selectedOption.data('is-update-investor-password');
+                if (showInvestor) {
+                    $(`#${modalId} #investor-password-wrapper`).show();
                 } else {
-                    $(submitButtonId).prop('disabled', true);
+                    $(`#${modalId} #investor-password-wrapper`).hide();
                 }
-            }
-
-            $('.modal').on('input', '#enter-main-password', function() {
-                var modalId = $(this).closest('.modal').attr('id');
-                var password = $(this).val();
-                checkPassword(password, 'main', `#${modalId} #create-forex-account`);
             });
+
+            // Password validation
+            // use global checkPassword from custom.js; no local override here
+
+            // legacy handlers not needed now; handled on modal show
 
             $('#partner_status_btn').on('change', function() {
                 @if ($user->ib_status == 'approved')

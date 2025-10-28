@@ -1,0 +1,1 @@
+<span class="text-nowrap">{{ \Carbon\Carbon::parse($created_at)->format('M d, Y h:i') }}</span>

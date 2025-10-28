@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="processingIndicator text-center">
+            <div class="processingIndicator processingIndicator-accounts text-center">
                 {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
                 <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
@@ -118,7 +118,7 @@
             "use strict";
             var table = $('#user-forex-account-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('.processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator-accounts').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,
@@ -146,7 +146,7 @@
                         {data: 'balance', name: 'balance'},
                         {data: 'equity', name: 'equity'},
                         {data: 'credit', name: 'credit'},
-                        {data: 'action', name: 'action'},
+                        {data: 'action', name: 'action', orderable: false, searchable: false},
                     ]
             });
         })(jQuery);

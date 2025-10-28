@@ -148,10 +148,10 @@ class TransactionController extends Controller
                     if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
                         $manualData = json_decode($row->manual_field_data, true);
                         if (is_array($manualData) && isset($manualData['time'])) {
-                            return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                            return '<span class="text-nowrap">' . \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A') . '</span>';
                         }
                     }
-                    return $row->created_at;
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
                 })
                 ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
                 ->with([

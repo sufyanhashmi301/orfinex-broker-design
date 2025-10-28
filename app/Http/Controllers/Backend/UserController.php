@@ -98,41 +98,44 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $loggedInUser = auth()->user();
-    $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search','search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
         if (!empty($filters['global_search']) ){
-        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
-            $filters['phone'] = $filters['global_search'];
-            $filters['global_search'] = '';
+            if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+                $filters['phone'] = $filters['global_search'];
+                $filters['global_search'] = '';
+            }
         }
-    }
-$staffMembers = Admin::whereDoesntHave('roles', function($query) {
-    $query->where('name', 'Super-Admin');
-})->get();
-    if ($request->ajax()) {
-       $data = getAccessibleUserIds($filters);
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
 
-     if (!empty($filters['staff_name'])) {
-         $data = applyStaffNameFilter($data, $filters['staff_name']);
-     }
+        if ($request->ajax()) {
+            $data = getAccessibleUserIds($filters);
+
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-            })
-            ->editColumn('kyc', 'backend.user.include.__kyc')
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-            ->addColumn('branch_name', function ($row) {
-                return view('backend.user.include.__branch', compact('row'))->render();
-            })
+                ->editColumn('created_at', 'backend.user.include.__datetime')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-            ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action', 'created_at'])
                 ->make(true);
         }
         
@@ -140,41 +143,29 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
     }
 
     public function export(Request $request, $type = null)
-{
-    switch ($type) {
-        case 'active':
-            return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
-        case 'disabled':
-            return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
-        case 'withbalance':
-            return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
-        case 'withoutbalance':
-            return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
-        case 'refferal':
-            // Only for referral exports we need user_id
-            $userId = $request->user_id;
-            if (!$userId) {
-                return back()->with('error', 'User ID is required for referral export');
-            }
-            $user = User::find($userId);
-            if (!$user) {
-                return back()->with('error', 'User not found');
-            }
-            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
-            return Excel::download(new RefferalUsersExport($userId), $fileName);
-        case 'transaction':
-            // Only for transaction exports we need user_id
-            $userId = $request->user_id;
-            if (!$userId) {
-                return back()->with('error', 'User ID is required for transaction export');
-            }
-            $user = User::find($userId);
-            if (!$user) {
-                return back()->with('error', 'User not found');
-            }
-            $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
-            return Excel::download(new TransactionsUsersExport($userId), $fileName);
-        case 'ibtransaction':
+    {
+        switch ($type) {
+            case 'active':
+                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
+            case 'disabled':
+                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+            case 'withbalance':
+                return Excel::download(new withBalanceUsersExport($request), 'withbalance-users.xlsx');
+            case 'withoutbalance':
+                return Excel::download(new withOutBalanceUsersExport($request), 'withoutbalance-users.xlsx');
+            case 'refferal':
+                // Only for referral exports we need user_id
+                $userId = $request->user_id;
+                if (!$userId) {
+                    return back()->with('error', 'User ID is required for referral export');
+                }
+                $user = User::find($userId);
+                if (!$user) {
+                    return back()->with('error', 'User not found');
+                }
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx';
+                return Excel::download(new RefferalUsersExport($userId), $fileName);
+            case 'transaction':
                 // Only for transaction exports we need user_id
                 $userId = $request->user_id;
                 if (!$userId) {
@@ -184,22 +175,34 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
                 if (!$user) {
                     return back()->with('error', 'User not found');
                 }
-                
-            // Get filter parameters
-            $filters = [
-                'login' => $request->login,
-                'deal' => $request->deal,
-                'symbol' => $request->symbol,
-                'date_filter' => $request->date_filter,
-                'created_at' => $request->created_at,
-            ];
-                
+                $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
+                return Excel::download(new TransactionsUsersExport($userId), $fileName);
+            case 'ibtransaction':
+                // Only for transaction exports we need user_id
+                $userId = $request->user_id;
+                if (!$userId) {
+                    return back()->with('error', 'User ID is required for transaction export');
+                }
+                $user = User::find($userId);
+                if (!$user) {
+                    return back()->with('error', 'User not found');
+                }
+                    
+                // Get filter parameters
+                $filters = [
+                    'login' => $request->login,
+                    'deal' => $request->deal,
+                    'symbol' => $request->symbol,
+                    'date_filter' => $request->date_filter,
+                    'created_at' => $request->created_at,
+                ];
+                    
                 $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-transactions-ibbonus.xlsx';
                 return Excel::download(new ibTransactionsUsersExport($userId, $filters), $fileName);
-        default:
-            return Excel::download(new UsersExport($request), 'users.xlsx');
+            default:
+                return Excel::download(new UsersExport($request), 'users.xlsx');
+        }
     }
-}
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -211,25 +214,27 @@ $staffMembers = Admin::whereDoesntHave('roles', function($query) {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name','phone', 'country', 'status', 'created_at', 'tag']);
         if (!empty($filters['global_search']) ){
-        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
-            $filters['phone'] = $filters['global_search'];
-            $filters['global_search'] = '';
+            if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+                $filters['phone'] = $filters['global_search'];
+                $filters['global_search'] = '';
+            }
         }
-    }
-         $filters['status'] = 1;
+        $filters['status'] = 1;
         if ($request->ajax()) {
 
             $data = getAccessibleUserIds($filters);
-if (!empty($filters['staff_name'])) {
-            $data = applyStaffNameFilter($data, $filters['staff_name']);
-        }
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                })
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->editColumn('created_at', 'backend.user.include.__datetime')
                 ->addColumn('branch_name', function ($row) {
                     return view('backend.user.include.__branch', compact('row'))->render();
                 })
@@ -239,7 +244,8 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action', 'created_at'])
                 ->make(true);
         }
         $staffMembers = Admin::whereDoesntHave('roles', function($query) {
@@ -259,22 +265,23 @@ if (!empty($filters['staff_name'])) {
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'staff_name', 'country', 'status', 'created_at', 'tag']);
-              if (!empty($filters['global_search']) ){
-        if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
-            $filters['phone'] = $filters['global_search'];
-            $filters['global_search'] = '';
-        }
-    }
+            if (!empty($filters['global_search']) ){
+                if (preg_match('/^[\d\+\-\(\) ]+$/', $filters['global_search'])) {
+                    $filters['phone'] = $filters['global_search'];
+                    $filters['global_search'] = '';
+                }
+            }
             $filters['status'] = 0;
-         $data = getAccessibleUserIds($filters);
- if (!empty($filters['staff_name'])) {
-              $data = applyStaffNameFilter($data, $filters['staff_name']);
-          }
+            $data = getAccessibleUserIds($filters);
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
@@ -286,7 +293,8 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+                ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action', 'created_at'])
                 ->make(true);
         }
 
@@ -301,16 +309,16 @@ if (!empty($filters['staff_name'])) {
     public function withBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-    $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
     
-    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-        $query->where('name', 'Super-Admin');
-    })->get();
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
     
         $riskProfileTags = RiskProfileTag::all();
 
         if ($request->ajax()) {
-        // Handle phone number detection in global search
+            // Handle phone number detection in global search
 
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
@@ -320,62 +328,64 @@ if (!empty($filters['staff_name'])) {
                 ->where('Balance', '>', 0)
                 ->pluck('Login');
 
-        $userIdsWithBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            $userIdsWithBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-        $accessibleUsersQuery = getAccessibleUserIds($filters);
+            $accessibleUsersQuery = getAccessibleUserIds($filters);
 
-        // Apply filters
-        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance);
+            // Apply filters
+            $data = $accessibleUsersQuery->whereIn('id', $userIdsWithBalance);
 
-          if (!empty($filters['global_search'])) {
-            $searchTerm = $filters['global_search'];
-            $data->where(function($query) use ($searchTerm) {
-                $query->Where('username', 'like', "%$searchTerm%")
-                      ->orWhere('email', 'like', "%$searchTerm%")
-                      ->orWhere('phone', 'like', "%$searchTerm%");
-            });
-        }
-
-        // Handle staff filter
-        if (!empty($filters['staff_name'])) {
-            $data = applyStaffNameFilter($data, $filters['staff_name']);
+            if (!empty($filters['global_search'])) {
+                $searchTerm = $filters['global_search'];
+                $data->where(function($query) use ($searchTerm) {
+                    $query->Where('username', 'like', "%$searchTerm%")
+                        ->orWhere('email', 'like', "%$searchTerm%")
+                        ->orWhere('phone', 'like', "%$searchTerm%");
+                });
             }
 
-        return Datatables::of($data->latest())
+            // Handle staff filter
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
+
+            return Datatables::of($data->latest())
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-            })
-            ->editColumn('kyc', 'backend.user.include.__kyc')
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-            ->addColumn('branch_name', function ($row) {
-                return view('backend.user.include.__branch', compact('row'))->render();
-            })
+                ->editColumn('created_at', 'backend.user.include.__datetime')
+                ->addColumn('branch_name', function ($row) {
+                    return view('backend.user.include.__branch', compact('row'))->render();
+                })
                 ->addColumn('staff_name', function ($row) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-            ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
+                ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action', 'created_at'])
                 ->make(true);
         }
         
         return view('backend.user.with_balance', [
-        'riskProfileTags' => $riskProfileTags
-    ], compact('staffMembers'));
+            'riskProfileTags' => $riskProfileTags
+        ], compact('staffMembers'));
     }
 
 
     public function withOutBalance(Request $request)
     {
         $loggedInUser = auth()->user();
-            $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
+        $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
     
-    $staffMembers = Admin::whereDoesntHave('roles', function($query) {
-        $query->where('name', 'Super-Admin');
-    })->get();
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
         $riskProfileTags = RiskProfileTag::all();
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
@@ -386,36 +396,38 @@ if (!empty($filters['staff_name'])) {
                 ->where('Balance', '<=', 0)
                 ->pluck('Login');
             
-        $userIdsWithoutBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            $userIdsWithoutBalance = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
 
-        // ✅ Apply the helper here:
-        $accessibleUsersQuery = getAccessibleUserIds();
+            // ✅ Apply the helper here:
+            $accessibleUsersQuery = getAccessibleUserIds();
 
-        // ✅ Filter by users without balance
-        $data = $accessibleUsersQuery->whereIn('id', $userIdsWithoutBalance)->latest();
-         if (!empty($filters['global_search'])) {
-            $searchTerm = $filters['global_search'];
-            $data->where(function($query) use ($searchTerm) {
-                $query->Where('username', 'like', "%$searchTerm%")
-                      ->orWhere('email', 'like', "%$searchTerm%")
-                      ->orWhere('phone', 'like', "%$searchTerm%");
-            });
-        }
+            // ✅ Filter by users without balance
+            $data = $accessibleUsersQuery->whereIn('id', $userIdsWithoutBalance)->latest();
+            if (!empty($filters['global_search'])) {
+                $searchTerm = $filters['global_search'];
+                $data->where(function($query) use ($searchTerm) {
+                    $query->Where('username', 'like', "%$searchTerm%")
+                        ->orWhere('email', 'like', "%$searchTerm%")
+                        ->orWhere('phone', 'like', "%$searchTerm%");
+                });
+            }
 
-// Handle staff filter
-        if (!empty($filters['staff_name'])) {
-            $data = applyStaffNameFilter($data, $filters['staff_name']);
+            // Handle staff filter
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
             }
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('username', function ($row) {
                     return view('backend.user.include.__user', compact('row'))->render();
-                })                ->editColumn('kyc', 'backend.user.include.__kyc')
+                })
+                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->editColumn('created_at', 'backend.user.include.__datetime')
                 ->addColumn('branch_name', function ($row) {
                     return view('backend.user.include.__branch', compact('row'))->render();
                 })
@@ -423,7 +435,8 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action'])
+                ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'status', 'balance', 'equity', 'branch_name', 'staff_name', 'credit', 'action', 'created_at'])
                 ->make(true);
         }
         
@@ -436,31 +449,32 @@ if (!empty($filters['staff_name'])) {
     {
         $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'staff_name', 'phone', 'country', 'status', 'created_at', 'tag']);
-$staffMembers = Admin::whereDoesntHave('roles', function($query) {
-    $query->where('name', 'Super-Admin');
-})->get();
-//        dd($request->all());
+        $staffMembers = Admin::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super-Admin');
+        })->get();
+        // dd($request->all());
         if ($request->ajax()) {
 
             // ✅ Use helper to get accessible user query
-        $accessibleUsersQuery = getAccessibleUserIds();
+            $accessibleUsersQuery = getAccessibleUserIds();
 
-        // ✅ Remove global scope and filter grace period
-        $data = $accessibleUsersQuery
-            ->withoutGlobalScope(ExcludeGracePeriodScope::class)
-            ->where('in_grace_period', true)
-                        ->latest();
+            // ✅ Remove global scope and filter grace period
+            $data = $accessibleUsersQuery
+                ->withoutGlobalScope(ExcludeGracePeriodScope::class)
+                ->where('in_grace_period', true)
+                ->latest();
             if (!empty($filters['global_search'])) {
-            $searchTerm = $filters['global_search'];
-            $data->where(function($query) use ($searchTerm) {
-                $query->Where('username', 'like', "%$searchTerm%")
-                      ->orWhere('email', 'like', "%$searchTerm%")
-                      ->orWhere('phone', 'like', "%$searchTerm%");
-            });
-        }
-if (!empty($filters['staff_name'])) {
-            $data = applyStaffNameFilter($data, $filters['staff_name']);
-        }
+                $searchTerm = $filters['global_search'];
+                $data->where(function($query) use ($searchTerm) {
+                    $query->Where('username', 'like', "%$searchTerm%")
+                        ->orWhere('email', 'like', "%$searchTerm%")
+                        ->orWhere('phone', 'like', "%$searchTerm%");
+                });
+            }
+
+            if (!empty($filters['staff_name'])) {
+                $data = applyStaffNameFilter($data, $filters['staff_name']);
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -470,6 +484,7 @@ if (!empty($filters['staff_name'])) {
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->editColumn('created_at', 'backend.user.include.__datetime')
                 ->addColumn('branch_name', function ($row) {
                     return view('backend.user.include.__branch', compact('row'))->render();
                 })
@@ -477,29 +492,31 @@ if (!empty($filters['staff_name'])) {
                     return view('backend.user.include.__staff')->with('staff', $row->staff);
                 })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
-//                ->editColumn('status', 'backend.user.include.__status')
+                // ->editColumn('status', 'backend.user.include.__status')
                ->addColumn('action', 'backend.user.include.__grace_action')
-                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action'])
+               ->orderColumn('created_at', 'users.created_at $1')
+                ->rawColumns(['username', 'kyc', 'balance', 'equity', 'credit', 'branch_name', 'staff_name', 'status', 'action', 'created_at'])
                 ->make(true);
         }
         
         return view('backend.user.grace_users', compact('staffMembers'));
     }
+
     public function updateGracePeriod(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'status' => 'required|in:0,1',
-    ]);
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:0,1',
+        ]);
 
-    $user = User::withoutGlobalScope(ExcludeGracePeriodScope::class)->findOrFail($request->user_id);
-    $user->in_grace_period = $request->status;
-    $user->save();
+        $user = User::withoutGlobalScope(ExcludeGracePeriodScope::class)->findOrFail($request->user_id);
+        $user->in_grace_period = $request->status;
+        $user->save();
 
-    notify()->success('Grace period status updated successfully.');
+        notify()->success('Grace period status updated successfully.');
 
-    return redirect()->back();
-}
+        return redirect()->back();
+    }
 
 
 
@@ -557,37 +574,195 @@ if (!empty($filters['staff_name'])) {
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $globalSchemas = ForexSchema::active()
-            ->traderType()
-            ->where('is_global', 1)
-            ->get();
+        // Get user's branch assignment
+        $userBranchId = getUserBranchId($user->id, $user);
 
-        $userSchemas = ForexSchema::active()
-            ->traderType()
-            ->relevantForUser($user->country, $tagNames)
-            ->get();
+        // Base query with top-level branch filter and trader type
+        $baseQuery = ForexSchema::active()->traderType();
 
+        if ($userBranchId) {
+            // Specific branch: assigned to that branch or explicitly global
+            $baseQuery->where(function($query) use ($userBranchId) {
+                $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                    $branchQuery->where('branch_id', $userBranchId);
+                })->orWhere('is_global', 1);
+            });
+        } else {
+            // No branch: only universal (no branch) or explicitly global
+            $baseQuery->where(function($query) {
+                $query->whereDoesntHave('branches')->orWhere('is_global', 1);
+            });
+        }
+
+        // Settings controlling visibility of global accounts
+        $showGlobalByCountryAndTags = setting('show_global_accounts_with_country_tags', 'account_type_settings');
+        $showGlobalWithIbRebateRules = setting('show_global_accounts_with_ib_rebate_rules', 'account_type_settings');
+        $allowGlobalAny = $showGlobalByCountryAndTags || $showGlobalWithIbRebateRules;
+
+        // Prepare schemas result
         $schemas = collect();
 
-        if ($isPartOfMasterIb) {
-            $ibGroup = IbGroup::with('rebateRules.forexSchemas')->find($isPartOfMasterIb);
+        // Check if user matches any country/tag based non-global schema
+        $matchesCountryOrTags = $baseQuery->clone()
+            ->where('account_category_id', '!=', 1)
+            ->where(function($query) use ($user, $tagNames) {
+                $query->relevantForUser($user->country, $tagNames);
+            })
+            ->exists();
 
-            if ($ibGroup && $ibGroup->rebateRules) {
-                foreach ($ibGroup->rebateRules as $rule) {
-                    $schemas = $schemas->merge($rule->forexSchemas->where('status', true));
-                }
+        // Non-IB user handling
+        if (!$isPartOfMasterIb) {
+            if (!$matchesCountryOrTags) {
+                // Show all global-category accounts (respecting top-level branch filter)
+                $schemas = $baseQuery->clone()
+                    ->where('account_category_id', 1)
+                    ->get()
+                    ->unique('id')
+                    ->sortBy('priority')
+                    ->values();
             } else {
-                // Log warning if IbGroup not found or has no rebate rules
-                if (!$ibGroup) {
-                    Log::warning("IbGroup not found for user {$user->id} with is_part_of_master_ib: {$isPartOfMasterIb}");
-                } elseif (!$ibGroup->rebateRules) {
-                    Log::warning("IbGroup {$ibGroup->id} has no rebate rules for user {$user->id}");
+                // Composite filter for non-IB users
+                $schemas = $baseQuery
+                    ->where(function($query) use ($user, $tagNames, $allowGlobalAny) {
+                        if ($allowGlobalAny) {
+                            $query->where(function($q) use ($user, $tagNames) {
+                                $q->where('account_category_id', 1)
+                                  ->where(function($globalMatch) use ($user, $tagNames) {
+                                      $globalMatch
+                                          ->where(function($matchQuery) use ($user, $tagNames) {
+                                              $matchQuery->relevantForUser($user->country, $tagNames);
+                                          })
+                                          ->orWhereNull('country')
+                                          ->orWhereJsonLength('country', 0)
+                                          ->orWhereNull('tags')
+                                          ->orWhereJsonLength('tags', 0);
+                                  });
+                            })
+                            ->orWhere(function($subQuery) use ($user, $tagNames) {
+                                $subQuery->where('account_category_id', '!=', 1)
+                                        ->where(function($matchQuery) use ($user, $tagNames) {
+                                            $matchQuery->relevantForUser($user->country, $tagNames);
+                                        });
+                            });
+                        } else {
+                            $query->where(function($subQuery) use ($user, $tagNames) {
+                                $subQuery->where('account_category_id', '!=', 1)
+                                        ->where(function($matchQuery) use ($user, $tagNames) {
+                                            $matchQuery->relevantForUser($user->country, $tagNames);
+                                        });
+                            });
+                        }
+                        // Always include schemas explicitly marked as global
+                        $query->orWhere('is_global', 1);
+                    })
+                    ->get()
+                    ->unique('id')
+                    ->sortBy('priority')
+                    ->values();
+            }
+        }
+
+        // IB-specific handling
+        $globalSchemasFromRules = collect();
+        $globalSchemasFromSetting = collect();
+        $hasIbRuleSchemas = false;
+
+        if ($isPartOfMasterIb) {
+            $ibGroup = IbGroup::with(['rebateRules.forexSchemas' => function($query) {
+                $query->active()->traderType();
+            }])->find($isPartOfMasterIb);
+
+            if ($ibGroup) {
+                $allowGlobalFromIbRules = (bool) $showGlobalWithIbRebateRules && (bool) $ibGroup->is_global_account;
+
+                foreach ($ibGroup->rebateRules as $rule) {
+                    $ruleSchemas = $rule->forexSchemas()
+                        ->where('status', true)
+                        ->traderType()
+                        ->active();
+
+                    if ($userBranchId) {
+                        $ruleSchemas->where(function($query) use ($userBranchId) {
+                            $query->whereHas('branches', function($branchQuery) use ($userBranchId) {
+                                $branchQuery->where('branch_id', $userBranchId);
+                            })->orWhere('is_global', 1);
+                        });
+                    } else {
+                        $ruleSchemas->where(function($query) {
+                            $query->whereDoesntHave('branches')->orWhere('is_global', 1);
+                        });
+                    }
+
+                    $ruleSchemas = $ruleSchemas->get();
+
+                    if ($ruleSchemas->count() > 0) {
+                        $hasIbRuleSchemas = true;
+                    }
+
+                    if (!$allowGlobalFromIbRules) {
+                        $ruleSchemas = $ruleSchemas->filter(function ($schema) {
+                            return ($schema->is_global == 1) || ($schema->account_category_id != 1);
+                        });
+                    }
+
+                    $schemas = $schemas->merge($ruleSchemas);
+
+                    if ($allowGlobalFromIbRules) {
+                        $globalSchemasFromRules = $globalSchemasFromRules->merge(
+                            $ruleSchemas->where('account_category_id', 1)
+                        );
+                    }
+                }
+
+                if ($allowGlobalFromIbRules) {
+                    $globalSchemasFromSetting = $baseQuery->clone()
+                        ->where('account_category_id', 1)
+                        ->where(function($globalMatch) use ($user, $tagNames) {
+                            $globalMatch
+                                ->where(function($matchQuery) use ($user, $tagNames) {
+                                    $matchQuery->relevantForUser($user->country, $tagNames);
+                                })
+                                ->orWhereNull('country')
+                                ->orWhereJsonLength('country', 0)
+                                ->orWhereNull('tags')
+                                ->orWhereJsonLength('tags', 0);
+                        })
+                        ->whereNotIn('id', $globalSchemasFromRules->pluck('id'))
+                        ->get();
                 }
             }
 
+            // Always include schemas explicitly marked as global
+            $alwaysGlobalSchemas = $baseQuery->clone()
+                ->where('is_global', 1)
+                ->get();
+            $schemas = $schemas->merge($alwaysGlobalSchemas);
         }
 
-        $schemas = $schemas->merge($userSchemas)->merge($globalSchemas)
+        if ($isPartOfMasterIb) {
+            $existingSchemaIds = $schemas->merge($globalSchemasFromSetting)->pluck('id')->toArray();
+
+            $additionalSchemas = $baseQuery->clone()
+                ->where('account_category_id', '!=', 1)
+                ->whereNotIn('id', $existingSchemaIds)
+                ->where(function($query) use ($user, $tagNames) {
+                    $query->relevantForUser($user->country, $tagNames);
+                })
+                ->get();
+
+            $schemas = $schemas->merge($additionalSchemas);
+        }
+
+        if ($isPartOfMasterIb && !$hasIbRuleSchemas && !$matchesCountryOrTags) {
+            if (!$allowGlobalFromIbRules) {
+                $schemas = $baseQuery->clone()
+                    ->where('is_global', 1)
+                    ->get();
+                $globalSchemasFromSetting = collect();
+            }
+        }
+
+        $schemas = $schemas->merge($globalSchemasFromSetting)
             ->unique('id')
             ->sortBy('priority')
             ->values();
@@ -1681,13 +1856,14 @@ if (!empty($filters['staff_name'])) {
 
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->editColumn('created_at', 'backend.user.include.__datetime')
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
                 ->addColumn('action_by', function ($row) {
                     return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
                 })
-                ->rawColumns(['status', 'type','action_by', 'final_amount'])
+                ->rawColumns(['status', 'type','action_by', 'final_amount', 'created_at'])
                 ->make(true);
         }
     }
@@ -1721,18 +1897,10 @@ if (!empty($filters['staff_name'])) {
 
         return Datatables::of($data->orderBy('created_at', 'desc'))
             ->addIndexColumn()
+            ->editColumn('created_at', 'backend.user.include.__datetime')
             ->editColumn('status', 'backend.user.include.__txn_status')
             ->editColumn('type', 'backend.user.include.__txn_type')
             ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-            ->editColumn('created_at', function ($row) {
-                // if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
-                //     $manualData = json_decode($row->manual_field_data, true);
-                //     if (is_array($manualData) && isset($manualData['time'])) {
-                //         return \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A');
-                //     }
-                // }
-                return \Carbon\Carbon::parse($row->created_at)->format('M d, Y h:i A');
-            })
             ->addColumn('deal_info', function ($row) {
                 if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
                     $manualData = json_decode($row->manual_field_data, true);

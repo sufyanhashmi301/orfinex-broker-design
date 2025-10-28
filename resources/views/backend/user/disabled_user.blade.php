@@ -103,6 +103,7 @@
                                     <th scope="col" class="table-th">{{ __('Branch') }}</th>
                                     <th scope="col" class="table-th">{{ __('Staff') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Joined') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -143,7 +144,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
-                    order: [[0, 'desc']],
+                    order: [[8, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -200,6 +201,10 @@
                         {
                             data: 'kyc',
                             name: 'kyc'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at'
                         },
                         {
                             data: 'status',

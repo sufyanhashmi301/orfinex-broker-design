@@ -193,7 +193,7 @@
                 { data: 'incoming', name: 'incoming' },
                 { data: 'outgoing', name: 'outgoing' },
                 { data: 'ib_bonus', name: 'ib_bonus' },
-                { data: 'action', name: 'action' },
+                { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
 

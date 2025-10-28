@@ -79,7 +79,7 @@ class SumsubClient
         return $this->parseBody($response);
     }
 
-    public function lgetAccessToken(string $externalUserId, string $levelName): array
+    public function getAccessToken(string $externalUserId, string $levelName): array
     {
         $url = '/resources/accessTokens?' . http_build_query(['userId' => $externalUserId, 'levelName' => $levelName]);
 

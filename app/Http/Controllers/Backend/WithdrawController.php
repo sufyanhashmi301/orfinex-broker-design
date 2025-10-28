@@ -290,65 +290,66 @@ class WithdrawController extends Controller
      * @throws Exception
      */
     public function pending(Request $request)
-{
-    $loggedInUser = auth()->user();
-    $filters = $request->only(['email', 'created_at']);
+    {
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['email', 'created_at']);
 
-    if ($request->ajax()) {
-        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
+        if ($request->ajax()) {
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        // ✅ Base query for pending withdrawals
-        $data = Transaction::where('type', TxnType::Withdraw)
-            ->where('status', 'pending')
-            ->whereIn('user_id', $accessibleUserIds);
+            // ✅ Base query for pending withdrawals
+            $data = Transaction::where('type', TxnType::Withdraw)
+                ->where('status', 'pending')
+                ->whereIn('user_id', $accessibleUserIds);
 
-        // Apply additional filters if any
-        $data = $data->applyFilters($filters);
+            // Apply additional filters if any
+            $data = $data->applyFilters($filters);
 
-        // Select sortable projections for username and signed amount
-        $data = $data->select('transactions.*')
-            ->selectSub(
-                DB::table('users')
-                    ->whereColumn('users.id', 'transactions.user_id')
-                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
-                'username_sort'
-            )
-            ->selectRaw("(
-                CASE
-                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
-                        THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
-                    ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
-                END
-            ) as signed_amount");
+            // Select sortable projections for username and signed amount
+            $data = $data->select('transactions.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'transactions.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                )
+                ->selectRaw("(
+                    CASE
+                        WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                            THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                        ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    END
+                ) as signed_amount");
 
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->editColumn('status', 'backend.transaction.include.__txn_status')
-            ->editColumn('type', 'backend.transaction.include.__txn_type')
-            ->editColumn('amount', 'backend.transaction.include.__txn_amount')
-            ->editColumn('charge', function ($request) {
-                return $request->charge . ' ' . setting('site_currency', 'global');
-            })
-            ->addColumn('username', 'backend.transaction.include.__user')
-            ->addColumn('action', 'backend.withdraw.include.__action')
-            // Server-side ordering mappings
-            ->orderColumn('created_at', 'transactions.created_at $1')
-            ->orderColumn('username', 'username_sort $1')
-            ->orderColumn('description', 'transactions.description $1')
-            ->orderColumn('tnx', 'transactions.tnx $1')
-            ->orderColumn('target_id', 'transactions.target_id $1')
-            ->orderColumn('amount', 'signed_amount $1')
-            ->orderColumn('charge', 'transactions.charge $1')
-            ->orderColumn('method', 'transactions.method $1')
-            ->orderColumn('status', 'transactions.status $1')
-            ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
-            ->make(true);
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                })
+                ->editColumn('status', 'backend.transaction.include.__txn_status')
+                ->editColumn('type', 'backend.transaction.include.__txn_type')
+                ->editColumn('amount', 'backend.transaction.include.__txn_amount')
+                ->editColumn('charge', function ($request) {
+                    return $request->charge . ' ' . setting('site_currency', 'global');
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('action', 'backend.withdraw.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'transactions.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('description', 'transactions.description $1')
+                ->orderColumn('tnx', 'transactions.tnx $1')
+                ->orderColumn('target_id', 'transactions.target_id $1')
+                ->orderColumn('amount', 'signed_amount $1')
+                ->orderColumn('charge', 'transactions.charge $1')
+                ->orderColumn('method', 'transactions.method $1')
+                ->orderColumn('status', 'transactions.status $1')
+                ->rawColumns(['created_at', 'action', 'status', 'type', 'amount', 'username'])
+                ->make(true);
+        }
+
+        return view('backend.withdraw.pending');
     }
-
-    return view('backend.withdraw.pending');
-}
-
-
 
     /**
      * @return Application|Factory|View|JsonResponse

@@ -503,10 +503,13 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
 
         return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts', 'platformLinks'));
     }
-    public function testForexAccount(Request $request)
+    public function testForexAccount(Request $request, $account = null)
     {
+        // Use the account parameter from URL if provided, otherwise use default
+        $login = $account ? $account : 601055;
+        
         $data = [
-            'login' => 601055
+            'login' => $login
         ];
         $response = $this->forexApiService->getBalance($data);
         dd($response);

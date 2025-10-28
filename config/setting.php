@@ -1777,8 +1777,8 @@ return [
                 'value' => 5,  // Default value (1 minutes)
                 'attributes' => [
                     'inputmode' => 'numeric',  // Shows numeric keyboard on mobile
-                    'pattern' => '[1-9]*',     // HTML5 pattern for numbers only
-                    'oninput' => 'this.value = this.value.replace(/[^1-9]/g, "")', // JS to prevent non-numbers
+                'pattern' => '^[1-9][0-9]*$',     // HTML5 pattern for positive integers (allows 10, 11, ...)
+                'oninput' => 'this.value = this.value.replace(/\D/g, "").replace(/^0+/, "")', // Allow digits, strip non-digits and leading zeros
                     'placeholder' => 'Enter minutes',
                 ],
             ],

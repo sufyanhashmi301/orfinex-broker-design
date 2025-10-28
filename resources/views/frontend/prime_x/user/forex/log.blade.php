@@ -181,6 +181,18 @@
                 $('#statusDetailsModal').modal('show');
             });
         })(jQuery);
+
+        $('body').on('click', '.toggle-password', function () {
+            const passwordInput = $(this).prev('input');
+            const icon = $(this).find('iconify-icon');
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.attr('icon', 'lucide:eye-off');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.attr('icon', 'lucide:eye');
+            }
+        });
     </script>
      <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="statusDetailsModal" tabindex="-1" aria-labelledby="statusDetailsModal" aria-hidden="true">
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative max-w-2xl w-full pointer-events-none">

@@ -3,7 +3,7 @@
         <div class="card-header flex-col !items-start gap-5">
             <div class="flex justify-between w-full gap-3">
                 <h4 class="card-title">{{ __('IB Bonus') }}</h4>
-                @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
+                {{-- @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
                     <div class="flex justify-end items-center gap-2">
                         @can('customer-master-ib-network-distribution')
                             @if ($user->ib_status == \App\Enums\IBStatus::APPROVED)
@@ -25,7 +25,7 @@
                             @endif
                         @endcan
                     </div>
-                @endcanany
+                @endcanany --}}
             </div>
             <div class="flex flex-col sm:flex-row sm:items-center w-full gap-3">
                 <!-- Filter Inputs -->

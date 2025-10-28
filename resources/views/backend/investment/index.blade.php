@@ -310,7 +310,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
-                    order: [[0, 'desc']],
+                    order: [[{{ in_array(($status ?? ''), ['pending','canceled']) ? 6 : 8 }}, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",

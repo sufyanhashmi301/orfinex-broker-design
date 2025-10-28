@@ -103,6 +103,7 @@
                                     <th scope="col" class="table-th">{{ __('Staff') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Joined') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -144,7 +145,7 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
-                    order: [[0, 'desc']],
+                    order: [[8, 'desc']],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -171,40 +172,54 @@
                     },
                     columns: [{
                             data: 'username',
-                            name: 'username'
+                            name: 'username',
+                            orderable: true,
                         },
                         {
                             data: 'balance',
-                            name: 'balance'
+                            name: 'balance',
+                            orderable: true,
                         },
                         {
                             data: 'equity',
-                            name: 'equity'
+                            name: 'equity',
+                            orderable: true,
                         },
                         {
                             data: 'credit',
-                            name: 'credit'
+                            name: 'credit',
+                            orderable: true,
                         },
                         {
                             data: 'country',
-                            name: 'country'
+                            name: 'country',
+                            orderable: true,
                         },
                         {
                             data: 'branch_name',
-                            name: 'branch_name'
+                            name: 'branch_name',
+                            orderable: true,
                         },
                         {
                             data: 'staff_name',
-                            name: 'staff_name'
+                            name: 'staff_name',
+                            orderable: true,
                         },
                         // {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
                         {
                             data: 'kyc',
-                            name: 'kyc'
+                            name: 'kyc',
+                            orderable: true,
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            orderable: true,
                         },
                         {
                             data: 'status',
-                            name: 'status'
+                            name: 'status',
+                            orderable: true,
                         },
                         {
                             data: 'action',

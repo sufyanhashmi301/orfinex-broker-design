@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     //Forex accounts
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
     Route::get('forex-account-logs', [ForexAccountController::class, 'forexAccountLogs'])->name('forex-account-logs');
-    Route::get('test', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
+    Route::get('test/{account?}', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
     Route::get('invest-cancel/{id}', [ForexAccountController::class, 'investCancel'])->name('invest-cancel');
     Route::get('get/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-account');
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {

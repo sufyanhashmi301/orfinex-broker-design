@@ -48,8 +48,7 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        // Allow users with deposit-list or deposit-add to access history (used by Add Deposit page)
-        $this->middleware('permission:deposit-list|deposit-add', ['only' => ['pending', 'history']]);
+        $this->middleware('permission:deposit-list', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
         $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
@@ -271,158 +270,153 @@ class DepositController extends Controller
     //-------------------------------------------  Deposit method end ---------------------------------------------------------------
 
     public function pending(Request $request)
-{
-    $loggedInUser = auth()->user();
+    {
+        $loggedInUser = auth()->user();
 
-    if ($request->ajax()) {
-        $filters = $request->only(['email', 'status', 'created_at']);
- // ✅ Use helper to get allowed user IDs
-        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
+        if ($request->ajax()) {
+            $filters = $request->only(['email', 'status', 'created_at']);
+            // ✅ Use helper to get allowed user IDs
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        // ✅ Build the base query
-        $data = Transaction::query()
-            ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
-            ->whereIn('type', [TxnType::ManualDeposit])
-            ->whereIn('user_id', $accessibleUserIds);
+            // ✅ Build the base query
+            $data = Transaction::query()
+                ->whereIn('status', [TxnStatus::Pending,TxnStatus::Review])
+                ->whereIn('type', [TxnType::ManualDeposit])
+                ->whereIn('user_id', $accessibleUserIds);
 
-        // Apply additional filters
-        $data->applyFilters($filters);
+            // Apply additional filters
+            $data->applyFilters($filters);
 
-        // Select sortable projections for username, action_by and signed amount
-        $data = $data->select('transactions.*')
-            ->selectSub(
-                DB::table('users')
-                    ->whereColumn('users.id', 'transactions.user_id')
-                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
-                'username_sort'
-            )
-            ->selectSub(
-                DB::table('admins')
-                    ->whereColumn('admins.id', 'transactions.action_by')
-                    ->selectRaw('MIN(admins.name)'),
-                'action_by_sort'
-            )
-            ->selectRaw("(
-                CASE
-                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
-                        THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
-                    ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
-                END
-            ) as signed_amount");
+            // Select sortable projections for username, action_by and signed amount
+            $data = $data->select('transactions.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'transactions.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->whereColumn('admins.id', 'transactions.action_by')
+                        ->selectRaw('MIN(admins.name)'),
+                    'action_by_sort'
+                )
+                ->selectRaw("(
+                    CASE
+                        WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                            THEN -1 * CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                        ELSE CAST(COALESCE(transactions.amount, 0) AS DECIMAL(18,8))
+                    END
+                ) as signed_amount");
 
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->editColumn('status', 'backend.transaction.include.__txn_status')
-            ->editColumn('type', 'backend.transaction.include.__txn_type')
-            ->editColumn('amount', 'backend.transaction.include.__txn_amount')
-            ->editColumn('charge', function ($request) {
-                return $request->charge . ' ' . setting('site_currency', 'global');
-            })
-            ->addColumn('username', 'backend.transaction.include.__user')
-            ->addColumn('action', 'backend.deposit.include.__action')
-            // Server-side ordering mappings
-            ->orderColumn('created_at', 'transactions.created_at $1')
-            ->orderColumn('username', 'username_sort $1')
-            ->orderColumn('tnx', 'transactions.tnx $1')
-            ->orderColumn('target_id', 'transactions.target_id $1')
-            ->orderColumn('amount', 'signed_amount $1')
-            ->orderColumn('final_amount', 'signed_amount $1')
-            ->orderColumn('charge', 'transactions.charge $1')
-            ->orderColumn('method', 'transactions.method $1')
-            ->orderColumn('action_by', 'action_by_sort $1')
-            ->orderColumn('status', 'transactions.status $1')
-            ->rawColumns(['action', 'status', 'type', 'amount', 'username'])
-            ->make(true);
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                })
+                ->editColumn('status', 'backend.transaction.include.__txn_status')
+                ->editColumn('type', 'backend.transaction.include.__txn_type')
+                ->editColumn('amount', 'backend.transaction.include.__txn_amount')
+                ->editColumn('charge', function ($request) {
+                    return $request->charge . ' ' . setting('site_currency', 'global');
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('action', 'backend.deposit.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'transactions.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('tnx', 'transactions.tnx $1')
+                ->orderColumn('target_id', 'transactions.target_id $1')
+                ->orderColumn('amount', 'signed_amount $1')
+                ->orderColumn('final_amount', 'signed_amount $1')
+                ->orderColumn('charge', 'transactions.charge $1')
+                ->orderColumn('method', 'transactions.method $1')
+                ->orderColumn('action_by', 'action_by_sort $1')
+                ->orderColumn('status', 'transactions.status $1')
+                ->rawColumns(['created_at', 'action', 'status', 'type', 'amount', 'username'])
+                ->make(true);
+        }
+
+        return view('backend.deposit.manual');
     }
-
-    return view('backend.deposit.manual');
-}
 
 
 
     public function history(Request $request)
-{
-    $loggedInUser = auth()->user();
+    {
+        $loggedInUser = auth()->user();
         $filters = $request->only(['email', 'status', 'created_at']);
 
-    if ($request->ajax()) {
-        // ✅ Get accessible user IDs using the helper
-        $accessibleUserIds = getAccessibleUserIds()->pluck('id');
+        if ($request->ajax()) {
+            // ✅ Get accessible user IDs using the helper
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-        // ✅ Base query: only deposits and manual deposits
-        $data = Transaction::query()
-            ->where(function ($query) {
-                $query->where('type', TxnType::ManualDeposit)
-                    ->orWhere('type', TxnType::Deposit);
-            })
-            ->whereIn('user_id', $accessibleUserIds);
+            // ✅ Base query: only deposits and manual deposits
+            $data = Transaction::query()
+                ->where(function ($query) {
+                    $query->where('type', TxnType::ManualDeposit)
+                        ->orWhere('type', TxnType::Deposit);
+                })
+                ->whereIn('user_id', $accessibleUserIds);
 
-            // ✅ Filter by selected user from Add Deposit (hashed id)
-            if ($request->filled('user_id')) {
-                $selectedUserId = get_hash($request->input('user_id'));
-                if (!empty($selectedUserId)) {
-                    $data->where('user_id', $selectedUserId);
-                }
-            }
+            // ✅ Apply filters (if any)
+            $data->applyFilters($filters);
 
-        // ✅ Apply filters (if any)
-        $data->applyFilters($filters);
+            // Select sortable projections for username, action_by and signed final amount
+            $data = $data->select('transactions.*')
+                ->selectSub(
+                    DB::table('users')
+                        ->whereColumn('users.id', 'transactions.user_id')
+                        ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
+                    'username_sort'
+                )
+                ->selectSub(
+                    DB::table('admins')
+                        ->whereColumn('admins.id', 'transactions.action_by')
+                        ->selectRaw('MIN(admins.name)'),
+                    'action_by_sort'
+                )
+                ->selectRaw("(
+                    CASE
+                        WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
+                            THEN -1 * CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                        ELSE CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
+                    END
+                ) as signed_final_amount");
 
-        // Select sortable projections for username, action_by and signed final amount
-        $data = $data->select('transactions.*')
-            ->selectSub(
-                DB::table('users')
-                    ->whereColumn('users.id', 'transactions.user_id')
-                    ->selectRaw("MIN(CONCAT(users.first_name, ' ', users.last_name))"),
-                'username_sort'
-            )
-            ->selectSub(
-                DB::table('admins')
-                    ->whereColumn('admins.id', 'transactions.action_by')
-                    ->selectRaw('MIN(admins.name)'),
-                'action_by_sort'
-            )
-            ->selectRaw("(
-                CASE
-                    WHEN transactions.type IN ('subtract','investment','withdraw','send_money','send_money_internal','bonus_refund','bonus_subtract')
-                        THEN -1 * CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
-                    ELSE CAST(COALESCE(transactions.final_amount, 0) AS DECIMAL(18,8))
-                END
-            ) as signed_final_amount");
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                })
+                ->editColumn('status', 'backend.transaction.include.__txn_status')
+                ->editColumn('type', 'backend.transaction.include.__txn_type')
+                ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
+                ->editColumn('charge', function ($request) {
+                    return $request->charge . ' ' . setting('site_currency', 'global');
+                })
+                ->addColumn('action_by', function ($row) {
+                    return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
+                })
+                ->addColumn('username', 'backend.transaction.include.__user')
+                ->addColumn('action', 'backend.transaction.include.__action')
+                // Server-side ordering mappings
+                ->orderColumn('created_at', 'transactions.created_at $1')
+                ->orderColumn('username', 'username_sort $1')
+                ->orderColumn('tnx', 'transactions.tnx $1')
+                ->orderColumn('target_id', 'transactions.target_id $1')
+                ->orderColumn('final_amount', 'signed_final_amount $1')
+                ->orderColumn('amount', 'signed_final_amount $1')
+                ->orderColumn('method', 'transactions.method $1')
+                ->orderColumn('charge', 'transactions.charge $1')
+                ->orderColumn('action_by', 'action_by_sort $1')
+                ->orderColumn('status', 'transactions.status $1')
+                ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
+                ->make(true);
+        }
 
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('created_at', function ($row) {
-                return '<span class="text-nowrap">' . $row->created_at . '</span>';
-            })
-            ->editColumn('status', 'backend.transaction.include.__txn_status')
-            ->editColumn('type', 'backend.transaction.include.__txn_type')
-            ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
-            ->editColumn('charge', function ($request) {
-                return $request->charge . ' ' . setting('site_currency', 'global');
-            })
-            ->addColumn('action_by', function ($row) {
-                return '<span class="text-nowrap">' . optional($row->staff)->name ?? '-' . '</span>';
-            })
-            ->addColumn('username', 'backend.transaction.include.__user')
-            ->addColumn('action', 'backend.transaction.include.__action')
-            // Server-side ordering mappings
-            ->orderColumn('created_at', 'transactions.created_at $1')
-            ->orderColumn('username', 'username_sort $1')
-            ->orderColumn('tnx', 'transactions.tnx $1')
-            ->orderColumn('target_id', 'transactions.target_id $1')
-            ->orderColumn('final_amount', 'signed_final_amount $1')
-            ->orderColumn('amount', 'signed_final_amount $1')
-            ->orderColumn('method', 'transactions.method $1')
-            ->orderColumn('charge', 'transactions.charge $1')
-            ->orderColumn('action_by', 'action_by_sort $1')
-            ->orderColumn('status', 'transactions.status $1')
-            ->rawColumns(['created_at', 'status', 'type', 'action_by', 'final_amount', 'username', 'action'])
-            ->make(true);
+        return view('backend.deposit.history');
     }
-
-    return view('backend.deposit.history');
-}
 
 
 
@@ -594,15 +588,14 @@ class DepositController extends Controller
         ->whereIn('id', $accessibleUserIds)
         ->get();
 
-        $forexAccounts = ForexAccount::with('schema')
+    $forexAccounts = ForexAccount::with('schema')
         ->traderType()
         ->where('account_type', 'real')
         ->where('status', ForexAccountStatus::Ongoing)
         ->orderBy('id', 'desc')
         ->get();
 
-        $currency = setting('site_currency', 'global');
-        return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts', 'currency'));
+    return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
 }
 
     public function getUserAccounts($userId)

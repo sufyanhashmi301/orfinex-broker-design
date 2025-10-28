@@ -307,6 +307,23 @@ class   AccountsController extends Controller
                     }
                 },
             ],
+            'investor_password' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $schema = ForexSchema::find($request->schema_id);
+                    if ($schema && $schema->is_update_investor_password) {
+                        if (empty($value)) {
+                            $fail(__('The investor password field is required.'));
+                            return;
+                        }
+                        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*():{}|<>])[A-Za-z\d!@#$%&*():{}|<>]+$/', (string) $value)) {
+                            $fail(__('The investor password must be 8–20 chars, include upper, lower, digit and special: ! @ # $ % & * ( ) : { } | < >'));
+                        }
+                        if (strlen((string) $value) < 8 || strlen((string) $value) > 20) {
+                            $fail(__('The investor password must be between 8 and 20 characters.'));
+                        }
+                    }
+                },
+            ],
             'is_islamic' => [
                 function ($attribute, $value, $fail) use ($request) {
                     $schema = ForexSchema::find($request->schema_id);
@@ -386,6 +403,8 @@ class   AccountsController extends Controller
             $phone = '+91';
         }
 
+        $investorPasswordInput = ($schema->is_update_investor_password ? ($request->investor_password ?: 'Inv@Pass1!') : 'Inv@Pass1!');
+
         $data = [
             "login" => $login,
             "group" => $group,
@@ -408,7 +427,7 @@ class   AccountsController extends Controller
             "phonePassword" => 'SNNH@2024@bol',
             "status" => "RE",
             "masterPassword" => $password,
-            "investorPassword" => 'SNNH@2024@bol'
+            "investorPassword" => ($schema->is_update_investor_password ? $investorPasswordInput : 'SNNH@2024@bol')
         ];
         $retryCount = 0;
         $maxRetries = 3;
@@ -445,7 +464,7 @@ class   AccountsController extends Controller
 
                 // Save account in DB
                 $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
-                $this->sendNotification($user, $mt5Login, $password, $schema, $server);
+                $this->sendNotification($user, $mt5Login, $password, $schema, $server, ($schema->is_update_investor_password ? $investorPasswordInput : 'Inv@Pass1!'));
 
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->back();
@@ -521,13 +540,14 @@ class   AccountsController extends Controller
     }
 
     public
-    function sendNotification($user, $mt5Login, $password, $schema, $server)
+    function sendNotification($user, $mt5Login, $password, $schema, $server, $investorPassword = null)
     {
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[login]]' => $mt5Login,
             '[[password]]' => $password,
             '[[plan_name]]' => $schema->title,
+            '[[investor_password]]' => $investorPassword,
             '[[server]]' => $server,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),

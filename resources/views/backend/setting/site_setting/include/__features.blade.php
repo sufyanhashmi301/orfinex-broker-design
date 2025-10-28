@@ -122,8 +122,8 @@
                                     class="form-control" 
                                     value="{{ oldSetting($field['name'], $section) ?? $field['value'] ?? '' }}"
                                     inputmode="numeric"
-                                    pattern="[0-9]*"
-                                    oninput="this.value = this.value.replace(/[^1-9]/g, '')"
+                                    pattern="^[1-9][0-9]*$"
+                                    oninput="this.value = this.value.replace(/\D/g, '').replace(/^0+/, '')"
                                     placeholder="{{ __('Enter minutes') }}"
                                     @if(isset($field['attributes']))
                                         @foreach($field['attributes'] as $attr => $val)

@@ -48,7 +48,7 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:deposit-list', ['only' => ['pending', 'history']]);
+        $this->middleware('permission:deposit-list|deposit-add', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
         $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
@@ -359,6 +359,14 @@ class DepositController extends Controller
                 })
                 ->whereIn('user_id', $accessibleUserIds);
 
+            // ✅ Optional filter by selected user (hashed id from Add Deposit)
+            if ($request->filled('user_id')) {
+                $selectedUserId = get_hash($request->input('user_id'));
+                if (!empty($selectedUserId)) {
+                    $data->where('user_id', $selectedUserId);
+                }
+            }
+
             // ✅ Apply filters (if any)
             $data->applyFilters($filters);
 
@@ -595,7 +603,8 @@ class DepositController extends Controller
         ->orderBy('id', 'desc')
         ->get();
 
-    return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts'));
+    $currency = setting('site_currency', 'global');
+    return view('backend.deposit.add_deposit', compact('users', 'gateways', 'forexAccounts', 'currency'));
 }
 
     public function getUserAccounts($userId)

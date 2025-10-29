@@ -4741,6 +4741,9 @@ textarea.form-control.is-invalid{
 .min-h-\[auto\]{
   min-height: auto;
 }
+.w-px {
+  width: 1px;
+}
 .w-9{
   width: 2.25rem;
 }

@@ -479,6 +479,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
+
+        Route::group(['prefix' => 'dynamic-content', 'as' => 'dynamic-content.'], function () {
+            Route::get('success-page', [PageController::class, 'successPage'])->name('success-page');
+            Route::get('success-page/{id}/edit', [PageController::class, 'successPageEdit'])->name('success-page.edit');
+            Route::put('success-page/{id}', [PageController::class, 'successPageUpdate'])->name('success-page.update');
+        });
     });
 
 
@@ -752,10 +758,6 @@ Route::prefix('team')->group(function() {
     Route::get('settings/route', function () {
         return view('backend.setting.customization.routes');
     })->name('routeSetting');
-
-    Route::get('settings/dynamic-content', function () {
-        return view('backend.setting.customization.dynamic_content');
-    })->name('dynamicContent');
 
     Route::get('leads', function () {
         $tags = App\Models\RiskProfileTag::where('status', true)->get();

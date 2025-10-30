@@ -714,6 +714,38 @@
                                 <span class="error">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Minimum allowed deposit amount for Demo">
+                                        {{ __('Min Deposit Amount (Demo)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" step="0.01" min="0" name="demo_min_deposit_amount" class="form-control"
+                                    placeholder="Enter min deposit amount (optional)" />
+                                @error('demo_min_deposit_amount')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Maximum allowed deposit amount for Demo">
+                                        {{ __('Max Deposit Amount (Demo)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" step="0.01" min="0" name="demo_max_deposit_amount" class="form-control"
+                                    placeholder="Enter max deposit amount (optional)" />
+                                @error('demo_max_deposit_amount')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
             $table->string('button_type')->nullable()->default('primary')->comment('primary, secondary, outline-dark');
+            $table->boolean('quote_show')->default(false);
             $table->boolean('trustpilot_button_show')->default(false);
             
             // Metadata

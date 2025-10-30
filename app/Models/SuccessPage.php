@@ -27,6 +27,7 @@ class SuccessPage extends Model
         'button_text',
         'button_link',
         'button_type',
+        'quote_show',
         'trustpilot_button_show',
     ];
 
@@ -37,6 +38,7 @@ class SuccessPage extends Model
      */
     protected $casts = [
         'trustpilot_button_show' => 'boolean',
+        'quote_show' => 'boolean',
     ];
 
     /**

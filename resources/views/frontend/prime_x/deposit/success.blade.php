@@ -13,6 +13,7 @@
     $buttonType = $successPage->button_type ?? 'primary';
     $imagePath = $successPage->image_path ?? 'common/images/success-page__img.svg';
     $showTrustpilot = $successPage->trustpilot_button_show ?? false;
+    $quoteShow = $successPage->quote_show ?? true;
 @endphp
 
 @extends('frontend::deposit.index')
@@ -31,7 +32,7 @@
             <p class="max-w-xl text-center text-slate-500 text-sm mb-3 dark:text-gray-300">
                 {{ $message }}
             </p>
-            @if($quote)
+            @if($quote && $quoteShow)
                 <blockquote class="border-0 text-slate-700 dark:text-slate-100 text-base my-5">
                     {{ $quote }}
                     @if($quoteAuthor)

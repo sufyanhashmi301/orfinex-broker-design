@@ -144,6 +144,27 @@
 
                             <div class="input-area grid grid-cols-12 gap-5 mb-6">
                                 <label for="" class="md:col-span-3 col-span-12 form-label">
+                                    <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Show / Hide quote section">
+                                        {{ __('Show Quote') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <div class="md:col-span-9 col-span-12">
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="quote_show">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="quote_show" value="1" class="sr-only peer"
+                                                @checked($successPage->quote_show)>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                                <label for="" class="md:col-span-3 col-span-12 form-label">
                                     <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Inspirational quote">
                                         {{ __('Quote') }}
                                         <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>

@@ -69,13 +69,15 @@ class PageController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_link' => 'nullable|string|max:255',
             'button_type' => 'nullable|string|in:primary,secondary,outline',
+            'quote_show' => 'nullable|boolean',
             'trustpilot_button_show' => 'nullable|boolean',
         ]);
 
         $successPage = SuccessPage::findOrFail($id);
         
         $input = $request->except(['_token', '_method', 'image']);
-        
+        $input['quote_show'] = $request->input('quote_show', 0);
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = self::imageUploadTrait($request->file('image'), $successPage->image_path);
@@ -83,7 +85,7 @@ class PageController extends Controller
         }
 
         // Convert trustpilot checkbox value
-        $input['trustpilot_button_show'] = $request->has('trustpilot_button_show') ? 1 : 0;
+        $input['trustpilot_button_show'] = $request->input('trustpilot_button_show', 0);
 
         // Process route shortcodes
         if (!empty($input['button_link'])) {
@@ -94,7 +96,7 @@ class PageController extends Controller
 
         notify()->success(__('Success Page Updated Successfully'));
 
-        return redirect()->route('admin.settings.dynamic-content.success-page');
+        return redirect()->back();
     }
 
     /**

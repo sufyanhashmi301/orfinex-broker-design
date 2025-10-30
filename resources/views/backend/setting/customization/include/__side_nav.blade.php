@@ -23,7 +23,7 @@
         @endcan
         @can('dynamic-content-settings')
         <li>
-            <a href="javascript:;" class="navItem">
+            <a href="{{ route('admin.settings.dynamic-content.success-page') }}" class="navItem {{ isActive('admin.settings.dynamic-content*') }}">
                 {{ __('Dynamic Content')}}
             </a>
         </li>

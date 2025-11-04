@@ -31,6 +31,7 @@ use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\UserIbRuleController;
 use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\UserBranchFormController;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\WebhookController;
 
@@ -317,6 +318,10 @@ Route::get('user/payment-deposit/{id}', [\App\Http\Controllers\Frontend\PaymentD
 //});
 
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
+
+
+// User-side branch form submission (modal on dashboard)
+Route::post('user/branch-form/submit', [UserBranchFormController::class, 'submit'])->middleware(['auth'])->name('user.branch-form.submit');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
 

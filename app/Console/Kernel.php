@@ -53,6 +53,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
         
+        // SMTP health monitoring
+        $schedule->command('smtp:health-check')->everyFifteenMinutes();
+        
         // 4-month based IB transactions management (automatic)
         $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();
 

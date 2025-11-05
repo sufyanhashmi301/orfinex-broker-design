@@ -71,6 +71,22 @@ trait NotifyTrait
                 'trace' => $e->getTraceAsString()
             ]);
             
+            // SMTP Monitoring - wrapped in try-catch for safety
+            try {
+                if (class_exists(\App\Services\Smtp\SmtpFailureDetectionService::class)) {
+                    $detectionService = app(\App\Services\Smtp\SmtpFailureDetectionService::class);
+                    $failure = $detectionService->logFailure($e, [
+                        'email' => $email,
+                        'template_code' => $code,
+                        'shortcodes' => $shortcodes, // Store shortcodes for resending
+                        'context' => 'mailNotify',
+                    ]);
+                    $detectionService->notifyAdmins($failure);
+                }
+            } catch (Exception $monitoringException) {
+                Log::debug('SMTP monitoring skipped', ['reason' => $monitoringException->getMessage()]);
+            }
+            
             // Only throw exception if explicitly requested (for critical emails)
             if ($throwOnFailure) {
                 throw $e;

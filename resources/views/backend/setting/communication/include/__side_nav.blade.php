@@ -33,5 +33,10 @@
                 {{ __('Notification Temp...')}}
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.smtp.monitoring.settings') }}" class="navItem {{ isActive('admin.smtp.monitoring*') }}">
+                {{ __('SMTP Monitoring')}}
+            </a>
+        </li>
     </ul>
 @endsection

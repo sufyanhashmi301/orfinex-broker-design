@@ -85,6 +85,7 @@ use App\Http\Controllers\Backend\DealNoteController;
 use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
+use App\Http\Controllers\Backend\SmtpMonitoringController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -497,6 +498,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
+
+        Route::group(['prefix' => 'dynamic-content', 'as' => 'dynamic-content.'], function () {
+            Route::get('success-page', [PageController::class, 'successPage'])->name('success-page');
+            Route::get('success-page/{id}/edit', [PageController::class, 'successPageEdit'])->name('success-page.edit');
+            Route::put('success-page/{id}', [PageController::class, 'successPageUpdate'])->name('success-page.update');
+        });
     });
 
 
@@ -749,6 +756,16 @@ Route::prefix('team')->group(function() {
         Route::resource('note', DealNoteController::class);
     });
 
+    // SMTP Monitoring Routes
+    Route::prefix('smtp/monitoring')->name('smtp.monitoring.')->group(function () {
+        Route::get('/logs', [SmtpMonitoringController::class, 'logs'])->name('logs');
+        Route::post('/clear-alert', [SmtpMonitoringController::class, 'clearAlert'])->name('clear-alert');
+        Route::post('/resend-email/{id}', [SmtpMonitoringController::class, 'resendEmail'])->name('resend-email');
+        Route::delete('/delete-log/{id}', [SmtpMonitoringController::class, 'deleteLog'])->name('delete-log');
+        Route::delete('/clear-logs', [SmtpMonitoringController::class, 'clearLogs'])->name('clear-logs');
+        Route::get('/settings', [SmtpMonitoringController::class, 'settings'])->name('settings');
+    });
+
 
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');
@@ -771,16 +788,13 @@ Route::prefix('team')->group(function() {
         return view('backend.setting.customization.routes');
     })->name('routeSetting');
 
-    Route::get('settings/dynamic-content', function () {
-        return view('backend.setting.customization.dynamic_content');
-    })->name('dynamicContent');
-
     Route::get('leads', function () {
         $tags = App\Models\RiskProfileTag::where('status', true)->get();
         return view('backend.lead.index', compact('tags'));
     })->name('customerLead');
 
     Route::resource('deposit-vouchers', \App\Http\Controllers\Backend\DepositVoucherController::class);
+
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

@@ -293,6 +293,8 @@
 
     <!-- Modal for Account unarchive -->
     @include('backend.investment.modal.__unarchive_account')
+    <!-- Modal for Account delete (soft) -->
+    @include('backend.investment.modal.__delete_account')
      @include('backend.investment.modal.__account_action')
 @endsection
 
@@ -464,6 +466,53 @@
                     });
                 }
             });
+
+        // Delete account modal open
+        $('body').on('click', '.open-delete-account-modal', function (e) {
+            e.preventDefault();
+            var login = $(this).data('login');
+            $('#deleteAccount').find('.delete-login').val(login);
+            $('#deleteAccount').modal('show');
+        });
+
+        // Confirm delete (soft)
+        $('body').on('click', '.dropdown-delete-account', function (e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var login = $('#deleteAccount').find('.delete-login').val();
+            $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+            $.ajax({
+                url: "{{ route('admin.forex-accounts.delete') }}",
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    login: login
+                },
+                success: function (resp) {
+                    $('#deleteAccount').modal('hide');
+                    if (typeof $('#dataTable').DataTable === 'function') {
+                        $('#dataTable').DataTable().ajax.reload(null, false);
+                    }
+                    if (typeof tNotify === 'function') {
+                        var msg = (resp && (resp.success || resp.message)) ? (resp.success || resp.message) : '{{ __("Account deleted successfully.") }}';
+                        tNotify('success', msg);
+                    }
+                },
+                error: function (xhr) {
+                    var errMsg = '{{ __("Failed to delete account.") }}';
+                    if (xhr && xhr.responseJSON) {
+                        if (xhr.responseJSON.error) errMsg = xhr.responseJSON.error;
+                        else if (xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
+                    }
+                    if (typeof tNotify === 'function') {
+                        tNotify('error', errMsg);
+                    }
+                },
+                complete: function(){
+                    $btn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                }
+            });
+        });
         });
     </script>
 @endsection

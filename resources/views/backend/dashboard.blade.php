@@ -148,7 +148,7 @@
                 </p>
             </div>
             @canany(['deposit-list','withdraw-list','kyc-list',])
-                @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
+                @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'] || $data['smtp_failure_count'])
                     <div class="md:text-right">
                         <p class="text-base dark:text-white font-medium mb-2">
                             {{ __("Explore what's important to review first") }}
@@ -183,6 +183,15 @@
                                     </a>
                                 @endif
                             @endcan
+
+                            {{-- SMTP Failure Alert --}}
+                            @if(!empty($data['smtp_failure_count']) && $data['smtp_failure_count'] > 0)
+                                <a href="{{ route('admin.smtp.monitoring.logs') }}" class="btn btn-sm btn-warning inline-flex items-center justify-center">
+                                    <iconify-icon class="text-lg mr-2" icon="lucide:mail-warning"></iconify-icon>
+                                    {{ __('SMTP Failures') }}
+                                    ({{ $data['smtp_failure_count'] }})
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @endif

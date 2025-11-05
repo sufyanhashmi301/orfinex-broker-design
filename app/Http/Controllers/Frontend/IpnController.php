@@ -634,10 +634,13 @@ class IpnController extends Controller
                 return response('fail', 400);
             }
 
-            // Extract transaction details
+            // Extract transaction details according to JenaPay documentation
+            // https://docs.jenapay.com/docs/guides/checkout_integration
             $orderNumber = $data['order']['number'] ?? '';
             $paymentStatus = $data['payment_status'] ?? '';
-            $paymentId = $data['payment_id'] ?? '';
+            
+            // Use payment_public_id as per official documentation (fallback to payment_id for compatibility)
+            $paymentId = $data['payment_public_id'] ?? $data['payment_id'] ?? '';
 
             // Update transaction with payment ID if available
             if ($paymentId) {

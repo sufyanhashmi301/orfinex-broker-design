@@ -208,6 +208,23 @@ class   AccountsController extends Controller
         }
     }
 
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'login' => ['required','integer']
+        ]);
+
+        $account = ForexAccount::where('login', $request->login)->first();
+        if (!$account) {
+            return response()->json(['error' => __('Invalid forex account!'), 'reload' => false], 404);
+        }
+
+        // Soft delete
+        $account->delete();
+
+        return response()->json(['success' => __('Account deleted successfully.'), 'reload' => true]);
+    }
+
     public function forexAccountMap(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -17,6 +17,11 @@
             <iconify-icon icon="fluent:apps-list-24-filled"></iconify-icon>
         </a>
     @endcan
+    @if(in_array($status ?? '', [\App\Enums\ForexAccountStatus::Ongoing, \App\Enums\ForexAccountStatus::Archive]))
+        <a href="javascript:;" class="action-btn open-delete-account-modal toolTip onTop" data-tippy-theme="dark" data-tippy-content="{{ __('Delete (Soft)') }}" data-login="{{ $login }}">
+            <iconify-icon icon="lucide:trash-2"></iconify-icon>
+        </a>
+    @endif
     @can('accounts-action')
     <a href="{{route('admin.user.edit',$user_id)}}" class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Edit User">
         <iconify-icon icon="lucide:edit-3"></iconify-icon>

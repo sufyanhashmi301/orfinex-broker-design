@@ -98,6 +98,30 @@ class ForexAccountController extends GatewayController
                 ],
                 'leverage' => 'required',
                 'account_name' => 'required',
+                'demo_deposit_amount' => [
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ($request->account_type !== 'demo') { return; }
+                        if ($value === null || $value === '') { return; } // optional
+                        if (!is_numeric($value) || (float)$value < 0) {
+                            $fail(__('Please enter a valid positive demo deposit amount.'));
+                            return;
+                        }
+                        $schema = ForexSchema::find(get_hash($request->schema_id));
+                        if ($schema) {
+                            $min = $schema->demo_min_deposit_amount;
+                            $max = $schema->demo_max_deposit_amount;
+                            $num = (float) $value;
+                            if ($min !== null && $num < (float)$min) {
+                                $fail(__('The demo deposit must be at least :min.', ['min' => $min]));
+                                return;
+                            }
+                            if ($max !== null && $num > (float)$max) {
+                                $fail(__('The demo deposit must not exceed :max.', ['max' => $max]));
+                                return;
+                            }
+                        }
+                    },
+                ],
             ], [
                 'main_password.required' => __('The main password field is required.'),
                 'main_password.min' => __('The main password must be at least 8 characters long.'),
@@ -289,14 +313,17 @@ class ForexAccountController extends GatewayController
                     // Save account in DB
                     $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
                     $this->sendNotification($user,$mt5Login,$password,$schema,$server, $schema->is_update_investor_password ? $investorPasswordInput : 'Inv@Pass1!');
-if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
-    $this->forexApiService->balanceOperationDemo([
-        'login' => $mt5Login,
-        'Amount' => $schema->demo_deposit_amount,
-        'type' => 1, // deposit
-        'TransactionComments' => 'auto/demo/deposit/'.time()
-    ]);
-}
+                    if ($accountType == 'demo') {
+                        $demoAmount = $request->filled('demo_deposit_amount') ? (float) $request->demo_deposit_amount : (float) ($schema->demo_deposit_amount ?? 0);
+                        if ($demoAmount > 0) {
+                            $this->forexApiService->balanceOperationDemo([
+                                'login' => $mt5Login,
+                                'Amount' => $demoAmount,
+                                'type' => 1, // deposit
+                                'TransactionComments' => 'auto/demo/deposit/'.time()
+                            ]);
+                        }
+                    }
                     notify()->success(__('Successfully Created Account'), 'success');
                     return redirect()->route('user.forex-account-logs');
                 }
@@ -344,13 +371,16 @@ if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
                 $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
                 $this->sendNotification($user,$mt5Login,$password,$schema,$server, $schema->is_update_investor_password ? $investorPasswordInput : 'Inv@Pass1!');
-                if ($accountType == 'demo' && $schema->demo_deposit_amount > 0) {
-                    (new x9ApiService())->balanceOperationDemo([
-                        'login' => $mt5Login,
-                        'Amount' => $schema->demo_deposit_amount,
-                        'type' => 1, // deposit
-                        'TransactionComments' => 'auto/demo/deposit/'.time()
-                    ]);
+                if ($accountType == 'demo') {
+                    $demoAmount = $request->filled('demo_deposit_amount') ? (float) $request->demo_deposit_amount : (float) ($schema->demo_deposit_amount ?? 0);
+                    if ($demoAmount > 0) {
+                        (new x9ApiService())->balanceOperationDemo([
+                            'login' => $mt5Login,
+                            'Amount' => $demoAmount,
+                            'type' => 1, // deposit
+                            'TransactionComments' => 'auto/demo/deposit/'.time()
+                        ]);
+                    }
                 }
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');

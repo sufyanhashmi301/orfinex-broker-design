@@ -72,7 +72,35 @@
 
                 </ul>
             </li>
-        @endcanany
+            @endcanany
+           @can('branches-form-list')
+            <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.branch-form-submissions.*']) }}">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:clipboard-list"></iconify-icon>
+                        <span>{{ __('Branches Forms') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('admin.branch-form-submissions.pending') }}" class="{{ isActive('admin.branch-form-submissions.pending') }}">
+                            {{ __('Pending Submissions') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.branch-form-submissions.approved') }}" class="{{ isActive('admin.branch-form-submissions.approved') }}">
+                            {{ __('Approved Submissions') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.branch-form-submissions.rejected') }}" class="{{ isActive('admin.branch-form-submissions.rejected') }}">
+                            {{ __('Rejected Submissions') }}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
         @canany(['lead-list', 'deal-list'])
             <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.user*', 'admin.notification*']) }}">
                 <a href="javascript:void(0);" class="navItem">

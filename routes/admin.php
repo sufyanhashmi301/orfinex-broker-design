@@ -70,6 +70,8 @@ use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
 use App\Http\Controllers\Backend\BranchController;
+use App\Http\Controllers\Backend\BranchFormController;
+use App\Http\Controllers\Backend\BranchFormSubmissionController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
 use App\Http\Controllers\Backend\PlatformApiController;
@@ -173,6 +175,21 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  Branches ==================================
     Route::resource('branches', BranchController::class);
     Route::post('branches/export', [BranchController::class, 'export'])->name('branches.export');
+    Route::group(['prefix' => 'branches', 'as' => 'branches.', 'controller' => BranchFormController::class], function () {
+        Route::get('{branch}/form', 'edit')->name('form.edit');
+        Route::post('{branch}/form', 'update')->name('form.update');
+    });
+
+    // Branch Form Submissions (global)
+    Route::group(['prefix' => 'branch-form-submissions', 'as' => 'branch-form-submissions.', 'controller' => BranchFormSubmissionController::class], function () {
+        Route::get('pending', 'pending')->name('pending');
+        Route::get('approved', 'approved')->name('approved');
+        Route::get('rejected', 'rejected')->name('rejected');
+        Route::get('data/{status}', 'data')->name('data');
+        Route::get('action/{id}', 'actionModal')->name('action.modal');
+        Route::post('update-status', 'updateStatus')->name('update-status');
+        Route::post('export/{status}', 'export')->name('export');
+    });
 
 
 //===============================  Risk Profile Tag ==================================

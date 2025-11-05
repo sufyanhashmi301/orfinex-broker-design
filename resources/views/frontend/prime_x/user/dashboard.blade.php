@@ -263,6 +263,10 @@
         @include('frontend::user.include.__popup')
     @endif
 
+    @if(!empty($branchFormToPrompt))
+        @include('frontend::user.include.__branch_form_modal')
+    @endif
+
 @endsection
 @section('script')
     <script>
@@ -381,6 +385,24 @@
         <script>
             $(document).ready(function() {
                 $('#offerModal').modal('show');
+            });
+        </script>
+    @endif
+
+    @if(!empty($branchFormToPrompt))
+        <script>
+            $(document).ready(function() {
+                $('#branchFormModal').modal({backdrop: 'static', keyboard: false});
+                $('#branchFormModal').modal('show');
+                // Initialize simple date pickers inside the modal
+                if (typeof flatpickr !== 'undefined') {
+                    $('.flatpickr-branch-date').flatpickr({
+                        dateFormat: 'Y-m-d',
+                        allowInput: false,
+                        clickOpens: true,
+                        enableTime: false,
+                    });
+                }
             });
         </script>
     @endif

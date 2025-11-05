@@ -118,6 +118,12 @@ class ForexApiService
         return $this->getByBody($endpoint, $data);
     }
 
+    public function deleteUser($data)
+    {
+        $endpoint = 'user/delete';
+        return $this->post($endpoint, $data);
+    }
+
     public function getBalance($data)
     {
         $endpoint = 'useraccount/balance';

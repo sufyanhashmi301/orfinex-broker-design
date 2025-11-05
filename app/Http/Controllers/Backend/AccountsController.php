@@ -26,6 +26,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -211,7 +212,8 @@ class   AccountsController extends Controller
     public function deleteAccount(Request $request)
     {
         $request->validate([
-            'login' => ['required','integer']
+            'login' => ['required','integer'],
+            'deleteType' => ['sometimes', 'integer', 'in:0,1']
         ]);
 
         $account = ForexAccount::where('login', $request->login)->first();
@@ -219,10 +221,38 @@ class   AccountsController extends Controller
             return response()->json(['error' => __('Invalid forex account!'), 'reload' => false], 404);
         }
 
-        // Soft delete
-        $account->delete();
+        try {
+            DB::beginTransaction();
 
-        return response()->json(['success' => __('Account deleted successfully.'), 'reload' => true]);
+            // Call Forex API to delete user
+            $deleteType = $request->input('deleteType', 1); // Default to 1 (Full Delete)
+            $apiData = [
+                'login' => (int) $request->login,
+                'deleteType' => (int) $deleteType // 0 - Archive, 1 - Full Delete
+            ];
+
+            $apiResponse = $this->forexApiService->deleteUser($apiData);
+
+            if (!$apiResponse['success']) {
+                DB::rollBack();
+                $errorMessage = $apiResponse['messages'] ?? __('Failed to delete forex account from MT5 server.');
+                return response()->json(['error' => $errorMessage, 'reload' => false], 400);
+            }
+
+            // Soft delete from database
+            $account->delete();
+
+            DB::commit();
+
+            return response()->json(['success' => __('Account deleted successfully.'), 'reload' => true]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting forex account: ' . $e->getMessage(), [
+                'login' => $request->login,
+                'exception' => $e
+            ]);
+            return response()->json(['error' => __('An error occurred while deleting the account. Please try again.'), 'reload' => false], 500);
+        }
     }
 
     public function forexAccountMap(Request $request)

@@ -2573,4 +2573,34 @@ return [
             ],
         ],
     ],
+    'company_register' => [
+        'title' => 'Company Registration Form',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'company_form_status',
+                'label' => 'Enable Company Registration Form',
+                'rules' => 'nullable',
+                'value' => 0,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'company_form_admin_approval',
+                'label' => 'Require Admin Approval',
+                'rules' => 'nullable',
+                'value' => 1,
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'company_form_fields',
+                'label' => 'Form Fields (JSON)',
+                'description' => 'Automatically managed. Do not edit manually.',
+                'rules' => 'nullable',
+                'value' => null,
+            ],
+        ],
+    ],
 ];

@@ -58,6 +58,7 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Backend\CompanyFormSubmissionController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\LevelReferralController;
 use App\Http\Controllers\Backend\PlatformGroupController;
@@ -183,6 +184,17 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     // Branch Form Submissions (global)
     Route::group(['prefix' => 'branch-form-submissions', 'as' => 'branch-form-submissions.', 'controller' => BranchFormSubmissionController::class], function () {
+        Route::get('pending', 'pending')->name('pending');
+        Route::get('approved', 'approved')->name('approved');
+        Route::get('rejected', 'rejected')->name('rejected');
+        Route::get('data/{status}', 'data')->name('data');
+        Route::get('action/{id}', 'actionModal')->name('action.modal');
+        Route::post('update-status', 'updateStatus')->name('update-status');
+        Route::post('export/{status}', 'export')->name('export');
+    });
+
+    // Company Form Submissions
+    Route::group(['prefix' => 'company-form-submissions', 'as' => 'company-form-submissions.', 'controller' => CompanyFormSubmissionController::class], function () {
         Route::get('pending', 'pending')->name('pending');
         Route::get('approved', 'approved')->name('approved');
         Route::get('rejected', 'rejected')->name('rejected');
@@ -449,6 +461,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
+        Route::get('register-company', 'registerCompany')->name('registerCompany');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
         Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');

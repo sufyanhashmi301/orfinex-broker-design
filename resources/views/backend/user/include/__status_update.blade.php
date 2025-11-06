@@ -34,8 +34,14 @@
                     src="{{ getFilteredPath($user->avatar, 'fallback/user.png') }}" alt="{{ $user->first_name }}" />
             </div>
             <div class="text-center">
-                <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
+                <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px] flex items-center justify-center gap-2">
                     {{ $user->first_name . ' ' . $user->last_name }}
+                    @php
+                        $isCompanyApproved = \App\Models\CompanyFormSubmission::where('user_id', $user->id)->where('status','approved')->exists();
+                    @endphp
+                    @if($isCompanyApproved)
+                        <span class="badge bg-success-500 text-white text-[10px] leading-3 px-1.5 py-[1px] uppercase">{{ __('C') }}</span>
+                    @endif
                 </div>
                 <div class="text-sm font-light text-slate-600 dark:text-slate-400">
                     {{ ucwords($user->city) }}@if ($user->city != '')

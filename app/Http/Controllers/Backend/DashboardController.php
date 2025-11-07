@@ -148,6 +148,7 @@ class DashboardController extends Controller
             'withdraw_count' => $withdrawCount,
             'kyc_count' => $kycCount,
             'deposit_count' => $depositCount,
+            'smtp_failure_count' => \App\Models\SmtpFailureLog::whereDate('created_at', today())->count(),
 
             'register_user' => $user->count(),
             'active_user' => $activeUser,

@@ -236,6 +236,44 @@ class PushNotificationTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            
+            // ============================= SMTP MONITORING NOTIFICATIONS =============================
+            [
+                'name' => 'SMTP Failure Detected',
+                'code' => 'smtp_failure_detected',
+                'for' => 'Admin',
+                'icon' => 'mail-warning',
+                'title' => 'SMTP Failure Detected',
+                'message_body' => 'Failed to send email: [[error_message]]. Failure count: [[failure_count]]',
+                'short_codes' => json_encode(["[[error_message]]", "[[failure_count]]", "[[timestamp]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'SMTP Multiple Failures',
+                'code' => 'smtp_multiple_failures',
+                'for' => 'Admin',
+                'icon' => 'alert-triangle',
+                'title' => 'Critical: SMTP Multiple Failures',
+                'message_body' => 'SMTP has failed [[failure_count]] times. Immediate action required.',
+                'short_codes' => json_encode(["[[failure_count]]", "[[timestamp]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'SMTP Service Recovered',
+                'code' => 'smtp_service_recovered',
+                'for' => 'Admin',
+                'icon' => 'check-circle',
+                'title' => 'SMTP Service Recovered',
+                'message_body' => 'SMTP service is back online after [[failure_count]] failures.',
+                'short_codes' => json_encode(["[[failure_count]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ];
 
         foreach ($templates as $template) {

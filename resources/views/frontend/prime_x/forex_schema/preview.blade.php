@@ -155,6 +155,44 @@
                             </ul>
                         </div>
                         @endif
+                        @php
+                            $currency = base_currency();
+                            $prefillDemo = $schema->demo_deposit_amount;
+                            $maxCap = $schema->demo_max_deposit_amount;
+                            if ($prefillDemo !== null && $maxCap !== null && $prefillDemo > $maxCap) {
+                                $prefillDemo = $maxCap;
+                            }
+                        @endphp
+                        <div class="input-area" id="demo-deposit-wrapper" style="display:none;">
+                            <label class="form-label" for="enter-demo-deposit">
+                                {{ __('Demo Deposit Amount (optional)') }}
+                            </label>
+                            <input type="number" step="0.01" class="form-control py-2 h-[48px]"
+                                   placeholder="{{ __('Enter Demo Deposit Amount (optional)') }}" aria-label="{{ __('Demo Deposit Amount') }}"
+                                   name="demo_deposit_amount" id="enter-demo-deposit" aria-describedby="basic-addon1"
+                                   @if($schema->demo_min_deposit_amount !== null) min="{{ $schema->demo_min_deposit_amount }}" @else min="0" @endif
+                                   @if($schema->demo_max_deposit_amount !== null) max="{{ $schema->demo_max_deposit_amount }}" @endif
+                                   @if($prefillDemo !== null) value="{{ $prefillDemo }}" @endif>
+                            <div class="text-xs font-Inter font-medium mt-2" style="color:#DC2626;">
+                                <span>{{ __('Allowed Range') }}:</span>
+                                <span id="demo-min-text">
+                                    @if($schema->demo_min_deposit_amount !== null)
+                                        {{ $schema->demo_min_deposit_amount }} {{ $currency }}
+                                    @else
+                                        {{ __('No minimum') }}
+                                    @endif
+                                </span>
+                                <span> - </span>
+                                <span id="demo-max-text">
+                                    @if($schema->demo_max_deposit_amount !== null)
+                                        {{ $schema->demo_max_deposit_amount }} {{ $currency }}
+                                    @else
+                                        {{ __('No maximum') }}
+                                    @endif
+                                </span>
+                            </div>
+                            <div id="demo-deposit-error" class="text-xs font-Inter font-medium mt-1 hidden" style="color:#DC2626;"></div>
+                        </div>
                         <div class="mt-4">
                             <button type="submit" class="btn inline-flex justify-center btn-primary mr-3" id="create-forex-account">
                                 {{ __('Create Account') }}
@@ -304,6 +342,23 @@
             toggleInvestorPasswordField();
             $('#account-type-tabs .nav-link').on('click', function () { toggleInvestorPasswordField(); });
 
+            var defaultDemoAmount = {{ $prefillDemo !== null ? (float) $prefillDemo : 'null' }};
+
+            function toggleDemoDepositField() {
+                var isDemo = $('#account-type').val() === 'demo';
+                if (isDemo) {
+                    $('#demo-deposit-wrapper').show();
+                    var $input = $('#enter-demo-deposit');
+                    if (($input.val() === '' || $input.val() === null) && defaultDemoAmount !== null) {
+                        $input.val(defaultDemoAmount);
+                    }
+                } else {
+                    $('#demo-deposit-wrapper').hide();
+                }
+            }
+            toggleDemoDepositField();
+            $('#account-type-tabs .nav-link').on('click', function () { toggleDemoDepositField(); validateDemoDeposit(); });
+
             function updateLeverageAndDeposit(result) {
                 // Assuming result contains these fields
                 $('#display-commission').text(result.commission === 0 ? '{{ __('No Commission') }}' : result.commission);
@@ -377,6 +432,8 @@
 
             $('#account-type').on('change', function () {
                 updateIslamicCheckboxState();
+                toggleDemoDepositField();
+                validateDemoDeposit();
             });
 
             // Initial checkbox visibility update
@@ -385,6 +442,48 @@
             $("#select-leverage").on('change', function () {
                 var selectedLeverage = $(this).val();
                 $('#display-leverage').text(selectedLeverage); // Update the display-leverage with the selected value
+            });
+
+            function validateDemoDeposit() {
+                var $input = $('#enter-demo-deposit');
+                var $error = $('#demo-deposit-error');
+                var $btn = $('#create-forex-account');
+                var val = $input.val();
+                var isDemo = $('#account-type').val() === 'demo';
+                var min = {{ $schema->demo_min_deposit_amount !== null ? (float) $schema->demo_min_deposit_amount : 'null' }};
+                var max = {{ $schema->demo_max_deposit_amount !== null ? (float) $schema->demo_max_deposit_amount : 'null' }};
+
+                // optional: if empty, it's fine
+                if (!isDemo || val === '' || val === null) {
+                    $error.addClass('hidden').text('');
+                    $btn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed').text($btn.data('original-text') || $btn.text());
+                    return true;
+                }
+
+                var num = parseFloat(val);
+                var ok = true; var msg = '';
+                if (isNaN(num) || num < 0) { ok = false; msg = '{{ __('Please enter a valid positive amount.') }}'; }
+                if (ok && max !== null && num > max) { // hard cap to max
+                    num = max; $input.val(max);
+                }
+                if (ok && min !== null && num < min) { ok = false; msg = '{{ __('Amount must be at least :min.') }}'.replace(':min', min); }
+
+                if (!ok) {
+                    $error.removeClass('hidden').text(msg);
+                    return false;
+                } else {
+                    $error.addClass('hidden').text('');
+                    return true;
+                }
+            }
+
+            $('#enter-demo-deposit').on('input', validateDemoDeposit);
+
+            $('#create-forex-account-form').on('submit', function (e) {
+                if (!validateDemoDeposit()) {
+                    e.preventDefault();
+                    return false;
+                }
             });
 
             $("#selectWallet").on('change', function (e) {

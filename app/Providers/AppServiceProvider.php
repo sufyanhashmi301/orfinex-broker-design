@@ -70,12 +70,24 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
-        // setting session expiry dynamically
+        // setting session expiry dynamically + SMTP failure alerts
         view()->composer('*', function ($view) {
             if (Auth::check()) {
                 $user = Auth::user();
                 if ($user->session_expiry) {
                     config(['session.lifetime' => $user->session_expiry]);
+                }
+                
+                // Share SMTP failure status with admin views
+                // Support both 'admin' and 'Super-Admin' roles
+                if (in_array(strtolower($user->role), ['admin', 'super-admin'])) {
+                    $view->with('smtpFailureActive', session('smtp_failure_active', false));
+                    $view->with('smtpFailureData', [
+                        'message' => session('smtp_failure_message'),
+                        'count' => session('smtp_failure_count'),
+                        'timestamp' => session('smtp_failure_timestamp'),
+                        'last_updated' => session('smtp_failure_last_updated'),
+                    ]);
                 }
             }
         });

@@ -35,11 +35,12 @@ class JenapayClient
 
     /**
      * Generate authentication signature for payment request.
-     * Formula: sha1(md5(strtoupper(order_id.amount.currency.description.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(order.number + order.amount + order.currency + order.description + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function generateAuthSignature(string $orderId, string $amount, string $currency, string $description): string
     {
+        // Order: order.number + order.amount + order.currency + order.description + merchant.pass
         $string = $orderId . $amount . $currency . $description . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
@@ -49,12 +50,13 @@ class JenapayClient
 
     /**
      * Generate callback signature for verification.
-     * Formula: sha1(md5(strtoupper(payment_id.order_id.amount.currency.description.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(payment_public_id + order.number + order.amount + order.currency + order.description + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
-    public function generateCallbackSignature(string $paymentId, string $orderId, string $amount, string $currency, string $description): string
+    public function generateCallbackSignature(string $paymentPublicId, string $orderId, string $amount, string $currency, string $description): string
     {
-        $string = $paymentId . $orderId . $amount . $currency . $description . $this->merchantPass;
+        // Order: payment_public_id + order.number + order.amount + order.currency + order.description + merchant.pass
+        $string = $paymentPublicId . $orderId . $amount . $currency . $description . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
         // SHA1 of MD5 hex string (NOT binary)
@@ -63,11 +65,14 @@ class JenapayClient
 
     /**
      * Verify callback signature.
+     * Uses payment_public_id as per official documentation
      */
     public function verifyCallbackSignature(array $data, string $receivedHash): bool
     {
+        // Use payment_public_id (not payment_id) as per documentation
+        $paymentPublicId = $data['payment_public_id'] ?? $data['payment_id'] ?? '';
         $calculatedHash = $this->generateCallbackSignature(
-            $data['payment_id'] ?? '',
+            $paymentPublicId,
             $data['order']['number'] ?? '',
             $data['order']['amount'] ?? '',
             $data['order']['currency'] ?? '',
@@ -115,6 +120,8 @@ class JenapayClient
 
     /**
      * Get transaction status by payment ID.
+     * Endpoint: /api/v1/payment/status
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function getTransactionStatusByPaymentId(string $paymentId): array
     {
@@ -128,13 +135,15 @@ class JenapayClient
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post("{$this->apiUrl}/payment/status", $payload);
+        ])->post("{$this->apiUrl}/api/v1/payment/status", $payload);
 
         return $response->json() ?? [];
     }
 
     /**
      * Get transaction status by order ID.
+     * Endpoint: /api/v1/payment/status
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function getTransactionStatusByOrderId(string $orderId): array
     {
@@ -148,13 +157,15 @@ class JenapayClient
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post("{$this->apiUrl}/payment/status", $payload);
+        ])->post("{$this->apiUrl}/api/v1/payment/status", $payload);
 
         return $response->json() ?? [];
     }
 
     /**
      * Refund a payment.
+     * Endpoint: /api/v1/payment/refund
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function refundPayment(string $paymentId, string $amount): array
     {
@@ -169,13 +180,15 @@ class JenapayClient
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post("{$this->apiUrl}/payment/refund", $payload);
+        ])->post("{$this->apiUrl}/api/v1/payment/refund", $payload);
 
         return $response->json() ?? [];
     }
 
     /**
      * Void a payment.
+     * Endpoint: /api/v1/payment/void
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function voidPayment(string $paymentId): array
     {
@@ -189,13 +202,15 @@ class JenapayClient
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post("{$this->apiUrl}/payment/void", $payload);
+        ])->post("{$this->apiUrl}/api/v1/payment/void", $payload);
 
         return $response->json() ?? [];
     }
 
     /**
      * Capture a payment (for DMS mode).
+     * Endpoint: /api/v1/payment/capture
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     public function capturePayment(string $paymentId, string $amount): array
     {
@@ -210,18 +225,19 @@ class JenapayClient
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post("{$this->apiUrl}/payment/capture", $payload);
+        ])->post("{$this->apiUrl}/api/v1/payment/capture", $payload);
 
         return $response->json() ?? [];
     }
 
     /**
      * Generate status signature by payment ID.
-     * Formula: sha1(md5(strtoupper(payment_id.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(payment.id + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     protected function generateStatusSignature(string $paymentId): string
     {
+        // Order: payment.id + merchant.pass
         $string = $paymentId . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
@@ -231,11 +247,12 @@ class JenapayClient
 
     /**
      * Generate status signature by order ID.
-     * Formula: sha1(md5(strtoupper(order_id.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(order.id + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     protected function generateStatusSignatureByOrderId(string $orderId): string
     {
+        // Order: order.id + merchant.pass
         $string = $orderId . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
@@ -245,11 +262,12 @@ class JenapayClient
 
     /**
      * Generate refund signature.
-     * Formula: sha1(md5(strtoupper(payment_id.amount.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(payment.id + amount + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     protected function generateRefundSignature(string $paymentId, string $amount): string
     {
+        // Order: payment.id + amount + merchant.pass
         $string = $paymentId . $amount . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
@@ -259,11 +277,12 @@ class JenapayClient
 
     /**
      * Generate void signature.
-     * Formula: sha1(md5(strtoupper(payment_id.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(payment.id + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     protected function generateVoidSignature(string $paymentId): string
     {
+        // Order: payment.id + merchant.pass
         $string = $paymentId . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         
@@ -273,11 +292,12 @@ class JenapayClient
 
     /**
      * Generate capture signature.
-     * Formula: sha1(md5(strtoupper(payment_id.amount.merchant_pass)))
-     * SHA1 of MD5 hex string (NOT binary)
+     * Formula: sha1(md5(strtoupper(payment.id + amount + merchant.pass)))
+     * According to: https://docs.jenapay.com/docs/guides/checkout_integration
      */
     protected function generateCaptureSignature(string $paymentId, string $amount): string
     {
+        // Order: payment.id + amount + merchant.pass
         $string = $paymentId . $amount . $this->merchantPass;
         $md5Hex = md5(strtoupper($string));
         

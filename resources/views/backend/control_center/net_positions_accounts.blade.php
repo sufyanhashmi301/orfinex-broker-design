@@ -20,7 +20,7 @@
                     <option value="" disabled selected>Select login</option>
                     @foreach ($logins as $login)
                         @if($login->login)
-                            <option value="{{ $login->login }}">{{ $login->login }}</option>
+                            <option value="{{ $login->login }}">{{ $login->login.' - '.$login->account_name }}</option>
                         @endif
                     @endforeach
                 </select>

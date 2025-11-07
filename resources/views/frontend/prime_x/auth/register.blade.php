@@ -42,7 +42,7 @@
                 </div>
             @endif
             <!-- BEGIN: Login Form -->
-            <form method="POST" action="{{ route('register') }}" class="space-y-4">
+            <form method="POST" action="{{ route('register') }}" class="space-y-4" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="schema" value="{{ request('schema') ?? old('schema') }}" >
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -144,6 +144,80 @@
                                 value="{{ old('invite') ?? $inviteCode }}"
                             />
                         </div>
+                    </div>
+                @endif
+
+                @php
+                    $companyFormEnabled = (bool) setting('company_form_status', 'company_register');
+                    $companyFieldsJson = setting('company_form_fields', 'company_register');
+                    $companyFields = [];
+                    if ($companyFormEnabled && is_string($companyFieldsJson) && !empty($companyFieldsJson)) {
+                        $decoded = json_decode($companyFieldsJson, true);
+                        $companyFields = is_array($decoded) ? $decoded : [];
+                    }
+                @endphp
+                @if($companyFormEnabled)
+                    <div class="formGroup">
+                        <label class="block capitalize form-label">{{ __('Register as') }}</label>
+                        <div class="flex items-center gap-6 mt-2">
+                            <label class="inline-flex items-center gap-2">
+                                <input type="radio" name="registration_type" value="individual" class="form-radio" checked>
+                                <span>{{ __('Individual') }}</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2">
+                                <input type="radio" name="registration_type" value="company" class="form-radio">
+                                <span>{{ __('Company') }}</span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">{{ __('Choose Company if you want to register a business account. Additional details will be required.') }}</p>
+                    </div>
+                    <div id="company-form-fields" class="space-y-4 hidden">
+                        @foreach($companyFields as $field)
+                            @php
+                                $fname = $field['name'] ?? '';
+                                $ftype = $field['type'] ?? 'text';
+                                $fvalidation = $field['validation'] ?? 'nullable';
+                                $foptions = $field['options'] ?? [];
+                                $isRequired = $fvalidation === 'required';
+                                $safeName = \Illuminate\Support\Str::slug($fname, '_');
+                            @endphp
+                            <div class="formGroup">
+                                <label class="block capitalize form-label">{{ $fname }} @if($isRequired)<span class="text-danger-500">*</span>@endif</label>
+                                <div class="relative mt-1">
+                                    @if($ftype === 'text' || $ftype === 'date')
+                                        <input type="{{ $ftype === 'date' ? 'date' : 'text' }}" class="form-control py-2 h-[48px] company-field" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form[{{ $safeName }}]" disabled>
+                                    @elseif($ftype === 'dropdown')
+                                        <select class="form-control py-2 h-[48px] company-field" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form[{{ $safeName }}]" disabled>
+                                            @foreach($foptions as $opt)
+                                                <option value="{{ $opt }}">{{ $opt }}</option>
+                                            @endforeach
+                                        </select>
+                                    @elseif($ftype === 'radio')
+                                        <div class="flex flex-wrap gap-4">
+                                            @foreach($foptions as $opt)
+                                                <label class="inline-flex items-center gap-2">
+                                                    <input type="radio" class="company-field-radio" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form[{{ $safeName }}]" value="{{ $opt }}" disabled>
+                                                    <span>{{ $opt }}</span>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    @elseif($ftype === 'checkbox')
+                                        <div class="flex flex-wrap gap-4">
+                                            @foreach($foptions as $opt)
+                                                <label class="inline-flex items-center gap-2">
+                                                    <input type="checkbox" class="company-field-checkbox" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form[{{ $safeName }}][]" value="{{ $opt }}" disabled>
+                                                    <span>{{ $opt }}</span>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    @elseif($ftype === 'file')
+                                        <input type="file" class="form-control py-2 h-[48px] company-field-file" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form_files[{{ $safeName }}]" disabled>
+                                    @else
+                                        <input type="text" class="form-control py-2 h-[48px] company-field" data-required="{{ $isRequired ? '1' : '0' }}" name="company_form[{{ $safeName }}]" disabled>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 @endif
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -298,6 +372,52 @@
                     $(this).text('Hide');
                 }
             })
+
+            function setCompanyFieldsEnabled(enabled){
+                const $container = $('#company-form-fields');
+                if (enabled) {
+                    $container.removeClass('hidden');
+                    // enable all
+                    $container.find('input, select, textarea').prop('disabled', false);
+                    // add required based on data-required
+                    $container.find('.company-field,[type=file]').each(function(){
+                        const req = $(this).data('required') === 1 || $(this).data('required') === '1';
+                        $(this).prop('required', !!req);
+                    });
+                    // radio groups: set required on first radio if needed
+                    $container.find('.company-field-radio').each(function(){
+                        const name = $(this).attr('name');
+                        const group = $container.find('input.company-field-radio[name="'+name.replace(/([\\\[\]\.\*\+\?\^\$\(\)\|\{\}])/g,'\\$1')+'"]');
+                        const req = $(this).data('required') === 1 || $(this).data('required') === '1';
+                        if (group.length) {
+                            group.prop('required', false);
+                            if (req) group.first().prop('required', true);
+                        }
+                    });
+                    // checkbox groups: HTML requires at least one, add required to first if needed
+                    $container.find('.company-field-checkbox').each(function(){
+                        const name = $(this).attr('name');
+                        const group = $container.find('input.company-field-checkbox[name="'+name.replace(/([\\\[\]\.\*\+\?\^\$\(\)\|\{\}])/g,'\\$1')+'"]');
+                        const req = $(this).data('required') === 1 || $(this).data('required') === '1';
+                        group.prop('required', false);
+                        if (req && group.length) group.first().prop('required', true);
+                    });
+                } else {
+                    // hide and disable to skip validation
+                    $container.addClass('hidden');
+                    $container.find('input, select, textarea').each(function(){
+                        $(this).prop('required', false).prop('disabled', true);
+                    });
+                }
+            }
+
+            // default state
+            setCompanyFieldsEnabled($('input[name="registration_type"]:checked').val() === 'company');
+
+            // Toggle on change
+            $('input[name="registration_type"]').on('change', function() {
+                setCompanyFieldsEnabled($(this).val() === 'company');
+            });
         });
 
     </script>

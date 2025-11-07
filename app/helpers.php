@@ -2312,3 +2312,29 @@ if (!function_exists('applyUserBranchFilter')) {
     }
 }
 
+/**
+ * Get success page by type
+ *
+ * @param string $type
+ * @return object|null
+ */
+if (!function_exists('getSuccessPage')) {
+    function getSuccessPage($type)
+    {
+        return \App\Models\SuccessPage::getByType($type);
+    }
+}
+
+/**
+ * Check if custom success page exists for type
+ *
+ * @param string $type
+ * @return bool
+ */
+if (!function_exists('hasCustomSuccessPage')) {
+    function hasCustomSuccessPage($type)
+    {
+        return \App\Models\SuccessPage::hasCustomPage($type);
+    }
+}
+

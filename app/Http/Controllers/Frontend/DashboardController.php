@@ -12,6 +12,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\App;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\BranchCountry;
+use App\Models\BranchForm;
+use App\Models\BranchFormSubmission;
 
 class DashboardController extends Controller
 {
@@ -62,6 +65,28 @@ class DashboardController extends Controller
         $getReferral = $user->getReferrals()->first();
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         $banners = Banner::where('status', 1)->get();
-        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'realForexAccountsCount', 'demoForexAccountsCount', 'qrCode', 'banners'));
+        // Determine if we should prompt branch form modal: only when user has no branch assigned and country maps to an active form
+        $branchFormToPrompt = null;
+        $promptBranchId = null;
+        $existingSubmission = null;
+        $userBranchId = getUserBranchId($user->id, $user);
+        if (empty($userBranchId) && !empty($user->country)) {
+            $code = strtoupper((string) getCountryCode($user->country));
+            if (!empty($code)) {
+                $bc = BranchCountry::where('country_code', $code)->first();
+                if ($bc) {
+                    $form = BranchForm::where('branch_id', $bc->branch_id)->where('status', 1)->first();
+                    if ($form) {
+                        $existingSubmission = BranchFormSubmission::where('user_id', $user->id)->where('branch_id', $bc->branch_id)->first();
+                        if (!$existingSubmission || $existingSubmission->status === 'rejected') {
+                            $branchFormToPrompt = $form;
+                            $promptBranchId = $bc->branch_id;
+                        }
+                    }
+                }
+            }
+        }
+
+        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'realForexAccountsCount', 'demoForexAccountsCount', 'qrCode', 'banners', 'branchFormToPrompt', 'promptBranchId', 'existingSubmission'));
     }
 }

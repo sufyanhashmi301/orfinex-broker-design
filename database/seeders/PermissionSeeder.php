@@ -66,6 +66,15 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer festures Management', 'name' => 'customer-notes-edit'],
             ['category' => 'Customer festures Management', 'name' => 'customer-notes-delete'],
 
+            ['category' => 'Company Forms Submissions Management', 'name' => 'company-form-list'],
+            ['category' => 'Company Forms Submissions Management', 'name' => 'company-form-action'],
+            ['category' => 'Company Forms Submissions Management', 'name' => 'company-form-export'],
+
+            ['category' => 'Branches Forms Submissions Management', 'name' => 'branches-form-list'],
+            ['category' => 'Branches Forms Submissions Management', 'name' => 'branches-form-action'],
+            ['category' => 'Branches Forms Submissions Management', 'name' => 'branches-form-export'],
+
+
             ['category' => 'leads Management', 'name' => 'lead-list'],
             ['category' => 'leads Management', 'name' => 'lead-action'],
             ['category' => 'leads Management', 'name' => 'lead-create'],
@@ -199,6 +208,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Branch Management', 'name' => 'branch-list'],
             ['category' => 'Branch Management', 'name' => 'branch-create'],
             ['category' => 'Branch Management', 'name' => 'branch-edit'],
+            ['category' => 'Branch Management', 'name' => 'manage-branch-form'],
             ['category' => 'Branch Management', 'name' => 'branch-delete'],
             ['category' => 'Branch Management', 'name' => 'branch-export'],
             ['category' => 'Branch Management', 'name' => 'staff-branch-assign'],
@@ -311,6 +321,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'auth-covers-settings'],
             ['category' => 'Website Setting', 'name' => 'admin-auth-logo-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
+            ['category' => 'Website Setting', 'name' => 'company-register-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-create-settings'],
             ['category' => 'Website Setting', 'name' => 'comments-edit-settings'],

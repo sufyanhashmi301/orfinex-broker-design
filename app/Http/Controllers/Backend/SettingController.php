@@ -56,7 +56,7 @@ class SettingController extends Controller
         $this->middleware('permission:customer-misc-settings', ['only' => ['customerMiscSettings']] );
         $this->middleware('permission:transfer-notification' , ['only' => ['transfersNotificationTune']]);
         $this->middleware('permission: kyc-levels-permissions' , ['only' => ['kycPermissionsSettings']]);
-
+        $this->middleware('permission:company-register-settings' , ['only' => ['registerCompany']]);
 
     }
 
@@ -73,7 +73,12 @@ class SettingController extends Controller
         return view('backend.setting.site_setting.site');
     }
 
+    public static function registerCompany()
+    {
+        return view('backend.setting.site_setting.register_company');
+    }
 
+   
     /**
      * @return Application|Factory|View
      */
@@ -137,6 +142,7 @@ class SettingController extends Controller
         }
 
     }
+    
 
     //store any setting
 
@@ -175,7 +181,19 @@ class SettingController extends Controller
             $rules['withdraw_day_limit'] = 'required|numeric|min:1';
             $rules['investment_cancellation_daily_limit'] = 'required|numeric|min:1';
         }
-    //    dd($request->all(),$rules);
+         // Special handling for company_register dynamic fields
+         if ($section === 'company_register') {
+            $request->merge([
+                'company_form_status' => $request->boolean('company_form_status'),
+                'company_form_admin_approval' => $request->boolean('company_form_admin_approval'),
+            ]);
+            $fields = $request->input('fields', []);
+            if (is_array($fields)) {
+                $request->merge([
+                    'company_form_fields' => json_encode($fields),
+                ]);
+            }
+        }    //    dd($request->all(),$rules);
 
         // Validate the request
         $validator = Validator::make($request->all(), $rules);
@@ -208,7 +226,7 @@ class SettingController extends Controller
                         $val = self::imageUploadTrait($val, $oldImage);
                     }
 
-                    if (is_string($val)) {
+                    if (is_string($val) && !($section === 'company_register' && $key === 'company_form_fields')) {
                         // Replace `{` and `}` with `<` and `>`
                         $val = str_replace(['{', '}'], ['<', '>'], $val);
                     }

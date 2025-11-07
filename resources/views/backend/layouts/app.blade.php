@@ -61,6 +61,71 @@
 
     @include('backend.include.__script')
 
+    {{-- SMTP Failure Persistent Alert (Using existing Notify system) --}}
+    @if(!empty($smtpFailureActive) && $smtpFailureActive)
+    <script>
+        $(document).ready(function() {
+            // Show persistent SMTP failure notification using existing Notify system
+            const smtpNotification = new Notify({
+                status: 'error',
+                title: '⚠️ SMTP Service Failure',
+                text: `{{ $smtpFailureData['message'] ?? 'Email service is experiencing issues' }}<br><br>
+                    <strong>Total Failures:</strong> {{ $smtpFailureData['count'] ?? 0 }}<br>
+                    <strong>First detected:</strong> {{ $smtpFailureData['timestamp'] ?? 'Unknown' }}<br>
+                    <strong>Last updated:</strong> {{ $smtpFailureData['last_updated'] ?? 'Unknown' }}<br><br>
+                    <div class="flex gap-2">
+                        <a href="{{ route('admin.smtp.monitoring.logs') }}" class="btn btn-sm btn-outline-primary inline-flex items-center justify-center">View Logs</a>
+                        <a href="{{ route('admin.smtp.monitoring.clear-alert') }}" class="btn btn-sm btn-outline-danger inline-flex items-center justify-center clear-smtp-alert">Clear Alert</a>
+                    </div>`,
+                effect: 'slide',
+                speed: 300,
+                customClass: 'smtp-failure-alert',
+                customIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.73 18 12 2 2.27 18Z M12 9v4 M12 17h.01"/></svg>',
+                showIcon: false,
+                showCloseButton: true,
+                autoclose: true, // Persistent - won't auto-close
+                autotimeout: 9000,
+                gap: 20,
+                distance: 20,
+                type: 1,
+                position: 'right top',
+                customWrapper: '',
+            });
+
+            // Handle close button to clear session
+            $(document).on('click', '.smtp-failure-alert .clear-smtp-alert', function(e) {
+                e.preventDefault(); // Prevent default link navigation
+                
+                const $notification = $(this).closest('.notify');
+                
+                fetch('{{ route('admin.smtp.monitoring.clear-alert') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('SMTP failure alert cleared successfully');
+                        // Close the notification
+                        $notification.fadeOut(300, function() {
+                            $(this).remove();
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to clear SMTP alert:', error);
+                    // Still close notification even if request fails
+                    $notification.fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                });
+            });
+        });
+    </script>
+    @endif
 
 </body>
 </html>

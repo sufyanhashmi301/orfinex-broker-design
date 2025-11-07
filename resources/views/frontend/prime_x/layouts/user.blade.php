@@ -67,10 +67,67 @@
         @endif
 
         <!-- /Automatic Popup End -->
+
+        @php
+            $branchFormToPrompt = null;
+            $promptBranchId = null;
+            $existingSubmission = null;
+            $user = auth()->user();
+            if ($user) {
+                $userBranchId = getUserBranchId($user->id, $user);
+                $hasUserReferral = !empty($user->ref_id);
+                $hasStaffReferral = \Illuminate\Support\Facades\DB::table('staff_user')->where('user_id', $user->id)->exists();
+                if (empty($userBranchId) && !$hasUserReferral && !$hasStaffReferral && !empty($user->country)) {
+                    $code = strtoupper((string) getCountryCode($user->country));
+                    if (!empty($code)) {
+                        $bc = \App\Models\BranchCountry::where('country_code', $code)->first();
+                        if ($bc) {
+                            $form = \App\Models\BranchForm::where('branch_id', $bc->branch_id)->where('status', 1)->first();
+                            if ($form) {
+                                $existingSubmission = \App\Models\BranchFormSubmission::where('user_id', $user->id)->where('branch_id', $bc->branch_id)->first();
+                                if (!$existingSubmission) {
+                                    $branchFormToPrompt = $form;
+                                    $promptBranchId = $bc->branch_id;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        @endphp
+
+        @if(!empty($branchFormToPrompt))
+            @include('frontend::user.include.__branch_form_modal')
+        @endif
     </main>
     <!--/Full Layout-->
 
     @include('frontend::include.__script')
+
+    @if(!empty($branchFormToPrompt))
+        <script>
+            $(document).ready(function() {
+                $('#branchFormModal').modal({backdrop: 'static', keyboard: false});
+                $('#branchFormModal').modal('show');
+                if (typeof flatpickr !== 'undefined') {
+                    $('.flatpickr-branch-date').flatpickr({
+                        dateFormat: 'Y-m-d',
+                        allowInput: false,
+                        clickOpens: true,
+                        enableTime: false,
+                    });
+                }
+                // Initialize select2 inside modal so dropdown renders above overlay
+                if ($.fn.select2) {
+                    const $modal = $('#branchFormModal');
+                    $modal.find('.select2').select2({
+                        dropdownParent: $('body'),
+                        width: '100%'
+                    });
+                }
+            });
+        </script>
+    @endif
 
 
 </body>

@@ -42,6 +42,8 @@ class ForexSchema extends Model
 
 	protected $casts = [
 		'first_min_deposit' => 'float',
+		'demo_min_deposit_amount' => 'float',
+		'demo_max_deposit_amount' => 'float',
 		'is_withdraw' => 'int',
 		'is_ib_partner' => 'int',
 		'is_internal_transfer' => 'int',
@@ -88,6 +90,8 @@ class ForexSchema extends Model
 		'live_server',
         'account_category_id',
 		'demo_deposit_amount',
+		'demo_min_deposit_amount',
+		'demo_max_deposit_amount',
 		'is_update_trading_password',
 		'is_update_investor_password',
 	];

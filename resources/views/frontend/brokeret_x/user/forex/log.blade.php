@@ -83,7 +83,7 @@
         <div class="border-b border-gray-200 dark:border-gray-800 mb-6">
             <nav class="-mb-px flex" role="tablist" aria-label="tab options">
                 <button type="button" 
-                    class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200"
+                    class="inline-flex items-center justify-center text-theme-base border-b-3 px-4 py-3 transition-colors duration-200"
                     x-on:click="selectedTab = 'realAccounts'" 
                     x-bind:aria-selected="selectedTab === 'realAccounts'" 
                     x-bind:tabindex="selectedTab === 'realAccounts' ? '0' : '-1'" 
@@ -93,7 +93,7 @@
                     {{ __('Real') }}            
                 </button>
                 <button type="button" 
-                    class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200"
+                    class="inline-flex items-center justify-center text-theme-base border-b-3 px-4 py-3 transition-colors duration-200"
                     x-on:click="selectedTab = 'demoAccounts'" 
                     x-bind:aria-selected="selectedTab === 'demoAccounts'" 
                     x-bind:tabindex="selectedTab === 'demoAccounts' ? '0' : '-1'" 
@@ -104,7 +104,7 @@
                 </button>
                 @if($archiveForexAccounts->count() > 0)
                     <button type="button" 
-                        class="inline-flex items-center justify-center text-base border-b-3 px-4 py-3 transition-colors duration-200"
+                        class="inline-flex items-center justify-center text-theme-base border-b-3 px-4 py-3 transition-colors duration-200"
                         x-on:click="selectedTab = 'archivedAccounts'" 
                         x-bind:aria-selected="selectedTab === 'archivedAccounts'" 
                         x-bind:tabindex="selectedTab === 'archivedAccounts' ? '0' : '-1'" 

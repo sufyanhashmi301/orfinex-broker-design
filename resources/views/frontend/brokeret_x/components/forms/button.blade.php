@@ -19,7 +19,7 @@
     
     $sizeClasses = [
         'sm' => $iconOnly ? 'p-1.5 text-theme-xs rounded w-8 h-8' : 'px-4 py-1.5 text-theme-xs rounded gap-1.5 h-8',
-        'md' => $iconOnly ? 'p-2.5 text-theme-sm rounded-sm w-10 h-10' : 'px-5 py-2.5 text-theme-sm rounded-sm gap-2 h-10',
+        'md' => $iconOnly ? 'p-2.5 text-theme-sm rounded-sm w-10 h-10' : 'px-5 py-2.5 text-theme-sm tracking-wide rounded-sm gap-2 h-10',
         'lg' => $iconOnly ? 'p-3 text-base rounded-md w-12 h-12' : 'px-6 py-3 text-base rounded-md gap-2 h-12'
     ];
     

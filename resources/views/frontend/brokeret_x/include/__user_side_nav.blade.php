@@ -234,8 +234,8 @@
                                @click="selected = (selected === '{{ $item['label'] }}' ? '':'{{ $item['label'] }}')"
                                class="flex items-center px-3 py-2 rounded-md transition-colors text-theme-sm gap-3 border border-transparent lg:px-2 lg:justify-center xl:px-3 xl:justify-start"
                                :class="currentRoute === '{{ $item['route'] }}' ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800' : 'text-gray-700 hover:bg-gray-100 hover:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-600'">
-                                <i data-lucide="{{ $item['icon'] }}" class="shrink-0 size-5"></i>
-                                <span class="menu-item-text lg:hidden xl:block">
+                                <i data-lucide="{{ $item['icon'] }}" class="text-[#6c8595] shrink-0 size-5"></i>
+                                <span class="menu-item-text tracking-wide lg:hidden xl:block">
                                     {{ __($item['label']) }}
                                 </span>
                             </a>

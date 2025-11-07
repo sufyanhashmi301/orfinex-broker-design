@@ -50,7 +50,7 @@
     @endif
 
     @if($subtitle)
-        <p class="text-theme-sm text-gray-500 dark:text-gray-400">
+        <p class="text-theme-sm text-gray-500 dark:text-gray-400 tracking-wide">
             {{ $subtitle }}
         </p>
     @endif

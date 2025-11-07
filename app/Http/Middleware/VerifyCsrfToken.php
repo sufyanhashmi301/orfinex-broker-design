@@ -18,6 +18,7 @@ class VerifyCsrfToken extends Middleware
         'ipn/uniwire',
         'ipn/match2pay',
         'ipn/jenapay',
+        'status/*', // Payment gateway redirect URLs (success, cancel, pending)
         'webhook/*',//for sumsub webhook receive,veriff webhook receive
         'webhook/sumsub',
         '*telegram/webhook',

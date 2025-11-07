@@ -25,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         UserReferred::class => [
             RewardUser::class,
         ],
+        \Illuminate\Mail\Events\MessageFailed::class => [
+            \App\Listeners\MailFailedListener::class,
+        ],
     ];
 
     /**

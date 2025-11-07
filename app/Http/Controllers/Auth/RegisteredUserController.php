@@ -13,9 +13,11 @@ use App\Models\Page;
 use App\Models\Ranking;
 use App\Models\User;
 use App\Models\ReferralLink;
+use App\Models\CompanyFormSubmission;
 use App\Providers\RouteServiceProvider;
 use App\Rules\Recaptcha;
 use App\Traits\NotifyTrait;
+use App\Traits\ImageUpload;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,7 @@ use Txn;
 
 class RegisteredUserController extends Controller
 {
-    use NotifyTrait;
+    use NotifyTrait, ImageUpload;
 
     /**
      * Handle an incoming registration request.
@@ -63,6 +65,62 @@ class RegisteredUserController extends Controller
         $user = $this->createUser($input, $rank, $phone, $country);
 
         $this->applyBonuses($user, $rank);
+
+        // Handle company registration submission if enabled and selected
+        try {
+            $companyFormEnabled = (bool) setting('company_form_status', 'company_register');
+            $adminApproval = (bool) setting('company_form_admin_approval', 'company_register');
+            if ($companyFormEnabled && $request->input('registration_type') === 'company') {
+                $companyFieldsJson = setting('company_form_fields', 'company_register');
+                $definitions = [];
+                if (is_string($companyFieldsJson) && !empty($companyFieldsJson)) {
+                    $decoded = json_decode($companyFieldsJson, true);
+                    $definitions = is_array($decoded) ? $decoded : [];
+                }
+
+                $payload = [];
+                foreach ($definitions as $def) {
+                    $name = $def['name'] ?? '';
+                    $type = $def['type'] ?? 'text';
+                    $validation = $def['validation'] ?? 'nullable';
+                    $safe = \Illuminate\Support\Str::slug($name, '_');
+
+                    if ($type === 'file') {
+                        $file = $request->file("company_form_files.$safe");
+                        if ($validation === 'required' && !$file) {
+                            throw \Illuminate\Validation\ValidationException::withMessages([
+                                'company_form_files.' . $safe => __(':field is required', ['field' => $name])
+                            ]);
+                        }
+                        if ($file) {
+                            $ext = strtolower($file->getClientOriginalExtension());
+                            $imageExt = in_array($ext, ['jpeg','jpg','png','gif','webp','svg']);
+                            $stored = $imageExt ? $this->imageUploadTrait($file) : $this->paymentDepositFileUploadTrait($file);
+                            $payload[$name] = $stored;
+                        }
+                    } else {
+                        $val = $request->input("company_form.$safe");
+                        if ($validation === 'required' && (is_null($val) || $val === '' || (is_array($val) && count($val) === 0))) {
+                            throw \Illuminate\Validation\ValidationException::withMessages([
+                                'company_form.' . $safe => __(':field is required', ['field' => $name])
+                            ]);
+                        }
+                        $payload[$name] = $val;
+                    }
+                }
+
+                if (!empty($payload)) {
+                    CompanyFormSubmission::create([
+                        'user_id' => $user->id,
+                        'fields' => $payload,
+                        'status' => $adminApproval ? 'pending' : 'approved',
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Company form submission handling failed: '.$e->getMessage());
+            // continue registration flow regardless
+        }
         $this->notifyUser($user, $input);
         $referralCode = $request->cookie('invite');
         $this->handleReferral($referralCode, $user);

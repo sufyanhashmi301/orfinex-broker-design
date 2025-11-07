@@ -175,6 +175,8 @@ class ForexSchemaController extends Controller
             'is_update_trading_password' => 'required|boolean',
             'is_update_investor_password' => 'required|boolean',
             'demo_deposit_amount' => 'nullable|numeric|min:0|max:50000000',
+            'demo_min_deposit_amount' => 'nullable|numeric|min:0',
+            'demo_max_deposit_amount' => 'nullable|numeric|min:0|gte:demo_min_deposit_amount',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
         ], [
@@ -190,6 +192,8 @@ class ForexSchemaController extends Controller
 
         $input = $request->all();
         $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
+        $input['demo_min_deposit_amount'] = $input['demo_min_deposit_amount'] === '' ? null : $input['demo_min_deposit_amount'];
+        $input['demo_max_deposit_amount'] = $input['demo_max_deposit_amount'] === '' ? null : $input['demo_max_deposit_amount'];
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         $finalData = [
@@ -210,6 +214,8 @@ class ForexSchemaController extends Controller
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
             'demo_deposit_amount' => $input['demo_deposit_amount'],
+            'demo_min_deposit_amount' => $input['demo_min_deposit_amount'],
+            'demo_max_deposit_amount' => $input['demo_max_deposit_amount'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
@@ -287,6 +293,8 @@ class ForexSchemaController extends Controller
             'is_update_trading_password' => 'required|boolean',
             'is_update_investor_password' => 'required|boolean',
             'demo_deposit_amount' => 'nullable|numeric|min:0',
+            'demo_min_deposit_amount' => 'nullable|numeric|min:0',
+            'demo_max_deposit_amount' => 'nullable|numeric|min:0|gte:demo_min_deposit_amount',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
 
@@ -304,6 +312,8 @@ class ForexSchemaController extends Controller
         $schema = ForexSchema::find($id);
         $input = $request->all();
         $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
+        $input['demo_min_deposit_amount'] = $input['demo_min_deposit_amount'] === '' ? null : $input['demo_min_deposit_amount'];
+        $input['demo_max_deposit_amount'] = $input['demo_max_deposit_amount'] === '' ? null : $input['demo_max_deposit_amount'];
 
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
@@ -324,6 +334,8 @@ class ForexSchemaController extends Controller
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
             'demo_deposit_amount' => $input['demo_deposit_amount'],
+            'demo_min_deposit_amount' => $input['demo_min_deposit_amount'],
+            'demo_max_deposit_amount' => $input['demo_max_deposit_amount'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,

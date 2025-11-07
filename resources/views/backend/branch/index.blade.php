@@ -108,6 +108,11 @@
                                                         data-id="{{ $branch->id }}">
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                     </button>
+                                                     @endcan
+                                                    @can('manage-branch-form')
+                                                    <a href="{{ route('admin.branches.form.edit', $branch->id) }}" class="action-btn" title="{{ __('Manage Form') }}">
+                                                        <iconify-icon icon="lucide:list-plus"></iconify-icon>
+                                                    </a>
                                                 @endcan
                                                 @can('branch-delete')
                                                     <button type="button" data-id="{{ $branch->id }}"

@@ -33,7 +33,7 @@
   --text-title-lg--line-height: 60px;
   --text-title-md: 36px;
   --text-title-md--line-height: 44px;
-  --text-title-sm: 32px;
+  --text-title-sm: 28px;
   --text-title-sm--line-height: 38px;
   --text-title-xs: 24px;
   --text-title-xs--line-height: 32px;
@@ -283,7 +283,7 @@
 
 @layer base {
   body {
-    @apply relative text-base font-normal font-roboto z-1 bg-gray-50;
+    @apply relative text-base font-normal font-roboto tracking-wide z-1 bg-gray-50;
   }
 
   .text-title-sm, .text-title-md, .text-title-lg, .text-title-xl, .text-title-2xl {

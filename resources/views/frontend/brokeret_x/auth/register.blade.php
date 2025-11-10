@@ -34,27 +34,28 @@
         <form method="POST" action="{{ route('register') }}" class="space-y-5">
             @csrf
             <input type="hidden" name="schema" value="{{ request('schema') ?? old('schema') }}" >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <x-frontend::forms.field
+                        :fieldId="'first_name'"
+                        :fieldLabel="'First Name'"
+                        :fieldPlaceholder="'Your first name'"
+                        :fieldRequired="true"
+                        :type="'text'"
+                        :fieldName="'first_name'"
+                        :fieldValue="old('first_name')"
+                    />
+                    <x-frontend::forms.field
+                        :fieldId="'last_name'"
+                        :fieldLabel="'Last Name'"
+                        :fieldPlaceholder="'Your last name'"
+                        :fieldRequired="true"
+                        :type="'text'"
+                        :fieldName="'last_name'"
+                        :fieldValue="old('last_name')"
+                    />
+                </div>
                 <x-frontend::forms.field
-                    :fieldId="'first_name'"
-                    :fieldLabel="'First Name'"
-                    :fieldPlaceholder="'Your first name'"
-                    :fieldRequired="true"
-                    :type="'text'"
-                    :fieldName="'first_name'"
-                    :fieldValue="old('first_name')"
-                />
-                <x-frontend::forms.field
-                    :fieldId="'last_name'"
-                    :fieldLabel="'Last Name'"
-                    :fieldPlaceholder="'Your last name'"
-                    :fieldRequired="true"
-                    :type="'text'"
-                    :fieldName="'last_name'"
-                    :fieldValue="old('last_name')"
-                />
-                <x-frontend::forms.field
-                    :containerClass="'col-span-2'"
                     :fieldId="'email'"
                     :fieldLabel="'Email Address'"
                     :fieldPlaceholder="'Your email address'"
@@ -65,7 +66,6 @@
                 />
                 @if(getPageSetting('username_show'))
                     <x-frontend::forms.field
-                        :containerClass="col-span-2"
                         :fieldId="'username'"
                         :fieldLabel="'User Name'"
                         :fieldPlaceholder="'Your user name'"
@@ -77,7 +77,7 @@
                 @endif
 
                 @if(getPageSetting('country_show'))
-                    <div class="col-span-2">
+                    <div>
                         <x-frontend::forms.label
                             :fieldId="'country'"
                             :fieldLabel="'Select Country'"
@@ -108,7 +108,7 @@
                 @endif
 
                 @if(getPageSetting('referral_code_show'))
-                    <div class="col-span-2" x-data="{ showReferral: {{ ($inviteCode || old('invite')) ? 'true' : 'false' }} }">
+                    <div x-data="{ showReferral: {{ ($inviteCode || old('invite')) ? 'true' : 'false' }} }">
                         <div class="flex items-center justify-between mb-1.5">
                             <x-frontend::forms.label
                                 fieldId="referral_code"
@@ -141,32 +141,34 @@
                     </div>
                 @endif
 
-                <x-frontend::forms.password-field
-                    :fieldId="'password'"
-                    :fieldLabel="'Password'"
-                    :fieldName="'password'"
-                    :fieldValue="old('password')"
-                    :fieldPlaceholder="'Enter your password'"
-                    :fieldRequired="true"
-                    :type="'password'"
-                />
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <x-frontend::forms.password-field
+                        :fieldId="'password'"
+                        :fieldLabel="'Password'"
+                        :fieldName="'password'"
+                        :fieldValue="old('password')"
+                        :fieldPlaceholder="'Enter your password'"
+                        :fieldRequired="true"
+                        :type="'password'"
+                    />
 
-                <x-frontend::forms.password-field
-                    :fieldId="'password_confirmation'"
-                    :fieldLabel="'Confirm Password'"
-                    :fieldName="'password_confirmation'"
-                    :fieldValue="old('password_confirmation')"
-                    :fieldPlaceholder="'Confirm your password'"
-                    :fieldRequired="true"
-                    :type="'password'"
-                />
+                    <x-frontend::forms.password-field
+                        :fieldId="'password_confirmation'"
+                        :fieldLabel="'Confirm Password'"
+                        :fieldName="'password_confirmation'"
+                        :fieldValue="old('password_confirmation')"
+                        :fieldPlaceholder="'Confirm your password'"
+                        :fieldRequired="true"
+                        :type="'password'"
+                    />
+                </div>
                 @if($cloudflareTurnstile)
-                    <div class="col-span-2">
+                    <div>
                         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
                         <div class="cf-turnstile" data-sitekey="{{ $siteKey }}" data-theme="light"></div>
                     </div>
                 @else
-                    <div class="col-span-2">
+                    <div>
                         @if($googleReCaptcha)
                             <div class="g-recaptcha mb-3" id="feedback-recaptcha"
                                 data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
@@ -185,7 +187,6 @@
                 @endphp
                 
                 <x-frontend::forms.checkbox
-                    containerClass="col-span-2"
                     fieldId="checkboxLabelOne"
                     fieldName="i_agree"
                     :fieldRequired="true"

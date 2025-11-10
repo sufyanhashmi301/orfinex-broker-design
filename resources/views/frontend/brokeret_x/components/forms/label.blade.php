@@ -5,7 +5,7 @@
     'popover' => false
 ])
 
-<label {{ $attributes->merge(['class' => 'mb-1.5 block text-theme-xs text-gray-700 dark:text-gray-400']) }} data-label="{{ $fieldRequired }}" for="{{ $fieldId }}">
+<label {{ $attributes->merge(['class' => 'mb-1.5 block text-theme-xs tracking-wide text-gray-700 dark:text-gray-400']) }} data-label="{{ $fieldRequired }}" for="{{ $fieldId }}">
     @if ($popover || $fieldRequired)
         <span class="inline-flex items-center gap-1">
             {!! $fieldLabel ?? '&nbsp;' !!}

@@ -1,32 +1,32 @@
-<div x-show="openDropDown" @click.outside="openDropDown = false" class="shadow-theme-lg dark:bg-gray-dark absolute top-full right-0 z-40 w-max space-y-1 rounded-2xl border border-gray-200 bg-white p-2 dark:border-gray-800">
-    <div class="dropdown-header flex justify-around gap-3 border-b dark:border-slate-700 p-3">
+<div x-show="openDropDown" @click.outside="openDropDown = false" class="shadow-theme-lg dark:bg-gray-dark absolute top-full right-0 z-40 w-max rounded-xl border border-gray-200 bg-white dark:border-gray-800">
+    <div class="dropdown-header flex justify-around gap-5 border-b dark:border-slate-700 px-4 py-5">
         @if($account->account_type == 'demo' && $account->status == \App\Enums\ForexAccountStatus::Ongoing)
-            <a href="javascript:void(0)" class="text-center text-theme-sm text-gray-500 dark:text-gray-400 dropdown-deposit-demo-account"
+            <a href="javascript:void(0)" class="text-center text-theme-xs tracking-wide text-gray-500 dark:text-gray-400 dropdown-deposit-demo-account"
                 @click.prevent="$store.modals.open('depositDemo', {
                     login: '{{ $account->login }}'
                 })">
-                <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
-                    <i data-lucide="download" class="w-5"></i>
+                <div class="size-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto mb-1">
+                    <i data-lucide="download" class="w-4"></i>
                 </div>
                 {{ __('Set Balance') }}
             </a>
         @endif
 
         @if($account->account_type == 'real' && $account->status == \App\Enums\ForexAccountStatus::Ongoing)
-            <a href="{{route('user.deposit.methods')}}" class="text-center text-theme-sm text-gray-500 dark:text-gray-400">
-                <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
-                    <i data-lucide="download" class="w-5"></i>
+            <a href="{{route('user.deposit.methods')}}" class="text-center text-theme-xs tracking-wide text-gray-500 dark:text-gray-400">
+                <div class="size-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto mb-1">
+                    <i data-lucide="download" class="w-4"></i>
                 </div>
                 {{ __('Deposit') }}
             </a>
-            <a href="{{route('user.withdraw.view')}}" class="text-center text-theme-sm text-gray-500 dark:text-gray-400">
-                <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
-                    <i data-lucide="upload" class="w-5"></i>
+            <a href="{{route('user.withdraw.view')}}" class="text-center text-theme-xs tracking-wide text-gray-500 dark:text-gray-400">
+                <div class="size-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto mb-1">
+                    <i data-lucide="upload" class="w-4"></i>
                 </div>
                 {{ __('Withdraw') }}
             </a>
         @endif
-        <a class="text-center text-theme-sm text-gray-500 dark:text-gray-400" 
+        <a class="text-center text-theme-xs tracking-wide text-gray-500 dark:text-gray-400" 
             href=""
             type="button"
             @click.prevent="$store.modals.open('tradeModal', {
@@ -36,15 +36,15 @@
                 server: '{{ $account->server }}',
                 account_currency: '{{ $account->account_currency }}'
             })">
-            <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
-                <i data-lucide="chart-candlestick" class="w-5"></i>
+            <div class="size-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto mb-1">
+                <i data-lucide="chart-candlestick" class="w-4"></i>
             </div>
             {{ __('Trade') }}
         </a>
     </div>
-    <ul>
+    <ul class="mb-2">
         <li>
-            <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-account-info"
+            <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-account-info"
                 href="#"
                 type="button"
                 @click.prevent="$store.modals.open('accountDetails', {
@@ -62,7 +62,7 @@
             </a>
         </li>
         <li>
-            <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-leverage"
+            <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-leverage"
                 href=""
                 type="button"
                 @click.prevent="$store.modals.loadLeverage({
@@ -74,7 +74,7 @@
             </a>
         </li>
         <li>
-            <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-name"
+            <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-name"
                 href=""
                 type="button"
                 @click.prevent="$store.modals.open('accountRename', {
@@ -86,7 +86,7 @@
         </li>
         @if($account->schema->is_update_trading_password)
             <li>
-                <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-password"
+                <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-password"
                     href=""
                     type="button"
                     @click.prevent="$store.modals.open('changeAccountPass', {
@@ -99,7 +99,7 @@
             </li>
         @endif
         <li>
-            <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-password"
+            <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 dropdown-update-password"
                 href=""
                 type="button"
                 @click.prevent="$store.modals.open('changeInvestorPass', {
@@ -111,7 +111,7 @@
         </li>
         <li>
             @if($account->status == \App\Enums\ForexAccountStatus::Archive)
-                <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 archive-login" 
+                <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 archive-login" 
                     href=""
                     type="button"
                     @click.prevent="$store.modals.open('unarchiveAccount', {
@@ -120,7 +120,7 @@
                     {{ __('Unarchive account') }}
                 </a>
             @else
-                <a class="text-theme-sm flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 archive-login"
+                <a class="text-theme-sm flex w-full px-3 py-2 text-left tracking-wide text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 archive-login"
                     href=""
                     type="button"
                     @click.prevent="$store.modals.open('archiveAccount', {

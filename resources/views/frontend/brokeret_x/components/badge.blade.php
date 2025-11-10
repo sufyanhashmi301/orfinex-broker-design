@@ -11,10 +11,10 @@
     
     // Size classes
     $sizeClasses = [
-        'xs' => 'px-2 py-0.5 text-xs',
-        'sm' => 'px-2.5 py-1 text-xs',
-        'md' => 'px-3 py-1.5 text-sm',
-        'lg' => 'px-4 py-2 text-base'
+        'xs' => 'px-2 py-0.5 text-xs tracking-wide',
+        'sm' => 'px-2.5 py-1 text-theme-xs tracking-wide',
+        'md' => 'px-3 py-1.5 text-sm tracking-wide',
+        'lg' => 'px-4 py-2 text-base tracking-wide'
     ];
     
     // Light background variants

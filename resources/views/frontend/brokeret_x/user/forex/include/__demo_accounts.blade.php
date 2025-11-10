@@ -28,7 +28,7 @@
                             <x-frontend::badge variant="light" style="light" size="sm">
                                 {{ $account->schema->title }}
                             </x-frontend::badge>
-                            <h5 class="text-base font-medium mb-0 dark:text-white/90">{{ $account->account_name }}</h5>
+                            <h5 class="text-theme-sm tracking-wide font-medium mb-0 dark:text-white/90">{{ $account->account_name }}</h5>
                         </div>
                         <div x-data="{openDropDown: false}" class="dropdown-menu relative leading-none h-fit">
                             <x-frontend::forms.button @click="openDropDown = !openDropDown" type="button" variant="secondary" icon="more-vertical" iconOnly />
@@ -37,65 +37,65 @@
                     </div>
                     <ul class="h-full p-3">
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Number') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-right text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ $account->login }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Account Type') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-right text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ $account->account_type }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Platform') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-sm text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-right text-gray-600 dark:text-gray-300">
                                 {{ __('MT5') }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Server') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-sm text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-right text-gray-600 dark:text-gray-300">
                                 {{ $account->server }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Balance') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-sm text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-right text-gray-600 dark:text-gray-300">
                                 {{ get_mt5_account_balance($account->login) }} {{ $account->currency }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Leverage') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-sm text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-right text-gray-600 dark:text-gray-300">
                                 {{ $account->leverage }}
                             </span>
                         </li>
                         <li class="flex items-baseline relative overflow-hidden py-2.5">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-gray-600 dark:text-gray-300">
                                 {{ __('Equity') }}
                             </span>
                             <span class="flex-1 h-full border-b border-dashed mx-1"></span>
-                            <span class="text-sm text-right text-gray-600 dark:text-gray-300">
+                            <span class="text-theme-sm tracking-wide text-right text-gray-600 dark:text-gray-300">
                                 {{ get_mt5_account_equity($account->login) }}
                             </span>
                         </li>

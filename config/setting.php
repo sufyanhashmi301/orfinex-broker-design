@@ -1777,8 +1777,8 @@ return [
                 'value' => 5,  // Default value (1 minutes)
                 'attributes' => [
                     'inputmode' => 'numeric',  // Shows numeric keyboard on mobile
-                    'pattern' => '[1-9]*',     // HTML5 pattern for numbers only
-                    'oninput' => 'this.value = this.value.replace(/[^1-9]/g, "")', // JS to prevent non-numbers
+                'pattern' => '^[1-9][0-9]*$',     // HTML5 pattern for positive integers (allows 10, 11, ...)
+                'oninput' => 'this.value = this.value.replace(/\D/g, "").replace(/^0+/, "")', // Allow digits, strip non-digits and leading zeros
                     'placeholder' => 'Enter minutes',
                 ],
             ],
@@ -2513,6 +2513,93 @@ return [
                 'description' => 'if enable this it shows global accounts with Ib Rebate Rule if disable it hides the global accounts',
                 'rules' => 'nullable',
                 'value' => 1,
+            ],
+        ],
+    ],
+
+    'smtp_monitoring' => [
+        'title' => 'SMTP Monitoring Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'smtp_monitoring_enabled', // unique name for field
+                'label' => 'Enable SMTP Monitoring', // you know what label it is
+                'description' => 'Automatically detect and alert on email sending failures',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'number', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'smtp_alert_cooldown',
+                'label' => 'Alert Cooldown Period (seconds)',
+                'description' => 'Minimum time between push notifications (60-86400 seconds)',
+                'rules' => 'required|numeric|min:60|max:86400', // validation rule of laravel
+                'value' => '1800', // default value if you want
+            ],
+            [
+                'type' => 'number', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'smtp_failure_threshold',
+                'label' => 'Failure Threshold',
+                'description' => 'Number of failures before sending escalated alert',
+                'rules' => 'required|numeric|min:1|max:100', // validation rule of laravel
+                'value' => '3', // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'smtp_health_check_enabled', // unique name for field
+                'label' => 'Enable Scheduled Health Checks', // you know what label it is
+                'description' => 'Periodically test SMTP connection via cron job',
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'select', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'smtp_health_check_interval', // unique name for field
+                'label' => 'Health Check Interval', // you know what label it is
+                'description' => 'How often to run automated SMTP health checks',
+                'rules' => 'required', // validation rule of laravel
+                'options' => [ // options for the select box
+                    '5' => 'Every 5 minutes',
+                    '15' => 'Every 15 minutes',
+                    '30' => 'Every 30 minutes',
+                    '60' => 'Every 1 hour',
+                ],
+                'value' => '15', // default value if you want
+            ],
+        ],
+    ],
+    'company_register' => [
+        'title' => 'Company Registration Form',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'company_form_status',
+                'label' => 'Enable Company Registration Form',
+                'rules' => 'nullable',
+                'value' => 0,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'company_form_admin_approval',
+                'label' => 'Require Admin Approval',
+                'rules' => 'nullable',
+                'value' => 1,
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'company_form_fields',
+                'label' => 'Form Fields (JSON)',
+                'description' => 'Automatically managed. Do not edit manually.',
+                'rules' => 'nullable',
+                'value' => null,
             ],
         ],
     ],

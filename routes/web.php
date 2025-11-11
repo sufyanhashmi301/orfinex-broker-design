@@ -31,6 +31,7 @@ use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\UserIbRuleController;
 use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\UserBranchFormController;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\WebhookController;
 
@@ -58,7 +59,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web', 'KYC'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.session.lifetime:web', 'check.email.verified', 'KYC'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -90,7 +91,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     //Forex accounts
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
     Route::get('forex-account-logs', [ForexAccountController::class, 'forexAccountLogs'])->name('forex-account-logs');
-    Route::get('test', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
+    Route::get('test/{account?}', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
     Route::get('invest-cancel/{id}', [ForexAccountController::class, 'investCancel'])->name('invest-cancel');
     Route::get('get/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-account');
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
@@ -317,6 +318,10 @@ Route::get('user/payment-deposit/{id}', [\App\Http\Controllers\Frontend\PaymentD
 //});
 
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
+
+
+// User-side branch form submission (modal on dashboard)
+Route::post('user/branch-form/submit', [UserBranchFormController::class, 'submit'])->middleware(['auth'])->name('user.branch-form.submit');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
 

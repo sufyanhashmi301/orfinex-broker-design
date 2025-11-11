@@ -293,10 +293,10 @@
                     @endcan
                     @can('dynamic-content-settings')
                     <li>
-                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.dynamic-content.success-page') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Dynamic Content')}}
-                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
-                                {{ __('Coming Soon') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>
@@ -417,6 +417,14 @@
                             {{ __('Notification Templates') }}
                             <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.smtp.monitoring.settings') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('SMTP Monitoring') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>

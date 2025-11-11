@@ -4,46 +4,68 @@
 @endsection
 @section('content')
     <div class="md:hidden block">
-        <div class="card user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg">
-            <div class="flex items-center">
-                <div class="flex-none">
-                    <div class="h-12 w-12 rounded-full flex-1 border-2 border-primary">
-                        <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+        <div class="card user-ranking-mobile p-3 mb-3 rounded-lg">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center">
+                    <div class="flex-none">
+                        <div class="h-12 w-12 rounded-full flex-1 border-2 border-primary">
+                            <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+                        </div>
+                    </div>
+                    <div class="flex-1 text-start ml-2">
+                        <h4 class="text-base font-medium dark:text-white whitespace-nowrap">
+                            {{ $user->full_name }}
+                        </h4>
+                        <div class="flex items-center text-slate-400 dark:text-slate-50 text-sm font-normal">
+                            @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                                {{ __('Verified') }}
+                                <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                            @else
+                                {{ __('Unverified') }}
+                                <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                            @endif
+                        </div>
                     </div>
                 </div>
-                <div class="flex-1 text-start ml-2">
-                    <h4 class="text-base font-medium dark:text-white whitespace-nowrap">
-                        {{ $user->full_name }}
-                    </h4>
-                    <div class="flex items-center text-slate-400 dark:text-slate-50 text-sm font-normal">
-                        @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
-                            {{ __('Verified') }}
-                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                <div class="ltr:mr-[10px] rtl:ml-[10px]">
+                    @auth
+                        @php
+                            $userId = auth()->id();
+                            $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
+                            $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
+                            $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
+                        @endphp
+                        @if($notifications->isNotEmpty())
+                            <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                                <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
+                            </a>
                         @else
-                            {{ __('Unverified') }}
-                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                            <a href="#" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" title="No notifications available">
+                                <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl" icon="heroicons-outline:bell-slash"></iconify-icon>
+                            </a>
                         @endif
-                    </div>
+                    @endauth
                 </div>
             </div>
-            <div class="ltr:mr-[10px] rtl:ml-[10px]">
-                @auth
-                    @php
-                        $userId = auth()->id();
-                        $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
-                        $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
-                        $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
-                    @endphp
-                    @if($notifications->isNotEmpty())
-                        <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
-                            <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
-                        </a>
-                    @else
-                        <a href="#" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" title="No notifications available">
-                            <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl" icon="heroicons-outline:bell-slash"></iconify-icon>
-                        </a>
-                    @endif
-                @endauth
+
+            <div class="flex flex-wrap justify-between gap-3 bg-slate-50 dark:bg-slate-900 rounded p-4">
+                <div class="">
+                    <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
+                        {{ __('Total Balance') }}
+                    </div>
+                    <div class="text-slate-900 dark:text-white text-lg font-medium">
+                        {{ $currencySymbol.' '.$dataCount['total_forex_balance'] ?? 0 }}
+                    </div>
+                </div>
+                <div class="mx-3 h-12 w-px bg-slate-200 dark:bg-slate-600"></div>
+                <div class="">
+                    <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
+                        {{ __('Current Equity') }}
+                    </div>
+                    <div class="text-slate-900 dark:text-white text-lg font-medium">
+                        {{ $currencySymbol.' '.$dataCount['total_forex_equity'] ?? 0 }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -241,6 +263,10 @@
         @include('frontend::user.include.__popup')
     @endif
 
+    @if(!empty($branchFormToPrompt))
+        @include('frontend::user.include.__branch_form_modal')
+    @endif
+
 @endsection
 @section('script')
     <script>
@@ -359,6 +385,24 @@
         <script>
             $(document).ready(function() {
                 $('#offerModal').modal('show');
+            });
+        </script>
+    @endif
+
+    @if(!empty($branchFormToPrompt))
+        <script>
+            $(document).ready(function() {
+                $('#branchFormModal').modal({backdrop: 'static', keyboard: false});
+                $('#branchFormModal').modal('show');
+                // Initialize simple date pickers inside the modal
+                if (typeof flatpickr !== 'undefined') {
+                    $('.flatpickr-branch-date').flatpickr({
+                        dateFormat: 'Y-m-d',
+                        allowInput: false,
+                        clickOpens: true,
+                        enableTime: false,
+                    });
+                }
             });
         </script>
     @endif

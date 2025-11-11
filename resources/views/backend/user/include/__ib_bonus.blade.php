@@ -3,7 +3,7 @@
         <div class="card-header flex-col !items-start gap-5">
             <div class="flex justify-between w-full gap-3">
                 <h4 class="card-title">{{ __('IB Bonus') }}</h4>
-                @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
+                {{-- @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
                     <div class="flex justify-end items-center gap-2">
                         @can('customer-master-ib-network-distribution')
                             @if ($user->ib_status == \App\Enums\IBStatus::APPROVED)
@@ -25,7 +25,7 @@
                             @endif
                         @endcan
                     </div>
-                @endcanany
+                @endcanany --}}
             </div>
             <div class="flex flex-col sm:flex-row sm:items-center w-full gap-3">
                 <!-- Filter Inputs -->
@@ -138,7 +138,7 @@
                         </table>
                     </div>
                 </div>
-                <div id="processingIndicator" class="text-center" style="display: none;">
+                <div class="processingIndicator processingIndicator-ibbonus text-center" style="display: none;">
                     {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
                     <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
                 </div>
@@ -173,7 +173,7 @@
         $(document).ready(function() {
             const table = $('#user-ib-transaction-dataTable')
                 .on('processing.dt', function(e, settings, processing) {
-                    $('#processingIndicator').css('display', processing ? 'block' : 'none');
+                    $('.processingIndicator-ibbonus').css('display', processing ? 'block' : 'none');
                 }).DataTable({
                     dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                     searching: false,

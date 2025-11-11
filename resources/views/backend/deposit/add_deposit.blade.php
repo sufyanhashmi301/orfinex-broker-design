@@ -285,6 +285,7 @@
     <script !src="">
         (function($) {
             "use strict";
+            var filtersEnabled = false;
             var table = $('#dataTable')
                 .on('processing.dt', function(e, settings, processing) {
                     $('#processingIndicator').css('display', processing ? 'block' : 'none');
@@ -310,9 +311,12 @@
                         url: "{{ route('admin.deposit.history') }}",
                         data: function(d) {
                             d.user_id = $('select[name="user_id"]').val();
-                            d.email = $('#email').val();
-                            d.status = $('#status').val();
-                            d.created_at = $('#created_at').val();
+                            if (filtersEnabled) {
+                                d.email = $('#email').val();
+                                d.status = $('#status').val();
+                                var createdAtVal = $('#created_at').val();
+                                if (createdAtVal) { d.created_at = createdAtVal; }
+                            }
 
                         }
                     },
@@ -363,11 +367,13 @@
             $('#filter-form').on('keypress', function(e) {
                 if (e.which === 13) { // 13 is the Enter key code
                     e.preventDefault(); // Prevent form submission
+                    filtersEnabled = true;
                     table.draw(); // Trigger filtering only
                     return false;
                 }
             });
             $('#filter').click(function() {
+                filtersEnabled = true;
                 table.draw();
             });
 
@@ -389,6 +395,15 @@
         let assetPath = '{{ asset('') }}/';
         var globalData;
         var currency = @json($currency)
+
+        // Ensure date filter is empty by default so table shows all recent transactions
+        $(function(){
+            var $created = $('#created_at');
+            if ($created.length) {
+                try { if ($created[0]._flatpickr) { $created[0]._flatpickr.clear(); } } catch(e) {}
+                $created.val('');
+            }
+        });
 
         // When the user dropdown changes
         $('select[name="user_id"]').on('change', function() {

@@ -127,6 +127,44 @@ trait ImageUpload
         return str_replace('assets/', '', $file_url); // Just return file path
     }
 
+    public function successPageImageUploadTrait($query, $old = null): string // Taking input image as parameter
+    {
+
+        $allowExt = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
+        $ext = strtolower($query->getClientOriginalExtension());
+
+        if ($query->getSize() > 5242880) { // 5 MiB
+            abort('406', 'Max file size is 5 MB.');
+        }
+
+        if (! in_array($ext, $allowExt)) {
+            abort('406', 'only allow : jpeg, png, jpg, gif, svg');
+        }
+
+        // Upload new image first
+        $image_name = Str::random(20);
+        $image_full_name = $image_name.'.'.$ext;
+        $upload_path = 'assets/global/images/';    //Creating Sub directory in Assets folder to put image
+        $image_url = $upload_path.$image_full_name;
+        $success = $query->move($upload_path, $image_full_name);
+        if (!$success) {
+            abort(406, 'Image upload failed.');
+        }
+
+        // Only delete old image after successful upload and if it's not a default/shared image
+        if ($old != null) {
+            $sharedImages = [
+                'frontend/images/success-page__img.svg', // Default success page image used by seeder
+            ];
+            
+            if (!in_array($old, $sharedImages)) {
+                self::delete($old);
+            }
+        }
+        
+        return str_replace('assets/', '', $image_url); // Just return image
+    }
+
     protected function delete($path)
     {
         if (is_string($path)) {

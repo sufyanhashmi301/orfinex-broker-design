@@ -43,23 +43,49 @@
         </div>
         <div class="lg:col-span-3 col-span-12">
             <div class="card h-full">
-                <div class="card-body p-6">
+                <div class="card-header noborder">
+                    <h4 class="card-title">{{ __('Network Equity Summary') }}</h4>
+                </div>
+                <div class="card-body p-6 pt-0">
                     @if(setting('site_referral','global') == 'level' && auth()->user()->referrals->count() > 0)
                         @php
                             $equityDetails = get_recursive_equity_details(auth()->user());
                         @endphp
                         <div class="flex flex-col">
-                            <h4 class="text-lg font-medium mb-4">{{ __('Network Equity Summary') }}</h4>
-                            
                             <!-- Personal Stats -->
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded">
-                                    <div class="text-sm text-slate-600 dark:text-slate-200">{{ __('Personal Equity') }}</div>
-                                    <div class="text-lg font-medium dark:text-white">{{ $currencySymbol.number_format($equityDetails['personal_equity'], 2) }}</div>
+                            <div class="border border-slate-100 dark:border-slate-700 p-4 rounded mb-4">
+                                <div class="flex space-x-4 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-white">
+                                            <iconify-icon icon="lucide:user"></iconify-icon>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Personal Equity') }}
+                                        </div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                            {{ $currencySymbol.number_format($equityDetails['personal_equity'], 2) }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded">
-                                    <div class="text-sm text-slate-600 dark:text-slate-200">{{ __('Total Network Equity') }}</div>
-                                    <div class="text-lg font-medium dark:text-white">{{ $currencySymbol.number_format($equityDetails['total_equity'], 2) }}</div>
+                            </div>
+
+                            <div class="border border-slate-100 dark:border-slate-700 p-4 rounded mb-4">
+                                <div class="flex space-x-4 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-white">
+                                            <iconify-icon icon="lucide:network"></iconify-icon>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Total Network Equity') }}
+                                        </div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                            {{ $currencySymbol.number_format($equityDetails['total_equity'], 2) }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -67,7 +93,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full">
                                     <thead>
-                                        <tr class="bg-slate-50 dark:bg-slate-800">
+                                        <tr class="bg-slate-50 dark:bg-body">
                                             <th class="table-th">{{ __('Level') }}</th>
                                             <th class="table-th">{{ __('Total Equity') }}</th>
                                             <th class="table-th">{{ __('Referrals') }}</th>
@@ -75,18 +101,34 @@
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($equityDetails['levels_data'] as $level => $data)
-                                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800">
-                                                <td class="table-td">{{ __('Level') }} {{ $level }}</td>
+                                            <tr>
+                                                <td class="table-td">
+                                                    <div class="w-6 h-6 inline-flex items-center justify-center rounded bg-slate-100 dark:bg-body text-slate-600 dark:text-slate-300 text-sm font-medium">
+                                                        {{ $level }}
+                                                    </div>
+                                                </td>
                                                 <td class="table-td">{{ $currencySymbol.number_format($data['level_equity'], 2) }}</td>
                                                 <td class="table-td">{{ $data['referral_count'] }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
-                                        <tr class="bg-slate-50 dark:bg-slate-800 font-medium">
-                                            <td class="table-td">{{ __('Total') }}</td>
-                                            <td class="table-td">{{ $currencySymbol.number_format($equityDetails['total_downline_equity'], 2) }}</td>
-                                            <td class="table-td">{{ $equityDetails['referral_count'] }}</td>
+                                        <tr class="bg-slate-50 dark:bg-body font-medium">
+                                            <td class="table-td">
+                                                <span class="font-medium">
+                                                    {{ __('Total') }}
+                                                </span>
+                                            </td>
+                                            <td class="table-td">
+                                                <span class="font-medium">
+                                                    {{ $currencySymbol.number_format($equityDetails['total_downline_equity'], 2) }}
+                                                </span>
+                                            </td>
+                                            <td class="table-td">
+                                                <span class="font-medium">
+                                                    {{ $equityDetails['referral_count'] }}
+                                                </span>
+                                            </td>
                                         </tr>
                                     </tfoot>
                                 </table>

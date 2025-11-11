@@ -20,8 +20,8 @@
 @section('deposit_content')
     <div class="card progress-steps-form">
         <div class="transaction-status flex flex-col items-center px-7 py-12">
-            <div class="max-w-xl w-full mx-auto mb-6">
-                <img src="{{ asset($imagePath) }}" alt="{{ __('Success Image') }}" class="w-full">
+            <div class="text-center max-w-xl w-full mx-auto mb-6">
+                <img src="{{ asset($imagePath) }}" alt="{{ __('Success Image') }}" class="inline-block max-h-80">
             </div>
             <h5 class="text-lg text-gray-500 dark:text-gray-300 mb-2">
                 {{ $subtitle }}

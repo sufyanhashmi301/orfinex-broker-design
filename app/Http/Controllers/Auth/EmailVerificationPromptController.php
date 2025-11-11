@@ -17,10 +17,11 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request)
     {
-
+        // If email verification is disabled, redirect to dashboard
         if (! setting('email_verification', 'permission')) {
             return redirect()->route('user.dashboard');
         }
+        
         $user = $request->user();
 
         if (!isset($user->verification_code) || Carbon::now()->greaterThan($user->verification_code_expires_at ?? Carbon::now()->subMinutes(5))) {

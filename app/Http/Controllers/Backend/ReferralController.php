@@ -125,19 +125,57 @@ class ReferralController extends Controller
                 ]);
                 add_child_agent($pUser);
 
-                // Check if the new parent is part of master IB and propagate to child network
-                $isPartOfMasterIB = user_meta('is_part_of_master_ib', null, $pUser);
+				// Determine nearest approved IB group from parent upward and propagate to child's network
+				$ibGroupIdToApply = null;
+				if ($pUser && $pUser->ib_status === 'approved' && !is_null($pUser->ib_group_id)) {
+					$ibGroupIdToApply = (int) $pUser->ib_group_id;
+				} else {
+					$ibGroupIdToApply = $this->findNearestApprovedIbGroupId($pUser);
+				}
 
-                if ($isPartOfMasterIB) {
-                    // Use the service to sync meta to the entire child network
-                    $updatedCount = $this->userIbNetworkService->syncMeta($childUser, 'is_part_of_master_ib', $isPartOfMasterIB);
-                    
-                    DB::commit();
-                    notify()->success('Referral created successfully');
-                } else {
-                    DB::commit();
-                    notify()->success('Referral created successfully');
-                }
+				if ($ibGroupIdToApply) {
+					$this->userIbNetworkService->syncMeta($childUser, 'is_part_of_master_ib', $ibGroupIdToApply);
+				}
+
+				// Propagate parent's branch to child user and entire downline (no IB checks)
+				// $parentBranchId = getUserBranchId($pUser->id, $pUser);
+				// $downlineUserIds = $this->collectFullDownlineUserIds($childUser);
+				// if ($parentBranchId) {
+				// 	foreach ($downlineUserIds as $uid) {
+				// 		setUserBranchId($uid, (int) $parentBranchId);
+				// 	}
+				// } else {
+				// 	foreach ($downlineUserIds as $uid) {
+				// 		setUserBranchId($uid, null);
+				// 	}
+				// }
+
+				// // Propagate parent's staff to child user and entire downline (no IB checks)
+				// $parentStaffIds = $pUser->staff()->pluck('admins.id')->toArray();
+				// if (!empty($parentStaffIds)) {
+				// 	foreach ($downlineUserIds as $uid) {
+				// 		DB::table('staff_user')->where('user_id', $uid)->delete();
+				// 		$rows = [];
+				// 		$now = now();
+				// 		foreach ($parentStaffIds as $sid) {
+				// 			$rows[] = [
+				// 				'staff_id' => (int) $sid,
+				// 				'user_id' => (int) $uid,
+				// 				'created_at' => $now,
+				// 				'updated_at' => $now,
+				// 			];
+				// 		}
+				// 		if (!empty($rows)) {
+				// 			DB::table('staff_user')->insert($rows);
+				// 		}
+				// 	}
+				// } else {
+				// 	// No staff on parent: remove staff for child and their network
+				// 	DB::table('staff_user')->whereIn('user_id', $downlineUserIds)->delete();
+				// }
+
+				DB::commit();
+				notify()->success('Referral created successfully');
 
                 return redirect()->back();
                 
@@ -153,6 +191,45 @@ class ReferralController extends Controller
         }
     }
 
+	/**
+	 * Collect all downline user IDs including the given root user, without IB-related skips.
+	 */
+	// protected function collectFullDownlineUserIds(User $root): array
+	// {
+	// 	$collectedIds = [$root->id];
+	// 	$queue = [$root->id];
+
+	// 	while (!empty($queue)) {
+	// 		$children = User::whereIn('ref_id', $queue)->pluck('id')->toArray();
+	// 		$children = array_values(array_diff($children, $collectedIds));
+	// 		if (empty($children)) {
+	// 			break;
+	// 		}
+	// 		$collectedIds = array_merge($collectedIds, $children);
+	// 		$queue = $children;
+	// 	}
+
+	// 	return $collectedIds;
+	// }
+
+	/**
+	 * Find nearest ancestor of the given user who is an approved IB and return their ib_group_id.
+	 */
+	protected function findNearestApprovedIbGroupId(?User $startFrom): ?int
+	{
+		$current = $startFrom;
+		while ($current && $current->ref_id) {
+			$parent = User::find($current->ref_id);
+			if (!$parent) {
+				break;
+			}
+			if ($parent->ib_status === 'approved' && !is_null($parent->ib_group_id)) {
+				return (int) $parent->ib_group_id;
+			}
+			$current = $parent;
+		}
+		return null;
+	}
     /**
      * @return RedirectResponse
      */

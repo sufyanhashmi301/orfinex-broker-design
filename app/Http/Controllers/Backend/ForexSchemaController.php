@@ -77,6 +77,8 @@ class ForexSchemaController extends Controller
         if ($request->filled('branch_id')) {
             if ($request->input('branch_id') === 'none') {
                 $schemas->whereDoesntHave('branches');
+            } elseif ($request->input('branch_id') === 'any') {
+                $schemas->whereHas('branches');
             } else {
                 $schemas->whereHas('branches', function ($q) use ($request) {
                     $q->where('branches.id', $request->input('branch_id'));
@@ -136,6 +138,8 @@ class ForexSchemaController extends Controller
         if ($request->filled('branch_id')) {
             if ($request->input('branch_id') === 'none') {
                 $schemas->whereDoesntHave('branches');
+            } elseif ($request->input('branch_id') === 'any') {
+                $schemas->whereHas('branches');
             } else {
                 $schemas->whereHas('branches', function ($q) use ($request) {
                     $q->where('branches.id', $request->input('branch_id'));

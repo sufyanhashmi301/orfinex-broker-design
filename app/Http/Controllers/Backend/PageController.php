@@ -80,7 +80,7 @@ class PageController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            $imagePath = self::imageUploadTrait($request->file('image'), $successPage->image_path);
+            $imagePath = self::successPageImageUploadTrait($request->file('image'), $successPage->image_path);
             $input['image_path'] = $imagePath;
         }
 

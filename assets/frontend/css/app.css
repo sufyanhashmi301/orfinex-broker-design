@@ -4705,6 +4705,10 @@ textarea.form-control.is-invalid{
 .max-h-\[calc\(100\%-64px\)\]{
   max-height: calc(100% - 64px);
 }
+.max-h-80 {
+  --spacing: .25rem;
+  max-height: calc(var(--spacing) * 80);
+}
 .min-h-\[3\.23rem\]{
   min-height: 3.23rem;
 }

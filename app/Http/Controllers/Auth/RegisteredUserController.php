@@ -331,12 +331,12 @@ class RegisteredUserController extends Controller
                 $user->ref_id = $referrer->id;
                 $user->save();
 
-                $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
-
-                if ($isPartOfMasterIb) {
+                // Determine nearest approved IB ancestor and set child's master IB accordingly
+                $nearestApprovedParent = app(\App\Services\UserIbNetworkService::class)->findNearestApprovedParentIb($user);
+                if ($nearestApprovedParent && !is_null($nearestApprovedParent->ib_group_id)) {
                     $user->user_metas()->updateOrCreate(
                         ['meta_key' => 'is_part_of_master_ib'],
-                        ['meta_value' => $isPartOfMasterIb]
+                        ['meta_value' => $nearestApprovedParent->ib_group_id]
                     );
                 }
 

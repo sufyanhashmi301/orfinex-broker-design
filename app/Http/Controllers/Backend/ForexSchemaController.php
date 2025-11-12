@@ -54,6 +54,14 @@ class ForexSchemaController extends Controller
             ->traderType();
     
         // Apply filters
+        if ($request->filled('q')) {
+            $q = $request->input('q');
+            $schemas->where(function ($query) use ($q) {
+                $query->where('title', 'like', '%' . $q . '%')
+                    ->orWhere('trader_type', 'like', '%' . $q . '%')
+                    ->orWhere('badge', 'like', '%' . $q . '%');
+            });
+        }
         if ($request->filled('title')) {
             $schemas->where('title', 'like', '%' . $request->input('title') . '%');
         }
@@ -66,26 +74,36 @@ class ForexSchemaController extends Controller
         if ($request->filled('badge')) {
             $schemas->where('badge', 'like', '%' . $request->input('badge') . '%');
         }
+        if ($request->filled('branch_id')) {
+            if ($request->input('branch_id') === 'none') {
+                $schemas->whereDoesntHave('branches');
+            } else {
+                $schemas->whereHas('branches', function ($q) use ($request) {
+                    $q->where('branches.id', $request->input('branch_id'));
+                });
+            }
+        }
         if ($request->filled('status') && in_array($request->input('status'), ['0', '1'])) {
             $schemas->where('status', $request->input('status'));
         }
     
         // Force page 1 when filters change
-        if ($request->hasAny(['title', 'trader_type', 'leverage', 'badge', 'status']) && !$request->ajax()) {
+        if ($request->hasAny(['q', 'title', 'trader_type', 'leverage', 'badge', 'status', 'branch_id']) && !$request->ajax()) {
             $request->merge(['page' => 1]);
         }
     
         $schemas = $schemas->paginate(10);
+        $branches = Branch::where('status', 1)->orderBy('name', 'asc')->get();
     
         if ($request->ajax()) {
             return response()->json([
-                'html' => view('backend.forex_schema.index', compact('schemas'))->render(),
+                'html' => view('backend.forex_schema.index', compact('schemas', 'branches'))->render(),
                 'current_page' => $schemas->currentPage(),
-                'filters_active' => $request->anyFilled(['title', 'trader_type', 'leverage', 'badge', 'status'])
+                'filters_active' => $request->anyFilled(['q', 'title', 'trader_type', 'leverage', 'badge', 'status', 'branch_id'])
             ]);
         }
     
-        return view('backend.forex_schema.index', compact('schemas'));
+        return view('backend.forex_schema.index', compact('schemas', 'branches'));
     }
     
     public function export(Request $request)
@@ -95,6 +113,14 @@ class ForexSchemaController extends Controller
             ->traderType();
     
         // Apply the same filters as index method
+        if ($request->filled('q')) {
+            $q = $request->input('q');
+            $schemas->where(function ($query) use ($q) {
+                $query->where('title', 'like', '%' . $q . '%')
+                    ->orWhere('trader_type', 'like', '%' . $q . '%')
+                    ->orWhere('badge', 'like', '%' . $q . '%');
+            });
+        }
         if ($request->filled('title')) {
             $schemas->where('title', 'like', '%' . $request->input('title') . '%');
         }
@@ -106,6 +132,15 @@ class ForexSchemaController extends Controller
         }
         if ($request->filled('badge')) {
             $schemas->where('badge', 'like', '%' . $request->input('badge') . '%');
+        }
+        if ($request->filled('branch_id')) {
+            if ($request->input('branch_id') === 'none') {
+                $schemas->whereDoesntHave('branches');
+            } else {
+                $schemas->whereHas('branches', function ($q) use ($request) {
+                    $q->where('branches.id', $request->input('branch_id'));
+                });
+            }
         }
         if ($request->filled('status') && in_array($request->input('status'), ['0', '1'])) {
             $schemas->where('status', $request->input('status'));

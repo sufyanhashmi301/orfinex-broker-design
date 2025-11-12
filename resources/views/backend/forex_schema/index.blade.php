@@ -14,17 +14,13 @@
                     <input type="text" name="leverage" id="leverage" class="form-control h-full filter-input"
                         placeholder="Search by Leverage">
                 </div>
-                <div class="flex-1 input-area relative">
-                    <select name="status" id="status" class="form-control h-full filter-select">
-                        <option value="">{{ __('Filter by Status') }}</option>
-                        <option value="1">{{ __('Active') }}</option>
-                        <option value="0">{{ __('Deactivated') }}</option>
-                    </select>
-                </div>
-                <div class="flex-1 input-area relative">
+                 <div class="flex-1 input-area relative">
                     <select name="branch_id" id="branch_id" class="form-control h-full filter-select">
-                        <option value="">{{ __('Filter by Branch') }}</option>
-                        <option value="none">{{ __('No Branch') }}</option>
+                        <option value="">{{ __('Select Branch') }}</option>
+                     
+                        <option value="any">{{ __('Assigned Branches') }}</option>
+                        <option value="none">{{ __('Unassigned Branches') }}</option>
+                        <option disabled>──────────</option>
                         @isset($branches)
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -32,6 +28,14 @@
                         @endisset
                     </select>
                 </div>
+                <div class="flex-1 input-area relative">
+                    <select name="status" id="status" class="form-control h-full filter-select">
+                        <option value="">{{ __('Filter by Status') }}</option>
+                        <option value="1">{{ __('Active') }}</option>
+                        <option value="0">{{ __('Deactivated') }}</option>
+                    </select>
+                </div>
+               
             </div>
 
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">

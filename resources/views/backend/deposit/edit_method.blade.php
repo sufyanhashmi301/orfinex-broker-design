@@ -491,6 +491,10 @@
         $("#currency").on('change', function() {
             if (currency === null) {
                 $('#currency-selected').text(this.value);
+            } else {
+                // For custom rate gateways (nowpayments, coinremitter, blockchain)
+                // Update the currency display to show the selected currency
+                $('#currency-selected').text(this.value);
             }
         });
 

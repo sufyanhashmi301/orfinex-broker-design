@@ -6,21 +6,27 @@
     <form id="filter-form">
         <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
             <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="title" id="title" class="form-control h-full filter-input"
-                        placeholder="Search by Title">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="trader_type" id="trader_type" class="form-control h-full filter-input"
-                        placeholder="Search by Trader Type">
+                <div class="flex-[2] input-area relative">
+                    <input type="text" name="q" id="q" class="form-control h-full filter-input"
+                        placeholder="Search by Title, Trader Type, Badge">
                 </div>
                 <div class="flex-1 input-area relative">
                     <input type="text" name="leverage" id="leverage" class="form-control h-full filter-input"
                         placeholder="Search by Leverage">
                 </div>
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="badge" id="badge" class="form-control h-full filter-input"
-                        placeholder="Search by Badge">
+                 <div class="flex-1 input-area relative">
+                    <select name="branch_id" id="branch_id" class="form-control h-full filter-select">
+                        <option value="">{{ __('Select Branch') }}</option>
+                     
+                        <option value="any">{{ __('Assigned Branches') }}</option>
+                        <option value="none">{{ __('Unassigned Branches') }}</option>
+                        <option disabled>──────────</option>
+                        @isset($branches)
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @endforeach
+                        @endisset
+                    </select>
                 </div>
                 <div class="flex-1 input-area relative">
                     <select name="status" id="status" class="form-control h-full filter-select">
@@ -29,6 +35,7 @@
                         <option value="0">{{ __('Deactivated') }}</option>
                     </select>
                 </div>
+               
             </div>
 
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -243,12 +250,16 @@
         $(document).ready(function() {
             let deleteSchemaId = null;
             const urlParams = new URLSearchParams(window.location.search);
-            const accountTitle = urlParams.get('title');
+            const query = urlParams.get('q');
+            const branchId = urlParams.get('branch_id');
 
             // Initialize filters from URL
-            if (accountTitle) {
-                $('#title').val(accountTitle);
-                $('#filters_div').removeClass('hidden');
+            if (query) {
+                $('#q').val(query);
+                $('#filters_div').removeClass('hidden'); // kept if present in layout
+            }
+            if (branchId) {
+                $('#branch_id').val(branchId);
             }
 
             // Debounce function

@@ -221,6 +221,9 @@ class IBTransactionQueryService
      */
     private static function applyFilters($query, $filters)
     {
+        // Always exclude 'none' status transactions
+        $query->where('status', '!=', 'none');
+        
         // Status filter
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);

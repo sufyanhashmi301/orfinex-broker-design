@@ -351,12 +351,13 @@ class DepositController extends Controller
             // ✅ Get accessible user IDs using the helper
             $accessibleUserIds = getAccessibleUserIds()->pluck('id');
 
-            // ✅ Base query: only deposits and manual deposits
+            // ✅ Base query: only deposits and manual deposits, exclude none status
             $data = Transaction::query()
                 ->where(function ($query) {
                     $query->where('type', TxnType::ManualDeposit)
                         ->orWhere('type', TxnType::Deposit);
                 })
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
                 ->whereIn('user_id', $accessibleUserIds);
 
             // ✅ Optional filter by selected user (hashed id from Add Deposit)

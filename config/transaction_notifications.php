@@ -72,7 +72,8 @@ return [
     // -------------------------
     'admin_push' => [
         'withdraw'      => 'withdraw_request',
-        'withdraw_auto' => 'withdraw_request',
+        'withdraw_auto' => 'withdraw_auto_admin_success',
+        'deposit'       => 'deposit_auto_admin_success',
         'default'       => 'manual_deposit_request',
     ],
 ];

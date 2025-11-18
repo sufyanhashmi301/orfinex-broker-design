@@ -23,6 +23,12 @@
         </div>
     @break
 
+    @case('expired')
+        <div class="badge bg-slate-500 text-white capitalize">
+            {{ __('Expired') }}
+        </div>
+    @break
+
     @case('none')
         <div class="badge badge-secondary capitalize">
             {{ __('None') }}

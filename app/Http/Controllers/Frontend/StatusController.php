@@ -93,7 +93,7 @@ class StatusController extends Controller
     {
         // Handle JenaPay cancel redirect with parameters
         if ($request->has('order_id') || $request->has('payment_id')) {
-            try {
+            try { 
                 $orderId = $request->order_id ?? $request->trans_id ?? '';
                 
                 if ($orderId) {

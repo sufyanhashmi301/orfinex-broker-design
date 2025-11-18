@@ -364,12 +364,13 @@ class WithdrawController extends Controller
         if ($request->ajax()) {
             $userIds = getAccessibleUserIds()->pluck('id');
 
-        // Build base query
+        // Build base query, exclude none status
         $data = Transaction::query()
             ->where(function ($query) {
                 $query->where('type', TxnType::Withdraw)
                       ->orWhere('type', TxnType::WithdrawAuto);
             })
+            ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
             ->when($userIds !== 'all', function ($query) use ($userIds) {
                 $query->whereIn('user_id', $userIds);
             });

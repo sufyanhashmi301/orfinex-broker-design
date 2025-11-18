@@ -14,6 +14,7 @@ use App\Models\DepositVoucher;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
 use App\Services\ForexApiService;
+use App\Services\NotificationService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -22,6 +23,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -275,31 +277,7 @@ class DepositController extends GatewayController
             );
 
             DB::commit();
-
-            if ($gatewayInfo->type == 'manual') {
-                $shortcodes = [
-                    '[[full_name]]' => $txnInfo->user->full_name,
-                    '[[txn]]' => $txnInfo->tnx,
-                    '[[gateway_name]]' => $txnInfo->method,
-                    '[[deposit_amount]]' => $txnInfo->amount,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                    '[[message]]' => $txnInfo->approval_cause,
-                    '[[status]]' =>  'Pending',
-                ];
-                $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
-                $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
-                try {
-                    $emails = getAttachedStaffAdminEmails($user->id);
-                    foreach ($emails as $email) {
-                        $this->mailNotify($email, 'manual_deposit_request', $shortcodes, true);
-                    }
-                } catch (\Throwable $e) {
-                    \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
-                }
-                $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
-
-            }
+            
             return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
         // } catch (Exception $e) {
         //     DB::rollBack();
@@ -559,6 +537,28 @@ class DepositController extends GatewayController
             }
 
             DB::commit();
+
+            // Send centralized notifications for voucher deposit
+            try {
+                $notificationService = app(NotificationService::class);
+                
+                // Refresh transaction to get updated status
+                $txnInfo->refresh();
+                
+                // Send user notification (email + push)
+                $notificationService->transactionStatus($txnInfo, 'success');
+                
+                // Send admin/staff notifications (email + push)
+                $notificationService->adminTransactionAlert($txnInfo);
+            } catch (\Throwable $e) {
+                Log::error('Voucher deposit notification failed', [
+                    'transaction_id' => $txnInfo->id,
+                    'transaction_tnx' => $txnInfo->tnx,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+
             return self::notifyOnVoucherRedeem($txnInfo);
 
 
@@ -604,21 +604,6 @@ class DepositController extends GatewayController
                     'modal' => $transaction->from_model
                 ]);
             }
-
-            // Optional: Send notification
-            $shortcodes = [
-                '[[full_name]]' => $transaction->user->full_name,
-                '[[txn]]' => $transaction->tnx,
-                '[[gateway_name]]' => 'Voucher',
-                '[[deposit_amount]]' => $transaction->amount,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[message]]' => $approvalCause,
-                '[[status]]' => 'approved',
-            ];
-
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
-            $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user_id, 'deposit');
 
             return true;
 

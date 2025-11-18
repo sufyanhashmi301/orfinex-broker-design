@@ -26,9 +26,9 @@ class StatusController extends Controller
     public function success(Request $request)
     {
         $data = $request->all();
-// dd($data);
+        // dd($data);
         Log::info('JenaPay success redirect received', $data);
-        dd($request->all());
+        // dd($request->all());
 
         // Handle JenaPay redirect with parameters
         // According to: https://docs.jenapay.com/docs/guides/checkout_integration

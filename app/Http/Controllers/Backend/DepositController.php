@@ -154,6 +154,7 @@ class DepositController extends Controller
             'status' => $input['status'],
             'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
+            'is_rate_override_enabled' => isset($input['is_rate_override_enabled']) ? (bool) $input['is_rate_override_enabled'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
@@ -243,6 +244,7 @@ class DepositController extends Controller
             'status' => $input['status'],
             'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'is_custom_bank_details' => isset($input['is_custom_bank_details']) ? (bool) $input['is_custom_bank_details'] : false,
+            'is_rate_override_enabled' => isset($input['is_rate_override_enabled']) ? (bool) $input['is_rate_override_enabled'] : false,
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? $input['payment_details'] : null,
         ];

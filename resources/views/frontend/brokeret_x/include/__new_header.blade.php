@@ -44,8 +44,8 @@
                         <div class="divide-y divide-gray-200 dark:divide-gray-800">
                             <div class="flex flex-col gap-1 py-3">
                                 <div class="flex items-center dark:text-white/90 gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
-                                    <span class="text-base font-semibold">{{ data_get($mainWallet,'amount') }}</span>
-                                    <span class="text-base font-normal">{{ $currency }}</span>
+                                    <span class="text-theme-base font-semibold">{{ data_get($mainWallet,'amount') }}</span>
+                                    <span class="text-theme-base font-normal">{{ $currency }}</span>
                                 </div>
                                 <div class="text-theme-xs text-gray-500 dark:text-gray-400">{{ __('Main Wallet') }}</div>
                                 <span class="text-theme-xs text-gray-500 dark:text-gray-400">{{ __('E-') }}{{ data_get($mainWallet,'wallet_id') }}</span>
@@ -60,8 +60,8 @@
                             </div>
                             <div class="flex flex-col gap-1 py-3">
                                 <div class="flex items-center dark:text-white/90 gap-1" :class="switcherToggle ? 'blur-sm select-none' : ''">
-                                    <span class="text-base font-semibold">{{ data_get($ibWallet,'amount') }}</span>
-                                    <span class="text-base font-normal">{{ $currency }}</span>
+                                    <span class="text-theme-base font-semibold">{{ data_get($ibWallet,'amount') }}</span>
+                                    <span class="text-theme-base font-normal">{{ $currency }}</span>
                                 </div>
                                 <div class="text-theme-xs text-gray-500 dark:text-gray-400">{{ __('IB Wallet') }}</div>
                                 <span class="text-theme-xs text-gray-500 dark:text-gray-400">{{ __('IB-') }}{{ data_get($ibWallet,'wallet_id') }}</span>
@@ -114,27 +114,27 @@
                         class="shadow-theme-lg dark:bg-gray-dark absolute right-0 mt-[17px] flex w-[220px] flex-col rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800">
                         <ul class="flex flex-col gap-1">
                             <li>
-                                <a href="{{ route('user.forex-account-logs') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                <a href="{{ route('user.forex-account-logs') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                     <i data-lucide="layout-dashboard" class="shrink-0 size-4"></i>
                                     {{ __('Personal Area') }}
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('user.platform') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                <a href="{{ route('user.platform') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                     <i data-lucide="chart-candlestick" class="shrink-0 size-4"></i>
                                     {{ __('Web Terminal') }}
                                 </a>
                             </li>
                             @if (auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || isset(auth()->user()->ref_id))
                                 <li>
-                                    <a href="{{ route('user.multi-level.ib.dashboard') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                    <a href="{{ route('user.multi-level.ib.dashboard') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                         <i data-lucide="users" class="shrink-0 size-4"></i>
                                         {{ __('Partnership') }}
                                     </a>
                                 </li>
                             @elseif(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id))
                                 <li>
-                                    <a href="{{ route('user.ib.request') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                    <a href="{{ route('user.ib.request') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                         <i data-lucide="users" class="shrink-0 size-4"></i>
                                         {{ __('Request Master IB') }}
                                     </a>
@@ -161,7 +161,7 @@
                                 <img src="{{ getFilteredPath(auth()->user()->avatar, 'fallback/user.png') }}" alt="User" />
                             </div>
                             <div>
-                                <p class="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
+                                <p class="text-theme-sm text-gray-800 dark:text-white/90">
                                     {{ auth()->user()->full_name }}
                                 </p>
                                 <span class="block text-theme-xs text-gray-500 dark:text-gray-400">
@@ -174,7 +174,7 @@
                     <ul class="flex flex-col gap-1 border-b border-gray-200 pt-4 pb-3 dark:border-gray-800">
                         <li>
                             <a href="{{ route('user.kyc') }}"
-                                class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                 <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +186,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('user.change.password') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                            <a href="{{ route('user.change.password') }}" class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                 <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300" 
                                     width="24" height="24" viewBox="0 0 24 24" fill="none" 
                                     xmlns="http://www.w3.org/2000/svg">
@@ -198,7 +198,7 @@
                         </li>
                         <li>
                             <a href="{{ route('user.ticket.index') }}"
-                                class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                 <svg class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -213,7 +213,7 @@
                     <form method="POST" action="{{ route('logout') }}" id="logout-form">
                         @csrf
                         <a href="{{ url('logout') }}" onclick="event.preventDefault(); localStorage.clear(); document.getElementById('logout-form').submit();" 
-                        class="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        class="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             <svg class="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300" width="24"
                                 height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"

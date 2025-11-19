@@ -65,11 +65,11 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-800 dark:text-white/90">{{ __('Status') }}</p>
+                    <p class="text-theme-xs text-gray-800 dark:text-white/90">{{ __('Status') }}</p>
                     <h2 class="text-title-xs font-bold {{ $statusClass }}">
                         {{ $statusText }}
                     </h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                    <p class="text-theme-xs text-gray-500 dark:text-gray-400">
                         {{ $completedLevels }}/{{ $totalLevels }} {{ __('steps complete') }}
                     </p>
                 </div>
@@ -92,11 +92,11 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-800 dark:text-white/90">{{ __('Deposit limit') }}</p>
+                    <p class="text-theme-xs text-gray-800 dark:text-white/90">{{ __('Deposit limit') }}</p>
                     <h2 class="text-title-xs font-bold text-success-600 dark:text-success-400">
                         {{ __('Unlimited') }}
                     </h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                    <p class="text-theme-xs text-gray-500 dark:text-gray-400">
                         {{ __('Depending on payment method') }}
                     </p>
                 </div>
@@ -115,7 +115,7 @@
             @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
                 <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
                     <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-100">
+                        <div class="flex items-center justify-center w-6 h-6 rounded-full text-theme-sm bg-brand-100">
                             {{ 1 }}
                         </div>
                         <div>
@@ -176,7 +176,7 @@
                 @if($automaticSubLevel && $automaticSubLevel->status)
                     <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-100">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full text-theme-sm bg-brand-100">
                                 {{ 2 }}
                             </div>
                             <div>
@@ -206,7 +206,7 @@
                 @if($manualSubLevel && $manualSubLevel->status)
                     <div class="flex items-center justify-between border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800">
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-100">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full text-theme-sm bg-brand-100">
                                 {{ 2 }}
                             </div>
                             <div>
@@ -242,7 +242,7 @@
                 <div class="border-b border-gray-100 px-4 py-5 last:border-b-0 dark:border-gray-800" x-data="{ open: false }">
                     <div class="flex items-center justify-between @if($user->kyc != \App\Enums\KYCStatus::Level3->value) cursor-pointer @endif" x-on:click="open = !open">
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-100">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full text-theme-sm bg-brand-100">
                                 {{ 3 }}
                             </div>
                             <div>

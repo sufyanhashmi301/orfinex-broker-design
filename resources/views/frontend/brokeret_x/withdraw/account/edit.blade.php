@@ -33,7 +33,7 @@
                 :fieldRequired="true"
             />
 
-            @foreach(json_decode($withdrawAccount->credentials, true) as $key => $field)
+            @foreach((is_string($withdrawAccount->credentials) ? json_decode($withdrawAccount->credentials, true) : $withdrawAccount->credentials) as $key => $field)
                 @if($field['type'] == 'file')
                     <input type="hidden" name="credentials[{{ $key }}][type]" value="{{ $field['type'] }}">
                     <input type="hidden" name="credentials[{{ $key }}][validation]" value="{{ $field['validation'] }}">

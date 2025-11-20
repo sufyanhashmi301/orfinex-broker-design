@@ -21,9 +21,9 @@ class WithdrawAccount extends Model
         "description"
     ];
 
-//    protected $casts = [
-//        "credentials" => "array"
-//    ];
+    protected $casts = [
+        "credentials" => "array"
+    ];
 
     // Status constants
     const STATUS_PENDING = "pending";
@@ -80,5 +80,15 @@ class WithdrawAccount extends Model
     public function getLogoUrlAttribute(): string
     {
         return $this->method ? $this->method->logo_url : asset('assets/frontend/images/default-method.png');
+    }
+
+    /**
+     * Get the formatted status label
+     * 
+     * @return string
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->status ? ucfirst($this->status) : 'Pending';
     }
 }

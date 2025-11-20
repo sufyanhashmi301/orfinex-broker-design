@@ -156,7 +156,12 @@
                         @if($selectedAccount)
                             @php
                                 $selectedAccountData = $accounts->where('id', $selectedAccount)->first();
-                                $credentials = $selectedAccountData ? json_decode($selectedAccountData->credentials, true) : [];
+                                $credentials = $selectedAccountData 
+                                    ? (is_string($selectedAccountData->credentials) 
+                                        ? json_decode($selectedAccountData->credentials, true) 
+                                        : $selectedAccountData->credentials) 
+                                    : [];
+                                $credentials = is_array($credentials) ? $credentials : [];
                             @endphp
                             
                             @if($selectedAccountData)
@@ -290,6 +295,86 @@
                             this.stopOtpTimer();
                         }
                     });
+                    
+                    // Check session for verification requirement (like jQuery version)
+                    this.checkSessionForVerification();
+                },
+
+                // Check session for verification requirement after backend redirect
+                checkSessionForVerification() {
+                    @php
+                        $authRequired = session('withdraw_auth_required', false);
+                        $withdrawalData = session('withdrawal_data', null);
+                        $authOptions = session('withdraw_auth_options', []);
+                        $hasOtpOption = $authOptions['otp'] ?? false;
+                        $hasGaOption = $authOptions['ga'] ?? false;
+                        
+                        // Check if this is a redirect from backend (has old input) or fresh page load
+                        $hasOldInput = old('target_id') || old('withdraw_account') || old('amount');
+                    @endphp
+                    
+                    // Only show modal if:
+                    // 1. Auth is required AND withdrawal data exists (form was submitted)
+                    // 2. AND there's old input (meaning this is a redirect from backend, not fresh page load)
+                    @if(session('withdraw_auth_required') && !empty($withdrawalData) && $hasOldInput)
+                        // Both verification methods available
+                        @if($hasOtpOption && $hasGaOption)
+                            this.$nextTick(() => {
+                                this.isVerificationChoiceModalOpen = true;
+                            });
+                        // Only OTP available
+                        @elseif($hasOtpOption && !$hasGaOption)
+                            this.$nextTick(() => {
+                                // OTP should already be sent by backend, just show modal
+                                this.isOtpModalOpen = true;
+                            });
+                        // Only GA available
+                        @elseif(!$hasOtpOption && $hasGaOption)
+                            this.$nextTick(() => {
+                                this.modals.ga = true;
+                            });
+                        @endif
+                        
+                        // Clear session flags after detecting (like jQuery version does)
+                        @php
+                            session()->forget('withdraw_auth_required');
+                            session()->forget('withdraw_auth_options');
+                        @endphp
+                    @endif
+                },
+
+                // Helper methods
+                findForm() {
+                    return document.getElementById('withdrawForm');
+                },
+
+                getCsrfToken() {
+                    return document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+                },
+
+                showPageLoader() {
+                    const pageLoader = document.getElementById('page-loader');
+                    if (pageLoader) pageLoader.style.display = 'block';
+                },
+
+                syncFormFields(form) {
+                    const targetIdInput = form.querySelector('[name="target_id"]');
+                    const accountTypeInput = form.querySelector('[name="account_type"]');
+                    const withdrawAccountInput = form.querySelector('[name="withdraw_account"]');
+                    const amountInput = form.querySelector('[name="amount"]');
+                    
+                    if (targetIdInput && this.selectedTargetId) {
+                        targetIdInput.value = this.selectedTargetId;
+                    }
+                    if (accountTypeInput && this.accountType) {
+                        accountTypeInput.value = this.accountType;
+                    }
+                    if (withdrawAccountInput && this.selectedWithdrawAccount) {
+                        withdrawAccountInput.value = this.selectedWithdrawAccount;
+                    }
+                    if (amountInput && this.amount) {
+                        amountInput.value = this.amount;
+                    }
                 },
 
                 // Validation helper
@@ -371,57 +456,40 @@
                     const otpCode = this.otpInputs.join('');
                     
                     if (otpCode.length !== 4) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Please enter the complete 4-digit code');
-                        }
+                        tNotify.('error', '{{ __("Please enter the complete 4-digit code") }}');
                         return;
                     }
+                    
+                    this.isSubmitting = true;
                     
                     try {
                         const response = await fetch('{{ route("user.withdraw.otp.verify") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': this.getCsrfToken()
                             },
-                            body: JSON.stringify({
-                                otp: otpCode
-                            })
+                            body: JSON.stringify({ otp: otpCode })
                         });
                         
                         const data = await response.json();
                         
                         if (data.status === 'success') {
                             this.isOtpModalOpen = false;
-                            
-                            if (typeof tNotify !== 'undefined') {
-                                tNotify('success', data.message);
-                            }
-                            
-                            // Show loading state
-                            const pageLoader = document.getElementById('page-loader');
-                            if (pageLoader) pageLoader.style.display = 'block';
-                            
-                            // Submit the form after successful OTP verification
+                            tNotify?.('success', data.message);
+                            this.showPageLoader();
                             this.submitFormAfterOtp();
                         } else {
-                            // Handle error response from backend
-                            const errorMessage = data.message || 'OTP verification failed';
-                            
-                            if (typeof tNotify !== 'undefined') {
-                                tNotify('error', errorMessage);
-                            }
-                            
-                            // Clear inputs on error
+                            this.isSubmitting = false;
+                            const errorMessage = data.message || '{{ __("OTP verification failed") }}';
+                            tNotify?.('error', errorMessage);
                             this.otpInputs = ['', '', '', ''];
                             
-                            // Focus first input for re-entry
                             this.$nextTick(() => {
                                 const firstInput = document.querySelector('[data-otp-index="0"]');
                                 if (firstInput) firstInput.focus();
                             });
                             
-                            // If OTP expired, suggest resending
                             if (errorMessage.toLowerCase().includes('expired')) {
                                 setTimeout(() => {
                                     if (confirm('{{ __("OTP has expired. Would you like to request a new one?") }}')) {
@@ -431,10 +499,8 @@
                             }
                         }
                     } catch (error) {
-                        console.error('OTP verification error:', error);
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'An error occurred during OTP verification. Please try again.');
-                        }
+                        this.isSubmitting = false;
+                        tNotify?.('error', '{{ __("An error occurred during OTP verification. Please try again.") }}');
                         this.otpInputs = ['', '', '', ''];
                     }
                 },
@@ -450,31 +516,21 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': this.getCsrfToken()
                             }
                         });
                         
                         const data = await response.json();
-                        
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('success', data.message);
-                        }
-                        
-                        // Reset timer when new OTP sent
+                        tNotify?.('success', data.message);
                         this.startOtpTimer();
-                        
-                        // Clear inputs for new code
                         this.otpInputs = ['', '', '', ''];
                         
-                        // Focus first input
                         this.$nextTick(() => {
                             const firstInput = document.querySelector('[data-otp-index="0"]');
                             if (firstInput) firstInput.focus();
                         });
                     } catch (error) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'An error occurred while resending the OTP. Please try again.');
-                        }
+                        tNotify?.('error', '{{ __("An error occurred while resending the OTP. Please try again.") }}');
                     } finally {
                         this.isResendingOtp = false;
                     }
@@ -486,14 +542,7 @@
 
                 closeOtpModal() {
                     this.isOtpModalOpen = false;
-                    this.otpInputs = ['', '', '', '']; // Clear OTP inputs when closing
-                    this.stopOtpTimer();
-                },
-
-                confirmCancel() {
-                    this.isOtpModalOpen = false;
-                    this.isCancelModalOpen = false;
-                    this.otpInputs = ['', '', '', '']; // Clear OTP inputs when canceling
+                    this.otpInputs = ['', '', '', ''];
                     this.stopOtpTimer();
                 },
 
@@ -599,31 +648,29 @@
                         return;
                     }
                     
-                    // For withdrawals, always submit form and let backend handle verification
+                    // Set loading state - will persist until page reload/redirect
+                    this.isSubmitting = true;
+                    
+                    // For withdrawals, always submit form first to let backend handle verification
                     // Backend will redirect back with session data if verification is needed
+                    // This matches the jQuery version flow
                     this.submitFormDirectly();
                 },
 
                 // Validate form fields
                 validateForm() {
                     if (!this.selectedTargetId) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Please select an account to withdraw from');
-                        }
+                        tNotify?.('error', '{{ __("Please select an account to withdraw from") }}');
                         return false;
                     }
                     
                     if (!this.selectedWithdrawAccount) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Please select a withdraw method');
-                        }
+                        tNotify?.('error', '{{ __("Please select a withdraw method") }}');
                         return false;
                     }
                     
                     if (!this.amount || parseFloat(this.amount) <= 0) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Please enter a valid amount');
-                        }
+                        tNotify?.('error', '{{ __("Please enter a valid amount") }}');
                         return false;
                     }
                     
@@ -632,34 +679,27 @@
 
                 // Submit form without verification
                 submitFormDirectly() {
-                    const form = document.getElementById('withdrawForm');
+                    const form = this.findForm();
                     if (form) {
-                        // Remove Alpine.js submit handler temporarily
+                        this.isSubmitting = true;
                         form.removeAttribute('@submit.prevent');
-                        // Submit the form normally
+                        this.showPageLoader();
                         form.submit();
                     }
                 },
 
                 submitFormAfterOtp() {
-                    // Submit form after successful OTP verification
-                    const form = document.getElementById('withdrawForm');
+                    const form = this.findForm();
                     if (form) {
-                        // Remove the Alpine.js submit handler temporarily
-                        form.removeAttribute('@submit');
-                        
-                        // Submit the form normally
+                        this.isSubmitting = true;
+                        this.syncFormFields(form);
+                        form.removeAttribute('@submit.prevent');
+                        this.showPageLoader();
                         form.submit();
                     } else {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Form submission error');
-                        }
+                        this.isSubmitting = false;
+                        tNotify?.('error', '{{ __("Form submission error") }}');
                     }
-                },
-
-                // Show cancel modal
-                showCancelModal() {
-                    this.isCancelModalOpen = true;
                 },
 
                 // Method selection for verification choice modal
@@ -667,11 +707,53 @@
                     this.selectedVerificationMethod = method;
                 },
 
-                // Note: Verification choice is handled by backend for withdrawals
-                // This method is kept for modal compatibility but not used in current flow
-                proceedWithVerification() {
-                    // This method is not used in the current withdraw flow
-                    // Backend handles all verification logic
+                // Handle verification method selection and proceed
+                async proceedWithVerification() {
+                    if (!this.selectedVerificationMethod) {
+                        notify()?.error('{{ __("Please choose a verification method") }}');
+                        return;
+                    }
+                    
+                    this.isVerificationChoiceModalOpen = false;
+                    
+                    if (this.selectedVerificationMethod === 'email') {
+                        try {
+                            const response = await fetch('{{ route('user.withdraw.otp.resend') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': this.getCsrfToken(),
+                                    'Accept': 'application/json'
+                                }
+                            });
+                            
+                            if (!response.ok) {
+                                let errorMessage = '{{ __("Failed to send OTP. Please try again.") }}';
+                                try {
+                                    const errorData = await response.json();
+                                    errorMessage = errorData.message || errorMessage;
+                                } catch (e) {
+                                    errorMessage = '{{ __("Server error. Please try again later.") }}';
+                                }
+                                tNotify?.('error', errorMessage);
+                                return;
+                            }
+                            
+                            const data = await response.json();
+                            
+                            if (data.success || data.status === 'success') {
+                                tNotify?.('success', data.message || '{{ __("OTP has been sent. Please verify it to proceed.") }}');
+                                this.isOtpModalOpen = true;
+                                this.startOtpTimer();
+                            } else {
+                                tNotify?.('error', data.message || '{{ __("Failed to send OTP. Please try again.") }}');
+                            }
+                        } catch (error) {
+                            tNotify?.('error', '{{ __("Failed to send OTP. Please try again.") }}');
+                        }
+                    } else if (this.selectedVerificationMethod === 'ga') {
+                        this.modals.ga = true;
+                    }
                 },
 
                 // Google Authenticator input handling
@@ -725,11 +807,9 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': this.getCsrfToken()
                             },
-                            body: JSON.stringify({
-                                one_time_password: gaCode
-                            })
+                            body: JSON.stringify({ one_time_password: gaCode })
                         });
                         
                         if (!response.ok) {
@@ -741,17 +821,23 @@
                         if (data.status === 'success') {
                             this.modals.ga = false;
                             this.gaInputs = ['', '', '', '', '', ''];
+                            this.isSubmitting = true;
+                            notify()?.success(data.message);
                             
-                            notify().success(data.message);
+                            const form = this.findForm();
+                            if (form) {
+                                this.syncFormFields(form);
+                            }
                             
-                            // Submit the form after successful verification
+                            this.showPageLoader();
                             this.submitFormDirectly();
                         } else {
+                            this.isSubmitting = false;
                             notify().error(data.message || 'Google Authenticator verification failed');
                             this.gaInputs = ['', '', '', '', '', ''];
                         }
                     } catch (error) {
-                        console.error('GA verification error:', error);
+                        this.isSubmitting = false;
                         notify().error('An error occurred during Google Authenticator verification. Please try again.');
                         this.gaInputs = ['', '', '', '', '', ''];
                     }
@@ -759,13 +845,15 @@
 
                 // Confirm cancel action
                 confirmCancel() {
+                    this.isSubmitting = false;
                     this.isOtpModalOpen = false;
                     this.isCancelModalOpen = false;
                     this.isVerificationChoiceModalOpen = false;
                     this.modals.ga = false;
-                    this.otpInput = '';
+                    this.otpInputs = ['', '', '', ''];
                     this.gaInputs = ['', '', '', '', '', ''];
                     this.selectedVerificationMethod = null;
+                    this.stopOtpTimer();
                 }
             }
         }

@@ -159,9 +159,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
     //withdraw
     Route::group(['middleware' => 'KYC', 'prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-            //withdraw methods
-    Route::resource('account', WithdrawController::class)->except('show');
-    Route::get('account/{id}', 'show')->name('account.show');
+        //withdraw methods
+        Route::resource('account', WithdrawController::class)->except('show');
+        Route::get('account/{id}', 'show')->name('account.show');
         //user withdraw
         Route::get('/', 'withdraw')->name('view');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');

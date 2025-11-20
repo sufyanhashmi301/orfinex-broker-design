@@ -63,7 +63,9 @@
 
                         <!-- Submit Button -->
                         <div class="buttons mt-6">
-                            <x-frontend::forms.button type="submit" class="w-full" size="md" variant="primary" icon="square-pen" icon-position="left">
+                            <x-frontend::forms.button type="submit" class="w-full" size="md" variant="primary" icon="square-pen" icon-position="left"
+                                x-bind:disabled="isSubmitting"
+                                x-bind:loading="isSubmitting">
                                 {{ __('Create Withdraw Account') }}
                             </x-frontend::forms.button>
                         </div>
@@ -130,6 +132,7 @@
                 methodFields: null,
                 loading: false,
                 error: null,
+                isSubmitting: false,
                 
                 // Modal states
                 isVerificationChoiceModalOpen: false,
@@ -162,6 +165,14 @@
                             this.startOtpTimer();
                         } else {
                             this.stopOtpTimer();
+                        }
+                    });
+                    
+                    // Watch verification choice modal - reset loading if closed without proceeding
+                    this.$watch('isVerificationChoiceModalOpen', (value) => {
+                        if (!value && this.isSubmitting && !this.selectedVerificationMethod) {
+                            // Modal closed without selection, reset loading state
+                            this.isSubmitting = false;
                         }
                     });
                 },
@@ -208,7 +219,6 @@
                         }
                         
                     } catch (error) {
-                        console.error('Failed to load payment method fields:', error);
                         this.error = '{{ __("Failed to load payment method details. Please try again.") }}';
                     } finally {
                         this.loading = false;
@@ -221,31 +231,62 @@
                 },
 
                 async proceedWithVerification() {
-                    if (!this.selectedVerificationMethod) return;
-                    
-                    this.isVerificationChoiceModalOpen = false;
-                    
-                    // Submit form to store endpoint with selected verification method
-                    await this.submitFormWithVerificationMethod(this.selectedVerificationMethod === 'email' ? 'otp' : 'ga');
-                },
-
-                async submitFormWithVerificationMethod(method) {
-                    console.log('submitFormWithVerificationMethod called with method:', method);
-                    
-                    // Try multiple methods to find the form
-                    let form = document.getElementById('withdrawAccountForm') || 
-                               document.querySelector('form[action*="withdraw.account.store"]') ||
-                               document.querySelector('form[method="post"]');
-                    
-                    if (!form) {
-                        console.error('Form not found in submitFormWithVerificationMethod');
-                        notify().error('Form not found. Please refresh the page.');
+                    if (!this.selectedVerificationMethod) {
+                        this.isSubmitting = false;
                         return;
                     }
                     
-                    console.log('Form found:', form.id || form.action);
+                    this.isVerificationChoiceModalOpen = false;
+                    this.isSubmitting = true;
+                    await this.submitFormWithVerificationMethod(this.selectedVerificationMethod === 'email' ? 'otp' : 'ga');
+                },
+
+                // Helper method to find form
+                findForm() {
+                    return document.getElementById('withdrawAccountForm') || 
+                           document.querySelector('form[action*="withdraw.account.store"]') ||
+                           document.querySelector('form[method="post"]');
+                },
+
+                // Helper method to get CSRF token
+                getCsrfToken() {
+                    return document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+                },
+
+                // Helper method to handle form submission response
+                handleFormResponse(data, response) {
+                    if (data.status === 'success') {
+                        if (data.show_modal) {
+                            this.isOtpModalOpen = true;
+                            notify()?.success(data.message);
+                        } else if (data.show_ga) {
+                            this.modals.ga = true;
+                            notify()?.info(data.message);
+                        } else if (data.redirect) {
+                            window.location.href = data.redirect;
+                        }
+                    } else {
+                        this.isSubmitting = false;
+                        notify()?.error(data.message || '{{ __("An error occurred") }}');
+                        
+                        if (data.errors) {
+                            Object.values(data.errors).flat().forEach(error => {
+                                notify()?.error(error);
+                            });
+                        }
+                    }
+                },
+
+                async submitFormWithVerificationMethod(method) {
+                    this.isSubmitting = true;
                     
-                    // Prepare form data
+                    const form = this.findForm();
+                    if (!form) {
+                        this.isSubmitting = false;
+                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
+                        return;
+                    }
+                    
                     const formData = new FormData(form);
                     formData.append('verification_method', method);
                     
@@ -254,83 +295,27 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'X-Requested-With': 'XMLHttpRequest'
+                                'X-CSRF-TOKEN': this.getCsrfToken(),
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
                             },
                             credentials: 'same-origin'
                         });
                         
-                        // Check if response is JSON
                         const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
+                        if (contentType?.includes('application/json')) {
                             const data = await response.json();
-                            
-                            if (data.status === 'success') {
-                                if (data.show_modal) {
-                                    // OTP was sent, show OTP modal
-                                    this.isOtpModalOpen = true;
-                                    if (typeof notify !== 'undefined') {
-                                        notify().success(data.message);
-                                    }
-                                } else if (data.show_ga) {
-                                    // Show GA modal
-                                    this.modals.ga = true;
-                                    if (typeof notify !== 'undefined') {
-                                        notify().info(data.message);
-                                    }
-                                } else if (data.redirect) {
-                                    // Account created successfully, redirect
-                                    window.location.href = data.redirect;
-                                }
-                            } else {
-                                // Handle error
-                                if (typeof notify !== 'undefined') {
-                                    notify().error(data.message || 'An error occurred');
-                                }
-                                
-                                // If there's a restriction, optionally show details
-                                if (data.is_restricted && data.formatted_time) {
-                                    console.log('Restricted until:', data.formatted_time);
-                                }
-                            }
+                            this.handleFormResponse(data, response);
                         } else {
-                            // Response is HTML (redirect), follow it
                             window.location.reload();
                         }
                     } catch (error) {
-                        console.error('Form submission error:', error);
-                        if (typeof notify !== 'undefined') {
-                            notify().error('An error occurred while processing your request');
-                        }
+                        this.isSubmitting = false;
+                        notify().error('{{ __("An error occurred while processing your request") }}');
                     }
                 },
 
-                // OTP Methods (for resend functionality only)
-
-                async sendOtpForWithdrawAccountCreation() {
-                    try {
-                        const response = await fetch('{{ route('user.withdraw.account.resend-otp') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            credentials: 'same-origin'
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success && typeof tNotify !== 'undefined') {
-                            tNotify('success', data.message || 'OTP has been sent to your email.');
-                        }
-                    } catch (error) {
-                        if (typeof tNotify !== 'undefined') {
-                            tNotify('error', 'Failed to send OTP. Please try again.');
-                        }
-                    }
-                },
-
+                // OTP Methods
                 async resendOtp() {
                     this.isResendingOtp = true;
                     
@@ -374,8 +359,7 @@
                             notify().error(data.message || 'Failed to resend OTP');
                         }
                     } catch (error) {
-                        console.error('Resend OTP error:', error);
-                        notify().error('An error occurred while resending the OTP. Please try again.');
+                        notify().error('{{ __("An error occurred while resending the OTP. Please try again.") }}');
                     } finally {
                         this.isResendingOtp = false;
                     }
@@ -388,6 +372,9 @@
                         notify().error('Please enter the complete 4-digit code');
                         return;
                     }
+                    
+                    // Ensure loading state is maintained
+                    this.isSubmitting = true;
                     
                     try {
                         const response = await fetch('{{ route("user.withdraw.account.verify-otp.post") }}', {
@@ -427,6 +414,9 @@
                                 }, 1000); // Small delay to show success message
                             }
                         } else {
+                            // Reset loading state on error
+                            this.isSubmitting = false;
+                            
                             // Handle error response from backend
                             const errorMessage = data.message || 'OTP verification failed';
                             notify().error(errorMessage);
@@ -459,8 +449,8 @@
                             }
                         }
                     } catch (error) {
-                        console.error('OTP verification error:', error);
-                        notify().error('An error occurred during OTP verification. Please try again.');
+                        this.isSubmitting = false;
+                        notify()?.error('{{ __("An error occurred during OTP verification. Please try again.") }}');
                         this.otpInputs = ['', '', '', ''];
                     }
                 },
@@ -471,6 +461,7 @@
                 },
 
                 confirmCancel() {
+                    this.isSubmitting = false;
                     this.isOtpModalOpen = false;
                     this.isCancelModalOpen = false;
                     this.modals.ga = false;
@@ -634,6 +625,9 @@
                         return;
                     }
                     
+                    // Ensure loading state is maintained
+                    this.isSubmitting = true;
+                    
                     try {
                         const response = await fetch('{{ route("user.withdraw.account.verify-ga.post") }}', {
                             method: 'POST',
@@ -649,18 +643,12 @@
                         });
                         
                         if (!response.ok) {
-                            const responseText = await response.text();
-                            console.error(`HTTP ${response.status} error:`, responseText);
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         
                         const contentType = response.headers.get('content-type');
-                        if (!contentType || !contentType.includes('application/json')) {
-                            const responseText = await response.text();
-                            console.error('Non-JSON response received:', responseText);
-                            console.error('Content-Type:', contentType);
-                            console.error('Response URL:', response.url);
-                            throw new Error('Server returned non-JSON response. Check console for details.');
+                        if (!contentType?.includes('application/json')) {
+                            throw new Error('Server returned non-JSON response');
                         }
                         
                         const data = await response.json();
@@ -678,23 +666,24 @@
                                 }, 1000); // Small delay to show success message
                             }
                         } else {
-                            this.modals.ga = false;
-                            notify().error(data.message || 'Google Authenticator verification failed');
+                            this.isSubmitting = false;
+                            notify().error(data.message || '{{ __("Google Authenticator verification failed") }}');
                             this.gaInputs = ['', '', '', '', '', ''];
                         }
                     } catch (error) {
-                        this.modals.ga = false;
-                        notify().error('An error occurred during verification. Please try again.');
-                        console.error('GA verification error:', error);
+                        this.isSubmitting = false;
+                        notify().error('{{ __("An error occurred during verification. Please try again.") }}');
                         this.gaInputs = ['', '', '', '', '', ''];
                     } finally {
-                        // Always close the modal in case of error
                         this.modals.ga = false;
                     }
                 },
 
                 // Smart verification flow - main logic
                 async startVerification() {
+                    // Set loading state - will persist until process completes or error
+                    this.isSubmitting = true;
+                    
                     // Check both settings and route accordingly
                     if (this.withdrawAccountOtp && this.twoFaEnabledForUser) {
                         // Both active → Show choice modal
@@ -713,33 +702,21 @@
                 
                 // Submit form to store endpoint and show OTP modal
                 async submitFormAndShowOtpModal() {
+                    this.isSubmitting = true;
                     
-                    // Try multiple methods to find the form
-                    let form = document.getElementById('withdrawAccountForm') || 
-                               document.querySelector('form[action*="withdraw.account.store"]') ||
-                               document.querySelector('form[method="post"]') ||
-                               this.$el.closest('div').querySelector('form');
-                    
-                    console.log('Form search result:', form);
-                    
+                    const form = this.findForm();
                     if (!form) {
-                        console.error('Form not found in submitFormAndShowOtpModal');
-                        console.log('Available forms:', document.querySelectorAll('form'));
-                        notify().error('Form not found. Please refresh the page.');
+                        this.isSubmitting = false;
+                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
                         return;
                     }
                     
-                    console.log('Form found:', form.id || form.action);
-                    
-                    // Validate form
                     if (!form.checkValidity()) {
-                        console.log('Form validation failed');
+                        this.isSubmitting = false;
                         form.reportValidity();
                         return;
                     }
                     
-                    // Get CSRF token
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
                     const formData = new FormData(form);
                     
                     try {
@@ -747,7 +724,7 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': csrfToken,
+                                'X-CSRF-TOKEN': this.getCsrfToken(),
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json'
                             },
@@ -755,65 +732,41 @@
                         });
                         
                         const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
+                        if (contentType?.includes('application/json')) {
                             const data = await response.json();
                             
                             if (data.status === 'success' && data.show_modal) {
-                                // OTP sent successfully, show modal
                                 this.isOtpModalOpen = true;
-                                notify().success(data.message || 'OTP has been sent to your email');
-                            } else if (data.status === 'error') {
-                                // Handle error
-                                notify().error(data.message || 'An error occurred');
-                                
-                                // Show validation errors if present
-                                if (data.errors) {
-                                    Object.values(data.errors).flat().forEach(error => {
-                                        notify().error(error);
-                                    });
-                                }
+                                notify().success(data.message || '{{ __("OTP has been sent to your email") }}');
                             } else {
-                                notify().warning('Unexpected response. Please try again.');
+                                this.handleFormResponse(data, response);
                             }
                         } else {
-                            // Non-JSON response
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else {
-                                window.location.reload();
-                            }
+                            window.location.href = response.url || window.location.href;
                         }
                     } catch (error) {
-                        notify().error('An error occurred while processing your request');
+                        this.isSubmitting = false;
+                        notify().error('{{ __("An error occurred while processing your request") }}');
                     }
                 },
                 
                 // Submit form to store endpoint and show GA modal
                 async submitFormAndShowGaModal() {
-                    console.log('submitFormAndShowGaModal called');
+                    this.isSubmitting = true;
                     
-                    // Try multiple methods to find the form
-                    let form = document.getElementById('withdrawAccountForm') || 
-                               document.querySelector('form[action*="withdraw.account.store"]') ||
-                               document.querySelector('form[method="post"]');
-                    
+                    const form = this.findForm();
                     if (!form) {
-                        console.error('Form not found in submitFormAndShowGaModal');
-                        console.log('Available forms:', document.querySelectorAll('form'));
-                        notify().error('Form not found. Please refresh the page.');
+                        this.isSubmitting = false;
+                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
                         return;
                     }
                     
-                    console.log('Form found:', form.id || form.action);
-                    
-                    // Validate form
                     if (!form.checkValidity()) {
+                        this.isSubmitting = false;
                         form.reportValidity();
                         return;
                     }
                     
-                    // Get CSRF token
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
                     const formData = new FormData(form);
                     
                     try {
@@ -821,7 +774,7 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': csrfToken,
+                                'X-CSRF-TOKEN': this.getCsrfToken(),
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json'
                             },
@@ -829,63 +782,41 @@
                         });
                         
                         const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
+                        if (contentType?.includes('application/json')) {
                             const data = await response.json();
                             
                             if (data.status === 'success' && data.show_ga) {
-                                // Show GA modal
                                 this.modals.ga = true;
-                                notify().info(data.message || 'Please verify with your Google Authenticator');
-                            } else if (data.status === 'error') {
-                                // Handle error
-                                notify().error(data.message || 'An error occurred');
-                                
-                                // Show validation errors if present
-                                if (data.errors) {
-                                    Object.values(data.errors).flat().forEach(error => {
-                                        notify().error(error);
-                                    });
-                                }
+                                notify().info(data.message || '{{ __("Please verify with your Google Authenticator") }}');
                             } else {
-                                notify().warning('Unexpected response. Please try again.');
+                                this.handleFormResponse(data, response);
                             }
                         } else {
-                            // Non-JSON response
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else {
-                                window.location.reload();
-                            }
+                            window.location.href = response.url || window.location.href;
                         }
                     } catch (error) {
-                        notify().error('An error occurred while processing your request');
+                        this.isSubmitting = false;
+                        notify().error('{{ __("An error occurred while processing your request") }}');
                     }
                 },
 
                 // Submit form without verification
                 async submitFormDirectly() {
-                    // Try multiple methods to find the form
-                    let form = document.getElementById('withdrawAccountForm') || 
-                               document.querySelector('form[action*="withdraw.account.store"]') ||
-                               document.querySelector('form[method="post"]');
+                    this.isSubmitting = true;
                     
+                    const form = this.findForm();
                     if (!form) {
-                        notify().error('Form not found. Please refresh the page.');
+                        this.isSubmitting = false;
+                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
                         return;
                     }
                     
-                    console.log('Form found:', form.id || form.action);
-                    
-                    // Validate form has required fields
                     if (!form.checkValidity()) {
+                        this.isSubmitting = false;
                         form.reportValidity();
                         return;
                     }
                     
-                    // Get CSRF token from meta tag or form
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
-                    
-                    // Prepare form data
                     const formData = new FormData(form);
                     
                     try {
@@ -893,77 +824,37 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': csrfToken,
+                                'X-CSRF-TOKEN': this.getCsrfToken(),
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json'
                             },
                             credentials: 'same-origin'
                         });
                         
-                        // Check if response is JSON
                         const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
+                        if (contentType?.includes('application/json')) {
                             const data = await response.json();
                             
                             if (data.status === 'success') {
+                                notify().success(data.message || '{{ __("Account created successfully") }}');
                                 if (data.redirect) {
-                                    // Account created successfully, redirect
-                                    notify().success(data.message || 'Account created successfully');
                                     setTimeout(() => {
                                         window.location.href = data.redirect;
                                     }, 500);
-                                } else {
-                                    // Success message
-                                    notify().success(data.message || 'Account created successfully');
                                 }
                             } else {
-                                // Handle error
-                                notify().error(data.message || 'An error occurred');
-                                
-                                // Log validation errors if present
-                                if (data.errors) {
-                                    Object.values(data.errors).flat().forEach(error => {
-                                        notify().error(error);
-                                    });
-                                }
+                                this.handleFormResponse(data, response);
                             }
                         } else {
-                            // Response is HTML (redirect), follow it
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else {
-                                window.location.reload();
-                            }
+                            window.location.href = response.url || window.location.href;
                         }
                     } catch (error) {
-                        console.error('Form submission error:', error);
-                        notify().error('An error occurred while processing your request. Submitting normally...');
-                        
-                        // Fallback: Submit form normally if AJAX fails
+                        this.isSubmitting = false;
+                        notify().error('{{ __("An error occurred while processing your request") }}');
                         setTimeout(() => {
                             form.submit();
                         }, 1000);
                     }
-                },
-
-                // Method selection for verification choice modal
-                selectVerificationMethod(method) {
-                    this.selectedVerificationMethod = method;
-                },
-
-                // Show cancel modal
-                showCancelModal() {
-                    this.isCancelModalOpen = true;
-                },
-
-                // Confirm cancel action
-                confirmCancel() {
-                    this.isOtpModalOpen = false;
-                    this.isCancelModalOpen = false;
-                    this.modals.ga = false;
-                    this.otpInputs = ['', '', '', ''];
-                    this.gaInputs = ['', '', '', '', '', ''];
-                    this.selectedVerificationMethod = null;
                 }
             }
         }

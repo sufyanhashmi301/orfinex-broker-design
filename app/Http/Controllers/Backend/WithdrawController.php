@@ -1132,7 +1132,10 @@ class WithdrawController extends Controller
 
         $withdrawAccount = WithdrawAccount::find($accountId);
 
-        $credentials = json_decode($withdrawAccount->credentials, true);
+        $credentials = is_string($withdrawAccount->credentials) 
+            ? json_decode($withdrawAccount->credentials, true) 
+            : $withdrawAccount->credentials;
+        $credentials = is_array($credentials) ? $credentials : [];
 
         $currency = setting('site_currency', 'global');
         $method = $withdrawAccount->method;
@@ -1259,7 +1262,7 @@ class WithdrawController extends Controller
             $input['amount'], $charge, $totalAmount, $withdrawMethod->name,
             'Withdraw With ' . $withdrawAccount->method_name, $type,
             TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null,
-            'User', json_decode($withdrawAccount->credentials, true), 'none',
+            'User', is_string($withdrawAccount->credentials) ? json_decode($withdrawAccount->credentials, true) : $withdrawAccount->credentials, 'none',
             $targetId, $targetType
         );
 

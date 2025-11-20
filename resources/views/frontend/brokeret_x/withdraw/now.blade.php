@@ -456,7 +456,7 @@
                     const otpCode = this.otpInputs.join('');
                     
                     if (otpCode.length !== 4) {
-                        tNotify.('error', '{{ __("Please enter the complete 4-digit code") }}');
+                        notify().error('Please enter the complete 4-digit code');
                         return;
                     }
                     
@@ -476,13 +476,13 @@
                         
                         if (data.status === 'success') {
                             this.isOtpModalOpen = false;
-                            tNotify?.('success', data.message);
+                            notify().success(data.message);
                             this.showPageLoader();
                             this.submitFormAfterOtp();
                         } else {
                             this.isSubmitting = false;
                             const errorMessage = data.message || '{{ __("OTP verification failed") }}';
-                            tNotify?.('error', errorMessage);
+                            notify().error(errorMessage);
                             this.otpInputs = ['', '', '', ''];
                             
                             this.$nextTick(() => {
@@ -500,7 +500,7 @@
                         }
                     } catch (error) {
                         this.isSubmitting = false;
-                        tNotify?.('error', '{{ __("An error occurred during OTP verification. Please try again.") }}');
+                        notify().error('An error occurred during OTP verification. Please try again.');
                         this.otpInputs = ['', '', '', ''];
                     }
                 },
@@ -521,7 +521,7 @@
                         });
                         
                         const data = await response.json();
-                        tNotify?.('success', data.message);
+                        notify().success(data.message);
                         this.startOtpTimer();
                         this.otpInputs = ['', '', '', ''];
                         
@@ -530,7 +530,7 @@
                             if (firstInput) firstInput.focus();
                         });
                     } catch (error) {
-                        tNotify?.('error', '{{ __("An error occurred while resending the OTP. Please try again.") }}');
+                        notify().error('An error occurred while resending the OTP. Please try again.');
                     } finally {
                         this.isResendingOtp = false;
                     }
@@ -660,17 +660,17 @@
                 // Validate form fields
                 validateForm() {
                     if (!this.selectedTargetId) {
-                        tNotify?.('error', '{{ __("Please select an account to withdraw from") }}');
+                        notify().error('Please select an account to withdraw from');
                         return false;
                     }
                     
                     if (!this.selectedWithdrawAccount) {
-                        tNotify?.('error', '{{ __("Please select a withdraw method") }}');
+                        notify().error('Please select a withdraw method');
                         return false;
                     }
                     
                     if (!this.amount || parseFloat(this.amount) <= 0) {
-                        tNotify?.('error', '{{ __("Please enter a valid amount") }}');
+                        notify().error('Please enter a valid amount');
                         return false;
                     }
                     
@@ -698,7 +698,7 @@
                         form.submit();
                     } else {
                         this.isSubmitting = false;
-                        tNotify?.('error', '{{ __("Form submission error") }}');
+                        notify().error('Form submission error');
                     }
                 },
 
@@ -710,7 +710,7 @@
                 // Handle verification method selection and proceed
                 async proceedWithVerification() {
                     if (!this.selectedVerificationMethod) {
-                        notify()?.error('{{ __("Please choose a verification method") }}');
+                        notify().error('Please choose a verification method');
                         return;
                     }
                     
@@ -735,21 +735,21 @@
                                 } catch (e) {
                                     errorMessage = '{{ __("Server error. Please try again later.") }}';
                                 }
-                                tNotify?.('error', errorMessage);
+                                notify().error(errorMessage);
                                 return;
                             }
                             
                             const data = await response.json();
                             
                             if (data.success || data.status === 'success') {
-                                tNotify?.('success', data.message || '{{ __("OTP has been sent. Please verify it to proceed.") }}');
+                                notify().success(data.message || 'OTP has been sent. Please verify it to proceed.');
                                 this.isOtpModalOpen = true;
                                 this.startOtpTimer();
                             } else {
-                                tNotify?.('error', data.message || '{{ __("Failed to send OTP. Please try again.") }}');
+                                notify().error(data.message || 'Failed to send OTP. Please try again.');
                             }
                         } catch (error) {
-                            tNotify?.('error', '{{ __("Failed to send OTP. Please try again.") }}');
+                            notify().error('Failed to send OTP. Please try again.');
                         }
                     } else if (this.selectedVerificationMethod === 'ga') {
                         this.modals.ga = true;
@@ -822,7 +822,7 @@
                             this.modals.ga = false;
                             this.gaInputs = ['', '', '', '', '', ''];
                             this.isSubmitting = true;
-                            notify()?.success(data.message);
+                            notify().success(data.message);
                             
                             const form = this.findForm();
                             if (form) {

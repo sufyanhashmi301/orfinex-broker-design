@@ -258,20 +258,20 @@
                     if (data.status === 'success') {
                         if (data.show_modal) {
                             this.isOtpModalOpen = true;
-                            notify()?.success(data.message);
+                            notify().success(data.message);
                         } else if (data.show_ga) {
                             this.modals.ga = true;
-                            notify()?.info(data.message);
+                            notify().info(data.message);
                         } else if (data.redirect) {
                             window.location.href = data.redirect;
                         }
                     } else {
                         this.isSubmitting = false;
-                        notify()?.error(data.message || '{{ __("An error occurred") }}');
+                        notify().error(data.message || 'An error occurred');
                         
                         if (data.errors) {
                             Object.values(data.errors).flat().forEach(error => {
-                                notify()?.error(error);
+                                notify().error(error);
                             });
                         }
                     }
@@ -283,7 +283,7 @@
                     const form = this.findForm();
                     if (!form) {
                         this.isSubmitting = false;
-                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
+                        notify().error('Form not found. Please refresh the page.');
                         return;
                     }
                     
@@ -311,7 +311,7 @@
                         }
                     } catch (error) {
                         this.isSubmitting = false;
-                        notify().error('{{ __("An error occurred while processing your request") }}');
+                        notify().error('An error occurred while processing your request');
                     }
                 },
 
@@ -359,7 +359,7 @@
                             notify().error(data.message || 'Failed to resend OTP');
                         }
                     } catch (error) {
-                        notify().error('{{ __("An error occurred while resending the OTP. Please try again.") }}');
+                        notify().error('An error occurred while resending the OTP. Please try again.');
                     } finally {
                         this.isResendingOtp = false;
                     }
@@ -424,7 +424,7 @@
                             // Check if session expired
                             if (data.expired && data.redirect) {
                                 setTimeout(() => {
-                                    notify().warning('{{ __("Redirecting to form...") }}');
+                                    notify().warning('Redirecting to form...');
                                     window.location.href = data.redirect;
                                 }, 2000);
                                 return;
@@ -450,7 +450,7 @@
                         }
                     } catch (error) {
                         this.isSubmitting = false;
-                        notify()?.error('{{ __("An error occurred during OTP verification. Please try again.") }}');
+                        notify().error('An error occurred during OTP verification. Please try again.');
                         this.otpInputs = ['', '', '', ''];
                     }
                 },
@@ -787,7 +787,7 @@
                             
                             if (data.status === 'success' && data.show_ga) {
                                 this.modals.ga = true;
-                                notify().info(data.message || '{{ __("Please verify with your Google Authenticator") }}');
+                                notify().info(data.message || 'Please verify with your Google Authenticator');
                             } else {
                                 this.handleFormResponse(data, response);
                             }
@@ -796,7 +796,7 @@
                         }
                     } catch (error) {
                         this.isSubmitting = false;
-                        notify().error('{{ __("An error occurred while processing your request") }}');
+                        notify().error('An error occurred while processing your request');
                     }
                 },
 
@@ -807,7 +807,7 @@
                     const form = this.findForm();
                     if (!form) {
                         this.isSubmitting = false;
-                        notify().error('{{ __("Form not found. Please refresh the page.") }}');
+                        notify().error('Form not found. Please refresh the page.');
                         return;
                     }
                     
@@ -836,7 +836,7 @@
                             const data = await response.json();
                             
                             if (data.status === 'success') {
-                                notify().success(data.message || '{{ __("Account created successfully") }}');
+                                notify().success(data.message || 'Account created successfully');
                                 if (data.redirect) {
                                     setTimeout(() => {
                                         window.location.href = data.redirect;
@@ -850,7 +850,7 @@
                         }
                     } catch (error) {
                         this.isSubmitting = false;
-                        notify().error('{{ __("An error occurred while processing your request") }}');
+                        notify().error('An error occurred while processing your request');
                         setTimeout(() => {
                             form.submit();
                         }, 1000);

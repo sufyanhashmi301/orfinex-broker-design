@@ -1,5 +1,5 @@
 @props([
-    'variant' => 'primary', // primary, success, error, warning, info, light, dark
+    'variant' => 'primary', // primary, secondary, success, error, warning, info, light, dark
     'style' => 'light', // light, solid
     'icon' => null,
     'iconPosition' => 'left', // left, right
@@ -20,6 +20,7 @@
     // Light background variants
     $lightVariants = [
         'primary' => 'bg-brand-50 text-brand-500 dark:bg-brand-500/15 dark:text-brand-400',
+        'secondary' => 'bg-gray-100 text-gray-600 dark:bg-gray-700/50 dark:text-gray-300',
         'success' => 'bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-400',
         'error' => 'bg-error-50 text-error-700 dark:bg-error-900/20 dark:text-error-400',
         'warning' => 'bg-warning-50 text-warning-700 dark:bg-warning-900/20 dark:text-warning-400',
@@ -31,6 +32,7 @@
     // Solid background variants
     $solidVariants = [
         'primary' => 'bg-brand-500 text-white',
+        'secondary' => 'bg-gray-500 text-white dark:bg-gray-600 dark:text-white',
         'success' => 'bg-success-500 text-white',
         'error' => 'bg-error-500 text-white',
         'warning' => 'bg-warning-500 text-white',
@@ -41,7 +43,11 @@
     
     $variants = $style === 'solid' ? $solidVariants : $lightVariants;
     
-    $classes = $baseClasses . ' ' . $sizeClasses[$size] . ' ' . $variants[$variant];
+    // Safe array access with fallback to primary variant
+    $variantClass = $variants[$variant] ?? $variants['primary'];
+    $sizeClass = $sizeClasses[$size] ?? $sizeClasses['sm'];
+    
+    $classes = $baseClasses . ' ' . $sizeClass . ' ' . $variantClass;
     
     // Icon size based on badge size
     $iconSizes = [
@@ -51,7 +57,7 @@
         'lg' => 'w-5 h-5'
     ];
     
-    $iconSize = $iconSizes[$size];
+    $iconSize = $iconSizes[$size] ?? $iconSizes['sm'];
 @endphp
 
 <span {{ $attributes->merge(['class' => $classes]) }}>

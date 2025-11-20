@@ -17,82 +17,95 @@
 
     <!-- Desktop Table View (hidden on mobile) -->
     <div class="hidden md:block overflow-hidden">
-        <div class="max-w-full overflow-x-auto">
-            <table class="min-w-full border-separate border-spacing-3">
-                <!-- table body start -->
-                <tbody class="">
-                    <tr>
-                        <td class="pe-5 pt-2 pb-1 sm:pe-6">
-                            <div class="min-w-max text-nowrap text-gray-800 dark:text-white/90">
-                                {{ __('Account type')}}
-                            </div>
-                        </td>
-                        <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                {{ __('Min deposit') }}
-                            </div>
-                        </td>
-                        <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                {{ __('Min spread') }}
-                            </div>
-                        </td>
-                        <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                {{ __('Max leverage') }}
-                            </div>
-                        </td>
-                        <td class="px-5 pt-2 pb-1 sm:px-6">
-                            <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
-                                {{ __('Commission') }}
-                            </div>
-                        </td>
-                    </tr>
-                    @foreach($schemas as $schema)
-                        <tr class="outline outline-1 outline-gray-200 cursor-pointer dark:outline-gray-800 rounded-lg hover:shadow-md transition-all duration-300" 
-                            x-data 
-                            @click="window.location.href = '{{ route('user.schema.preview', the_hash($schema->id)) }}'">
-                            <td class="px-5 py-4 sm:px-6">
-                                <div class="flex gap-3">
-                                    <div class="flex-shrink-0 w-12 h-12 overflow-hidden">
-                                        <img src="{{ asset($schema->icon) }}" alt="brand">
-                                    </div>
-
-                                    <div class="flex flex-col gap-1 max-w-[356px]">
-                                        <span class="font-medium text-gray-800 text-theme-lg dark:text-white/90">
-                                            {{ $schema->title }}
-                                        </span>
-                                        <span class="w-full max-w-max text-gray-500 text-theme-sm dark:text-gray-400">
-                                            {!! $schema->desc !!}
-                                        </span>
-                                    </div>
+        @if($schemas->isEmpty())
+            <x-frontend::empty-state icon="inbox">
+                <x-slot name="subtitle">
+                    {{ __('No account type found') }}
+                </x-slot>
+                <x-slot name="actions">
+                    <x-frontend::link-button href="{{ route('user.ticket.index') }}" variant="primary" size="md" icon="headset" icon-position="left">
+                        {{ __('Contact Support') }}
+                    </x-frontend::link-button>
+                </x-slot>
+            </x-frontend::empty-state>
+        @else
+            <div class="max-w-full overflow-x-auto">
+                <table class="min-w-full border-separate border-spacing-3">
+                    <!-- table body start -->
+                    <tbody class="">
+                        <tr>
+                            <td class="pe-5 pt-2 pb-1 sm:pe-6">
+                                <div class="min-w-max text-nowrap text-gray-800 dark:text-white/90">
+                                    {{ __('Account type')}}
                                 </div>
                             </td>
-                            <td class="px-5 py-4 sm:px-6">
-                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
-                                </p>
+                            <td class="px-5 pt-2 pb-1 sm:px-6">
+                                <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                    {{ __('Min deposit') }}
+                                </div>
                             </td>
-                            <td class="px-5 py-4 sm:px-6">
-                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {{ $schema->spread }}
-                                </p>
+                            <td class="px-5 pt-2 pb-1 sm:px-6">
+                                <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                    {{ __('Min spread') }}
+                                </div>
                             </td>
-                            <td class="px-5 py-4 sm:px-6">
-                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {{ $schema->leverage }}
-                                </p>
+                            <td class="px-5 pt-2 pb-1 sm:px-6">
+                                <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                    {{ __('Max leverage') }}
+                                </div>
                             </td>
-                            <td class="px-5 py-4 sm:px-6">
-                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {{ $schema->commission }}
-                                </p>
+                            <td class="px-5 pt-2 pb-1 sm:px-6">
+                                <div class="min-w-max text-nowrap text-gray-500 text-theme-xs dark:text-gray-400">
+                                    {{ __('Commission') }}
+                                </div>
                             </td>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                        @foreach($schemas as $schema)
+                            <tr class="outline outline-1 outline-gray-200 cursor-pointer dark:outline-gray-800 rounded-lg hover:shadow-md transition-all duration-300" 
+                                x-data 
+                                @click="window.location.href = '{{ route('user.schema.preview', the_hash($schema->id)) }}'">
+                                <td class="px-5 py-4 sm:px-6">
+                                    <div class="flex gap-3">
+                                        <div class="flex-shrink-0 w-12 h-12 overflow-hidden">
+                                            <img src="{{ asset($schema->icon) }}" alt="brand">
+                                        </div>
+
+                                        <div class="flex flex-col gap-1 max-w-[356px]">
+                                            <span class="font-medium text-gray-800 text-theme-lg dark:text-white/90">
+                                                {{ $schema->title }}
+                                            </span>
+                                            <span class="w-full max-w-max text-gray-500 text-theme-sm dark:text-gray-400">
+                                                {!! $schema->desc !!}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-4 sm:px-6">
+                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                        {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
+                                    </p>
+                                </td>
+                                <td class="px-5 py-4 sm:px-6">
+                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                        {{ $schema->spread }}
+                                    </p>
+                                </td>
+                                <td class="px-5 py-4 sm:px-6">
+                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                        {{ $schema->leverage }}
+                                    </p>
+                                </td>
+                                <td class="px-5 py-4 sm:px-6">
+                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                        {{ $schema->commission }}
+                                    </p>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 
     <!-- Mobile Carousel View (visible only on mobile) -->
@@ -111,6 +124,15 @@
         
         <div class="swiper w-full" x-ref="container">
             <div class="swiper-wrapper">
+                @if($schemas->isEmpty())
+                    <div class="swiper-slide">
+                        <x-frontend::empty-state icon="inbox">
+                            <x-slot name="subtitle">
+                                {{ __('No account type found') }}
+                            </x-slot>
+                        </x-frontend::empty-state>
+                    </div>
+                @else
                 @foreach($schemas as $schema)
                     <div class="swiper-slide">
                         <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3" 
@@ -165,8 +187,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </div>
         <!-- Add Pagination -->

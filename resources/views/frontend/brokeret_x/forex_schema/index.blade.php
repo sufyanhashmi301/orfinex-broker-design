@@ -19,8 +19,11 @@
     <div class="hidden md:block overflow-hidden">
         @if($schemas->isEmpty())
             <x-frontend::empty-state icon="inbox">
+                <x-slot name="title">
+                    {{ __("No account type found") }}
+                </x-slot>
                 <x-slot name="subtitle">
-                    {{ __('No account type found') }}
+                    {{ __('Please contact support to get more information about account types.') }}
                 </x-slot>
                 <x-slot name="actions">
                     <x-frontend::link-button href="{{ route('user.ticket.index') }}" variant="primary" size="md" icon="headset" icon-position="left">
@@ -127,8 +130,16 @@
                 @if($schemas->isEmpty())
                     <div class="swiper-slide">
                         <x-frontend::empty-state icon="inbox">
+                            <x-slot name="title">
+                                {{ __("No account type found") }}
+                            </x-slot>
                             <x-slot name="subtitle">
-                                {{ __('No account type found') }}
+                                {{ __('Please contact support to get more information about account types.') }}
+                            </x-slot>
+                            <x-slot name="actions">
+                                <x-frontend::link-button href="{{ route('user.ticket.index') }}" variant="primary" size="md" icon="headset" icon-position="left">
+                                    {{ __('Contact Support') }}
+                                </x-frontend::link-button>
                             </x-slot>
                         </x-frontend::empty-state>
                     </div>

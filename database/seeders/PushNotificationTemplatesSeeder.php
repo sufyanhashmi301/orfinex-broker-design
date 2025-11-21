@@ -11,7 +11,6 @@ class PushNotificationTemplatesSeeder extends Seeder
     public function run()
     {
         $templates = [
-            // ============================= DEPOSIT NOTIFICATIONS =============================
             [
                 'name' => 'Payment Deposit Request',
                 'code' => 'payment_deposit_request',
@@ -72,8 +71,6 @@ class PushNotificationTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-
-            // ============================= WITHDRAWAL NOTIFICATIONS =============================
             [
                 'name' => 'Withdraw Account Request',
                 'code' => 'withdraw_account_request',
@@ -134,8 +131,6 @@ class PushNotificationTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-
-            // ============================= KYC NOTIFICATIONS =============================
             [
                 'name' => 'KYC Request',
                 'code' => 'kyc_request',
@@ -160,8 +155,6 @@ class PushNotificationTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-
-            // ============================= IB NOTIFICATIONS =============================
             [
                 'name' => 'IB Request',
                 'code' => 'ib_request',
@@ -274,6 +267,66 @@ class PushNotificationTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'name' => 'Auto Deposit Success',
+                'code' => 'deposit_auto_user_success',
+                'for' => 'User',
+                'icon' => 'circle-check',
+                'title' => 'Deposit Successful',
+                'message_body' => 'Your payment of [[amount]] [[currency]] via [[method]] has been successfully processed. Transaction ID: [[tnx]]',
+                'short_codes' => json_encode(["[[full_name]]", "[[tnx]]", "[[method]]", "[[amount]]", "[[currency]]", "[[description]]", "[[date]]", "[[site_title]]", "[[site_url]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Auto Deposit Failed',
+                'code' => 'deposit_auto_user_failed',
+                'for' => 'User',
+                'icon' => 'alert-circle',
+                'title' => 'Deposit Failed',
+                'message_body' => 'Your payment of [[amount]] [[currency]] via [[method]] could not be processed. Transaction ID: [[tnx]]. Please contact support if funds were deducted.',
+                'short_codes' => json_encode(["[[full_name]]", "[[tnx]]", "[[method]]", "[[amount]]", "[[currency]]", "[[description]]", "[[date]]", "[[site_title]]", "[[site_url]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Withdrawal Failed',
+                'code' => 'withdraw_failed',
+                'for' => 'User',
+                'icon' => 'x-circle',
+                'title' => 'Withdrawal Failed',
+                'message_body' => 'Your withdrawal of [[amount]] [[currency]] failed. [[description]]. Transaction ID: [[tnx]]',
+                'short_codes' => json_encode(["[[full_name]]", "[[tnx]]", "[[method]]", "[[amount]]", "[[currency]]", "[[description]]", "[[date]]", "[[site_title]]", "[[site_url]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Auto Deposit Success - Admin & Staff',
+                'code' => 'deposit_auto_admin_success',
+                'for' => 'Admin',
+                'icon' => 'credit-card',
+                'title' => 'Deposit Successful',
+                'message_body' => '[[full_name]] deposited [[amount]] [[currency]] via [[method]]. Transaction ID: [[tnx]]',
+                'short_codes' => json_encode(["[[full_name]]", "[[tnx]]", "[[method]]", "[[amount]]", "[[currency]]", "[[site_title]]", "[[site_url]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Auto Withdrawal Success - Admin & Staff',
+                'code' => 'withdraw_auto_admin_success',
+                'for' => 'Admin',
+                'icon' => 'banknote',
+                'title' => 'Withdrawal Successful',
+                'message_body' => '[[full_name]] withdrew [[amount]] [[currency]] via [[method]]. Transaction ID: [[tnx]]',
+                'short_codes' => json_encode(["[[full_name]]", "[[tnx]]", "[[method]]", "[[amount]]", "[[currency]]", "[[site_title]]", "[[site_url]]"]),
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
         ];
 
         foreach ($templates as $template) {

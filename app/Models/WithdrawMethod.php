@@ -13,6 +13,7 @@ class WithdrawMethod extends Model
     protected $casts = [
         'country' => 'array',
         'is_global' => 'boolean',
+        'is_rate_override_enabled' => 'boolean',
     ];
 
     public function gateway(): \Illuminate\Database\Eloquent\Relations\BelongsTo

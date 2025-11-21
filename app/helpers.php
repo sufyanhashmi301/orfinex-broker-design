@@ -1039,7 +1039,7 @@ if (!function_exists('txn_type')) {
 if (!function_exists('is_custom_rate')) {
     function is_custom_rate($gateway_code)
     {
-        if (in_array($gateway_code, ['nowpayments', 'coinremitter', 'blockchain'])) {
+        if (in_array($gateway_code, ['coinremitter', 'blockchain'])) {
             return 'USD';
         }
         return null;

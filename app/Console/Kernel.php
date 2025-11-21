@@ -27,6 +27,7 @@ use App\Console\Commands\RecalculateIBBalances;
 use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 use App\Console\Commands\RemoveDuplicateIBTransactions;
+use App\Console\Commands\ExpirePendingDeposits;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -58,6 +59,9 @@ class Kernel extends ConsoleKernel
         
         // 4-month based IB transactions management (automatic)
         $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();
+
+        // Expire pending deposits older than 1 hour
+        $schedule->command('deposits:expire-pending')->hourly()->withoutOverlapping();
 
     }
 
@@ -100,6 +104,7 @@ class Kernel extends ConsoleKernel
         RecalculateIBBalances::class,
         DebugUserIBTransactions::class,
         RemoveDuplicateIBTransactions::class,
+        ExpirePendingDeposits::class,
 
     ];
 }

@@ -367,12 +367,13 @@ class WithdrawController extends Controller
         if ($request->ajax()) {
             $userIds = getAccessibleUserIds()->pluck('id');
 
-        // Build base query
+        // Build base query, exclude none status
         $data = Transaction::query()
             ->where(function ($query) {
                 $query->where('type', TxnType::Withdraw)
                       ->orWhere('type', TxnType::WithdrawAuto);
             })
+            ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
             ->when($userIds !== 'all', function ($query) use ($userIds) {
                 $query->whereIn('user_id', $userIds);
             });
@@ -502,7 +503,22 @@ class WithdrawController extends Controller
             if (isset($input['approve'])) {
                 $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                 if ($txn) {
-                    $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
+                    // Refresh transaction to get updated status
+                    $transaction->refresh();
+                    
+                    // Send centralized notifications for withdrawal approval
+                    try {
+                        $notificationService = app(\App\Services\NotificationService::class);
+                        $notificationService->transactionStatus($transaction, 'success');
+                        $notificationService->adminTransactionAlert($transaction);
+                    } catch (\Throwable $e) {
+                        Log::error('Manual withdrawal approval notification failed', [
+                            'transaction_id' => $transaction->id,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
+                    
                     notify()->success('Approve successfully');
                 }else{
                     notify()->error('Failed to update transaction. Please try again.');
@@ -531,7 +547,21 @@ class WithdrawController extends Controller
 
                     $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                     if ($txn) {
-                        $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+                        // Refresh refund transaction to get updated status
+                        $newTransaction->refresh();
+                        
+                        // Send centralized notifications for refund transaction
+                        try {
+                            $notificationService = app(\App\Services\NotificationService::class);
+                            $notificationService->transactionStatus($newTransaction, 'success');
+                            $notificationService->adminTransactionAlert($newTransaction);
+                        } catch (\Throwable $e) {
+                            Log::error('Refund transaction notification failed', [
+                                'transaction_id' => $newTransaction->id,
+                                'error' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+                        }
                     }else{
                         notify()->error('Failed to update transaction. Please try again.');
                         return redirect()->back();
@@ -544,13 +574,37 @@ class WithdrawController extends Controller
                     notify()->error('Failed to update transaction. Please try again.');
                     return redirect()->back();
                 }
+                
+                // Refresh transaction to get updated status
+                $transaction->refresh();
+                
+                // Send centralized notifications for withdrawal rejection
+                try {
+                    $notificationService = app(\App\Services\NotificationService::class);
+                    $notificationService->transactionStatus($transaction, 'rejected');
+                    $notificationService->adminTransactionAlert($transaction);
+                } catch (\Throwable $e) {
+                    Log::error('Manual withdrawal rejection notification failed', [
+                        'transaction_id' => $transaction->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
+                
                 notify()->success('Reject successfully');
             }
             $transaction->action_by = auth()->user()->id;
             $transaction->save();
-
-            $this->pushNotify('withdraw_request_user', $shortcodes, route('user.history.transactions'), $user->id, 'withdraw');
-            $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
+            
+            // Send SMS notification (if enabled) - only for approval/rejection, not creation
+            try {
+                $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
+            } catch (\Throwable $e) {
+                Log::warning('SMS notification failed for withdrawal', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             DB::commit();
             return redirect()->back();
@@ -1341,7 +1395,7 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
         $input = $request->all();
-//dd($input);
+        //dd($input);
         $targetId = get_hash($input['target_id']);
         $targetType = TxnTargetType::Wallet->value;
 
@@ -1530,17 +1584,53 @@ class WithdrawController extends Controller
         ];
 
         if ($request->is_auto_approve == true) {
-            Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, $approvalCause);
-            $this->mailNotify($txnInfo->user->email, 'user_auto_approve_withdrawal', $shortcodes);
+            $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, $approvalCause);
+            if ($updateResult) {
+                // Refresh transaction to get updated status
+                $txnInfo->refresh();
+                
+                // Send centralized notifications for auto-approved withdrawal
+                try {
+                    $notificationService = app(\App\Services\NotificationService::class);
+                    $notificationService->transactionStatus($txnInfo, 'success');
+                    $notificationService->adminTransactionAlert($txnInfo);
+                } catch (\Throwable $e) {
+                    Log::error('Admin add withdrawal auto-approve notification failed', [
+                        'transaction_id' => $txnInfo->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
+            }
             notify()->success('Withdrawal approved automatically');
             return redirect()->back();
         }
 
-        // Send notifications
-        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
-        $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
-        $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
-        $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+        // Refresh transaction to get latest status
+        $txnInfo->refresh();
+        
+        // Send centralized notifications for pending withdrawal
+        try {
+            $notificationService = app(\App\Services\NotificationService::class);
+            $notificationService->transactionStatus($txnInfo, 'pending');
+            $notificationService->adminTransactionAlert($txnInfo);
+        } catch (\Throwable $e) {
+            Log::error('Admin add withdrawal pending notification failed', [
+                'transaction_id' => $txnInfo->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+        
+        // Send SMS notification (if enabled)
+        try {
+            $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+        } catch (\Throwable $e) {
+            Log::warning('SMS notification failed for admin add withdrawal', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->back();
     }

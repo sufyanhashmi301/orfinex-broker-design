@@ -542,8 +542,8 @@ class Txn
                         $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
                         $userAccount->save();
                     }
+                }
             }
-        }
 
             if (($status == TxnStatus::Pending) && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
                 if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {

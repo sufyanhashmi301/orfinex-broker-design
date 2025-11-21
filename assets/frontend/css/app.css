@@ -16902,10 +16902,6 @@ ul.custom-list ul li{
   display: flex;
   justify-content: center;
 }
-.hv-wrapper .hv-item .hv-item-parent .level-summary {
-  bottom: -40px;
-  z-index: 1;
-}
 
 .hv-wrapper .hv-item .hv-item-parent:after {
   position: absolute;
@@ -16986,32 +16982,6 @@ ul.custom-list ul li{
   border-radius: 50%;
   overflow: hidden;
   background-color: #fff;
-}
-
-.management-hierarchy .person>.f-name-l-name {
-  height: 50px;
-  width: 50px;
-  line-height: 43px;
-  border: 3px solid #0f172a;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #ff0000;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-  display: inline-block;
-  margin-bottom: -6px;
-}
-
-.management-hierarchy .person>p.name {
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: normal;
-  margin: 0;
-  position: relative;
-  text-wrap: nowrap;
 }
 
 .mobile_treeview ul li ul li {

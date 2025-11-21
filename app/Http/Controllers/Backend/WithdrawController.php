@@ -185,6 +185,7 @@ class WithdrawController extends Controller
             'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'fields' => json_encode($fields ?? $input['fields']),
+            'is_rate_override_enabled' => isset($input['is_rate_override_enabled']) ? (bool) $input['is_rate_override_enabled'] : false,
         ];
 
         $withdrawMethod = WithdrawMethod::create($data);
@@ -214,10 +215,11 @@ class WithdrawController extends Controller
 
         $withdrawMethod = WithdrawMethod::with('branches')->find(\request('id'));
         $supported_currencies = Gateway::find($withdrawMethod->gateway_id)->supported_currencies ?? [];
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
         $branches = \App\Models\Branch::where('status', 1)->get();
         $attachedBranches = $withdrawMethod->branches->pluck('id')->toArray();
 
-        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies', 'branches', 'attachedBranches'));
+        return view('backend.withdraw.method_edit', compact('button', 'withdrawMethod', 'type', 'supported_currencies', 'branches', 'attachedBranches', 'autoExchangeRatesEnabled'));
     }
 
     /**
@@ -263,6 +265,7 @@ class WithdrawController extends Controller
             'is_global' => isset($input['is_global']) ? (bool) $input['is_global'] : false,
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'fields' => isset($input['fields']) ? json_encode($input['fields']) : $withdrawMethod->fields,
+            'is_rate_override_enabled' => isset($input['is_rate_override_enabled']) ? (bool) $input['is_rate_override_enabled'] : false,
         ];
 
         if ($request->hasFile('icon')) {

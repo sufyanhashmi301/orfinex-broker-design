@@ -1271,19 +1271,36 @@ class WithdrawController extends Controller
                 '[[site_url]]' => route('home'),
             ];
 
-            // Send notifications
-            $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
-            $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
+            // Send centralized notifications for manual withdrawal creation
             try {
-                $emails = getAttachedStaffAdminEmails($user->id);
-                foreach ($emails as $email) {
-                    $this->mailNotify($email, 'withdraw_request', $shortcodes, true);
-                }
+                $notificationService = app(\App\Services\NotificationService::class);
+                
+                // Refresh transaction to get latest status
+                $txnInfo->refresh();
+                
+                // Send user notification (email + push)
+                $notificationService->transactionStatus($txnInfo, 'pending');
+                
+                // Send admin/staff notifications (email + push)
+                $notificationService->adminTransactionAlert($txnInfo);
             } catch (\Throwable $e) {
-                \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                \Log::error('Manual withdrawal creation notification failed', [
+                    'transaction_tnx' => $txnInfo->tnx,
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
-            $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
-            $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+            
+            // Send SMS notification (if enabled)
+            try {
+                $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+            } catch (\Throwable $e) {
+                \Log::warning('SMS notification failed for withdrawal', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             if (session()->has('withdrawal_data')) {
                 Session::forget('withdrawal_data');

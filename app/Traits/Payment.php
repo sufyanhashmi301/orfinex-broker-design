@@ -9,8 +9,10 @@ use App\Models\DepositMethod;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
+use App\Services\NotificationService;
 use charlesassets\LaravelPerfectMoney\PerfectMoney;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Payment\Binance\BinanceTxn;
 use Payment\Blockchain\BlockchainTxn;
 use Payment\BlockIo\BlockIoTxn;
@@ -85,6 +87,26 @@ trait Payment
         ];
         Session::put('user_notify', $notify);
 
+        // Send notifications for auto withdrawal initiation
+        try {
+            $notificationService = app(NotificationService::class);
+            
+            // Refresh transaction to get latest status
+            $txnInfo->refresh();
+            
+            // Send user notification for initiation
+            $notificationService->transactionStatus($txnInfo, 'pending');
+            
+            // Send admin and staff notifications (merged - includes all admin and staff emails)
+            $notificationService->adminTransactionAlert($txnInfo);
+        } catch (\Throwable $e) {
+            // Log error but don't break withdrawal flow
+            Log::error('Auto withdrawal initiation notification failed', [
+                'transaction_tnx' => $txnInfo->tnx,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return redirect()->route('user.notify');
 
     }
@@ -124,19 +146,22 @@ trait Payment
         ];
 
         if ($status == 'Pending') {
-            $shortcodes = [
-                '[[full_name]]' => $tnxInfo->user->full_name,
-                '[[txn]]' => $tnxInfo->tnx,
-                '[[gateway_name]]' => $tnxInfo->method,
-                '[[deposit_amount]]' => $tnxInfo->amount,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[message]]' => '',
-                '[[status]]' => $status,
-            ];
-            $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
-            $this->pushNotify('manual_deposit_request', $shortcodes, route('admin.deposit.manual.pending'), $tnxInfo->user->id, 'deposit');
-            $this->smsNotify('manual_deposit_request', $shortcodes, $tnxInfo->user->phone);
+            // Send centralized notifications for auto deposit pending
+            try {
+                $notificationService = app(NotificationService::class);
+                
+                // Send user notification
+                $notificationService->transactionStatus($tnxInfo, 'pending');
+                
+                // Send admin and staff notifications (merged - includes all admin and staff emails)
+                $notificationService->adminTransactionAlert($tnxInfo);
+            } catch (\Throwable $e) {
+                // Log error but don't break payment flow
+                Log::error('Auto deposit pending notification failed', [
+                    'transaction_tnx' => $tnx,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         $isStepOne = 'current';
@@ -164,6 +189,26 @@ trait Payment
 //                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
 //                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
 //            }
+
+            // Send notifications AFTER transaction update completes successfully
+            try {
+                $notificationService = app(NotificationService::class);
+                
+                // Refresh transaction to get updated status
+                $txnInfo->refresh();
+                
+                // Send user notification
+                $notificationService->transactionStatus($txnInfo, 'success');
+                
+                // Send admin and staff notifications (merged - includes all admin and staff emails)
+                $notificationService->adminTransactionAlert($txnInfo);
+            } catch (\Throwable $e) {
+                // Log error but don't break transaction flow
+                Log::error('Auto deposit success notification failed', [
+                    'transaction_tnx' => $ref,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             if ($isRedirect) {
                 return redirect(URL::temporarySignedRoute(

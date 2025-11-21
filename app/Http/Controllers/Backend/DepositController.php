@@ -36,24 +36,26 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DepositVoucher;
+use App\Services\NotificationService;
 
 class DepositController extends Controller
 {
     use NotifyTrait, ImageUpload, ForexApiTrait;
+    protected $notificationService;
 
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(NotificationService $notificationService)
     {
         $this->middleware('permission:deposit-list|deposit-add', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-export', ['only' => ['export']]);
         $this->middleware('permission:deposit-add', ['only' => ['addDeposit']]);
         $this->middleware('permission:automatic-gateway-manage|manual-gateway-manage', ['only' => ['methodList']]);
         $this->middleware('permission:deposit-notification', ['only' => ['notificationTune']]);
-
+        $this->notificationService = $notificationService;
     }
 
     //-------------------------------------------  Deposit method start ---------------------------------------------------------------
@@ -504,8 +506,17 @@ class DepositController extends Controller
                 }
 
                 // Notify user
-                $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
-                $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
+                try {
+                    $notificationService = app(NotificationService::class);
+                    $notificationService->transactionStatus($transaction, 'success');
+                    $notificationService->adminTransactionAlert($transaction);
+                } catch (\Throwable $e) {
+                    Log::error('Manual deposit approval notification failed', [
+                        'transaction_tnx' => $transaction->tnx,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+                
                 notify()->success('Deposit approved successfully.');
 
             } elseif (isset($input['reject'])) {
@@ -517,8 +528,16 @@ class DepositController extends Controller
                     return redirect()->back();
                 }
 
-                $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
-                $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.history.transactions'), $transaction->user->id, 'deposit');
+                try {
+                    $notificationService = app(NotificationService::class);
+                    $notificationService->transactionStatus($transaction, 'rejected');
+                    $notificationService->adminTransactionAlert($transaction);
+                } catch (\Throwable $e) {
+                    Log::error('Manual deposit rejection notification failed', [
+                        'transaction_tnx' => $transaction->tnx,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
 
                 notify()->success('Deposit rejected successfully.');
             }
@@ -767,12 +786,28 @@ class DepositController extends Controller
                 ]);
             }
 
-            $this->mailNotify($txn->user->email, 'user_manual_deposit_approve', $shortcodes);
+            try {
+                $notificationService = app(NotificationService::class);
+                $notificationService->transactionStatus($txn, 'success');
+                $notificationService->adminTransactionAlert($txn);
+            } catch (\Throwable $e) {
+                Log::error('Manual deposit approval notification failed', [
+                    'transaction_tnx' => $txn->tnx,
+                    'error' => $e->getMessage(),
+                ]);
+            }
             notify()->success(__('Approve successfully'));
         } else {
-            $this->mailNotify($txn->user->email, 'user_manual_deposit_request', $shortcodes);
-            $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
-            $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id, 'deposit');
+            try {
+                $notificationService = app(NotificationService::class);
+                $notificationService->transactionStatus($txn, 'pending');
+                $notificationService->adminTransactionAlert($txn);
+            } catch (\Throwable $e) {
+                Log::error('Manual deposit creation notification failed', [
+                    'transaction_tnx' => $txn->tnx,
+                    'error' => $e->getMessage(),
+                ]);
+            }
             notify()->success(__('Successfully added pending deposit request'));
         }
 

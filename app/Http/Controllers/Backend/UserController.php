@@ -60,6 +60,7 @@ use Illuminate\Validation\Rules;
 use App\Models\Ranking;
 use App\Rules\Recaptcha;
 use Illuminate\Support\Facades\Artisan;
+use App\Services\NotificationService;
 class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
@@ -1580,8 +1581,8 @@ class UserController extends Controller
                     $response = $this->forexApiService->balanceOperation($data);
 
                     if (!($response['success'] && 
-                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
-            )) {
+                        ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                    )) {
                         throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
 
@@ -1602,8 +1603,8 @@ class UserController extends Controller
                     $response = $this->forexApiService->balanceOperation($data);
 
                     if (!($response['success'] && 
-                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
-            )) {
+                        ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                    )) {
                         throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }
@@ -1629,6 +1630,31 @@ class UserController extends Controller
                 );
                 $txn->action_by = auth()->user()->id;
                 $txn->save();
+                
+                // Send centralized notifications for balance update
+                try {
+                    $notificationService = app(NotificationService::class);
+                    
+                    // Refresh transaction to get latest data
+                    $txn->refresh();
+                    
+                    // Send user notification (email + push) with balance-specific templates
+                    $userEmailTemplate = $type === 'add' ? 'balance_added_user' : 'balance_subtracted_user';
+                    $notificationService->transactionStatus($txn, 'success', $userEmailTemplate);
+                    
+                    // Send admin/staff notifications (email + push) with balance-specific templates
+                    $adminEmailTemplate = $type === 'add' ? 'balance_added_admin' : 'balance_subtracted_admin';
+                    $notificationService->adminTransactionAlert($txn, true, $adminEmailTemplate);
+                } catch (\Throwable $e) {
+                    Log::error('Balance update notification failed', [
+                        'transaction_id' => $txn->id,
+                        'user_id' => $user->id,
+                        'type' => $type,
+                        'target_type' => $targetType,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
             } elseif ($targetType === 'wallet') {
                 // Wallet account operations
                 $account = Account::where('wallet_id', $targetId)->where('user_id', $user->id)->firstOrFail();
@@ -1659,6 +1685,28 @@ class UserController extends Controller
                     $txn->save();
                     $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
                     $this->walletService->createCreditLedgerEntry($txn, $ledgerBalance);
+                    
+                    // Send centralized notifications for balance add
+                    try {
+                        $notificationService = app(NotificationService::class);
+                        
+                        // Refresh transaction to get latest data
+                        $txn->refresh();
+                        
+                        // Send user notification (email + push) with balance-specific template
+                        $notificationService->transactionStatus($txn, 'success', 'balance_added_user');
+                        
+                        // Send admin/staff notifications (email + push) with balance-specific template
+                        $notificationService->adminTransactionAlert($txn, true, 'balance_added_admin');
+                    } catch (\Throwable $e) {
+                        Log::error('Balance add notification failed', [
+                            'transaction_id' => $txn->id,
+                            'user_id' => $user->id,
+                            'target_type' => 'wallet',
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
 
                 } else {
                     if ($amount->compareTo(BigDecimal::of($account->amount)) > 0) {
@@ -1690,6 +1738,28 @@ class UserController extends Controller
                     $txn->save();
                     $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
                     $this->walletService->createDebitLedgerEntry($txn, $ledgerBalance);
+                    
+                    // Send centralized notifications for balance subtract
+                    try {
+                        $notificationService = app(NotificationService::class);
+                        
+                        // Refresh transaction to get latest data
+                        $txn->refresh();
+                        
+                        // Send user notification (email + push) with balance-specific template
+                        $notificationService->transactionStatus($txn, 'success', 'balance_subtracted_user');
+                        
+                        // Send admin/staff notifications (email + push) with balance-specific template
+                        $notificationService->adminTransactionAlert($txn, true, 'balance_subtracted_admin');
+                    } catch (\Throwable $e) {
+                        Log::error('Balance subtract notification failed', [
+                            'transaction_id' => $txn->id,
+                            'user_id' => $user->id,
+                            'target_type' => 'wallet',
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
                 }
             }
 

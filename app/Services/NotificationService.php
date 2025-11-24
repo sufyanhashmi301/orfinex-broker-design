@@ -258,7 +258,7 @@ class NotificationService
      */
     private function getAdminEmails(int $userId): array
     {
-        $siteEmails = $this->parseEmails(setting('site_email', 'global'));
+        $siteEmails = parseEmails(setting('site_email', 'global'));
         $staffEmails = getAttachedStaffAdminEmails($userId);
         
         // Convert Collection to array if needed
@@ -282,18 +282,12 @@ class NotificationService
 
     /**
      * Parse CSV or array of emails.
+     * Supports comma-separated emails only.
+     * Uses global parseEmails() helper function.
      */
     private function parseEmails(mixed $value): array
     {
-        if (is_array($value)) {
-            return array_filter($value);
-        }
-
-        if (is_string($value) && trim($value) !== '') {
-            return array_filter(array_map('trim', explode(',', $value)));
-        }
-
-        return [];
+        return \parseEmails($value);
     }
 
     private function isValidEmail(?string $email): bool

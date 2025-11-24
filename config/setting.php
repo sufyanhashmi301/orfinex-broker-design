@@ -405,11 +405,11 @@ return [
                 'value' => 'Brokeret', // default value if you want
             ],
             [
-                'type' => 'email', // input fields type
+                'type' => 'text', // input fields type (allow multiple comma-separated emails)
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_email', // unique name for field
                 'label' => 'Site Email', // you know what label it is
-                'description' => 'Default email used for system notifications',
+                'description' => 'Comma-separated email addresses used for system notifications. e.g. admin@example.com, support@example.com',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'admin@tdevs.co', // default value if you want
             ],

@@ -472,20 +472,23 @@ class WithdrawController extends Controller
                 '[[site_url]]' => route('home'),
             ];
 
-            // Resolve admin email (site email or first active admin)
-            $adminEmail = setting('site_email', 'global');
-            if (empty($adminEmail)) {
-                $adminEmail = User::where('status', 1)
+            // Resolve admin emails (site email or first active admin)
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            if (empty($adminEmails)) {
+                $fallbackEmail = User::where('status', 1)
                     ->whereHas('roles', function($q) { $q->whereIn('name', ['Super-Admin', 'Admin']); })
                     ->value('email');
+                if (!empty($fallbackEmail)) {
+                    $adminEmails = [$fallbackEmail];
+                }
             }
 
             // If account requires manual approval, notify admin and user
             if ($status === WithdrawAccount::STATUS_PENDING) {
                 // Email to user
                 try { $this->mailNotify($user->email, 'withdraw_account_request_user', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
-                // Email to admin
-                if (!empty($adminEmail)) {
+                // Email to admin(s)
+                foreach ($adminEmails as $adminEmail) {
                     try { $this->mailNotify($adminEmail, 'withdraw_account_request', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
                 try {
@@ -507,10 +510,10 @@ class WithdrawController extends Controller
                     try { $this->mailNotify($user->email, 'withdraw_account_approval', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
 
-                // Email to admin on direct approval (if admin template exists)
-                if (!empty($adminEmail)) {
-                    $adminApprovalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval_admin')->first();
-                    if ($adminApprovalTemplate) {
+                // Email to admin(s) on direct approval (if admin template exists)
+                $adminApprovalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval_admin')->first();
+                if ($adminApprovalTemplate) {
+                    foreach ($adminEmails as $adminEmail) {
                         try { $this->mailNotify($adminEmail, 'withdraw_account_approval_admin', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                     }
                 }

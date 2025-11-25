@@ -61,7 +61,7 @@ class SendMoneyController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         if (! setting('is_external_transfer', 'transfer_external') or ! \Auth::user()->transfer_status) {
-            abort('403', __('Send Money Disable Now'));
+            throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disable Now'));
         }
 
         $isStepOne = 'current';
@@ -73,7 +73,7 @@ class SendMoneyController extends Controller
 {
     // Check if the user has the permission to transfer
     if (!setting('is_external_transfer', 'transfer_external') || !\Auth::user()->transfer_status) {
-        abort(403, __('Send Money Disabled Now'));
+        throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disabled Now'));
     }
 
     // Check if KYC is completed
@@ -679,7 +679,7 @@ class SendMoneyController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         if (! setting('is_internal_transfer', 'transfer_internal') or ! \Auth::user()->transfer_status) {
-            abort('403', __('Send Money Disable Now'));
+            throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disable Now'));
         }
 
         $isStepOne = 'current';
@@ -693,7 +693,7 @@ class SendMoneyController extends Controller
 {
     // Check if transfers are enabled
     if (!setting('is_internal_transfer', 'transfer_internal') || !Auth::user()->transfer_status) {
-        abort(403, __('Send Money Disabled Now'));
+        throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disabled Now'));
     }
     // Check if KYC is completed
     if (!setting('internal_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {

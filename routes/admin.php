@@ -513,9 +513,14 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
         Route::group(['prefix' => 'dynamic-content', 'as' => 'dynamic-content.'], function () {
+            //success page
             Route::get('success-page', [PageController::class, 'successPage'])->name('success-page');
             Route::get('success-page/{id}/edit', [PageController::class, 'successPageEdit'])->name('success-page.edit');
             Route::put('success-page/{id}', [PageController::class, 'successPageUpdate'])->name('success-page.update');
+            //error page
+            Route::get('error-page', [PageController::class, 'errorPage'])->name('error-page');
+            Route::get('error-page/{id}/edit', [PageController::class, 'errorPageEdit'])->name('error-page.edit');
+            Route::put('error-page/{id}', [PageController::class, 'errorPageUpdate'])->name('error-page.update');
         });
     });
 

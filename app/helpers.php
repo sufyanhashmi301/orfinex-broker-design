@@ -2065,6 +2065,47 @@ if (!function_exists('getAccessibleUserIds')) {
     }
 }
 
+if (!function_exists('parseEmails')) {
+    /**
+     * Parse comma-separated email addresses from string or array.
+     * Validates emails and returns unique, filtered array.
+     * 
+     * @param mixed $value String with comma-separated emails or array of emails
+     * @return array Array of valid, unique email addresses
+     * 
+     * @example
+     * parseEmails('admin@example.com, support@example.com') 
+     * // Returns: ['admin@example.com', 'support@example.com']
+     * 
+     * parseEmails(['admin@example.com', 'invalid-email', 'support@example.com'])
+     * // Returns: ['admin@example.com', 'support@example.com']
+     */
+    function parseEmails(mixed $value): array
+    {
+        if (is_array($value)) {
+            return array_filter($value, function ($email) {
+                return !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL);
+            });
+        }
+
+        if (is_string($value) && trim($value) !== '') {
+            // Support comma-separated emails only
+            return collect(explode(',', $value))
+                ->map(function ($email) { 
+                    return trim($email); 
+                })
+                ->filter(function ($email) { 
+                    return !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL); 
+                })
+                ->unique()
+                ->values()
+                ->toArray();
+        }
+
+        return [];
+    }
+}
+
 if (!function_exists('getAttachedStaffAdminEmails')) {
     /**
      * Get unique staff admin emails attached to the given user via staff_user pivot.

@@ -91,10 +91,15 @@ class IBController extends Controller
         '[[status]]' => 'Pending',
         ];
 
+        $this->mailNotify($user->email, 'user_ib_request', $shortcodes);
+        
+        // Notify admin
+        $adminEmails = parseEmails(setting('site_email', 'global'));
+        foreach ($adminEmails as $email) {
+            $this->mailNotify($email, 'ib_request', $shortcodes);
+        }
 
-            $this->mailNotify($user->email, 'user_ib_request', $shortcodes);
-            $this->mailNotify(setting('site_email', 'global'), 'ib_request', $shortcodes);
-            $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
+        $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
 
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 

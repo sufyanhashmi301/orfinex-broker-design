@@ -19,6 +19,7 @@ class SocialController extends Controller
     public function __construct()
     {
         $this->middleware('permission:social-logins-list', ['only' => ['index']]);
+        $this->middleware('permission:social-logins-action', ['only' => ['edit', 'update']]);
     }
     public function index(Request $request)
     {
@@ -83,9 +84,10 @@ class SocialController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'client_id' => 'required',
-            'client_secret' => 'required',
-            'status' => 'required',
+            'id' => 'required|exists:socials,id',
+            'client_id' => 'required|string',
+            'client_secret' => 'required|string',
+            'status' => 'required|in:0,1',
         ]);
 
         if ($validator->fails()) {
@@ -93,18 +95,22 @@ class SocialController extends Controller
             return redirect()->back();
         }
 
-        $input = $request->all();
+        $socialLogin = Social::find($input['id']);
+
+        if (!$socialLogin) {
+            notify()->error('Social login configuration not found.', 'Error');
+            return redirect()->back();
+        }
+
         $data = [
             'client_id' => $input['client_id'],
             'client_secret' => $input['client_secret'],
             'status' => $input['status'],
         ];
 
-        $socialLink = Social::find($input['id']);
+        $socialLogin->update($data);
 
-        $socialLink->update($data);
-
-        notify()->success('Social login update successfully');
+        notify()->success('Social login updated successfully');
         return redirect()->back();
     }
 }

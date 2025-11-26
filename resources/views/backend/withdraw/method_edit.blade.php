@@ -447,8 +447,47 @@
 @section('payment-script')
     <script>
         const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled ?? false);
+
+        let get_rate = (code) => {
+            $.ajax({
+                url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
+                type: 'GET',
+                success: function(response) {
+                    // Handle the success response (you get the rate here)
+                    if (response.rate) {
+                        // Always load the values, but only make them readonly if auto exchange is enabled
+                        $('.display-conversion-rate').val(response.rate.toFixed(6));
+
+                        // If auto exchange rates are disabled, make the fields editable after loading values
+                        if (!autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').prop('readonly', false);
+                        } else {
+                            // When auto updates are enabled, respect the manual override toggle
+                            const $overrideToggle = $('input[name="is_rate_override_enabled"]');
+                            if ($overrideToggle.length) {
+                                const enabled = $overrideToggle.is(':checked');
+                                $('.display-conversion-rate').prop('readonly', !enabled);
+                            } else {
+                                $('.display-conversion-rate').prop('readonly', true);
+                            }
+                        }
+                    } else {
+                        console.log(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    console.log('Error fetching rate');
+                }
+            });
+        }
+
         $("#currency").on('change', function() {
             $('#currency-selected').text(this.value);
+            // Fetch rate when currency changes and auto exchange rates are enabled
+            if (autoExchangeRatesEnabled) {
+                get_rate($(this).val());
+            }
         });
 
         var i = Object.keys(JSON.parse(@json($withdrawMethod->fields))).length;
@@ -500,6 +539,10 @@
             url = url.replace(':id', id);
             $.get(url, function($data) {
                 $('#currency').html($data.view);
+                // Fetch rate when gateway changes and auto exchange rates are enabled
+                if (autoExchangeRatesEnabled && $('#currency').val()) {
+                    get_rate($('#currency').val());
+                }
             })
         })
 

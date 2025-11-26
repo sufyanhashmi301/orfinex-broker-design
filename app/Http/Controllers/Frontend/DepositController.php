@@ -118,7 +118,7 @@ class DepositController extends GatewayController
     public function deposit()
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', __('Deposit Disable Now'));
+            throw new \App\Exceptions\DepositDisabledException(__('Deposit Disable Now'));
         }
 
         $gatewayCode = request()->get('gateway_code', '');
@@ -174,7 +174,7 @@ class DepositController extends GatewayController
         // try {composer dump-autoload
             DB::beginTransaction();
             if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-                abort('403', __('Deposit Disabled Now'));
+                throw new \App\Exceptions\DepositDisabledException(__('Deposit Disabled Now'));
             }
             if (!setting('deposit_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
                     notify()->error('KYC Pending: Please complete your KYC verification to proceed with your deposit', __('Error'));
@@ -290,7 +290,7 @@ class DepositController extends GatewayController
     public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', __('Deposit Disable Now'));
+            throw new \App\Exceptions\DepositDisabledException(__('Deposit Disable Now'));
         }
         $request->validate([
             'target_id' => ['required','integer', new ForexLoginBelongsToUserForDemo,

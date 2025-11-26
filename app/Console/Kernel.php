@@ -10,6 +10,7 @@ use App\Console\Commands\MultiLevelRebateDistribution;
 use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
+use App\Console\Commands\UpdateCryptoRatesFromGateways;
 use App\Console\Commands\CreateIBTransactionsTable4Month;
 use App\Console\Commands\CopyIBTransactions4Month;
 use App\Console\Commands\ScheduleIBTransactions4Month;
@@ -51,7 +52,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('ib:remove-duplicates')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
-        $schedule->command('tokens:update-rates')->everyThirtyMinutes();
+        // $schedule->command('tokens:update-rates')->everyThirtyMinutes();
+        $schedule->command('crypto:update-gateway-rates')->everyThirtyMinutes()->withoutOverlapping();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
         
         // SMTP health monitoring
@@ -86,6 +88,7 @@ class Kernel extends ConsoleKernel
         MultiIbBonus::class,
         Commands\UpdateExchangeRates::class,
         Commands\UpdateTokenRates::class,
+        Commands\UpdateCryptoRatesFromGateways::class,
         SyncForexAccountsViaEmail::class,
         MultiLevelRebateDistribution::class,
         CreateIBTransactionsTable4Month::class,

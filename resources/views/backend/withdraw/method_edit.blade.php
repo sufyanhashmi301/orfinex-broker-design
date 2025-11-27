@@ -154,7 +154,22 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>              
+                            </div>
+                        <div class="xl:col-span-6 col-span-12">
+                            <div class="input-area">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
+                                        {{ __('Currency Symbol') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="text" class="form-control currency-symbol"
+                                    value="{{ $withdrawMethod->currency_symbol ?? '' }}" name="currency_symbol"
+                                    @if ($autoExchangeRatesEnabled ?? false) readonly @endif />
+                            </div>
+                        </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area position-relative">
                                 <label class="form-label" for="">
@@ -455,13 +470,13 @@
                 success: function(response) {
                     // Handle the success response (you get the rate here)
                     if (response.rate) {
-                        // Always load the values, but only make them readonly if auto exchange is enabled
-                        $('.display-conversion-rate').val(response.rate.toFixed(6));
-
-                        // If auto exchange rates are disabled, make the fields editable after loading values
-                        if (!autoExchangeRatesEnabled) {
-                            $('.display-conversion-rate').prop('readonly', false);
-                        } else {
+                        // Always update currency symbol
+                        $('.currency-symbol').val(response.symbol);
+                        
+                        // Only update rate when auto exchange rates are enabled
+                        if (autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            
                             // When auto updates are enabled, respect the manual override toggle
                             const $overrideToggle = $('input[name="is_rate_override_enabled"]');
                             if ($overrideToggle.length) {
@@ -470,6 +485,11 @@
                             } else {
                                 $('.display-conversion-rate').prop('readonly', true);
                             }
+                            $('.currency-symbol').prop('readonly', true);
+                        } else {
+                            // If auto exchange rates are disabled, make the fields editable
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
                         }
                     } else {
                         console.log(response.error);
@@ -484,10 +504,8 @@
 
         $("#currency").on('change', function() {
             $('#currency-selected').text(this.value);
-            // Fetch rate when currency changes and auto exchange rates are enabled
-            if (autoExchangeRatesEnabled) {
-                get_rate($(this).val());
-            }
+            // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+            get_rate($(this).val());
         });
 
         var i = Object.keys(JSON.parse(@json($withdrawMethod->fields))).length;
@@ -539,8 +557,8 @@
             url = url.replace(':id', id);
             $.get(url, function($data) {
                 $('#currency').html($data.view);
-                // Fetch rate when gateway changes and auto exchange rates are enabled
-                if (autoExchangeRatesEnabled && $('#currency').val()) {
+                // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+                if ($('#currency').val()) {
                     get_rate($('#currency').val());
                 }
             })
@@ -548,8 +566,18 @@
 
         // Control readonly state of rate field based on autoExchangeRatesEnabled and manual override
         $(document).ready(function() {
+            // Fetch currency symbol on page load if currency is already selected
+            const $currencyField = $('#currency');
+            if ($currencyField.length) {
+                const selectedCurrency = $currencyField.val();
+                if (selectedCurrency) {
+                    get_rate(selectedCurrency);
+                }
+            }
+            
             if (!autoExchangeRatesEnabled) {
                 $('.display-conversion-rate').prop('readonly', false);
+                $('.currency-symbol').prop('readonly', false);
             } else {
                 const $overrideToggle = $('input[name="is_rate_override_enabled"]');
                 if ($overrideToggle.length) {
@@ -560,6 +588,7 @@
                     syncReadonly();
                     $overrideToggle.on('change', syncReadonly);
                 }
+                $('.currency-symbol').prop('readonly', true);
             }
         });
     </script>

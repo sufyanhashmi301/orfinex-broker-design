@@ -532,15 +532,13 @@
                 success: function(response) {
                     // Handle the success response (you get the rate here)
                     if (response.rate) {
-                        // Always load the values, but only make them readonly if auto exchange is enabled
-                        $('.display-conversion-rate').val(response.rate.toFixed(6));
+                        // Always update currency symbol
                         $('.currency-symbol').val(response.symbol);
-
-                        // If auto exchange rates are disabled, make the fields editable after loading values
-                        if (!autoExchangeRatesEnabled) {
-                            $('.display-conversion-rate').prop('readonly', false);
-                            $('.currency-symbol').prop('readonly', false);
-                        } else {
+                        
+                        // Only update rate when auto exchange rates are enabled
+                        if (autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            
                             // When auto updates are enabled, respect the manual override toggle
                             const $overrideToggle = $('input[name="is_rate_override_enabled"]');
                             if ($overrideToggle.length) {
@@ -550,6 +548,10 @@
                                 $('.display-conversion-rate').prop('readonly', true);
                             }
                             $('.currency-symbol').prop('readonly', true);
+                        } else {
+                            // If auto exchange rates are disabled, make the fields editable
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
                         }
                     } else {
                         console.log(response.error);
@@ -570,10 +572,8 @@
                 // Update the currency display to show the selected currency
                 $('#currency-selected').text(this.value);
             }
-            // Fetch rate when currency changes and auto exchange rates are enabled
-            if (autoExchangeRatesEnabled) {
-                get_rate($(this).val());
-            }
+            // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+            get_rate($(this).val());
         });
 
         // If auto exchange rates are disabled, make the fields editable on page load
@@ -651,8 +651,8 @@
                 $('#currency').html(data.view);
                 $('#currency-selected').text(data.pay_currency);
                 currency = data.pay_currency
-                // Fetch rate when gateway changes and auto exchange rates are enabled
-                if (autoExchangeRatesEnabled && $('#currency').val()) {
+                // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+                if ($('#currency').val()) {
                     get_rate($('#currency').val());
                 }
             })

@@ -525,10 +525,55 @@
         const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled);
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
+        let get_rate = (code) => {
+            $.ajax({
+                url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
+                type: 'GET',
+                success: function(response) {
+                    // Handle the success response (you get the rate here)
+                    if (response.rate) {
+                        // Always update currency symbol
+                        $('.currency-symbol').val(response.symbol);
+                        
+                        // Only update rate when auto exchange rates are enabled
+                        if (autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            
+                            // When auto updates are enabled, respect the manual override toggle
+                            const $overrideToggle = $('input[name="is_rate_override_enabled"]');
+                            if ($overrideToggle.length) {
+                                const enabled = $overrideToggle.is(':checked');
+                                $('.display-conversion-rate').prop('readonly', !enabled);
+                            } else {
+                                $('.display-conversion-rate').prop('readonly', true);
+                            }
+                            $('.currency-symbol').prop('readonly', true);
+                        } else {
+                            // If auto exchange rates are disabled, make the fields editable
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
+                        }
+                    } else {
+                        console.log(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    console.log('Error fetching rate');
+                }
+            });
+        }
+
         $("#currency").on('change', function() {
             if (currency === null) {
                 $('#currency-selected').text(this.value);
+            } else {
+                // For custom rate gateways (nowpayments, coinremitter, blockchain)
+                // Update the currency display to show the selected currency
+                $('#currency-selected').text(this.value);
             }
+            // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+            get_rate($(this).val());
         });
 
         // If auto exchange rates are disabled, make the fields editable on page load
@@ -606,6 +651,10 @@
                 $('#currency').html(data.view);
                 $('#currency-selected').text(data.pay_currency);
                 currency = data.pay_currency
+                // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+                if ($('#currency').val()) {
+                    get_rate($('#currency').val());
+                }
             })
         })
 

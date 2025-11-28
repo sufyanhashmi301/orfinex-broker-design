@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class UpdateExchangeRates extends Command
 {
@@ -247,6 +248,12 @@ class UpdateExchangeRates extends Command
                 $formattedRate = $this->truncateToTwoDecimals($rate);
                 $updated = DB::table('deposit_methods')
                     ->where('currency', $currencyCode)
+                    ->where(function ($q) {
+                        // Respect per-method manual override: skip rows with override enabled
+                        if (Schema::hasColumn('deposit_methods', 'is_rate_override_enabled')) {
+                            $q->where('is_rate_override_enabled', false);
+                        }
+                    })
                     ->update([
                         'rate' => $formattedRate,
                         'updated_at' => Carbon::now()
@@ -259,6 +266,12 @@ class UpdateExchangeRates extends Command
                 $formattedRate = $this->truncateToTwoDecimals($rate);
                 $updated = DB::table('withdraw_methods')
                     ->where('currency', $currencyCode)
+                    ->where(function ($q) {
+                        // Respect per-method manual override: skip rows with override enabled
+                        if (Schema::hasColumn('withdraw_methods', 'is_rate_override_enabled')) {
+                            $q->where('is_rate_override_enabled', false);
+                        }
+                    })
                     ->update([
                         'rate' => $formattedRate,
                         'updated_at' => Carbon::now()

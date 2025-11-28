@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PageSetting;
 use App\Models\SuccessPage;
+use App\Models\ErrorPage;
 use App\Traits\ImageUpload;
 
 class PageController extends Controller
@@ -95,6 +96,47 @@ class PageController extends Controller
         $successPage->update($input);
 
         notify()->success(__('Success Page Updated Successfully'));
+
+        return redirect()->back();
+    }
+
+    public function errorPage()
+    {
+        $errorPages = ErrorPage::all();
+        return view('backend.setting.customization.dynamic_content.error-page', compact('errorPages'));
+    }
+
+    public function errorPageEdit($id)
+    {
+        $errorPage = ErrorPage::findOrFail($id);
+        return view('backend.setting.customization.dynamic_content.edit-error-page', compact('errorPage'));
+    }
+
+    public function errorPageUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string',
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'message' => 'nullable|string',
+            'button_text' => 'nullable|string|max:255',
+            'button_link' => 'nullable|string|max:255',
+            'button_type' => 'nullable|string|in:primary,secondary,outline',
+        ]);
+
+        $errorPage = ErrorPage::findOrFail($id);
+
+        $input = $request->except(['_token', '_method']);
+
+        // Process route shortcodes
+        if (!empty($input['button_link'])) {
+            $input['button_link'] = $this->processRouteShortcode($input['button_link']);
+        }
+
+        $errorPage->update($input);
+
+        notify()->success(__('Error Page Updated Successfully'));
 
         return redirect()->back();
     }

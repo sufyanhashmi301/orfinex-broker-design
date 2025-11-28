@@ -9,6 +9,7 @@ enum TxnStatus: string
     case Pending = 'pending';
     case Failed = 'failed';
     case Review = 'review';
+    case Expired = 'expired';
 
     
 
@@ -20,6 +21,7 @@ enum TxnStatus: string
             self::Pending => 'Pending',
             self::Failed => 'Failed',
             self::Review => 'Review',
+            self::Expired => 'Expired',
         };
     }
 }

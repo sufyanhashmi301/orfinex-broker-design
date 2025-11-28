@@ -293,9 +293,9 @@ class IBControllerSecure extends Controller
             $this->mailNotify($user->email, 'user_ib_request', $shortcodes);
             
             // Notify admin
-            $adminEmail = setting('site_email', 'global');
-            if ($adminEmail) {
-                $this->mailNotify($adminEmail, 'ib_request', $shortcodes);
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            foreach ($adminEmails as $email) {
+                $this->mailNotify($email, 'ib_request', $shortcodes);
             }
             
             // Push notification to admin dashboard

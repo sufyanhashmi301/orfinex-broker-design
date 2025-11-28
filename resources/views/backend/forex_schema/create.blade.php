@@ -524,6 +524,24 @@
                                     placeholder="Trading Server" value="{{ setting('x9_name', 'x9_api') }}" readonly>
                             </div>
                         @endif
+                        @if(setting('live_account_creation', 'features'))
+                            <div class="input-area mt-4">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Number of accounts a user can create before requiring admin approval for this account type">
+                                        {{ __('Account Creation Limit (Live)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" min="0" step="1" name="live_account_limit" class="form-control"
+                                    placeholder="Enter account limit (0 = unlimited)" value="0" />
+                                <span class="text-xs text-gray-500">After this limit, accounts will require admin approval. Set to 0 for unlimited.</span>
+                                @error('live_account_limit')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -699,6 +717,24 @@
                                 <input type="text" class="form-control" name="x9_name"
                                     placeholder="Trading Server Demo" value="{{ setting('x9_name', 'x9_api') }}"
                                     readonly>
+                            </div>
+                        @endif
+                        @if(setting('demo_account_creation', 'features'))
+                            <div class="input-area mt-4">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Number of accounts a user can create before requiring admin approval for this account type">
+                                        {{ __('Account Creation Limit (Demo)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" min="0" step="1" name="demo_account_limit" class="form-control"
+                                    placeholder="Enter account limit (0 = unlimited)" value="0" />
+                                <span class="text-xs text-gray-500">After this limit, accounts will require admin approval. Set to 0 for unlimited.</span>
+                                @error('demo_account_limit')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endif
                         <div class="input-area mt-4">

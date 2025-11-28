@@ -216,6 +216,8 @@ class ForexSchemaController extends Controller
             'demo_deposit_amount' => 'nullable|numeric|min:0|max:50000000',
             'demo_min_deposit_amount' => 'nullable|numeric|min:0',
             'demo_max_deposit_amount' => 'nullable|numeric|min:0|gte:demo_min_deposit_amount',
+            'live_account_limit' => 'nullable|integer|min:0',
+            'demo_account_limit' => 'nullable|integer|min:0',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
         ], [
@@ -233,6 +235,8 @@ class ForexSchemaController extends Controller
         $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
         $input['demo_min_deposit_amount'] = $input['demo_min_deposit_amount'] === '' ? null : $input['demo_min_deposit_amount'];
         $input['demo_max_deposit_amount'] = $input['demo_max_deposit_amount'] === '' ? null : $input['demo_max_deposit_amount'];
+        $input['live_account_limit'] = isset($input['live_account_limit']) && $input['live_account_limit'] !== '' ? (int)$input['live_account_limit'] : 0;
+        $input['demo_account_limit'] = isset($input['demo_account_limit']) && $input['demo_account_limit'] !== '' ? (int)$input['demo_account_limit'] : 0;
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         $finalData = [
@@ -255,6 +259,8 @@ class ForexSchemaController extends Controller
             'demo_deposit_amount' => $input['demo_deposit_amount'],
             'demo_min_deposit_amount' => $input['demo_min_deposit_amount'],
             'demo_max_deposit_amount' => $input['demo_max_deposit_amount'],
+            'live_account_limit' => $input['live_account_limit'],
+            'demo_account_limit' => $input['demo_account_limit'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
@@ -334,6 +340,8 @@ class ForexSchemaController extends Controller
             'demo_deposit_amount' => 'nullable|numeric|min:0',
             'demo_min_deposit_amount' => 'nullable|numeric|min:0',
             'demo_max_deposit_amount' => 'nullable|numeric|min:0|gte:demo_min_deposit_amount',
+            'live_account_limit' => 'nullable|integer|min:0',
+            'demo_account_limit' => 'nullable|integer|min:0',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
 
@@ -353,6 +361,8 @@ class ForexSchemaController extends Controller
         $input['demo_deposit_amount'] = $input['demo_deposit_amount'] === '' ? null : $input['demo_deposit_amount'];
         $input['demo_min_deposit_amount'] = $input['demo_min_deposit_amount'] === '' ? null : $input['demo_min_deposit_amount'];
         $input['demo_max_deposit_amount'] = $input['demo_max_deposit_amount'] === '' ? null : $input['demo_max_deposit_amount'];
+        $input['live_account_limit'] = isset($input['live_account_limit']) && $input['live_account_limit'] !== '' ? (int)$input['live_account_limit'] : 0;
+        $input['demo_account_limit'] = isset($input['demo_account_limit']) && $input['demo_account_limit'] !== '' ? (int)$input['demo_account_limit'] : 0;
 
         $input['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
@@ -375,6 +385,8 @@ class ForexSchemaController extends Controller
             'demo_deposit_amount' => $input['demo_deposit_amount'],
             'demo_min_deposit_amount' => $input['demo_min_deposit_amount'],
             'demo_max_deposit_amount' => $input['demo_max_deposit_amount'],
+            'live_account_limit' => $input['live_account_limit'],
+            'demo_account_limit' => $input['demo_account_limit'],
             'account_category_id' => $input['account_category_id'],
             'country' => isset($input['country']) ? json_encode($input['country']) : null,
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,

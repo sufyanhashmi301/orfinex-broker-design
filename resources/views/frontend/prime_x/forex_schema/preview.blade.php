@@ -68,7 +68,9 @@
                                    data-is_real_islamic="{{$schema->is_real_islamic}}"
                                    data-is_demo_islamic="{{$schema->is_demo_islamic}}"
                                    data-first-min-deposit="{{$schema->first_min_deposit}}"
-                                   data-leverage="{{$schema->leverage}}" required readonly>
+                                   data-leverage="{{$schema->leverage}}"
+                                   data-live-account-limit="{{$schema->live_account_limit ?? 0}}"
+                                   data-demo-account-limit="{{$schema->demo_account_limit ?? 0}}" required readonly>
                             <input type="text" class="form-control py-2 h-[48px]" value="{{$schema->title}}"
                                    aria-label="{{ __('Nickname') }}" aria-describedby="basic-addon1" required readonly>
                         </div>
@@ -305,11 +307,25 @@
             function updateApprovalAlert(accountType){
                 var $alert = $('#approval-alert');
                 var show = false; var text = '';
+                var selectSchema = $('#select-schema');
+                var liveLimit = parseInt(selectSchema.data('live-account-limit') || 0);
+                var demoLimit = parseInt(selectSchema.data('demo-account-limit') || 0);
+                
                 if(accountType === 'real' && {{ $liveApproval ? 'true' : 'false' }}){
-                    show = true; text = '{{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                    show = true;
+                    if(liveLimit > 0){
+                        text = '{{ __('Real accounts will be auto-approved for the first') }} ' + liveLimit + ' {{ __('account(s). After reaching') }} ' + liveLimit + ' {{ __('account(s), additional accounts will require admin approval.') }}';
+                    } else {
+                        text = '{{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                    }
                 }
                 if(accountType === 'demo' && {{ $demoApproval ? 'true' : 'false' }}){
-                    show = true; text = '{{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                    show = true;
+                    if(demoLimit > 0){
+                        text = '{{ __('Demo accounts will be auto-approved for the first') }} ' + demoLimit + ' {{ __('account(s). After reaching') }} ' + demoLimit + ' {{ __('account(s), additional accounts will require admin approval.') }}';
+                    } else {
+                        text = '{{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}';
+                    }
                 }
                 if(show){ $alert.removeClass('hidden').text(text); } else { $alert.addClass('hidden').text(''); }
             }

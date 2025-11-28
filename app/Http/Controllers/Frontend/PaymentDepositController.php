@@ -307,9 +307,9 @@ class PaymentDepositController extends Controller
             $this->mailNotify($user->email, 'payment_deposit_request', $shortcodes);
             
             // Notify admin
-            $adminEmail = setting('site_email', 'global');
-            if ($adminEmail) {
-                $this->mailNotify($adminEmail, 'payment_deposit_request_admin', $shortcodes);
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            foreach ($adminEmails as $email) {
+                $this->mailNotify($email, 'payment_deposit_request_admin', $shortcodes);
             }
             
             // Push notification to admin dashboard

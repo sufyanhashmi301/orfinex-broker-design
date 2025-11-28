@@ -132,7 +132,7 @@
                                     <label class="form-label" for="">
                                         <span class="shift-Away inline-flex items-center gap-1"
                                             data-tippy-content="Define the conversion from 1 {{ $currency }} to the target currency">
-                                            {{ __('Convention Rate') }}
+                                            {{ __('Conversion Rate') }}
                                             <iconify-icon icon="mdi:information-slab-circle-outline"
                                                 class="text-[16px]"></iconify-icon>
                                         </span>

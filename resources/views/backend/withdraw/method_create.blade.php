@@ -131,7 +131,19 @@
                                     id="currency-selected"></span>
                             </div>
                         </div>
-
+                        @if ($type == 'auto')
+                        <div class="input-area relative">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
+                                    {{ __('Currency Symbol') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control currency-symbol" name="currency_symbol" readonly />
+                        </div>
+                        @endif
                         <div class="input-area relative position-relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"
@@ -336,16 +348,29 @@
 @endsection
 @section('payment-script')
     <script>
-        let get_rate = (code) => {
+        const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled ?? false);
 
+        let get_rate = (code) => {
             $.ajax({
                 url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
                 type: 'GET',
                 success: function(response) {
                     // Handle the success response (you get the rate here)
                     if (response.rate) {
-                        // You can also update a field or display the result on the page
-                        $('.display-conversion-rate').val(response.rate.toFixed(6));
+                        // Always update currency symbol
+                        $('.currency-symbol').val(response.symbol);
+                        
+                        // Only update rate when auto exchange rates are enabled
+                        if (autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            $('.display-conversion-rate').prop('readonly', true);
+                            $('.currency-symbol').prop('readonly', true);
+                        } else {
+                            // If auto exchange rates are disabled, make the fields editable after loading values
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
+                        }
                     } else {
                         console.log(response.error);
                     }
@@ -359,12 +384,14 @@
 
         // Manual
         $('.select-manual-currency').on('change', function() {
-            get_rate($(this).val())
+            $('#currency-selected').text($(this).val());
+            get_rate($(this).val());
         })
 
         // Auto
         $('#currency').on('change', function() {
-            get_rate($(this).val())
+            $('#currency-selected').text(this.value);
+            get_rate($(this).val());
         })
     </script>
     <script>
@@ -423,7 +450,11 @@
                 url = url.replace(':id', id);
                 $.get(url, function($data) {
                     $('#currency').html($data.view);
-                    get_rate($('#currency').val())
+                    // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+                    if ($('#currency').val()) {
+                        $('#currency-selected').text($('#currency').val());
+                        get_rate($('#currency').val());
+                    }
                 })
             })
         });

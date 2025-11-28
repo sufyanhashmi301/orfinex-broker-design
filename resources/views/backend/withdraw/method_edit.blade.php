@@ -155,6 +155,7 @@
                                 </div>
                             </div>
                             </div>
+                            @if ($type == 'auto')
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">
@@ -170,6 +171,7 @@
                                     @if ($autoExchangeRatesEnabled ?? false) readonly @endif />
                             </div>
                         </div>
+                        @endif
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area position-relative">
                                 <label class="form-label" for="">

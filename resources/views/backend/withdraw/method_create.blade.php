@@ -131,6 +131,7 @@
                                     id="currency-selected"></span>
                             </div>
                         </div>
+                        @if ($type == 'auto')
                         <div class="input-area relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"
@@ -142,6 +143,7 @@
                             </label>
                             <input type="text" class="form-control currency-symbol" name="currency_symbol" readonly />
                         </div>
+                        @endif
                         <div class="input-area relative position-relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"

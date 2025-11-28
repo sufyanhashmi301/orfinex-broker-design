@@ -117,9 +117,10 @@ class WithdrawController extends Controller
         ];
         $gateways = Gateway::where('status', true)->whereNot('is_withdraw', '=', '0')->get();
         $rates_with_countries = Rate::with('country')->get();
+        $autoExchangeRatesEnabled = setting('auto_exchange_rates_update', 'permission', 1);
         $branches = \App\Models\Branch::where('status', 1)->get();
 
-        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries', 'branches'));
+        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries', 'branches','autoExchangeRatesEnabled'));
     }
 
     /**

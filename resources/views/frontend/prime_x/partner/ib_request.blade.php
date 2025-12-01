@@ -22,10 +22,12 @@
                                 {{ __("Your partnership request is under review and we'll confirm with you shortly. Stay tuned!") }}
                             </p>
                             <div class="flex flex-wrap items-center justify-center gap-3">
-                                <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
-                                    <span>{{ __('Read Partner Agreement') }}</span>
-                                </a>
+                                @if(setting('IB_partner_agreement_show', 'document_links'))
+                                    <a href="{{setting('IB_partner_agreement_link','document_links')}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
+                                        <span>{{ __('Read Partner Agreement') }}</span>
+                                    </a>
+                                @endif
                                 @php
                                     $trustpilot = plugin_active('Trustpilot');
                                 @endphp
@@ -64,10 +66,12 @@
                                 {{ __("Unfortunately, your partnership request has been rejected. If you have any questions or need clarification, feel free to contact us.") }}
                             </p>
                             <div class="flex flex-wrap items-center justify-center gap-3">
-                                <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
-                                    <span>{{ __('Read Partner Agreement') }}</span>
-                                </a>
+                                @if(setting('IB_partner_agreement_show', 'document_links'))
+                                    <a href="{{setting('IB_partner_agreement_link','document_links')}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
+                                        <span>{{ __('Read Partner Agreement') }}</span>
+                                    </a>
+                                @endif
                                 @php
                                     $trustpilot = plugin_active('Trustpilot');
                                 @endphp
@@ -176,20 +180,22 @@
                                 </div>
                             @endforeach
                         @endforeach
-                        <div class="input-area">
-                            <div class="checkbox-area">
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
-                                    <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                        <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
-                                    </span>
-                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
-                                        {{ __('I have read and agree with the ') }}
-                                        <a href="javascript:;" class="btn-link">{{ __('IB Agreement') }}</a>
-                                    </span>
-                                </label>
+                        @if(setting('IB_partner_agreement_show', 'document_links'))
+                            <div class="input-area">
+                                <div class="checkbox-area">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
+                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                        </span>
+                                        <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                            {{ __('I have read and agree with the ') }}
+                                            <a href="{{setting('IB_partner_agreement_link','document_links','javascript:;')}}" target="_blank" class="btn-link">{{ __('IB Agreement') }}</a>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <div class="md:col-span-2">
                             <div class="text-right">
                                 <button type="button" class="btn btn-dark save-btn">{{ __('Register') }}</button>
@@ -240,7 +246,11 @@
             });
         });
         $('body').on('click', '.save-btn', function () {
-            if ($('#agreement-check').is(':checked')) {
+            // Check if agreement checkbox exists and is shown
+            var agreementCheckbox = $('#agreement-check');
+            var shouldCheckAgreement = agreementCheckbox.length > 0;
+            
+            if (!shouldCheckAgreement || agreementCheckbox.is(':checked')) {
                 var btn = $(this);
                 btn.prop('disabled', true);
                 let form = document.querySelector('#ib-from-create');

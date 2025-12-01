@@ -100,6 +100,30 @@ class ReferralController extends Controller
 
         $input = $request->all();
 
+        // Validate that ref_id and user_id are different
+        if ($input['ref_id'] == $input['user_id']) {
+            notify()->error('A user cannot be their own referral parent', 'Error');
+            return redirect()->back();
+        }
+
+        // Check for circular reference - prevent adding a user's ancestor as their child
+        $childUser = User::find($input['user_id']);
+        if (!$childUser) {
+            notify()->error('Child user not found', 'Error');
+            return redirect()->back();
+        }
+
+        // Check if the child user (user_id) exists in the parent chain of current user (ref_id)
+        // This prevents: if ref_id has ancestry including user_id, then adding user_id as child creates loop
+        if ($this->isUserInAncestry($input['user_id'], $input['ref_id'])) {
+            $parentUser = User::find($input['ref_id']);
+            $childUserEmail = $childUser->email ?? 'Unknown';
+            $parentUserEmail = $parentUser->email ?? 'Unknown';
+            
+            notify()->error('Cannot add referral: This would create a circular reference. The user you are trying to add (' . $childUserEmail . ') is already in the parent chain of the current user (' . $parentUserEmail . ').', 'Error');
+            return redirect()->back();
+        }
+
         $pUser = User::find($input['ref_id']);
         $pUser->getReferrals();
         $referral = ReferralLink::where('user_id', $input['ref_id'])->first();
@@ -230,6 +254,54 @@ class ReferralController extends Controller
 		}
 		return null;
 	}
+
+
+	/**
+	 * Check if a user is in the ancestry (upline/parent chain) of another user.
+	 * 
+	 * This traverses upward through the parent chain to detect circular references.
+	 * 
+	 * Example: If checking isUserInAncestry(9, 1)
+	 * - Start from user 1
+	 * - Traverse up: 1 → 2 → 3 → ... 
+	 * - If we find user 9 in this chain, return true
+	 * - This prevents adding user 9 as a child of user 1 (would create loop)
+	 * 
+	 * @param int $ancestorId The ID to search for in the ancestry (the user being added as child)
+	 * @param int $descendantId The user whose ancestry we're checking (current user/parent)
+	 * @return bool True if ancestorId is found in descendantId's upline chain
+	 */
+	protected function isUserInAncestry(int $ancestorId, int $descendantId): bool
+	{
+		$current = User::find($descendantId);
+		$visited = []; // Track visited IDs to prevent infinite loops
+		$maxDepth = 1000; // Safety limit
+		$depth = 0;
+
+		while ($current && $current->ref_id && $depth < $maxDepth) {
+			// Prevent infinite loops in case of existing circular references
+			if (in_array($current->ref_id, $visited)) {
+				Log::warning("Circular reference detected in existing ancestry data at user ID: {$current->ref_id}");
+				break;
+			}
+
+			// If we find the ancestor in the upline chain
+			if ($current->ref_id == $ancestorId) {
+				return true;
+			}
+
+			$visited[] = $current->ref_id;
+			$current = User::find($current->ref_id);
+			$depth++;
+		}
+
+		if ($depth >= $maxDepth) {
+			Log::error("Maximum depth reached while checking ancestry. Possible existing circular reference.");
+		}
+
+		return false;
+	}
+
     /**
      * @return RedirectResponse
      */

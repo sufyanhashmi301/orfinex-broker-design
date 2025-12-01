@@ -2014,13 +2014,100 @@ class UserController extends Controller
     }
 
     /**
+     * Login as user - supports both same window and new tab/window
+     * 
      * @return RedirectResponse
      */
     public function userLogin($id)
     {
-        Auth::guard('web')->loginUsingId($id);
+        try {
+            // Check if admin is authenticated
+            if (!Auth::guard('admin')->check()) {
+                notify()->error('Admin authentication required.');
+                return redirect()->route('admin.login');
+            }
 
-        return redirect()->route('user.dashboard');
+            // Verify user exists
+            $user = User::find($id);
+            if (!$user) {
+                notify()->error('User not found.');
+                return redirect()->back();
+            }
+
+            // Store admin ID for this impersonation session
+            $adminId = Auth::guard('admin')->id();
+            
+            // Create a unique session key for this impersonation
+            $impersonationKey = 'impersonation_' . $adminId . '_' . $id . '_' . time();
+            
+            // Store impersonation data in cache (accessible across different sessions)
+            cache()->put($impersonationKey, [
+                'admin_id' => $adminId,
+                'user_id' => $id,
+                'started_at' => now(),
+            ], now()->addHours(12)); // 12 hour expiry
+            
+            // Store the impersonation key in session
+            session(['impersonation_key' => $impersonationKey]);
+            session(['impersonating_admin_id' => $adminId]);
+            session(['impersonating_user_id' => $id]);
+
+            // DON'T logout from admin - this allows simultaneous sessions
+            // Just login to the web guard (for this session/tab)
+            Auth::guard('web')->loginUsingId($id);
+
+            notify()->success('Logged in as user successfully');
+            return redirect()->route('user.dashboard');
+            
+        } catch (\Exception $e) {
+            Log::error('User impersonation error: ' . $e->getMessage());
+            notify()->error('An error occurred while logging in as user.');
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Stop impersonating user and return to admin session
+     * 
+     * @return RedirectResponse
+     */
+    public function stopUserImpersonation()
+    {
+        try {
+            // Check if we're actually impersonating
+            if (!session('impersonating_admin_id') || !session('impersonating_user_id')) {
+                notify()->error('No active impersonation session.');
+                return redirect()->route('admin.login');
+            }
+
+            $adminId = session('impersonating_admin_id');
+            $impersonationKey = session('impersonation_key');
+
+            // Clear cache entry if exists
+            if ($impersonationKey) {
+                cache()->forget($impersonationKey);
+            }
+
+            // Logout from user guard
+            Auth::guard('web')->logout();
+
+            // Check if admin is still authenticated (in case of same-window usage)
+            if (!Auth::guard('admin')->check()) {
+                // Login back as admin
+                Auth::guard('admin')->loginUsingId($adminId);
+            }
+
+            // Clear impersonation session data
+            session()->forget(['impersonating_admin_id', 'impersonating_user_id', 'impersonation_key']);
+
+            notify()->success('Returned to admin panel successfully');
+            return redirect()->route('admin.dashboard');
+            
+        } catch (\Exception $e) {
+            Log::error('Stop user impersonation error: ' . $e->getMessage());
+            notify()->error('An error occurred while returning to admin panel.');
+            return redirect()->route('admin.login');
+        }
     }
 
    public function createCustomer()

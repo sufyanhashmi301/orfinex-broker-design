@@ -59,6 +59,11 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
+// Admin impersonation - return to admin panel (must be before other user routes)
+Route::get('user/return-to-admin', [\App\Http\Controllers\Backend\UserController::class, 'stopUserImpersonation'])
+    ->middleware(['auth'])
+    ->name('user.return-to-admin');
+
 Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.session.lifetime:web', 'check.email.verified', 'KYC'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');

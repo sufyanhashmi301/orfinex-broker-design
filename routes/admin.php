@@ -115,6 +115,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('grace/period', 'gracePeriodUsers')->name('gracePeriodUsers');
         Route::post('/update-grace-period', 'updateGracePeriod')->name('updateGracePeriod');
         Route::get('login/{id}', 'userLogin')->name('login');
+        Route::get('stop-impersonation', 'stopUserImpersonation')->name('stop-impersonation');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
         Route::post('password-reset', 'resetPassword')->name('reset-password');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');

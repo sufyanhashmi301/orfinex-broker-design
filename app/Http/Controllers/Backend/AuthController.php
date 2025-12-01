@@ -406,8 +406,21 @@ class AuthController extends Controller
             Admin2FACode::clearRestrictions($adminId);
         }
         
+        // Check if there's an active user session (admin viewing user account)
+        $hasUserSession = Auth::guard('web')->check();
+        
         $this->guard()->logout();
-        $request->session()->invalidate();
+        
+        // Only invalidate session if there's NO active user session
+        // (to preserve user session if admin was viewing user account)
+        if (!$hasUserSession) {
+            $request->session()->invalidate();
+        } else {
+            // If there's a user session, only clear admin-specific data
+            session()->forget(['impersonated_id', 'super_admin_id']);
+            session()->regenerateToken();
+        }
+        
         return redirect()->route('admin.login');
     }
 }

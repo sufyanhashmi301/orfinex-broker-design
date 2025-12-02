@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call(NewGatewaysSeeder::class);
         $this->call(EmailTemplatesSeeder::class);
 //        $this->call(DefaultIbGroupSeeder::class);
+        $this->call(DefaultIbQuestionSeeder::class);
         $this->call(PluginSeeder::class);
         $this->call(TicketPrioritySeeder::class);
         $this->call(TicketStatusSeeder::class);

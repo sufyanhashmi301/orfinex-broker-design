@@ -123,6 +123,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <input type="hidden" name="currency_symbol" value="" />
                         @endif
                        
                          <div class="input-area relative">

@@ -2013,7 +2013,53 @@ class EmailTemplatesSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'name' => 'Daily Forex Account Statement',
+                'code' => 'forex_daily_account_statement',
+                'for' => 'User',
+                'banner' => 'global/images/EsCX4Sg9WJF5lSOImDVQ.png',
+                'title' => 'Your Daily Forex Account Statement',
+                'subject' => 'Daily Account Statement for [[account_name]] - [[statement_date]]',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'Please find your daily account statement for account [[account_login]] dated [[statement_date]].<br><br>
 
+                <strong>Account Summary:</strong><br>
+                Account Login: [[account_login]]<br>
+                Account Balance: [[closing_balance]] [[currency]]<br>
+                Equity: [[equity]] [[currency]]<br>
+                Margin Level: [[margin_level]]%<br>
+                Free Margin: [[free_margin]] [[currency]]<br>
+
+                <strong>Open Positions:</strong><br>
+                [[open_positions_html]]<br><br>
+
+                <strong>Closed Trades:</strong><br>
+                [[closed_trades_html]]<br><br>
+
+                Detailed statement with complete account information is also attached as Excel file.',
+                'button_level' => 'View Account Details',
+                'button_link' => '[[site_url]]/user/forex/logs',
+                'footer_status' => 1,
+                'footer_body' => 'Best Regards,<br />[[site_title]] Team',
+                'bottom_status' => 1,
+                'bottom_title' => 'Account Statement Details',
+                'bottom_body' => 'This statement reflects all trading activity, deposits, withdrawals, and account balances for the specified period. For any questions, please contact our support team.',
+                'short_codes' => json_encode([
+                    // User and Account Info (used in subject, salutation, message_body)
+                    "[[full_name]]", "[[account_name]]", "[[account_login]]", "[[account_type]]", "[[statement_date]]",
+                    // Account Summary (used in message_body)
+                    "[[opening_balance]]", "[[closing_balance]]", "[[currency]]", "[[equity]]", "[[free_margin]]", "[[margin_level]]", 
+                    "[[open_positions_count]]", "[[closed_trades_count]]", "[[open_positions_html]]", "[[closed_trades_html]]",
+                    "[[site_title]]", "[[site_url]]"
+                ]),
+                'note' => 'This is an automated daily statement. For any questions, please contact our support team.',
+                'support_link' => '[[site_url]]/support',
+                'warning_content' => null,
+                'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ];
 
         foreach ($templates as $template) {

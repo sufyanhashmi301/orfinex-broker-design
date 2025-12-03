@@ -29,6 +29,7 @@ use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 use App\Console\Commands\RemoveDuplicateIBTransactions;
 use App\Console\Commands\ExpirePendingDeposits;
+use App\Console\Commands\SendDailyForexStatements;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -64,6 +65,17 @@ class Kernel extends ConsoleKernel
 
         // Expire pending deposits older than 1 hour
         $schedule->command('deposits:expire-pending')->everyThreeHours()->withoutOverlapping();
+
+        // Daily Forex Account Statements (only schedule if enabled)
+        if (setting('daily_statement_enabled', 'forex_daily_reporting', 0)) {
+            $statementTime = setting('daily_statement_time', 'forex_daily_reporting', '23:00');
+            $statementTimezone = setting('daily_statement_timezone', 'forex_daily_reporting', 'UTC');
+            $schedule->command('forex:send-daily-statements')
+                ->dailyAt($statementTime)
+                ->timezone($statementTimezone)
+                ->withoutOverlapping()
+                ->runInBackground();
+        }
 
     }
 
@@ -108,6 +120,7 @@ class Kernel extends ConsoleKernel
         DebugUserIBTransactions::class,
         RemoveDuplicateIBTransactions::class,
         ExpirePendingDeposits::class,
+        SendDailyForexStatements::class,
 
     ];
 }

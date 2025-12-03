@@ -63,7 +63,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();
 
         // Expire pending deposits older than 1 hour
-        $schedule->command('deposits:expire-pending')->everyThreeHours()->withoutOverlapping();
+        // $schedule->command('deposits:expire-pending')->everyThreeHours()->withoutOverlapping();
 
     }
 

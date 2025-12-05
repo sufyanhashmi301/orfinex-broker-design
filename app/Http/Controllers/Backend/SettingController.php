@@ -107,6 +107,11 @@ class SettingController extends Controller
         return view('backend.setting.forex-api');
     }
 
+    public static function forexDailyReportingSetting()
+    {
+        return view('backend.setting.forex-daily-reporting');
+    }
+
     public static function platformApiSetting()
     {
         return view('backend.setting.platform_api.metatrader');

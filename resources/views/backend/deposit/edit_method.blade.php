@@ -120,6 +120,7 @@
                                 <input type="text" class="form-control" name="currency" value="{{ $method->currency }}"
                                     id="currency" />
                             </div>
+                            <input type="hidden" name="currency_symbol" value="{{ $method->currency_symbol ?? '' }}" />
                         @endif
                         
                          @if ($autoExchangeRatesEnabled)

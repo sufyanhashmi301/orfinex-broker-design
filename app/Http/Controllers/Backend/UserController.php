@@ -2614,7 +2614,7 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         $user = User::findOrFail($userId);
 
-        try {
+        // try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
@@ -2623,11 +2623,11 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
 
             return redirect()->back();
-        } catch (\Exception $e) {
-            notify()->error('Command failed: ' . $e->getMessage());
+        // } catch (\Exception $e) {
+        //     notify()->error('Command failed: ' . $e->getMessage());
 
-            return redirect()->back();
-        }
+        //     return redirect()->back();
+        // }
     }
 
     public function getAllReferrals(User $user)

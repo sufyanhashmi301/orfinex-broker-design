@@ -468,6 +468,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
         Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
+        Route::get('forex-daily-reporting', 'forexDailyReportingSetting')->name('forex-daily-reporting');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('mt5-connection-test', 'testMT5Connection')->name('mt5.connection.test');
         Route::post('update', 'update')->name('update');

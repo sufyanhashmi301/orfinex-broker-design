@@ -420,4 +420,233 @@ class IBTransactionQueryService
         
         return $tables;
     }
+
+    /**
+     * Get sum of ib_bonus transactions for a user from IB transaction quarter tables
+     * Used for leaderboard
+     *
+     * @param int $userId
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return float
+     */
+    public static function getUserIBTransactionsSum($userId, $from = null, $to = null)
+    {
+        // Get quarter tables for date range
+        if ($from && $to) {
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        } else {
+            // Default to past 1 year if no date range
+            $to = Carbon::now();
+            $from = $to->copy()->subYear();
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        }
+
+        if (empty($quarterTables)) {
+            return 0;
+        }
+
+        $total = 0;
+
+        foreach ($quarterTables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+
+            $query = DB::table($tableName)
+                ->where('user_id', $userId)
+                ->where('type', 'ib_bonus');
+
+            if ($from && $to) {
+                $query->whereBetween('created_at', [$from, $to]);
+            }
+
+            $total += $query->sum('amount') ?? 0;
+        }
+
+        return $total;
+    }
+
+    /**
+     * Get sum of other transactions (non-ib_bonus) for a user from main transactions table
+     * Used for leaderboard
+     *
+     * @param int $userId
+     * @param array $types Array of transaction type values
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return float
+     */
+    public static function getUserOtherTransactionsSum($userId, array $types, $from = null, $to = null)
+    {
+        if (empty($types)) {
+            return 0;
+        }
+
+        $query = DB::table('transactions')
+            ->where('user_id', $userId)
+            ->whereIn('type', $types)
+            ->where('type', '!=', 'ib_bonus'); // Exclude ib_bonus as it's in IB tables
+
+        if ($from && $to) {
+            $query->whereBetween('created_at', [$from, $to]);
+        }
+
+        return $query->sum('amount') ?? 0;
+    }
+
+    /**
+     * Get sum of ib_bonus transactions for network users from IB transaction quarter tables
+     * Used for leaderboard
+     *
+     * @param array $userIds
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return float
+     */
+    public static function getNetworkIBTransactionsSum(array $userIds, $from = null, $to = null)
+    {
+        if (empty($userIds)) {
+            return 0;
+        }
+
+        // Get quarter tables for date range
+        if ($from && $to) {
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        } else {
+            // Default to past 1 year if no date range
+            $to = Carbon::now();
+            $from = $to->copy()->subYear();
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        }
+
+        if (empty($quarterTables)) {
+            return 0;
+        }
+
+        $total = 0;
+
+        foreach ($quarterTables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+
+            $query = DB::table($tableName)
+                ->whereIn('user_id', $userIds)
+                ->where('type', 'ib_bonus');
+
+            if ($from && $to) {
+                $query->whereBetween('created_at', [$from, $to]);
+            }
+
+            $total += $query->sum('amount') ?? 0;
+        }
+
+        return $total;
+    }
+
+    /**
+     * Get sum of other transactions (non-ib_bonus) for network users from main transactions table
+     * Used for leaderboard
+     *
+     * @param array $userIds
+     * @param array $types Array of transaction type values
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return float
+     */
+    public static function getNetworkOtherTransactionsSum(array $userIds, array $types, $from = null, $to = null)
+    {
+        if (empty($userIds) || empty($types)) {
+            return 0;
+        }
+
+        $query = DB::table('transactions')
+            ->whereIn('user_id', $userIds)
+            ->whereIn('type', $types)
+            ->where('type', '!=', 'ib_bonus'); // Exclude ib_bonus as it's in IB tables
+
+        if ($from && $to) {
+            $query->whereBetween('created_at', [$from, $to]);
+        }
+
+        return $query->sum('amount') ?? 0;
+    }
+
+    /**
+     * Get ib_bonus transactions for users from IB transaction quarter tables
+     * Used for leaderboard top1 details breakdown
+     *
+     * @param array $userIds
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getIBTransactionsForUsers(array $userIds, $from = null, $to = null)
+    {
+        if (empty($userIds)) {
+            return collect();
+        }
+
+        // Get quarter tables for date range
+        if ($from && $to) {
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        } else {
+            // Default to past 1 year if no date range
+            $to = Carbon::now();
+            $from = $to->copy()->subYear();
+            $quarterTables = self::getQuarterTablesForDateRange($from, $to);
+        }
+
+        if (empty($quarterTables)) {
+            return collect();
+        }
+
+        $transactions = collect();
+
+        foreach ($quarterTables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+
+            $query = DB::table($tableName)
+                ->whereIn('user_id', $userIds)
+                ->where('type', 'ib_bonus');
+
+            if ($from && $to) {
+                $query->whereBetween('created_at', [$from, $to]);
+            }
+
+            $tableTransactions = $query->get();
+            $transactions = $transactions->merge($tableTransactions);
+        }
+
+        return $transactions;
+    }
+
+    /**
+     * Get other transactions (non-ib_bonus) for users from main transactions table
+     * Used for leaderboard top1 details breakdown
+     *
+     * @param array $userIds
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getOtherTransactionsForUsers(array $userIds, $from = null, $to = null)
+    {
+        if (empty($userIds)) {
+            return collect();
+        }
+
+        $query = DB::table('transactions')
+            ->whereIn('user_id', $userIds)
+            ->where('type', '!=', 'ib_bonus'); // Exclude ib_bonus as it's in IB tables
+
+        if ($from && $to) {
+            $query->whereBetween('created_at', [$from, $to]);
+        }
+
+        return $query->get();
+    }
 }

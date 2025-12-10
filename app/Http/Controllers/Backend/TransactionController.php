@@ -22,7 +22,10 @@ use App\Exports\TransactionsExport;
 use App\Models\DepositMethod;
 use App\Models\User;
 use App\Models\LevelReferral;
+use App\Services\IBTransactionQueryService;
+use App\Services\IBTransactionPeriodService;
 use App\Helpers\TxnTypeGroup;
+use Illuminate\Support\Facades\Schema;
 
 class TransactionController extends Controller
 {
@@ -216,6 +219,10 @@ class TransactionController extends Controller
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
         });
 
+        // Get IB transactions from quarterly tables and merge with regular transactions
+        $ibResults = $this->getIBTransactionsGroupedByTypeAndStatus();
+        $results = $this->mergeTransactionResults($results, $ibResults);
+
         $incomingTypes = TxnTypeGroup::incoming();
         $outgoingTypes = TxnTypeGroup::outgoing();
 
@@ -227,10 +234,15 @@ class TransactionController extends Controller
 
             $records = $results->get($key, collect());
 
-            $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
-            $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
-            $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
-
+            $success = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Success->value
+            )->sum('total'), 2);
+            $pending = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Pending->value
+            )->sum('total'), 2);
+            $rejected = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Failed->value
+            )->sum('total'), 2);
 
             $total_amount = $records->sum('total');
 
@@ -240,7 +252,6 @@ class TransactionController extends Controller
                 'success' => $success,
                 'pending' => $pending,
                 'rejected' => $rejected,
-
                 'total' => $total_amount,
             ];
 
@@ -273,6 +284,8 @@ class TransactionController extends Controller
         }
 
         // Date range support
+        $startDate = null;
+        $endDate = null;
         if (!empty($date)) {
             $dates = explode(' to ', $date);
             if (count($dates) === 2) {
@@ -280,13 +293,19 @@ class TransactionController extends Controller
                 $endDate = Carbon::parse($dates[1])->endOfDay();
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             } else {
-                $query->whereDate('created_at', Carbon::parse($date));
+                $startDate = Carbon::parse($date)->startOfDay();
+                $endDate = Carbon::parse($date)->endOfDay();
+                $query->whereDate('created_at', $startDate);
             }
         }
 
         $results = $query->get()->groupBy(function ($item) {
             return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
         });
+
+        // Get IB transactions from quarterly tables and merge with regular transactions
+        $ibResults = $this->getIBTransactionsGroupedByTypeAndStatus($userId, $startDate, $endDate);
+        $results = $this->mergeTransactionResults($results, $ibResults);
 
         $incomingTypes = TxnTypeGroup::incoming();
         $outgoingTypes = TxnTypeGroup::outgoing();
@@ -299,10 +318,15 @@ class TransactionController extends Controller
 
             $records = $results->get($key, collect());
 
-            $success = round($records->filter(fn ($r) => $r->status === TxnStatus::Success)->sum('total'), 2);
-            $pending = round($records->filter(fn ($r) => $r->status === TxnStatus::Pending)->sum('total'), 2);
-            $rejected = round($records->filter(fn ($r) => $r->status === TxnStatus::Failed)->sum('total'), 2);
-
+            $success = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Success->value
+            )->sum('total'), 2);
+            $pending = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Pending->value
+            )->sum('total'), 2);
+            $rejected = round($records->filter(fn ($r) => 
+                ($r->status instanceof TxnStatus ? $r->status->value : (string)$r->status) === TxnStatus::Failed->value
+            )->sum('total'), 2);
 
             $total_amount = $records->sum('total');
 
@@ -312,7 +336,6 @@ class TransactionController extends Controller
                 'success' => $success,
                 'pending' => $pending,
                 'rejected' => $rejected,
-
                 'total' => $total_amount,
             ];
 
@@ -366,6 +389,20 @@ class TransactionController extends Controller
             $userIds = $allUsers->pluck('user.id')->toArray();
             $currency = setting('site_currency', 'global');
 
+            // Determine date range for IB transactions
+            $startDate = null;
+            $endDate = null;
+            if (!empty($date)) {
+                $dates = explode(' to ', $date);
+                if (count($dates) === 2) {
+                    $startDate = Carbon::parse($dates[0])->startOfDay();
+                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                } else {
+                    $startDate = Carbon::parse($date)->startOfDay();
+                    $endDate = Carbon::parse($date)->endOfDay();
+                }
+            }
+
             // Build base transaction query - exclude none status for referral network report
             $txnQuery = Transaction::where('status', '!=', TxnStatus::None)
                 ->select(['user_id', 'type', 'status', DB::raw('SUM(amount) as total')])
@@ -373,18 +410,25 @@ class TransactionController extends Controller
                 ->groupBy('user_id', 'type', 'status');
 
             // Apply optional date filter
-            if (!empty($date)) {
-                $dates = explode(' to ', $date);
-                if (count($dates) === 2) {
-                    $startDate = Carbon::parse($dates[0])->startOfDay();
-                    $endDate = Carbon::parse($dates[1])->endOfDay();
-                    $txnQuery->whereBetween('created_at', [$startDate, $endDate]);
-                } else {
-                    $txnQuery->whereDate('created_at', Carbon::parse($date));
-                }
+            if ($startDate && $endDate) {
+                $txnQuery->whereBetween('created_at', [$startDate, $endDate]);
             }
 
             $allTransactions = $txnQuery->get()->groupBy('user_id');
+
+            // Get IB transactions from quarterly tables for all users
+            $ibTransactionsByUser = $this->getIBTransactionsForNetworkUsers($userIds, $startDate, $endDate);
+            
+            // Merge IB transactions with regular transactions
+            foreach ($ibTransactionsByUser as $userId => $ibTxns) {
+                if ($allTransactions->has($userId)) {
+                    $existingTxns = $allTransactions->get($userId);
+                    $mergedTxns = $existingTxns->merge($ibTxns);
+                    $allTransactions->put($userId, $mergedTxns);
+                } else {
+                    $allTransactions->put($userId, $ibTxns);
+                }
+            }
 
             $incomingTypes = TxnTypeGroup::incoming();
             $outgoingTypes = TxnTypeGroup::outgoing();
@@ -395,8 +439,7 @@ class TransactionController extends Controller
                 $ref = $item['user'];
                 $level = $item['level'];
 
-                $grouped = $allTransactions->get(
-                    $ref->id, collect())->groupBy(fn($txn) => $txn->type instanceof TxnType ? $txn->type->value : $txn->type);
+                $grouped = $allTransactions->get($ref->id, collect())->groupBy(fn($txn) => $txn->type instanceof TxnType ? $txn->type->value : $txn->type);
 
                 $incomingSummary = [];
                 $outgoingSummary = [];
@@ -405,14 +448,29 @@ class TransactionController extends Controller
                     $key = $type->value;
                     $records = $grouped->get($key, collect());
 
+                    // Normalize status comparison (handle both enum and string)
+                    $success = round($records->filter(function ($r) {
+                        $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                        return $status === TxnStatus::Success->value;
+                    })->sum('total'), 2);
+
+                    $pending = round($records->filter(function ($r) {
+                        $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                        return $status === TxnStatus::Pending->value;
+                    })->sum('total'), 2);
+
+                    $rejected = round($records->filter(function ($r) {
+                        $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                        return $status === TxnStatus::Failed->value;
+                    })->sum('total'), 2);
+
                     $row = [
                         'key' => $key, // raw enum value e.g., 'ib_bonus'
                         'type' => $type->label(), // e.g., 'IB Bonus'
                         'desc' => $type->description(),
-                        'success' => round($records->where('status', TxnStatus::Success)->sum('total'), 2),
-                        'pending' => round($records->where('status', TxnStatus::Pending)->sum('total'), 2),
-                        'rejected' => round($records->where('status', TxnStatus::Failed)->sum('total'), 2),
-
+                        'success' => $success,
+                        'pending' => $pending,
+                        'rejected' => $rejected,
                         'total' => round($records->sum('total'), 2),
                     ];
 
@@ -594,6 +652,178 @@ class TransactionController extends Controller
         }
 
         return collect($result);
+    }
+
+    /**
+     * Get IB transactions from quarterly tables grouped by type and status
+     *
+     * @param int|null $userId Optional user ID filter
+     * @param Carbon|null $startDate Optional start date filter
+     * @param Carbon|null $endDate Optional end date filter
+     * @return \Illuminate\Support\Collection
+     */
+    private function getIBTransactionsGroupedByTypeAndStatus($userId = null, $startDate = null, $endDate = null)
+    {
+        // Determine date range
+        if ($startDate && $endDate) {
+            $dateRange = [$startDate, $endDate];
+        } else {
+            // Default to past 1 year if no date range provided
+            $endDate = Carbon::now();
+            $startDate = $endDate->copy()->subYear();
+            $dateRange = [$startDate, $endDate];
+        }
+
+        // Get quarter tables for date range (replicate logic from IBTransactionQueryService)
+        $tables = [];
+        $startYear = $dateRange[0]->year;
+        $endYear = $dateRange[1]->year;
+
+        for ($year = $startYear; $year <= $endYear; $year++) {
+            $yearPeriods = IBTransactionPeriodService::getYearPeriods($year);
+
+            foreach ($yearPeriods as $period) {
+                $periodRange = IBTransactionPeriodService::getPeriodDateRange($period);
+
+                // Check if this period overlaps with our date range
+                if ($periodRange['start']->lte($dateRange[1]) && $periodRange['end']->gte($dateRange[0])) {
+                    $tableName = IBTransactionPeriodService::getTableName($period);
+                    $tables[] = $tableName;
+                }
+            }
+        }
+
+        if (empty($tables)) {
+            return collect();
+        }
+
+        $ibResults = collect();
+
+        foreach ($tables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+
+            $query = DB::table($tableName)
+                ->where('type', 'ib_bonus')
+                ->where('status', '!=', 'none')
+                ->whereBetween('created_at', $dateRange)
+                ->select(['type', 'status', DB::raw('SUM(CAST(final_amount AS DECIMAL(15,2))) as total')])
+                ->groupBy('type', 'status');
+
+            if ($userId) {
+                $query->where('user_id', $userId);
+            }
+
+            $tableResults = $query->get();
+            $ibResults = $ibResults->merge($tableResults);
+        }
+
+        // Group by type
+        return $ibResults->groupBy(function ($item) {
+            return $item->type instanceof TxnType ? $item->type->value : (string) $item->type;
+        });
+    }
+
+    /**
+     * Merge IB transaction results with regular transaction results
+     *
+     * @param \Illuminate\Support\Collection $regularResults
+     * @param \Illuminate\Support\Collection $ibResults
+     * @return \Illuminate\Support\Collection
+     */
+    private function mergeTransactionResults($regularResults, $ibResults)
+    {
+        foreach ($ibResults as $typeKey => $ibRecords) {
+            if ($regularResults->has($typeKey)) {
+                // Merge with existing records
+                $existingRecords = $regularResults->get($typeKey);
+                $mergedRecords = $existingRecords->merge($ibRecords);
+                $regularResults->put($typeKey, $mergedRecords);
+            } else {
+                // Add new records
+                $regularResults->put($typeKey, $ibRecords);
+            }
+        }
+
+        return $regularResults;
+    }
+
+    /**
+     * Get IB transactions from quarterly tables for multiple users grouped by user_id
+     *
+     * @param array $userIds Array of user IDs
+     * @param Carbon|null $startDate Optional start date filter
+     * @param Carbon|null $endDate Optional end date filter
+     * @return \Illuminate\Support\Collection Collection grouped by user_id
+     */
+    private function getIBTransactionsForNetworkUsers($userIds, $startDate = null, $endDate = null)
+    {
+        if (empty($userIds)) {
+            return collect();
+        }
+
+        // Determine date range
+        if ($startDate && $endDate) {
+            $dateRange = [$startDate, $endDate];
+        } else {
+            // Default to past 1 year if no date range provided
+            $endDate = Carbon::now();
+            $startDate = $endDate->copy()->subYear();
+            $dateRange = [$startDate, $endDate];
+        }
+
+        // Get quarter tables for date range
+        $tables = [];
+        $startYear = $dateRange[0]->year;
+        $endYear = $dateRange[1]->year;
+
+        for ($year = $startYear; $year <= $endYear; $year++) {
+            $yearPeriods = IBTransactionPeriodService::getYearPeriods($year);
+
+            foreach ($yearPeriods as $period) {
+                $periodRange = IBTransactionPeriodService::getPeriodDateRange($period);
+
+                // Check if this period overlaps with our date range
+                if ($periodRange['start']->lte($dateRange[1]) && $periodRange['end']->gte($dateRange[0])) {
+                    $tableName = IBTransactionPeriodService::getTableName($period);
+                    $tables[] = $tableName;
+                }
+            }
+        }
+
+        if (empty($tables)) {
+            return collect();
+        }
+
+        $ibResultsByUser = collect();
+
+        foreach ($tables as $tableName) {
+            if (!Schema::hasTable($tableName)) {
+                continue;
+            }
+
+            $query = DB::table($tableName)
+                ->whereIn('user_id', $userIds)
+                ->where('type', 'ib_bonus')
+                ->where('status', '!=', 'none')
+                ->whereBetween('created_at', $dateRange)
+                ->select(['user_id', 'type', 'status', DB::raw('SUM(CAST(final_amount AS DECIMAL(15,2))) as total')])
+                ->groupBy('user_id', 'type', 'status');
+
+            $tableResults = $query->get();
+
+            // Group by user_id
+            foreach ($tableResults as $result) {
+                $userId = $result->user_id;
+                if (!$ibResultsByUser->has($userId)) {
+                    $ibResultsByUser->put($userId, collect());
+                }
+                $ibResultsByUser->get($userId)->push($result);
+            }
+        }
+
+        return $ibResultsByUser;
     }
 
 }

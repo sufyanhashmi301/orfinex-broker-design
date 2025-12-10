@@ -161,7 +161,7 @@ class RegisteredUserController extends Controller
                 'first_name' => $socialUser->getName(),
                 'last_name' => $socialUser->getName(),
                 'username' => $socialUser->getNickname() ?? 'user_' . rand(1000, 9999),
-                'provider' => $provider,
+                'provider_name' => $provider,
                 'provider_id' => $socialUser->getId(),
                 'avatar' => $socialUser->getAvatar(),
                 'country' => $country,
@@ -173,6 +173,15 @@ class RegisteredUserController extends Controller
                 'in_grace_period' => setting('grace_period', 'customer_misc') && !$socialUser->getEmail(),
             ]
         );
+
+        // Update provider info if user already exists (in case they switch providers)
+        if (!$user->wasRecentlyCreated) {
+            $user->update([
+                'provider_name' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar() ?: $user->avatar,
+            ]);
+        }
 
         // If the user is newly created, handle bonuses, notifications, and referral
         if ($user->wasRecentlyCreated) {
@@ -331,12 +340,12 @@ class RegisteredUserController extends Controller
                 $user->ref_id = $referrer->id;
                 $user->save();
 
-                $isPartOfMasterIb = user_meta('is_part_of_master_ib', null, $referrer);
-
-                if ($isPartOfMasterIb) {
+                // Determine nearest approved IB ancestor and set child's master IB accordingly
+                $nearestApprovedParent = app(\App\Services\UserIbNetworkService::class)->findNearestApprovedParentIb($user);
+                if ($nearestApprovedParent && !is_null($nearestApprovedParent->ib_group_id)) {
                     $user->user_metas()->updateOrCreate(
                         ['meta_key' => 'is_part_of_master_ib'],
-                        ['meta_value' => $isPartOfMasterIb]
+                        ['meta_value' => $nearestApprovedParent->ib_group_id]
                     );
                 }
 

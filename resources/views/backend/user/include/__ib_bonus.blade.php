@@ -3,7 +3,7 @@
         <div class="card-header flex-col !items-start gap-5">
             <div class="flex justify-between w-full gap-3">
                 <h4 class="card-title">{{ __('IB Bonus') }}</h4>
-                {{-- @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
+                @canany(['customer-master-ib-network-distribution', 'customer-child-ib-distribution'])
                     <div class="flex justify-end items-center gap-2">
                         @can('customer-master-ib-network-distribution')
                             @if ($user->ib_status == \App\Enums\IBStatus::APPROVED)
@@ -25,7 +25,7 @@
                             @endif
                         @endcan
                     </div>
-                @endcanany --}}
+                @endcanany
             </div>
             <div class="flex flex-col sm:flex-row sm:items-center w-full gap-3">
                 <!-- Filter Inputs -->
@@ -140,7 +140,8 @@
                 </div>
                 <div class="processingIndicator processingIndicator-ibbonus text-center" style="display: none;">
                     {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
-                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100"
+                        icon="lucide:loader"></iconify-icon>
                 </div>
             </div>
         </div>
@@ -179,7 +180,9 @@
                     searching: false,
                     lengthChange: false,
                     info: true,
-                    order: [[0, 'desc']],
+                    order: [
+                        [0, 'desc']
+                    ],
                     language: {
                         lengthMenu: "Show _MENU_ entries",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -366,8 +369,7 @@
         });
 
         $('#child-ib-distribution-btn').on('click', function() {
-            var myModal = new bootstrap.Modal(document.getElementById('child-ib-modal'));
-            myModal.show();
+            $('#child-ib-modal').modal('show');
         });
     </script>
 @endpush

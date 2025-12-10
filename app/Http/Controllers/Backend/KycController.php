@@ -711,10 +711,16 @@ public function actionLevel3Now(Request $request)
 
         $this->mailNotify($user->email, $template, $shortcodes);
         if ($request->kyc_level == 3){
-            $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request', $shortcodes);
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            foreach ($adminEmails as $email) {
+                $this->mailNotify($email, 'admin_kyc_request', $shortcodes);
+            }
         }
         elseif ($request->kyc_level == 5) {
-            $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_3', $shortcodes);
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            foreach ($adminEmails as $email) {
+                $this->mailNotify($email, 'admin_kyc_request_level_3', $shortcodes);
+            }
         }
 
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);

@@ -224,8 +224,32 @@ class ForexAccountController extends GatewayController
         }
 //        dd($traderType,$group,$server);
 
-        // If manual approval is enabled, do NOT call platform APIs here; create local pending record only
-        $manualApproval = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+        // Check if admin approval is enabled for this account type
+        $adminApprovalEnabled = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+        
+        // If admin approval is enabled, check account limit
+        $limitReached = false;
+        if ($adminApprovalEnabled) {
+            $accountLimit = ($accountType === 'real') ? ($schema->live_account_limit ?? 0) : ($schema->demo_account_limit ?? 0);
+            
+            // Only check limit if limit is set (greater than 0, 0 means unlimited)
+            if ($accountLimit > 0) {
+                $userAccountCount = ForexAccount::where('user_id', $user->id)
+                    ->where('forex_schema_id', $schema->id)
+                    ->where('account_type', $accountType)
+                    ->traderType()
+                    ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending])
+                    ->count();
+                
+                // If user has reached or exceeded the limit, require approval
+                $limitReached = ($userAccountCount >= $accountLimit);
+            }
+            // If limit is 0 (unlimited), limitReached remains false, so account will be auto-approved
+        }
+
+        // If admin approval is enabled AND limit is reached, do NOT call platform APIs here; create local pending record only
+        // If admin approval is enabled but limit NOT reached (or limit is 0/unlimited), proceed with normal flow (auto-approve)
+        $manualApproval = $adminApprovalEnabled && $limitReached;
 
         if ($manualApproval) {
             // Save local pending account and exit
@@ -413,12 +437,32 @@ class ForexAccountController extends GatewayController
             $accountData['group'] = $data['group'];
             $accountData['leverage'] = $data['leverage'];
             $status = ForexAccountStatus::Ongoing;
-            if ($accountType === 'real' && setting('live_account_creation', 'features')) {
-                $status = ForexAccountStatus::Pending;
+            
+            // Check if admin approval is enabled for this account type
+            $adminApprovalEnabled = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+            
+            // If admin approval is enabled, check account limit
+            if ($adminApprovalEnabled) {
+                $accountLimit = ($accountType === 'real') ? ($schema->live_account_limit ?? 0) : ($schema->demo_account_limit ?? 0);
+                
+                // Only check limit if limit is set (greater than 0, 0 means unlimited)
+                if ($accountLimit > 0) {
+                    $userAccountCount = ForexAccount::where('user_id', $user->id)
+                        ->where('forex_schema_id', $schema->id)
+                        ->where('account_type', $accountType)
+                        ->traderType()
+                        ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending])
+                        ->count();
+                    
+                    // If user has reached or exceeded the limit, set status to pending
+                    if ($userAccountCount >= $accountLimit) {
+                        $status = ForexAccountStatus::Pending;
+                    }
+                    // If limit not reached, status remains Ongoing (auto-approved)
+                }
+                // If limit is 0 (unlimited), status remains Ongoing (auto-approved)
             }
-            if ($accountType === 'demo' && setting('demo_account_creation', 'features')) {
-                $status = ForexAccountStatus::Pending;
-            }
+            
             $accountData['status'] = $status;
             $accountData['server'] = $server;
             $accountData['created_by'] = $user->id;

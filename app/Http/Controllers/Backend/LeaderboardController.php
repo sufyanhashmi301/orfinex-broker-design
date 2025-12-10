@@ -7,11 +7,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\IbGroup;
-use App\Models\Transaction;
 use App\Enums\TxnType;
 use App\Enums\TxnStatus;
 use App\Helpers\TxnTypeGroup;
-use Illuminate\Support\Facades\DB;
+use App\Services\IBTransactionQueryService;
 use DataTables;
 
 class LeaderboardController extends Controller
@@ -33,13 +32,18 @@ class LeaderboardController extends Controller
 
         $from = $to = null;
         if (!empty($date)) {
-            $dates = explode(' to ', $date);
-            if (count($dates) === 2) {
-                $from = Carbon::parse($dates[0])->startOfDay();
-                $to = Carbon::parse($dates[1])->endOfDay();
-            } else {
-                $from = Carbon::parse($date)->startOfDay();
-                $to = Carbon::parse($date)->endOfDay();
+            try {
+                $dates = explode(' to ', trim($date));
+                if (count($dates) === 2) {
+                    $from = Carbon::parse(trim($dates[0]))->startOfDay();
+                    $to = Carbon::parse(trim($dates[1]))->endOfDay();
+                } else {
+                    $from = Carbon::parse(trim($date))->startOfDay();
+                    $to = Carbon::parse(trim($date))->endOfDay();
+                }
+            } catch (\Exception $e) {
+                // Invalid date format, ignore date filter
+                $from = $to = null;
             }
         }
 
@@ -47,80 +51,89 @@ class LeaderboardController extends Controller
             $ibGroupId = null;
         }
 
+        // Get IB users
         $query = User::query()
             ->with('ibGroup')
             ->whereNotNull('ib_group_id')
             ->where('ib_status', 'approved')
-            ->when($ibGroupId, fn($q) => $q->where('ib_group_id', $ibGroupId))
-            ->withSum(['transaction as incoming_total' => function ($q) use ($from, $to) {
-                $q->whereIn('type', TxnTypeGroup::incoming());
-                if ($from && $to) {
-                    $q->whereBetween('created_at', [$from, $to]);
-                }
-            }], 'amount')
-            ->withSum(['transaction as outgoing_total' => function ($q) use ($from, $to) {
-                $q->whereIn('type', TxnTypeGroup::outgoing());
-                if ($from && $to) {
-                    $q->whereBetween('created_at', [$from, $to]);
-                }
-            }], 'amount');
+            ->when($ibGroupId, fn($q) => $q->where('ib_group_id', $ibGroupId));
 
-        $users = $query->orderByDesc('incoming_total')->get();
+        $users = $query->get();
 
+        // Calculate user transactions
+        // ib_bonus from IB transaction tables + other transactions from main transactions table
+        foreach ($users as $user) {
+            // Get ib_bonus from IB transaction tables (incoming)
+            $ibBonusAmount = IBTransactionQueryService::getUserIBTransactionsSum(
+                $user->id,
+                $from,
+                $to
+            );
+            
+            // Get other incoming transactions from main transactions table (excluding ib_bonus)
+            $otherIncomingAmount = IBTransactionQueryService::getUserOtherTransactionsSum(
+                $user->id,
+                TxnTypeGroup::incoming(),
+                $from,
+                $to
+            );
+            
+            // Get outgoing transactions from main transactions table
+            $outgoingAmount = IBTransactionQueryService::getUserOtherTransactionsSum(
+                $user->id,
+                TxnTypeGroup::outgoing(),
+                $from,
+                $to
+            );
+            
+            $user->incoming_total = $ibBonusAmount + $otherIncomingAmount;
+            $user->outgoing_total = $outgoingAmount;
+        }
+
+        // Calculate network transactions
         foreach ($users as $user) {
             $referrals = $this->getAllReferrals($user);
             $referralUserIds = $referrals->pluck('id');
 
             $user->network_user_count = $referrals->count();
 
-            $user->network_incoming = Transaction::whereIn('user_id', $referralUserIds)
-                ->whereIn('type', TxnTypeGroup::incoming())
-                ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
-                ->sum('amount');
-
-            $user->network_outgoing = Transaction::whereIn('user_id', $referralUserIds)
-                ->whereIn('type', TxnTypeGroup::outgoing())
-                ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
-                ->sum('amount');
+            // Get ib_bonus from IB transaction tables (incoming)
+            $networkIBBonusAmount = IBTransactionQueryService::getNetworkIBTransactionsSum(
+                $referralUserIds->toArray(),
+                $from,
+                $to
+            );
+            
+            // Get other incoming transactions from main transactions table (excluding ib_bonus)
+            $networkOtherIncomingAmount = IBTransactionQueryService::getNetworkOtherTransactionsSum(
+                $referralUserIds->toArray(),
+                TxnTypeGroup::incoming(),
+                $from,
+                $to
+            );
+            
+            // Get outgoing transactions from main transactions table
+            $networkOutgoingAmount = IBTransactionQueryService::getNetworkOtherTransactionsSum(
+                $referralUserIds->toArray(),
+                TxnTypeGroup::outgoing(),
+                $from,
+                $to
+            );
+            
+            $user->network_incoming = $networkIBBonusAmount + $networkOtherIncomingAmount;
+            $user->network_outgoing = $networkOutgoingAmount;
         }
+
+        // Sort by incoming_total descending
+        $users = $users->sortByDesc('incoming_total')->values();
 
         $top1 = $users->first();
         $top3 = $users->take(3);
 
-        $top1Details = ['incoming' => [], 'outgoing' => []];
+        // Calculate top1 details (reused for both AJAX and non-AJAX)
+        $top1Details = $this->getTop1Details($top1, $from, $to);
 
-        if ($top1) {
-            $referrals = $this->getAllReferrals($top1);
-            $ids = $referrals->pluck('id')->prepend($top1->id);
-            $transactions = Transaction::whereIn('user_id', $ids)
-                ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
-                ->get()
-                ->groupBy(fn($txn) => $txn->type->value);
-
-            foreach (getFilteredTxnTypes() as $type) {
-                $key = $type->value;
-                $records = $transactions->get($key, collect());
-
-                $row = [
-                    'key' => $key,
-                    'type' => $type->label(),
-                    'desc' => $type->description(),
-                    'success' => round($records->where('status', TxnStatus::Success)->sum('amount'), 2),
-                    'pending' => round($records->where('status', TxnStatus::Pending)->sum('amount'), 2),
-                    'rejected' => round($records->where('status', TxnStatus::Failed)->sum('amount'), 2),
-                    'none' => round($records->where('status', TxnStatus::None)->sum('amount'), 2),
-                    'total' => round($records->sum('amount'), 2),
-                ];
-
-                if (in_array($key, TxnTypeGroup::incoming())) {
-                    $top1Details['incoming'][] = $row;
-                } elseif (in_array($key, TxnTypeGroup::outgoing())) {
-                    $top1Details['outgoing'][] = $row;
-                }
-            }
-        }
-
-        if($request->ajax()) {
+        if ($request->ajax() || $request->wantsJson()) {
             if (!$request->has('datatable')) {
                 $summaryHtml = view('backend.leaderboard.summary', [
                     'top3' => $top3,
@@ -144,11 +157,11 @@ class LeaderboardController extends Controller
                         return $row->network_user_count ?? 0;
                     })
                     ->addColumn('incoming_total', function ($row) {
-                        $amount = $row->incoming_total + $row->network_incoming ?? 0;
+                        $amount = ($row->incoming_total ?? 0) + ($row->network_incoming ?? 0);
                         return setting('currency_symbol', 'global') . number_format($amount, 2);
                     })
                     ->addColumn('outgoing_total', function ($row) {
-                        $amount = $row->outgoing_total + $row->network_outgoing ?? 0;
+                        $amount = ($row->outgoing_total ?? 0) + ($row->network_outgoing ?? 0);
                         return setting('currency_symbol', 'global') . number_format($amount, 2);
                     })
                     ->addColumn('actions', function ($row) {
@@ -159,57 +172,6 @@ class LeaderboardController extends Controller
             }
 
             return response()->json(['summaryHtml' => $summaryHtml]);
-        }
-
-        // Breakdown for top1
-        $top1 = $users->first();
-
-        $top1Details = [
-            'incoming' => [],
-            'outgoing' => [],
-        ];
-
-        if ($top1) {
-            $referrals = $this->getAllReferrals($top1);
-            $ids = $referrals->pluck('id')->prepend($top1->id);
-
-            // ADD DATE FILTERING HERE
-            $transactions = Transaction::whereIn('user_id', $ids)
-                ->when($from && $to, fn ($q) => $q->whereBetween('created_at', [$from, $to]))
-                ->get();
-
-            $groupedTxns = $transactions->groupBy(fn ($txn) => $txn->type->value);
-
-
-            $incomingSummary = [];
-            $outgoingSummary = [];
-
-            foreach (getFilteredTxnTypes() as $type) {
-                $key = $type->value;
-                $records = $groupedTxns->get($key, collect());
-
-                $row = [
-                    'key' => $key,
-                    'type' => $type->label(),
-                    'desc' => $type->description(),
-                    'success' => round($records->where('status', TxnStatus::Success)->sum('amount'), 2),
-                    'pending' => round($records->where('status', TxnStatus::Pending)->sum('amount'), 2),
-                    'rejected' => round($records->where('status', TxnStatus::Failed)->sum('amount'), 2),
-                    'none' => round($records->where('status', TxnStatus::None)->sum('amount'), 2),
-                    'total' => round($records->sum('amount'), 2),
-                ];
-
-                if (in_array($key, TxnTypeGroup::incoming())) {
-                    $incomingSummary[] = $row;
-                } elseif (in_array($key, TxnTypeGroup::outgoing())) {
-                    $outgoingSummary[] = $row;
-                }
-            }
-
-            $top1Details = [
-                'incoming' => $incomingSummary,
-                'outgoing' => $outgoingSummary
-            ];
         }
 
         return view('backend.leaderboard.index', [
@@ -309,5 +271,111 @@ class LeaderboardController extends Controller
         }
 
         return $referrals->unique('id');
+    }
+
+    /**
+     * Get top1 user transaction details
+     *
+     * @param User|null $top1
+     * @param Carbon|null $from
+     * @param Carbon|null $to
+     * @return array
+     */
+    private function getTop1Details($top1, $from = null, $to = null)
+    {
+        $top1Details = [
+            'incoming' => [],
+            'outgoing' => [],
+        ];
+
+        if (!$top1) {
+            return $top1Details;
+        }
+
+        $referrals = $this->getAllReferrals($top1);
+        $ids = $referrals->pluck('id')->prepend($top1->id);
+
+        // Get ib_bonus transactions from IB transaction tables
+        $ibTransactions = IBTransactionQueryService::getIBTransactionsForUsers(
+            $ids->toArray(),
+            $from,
+            $to
+        );
+
+        // Get other transactions from main transactions table
+        $otherTransactions = IBTransactionQueryService::getOtherTransactionsForUsers(
+            $ids->toArray(),
+            $from,
+            $to
+        );
+
+        // Normalize amount field for IB transactions (use final_amount if available, otherwise amount)
+        // Also exclude none status transactions
+        $ibTransactions = $ibTransactions->filter(function ($transaction) {
+            $status = $transaction->status instanceof TxnStatus ? $transaction->status->value : (string)$transaction->status;
+            return $status !== TxnStatus::None->value;
+        })->map(function ($transaction) {
+            // Use final_amount for IB transactions if available, otherwise use amount
+            $transaction->amount = isset($transaction->final_amount) && $transaction->final_amount !== null
+                ? (float) $transaction->final_amount
+                : (float) ($transaction->amount ?? 0);
+            return $transaction;
+        });
+
+        // Normalize amount field for regular transactions
+        // Also exclude none status transactions
+        $otherTransactions = $otherTransactions->filter(function ($transaction) {
+            $status = $transaction->status instanceof TxnStatus ? $transaction->status->value : (string)$transaction->status;
+            return $status !== TxnStatus::None->value;
+        })->map(function ($transaction) {
+            $transaction->amount = (float) ($transaction->amount ?? 0);
+            return $transaction;
+        });
+
+        // Merge both collections
+        $transactions = $ibTransactions->merge($otherTransactions);
+
+        // Group by type value (from DB it's a string)
+        $groupedTxns = $transactions->groupBy('type');
+
+        foreach (getFilteredTxnTypes() as $type) {
+            $key = $type->value;
+            $records = $groupedTxns->get($key, collect());
+
+            // Normalize status comparison (handle both enum and string)
+            $success = round($records->filter(function ($r) {
+                $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                return $status === TxnStatus::Success->value;
+            })->sum('amount'), 2);
+
+            $pending = round($records->filter(function ($r) {
+                $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                return $status === TxnStatus::Pending->value;
+            })->sum('amount'), 2);
+
+            $rejected = round($records->filter(function ($r) {
+                $status = $r->status instanceof TxnStatus ? $r->status->value : (string)$r->status;
+                return $status === TxnStatus::Failed->value;
+            })->sum('amount'), 2);
+
+            $row = [
+                'key' => $key,
+                'type' => $type->label(),
+                'desc' => $type->description(),
+                'success' => $success,
+                'pending' => $pending,
+                'rejected' => $rejected,
+                'total' => round($records->sum('amount'), 2),
+            ];
+
+            // Categorize by incoming/outgoing
+            if (in_array($key, TxnTypeGroup::incoming())) {
+                $top1Details['incoming'][] = $row;
+            } elseif (in_array($key, TxnTypeGroup::outgoing())) {
+                $top1Details['outgoing'][] = $row;
+            }
+        }
+
+        return $top1Details;
     }
 }

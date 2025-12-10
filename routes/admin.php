@@ -115,6 +115,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('grace/period', 'gracePeriodUsers')->name('gracePeriodUsers');
         Route::post('/update-grace-period', 'updateGracePeriod')->name('updateGracePeriod');
         Route::get('login/{id}', 'userLogin')->name('login');
+        Route::get('stop-impersonation', 'stopUserImpersonation')->name('stop-impersonation');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
         Route::post('password-reset', 'resetPassword')->name('reset-password');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
@@ -467,6 +468,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
         Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
+        Route::get('forex-daily-reporting', 'forexDailyReportingSetting')->name('forex-daily-reporting');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('mt5-connection-test', 'testMT5Connection')->name('mt5.connection.test');
         Route::post('update', 'update')->name('update');
@@ -513,9 +515,14 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
         Route::group(['prefix' => 'dynamic-content', 'as' => 'dynamic-content.'], function () {
+            //success page
             Route::get('success-page', [PageController::class, 'successPage'])->name('success-page');
             Route::get('success-page/{id}/edit', [PageController::class, 'successPageEdit'])->name('success-page.edit');
             Route::put('success-page/{id}', [PageController::class, 'successPageUpdate'])->name('success-page.update');
+            //error page
+            Route::get('error-page', [PageController::class, 'errorPage'])->name('error-page');
+            Route::get('error-page/{id}/edit', [PageController::class, 'errorPageEdit'])->name('error-page.edit');
+            Route::put('error-page/{id}', [PageController::class, 'errorPageUpdate'])->name('error-page.update');
         });
     });
 

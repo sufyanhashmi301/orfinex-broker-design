@@ -405,11 +405,11 @@ return [
                 'value' => 'Brokeret', // default value if you want
             ],
             [
-                'type' => 'email', // input fields type
+                'type' => 'text', // input fields type (allow multiple comma-separated emails)
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_email', // unique name for field
                 'label' => 'Site Email', // you know what label it is
-                'description' => 'Default email used for system notifications',
+                'description' => 'Comma-separated email addresses used for system notifications. e.g. admin@example.com, support@example.com',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'admin@tdevs.co', // default value if you want
             ],
@@ -2600,6 +2600,122 @@ return [
                 'description' => 'Automatically managed. Do not edit manually.',
                 'rules' => 'nullable',
                 'value' => null,
+            ],
+        ],
+    ],
+    'forex_daily_reporting' => [
+        'title' => 'Forex Daily Reporting Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'daily_statement_enabled',
+                'label' => 'Enable Daily Account Statements',
+                'description' => 'Enable or disable the daily account statements',
+                'rules' => 'nullable',
+                'value' => 0,
+            ],
+            [
+                'type' => 'time',
+                'data' => 'string',
+                'name' => 'daily_statement_time',
+                'label' => 'Statement Sending Time',
+                'description' => 'The time of day to send the daily account statements',
+                'rules' => 'nullable|date_format:H:i',
+                'value' => '23:00',
+            ],
+            [
+                'type' => 'select',
+                'data' => 'string',
+                'name' => 'daily_statement_timezone',
+                'label' => 'Timezone',
+                'description' => 'The timezone to use for the daily account statements',
+                'rules' => 'nullable|string|max:50',
+                'options' => [
+                    'UTC' => 'UTC (Coordinated Universal Time)',
+                    // Asian Trading Session
+                    'Asia/Tokyo' => 'Asia/Tokyo (Japan Standard Time)',
+                    'Asia/Shanghai' => 'Asia/Shanghai (China Standard Time)',
+                    'Asia/Hong_Kong' => 'Asia/Hong_Kong (Hong Kong Time)',
+                    'Asia/Singapore' => 'Asia/Singapore (Singapore Time)',
+                    'Asia/Dubai' => 'Asia/Dubai (Gulf Standard Time)',
+                    'Australia/Sydney' => 'Australia/Sydney (Australian Eastern Time)',
+                    // European Trading Session
+                    'Europe/London' => 'Europe/London (Greenwich Mean Time)',
+                    'Europe/Frankfurt' => 'Europe/Frankfurt (Central European Time)',
+                    'Europe/Paris' => 'Europe/Paris (Central European Time)',
+                    'Europe/Zurich' => 'Europe/Zurich (Central European Time)',
+                    // American Trading Session
+                    'America/New_York' => 'America/New_York (Eastern Time)',
+                    'America/Chicago' => 'America/Chicago (Central Time)',
+                    'America/Los_Angeles' => 'America/Los_Angeles (Pacific Time)',
+                    // Other Major Centers
+                    'Pacific/Auckland' => 'Pacific/Auckland (New Zealand Time)',
+                ],
+                'value' => 'UTC',
+            ],
+            [
+                'type' => 'select',
+                'data' => 'string',
+                'name' => 'daily_statement_account_types',
+                'label' => 'Account Types',
+                'description' => 'The account types to include in the daily account statements',
+                'rules' => 'nullable|in:both,real,demo',
+                'options' => [
+                    'both' => 'Both',
+                    'real' => 'Real',
+                    'demo' => 'Demo',
+                ],
+                'value' => 'both',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'integer',
+                'name' => 'daily_statement_batch_size',
+                'label' => 'Batch Size',
+                'description' => 'Number of accounts to process in each batch',
+                'rules' => 'nullable|integer|min:1|max:500',
+                'value' => '50',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'integer',
+                'name' => 'daily_statement_retry_attempts',
+                'label' => 'Retry Attempts',
+                'description' => 'The number of retry attempts for failed sends',
+                'rules' => 'nullable|integer|min:0|max:10',
+                'value' => '3',
+            ],
+            [
+                'type' => 'select',
+                'data' => 'string',
+                'name' => 'daily_statement_period',
+                'label' => 'Statement Period',
+                'description' => 'The period for which the statement is generated',
+                'rules' => 'nullable|in:previous_day,current_day',
+                'options' => [
+                    'previous_day' => 'Previous Day',
+                    'current_day' => 'Current Day',
+                ],
+                'value' => 'previous_day',
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'daily_statement_include_excel',
+                'label' => 'Include Excel Attachment',
+                'description' => 'Include the Excel attachment in the daily account statements',
+                'rules' => 'nullable',
+                'value' => 1,
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'daily_statement_retry_failed',
+                'label' => 'Retry Failed Sends',
+                'description' => 'Retry the failed sends for the daily account statements',
+                'rules' => 'nullable',
+                'value' => 1,
             ],
         ],
     ],

@@ -31,8 +31,14 @@
                     </div>
                     <div class="content flex-1">
                         <div class="main-cont text-slate-600 dark:text-slate-300 text-sm mb-1">
-                            <span class="font-medium">{{ optional($notification->user)->full_name ?? __('System') }}</span>
-                            {{ $notification->notice }}
+                            @if($notification->for === 'admin' && $notification->notice)
+                                {{-- For admin notifications, notice already contains the user's name, so don't duplicate --}}
+                                {{ $notification->notice }}
+                            @else
+                                {{-- For user notifications, show user name + notice --}}
+                                <span class="font-medium">{{ optional($notification->user)->full_name ?? __('System') }}</span>
+                                {{ $notification->notice }}
+                            @endif
                         </div>
                         <div class="time text-xs">{{ $notification->created_at->diffForHumans() }}</div>
                     </div>

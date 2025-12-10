@@ -226,7 +226,12 @@ class KycController extends Controller
         ];
 
         $this->mailNotify($user->email, 'kyc_request_level_2', $shortcodes);
-        $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_2', $shortcodes);
+
+        // Notify admin
+        $adminEmails = parseEmails(setting('site_email', 'global'));
+        foreach ($adminEmails as $email) {
+            $this->mailNotify($email, 'admin_kyc_request_level_2', $shortcodes);
+        }
 
         // Also notify all staff attached to this user (if any)
         try {
@@ -325,7 +330,12 @@ class KycController extends Controller
         ];
 
         $this->mailNotify($user->email, 'kyc_request_level_3', $shortcodes);
-        $this->mailNotify(setting('site_email', 'global'), 'admin_kyc_request_level_3', $shortcodes);
+        
+        // Notify admin
+        $adminEmails = parseEmails(setting('site_email', 'global'));
+        foreach ($adminEmails as $email) {
+            $this->mailNotify($email, 'admin_kyc_request_level_3', $shortcodes);
+        }
 
         // Also notify all staff attached to this user (if any) for Level 3
         try {

@@ -23,16 +23,62 @@
         {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">{{ __('Get Bonus') }}</a> --}}
     </div>
 </div>
-@php $reqType = request('type'); @endphp
-@if(($reqType === 'real' && setting('live_account_creation','features')) || ($reqType === 'demo' && setting('demo_account_creation','features')))
+@php 
+    $reqType = request('type');
+    $liveApproval = setting('live_account_creation','features');
+    $demoApproval = setting('demo_account_creation','features');
+@endphp
+@if(($reqType === 'real' && $liveApproval) || ($reqType === 'demo' && $demoApproval))
 <div class="py-3 px-4 rounded-md mb-5 bg-warning-500 bg-opacity-30 text-warning-900" style="background-color:#FEF3C7; color:#92400E;">
     <div class="flex items-center">
         <iconify-icon class="text-xl mr-2" icon="lucide:info"></iconify-icon>
         <span>
             @if($reqType === 'real')
-                {{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}
+                @php
+                    $limits = [];
+                    foreach($schemas as $s) {
+                        $limit = $s->live_account_limit ?? 0;
+                        if($limit > 0) {
+                            $limits[] = $limit;
+                        }
+                    }
+                    $hasLimit = !empty($limits);
+                    $minLimit = $hasLimit ? min($limits) : 0;
+                    $maxLimit = $hasLimit ? max($limits) : 0;
+                    $uniqueLimits = array_unique($limits);
+                @endphp
+                @if($hasLimit)
+                    @if(count($uniqueLimits) === 1)
+                        {{ __('Real accounts will be auto-approved for the first :limit account(s). After reaching :limit account(s), additional accounts will require admin approval.', ['limit' => $minLimit]) }}
+                    @else
+                        {{ __('Real accounts will be auto-approved until you reach the account limit (varies by account type). After reaching the limit, accounts will require admin approval.') }}
+                    @endif
+                @else
+                    {{ __('Real accounts require admin approval. Your request will be marked as Pending until approved.') }}
+                @endif
             @else
-                {{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}
+                @php
+                    $limits = [];
+                    foreach($schemas as $s) {
+                        $limit = $s->demo_account_limit ?? 0;
+                        if($limit > 0) {
+                            $limits[] = $limit;
+                        }
+                    }
+                    $hasLimit = !empty($limits);
+                    $minLimit = $hasLimit ? min($limits) : 0;
+                    $maxLimit = $hasLimit ? max($limits) : 0;
+                    $uniqueLimits = array_unique($limits);
+                @endphp
+                @if($hasLimit)
+                    @if(count($uniqueLimits) === 1)
+                        {{ __('Demo accounts will be auto-approved for the first :limit account(s). After reaching :limit account(s), additional accounts will require admin approval.', ['limit' => $minLimit]) }}
+                    @else
+                        {{ __('Demo accounts will be auto-approved until you reach the account limit (varies by account type). After reaching the limit, accounts will require admin approval.') }}
+                    @endif
+                @else
+                    {{ __('Demo accounts require admin approval. Your request will be marked as Pending until approved.') }}
+                @endif
             @endif
         </span>
     </div>

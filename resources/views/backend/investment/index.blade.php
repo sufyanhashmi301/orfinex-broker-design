@@ -467,52 +467,111 @@
                 }
             });
 
-        // Delete account modal open
-        $('body').on('click', '.open-delete-account-modal', function (e) {
-            e.preventDefault();
-            var login = $(this).data('login');
-            $('#deleteAccount').find('.delete-login').val(login);
-            $('#deleteAccount').modal('show');
-        });
-
-        // Confirm delete (soft)
-        $('body').on('click', '.dropdown-delete-account', function (e) {
-            e.preventDefault();
-            var $btn = $(this);
-            var login = $('#deleteAccount').find('.delete-login').val();
-            $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-            $.ajax({
-                url: "{{ route('admin.forex-accounts.delete') }}",
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    login: login
-                },
-                success: function (resp) {
-                    $('#deleteAccount').modal('hide');
-                    if (typeof $('#dataTable').DataTable === 'function') {
-                        $('#dataTable').DataTable().ajax.reload(null, false);
-                    }
-                    if (typeof tNotify === 'function') {
-                        var msg = (resp && (resp.success || resp.message)) ? (resp.success || resp.message) : '{{ __("Account deleted successfully.") }}';
-                        tNotify('success', msg);
-                    }
-                },
-                error: function (xhr) {
-                    var errMsg = '{{ __("Failed to delete account.") }}';
-                    if (xhr && xhr.responseJSON) {
-                        if (xhr.responseJSON.error) errMsg = xhr.responseJSON.error;
-                        else if (xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
-                    }
-                    if (typeof tNotify === 'function') {
-                        tNotify('error', errMsg);
-                    }
-                },
-                complete: function(){
-                    $btn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
-                }
+            // Delete account modal open
+            $('body').on('click', '.open-delete-account-modal', function (e) {
+                e.preventDefault();
+                var login = $(this).data('login');
+                $('#deleteAccount').find('.delete-login').val(login);
+                $('#deleteAccount').modal('show');
             });
-        });
+
+            // Confirm delete (soft)
+            $('body').on('click', '.dropdown-delete-account', function (e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var login = $('#deleteAccount').find('.delete-login').val();
+                $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                $.ajax({
+                    url: "{{ route('admin.forex-accounts.delete') }}",
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        login: login
+                    },
+                    success: function (resp) {
+                        $('#deleteAccount').modal('hide');
+                        if (typeof $('#dataTable').DataTable === 'function') {
+                            $('#dataTable').DataTable().ajax.reload(null, false);
+                        }
+                        if (typeof tNotify === 'function') {
+                            var msg = (resp && (resp.success || resp.message)) ? (resp.success || resp.message) : '{{ __("Account deleted successfully.") }}';
+                            tNotify('success', msg);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errMsg = '{{ __("Failed to delete account.") }}';
+                        if (xhr && xhr.responseJSON) {
+                            if (xhr.responseJSON.error) errMsg = xhr.responseJSON.error;
+                            else if (xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
+                        }
+                        if (typeof tNotify === 'function') {
+                            tNotify('error', errMsg);
+                        }
+                    },
+                    complete: function(){
+                        $btn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    }
+                });
+            });
+            
+            // Send Statement Email Function
+            window.sendStatement = function(login) {
+
+                if (!login) {
+                    tNotify('error', "Account login is required");
+                    return;
+                }
+
+                // Select the button
+                let $btn = $('.send-statement-btn[data-login="' + login + '"]');
+
+                // Disable to prevent double clicks
+                $btn.prop('disabled', true)
+                    .addClass('opacity-50 cursor-not-allowed');
+
+                // Notify user
+                tNotify('info', "Sending statement email...");
+
+                $.ajax({
+                    url: '{{ route("admin.forex.send-statement") }}',
+                    method: 'POST',
+                    dataType: 'json',
+                    timeout: 30000,
+                    data: {
+                        login: login,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+
+                        if (response.success) {
+                            tNotify('success', response.message ?? "Statement email sent successfully");
+                        } else {
+                            tNotify('error', response.message ?? "Failed to send statement email");
+                        }
+
+                    },
+                    error: function(xhr, status) {
+
+                        let errMsg = "Failed to send statement email";
+
+                        if (status === 'timeout') {
+                            errMsg = "Request timed out. Please try again.";
+                        } else if (xhr.responseJSON) {
+                            errMsg = xhr.responseJSON.error ?? 
+                                    xhr.responseJSON.message ?? 
+                                    errMsg;
+                        }
+
+                        tNotify('error', errMsg);
+                    },
+                    complete: function() {
+                        // Re-enable button
+                        $btn.prop('disabled', false)
+                            .removeClass('opacity-50 cursor-not-allowed');
+                    }
+                });
+            };
+
         });
     </script>
 @endsection

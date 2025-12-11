@@ -2036,7 +2036,7 @@ class EmailTemplatesSeeder extends Seeder
                 <strong>Closed Trades:</strong><br>
                 [[closed_trades_html]]<br><br>
 
-                Detailed statement with complete account information is also attached as Excel file.',
+                Detailed statement with complete account information is also attached as PDF file.',
                 'button_level' => 'View Account Details',
                 'button_link' => '[[site_url]]/user/forex/logs',
                 'footer_status' => 1,

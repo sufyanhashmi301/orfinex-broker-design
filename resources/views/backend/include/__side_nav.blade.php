@@ -448,6 +448,13 @@
                             </li>
                         </ul>
                     </li>
+                    @can('forex-statement-logs')
+                        <li>
+                            <a href="{{ route('admin.forex.statement-logs') }}" class="{{ isActive('admin.forex.statement-logs') }}">
+                                {{ __('Statement Logs') }}
+                            </a>
+                        </li>
+                    @endcan
                 </ul>        
             </li>
         @endcan

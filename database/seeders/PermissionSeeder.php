@@ -135,6 +135,9 @@ class PermissionSeeder extends Seeder
             ['category' => 'Accounts Management', 'name' => 'account-trades-view'],
             ['category' => 'Accounts Management', 'name' => 'leverage-action'],
             ['category' => 'Accounts Management', 'name' => 'accounts-export'],
+            ['category' => 'Accounts Management', 'name' => 'forex-reporting-settings'],
+            ['category' => 'Accounts Management', 'name' => 'forex-statement-logs'],
+            ['category' => 'Accounts Management', 'name' => 'forex-statement-logs-clear'],
 
             ['category' => 'Risk Hub Management', 'name' => 'active-positions'],
             ['category' => 'Risk Hub Management', 'name' => 'net-positions-accounts'],

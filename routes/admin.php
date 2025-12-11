@@ -87,6 +87,7 @@ use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SmtpMonitoringController;
+use App\Http\Controllers\Backend\ForexAccountStatementLogController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -295,6 +296,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
         Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+        Route::post('send-statement', [AccountsController::class, 'sendStatement'])->name('send-statement');
+                
+        // Statement Logs Management
+        Route::get('statement-logs', [ForexAccountStatementLogController::class, 'index'])->name('statement-logs');
+        Route::post('statement-logs/clear', [ForexAccountStatementLogController::class, 'clearLogs'])->name('statement-logs.clear');
+        Route::get('statement-logs/export', [ForexAccountStatementLogController::class, 'exportLogs'])->name('statement-logs.export');
     });
 
     //===============================  Profit Deduction Management ==================================

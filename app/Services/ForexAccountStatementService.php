@@ -4,19 +4,20 @@ namespace App\Services;
 
 use App\Models\ForexAccount;
 use App\Models\Transaction;
+use App\Models\ForexAccountStatementLog;
 use App\Enums\TxnType;
 use App\Enums\ForexAccountStatus;
 use App\Traits\NotifyTrait;
 use App\Mail\MailSend;
 use App\Models\EmailTemplate;
-use App\Exports\ForexStatementMultiSheetExport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Facades\Excel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class ForexAccountStatementService
 {
@@ -361,6 +362,18 @@ class ForexAccountStatementService
                 $commission = (float) ($position->Commission ?? 0);
                 $unrealizedPL = $profit + $swap - $commission;
 
+                // Format time fields
+                $openTime = null;
+                $updateTime = null;
+                
+                if (isset($position->Time)) {
+                    $openTime = Carbon::parse($position->Time)->format('Y-m-d H:i:s');
+                }
+                
+                if (isset($position->TimeUpdate)) {
+                    $updateTime = Carbon::parse($position->TimeUpdate)->format('Y-m-d H:i:s');
+                }
+
                 return [
                     'deal' => $position->Deal ?? null,
                     'symbol' => $position->Symbol ?? '',
@@ -373,8 +386,12 @@ class ForexAccountStatementService
                     'commission' => $commission,
                     'unrealized_pl' => $unrealizedPL,
                     'time' => $position->Time ?? null,
+                    'open_time' => $openTime,
+                    'update_time' => $updateTime,
                     'action' => $position->Action ?? null, // 0 = Buy, 1 = Sell
                     'direction' => isset($position->Action) && $position->Action == 1 ? 'Sell' : 'Buy',
+                    'comment' => $position->Comment ?? '',
+                    'digits' => $position->Digits ?? 5,
                 ];
             })->toArray();
         } catch (\Exception $e) {
@@ -631,11 +648,16 @@ class ForexAccountStatementService
                 return false;
             }
 
-            // Generate Excel file
-            $excelPath = $this->generateStatementExcel($account, $statementData);
+            // Try PDF generation first, fallback to Excel if needed
+            $attachmentPath = null;
+            $attachmentName = '';
             
-            if (!$excelPath) {
-                Log::error('Failed to generate Excel for statement email', [
+            // Generate PDF statement
+            $attachmentPath = $this->generateStatementPdf($account, $statementData);
+            $attachmentName = 'forex_statement_' . $account->login . '_' . $statementData['statement_date'] . '.pdf';
+            
+            if (!$attachmentPath) {
+                Log::error('Failed to generate PDF statement for email', [
                     'account_id' => $account->id,
                     'login' => $account->login,
                 ]);
@@ -645,12 +667,13 @@ class ForexAccountStatementService
             // Prepare shortcodes for email template (including open positions and closed trades tables)
             $shortcodes = $this->prepareStatementShortcodes($account, $statementData);
 
-            Log::info('Attempting to send statement email with Excel', [
+            Log::info('Attempting to send statement email with PDF attachment', [
                 'account_id' => $account->id,
                 'login' => $account->login,
                 'user_email' => $user->email,
                 'statement_date' => $statementData['statement_date'],
-                'excel_path' => $excelPath,
+                'pdf_path' => $attachmentPath,
+                'pdf_size' => file_exists($attachmentPath) ? filesize($attachmentPath) : 0,
             ]);
 
             // Get email template
@@ -694,26 +717,36 @@ class ForexAccountStatementService
                 'custom_html_content' => str_replace($find, $replace, $template->getDecodedCustomHtml()),
             ];
 
-            // Generate Excel filename
-            $excelFileName = 'statement_' . $account->login . '_' . $statementData['statement_date'] . '.xlsx';
+            // Generate PDF filename
+            $pdfFileName = 'statement_' . $account->login . '_' . $statementData['statement_date'] . '.pdf';
 
-            // Send email with Excel attachment
-            Mail::to($user->email)->send(new MailSend($details, $excelPath, $excelFileName));
+            // Get file size before sending
+            $pdfSize = file_exists($attachmentPath) ? filesize($attachmentPath) : 0;
 
-            // Clean up Excel file after sending
-            if (file_exists($excelPath)) {
-                @unlink($excelPath);
+            // Send email with attachment
+            Mail::to($user->email)->send(new MailSend($details, $attachmentPath, $attachmentName));
+
+            // Log successful delivery to database
+            $this->logStatementDelivery($account, $statementData['statement_date'], 'sent', null, $pdfSize);
+
+            // Clean up attachment file after sending
+            if (file_exists($attachmentPath)) {
+                @unlink($attachmentPath);
             }
 
-            Log::info('Statement email sent successfully with Excel', [
+            Log::info('Statement email sent successfully with PDF attachment', [
                 'account_id' => $account->id,
                 'login' => $account->login,
                 'user_email' => $user->email,
                 'statement_date' => $statementData['statement_date'],
+                'pdf_size' => $pdfSize,
             ]);
             
             return true;
         } catch (\Exception $e) {
+            // Log failed delivery to database
+            $this->logStatementDelivery($account, $statementData['statement_date'], 'failed', $e->getMessage());
+
             Log::error('Failed to send statement email', [
                 'account_id' => $account->id,
                 'login' => $account->login,
@@ -725,17 +758,18 @@ class ForexAccountStatementService
     }
 
     /**
-     * Generate Excel file for statement
+     * Generate PDF file for statement using Laravel DomPDF
      *
      * @param ForexAccount $account
      * @param array $statementData
-     * @return string|null Path to generated Excel file
+     * @return string|null Path to generated PDF file
+     * @throws \Exception if PDF generation fails
      */
-    protected function generateStatementExcel(ForexAccount $account, array $statementData): ?string
+    protected function generateStatementPdf(ForexAccount $account, array $statementData): string
     {
         try {
             // Create temporary file path
-            $fileName = 'statement_' . $account->login . '_' . time() . '.xlsx';
+            $fileName = 'forex_statement_' . $account->login . '_' . time() . '.pdf';
             $tempPath = storage_path('app/temp/' . $fileName);
             
             // Ensure directory exists
@@ -744,28 +778,45 @@ class ForexAccountStatementService
                 mkdir($dir, 0755, true);
             }
             
-            // Generate Excel with multiple sheets
-            $export = new ForexStatementMultiSheetExport($account, $statementData);
+            // Generate HTML content for PDF
+            $html = $this->generateStatementHtml($account, $statementData);
             
-            // Use Excel::store with proper path
-            Excel::store(
-                $export,
-                'temp/' . $fileName,
-                'local',
-                \Maatwebsite\Excel\Excel::XLSX
-            );
+            // Configure DomPDF options (simplified)
+            $options = new Options();
+            $options->set('isRemoteEnabled', false);
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('defaultFont', 'Arial');
             
-            $excelPath = storage_path('app/temp/' . $fileName);
+            // Create DomPDF instance
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
             
-            return file_exists($excelPath) ? $excelPath : null;
+            // Save PDF to temporary file
+            file_put_contents($tempPath, $dompdf->output());
+            
+            // Verify file was created successfully
+            if (!file_exists($tempPath) || filesize($tempPath) === 0) {
+                throw new \Exception('PDF file was not created or is empty');
+            }
+            
+            Log::info('PDF statement generated successfully', [
+                'account_id' => $account->id,
+                'login' => $account->login,
+                'file_path' => $tempPath,
+                'file_size' => filesize($tempPath),
+            ]);
+            
+            return $tempPath;
         } catch (\Exception $e) {
-            Log::error('Failed to generate Excel', [
+            Log::error('Failed to generate PDF statement', [
                 'account_id' => $account->id,
                 'login' => $account->login,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            return null;
+            throw new \Exception('PDF generation failed: ' . $e->getMessage());
         }
     }
 
@@ -855,7 +906,7 @@ class ForexAccountStatementService
 
         $html = '<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
         $html .= '<thead><tr>';
-        $html .= '<th>Symbol</th><th>Direction</th><th>Volume</th><th>Open Price</th><th>Current Price</th><th>Unrealized P/L</th>';
+        $html .= '<th>Symbol</th><th>Direction</th><th>Volume</th><th>Open Time</th><th>Open Price</th><th>Current Price</th><th>Unrealized P/L</th>';
         $html .= '</tr></thead><tbody>';
 
         foreach ($positions as $position) {
@@ -863,6 +914,7 @@ class ForexAccountStatementService
             $html .= '<td>' . htmlspecialchars($position['symbol']) . '</td>';
             $html .= '<td>' . htmlspecialchars($position['direction']) . '</td>';
             $html .= '<td>' . number_format($position['volume'], 2) . '</td>';
+            $html .= '<td>' . htmlspecialchars($position['open_time'] ?? 'N/A') . '</td>';
             $html .= '<td>' . number_format($position['open_price'], 5) . '</td>';
             $html .= '<td>' . number_format($position['current_price'], 5) . '</td>';
             $html .= '<td>' . number_format($position['unrealized_pl'], 2) . '</td>';
@@ -887,7 +939,7 @@ class ForexAccountStatementService
 
         $html = '<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
         $html .= '<thead><tr>';
-        $html .= '<th>Deal</th><th>Symbol</th><th>Direction</th><th>Volume</th><th>Open Price</th><th>Close Price</th><th>Realized P/L</th>';
+        $html .= '<th>Deal</th><th>Symbol</th><th>Direction</th><th>Volume</th><th>Open Time</th><th>Close Time</th><th>Open Price</th><th>Close Price</th><th>Realized P/L</th>';
         $html .= '</tr></thead><tbody>';
 
         foreach ($trades as $trade) {
@@ -896,6 +948,8 @@ class ForexAccountStatementService
             $html .= '<td>' . htmlspecialchars($trade['symbol']) . '</td>';
             $html .= '<td>' . htmlspecialchars($trade['direction']) . '</td>';
             $html .= '<td>' . number_format($trade['volume'], 2) . '</td>';
+            $html .= '<td>' . htmlspecialchars($trade['open_time'] ?? 'N/A') . '</td>';
+            $html .= '<td>' . htmlspecialchars($trade['close_time'] ?? 'N/A') . '</td>';
             $html .= '<td>' . number_format($trade['open_price'], 5) . '</td>';
             $html .= '<td>' . number_format($trade['close_price'], 5) . '</td>';
             $html .= '<td>' . number_format($trade['realized_pl'], 2) . '</td>';
@@ -904,6 +958,193 @@ class ForexAccountStatementService
 
         $html .= '</tbody></table>';
         return $html;
+    }
+
+    /**
+     * Generate comprehensive HTML content for PDF statement
+     *
+     * @param ForexAccount $account
+     * @param array $statementData
+     * @return string
+     */
+    public function generateStatementHtml(ForexAccount $account, array $statementData): string
+    {
+        $balance       = $statementData['balance'] ?? [];
+        $equityMargin  = $statementData['equity_margin'] ?? [];
+        $openPositions = $statementData['open_positions'] ?? [];
+        $closedTrades  = $statementData['closed_trades'] ?? [];
+        $statementDate = $statementData['statement_date'] ?? date('Y-m-d');
+
+        $html = '<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Daily Account Statement - ' . htmlspecialchars($account->login) . '</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; padding: 20px; }
+                .container { display: flex; flex-direction: column; height: 100%; }
+                .content { flex: 1; margin-bottom: 40px; }
+
+                .header { text-align: left; margin-bottom: 30px; }
+                .header h1 { font-size: 18px; margin-bottom: 5px; color: #333; }
+                .header .date { font-size: 12px; color: #666; }
+                
+                .account-info { background: #f8f9fa; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
+                .account-info h2 { font-size: 14px; margin-bottom: 10px; color: #333; }
+                .info-row { margin-bottom: 8px; }
+                .info-row span { display: inline-block; width: 120px; color: #666; }
+                .info-row strong { color: #333; font-weight: bold; }
+                
+                h2.section { font-size: 14px; margin: 25px 0 15px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+                
+                table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+                .data-table { page-break-inside: auto; }
+                th { background: #f8f9fa; padding: 10px 8px; font-size: 11px; font-weight: bold; color: #333; border-bottom: 2px solid #ddd; text-align: left; }
+                td { padding: 8px; font-size: 11px; border-bottom: 1px solid #eee; }
+                tr:nth-child(even) { background: #fafafa; }
+                
+                .profit { color: #28a745; font-weight: bold; }
+                .loss { color: #dc3545; font-weight: bold; }
+                
+                .no-data { font-style: italic; color: #666; text-align: center; padding: 20px; }
+                
+                .footer { 
+                    font-size: 10px; 
+                    color: #999; 
+                    text-align: center; 
+                    border-top: 1px solid #eee; 
+                    padding-top: 15px; 
+                    margin-top: auto;
+                    page-break-inside: avoid;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="content">
+                    <div class="header">
+                        <h1>Daily Account Statement</h1>
+                        <div class="date">Date: ' . htmlspecialchars($statementDate) . '</div>
+                    </div>
+
+                    <div class="account-info">
+                        <h2>Account Information</h2>
+                        <div class="info-row"><span>Account Login:</span> <strong>' . htmlspecialchars($account->login) . '</strong></div>
+                        <div class="info-row"><span>Balance:</span> <strong>$' . number_format($balance['closing'] ?? 0, 2) . '</strong></div>
+                        <div class="info-row"><span>Equity:</span> <strong>$' . number_format($equityMargin['equity'] ?? 0, 2) . '</strong></div>
+                        <div class="info-row"><span>Free Margin:</span> <strong>$' . number_format($equityMargin['free_margin'] ?? 0, 2) . '</strong></div>
+                        <div class="info-row"><span>Margin Level:</span> <strong>' . number_format($equityMargin['margin_level'] ?? 0, 2) . '%</strong></div>
+                    </div>';
+
+                    if (!empty($openPositions)) {
+                        $html .= '<h2 class="section">Open Positions</h2>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th><th>Type</th><th>Volume</th><th>Open Price</th><th>Current Price</th><th>P/L</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+
+                                    foreach ($openPositions as $p) {
+                                        $profit = $p['profit'] ?? 0;
+                                        $plClass = $profit >= 0 ? 'profit' : 'loss';
+                                        $type = ($p['action'] ?? 0) == 0 ? 'Buy' : 'Sell';
+
+                                        $html .= '<tr>
+                                            <td>' . htmlspecialchars($p['symbol']) . '</td>
+                                            <td>' . $type . '</td>
+                                            <td>' . number_format(($p['volume'] ?? 0)/10000, 2) . '</td>
+                                            <td>' . number_format($p['open_price'] ?? 0, 5) . '</td>
+                                            <td>' . number_format($p['current_price'] ?? 0, 5) . '</td>
+                                            <td class="' . $plClass . '">$' . number_format($profit, 2) . '</td>
+                                        </tr>';
+                                    }
+
+                        $html .= '</tbody></table>';
+                    }
+
+                    if (!empty($closedTrades)) {
+                        $html .= '<h2 class="section">Closed Positions (Today)</h2>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th><th>Type</th><th>Volume</th><th>Open Price</th><th>Close Price</th><th>P/L</th><th>Close Time</th>
+                                    </tr>
+                                </thead><tbody>';
+
+                                foreach ($closedTrades as $t) {
+                                    $profit = $t['profit'] ?? 0;
+                                    $plClass = $profit >= 0 ? 'profit' : 'loss';
+                                    $type = ($t['action'] ?? 0) == 0 ? 'Buy' : 'Sell';
+
+                                    $html .= '<tr>
+                                        <td>' . htmlspecialchars($t['symbol']) . '</td>
+                                        <td>' . $type . '</td>
+                                        <td>' . number_format(($t['volume'] ?? 0)/10000, 2) . '</td>
+                                        <td>' . number_format($t['open_price'] ?? 0, 5) . '</td>
+                                        <td>' . number_format($t['close_price'] ?? 0, 5) . '</td>
+                                        <td class="' . $plClass . '">$' . number_format($profit, 2) . '</td>
+                                        <td>' . date("H:i", strtotime($t['close_time'] ?? '')) . '</td>
+                                    </tr>';
+                                }
+
+                        $html .= '</tbody></table>';
+                    }
+
+                    // Show message only if both open and closed positions are empty
+                    if (empty($openPositions) && empty($closedTrades)) {
+                        $html .= '<div class="no-data">No trading activity for this period.</div>';
+                    }
+
+                $html .= '</div>';
+
+                $html .= '<div class="footer">
+                        This statement is computer generated and does not require a signature.<br>
+                        Generated on ' . date("Y-m-d H:i:s T") . '
+                    </div>
+            </div>
+        </body></html>';
+
+        return $html;
+    }
+
+    /**
+     * Log statement delivery to database
+     *
+     * @param ForexAccount $account
+     * @param string $statementDate
+     * @param string $status ('sent' or 'failed')
+     * @param string|null $errorMessage
+     * @param int|null $pdfSize
+     * @return void
+     */
+    protected function logStatementDelivery(ForexAccount $account, string $statementDate, string $status, ?string $errorMessage = null, ?int $pdfSize = null): void
+    {
+        try {
+            ForexAccountStatementLog::updateOrCreate(
+                [
+                    'forex_account_id' => $account->id,
+                    'statement_date' => $statementDate,
+                ],
+                [
+                    'account_login' => $account->login,
+                    'user_email' => $account->user->email,
+                    'status' => $status,
+                    'error_message' => $errorMessage,
+                    'pdf_size' => $pdfSize,
+                    'sent_at' => now(),
+                ]
+            );
+        } catch (\Exception $e) {
+            // Don't let logging errors break the main functionality
+            Log::warning('Failed to log statement delivery to database', [
+                'account_id' => $account->id,
+                'login' => $account->login,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
 }

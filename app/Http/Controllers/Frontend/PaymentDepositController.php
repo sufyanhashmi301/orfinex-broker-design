@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Services\ActivityLogService;
 
 class PaymentDepositController extends Controller
 {
@@ -56,10 +57,10 @@ class PaymentDepositController extends Controller
     {
         // Check if payment deposit requests are enabled
         if (setting('deposit_account_mode', 'features') !== 'request_deposit_accounts') {
-            abort(404, 'Payment deposit requests are not available.');
+            ActivityLogService::log('payment_deposit_request', "Payment deposit request submission failed due to disabled feature");
+            throw new \Exception('Payment deposit requests are not available.');
         }
         
-
         DB::beginTransaction();
         
         try {
@@ -73,6 +74,7 @@ class PaymentDepositController extends Controller
             if ($pendingRequest) {
                 DB::rollback();
                 
+                ActivityLogService::log('payment_deposit_request', "Payment deposit request submission failed due to pending request");
                 throw ValidationException::withMessages([
                     'pending_request' => 'You already have a pending payment deposit request. Please wait for admin review.'
                 ]);
@@ -117,6 +119,7 @@ class PaymentDepositController extends Controller
                 'request_id' => $depositRequest->id,
                 'ip' => $request->ip()
             ]);
+            ActivityLogService::log('payment_deposit_request', "Payment deposit request submitted successfully");
 
             return response()->json([
                 'reload' => true,
@@ -136,7 +139,10 @@ class PaymentDepositController extends Controller
                 'ip' => $request->ip(),
                 'trace' => $e->getTraceAsString()
             ]);
-
+            ActivityLogService::log('payment_deposit_request', "Payment deposit request submission failed", [
+                'error' => $e->getMessage(),
+            ]);
+            
             return response()->json([
                 'error' => 'Failed to submit payment deposit request. Please try again later.'
             ], 500);

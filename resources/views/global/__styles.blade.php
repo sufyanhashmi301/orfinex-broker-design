@@ -234,6 +234,11 @@
     .\!border-danger {
         border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
     }
+    .badge-info {
+        --tw-text-opacity: 1;
+        background-color: rgb(23 162 184 / var(--tw-bg-opacity));
+        color: rgb(23 162 184 / var(--tw-text-opacity));
+    }
     .badge-primary, .tag.label-info{
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
         color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));

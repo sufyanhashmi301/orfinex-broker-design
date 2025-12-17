@@ -2379,3 +2379,33 @@ if (!function_exists('hasCustomSuccessPage')) {
     }
 }
 
+if (!function_exists('getAccountDetails')) {
+    function getAccountDetails($targetId, $accountType = null, $userId = null)
+    {
+
+        $targetId = is_string($targetId) ? get_hash($targetId) : $targetId;
+
+        $forexAccount = \App\Models\ForexAccount::where('login', $targetId)->first();
+
+        if ($forexAccount) {
+            return $forexAccount;
+        }else{
+            $walletAccount = get_user_account_by_wallet_id($targetId, $userId);
+            return $walletAccount;
+        }
+    }
+}
+
+if (!function_exists('getDepositMethodDetails')) {
+    function getDepositMethodDetails($gatewayCode)
+    {
+        return \App\Models\DepositMethod::code($gatewayCode)->first();
+    }
+}
+
+if (!function_exists('getWithdrawAccountDetails')) {
+    function getWithdrawAccountDetails($withdrawAccountId, $userId)
+    {
+        return \App\Models\WithdrawAccount::where('id', $withdrawAccountId)->where('user_id', $userId)->first();
+    }
+}

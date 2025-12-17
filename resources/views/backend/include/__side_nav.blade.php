@@ -764,6 +764,33 @@
                     @endcan
                 </ul>
             </li>
+
+            <li class="">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:square-activity"></iconify-icon>
+                        <span>{{ __('Activity Logs') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('admin.activity-logs.index') }}" class="{{ isActive('admin.activity-logs.index') }}">
+                            {{ __('All Activities') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.activity-logs.users') }}" class="{{ isActive('admin.activity-logs.users') }}">
+                            {{ __('User Activities') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.activity-logs.staff') }}" class="{{ isActive('admin.activity-logs.staff') }}">
+                            {{ __('Staff Activities') }}
+                        </a>
+                    </li>
+                </ul>
+            </li>
         @endcanany
     </ul>
 </div>

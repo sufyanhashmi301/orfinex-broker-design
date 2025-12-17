@@ -15,6 +15,7 @@ use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
 use App\Services\ForexApiService;
 use App\Services\NotificationService;
+use App\Services\ActivityLogService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -171,15 +172,23 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
+        $activityMeta = [
+            'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+            'Method' => getDepositMethodDetails($request->gateway_code)->name,
+            'Account' => getAccountDetails($request->target_id, null, auth()->id())->wallet_name ?? getAccountDetails($request->target_id, null, auth()->id())->account_name,
+        ];
+
         // try {composer dump-autoload
             DB::beginTransaction();
             if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
+                ActivityLogService::log('deposit', "Deposit disabled", $activityMeta);
                 throw new \App\Exceptions\DepositDisabledException(__('Deposit Disabled Now'));
             }
             if (!setting('deposit_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
-                    notify()->error('KYC Pending: Please complete your KYC verification to proceed with your deposit', __('Error'));
+                ActivityLogService::log('deposit', "Deposit restricted due to KYC pending", $activityMeta);
+                notify()->error('KYC Pending: Please complete your KYC verification to proceed with your deposit', __('Error'));
                 return redirect()->route('user.kyc');
-                }
+            }
             // Validate request input
             $validator = Validator::make($request->all(), [
                 'target_id' => ['required'], // Removed integer validation because wallet id and forex login are not the same type
@@ -199,12 +208,15 @@ class DepositController extends GatewayController
             if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'deposit_settings')) {
                 $currencySymbol = setting('currency_symbol', 'global');
                 $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
+
+                ActivityLogService::log('deposit', "Deposit failed due to pending request limit exceeded", $activityMeta);
                 notify()->error($message, 'Error');
                 return redirect()->back();
             }
             // Check deposit amount against the gateway's limits
             if (!isset($user->country)) {
                 $message = __('Kindly choose the country from your profile for proceed to payment!');
+                ActivityLogService::log('deposit', "Deposit failed due to country not selected", $activityMeta);
                 notify()->error($message, __('Error'));
                 return redirect()->back();
             }
@@ -219,6 +231,7 @@ class DepositController extends GatewayController
             if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
                 $currencySymbol = setting('currency_symbol', 'global');
                 $message = __('Please deposit the amount within the range ') . $currencySymbol . $gatewayInfo->minimum_deposit . __(' to ')  . $currencySymbol . $gatewayInfo->maximum_deposit;
+                ActivityLogService::log('deposit', "Deposit failed due to amount not within the range", $activityMeta);
                 notify()->error($message,  __('Error'));
                 return redirect()->back();
             }
@@ -238,6 +251,7 @@ class DepositController extends GatewayController
                         $currencySymbol = setting('currency_symbol', 'global');
                         $message =  __('Please deposit the first minimum amount of ') . $currencySymbol . $forexAccount->schema->first_min_deposit;
                         notify()->error($message, __('Error'));
+                        ActivityLogService::log('deposit', "Deposit failed due to amount not within the range", $activityMeta);
                         return redirect()->back();
                     }
                 }
@@ -248,6 +262,7 @@ class DepositController extends GatewayController
                     $targetType = TxnTargetType::Wallet->value;
                 } else {
                     notify()->error(__('The selected account does not exist'), __('Error'));
+                    ActivityLogService::log('deposit', "Deposit failed due to account not found", $activityMeta);
                     return redirect()->back();
                 }
             }
@@ -276,6 +291,8 @@ class DepositController extends GatewayController
                 $manualData ?? [], 'none', $targetId, $targetType
             );
 
+            ActivityLogService::log('deposit', "Deposit successful", $activityMeta);
+
             DB::commit();
             
             return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
@@ -290,6 +307,10 @@ class DepositController extends GatewayController
     public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
+            ActivityLogService::log('deposit_demo', "Attempted to deposit with disabled deposit", [
+                'Account' => getAccountDetails($request->target_id, null, auth()->id())->wallet_name ?? getAccountDetails($request->target_id, null, auth()->id())->account_name,
+                'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+            ]);
             throw new \App\Exceptions\DepositDisabledException(__('Deposit Disable Now'));
         }
         $request->validate([
@@ -323,6 +344,10 @@ class DepositController extends GatewayController
             'login' => $targetId
         ]);
         if(!$response['success']){
+            ActivityLogService::log('deposit_demo', "Deposit failed due to account disabled", [
+                'Account' => getAccountDetails($targetId, null, auth()->id())->wallet_name ?? getAccountDetails($targetId, null, auth()->id())->account_name,
+                'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+            ]);
             return response()->json(['error' => __('Your account has been disabled. You are currently not permitted to access the platform. please contact: ').setting('support_email', 'global'), 'reload' => false]);
 
         }
@@ -344,9 +369,17 @@ class DepositController extends GatewayController
         $depositResponse = $this->forexApiService->balanceOperationDemo($data);
         if ($depositResponse['success']) {
             Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, 'System');
+            ActivityLogService::log('deposit_demo', "Deposit successful", [
+                'Account' => getAccountDetails($targetId, null, auth()->id())->wallet_name ?? getAccountDetails($targetId, null, auth()->id())->account_name,
+                'Amount' => $request->amount,
+            ]);
             return response()->json(['success' => __('Successfully Deposited.'), 'reload' => true]);
         } else {
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'System');
+            ActivityLogService::log('deposit_demo', "Deposit failed due to system error", [
+                'Account' => getAccountDetails($targetId, null, auth()->id())->wallet_name ?? getAccountDetails($targetId, null, auth()->id())->account_name,
+                'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+            ]);
             return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => true]);
         }
 
@@ -402,10 +435,16 @@ class DepositController extends GatewayController
         $voucher = DepositVoucher::where('code', $request->code)->first();
 
         if (!$voucher) {
+            ActivityLogService::log('voucher_redeem', "Attempted to redeem an invalid voucher code", [
+                'Code' => $request->code,
+            ]);
             return response()->json(['success' => false, 'message' => 'Invalid voucher code.']);
         }
         
         if ($voucher->status === 'used') {
+            ActivityLogService::log('voucher_redeem', "Attempted to redeem an already used voucher", [
+                'Code' => $request->code,
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'This voucher has already been used.'
@@ -413,6 +452,9 @@ class DepositController extends GatewayController
         }
         
         if ($voucher->status !== 'active') {
+            ActivityLogService::log('voucher_redeem', "Attempted to redeem an not active voucher", [
+                'Code' => $request->code,
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'This voucher is not active.'
@@ -420,6 +462,9 @@ class DepositController extends GatewayController
         }
 
         if ($voucher->expiry_date < now()) {
+            ActivityLogService::log('voucher_redeem', "Attempted to redeem an expired voucher", [
+                'Code' => $request->code,
+            ]);
             return response()->json(['success' => false, 'message' => 'Voucher has expired.']);
         }
 
@@ -526,6 +571,13 @@ class DepositController extends GatewayController
                 $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User',
                 $manualData ?? [], 'none', $targetId, $targetType
             );
+
+            ActivityLogService::log('voucher_redeem', "Voucher redeemed successfully", [
+                'Account' => $targetId,
+                'Code' => $request->code,
+                'Amount' => $voucher->amount,
+                'Title' => $voucher->title,
+            ]);
 
             // Auto-approve immediately
             $approved = $this->approveVoucherTransaction($txnInfo, 'Auto-approved on redeem');

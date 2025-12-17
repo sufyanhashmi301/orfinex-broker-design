@@ -88,6 +88,7 @@ use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SmtpMonitoringController;
 use App\Http\Controllers\Backend\ForexAccountStatementLogController;
+use App\Http\Controllers\Backend\ActivityLogController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -793,6 +794,15 @@ Route::prefix('team')->group(function() {
         Route::get('/settings', [SmtpMonitoringController::class, 'settings'])->name('settings');
     });
 
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::get('/', [ActivityLogController::class, 'index'])->name('index');
+        Route::get('/users', [ActivityLogController::class, 'users'])->name('users');
+        Route::get('/staff', [ActivityLogController::class, 'staff'])->name('staff');
+        Route::get('/export', [ActivityLogController::class, 'export'])->name('export');
+        Route::get('/{id}', [ActivityLogController::class, 'show'])->name('show');
+
+        Route::get('/users/{id}', [ActivityLogController::class, 'userActivities'])->name('user.activities');
+    });
 
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');

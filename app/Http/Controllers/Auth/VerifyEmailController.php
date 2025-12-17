@@ -12,6 +12,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\ActivityLogService;
 
 class VerifyEmailController extends Controller
 {
@@ -70,6 +71,7 @@ class VerifyEmailController extends Controller
             ->first(['verification_code','verification_code_expires_at']);
 
         if (!$user || Carbon::now()->greaterThan($user->verification_code_expires_at)) {
+            ActivityLogService::log('email_verification', "Email verification failed due to invalid code", ['email' => $request->user()->email]);
             return back()->with('status', 'invalid-code');
         }
 //        dd($request->all(),);
@@ -77,7 +79,7 @@ class VerifyEmailController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
 
-//            dd($user,$request->user());
+            // dd($user,$request->user());
             $request->user()->verification_code = null;
             $request->user()->verification_code_expires_at = null;
             $user->in_grace_period = false;
@@ -98,7 +100,9 @@ class VerifyEmailController extends Controller
             $this->mailNotify($user->email, 'new_user', $shortcodes);
             $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
             $this->smsNotify('new_user', $shortcodes, $user->phone);
-    }
+
+            ActivityLogService::log('email_verification', "Email verified successfully", ['email' => $request->user()->email]);
+        }
 
         return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
     }

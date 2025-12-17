@@ -51,11 +51,13 @@
                     @endforeach
                 </select>
             </div>
-            <form method="POST" action="{{ route('user.history.transactions.export') }}">
+            <form id="export-form" method="POST" action="{{ route('user.history.transactions.export') }}">
                 @csrf
-                <input type="hidden" name="query" value="{{ request('query') }}">
-                <input type="hidden" name="date" value="{{ request('date') }}">
-                <button type="submit" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
+                <input type="hidden" id="export-date" name="date" value="">
+                <input type="hidden" id="export-status" name="status" value="">
+                <input type="hidden" id="export-type" name="type" value="">
+                <input type="hidden" id="export-forex-account" name="forex_account" value="">
+                <button type="button" id="export-btn" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
                     <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
                         icon="lets-icons:export-fill"></iconify-icon>
                     {{ __('Export') }}
@@ -309,6 +311,18 @@
 
             // Attach pagination event initially
             attachPaginationEvents();
+
+            // Export functionality
+            $('#export-btn').on('click', function() {
+                // Get current filter values
+                $('#export-date').val($('#transaction-date').val());
+                $('#export-status').val($('#transaction-status').val());
+                $('#export-type').val($('#transaction-type').val());
+                $('#export-forex-account').val($('#forex-account').val());
+                
+                // Submit the form
+                $('#export-form').submit();
+            });
         });
     </script>
 @endsection

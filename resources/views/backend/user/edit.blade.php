@@ -290,6 +290,14 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li class="nav-item" role="presentation">
+                                <a href=""
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-activities-tab" data-bs-toggle="pill" data-bs-target="#pills-activities"
+                                    type="button" role="tab" aria-controls="pills-activities" aria-selected="true">
+                                    {{ __('Activities') }}
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -361,6 +369,8 @@
                     @can('customer-change-password')
                         @include('backend.user.include.__security')
                     @endcan
+
+                    @include('backend.user.include.__activities')
                 </div>
             </div>
         </div>
@@ -375,8 +385,6 @@
     @endcan
     <!-- Modal for Send Email-->
 
-
-
     {{-- Modal for Add or Subtract Bonus --}}
     @include('backend.user.include.__bonus')
 
@@ -390,16 +398,21 @@
     @include('backend.user.include.__tag_delete')
     {{--    @endcan --}}
     <!-- Modal for Add or Subtract Balance -->
+
     {{--    @can('delete-user') --}}
     @include('backend.user.include.__delete_user', ['id' => $user->id])
     {{--    @endcan --}}
-    <!-- Modal for Add or Subtract Balance End-->
+    
     <!-- Modal for add referral-->
     {{--    @can('customer-mail-send') --}}
     @include('backend.user.include.__delete_direct_referral')
     {{--    @endcan --}}
-    <!-- Modal for add referral-->
- @include('backend.investment.modal.__account_action')
+    
+    <!-- Modal for Activity Details -->
+    @include('backend.activity_tracking.__activity_details')
+    
+    @include('backend.investment.modal.__account_action')
+
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">

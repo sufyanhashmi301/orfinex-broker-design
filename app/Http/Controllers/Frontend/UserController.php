@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Session;
 use Txn;
 use Validator;
+use App\Services\ActivityLogService;
 
 class UserController extends Controller
 {
@@ -45,6 +46,7 @@ class UserController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
         User::find(auth()->user()->id)->update(['password' => Hash::make($request->new_password)]);
+        ActivityLogService::log('password_change', "Password changed successfully");
         notify()->success(__('Password Changed Successfully'));
 
         return redirect()->back();

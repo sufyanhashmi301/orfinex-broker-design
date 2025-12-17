@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Services\WalletService;
+use App\Services\ActivityLogService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -71,13 +72,20 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyNow(Request $request)
 {
+    $activityMeta = [
+        'Account' => getAccountDetails($request->target_id, null, auth()->id())->wallet_name ?? getAccountDetails($request->target_id, null, auth()->id())->account_name,
+        'Receiver Account' => getAccountDetails(the_hash($request->receiver_account), null, auth()->id())->wallet_name ?? getAccountDetails(the_hash($request->receiver_account), null, auth()->id())->account_name,
+        'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+    ];
     // Check if the user has the permission to transfer
     if (!setting('is_external_transfer', 'transfer_external') || !\Auth::user()->transfer_status) {
+        ActivityLogService::log('external_transfer', "Attempted to external transfer but transfer is disabled", $activityMeta);
         throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disabled Now'));
     }
 
     // Check if KYC is completed
-  if (!setting('external_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {
+    if (!setting('external_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {
+        ActivityLogService::log('external_transfer', "Attempted to external transfer but KYC is not completed", $activityMeta);
         notify()->error('KYC Pending: Please complete your KYC verification to proceed with your external amount transfer', __('Error'));
         return redirect()->route('user.kyc');
     }
@@ -132,6 +140,7 @@ class SendMoneyController extends Controller
             ->count();
 
         if ($todayTransfers > $dailyLimit) {
+            ActivityLogService::log('external_transfer', "External transfer failed due to daily transfer limit is reached", $activityMeta);
             notify()->error(__('You have reached the daily transfer limit.'), __('Error'));
             return redirect()->back();
         }
@@ -140,22 +149,30 @@ class SendMoneyController extends Controller
         if ($targetType === 'forex') {
             $fromForexAccount = ForexAccount::where('login', $targetId)->where('user_id', \Auth::id())->first();
             if (!$fromForexAccount) {
+                ActivityLogService::log('external_transfer', "External transfer failed due to Forex account not found", $activityMeta);
                 throw new \Exception(__('The selected Forex account does not belong to you.'));
             }
             $scaledAmount = apply_cent_account_adjustment($targetId, $amount);
             $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
 
             if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
+                ActivityLogService::log('external_transfer', "External transfer failed due to insufficient funds", $activityMeta);
                 throw new \Exception(__("Insufficient funds in your account."));
             }
         } elseif ($targetType === 'wallet') {
             $wallet = get_user_account_by_wallet_id($targetId, \Auth::id());
             if (!$wallet) {
+                ActivityLogService::log('external_transfer', "External transfer failed due to Wallet account not found", $activityMeta);
                 throw new \Exception(__('The selected Wallet account does not belong to you.'));
             }
             if ($wallet->balance === AccountBalanceType::IB_WALLET) {
                 $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
                 if ($amount < $ibMinLimit) {
+                    ActivityLogService::log('external_transfer', "External transfer failed due to transfer amount is less than IB Wallet minimum limit", [
+                        'Account' => $request->target_id,
+                        'Receiver Account' => $request->receiver_account,
+                        'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+                    ]);
                     notify()->error(__('You must transfer at least :limit from IB Wallet.', [
                         'limit' => setting('currency_symbol', 'global') . $ibMinLimit
                     ]), 'Error');
@@ -169,6 +186,7 @@ class SendMoneyController extends Controller
         $min = setting('external_min_send', 'transfer_external');
         $max = setting('external_max_send', 'transfer_external');
         if ($amount < $min || $amount > $max) {
+            ActivityLogService::log('external_transfer', "External transfer failed due to transfer amount is out of range", $activityMeta);
             throw new \Exception(__('Please send an amount within the range ') . setting('currency_symbol', 'global') . $min . ' - ' . $max);
         }
 
@@ -178,12 +196,14 @@ class SendMoneyController extends Controller
 
         // Check if sender's balance is sufficient
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
+            ActivityLogService::log('external_transfer', "External transfer failed due to insufficient funds", $activityMeta);
             throw new \Exception(__("Insufficient funds in your account."));
         }
 
         // Validate receiver's Forex account
         $toUserForexAccount = ForexAccount::where('login', $receiverAccount)->first();
         if (!$toUserForexAccount) {
+            ActivityLogService::log('external_transfer', "External transfer failed due to receiver Forex account is invalid or inactive", $activityMeta);
             throw new \Exception(__('Receiver Forex account is invalid or inactive.'));
         }
 
@@ -235,6 +255,8 @@ class SendMoneyController extends Controller
         // Commit the transaction
         \DB::commit();
 
+        ActivityLogService::log('external_transfer', "External transfer successful", $activityMeta);
+
         // Notify the user of success
         notify()->success(__('Successfully Sent Money'), __('Success'));
 
@@ -249,6 +271,8 @@ class SendMoneyController extends Controller
 
         // Log the error and notify the user
         Log::error(__('Transaction failed: ') . $e->getMessage());
+        ActivityLogService::log('external_transfer', "External transfer failed due to error", $activityMeta);
+
         notify()->error($e->getMessage(), __('Error'));
 
         return redirect()->back()->withErrors(['error' => $e->getMessage()]);
@@ -691,12 +715,19 @@ class SendMoneyController extends Controller
 
    public function sendMoneyInternalNow(Request $request)
 {
+    $activityMeta = [
+        'Account' => getAccountDetails($request->target_id, null, auth()->id())->wallet_name ?? getAccountDetails($request->target_id, null, auth()->id())->account_name,
+        'Receiver Account' => getAccountDetails($request->receiver_account, null, auth()->id())->wallet_name ?? getAccountDetails($request->receiver_account, null, auth()->id())->account_name,
+        'Amount' => $request->amount.' '.setting('currency_symbol', 'global'),
+    ];
     // Check if transfers are enabled
     if (!setting('is_internal_transfer', 'transfer_internal') || !Auth::user()->transfer_status) {
+        ActivityLogService::log('internal_transfer', "Attempted to internal transfer but transfer is disabled", $activityMeta);
         throw new \App\Exceptions\SendMoneyDisabledException(__('Send Money Disabled Now'));
     }
     // Check if KYC is completed
     if (!setting('internal_transfer_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level()) {
+        ActivityLogService::log('internal_transfer', "Attempted to internal transfer but KYC is not completed", $activityMeta);
         notify()->error('KYC Pending: Please complete your KYC verification to proceed with your internal amount transfer', __('Error'));
         return redirect()->route('user.kyc');
     }
@@ -712,6 +743,7 @@ class SendMoneyController extends Controller
     ]);
 
     if ($validator->fails()) {
+        ActivityLogService::log('internal_transfer', "Internal transfer failed due to validation failed", $activityMeta);
         notify()->error($validator->errors()->first(), __('Error'));
         return redirect()->back();
     }
@@ -728,6 +760,7 @@ class SendMoneyController extends Controller
     $min = setting('internal_min_send', 'transfer_internal');
     $max = setting('internal_max_send', 'transfer_internal');
     if ($amount < $min || $amount > $max) {
+        ActivityLogService::log('internal_transfer', "Internal transfer failed due to transfer amount is out of range", $activityMeta);
         $currencySymbol = setting('currency_symbol', 'global');
         $message = __('Please Send the Amount within the range ') . $currencySymbol . $min . __(' to ') . $currencySymbol . $max;
         notify()->error($message, __('Error'));
@@ -743,6 +776,7 @@ class SendMoneyController extends Controller
         ->count();
 
     if ($todayTransfers >= $dailyLimit) {
+        ActivityLogService::log('internal_transfer', "Internal transfer failed due to daily transfer limit is reached", $activityMeta);
         notify()->error(__('You have reached the daily transfer limit.'), __('Error'));
         return redirect()->back();
     }
@@ -766,6 +800,7 @@ class SendMoneyController extends Controller
                 ->first();
 
             if (!$forexAccount) {
+                ActivityLogService::log('internal_transfer', "Internal transfer failed due to Forex account not found", $activityMeta);
                 throw new \Exception(__('The selected Forex account does not belong to you.'));
             }
 
@@ -820,6 +855,7 @@ class SendMoneyController extends Controller
                 ->first();
 
             if (!$toUserForexAccount || $toUserForexAccount->user_id == null) {
+                ActivityLogService::log('internal_transfer', "Internal transfer failed due to receiver Forex account is invalid or inactive", $activityMeta);
                 throw new \Exception(__('Receiver Forex account is invalid or inactive'));
             }
 
@@ -906,6 +942,8 @@ class SendMoneyController extends Controller
         // Commit the database transaction
         DB::commit();
 
+        ActivityLogService::log('internal_transfer', "Internal transfer successful", $activityMeta);
+
         notify()->success(__('Successfully Send Money'), __('Success'));
 
         $symbol = setting('currency_symbol', 'global');
@@ -977,6 +1015,7 @@ class SendMoneyController extends Controller
         // Show user-friendly error message
         $errorMessage = $e->getMessage();
         if (strpos($errorMessage, 'API') !== false || strpos($errorMessage, 'balance') !== false) {
+            ActivityLogService::log('internal_transfer', "Internal transfer failed due to transfer service is temporarily unavailable", $activityMeta);
             $errorMessage = __('Transfer service is temporarily unavailable. Please try again later.');
         }
         

@@ -9,6 +9,7 @@ use App\Models\Page;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\ActivityLogService;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -66,6 +67,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         LoginActivities::add();
+        ActivityLogService::log('user_login', "Login Successfully");
+
         session()->put('site-color-mode', $oldTheme);
         
         // Always redirect to user dashboard when logging in as user
@@ -87,6 +90,8 @@ class AuthenticatedSessionController extends Controller
         
         // Check if admin is logged in (even without impersonation)
         $hasAdminSession = Auth::guard('admin')->check();
+        
+        ActivityLogService::log('user_logout', "Logout Successfully");
         
         // Logout from web guard only
         Auth::guard('web')->logout();

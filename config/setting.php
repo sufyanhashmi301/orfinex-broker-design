@@ -2702,9 +2702,9 @@ return [
             [
                 'type' => 'checkbox',
                 'data' => 'boolean',
-                'name' => 'daily_statement_include_excel',
-                'label' => 'Include Excel Attachment',
-                'description' => 'Include the Excel attachment in the daily account statements',
+                'name' => 'daily_statement_include_pdf',
+                'label' => 'Include PDF Attachment',
+                'description' => 'Include the PDF attachment in the daily account statements',
                 'rules' => 'nullable',
                 'value' => 1,
             ],

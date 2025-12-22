@@ -16,6 +16,7 @@ use App\Models\ReferralLink;
 use App\Models\CompanyFormSubmission;
 use App\Providers\RouteServiceProvider;
 use App\Rules\Recaptcha;
+use App\Services\ActivityLogService;
 use App\Traits\NotifyTrait;
 use App\Traits\ImageUpload;
 use Carbon\Carbon;
@@ -127,7 +128,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
         LoginActivities::add();
-
+        ActivityLogService::log('Registration', "Registration Successfully", [
+            'User Name' => $input['first_name'] . ' ' . $input['last_name'],
+            'User Email' => $input['email'],
+        ]);
+        
         return redirect(RouteServiceProvider::HOME);
     }
     private function verifyEmail($email) {
@@ -203,7 +208,8 @@ class RegisteredUserController extends Controller
 
         // Log the activity
         LoginActivities::add();
-
+        ActivityLogService::log('Login', "Login Successfully via " . ucfirst($provider));
+        
         return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in via ' . ucfirst($provider));
     }
 

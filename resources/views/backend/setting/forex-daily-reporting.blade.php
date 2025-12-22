@@ -1,8 +1,8 @@
-@extends('backend.setting.misc.index')
+@extends('backend.setting.communication.index')
 @section('title')
     {{ __('Forex Daily Reporting') }}
 @endsection
-@section('misc-content')
+@section('communication-content')
     <?php
         $section = 'forex_daily_reporting';
         $fields = config("setting.$section");
@@ -22,28 +22,57 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach( $fields['elements'] as $key => $field)
                         @if($field['type'] == 'checkbox')
-                            <div class="input-area @if($field['name'] == 'daily_statement_enabled') col-span-2 @endif">
-                                <div class="flex items-center space-x-7 flex-wrap">
-                                    <div class="form-switch ps-0" style="line-height: 0">
-                                        <input class="form-check-input" type="hidden" value="0" name="{{ $field['name'] }}">
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" 
-                                                id="{{ $field['name'] }}" 
-                                                name="{{ $field['name'] }}" 
-                                                value="1" 
-                                                @if(setting($field['name'], $section, $field['value'])) checked @endif 
-                                                class="sr-only peer">
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                            @if($field['name'] == 'daily_statement_enabled')
+                                <div class="input-area col-span-2">
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                                        <div>
+                                            <label class="font-semibold text-slate-700 dark:text-slate-300">
+                                                {{ __($field['label']) }}
+                                            </label>
+                                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                                {{ __($field['description']) }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <div class="form-switch ps-0" style="line-height: 0">
+                                                <input class="form-check-input" type="hidden" value="0" name="{{ $field['name'] }}">
+                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                    <input type="checkbox" 
+                                                        id="{{ $field['name'] }}" 
+                                                        name="{{ $field['name'] }}" 
+                                                        value="1" 
+                                                        @if(setting($field['name'], $section, $field['value'])) checked @endif 
+                                                        class="sr-only peer">
+                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="input-area">
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <div class="form-switch ps-0" style="line-height: 0">
+                                            <input class="form-check-input" type="hidden" value="0" name="{{ $field['name'] }}">
+                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" 
+                                                    id="{{ $field['name'] }}" 
+                                                    name="{{ $field['name'] }}" 
+                                                    value="1" 
+                                                    @if(setting($field['name'], $section, $field['value'])) checked @endif 
+                                                    class="sr-only peer">
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                        <label class="form-label !w-auto !mb-0">
+                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
+                                                {{ __($field['label']) }}
+                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                            </span>
                                         </label>
                                     </div>
-                                    <label class="form-label !w-auto !mb-0">
-                                        <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="{{ __($field['description']) }}">
-                                            {{ __($field['label']) }}
-                                            <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
-                                        </span>
-                                    </label>
                                 </div>
-                            </div>
+                            @endif
                         @elseif($field['type'] == 'select')
                             <div class="input-area">
                                 <label for="" class="form-label">

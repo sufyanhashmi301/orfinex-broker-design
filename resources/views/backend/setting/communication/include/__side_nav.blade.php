@@ -38,5 +38,12 @@
                 {{ __('SMTP Monitoring')}}
             </a>
         </li>
+        @can('forex-reporting-settings')
+        <li>
+            <a href="{{ route('admin.settings.forex-daily-reporting') }}" class="navItem {{ isActive('admin.settings.forex-daily-reporting') }}">
+                {{ __('Forex Daily Reporting') }}
+            </a>
+        </li>
+        @endcan
     </ul>
 @endsection

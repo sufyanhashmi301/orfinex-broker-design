@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Exports\AllTransactionsExport;
 use App\Traits\ForexApiTrait;
 use App\Services\ForexApiService;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
@@ -120,6 +121,7 @@ class TransactionController extends Controller
         }
 
         $transactions = $query->get();
+        ActivityLogService::log('transaction_export', "Transaction history exported successfully");
 
         return Excel::download(new AllTransactionsExport($transactions), 'Filtered-Transactions.xlsx');
     }

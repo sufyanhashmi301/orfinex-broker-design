@@ -3,44 +3,29 @@
 namespace App\Exports;
 
 use App\Models\Transaction;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
-class AllTransactionsExport implements FromQuery, WithHeadings, WithMapping
+class AllTransactionsExport implements FromCollection, WithHeadings, WithMapping
 {
     use Exportable;
 
-    protected $request;
+    protected $transactions;
 
-    public function __construct(Request $request)
+    public function __construct(Collection $transactions)
     {
-        $this->request = $request;
+        $this->transactions = $transactions;
     }
 
     /**
-     * Query the transactions table with filters based on user input.
+     * Return the collection of transactions.
      */
-    public function query()
+    public function collection()
     {
-        return Transaction::with('user')  // Eager load the related user
-            ->where('user_id', auth()->user()->id)
-            ->when($this->request->input('query'), function ($query) {
-                $searchTerm = $this->request->input('query');
-                $query->where(function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('description', 'like', "%{$searchTerm}%")
-                             ->orWhere('tnx', 'like', "%{$searchTerm}%")
-                             ->orWhere('status', 'like', "%{$searchTerm}%")
-                             ->orWhere('type', 'like', "%{$searchTerm}%");
-                });
-            })
-            ->when($this->request->input('date'), function ($query) {
-                $query->whereDate('created_at', Carbon::parse($this->request->input('date')));
-            })
-            ->orderBy('created_at', 'desc');
+        return $this->transactions;
     }
 
     /**

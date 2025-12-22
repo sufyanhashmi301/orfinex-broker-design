@@ -21,6 +21,7 @@ use App\Services\ForexApiService;
 use App\Services\OtpService;
 use App\Services\UserAccountCreationService;
 use App\Services\WalletService;
+use App\Services\ActivityLogService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -527,8 +528,14 @@ class WithdrawController extends Controller
 
         // Show appropriate success message based on status
         if ($status === WithdrawAccount::STATUS_APPROVED) {
+            ActivityLogService::log('withdraw_account_created', "Withdraw account created", [
+                'Withdraw Account' => $input['method_name'],
+            ]);
             notify()->success(__('Successfully Withdraw Account Created'), 'success');
         } else {
+            ActivityLogService::log('withdraw_account_created', "Withdraw account created", [
+                'Withdraw Account' => $input['method_name'],
+            ]);
             notify()->success(__('Withdraw Account Created Successfully. It will be reviewed by admin for approval.'), 'success');
         }
 
@@ -548,6 +555,9 @@ class WithdrawController extends Controller
             ->first();
 
         if (!$withdrawAccount) {
+            ActivityLogService::log('withdraw_account_deleted', "Withdraw account delete failed due to not found", [
+                'Account Name' => $withdrawAccount->method_name,
+            ]);
             notify()->error(__('Withdraw account not found.'), __('Error'));
             return redirect()->back();
         }
@@ -560,12 +570,18 @@ class WithdrawController extends Controller
             ->count();
 
         if ($pendingWithdrawals > 0) {
+            ActivityLogService::log('withdraw_account_deleted', "Withdraw account delete failed due to has pending withdrawals", [
+                'Account Name' => $withdrawAccount->method_name,
+            ]);
             notify()->error(__('Cannot delete account with pending withdrawals.'), __('Error'));
             return redirect()->back();
         }
 
         $withdrawAccount->delete();
 
+        ActivityLogService::log('withdraw_account_deleted', "Withdraw account deleted successfully", [
+            'Account Name' => $withdrawAccount->method_name,
+        ]);
         notify()->success(__('Withdraw account deleted successfully.'), __('Success'));
         return redirect()->route('user.withdraw.account.index');
     }
@@ -977,11 +993,19 @@ class WithdrawController extends Controller
         $user = Auth::user();
         $input = $request->all();
 
+        $activityMeta = [
+            'amount' => $input['amount'].' '.setting('site_currency', 'global'),
+            'Account to withdraw' => getAccountDetails($input['target_id'], null, auth()->id())->wallet_name ?? getAccountDetails($input['target_id'], null, auth()->id())->account_name,
+            'Withdraw method' => getWithdrawAccountDetails($input['withdraw_account'], auth()->id())->method_name,
+        ];
+
         if (!setting('user_withdraw', 'permission') || !$user->withdraw_status) {
+            ActivityLogService::log('Withdraw', "Withdraw disabled", $activityMeta);
             throw new \App\Exceptions\WithdrawDisabledException(__('Withdraw Disabled Now'));
         }
 
         if (!setting('withdraw_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            ActivityLogService::log('Withdraw', "KYC pending", $activityMeta);
             notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
             return false;
         }
@@ -991,6 +1015,7 @@ class WithdrawController extends Controller
         $today = $date->format('l');
 
         if (in_array($today, $withdrawOffDays)) {
+            ActivityLogService::log('Withdraw', "Today is the off day for withdraw", $activityMeta);
             throw new \App\Exceptions\WithdrawOffDayException(__('Today is the off day for withdraw'));
         }
 
@@ -1002,6 +1027,7 @@ class WithdrawController extends Controller
             ->count();
 
         if ($pendingWithdraws >= $pendingLimit) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but pending withdraw limit is reached", $activityMeta);
             notify()->error(
                 __("You already have a pending withdrawal request. Please contact our support team at :email for assistance.", [
                     'email' => setting('support_email', 'global')
@@ -1018,6 +1044,7 @@ class WithdrawController extends Controller
             ->count();
 
         if ($todayTransfers >= $dailyLimit) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but daily withdraw limit is reached", $activityMeta);
             notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
             return false;
         }
@@ -1053,6 +1080,7 @@ class WithdrawController extends Controller
             ->first();
             
         if (!$withdrawAccount) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but invalid or unapproved withdraw account", $activityMeta);
             notify()->error(__('Invalid or unapproved withdraw account.'), 'Error');
             return false;
         }
@@ -1061,6 +1089,7 @@ class WithdrawController extends Controller
 
         // Check if the amount is within the allowed withdraw range
         if ($amount < $withdrawMethod->min_withdraw || $amount > $withdrawMethod->max_withdraw) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but amount is out of range", $activityMeta);
             $currencySymbol = setting('currency_symbol', 'global');
             $message = __('Please withdraw the amount within the range') . ' ' . $currencySymbol . $withdrawMethod->min_withdraw . ' ' . __('to') . ' ' . $currencySymbol . $withdrawMethod->max_withdraw;
             notify()->error($message, 'Error');
@@ -1083,6 +1112,7 @@ class WithdrawController extends Controller
                 ->first();
 
             if (!$forexAccount) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but Forex account does not belong to you", $activityMeta);
                 notify()->error(__('The selected Forex account does not belong to you.'), 'Error');
                 return false;
             }
@@ -1092,6 +1122,7 @@ class WithdrawController extends Controller
             
 
             if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but insufficient balance in Forex account", $activityMeta);
                 notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
                 return false;
             }
@@ -1104,12 +1135,14 @@ class WithdrawController extends Controller
             // Validate wallet ownership
             $wallet = get_user_account_by_wallet_id($targetId, $user->id);
             if (!$wallet) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but wallet does not belong to you", $activityMeta);
                 notify()->error(__('The selected wallet does not belong to you.'), 'Error');
                 return false;
             }
 
             $balance = BigDecimal::of($wallet->amount);
             if ($totalAmount->compareTo($balance) > 0) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but insufficient balance in wallet", $activityMeta);
                 notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
                 return false;
             }
@@ -1117,6 +1150,7 @@ class WithdrawController extends Controller
             if ($wallet->balance === AccountBalanceType::IB_WALLET) {
                 $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
                 if ($amount < $ibMinLimit) {
+                    ActivityLogService::log('Withdraw', "Attempted to withdraw but amount is less than IB wallet minimum limit", $activityMeta);
                     notify()->error(__('You must withdraw at least :limit from IB Wallet.', [
                         'limit' => setting('currency_symbol', 'global') . $ibMinLimit
                     ]), 'Error');
@@ -1259,6 +1293,12 @@ class WithdrawController extends Controller
             'view_name' => 'withdraw',
         ];
         Session::put('user_notify', $notify);
+
+        ActivityLogService::log('withdraw', "Withdraw request successful", [
+            'Transaction ID' => $txnInfo->tnx,
+            'Amount' => $txnInfo->amount . setting('site_currency', 'global'),
+            'Method Name' => $withdrawMethod->name,
+        ]);
 
         $shortcodes = [
             '[[full_name]]' => $txnInfo->user->full_name,

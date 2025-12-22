@@ -57,6 +57,7 @@ class SettingController extends Controller
         $this->middleware('permission:transfer-notification' , ['only' => ['transfersNotificationTune']]);
         $this->middleware('permission: kyc-levels-permissions' , ['only' => ['kycPermissionsSettings']]);
         $this->middleware('permission:company-register-settings' , ['only' => ['registerCompany']]);
+        $this->middleware('permission:forex-reporting-settings', ['only' => ['forexDailyReportingSetting']]);
 
     }
 

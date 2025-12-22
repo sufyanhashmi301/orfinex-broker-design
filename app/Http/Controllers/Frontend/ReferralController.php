@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\ActivityLogService;
 
 class ReferralController extends Controller
 {
@@ -252,6 +253,10 @@ class ReferralController extends Controller
         
         $user = auth()->user();
         $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-ib-transactions.xlsx';
+
+        ActivityLogService::log('data_export', "Exported IB transactions history", [
+            'File Name' => $fileName,
+        ]);
         
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\ibTransactionsUsersExport($user->id, $filters), 

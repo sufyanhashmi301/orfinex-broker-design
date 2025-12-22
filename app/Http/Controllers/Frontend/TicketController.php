@@ -14,6 +14,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Redirect;
+use App\Services\ActivityLogService;
 
 class TicketController extends Controller
 {
@@ -141,6 +142,13 @@ class TicketController extends Controller
         $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);
         $this->mailNotify(setting('support_email', 'global'), 'admin_support_ticket', $shortcodes);
 
+        ActivityLogService::log('ticket_create', "Created new support ticket", [
+            'Ticket Title' => $data['title'],
+            'Ticket Message' => $data['message'],
+            'Ticket Priority' => $data['priority'],
+            'Ticket Labels' => Label::find($request->input('label'))->pluck('name')->implode(', '),
+            'Ticket Attachments' => $data['attach'] ? 'Yes' : 'No',
+        ]);
         notify()->success(__('Your Ticket Was created successfully'), 'success');
 
         return Redirect::route('user.ticket.show', $ticket->uuid);
@@ -163,6 +171,12 @@ class TicketController extends Controller
     {
 
         Ticket::uuid($uuid)->close();
+        
+        ActivityLogService::log('ticket_close', "Closed support ticket", [
+            'Ticket Title' => Ticket::uuid($uuid)->title,
+            'Ticket Status' => Ticket::uuid($uuid)->status,
+        ]);
+
         notify()->success(__('Your Ticket Closed successfully'), 'success');
 
         return Redirect::route('user.ticket.index');
@@ -232,6 +246,12 @@ class TicketController extends Controller
         ];
 
         $this->mailNotify(setting('support_email', 'global'), 'admin_support_ticket', $shortcodes);
+
+        ActivityLogService::log('ticket_reply', "Replied to support ticket", [
+            'Ticket Title' => $ticket->title,
+            'Ticket Message' => $data['message'],
+            'Ticket Attachments' => $data['attach'] ? 'Yes' : 'No',
+        ]);
 
         notify()->success(__('Your Ticket Reply successfully'), 'success');
 

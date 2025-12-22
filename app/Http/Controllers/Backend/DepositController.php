@@ -37,6 +37,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DepositVoucher;
 use App\Services\NotificationService;
+use App\Services\ActivityLogService;
 
 class DepositController extends Controller
 {
@@ -518,7 +519,16 @@ class DepositController extends Controller
                         'error' => $e->getMessage(),
                     ]);
                 }
-                
+
+                ActivityLogService::log('Deposit', "Deposit approved Successfully", [
+                    'transaction_tnx' => $transaction->tnx,
+                    'user_name' => $transaction->user->full_name,
+                    'amount' => $transaction->amount,
+                    'method' => $transaction->method,
+                    'status' => $transaction->status,
+                    'approval_cause' => $approvalCause,
+                ]);
+
                 notify()->success('Deposit approved successfully.');
 
             } elseif (isset($input['reject'])) {
@@ -540,6 +550,15 @@ class DepositController extends Controller
                         'error' => $e->getMessage(),
                     ]);
                 }
+                
+                ActivityLogService::log('Deposit', "Deposit rejected Successfully", [
+                    'transaction_tnx' => $transaction->tnx,
+                    'user_name' => $transaction->user->full_name,
+                    'amount' => $transaction->amount,
+                    'method' => $transaction->method,
+                    'status' => $transaction->status,
+                    'approval_cause' => $approvalCause,
+                ]);
 
                 notify()->success('Deposit rejected successfully.');
             }

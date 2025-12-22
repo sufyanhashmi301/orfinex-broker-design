@@ -15,6 +15,8 @@ use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
 use App\Services\AdminForexAccountApprovalService;
+use App\Services\ForexAccountStatementService;
+use App\Services\MT5DatabaseService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -1054,6 +1056,61 @@ class   AccountsController extends Controller
             return response()->json(['success' => __('Successfully updated your account type.'), 'reload' => true]);
         } else {
             return response()->json(['error' => __('Failed to update account type. Please try again.')], 400);
+        }
+    }
+
+    /**
+     * Send statement email for a specific account
+     */
+    public function sendStatement(Request $request)
+    {
+        $request->validate([
+            'login' => ['required', 'string']
+        ]);
+
+        try {
+            // Find the forex account
+            $account = ForexAccount::where('login', $request->login)->first();
+            
+            if (!$account) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Account not found')
+                ], 404);
+            }
+
+            // Check if user has permission to access this account
+            $accessibleUserIds = getAccessibleUserIds()->pluck('id')->toArray();
+            if (!in_array($account->user_id, $accessibleUserIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Access denied')
+                ], 403);
+            }
+
+            // Generate and send statement using Laravel's service container
+            $statementService = app(ForexAccountStatementService::class);
+            $statementData = $statementService->generateStatement($account, now()->subDay());
+            
+            // Send the statement email
+            $result = $statementService->sendStatementEmail($account, $statementData);
+            
+            return response()->json([
+                'success' => true,
+                'message' => __('Statement email sent successfully to :email', ['email' => $account->user->email])
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to send statement email', [
+                'login' => $request->login,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => __('Failed to send statement email: :error', ['error' => $e->getMessage()])
+            ], 500);
         }
     }
 

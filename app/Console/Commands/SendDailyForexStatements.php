@@ -29,7 +29,7 @@ class SendDailyForexStatements extends Command
      *
      * @var string
      */
-    protected $description = 'Send daily account statements to Forex account holders';
+    protected $description = 'Send daily PDF account statements to Forex account holders';
 
     protected ForexAccountStatementService $statementService;
 

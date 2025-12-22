@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 use Validator;
-
+use App\Services\ActivityLogService;
 
 class KycController extends Controller
 {
@@ -160,6 +160,10 @@ class KycController extends Controller
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
             if (!isset($user->kyc ) && $user->kyc < KYCStatus::Level1->value) {
+                ActivityLogService::log('kyc_submission', "KYC submission failed due to level 1 not completed", [
+                    'KYC Level' => 'Level 2',
+                    'Status' => 'Failed',
+                ]);
                 notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
@@ -169,6 +173,11 @@ class KycController extends Controller
         foreach ($input['kyc_credential'] as $key => $value) {
             if ($value instanceof \Illuminate\Http\UploadedFile) {
                 if (!$value->isValid()) {
+                    ActivityLogService::log('kyc_submission', "KYC submission failed due to invalid file", [
+                        'KYC Level' => 'Level 2',
+                        'Status' => 'Failed',
+                    ]);
+
                     notify()->error(__('The file in "' . $key . '" is not valid.'), __('Error'));
                     return redirect()->back();
                 }
@@ -186,6 +195,12 @@ class KycController extends Controller
                 if (!empty($path)) {
                     $kycCredential[$key] = $path;
                 } else {
+                    ActivityLogService::log('kyc_submission', "KYC submission failed due to invalid file", [
+                        'KYC Level' => 'Level 2',
+                        'Status' => 'Failed',
+                        'Error' => 'Failed to upload file',
+                    ]);
+
                     notify()->error(__('Failed to upload ') . $key, __('Error'));
                     return redirect()->back();
                 }
@@ -226,6 +241,12 @@ class KycController extends Controller
         ];
 
         $this->mailNotify($user->email, 'kyc_request_level_2', $shortcodes);
+
+        ActivityLogService::log('kyc_submission', "KYC submission successful", [
+            'KYC Level' => 'Level 2',
+            'Status' => 'Success',
+            'KYC Type' => $kyc->name,
+        ]);
 
         // Notify admin
         $adminEmails = parseEmails(setting('site_email', 'global'));
@@ -272,6 +293,11 @@ class KycController extends Controller
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->first();
         if ($checkLevel1 && $checkLevel1->status == 1) {
             if (!isset($user->kyc) || $user->kyc < KYCStatus::Level1->value) {
+                ActivityLogService::log('kyc_submission', "KYC submission failed due to level 1 not completed", [
+                    'KYC Level' => 'Level 3',
+                    'Status' => 'Failed',
+                ]);
+
                 notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
@@ -280,6 +306,11 @@ class KycController extends Controller
         $checkLevel2 = KycLevel::where('slug', KycLevelSlug::LEVEL2)->first();
         if ($checkLevel2 && $checkLevel2->status == 1) {
             if ($user->kyc < KYCStatus::Level2->value) {
+                ActivityLogService::log('kyc_submission', "KYC submission failed due to level 2 not completed", [
+                    'KYC Level' => 'Level 3',
+                    'Status' => 'Failed',
+                ]);
+                
                 notify()->error(__('kindly complete the level 2 first'));
                 return redirect()->back();
             }
@@ -289,6 +320,12 @@ class KycController extends Controller
         foreach ($input['kyc_credential'] as $key => $value) {
             if ($value instanceof \Illuminate\Http\UploadedFile) {
                 if (!$value->isValid()) {
+                    ActivityLogService::log('kyc_submission', "KYC submission failed due to invalid file", [
+                        'KYC Level' => 'Level 3',
+                        'Status' => 'Failed',
+                        'Error' => 'Invalid file',
+                    ]);
+
                     notify()->error(__('The file in "' . $key . '" is not valid.'), __('Error'));
                     return redirect()->back();
                 }
@@ -309,6 +346,12 @@ class KycController extends Controller
                 if (!empty($path)) {
                     $kycCredential[$key] = $path;
                 } else {
+                    ActivityLogService::log('kyc_submission', "KYC submission failed due to failed to upload file", [
+                        'KYC Level' => 'Level 3',
+                        'Status' => 'Failed',
+                        'Error' => 'Failed to upload file',
+                    ]);
+
                     notify()->error(__('Failed to upload ') . $key, __('Error'));
                     return redirect()->back();
                 }
@@ -347,6 +390,11 @@ class KycController extends Controller
             \Log::warning('Failed to notify staff for KYC level 3 request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
+        ActivityLogService::log('kyc_submission', "KYC submission successful", [
+            'KYC Level' => 'Level 3',
+            'Status' => 'Success',
+            'KYC Type' => $kyc->name,
+        ]);
 
         notify()->success(__(' KYC Updated'));
         return redirect()->route('user.kyc');

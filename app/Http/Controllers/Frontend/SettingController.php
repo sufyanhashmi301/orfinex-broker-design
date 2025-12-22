@@ -16,6 +16,7 @@ use App\Models\UserLanguage;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\NumberParseException;
+use App\Services\ActivityLogService;
 
 class SettingController extends Controller
 {
@@ -213,6 +214,7 @@ class SettingController extends Controller
             $user->update($data);
         }
 
+        ActivityLogService::log('profile_update', "Updated profile");
 
         notify()->success(__('Your Profile Updated successfully'));
         return redirect()->back();
@@ -242,6 +244,11 @@ class SettingController extends Controller
         }
 
         auth()->user()->update(['avatar' => $avatarPath]);
+
+        ActivityLogService::log('avatar_update', "Updated avatar", [
+            'User' => $user->username,
+            'Avatar' => $avatarPath,
+        ]);
 
         return response()->json(['success' => true]);
     }
@@ -275,6 +282,11 @@ class SettingController extends Controller
 
         $user->update($data);
 
+        ActivityLogService::log('info_update', "Updated info", [
+            'Phone' => $input['phone'],
+            'Address' => $input['address'],
+        ]);
+
         notify()->success(__('Your Profile Updated successfully'));
 
         return redirect()->route('user.setting.show');
@@ -290,6 +302,7 @@ class SettingController extends Controller
         $user->update([
             'google2fa_secret' => $secret,
         ]);
+        ActivityLogService::log('two_fa_update', "Updated two factor authentication");
         notify()->success(__('QR Code And Secret Key Generate successfully'));
 
         return redirect()->back();
@@ -321,10 +334,13 @@ class SettingController extends Controller
                 $user->update([
                     'two_fa' => 0,
                 ]);
+                ActivityLogService::log('two_fa_update', "Disabled two factor authentication");
                 notify()->success(__('2Fa Authentication Disable successfully'));
 
                 return redirect()->back();
             }
+
+            ActivityLogService::log('two_fa_update', "Failed to disable two factor authentication");
 
             notify()->warning(__('Incorrect password or one-time code'));
 
@@ -343,12 +359,15 @@ class SettingController extends Controller
                 $user->update([
                     'two_fa' => 1,
                 ]);
+
+                ActivityLogService::log('two_fa_update', "2Fa authentication enable");
                 notify()->success(__('2Fa Authentication Enable successfully'));
 
                 return redirect()->back();
 
             }
 
+            ActivityLogService::log('two_fa_update', "Failed to enable two factor authentication");
             notify()->warning(__('2Fa Authentication Wrong One Time Key'));
 
             return redirect()->back();
@@ -384,6 +403,10 @@ class SettingController extends Controller
                 'language' => $request->language,
             ]);
         }
+        
+        ActivityLogService::log('language_update', "Updated language", [
+            'Language' => $request->language,
+        ]);
 
         notify()->success(__('Language Selected successfully'));
         return redirect()->back();
@@ -398,6 +421,10 @@ class SettingController extends Controller
         $user = Auth::user();
         $user->update([
             'user_theme' => $request['user_theme'],
+        ]);
+
+        ActivityLogService::log('theme_update', "Updated theme", [
+            'Theme' => $request->user_theme,
         ]);
 
         notify()->success(__('Your theme has been updated successfully.'));

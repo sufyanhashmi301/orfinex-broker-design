@@ -87,6 +87,8 @@ use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SmtpMonitoringController;
+use App\Http\Controllers\Backend\ForexAccountStatementLogController;
+use App\Http\Controllers\Backend\ActivityLogController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -295,6 +297,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
         Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+        Route::post('send-statement', [AccountsController::class, 'sendStatement'])->name('send-statement');
+                
+        // Statement Logs Management
+        Route::get('statement-logs', [ForexAccountStatementLogController::class, 'index'])->name('statement-logs');
+        Route::post('statement-logs/clear', [ForexAccountStatementLogController::class, 'clearLogs'])->name('statement-logs.clear');
+        Route::get('statement-logs/export', [ForexAccountStatementLogController::class, 'exportLogs'])->name('statement-logs.export');
     });
 
     //===============================  Profit Deduction Management ==================================
@@ -786,6 +794,15 @@ Route::prefix('team')->group(function() {
         Route::get('/settings', [SmtpMonitoringController::class, 'settings'])->name('settings');
     });
 
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::get('/', [ActivityLogController::class, 'index'])->name('index');
+        Route::get('/users', [ActivityLogController::class, 'users'])->name('users');
+        Route::get('/staff', [ActivityLogController::class, 'staff'])->name('staff');
+        Route::get('/export', [ActivityLogController::class, 'export'])->name('export');
+        Route::get('/{id}', [ActivityLogController::class, 'show'])->name('show');
+
+        Route::get('/users/{id}', [ActivityLogController::class, 'userActivities'])->name('user.activities');
+    });
 
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');

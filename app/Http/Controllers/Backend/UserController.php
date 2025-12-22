@@ -769,7 +769,7 @@ class UserController extends Controller
             ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
-        $branches = Branch::where('status', 1)->get();
+        $branches = Branch::where('status', 1)->get();  
 
         return view('backend.user.edit', compact(
             'users',
@@ -786,7 +786,7 @@ class UserController extends Controller
             'bonuses',
             'ibGroups',
             'referrals',
-            'branches'
+            'branches',
         ));
     }
 

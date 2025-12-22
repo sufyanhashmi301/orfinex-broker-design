@@ -87,6 +87,8 @@ use App\Http\Controllers\Backend\UserAttachmentController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SmtpMonitoringController;
+use App\Http\Controllers\Backend\ForexAccountStatementLogController;
+use App\Http\Controllers\Backend\ActivityLogController;
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -115,6 +117,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('grace/period', 'gracePeriodUsers')->name('gracePeriodUsers');
         Route::post('/update-grace-period', 'updateGracePeriod')->name('updateGracePeriod');
         Route::get('login/{id}', 'userLogin')->name('login');
+        Route::get('stop-impersonation', 'stopUserImpersonation')->name('stop-impersonation');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
         Route::post('password-reset', 'resetPassword')->name('reset-password');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
@@ -294,6 +297,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
         Route::post('get/schema', [AccountsController::class, 'getSchema'])->name('get.schema');
         Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+        Route::post('send-statement', [AccountsController::class, 'sendStatement'])->name('send-statement');
+                
+        // Statement Logs Management
+        Route::get('statement-logs', [ForexAccountStatementLogController::class, 'index'])->name('statement-logs');
+        Route::post('statement-logs/clear', [ForexAccountStatementLogController::class, 'clearLogs'])->name('statement-logs.clear');
+        Route::get('statement-logs/export', [ForexAccountStatementLogController::class, 'exportLogs'])->name('statement-logs.export');
     });
 
     //===============================  Profit Deduction Management ==================================
@@ -467,6 +476,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
         Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
+        Route::get('forex-daily-reporting', 'forexDailyReportingSetting')->name('forex-daily-reporting');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('mt5-connection-test', 'testMT5Connection')->name('mt5.connection.test');
         Route::post('update', 'update')->name('update');
@@ -513,9 +523,14 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
         Route::group(['prefix' => 'dynamic-content', 'as' => 'dynamic-content.'], function () {
+            //success page
             Route::get('success-page', [PageController::class, 'successPage'])->name('success-page');
             Route::get('success-page/{id}/edit', [PageController::class, 'successPageEdit'])->name('success-page.edit');
             Route::put('success-page/{id}', [PageController::class, 'successPageUpdate'])->name('success-page.update');
+            //error page
+            Route::get('error-page', [PageController::class, 'errorPage'])->name('error-page');
+            Route::get('error-page/{id}/edit', [PageController::class, 'errorPageEdit'])->name('error-page.edit');
+            Route::put('error-page/{id}', [PageController::class, 'errorPageUpdate'])->name('error-page.update');
         });
     });
 
@@ -779,6 +794,15 @@ Route::prefix('team')->group(function() {
         Route::get('/settings', [SmtpMonitoringController::class, 'settings'])->name('settings');
     });
 
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::get('/', [ActivityLogController::class, 'index'])->name('index');
+        Route::get('/users', [ActivityLogController::class, 'users'])->name('users');
+        Route::get('/staff', [ActivityLogController::class, 'staff'])->name('staff');
+        Route::get('/export', [ActivityLogController::class, 'export'])->name('export');
+        Route::get('/{id}', [ActivityLogController::class, 'show'])->name('show');
+
+        Route::get('/users/{id}', [ActivityLogController::class, 'userActivities'])->name('user.activities');
+    });
 
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');

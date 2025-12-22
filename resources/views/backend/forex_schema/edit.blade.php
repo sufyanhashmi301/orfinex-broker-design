@@ -40,45 +40,71 @@
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
-                        <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                            <div class="input-area">
-                                <label class="form-label" for="">
-                                    {{ __('Account Type Category') }}
-                                    <span class="text-xs font-Inter font-normal text-slate-600 block">
-                                        {{ __('Choose how this account type should be categorized.') }}
-                                    </span>
-                                </label>
-                                <select name="account_category_id" id="accountTypeCategory" class="form-control w-full"
-                                    data-placeholder="Select Account Type Category">
-                                    @foreach ($accountTypeCategories as $category)
-                                        <option value="{{ $category->id }}" data-slug="{{ $category->slug }}"
-                                            data-description="{{ $category->description }}"
-                                            @if ($schema->account_category_id == $category->id) selected @endif>
-                                            {{ $category->title }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div id="global_account" class="input-area flex items-center hidden">
-                            <input type="hidden" value="0" name="is_global">
-                            <label
-                                class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="checkbox" id="isGlobalInput" name="is_global" value="1"
-                                    class="sr-only peer" {{ old('is_global', $schema->is_global ?? 0) ? 'checked' : '' }}>
-                                <div
-                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500">
-                                </div>
-                            </label>
-                            <div class="flex flex-col ml-5">
-                                <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
-                                    {{ __('Set as Universal Global Account') }}
-                                </span>
-                                <span class="text-xs font-Inter font-normal text-slate-600">
-                                    {{ __('This will override the country, tag and ib rebate rules restrictions and will be shown to all users.') }}
-                                </span>
-                            </div>
-                        </div>
+						<div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+							{{-- Assign Branches placed on the left --}}
+							<div class="input-area">
+								<label class="form-label" for="">
+									<span class="shift-Away inline-flex items-center gap-1"
+										data-tippy-content="Select branches where this account type will be available">
+										{{ __('Assign Branches') }}
+										<iconify-icon icon="mdi:information-slab-circle-outline"
+											class="text-[16px]"></iconify-icon>
+									</span>
+								</label>
+                                <span class="text-xs font-Inter font-normal text-slate-600 block mt-1">
+									{{ __('Leave empty to make available for all branches.') }}
+								</span>
+								<select name="branches[]" id="branchSelect" class="select2 form-control w-full h-9"
+									placeholder="Select Branches" multiple>
+									@foreach ($branches as $branch)
+										<option value="{{ $branch->id }}"
+											{{ in_array($branch->id, old('branches', $attachedBranches)) ? 'selected' : '' }}
+											class="inline-block font-Inter font-normal text-sm text-slate-600">
+											{{ $branch->name }} ({{ $branch->code }})
+										</option>
+									@endforeach
+								</select>
+							</div>
+							{{-- Account Type Category placed on the right with Universal Global toggle --}}
+							<div class="input-area">
+								<label class="form-label" for="">
+									{{ __('Account Type Category') }}
+									<span class="text-xs font-Inter font-normal text-slate-600 block">
+										{{ __('Choose how this account type should be categorized.') }}
+									</span>
+								</label>
+								<select name="account_category_id" id="accountTypeCategory" class="form-control w-full"
+									data-placeholder="Select Account Type Category">
+									@foreach ($accountTypeCategories as $category)
+										<option value="{{ $category->id }}" data-slug="{{ $category->slug }}"
+											data-description="{{ $category->description }}"
+											@if ($schema->account_category_id == $category->id) selected @endif>
+											{{ $category->title }}
+										</option>
+									@endforeach
+								</select>
+								<div id="global_account" class="input-area flex items-center hidden mt-4">
+									<input type="hidden" value="0" name="is_global">
+									<label
+										class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+										<input type="checkbox" id="isGlobalInput" name="is_global" value="1"
+											class="sr-only peer" {{ old('is_global', $schema->is_global ?? 0) ? 'checked' : '' }}>
+										<div
+											class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500">
+										</div>
+									</label>
+									<div class="flex flex-col ml-5">
+										<span class="text-slate-500 dark:text-slate-400 text-sm leading-6 font-medium">
+											{{ __('Set as Universal Global Account') }}
+										</span>
+										<span class="text-xs font-Inter font-normal text-slate-600">
+											{{ __('This will override the country, tag and ib rebate rules restrictions and will be shown to all users.') }}
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
                         <div id="ib_rebate_rules" class="hidden">
                             <div class="input-area">
                                 <label class="form-label" for="">
@@ -219,29 +245,7 @@
                     </div>
 
                     {{-- Branch Assignment Section --}}
-                    <div class="input-area">
-                        <label class="form-label" for="">
-                            <span class="shift-Away inline-flex items-center gap-1"
-                                data-tippy-content="Select branches where this account type will be available">
-                                {{ __('Assign Branches') }}
-                                <iconify-icon icon="mdi:information-slab-circle-outline"
-                                    class="text-[16px]"></iconify-icon>
-                            </span>
-                        </label>
-                        <select name="branches[]" id="branchSelect" class="select2 form-control w-full h-9"
-                            placeholder="Select Branches" multiple>
-                            @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}"
-                                    {{ in_array($branch->id, old('branches', $attachedBranches)) ? 'selected' : '' }}
-                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                    {{ $branch->name }} ({{ $branch->code }})
-                                </option>
-                            @endforeach
-                        </select>
-                        <span class="text-xs font-Inter font-normal text-slate-600 block mt-1">
-                            {{ __('Leave empty to make available for all branches.') }}
-                        </span>
-                    </div>
+                    
 
                     <div class="input-area @if (!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">
@@ -466,6 +470,24 @@
                                 readonly>
 
                         </div>
+                        @if(setting('live_account_creation', 'features'))
+                            <div class="input-area mt-4">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Number of accounts a user can create before requiring admin approval for this account type">
+                                        {{ __('Account Creation Limit (Live)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" min="0" step="1" name="live_account_limit" class="form-control"
+                                    placeholder="Enter account limit (0 = unlimited)" value="{{ $schema->live_account_limit ?? 0 }}" />
+                                <span class="text-xs text-gray-500">After this limit, accounts will require admin approval. Set to 0 for unlimited.</span>
+                                @error('live_account_limit')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -568,6 +590,24 @@
                                 placeholder="Trading Server Demo" value="{{ setting('demo_server', 'platform_api') }}"
                                 readonly>
                         </div>
+                        @if(setting('demo_account_creation', 'features'))
+                            <div class="input-area mt-4">
+                                <label class="form-label" for="">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Number of accounts a user can create before requiring admin approval for this account type">
+                                        {{ __('Account Creation Limit (Demo)') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <input type="number" min="0" step="1" name="demo_account_limit" class="form-control"
+                                    placeholder="Enter account limit (0 = unlimited)" value="{{ $schema->demo_account_limit ?? 0 }}" />
+                                <span class="text-xs text-gray-500">After this limit, accounts will require admin approval. Set to 0 for unlimited.</span>
+                                @error('demo_account_limit')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                         <div class="input-area mt-4">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"

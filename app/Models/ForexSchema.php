@@ -49,7 +49,9 @@ class ForexSchema extends Model
 		'is_internal_transfer' => 'int',
 		'is_external_transfer' => 'int',
 		'is_bonus' => 'int',
-		'status' => 'int'
+		'status' => 'int',
+		'live_account_limit' => 'int',
+		'demo_account_limit' => 'int',
 	];
 
 	protected $fillable = [
@@ -94,6 +96,8 @@ class ForexSchema extends Model
 		'demo_max_deposit_amount',
 		'is_update_trading_password',
 		'is_update_investor_password',
+		'live_account_limit',
+		'demo_account_limit',
 	];
 
     // App\Models\ForexSchema.php

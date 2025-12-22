@@ -25,6 +25,34 @@
                     </div>
                 </div>
             @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mt-2 text-sm" role="alert">
+                    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                        <p class="flex-1 font-Inter">
+                            {{ __(session('error')) }}
+                        </p>
+                        <div class="flex-0 text-lg cursor-pointer">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
+                                <iconify-icon icon="line-md:close"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-2 text-sm" role="alert">
+                    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                        <p class="flex-1 font-Inter">
+                            {{ __(session('success')) }}
+                        </p>
+                        <div class="flex-0 text-lg cursor-pointer">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
+                                <iconify-icon icon="line-md:close"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
         <!-- BEGIN: Login Form -->
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf

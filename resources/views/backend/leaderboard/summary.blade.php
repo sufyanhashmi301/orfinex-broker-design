@@ -2,7 +2,9 @@
     <div class="card overflow-hidden">
         <div class="grid grid-cols-12">
             <div class="lg:col-span-7 col-span-12">
-                @include('backend.leaderboard.include.__top3', ['top3' => $top3, 'hasData' => $hasData, 'currencySymbol' => $currencySymbol])
+                <div class="innerMenu">
+                    @include('backend.leaderboard.include.__top3', ['top3' => $top3, 'hasData' => $hasData, 'currencySymbol' => $currencySymbol])
+                </div>
                 <div class="relative px-6 pt-3">
                     <div class="overflow-x-auto -mx-6 dashcode-data-table">
                         <span class="col-span-8 hidden"></span>

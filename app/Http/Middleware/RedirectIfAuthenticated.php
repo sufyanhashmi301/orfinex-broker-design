@@ -19,16 +19,20 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
+        
         foreach ($guards as $guard) {
             switch ($guard) {
                 case 'admin':
-                    if (Auth::guard($guard)->check()) {
+                    // Only redirect if admin guard is authenticated
+                    if (Auth::guard('admin')->check()) {
                         return redirect()->route('admin.dashboard');
                     }
                     break;
 
                 default:
-                    if (Auth::guard($guard)->check()) {
+                    // For web guard, only check web guard specifically
+                    // Don't redirect if only admin is authenticated
+                    if (Auth::guard('web')->check() && !session('impersonating_admin_id')) {
                         return redirect(RouteServiceProvider::HOME);
                     }
                     break;

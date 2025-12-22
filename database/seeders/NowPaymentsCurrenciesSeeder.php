@@ -20,86 +20,73 @@ class NowPaymentsCurrenciesSeeder extends Seeder
             // Begin database transaction for data integrity
             DB::beginTransaction();
 
-            // Comprehensive list of NOWPayments supported cryptocurrencies as of 2024
-            // Based on official NOWPayments documentation and API
+            // Comprehensive list of NOWPayments supported cryptocurrencies as of November 2024
+            // Source: https://nowpayments.io/supported-coins
+            // Updated with all currencies from official NOWPayments documentation
             $nowPaymentsCurrencies = [
-                // Major Cryptocurrencies
-                'BTC', 'ETH', 'XRP', 'USDT', 'LTC', 'BCH', 'DOGE', 'ADA', 'SOL', 'DOT',
-                'AVAX', 'MATIC', 'SHIB', 'UNI', 'LINK', 'ATOM', 'XLM', 'VET', 'FIL', 'TRX',
-                'ETC', 'THETA', 'XMR', 'ALGO', 'AAVE', 'MKR', 'COMP', 'SNX', 'SUSHI', 'YFI',
+                // Popular Coins
+                'BTC', 'ETH', 'XRP', 'USDTOMNI', 'LTC', 'BCH', 'DOGE', 'XNO', 'XMR', 'DASH',
+                'VET', 'UNI', 'SOL', 'ADA', 'SHIB', 'DGB', 'TRX',
                 
-                // Stablecoins
-                'USDC', 'BUSD', 'DAI', 'TUSD', 'USDD', 'FRAX', 'LUSD', 'GUSD', 'USDP',
+                // Stable Coins
+                'TUSD', 'TUSDTRC20', 'DAI', 'USDTTRC20', 'USDTBSC', 'USDTERC20', 'USDTSOL',
+                'USDP', 'BUSD', 'USDC', 'USDCMATIC', 'USDDTRC20', 'GUSD', 'USDTMATIC',
+                'USDCSOL', 'PYUSD', 'EURT', 'USDE',
                 
-                // DeFi Tokens
-                'CRV', 'BAL', 'REN', 'LRC', 'ZRX', 'KNC', 'BAND', 'RSR', 'NMR', 'MLN',
-                
-                // Layer 2 and Scaling Solutions
-                'LPT', 'STORJ', 'GRT', 'ANKR', 'CTSI', 'SKL', 'CELR', 'COTI', 'DYDX',
+                // Fiat Currencies
+                'USD', 'EUR', 'NGN', 'CAD', 'AUD', 'GBP', 'KRW', 'ILS', 'RON', 'ARS',
+                'INR', 'IDR', 'MXN', 'MYR', 'TRY', 'CLP', 'PEN', 'PHP', 'THB', 'VND',
+                'PLN', 'BRL',
                 
                 // Exchange Tokens
-                'BNB', 'CRO', 'HT', 'OKB', 'LEO', 'KCS', 'GT', 'FTT',
+                'FTT', 'BNBBSC', 'BNBMAINNET', 'HT', 'OKB', 'CRO', 'MX',
                 
-                // Gaming and NFT Tokens
-                'MANA', 'SAND', 'AXS', 'SLP', 'ENJ', 'CHZ', 'FLOW', 'IMX', 'GALA', 'APE',
+                // Layer 1 & Layer 2 Blockchains
+                'ARB', 'AVAX', 'DOT', 'ATOM', 'NEAR', 'FTM', 'EGLD', 'MATIC', 'MATICMAINNET',
+                'ONE', 'HBAR', 'XTZ', 'ALGO', 'WAVES', 'NEO', 'EOS', 'ICX', 'STRAX', 'ONT',
+                'ZIL', 'QTUM', 'LSK', 'XLM', 'AE', 'XYM', 'KLAY', 'APT', 'SEI', 'TON',
+                'FILMAINNET', 'ARK', 'CSPR', 'PLS', 'MATICUSDCE',
+                
+                // DeFi Tokens
+                'AAVE', 'UNI', 'LINK', 'YFI', 'OCEAN', 'KNC', 'BAL', 'CRV', 'CAKE', 'GRT',
+                'COTI', 'DAO', 'CTSI', 'SXP', 'BEL', 'STPT', 'CHR', 'FRONT', 'NOW', 'OM',
+                'SCRT', 'SUPER', 'POOLZ', 'KLV', 'TFUEL', 'DYDX', 'VELO', 'POOLX', 'RUNE',
+                'VERSE',
+                
+                // Gaming & NFT Tokens
+                'AXS', 'SAND', 'MANA', 'ENJ', 'CHZ', 'GALA', 'APE', 'ILV', 'ALICE', 'TLM',
+                'PYR', 'GHST', 'REVV', 'TOWER', 'TKO', 'SLP', 'FLOW', 'IMX', 'C98', 'FUN',
+                'SFUND', 'NTVRK', 'NFTB', 'HOTCROSS', 'GALBSC', 'TTC', 'ZBCSOL', 'GUARD',
+                'MARSH', 'DGI', 'GHC', 'JETTON', 'AITECH', 'BEFI', 'VPS', 'LBP', 'CATI',
+                'BAZED', 'SIDUS',
                 
                 // Meme Coins
-                'ELON', 'FLOKI', 'BABYDOGE', 'SAFEMOON',
+                'SHIB', 'DOGE', 'FLOKI', 'FLOKIBSC', 'BABYDOGE', 'KISHU', 'KEANU', 'LEASH',
+                'PEPE', 'SHIBBSC', 'PIT', 'POODL', 'HOGE', 'KIBABSC', 'KIBA', 'VOLT',
+                'BUFF', 'DOGECOIN', 'RBIF', 'QUACK', 'TENSHI', 'PEIPEI', 'SCRAT', 'PONKE',
+                'DINO', 'GRAPE', 'MYRO', 'BRETT', 'MEW', 'PENG', 'BANANA', 'DOGS', 'CATS',
+                'SUNDOG', 'NEIRO', 'DADDY', 'WOLF', 'HMSTR', 'PEW', 'RAINCOIN',
                 
                 // Privacy Coins
-                'ZEC', 'DASH', 'XNO',
+                'XMR', 'ZEC', 'DASH', 'XNO', 'FIRO', 'ZEN', 'XVG', 'BEAM', 'PIVX', 'EPIC',
                 
-                // Enterprise and Utility Tokens
-                'BAT', 'REP', 'ZIL', 'ICX', 'ONT', 'QTUM', 'WAVES', 'LSK', 'STEEM', 'HIVE',
+                // Utility & Enterprise Tokens
+                'BAT', 'REP', 'GAS', 'GRS', 'WABI', 'MCO', 'KMD', 'RVN', 'FEG', 'XYO',
+                'ARPA', 'AVA', 'AVABSC', 'AVAERC20', 'XDC', 'FLUF', 'BLOCKS', 'BONE', 'AVN',
+                'GTERC20', 'RXCG', 'BSV', 'BTG', 'BCD', 'DCR', 'ETC', 'ETHW', 'OMG', 'XEM',
+                'UST', 'VIB', 'SRK', 'NWC', 'IOTX', 'MIOTA', 'HOT', 'THETA', 'TRVL',
+                'RACA', 'BRISEBSC', 'CNS', 'LUNC', '1INCH', '1INCHBSC', 'ARV', 'BOBA',
+                'BTT', 'BTTBSC', 'CUDOS', 'GAFA', 'ETHBSC', 'PIKAETH', 'XCAD', 'GGTKN',
+                'DGMOON', 'DIVI', 'KAS', 'NFAI', 'ETHARB', 'NOT', 'ZKSYNC', 'ZK', 'XAUT',
+                'XEC', 'CFXBSC', 'ID', 'DGD', 'XZC', 'XCUR', 'CVC', 'GSPI', 'SPI', 'CULT',
+                'BTFA', 'BTTC', 'TLOS', 'GETH', 'STKK', 'GARI', 'HEX', 'JST', 'USDJ', 'SUN',
+                'WIN', 'SYSEVM', 'TUP', 'WBTC', 'ZRO', 'STRK', 'IPMB', 'LNQ', 'G', 'SNSY',
+                'PLX', 'INJ', 'RJV', 'AVA2', 'ZENT', 'NEVER', 'CGPT', 'CSWAP', 'X', 'TET',
+                'FTN', 'SOON',
                 
-                // Newer and Emerging Tokens
-                'NEAR', 'FTM', 'ONE', 'HBAR', 'EGLD', 'KLAY', 'CELO', 'XTZ', 'KSM', 'KUSAMA',
-                'ICP', 'AR', 'HNT', 'MINA', 'ROSE', 'OSMO', 'JUNO', 'SCRT', 'LUNA', 'UST',
-                
-                // Additional supported tokens
-                'OMG', 'LPT', 'NKN', 'RLC', 'OCEAN', 'FET', 'AGIX', 'WLD', 'RENDER', 'TAO',
-                'PENDLE', 'ARB', 'OP', 'BLUR', 'PEPE', 'WOO', 'GMX', 'RDNT', 'MAGIC',
-                
-                // Wrapped tokens and derivatives
-                'WBTC', 'WETH', 'WBNB', 'WMATIC', 'WAVAX',
-                
-                // Layer 1 blockchains
-                'AVAX', 'ATOM', 'OSMO', 'JUNO', 'SCRT', 'KAVA', 'BAND', 'IRIS', 'REGEN',
-                
-                // Cross-chain and bridge tokens
-                'POLY', 'CELR', 'CBRIDGE', 'SYN', 'MULTI',
-                
-                // Metaverse and Web3 tokens
-                'ILV', 'ALICE', 'TLM', 'PYR', 'GHST', 'REVV', 'TOWER',
-                
-                // Additional DeFi protocols
-                'CVX', 'FXS', 'SPELL', 'MIM', 'BTRFLY', 'TOKE', 'ALCX', 'BADGER',
-                
-                // Solana ecosystem tokens
-                'RAY', 'SRM', 'FIDA', 'ROPE', 'COPE', 'STEP', 'MEDIA', 'LIKE',
-                
-                // Polygon ecosystem tokens
-                'QUICK', 'GHST', 'DQUICK', 'WMATIC',
-                
-                // BSC ecosystem tokens
-                'CAKE', 'AUTO', 'BIFI', 'BELT', 'ALPACA', 'XVS', 'VAI',
-                
-                // Avalanche ecosystem tokens
-                'JOE', 'PNG', 'QI', 'XAVA', 'BENQI', 'YAK',
-                
-                // Fantom ecosystem tokens
-                'BOO', 'SPIRIT', 'LQDR', 'SCREAM', 'TAROT',
-                
-                // Arbitrum ecosystem tokens
-                'DPX', 'RDNT', 'GMX', 'MAGIC', 'TREASURE',
-                
-                // Optimism ecosystem tokens
-                'OP', 'VELO', 'SNX',
-                
-                // Additional tokens for comprehensive coverage
-                'ALPHA', 'BETA', 'GAMMA', 'DELTA', 'EPSILON', 'ZETA', 'ETA', 'THETA',
-                'IOTA', 'KAPPA', 'LAMBDA', 'MU', 'NU', 'XI', 'OMICRON', 'PI', 'RHO',
-                'SIGMA', 'TAU', 'UPSILON', 'PHI', 'CHI', 'PSI', 'OMEGA'
+                // Additional tokens
+                'LUNA', 'LGCY', 'JASMY', 'BIFIBSC', 'ONIGI', 'BRGBSC', 'FITFIARC20',
+                'BRISEMAINNET'
             ];
 
             // Remove duplicates and sort alphabetically

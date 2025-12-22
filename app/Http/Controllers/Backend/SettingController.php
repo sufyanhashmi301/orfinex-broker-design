@@ -57,6 +57,7 @@ class SettingController extends Controller
         $this->middleware('permission:transfer-notification' , ['only' => ['transfersNotificationTune']]);
         $this->middleware('permission: kyc-levels-permissions' , ['only' => ['kycPermissionsSettings']]);
         $this->middleware('permission:company-register-settings' , ['only' => ['registerCompany']]);
+        $this->middleware('permission:forex-reporting-settings', ['only' => ['forexDailyReportingSetting']]);
 
     }
 
@@ -105,6 +106,11 @@ class SettingController extends Controller
     public static function forexApiSetting()
     {
         return view('backend.setting.forex-api');
+    }
+
+    public static function forexDailyReportingSetting()
+    {
+        return view('backend.setting.forex-daily-reporting');
     }
 
     public static function platformApiSetting()

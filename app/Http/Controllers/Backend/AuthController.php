@@ -20,6 +20,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
+use App\Services\ActivityLogService;
 
 class AuthController extends Controller
 {
@@ -75,6 +76,10 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
+            ActivityLogService::log('admin_login', "Login Failed", [
+                'Admin Email' => $credentials['email'],
+            ]);
+
             notify()->warning('Invalid email or specific password.');
             return back();
         }
@@ -101,6 +106,12 @@ class AuthController extends Controller
                     // Logout the user since they're restricted
                     $this->guard()->logout();
                     notify()->warning("Your account is restricted for {$hours}h {$minutes}m due to too many 2FA resend attempts. Please wait before trying again.");
+
+                    ActivityLogService::log('admin_login', "Login Failed due to 2FA restriction", [
+                        'Admin Email' => $admin->email,
+                        'Admin Name' => $admin->full_name,
+                    ]);
+
                     return back();
                 }
                 
@@ -152,12 +163,21 @@ class AuthController extends Controller
             // If 2FA not enabled, proceed with normal login
             $request->session()->regenerate();
             AdminLoginActivity::add();
+            ActivityLogService::log('admin_login', "Login Successfully", [
+                'Admin Name' => $admin->full_name,
+                'Admin Email' => $admin->email,
+            ]);
+
             notify()->success('Successfully logged in.');
             
             return $this->redirectBasedOnRole();
         }
 
         notify()->warning('The provided credentials do not match our records.');
+        ActivityLogService::log('admin_login', "Login Failed due to invalid credentials", [
+            'Admin Email' => $credentials['email'],
+        ]);
+        
         return back();
     }
 
@@ -406,8 +426,22 @@ class AuthController extends Controller
             Admin2FACode::clearRestrictions($adminId);
         }
         
+        // Check if there's an active user session (admin viewing user account)
+        $hasUserSession = Auth::guard('web')->check();
+        ActivityLogService::log('admin_logout', "Logout Successfully");
+        
         $this->guard()->logout();
-        $request->session()->invalidate();
+        
+        // Only invalidate session if there's NO active user session
+        // (to preserve user session if admin was viewing user account)
+        if (!$hasUserSession) {
+            $request->session()->invalidate();
+        } else {
+            // If there's a user session, only clear admin-specific data
+            session()->forget(['impersonated_id', 'super_admin_id']);
+            session()->regenerateToken();
+        }
+        
         return redirect()->route('admin.login');
     }
 }

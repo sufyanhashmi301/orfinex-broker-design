@@ -10,6 +10,7 @@ use App\Console\Commands\MultiLevelRebateDistribution;
 use App\Console\Commands\ResetData;
 use App\Console\Commands\SyncForexAccountsViaEmail;
 use App\Console\Commands\UpdateExchangeRates;
+use App\Console\Commands\UpdateCryptoRatesFromGateways;
 use App\Console\Commands\CreateIBTransactionsTable4Month;
 use App\Console\Commands\CopyIBTransactions4Month;
 use App\Console\Commands\ScheduleIBTransactions4Month;
@@ -28,6 +29,7 @@ use App\Console\Commands\DebugUserIBTransactions;
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
 use App\Console\Commands\RemoveDuplicateIBTransactions;
 use App\Console\Commands\ExpirePendingDeposits;
+use App\Console\Commands\SendDailyForexStatements;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -51,7 +53,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('ib:remove-duplicates')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('users:delete-stale')->daily();
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
-        $schedule->command('tokens:update-rates')->everyThirtyMinutes();
+        // $schedule->command('tokens:update-rates')->everyThirtyMinutes();
+        $schedule->command('crypto:update-gateway-rates')->everyThirtyMinutes()->withoutOverlapping();
 //        $schedule->command('sync:forex-accounts-via-email')->everyFiveMinutes();
         
         // SMTP health monitoring
@@ -61,7 +64,18 @@ class Kernel extends ConsoleKernel
         $schedule->command('ib:schedule-4month-tasks')->daily()->at('02:00')->withoutOverlapping();
 
         // Expire pending deposits older than 1 hour
-        $schedule->command('deposits:expire-pending')->hourly()->withoutOverlapping();
+        // $schedule->command('deposits:expire-pending')->everyThreeHours()->withoutOverlapping();
+
+        // Daily Forex Account Statements (only schedule if enabled)
+        if (setting('daily_statement_enabled', 'forex_daily_reporting', 0)) {
+            $statementTime = setting('daily_statement_time', 'forex_daily_reporting', '23:00');
+            $statementTimezone = setting('daily_statement_timezone', 'forex_daily_reporting', 'UTC');
+            $schedule->command('forex:send-daily-statements')
+                ->dailyAt($statementTime)
+                ->timezone($statementTimezone)
+                ->withoutOverlapping()
+                ->runInBackground();
+        }
 
     }
 
@@ -86,6 +100,7 @@ class Kernel extends ConsoleKernel
         MultiIbBonus::class,
         Commands\UpdateExchangeRates::class,
         Commands\UpdateTokenRates::class,
+        Commands\UpdateCryptoRatesFromGateways::class,
         SyncForexAccountsViaEmail::class,
         MultiLevelRebateDistribution::class,
         CreateIBTransactionsTable4Month::class,
@@ -105,6 +120,7 @@ class Kernel extends ConsoleKernel
         DebugUserIBTransactions::class,
         RemoveDuplicateIBTransactions::class,
         ExpirePendingDeposits::class,
+        SendDailyForexStatements::class,
 
     ];
 }

@@ -26,7 +26,7 @@ class StatusController extends Controller
     public function success(Request $request)
     {
         $data = $request->all();
-// dd($data);
+        // dd($data);
         Log::info('JenaPay success redirect received', $data);
         // dd($request->all());
 

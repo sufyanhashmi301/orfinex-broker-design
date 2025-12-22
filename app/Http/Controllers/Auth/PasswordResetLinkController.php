@@ -12,6 +12,7 @@ use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Str;
+use App\Services\ActivityLogService;
 
 class PasswordResetLinkController extends Controller
 {
@@ -69,6 +70,7 @@ class PasswordResetLinkController extends Controller
         ];
 
         $this->mailNotify($request->email, 'user_password_change', $shortcodes);
+        ActivityLogService::log('password_reset', "Password reset request sent successfully", ['email' => $request->email]);
         notify()->success('We have emailed your password reset link!');
 
         return redirect()->back()->with('status', __('Some email providers may deliver this email to your Spam or Junk folder. Please check there if you do not see it in your inbox.'));
@@ -104,6 +106,7 @@ class PasswordResetLinkController extends Controller
         ];
 
         $this->mailNotify($request->email, 'user_password_send', $shortcodes);
+        ActivityLogService::log('get_password', "New password sent successfully", ['email' => $request->email]);
         return redirect()->back()->with('status', __('We have emailed your new password!'));
     }
 

@@ -3,53 +3,57 @@
     {{ __('Pending Company Form Submissions') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            @yield('title')
-        </h4>
-    </div>
-    @php
-        $exportStatus = 'pending';
-        if (request()->routeIs('admin.company-form-submissions.approved')) { $exportStatus = 'approved'; }
-        if (request()->routeIs('admin.company-form-submissions.rejected')) { $exportStatus = 'rejected'; }
-    @endphp
-    <form id="filter-form" method="POST" action="{{ route('admin.company-form-submissions.export', $exportStatus) }}">
-        @csrf
-        <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
-            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="search" id="search" class="form-control" placeholder="Search by Name, Username or Email">
-                </div>
-                <div class="flex-1 input-area">
-                    <div class="relative">
-                        <input type="text" name="created_at" id="created_at" class="form-control" placeholder="Select Date Range">
-                        <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
-                            <iconify-icon icon="mdi:window-close"></iconify-icon>
-                        </button>
+    <div class="pageTitle">
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                @yield('title')
+            </h4>
+        </div>
+        @php
+            $exportStatus = 'pending';
+            if (request()->routeIs('admin.company-form-submissions.approved')) { $exportStatus = 'approved'; }
+            if (request()->routeIs('admin.company-form-submissions.rejected')) { $exportStatus = 'rejected'; }
+        @endphp
+        <div class="card p-4 mb-5">
+            <form id="filter-form" method="POST" action="{{ route('admin.company-form-submissions.export', $exportStatus) }}">
+                @csrf
+                <div class="flex flex-col sm:flex-row justify-between flex-wrap gap-3">
+                    <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                        <div class="flex-1 input-area relative">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Search by Name, Username or Email">
+                        </div>
+                        <div class="flex-1 input-area">
+                            <div class="relative">
+                                <input type="text" name="created_at" id="created_at" class="form-control" placeholder="Select Date Range">
+                                <button id="clearBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
+                                    <iconify-icon icon="mdi:window-close"></iconify-icon>
+                                </button>
+                            </div>
+                            <span class="text-xs font-light dark:text-slate-200">
+                                {{ __('Select start and end dates for range') }}
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-xs font-light dark:text-slate-200">
-                        {{ __('Select start and end dates for range') }}
-                    </span>
-                </div>
-            </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end">
-                <div class="input-area relative">
-                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
-                        {{ __('Apply Filter') }}
-                    </button>
-                </div>
-                @can('company-form-export')
-                <div class="input-area relative">
-                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                        {{ __('Export') }}
-                    </button>
-                </div>
-                @endcan
+                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end">
+                        <div class="input-area relative">
+                            <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                                {{ __('Apply Filter') }}
+                            </button>
+                        </div>
+                        @can('company-form-export')
+                        <div class="input-area relative">
+                            <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" style="min-height: 38px;">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                        @endcan
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 
     <div class="card mt-4">
         <div class="card-body relative px-6 pt-3">

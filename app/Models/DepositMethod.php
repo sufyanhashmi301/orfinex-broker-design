@@ -14,6 +14,7 @@ class DepositMethod extends Model
         'country' => 'array',
         'is_custom_bank_details' => 'boolean',
         'is_global' => 'boolean',
+        'is_rate_override_enabled' => 'boolean',
     ];
     protected $appends = [
         'gateway_logo',

@@ -21,6 +21,7 @@ use App\Services\ForexApiService;
 use App\Services\OtpService;
 use App\Services\UserAccountCreationService;
 use App\Services\WalletService;
+use App\Services\ActivityLogService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -472,20 +473,23 @@ class WithdrawController extends Controller
                 '[[site_url]]' => route('home'),
             ];
 
-            // Resolve admin email (site email or first active admin)
-            $adminEmail = setting('site_email', 'global');
-            if (empty($adminEmail)) {
-                $adminEmail = User::where('status', 1)
+            // Resolve admin emails (site email or first active admin)
+            $adminEmails = parseEmails(setting('site_email', 'global'));
+            if (empty($adminEmails)) {
+                $fallbackEmail = User::where('status', 1)
                     ->whereHas('roles', function($q) { $q->whereIn('name', ['Super-Admin', 'Admin']); })
                     ->value('email');
+                if (!empty($fallbackEmail)) {
+                    $adminEmails = [$fallbackEmail];
+                }
             }
 
             // If account requires manual approval, notify admin and user
             if ($status === WithdrawAccount::STATUS_PENDING) {
                 // Email to user
                 try { $this->mailNotify($user->email, 'withdraw_account_request_user', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
-                // Email to admin
-                if (!empty($adminEmail)) {
+                // Email to admin(s)
+                foreach ($adminEmails as $adminEmail) {
                     try { $this->mailNotify($adminEmail, 'withdraw_account_request', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
                 try {
@@ -507,10 +511,10 @@ class WithdrawController extends Controller
                     try { $this->mailNotify($user->email, 'withdraw_account_approval', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                 }
 
-                // Email to admin on direct approval (if admin template exists)
-                if (!empty($adminEmail)) {
-                    $adminApprovalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval_admin')->first();
-                    if ($adminApprovalTemplate) {
+                // Email to admin(s) on direct approval (if admin template exists)
+                $adminApprovalTemplate = \App\Models\EmailTemplate::where('status', true)->where('code', 'withdraw_account_approval_admin')->first();
+                if ($adminApprovalTemplate) {
+                    foreach ($adminEmails as $adminEmail) {
                         try { $this->mailNotify($adminEmail, 'withdraw_account_approval_admin', $shortcodes); } catch (\Exception $e) { /* silently ignore */ }
                     }
                 }
@@ -524,8 +528,14 @@ class WithdrawController extends Controller
 
         // Show appropriate success message based on status
         if ($status === WithdrawAccount::STATUS_APPROVED) {
+            ActivityLogService::log('withdraw_account_created', "Withdraw account created", [
+                'Withdraw Account' => $input['method_name'],
+            ]);
             notify()->success(__('Successfully Withdraw Account Created'), 'success');
         } else {
+            ActivityLogService::log('withdraw_account_created', "Withdraw account created", [
+                'Withdraw Account' => $input['method_name'],
+            ]);
             notify()->success(__('Withdraw Account Created Successfully. It will be reviewed by admin for approval.'), 'success');
         }
 
@@ -545,6 +555,9 @@ class WithdrawController extends Controller
             ->first();
 
         if (!$withdrawAccount) {
+            ActivityLogService::log('withdraw_account_deleted', "Withdraw account delete failed due to not found", [
+                'Account Name' => $withdrawAccount->method_name,
+            ]);
             notify()->error(__('Withdraw account not found.'), __('Error'));
             return redirect()->back();
         }
@@ -557,12 +570,18 @@ class WithdrawController extends Controller
             ->count();
 
         if ($pendingWithdrawals > 0) {
+            ActivityLogService::log('withdraw_account_deleted', "Withdraw account delete failed due to has pending withdrawals", [
+                'Account Name' => $withdrawAccount->method_name,
+            ]);
             notify()->error(__('Cannot delete account with pending withdrawals.'), __('Error'));
             return redirect()->back();
         }
 
         $withdrawAccount->delete();
 
+        ActivityLogService::log('withdraw_account_deleted', "Withdraw account deleted successfully", [
+            'Account Name' => $withdrawAccount->method_name,
+        ]);
         notify()->success(__('Withdraw account deleted successfully.'), __('Success'));
         return redirect()->route('user.withdraw.account.index');
     }
@@ -796,7 +815,6 @@ class WithdrawController extends Controller
      */
     public function withdrawNow(Request $request)
     {
-//
 
         $validationResult = $this->validateWithdrawal($request);
         if (!$validationResult) {
@@ -888,12 +906,12 @@ class WithdrawController extends Controller
             return redirect()->back()->withInput();
         }
     }
-        public
-        function resendOtp(Request $request)
-        {
-            $user = Auth::user();
-            $transactionType = TxnType::Withdraw->value;
-            $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
+
+    public function resendOtp(Request $request)
+    {
+        $user = Auth::user();
+        $transactionType = TxnType::Withdraw->value;
+        $otpValidityMinutes = setting('withdraw_otp_expires', 'withdraw_settings');
 
         $this->otpService->sendOtp($user, $transactionType, $otpValidityMinutes); // Call the method to resend OTP
 
@@ -903,12 +921,11 @@ class WithdrawController extends Controller
         ]);
     }
 
-        public
-        function verifyOtp(Request $request)
-        {
-            $user = Auth::user();
-            $otpInput = $request->input('otp');
-            $transactionType = TxnType::Withdraw->value;
+    public function verifyOtp(Request $request)
+    {
+        $user = Auth::user();
+        $otpInput = $request->input('otp');
+        $transactionType = TxnType::Withdraw->value;
 
         // Validate the OTP
         $otpValidationResult = $this->otpService->validateOtp($user, $transactionType, $otpInput);
@@ -929,117 +946,126 @@ class WithdrawController extends Controller
         ], 200);
     }
 
-        public
-        function verifyGaForWithdraw(Request $request)
-        {
-            $request->validate([
-                'one_time_password' => 'required|digits:6',
-            ]);
+    public function verifyGaForWithdraw(Request $request)
+    {
+        $request->validate([
+            'one_time_password' => 'required|digits:6',
+        ]);
 
-            $user = Auth::user();
-            if (!$user || !$user->two_fa || empty($user->google2fa_secret)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => __('Two-factor authentication is not enabled for your account.'),
-                ], 400);
-            }
-
-            $google2fa = app('pragmarx.google2fa');
-            $isValid = false;
-            try {
-                $isValid = (bool) $google2fa->verifyKey($user->google2fa_secret, $request->input('one_time_password'));
-            } catch (\Throwable $e) {
-                $isValid = false;
-            }
-
-            if (!$isValid) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => __('Invalid authenticator code.'),
-                ], 400);
-            }
-
-            session([
-                'ga_verified_withdraw' => [
-                    'verified' => true,
-                    'expires_at' => Carbon::now()->addMinutes(2)->toDateTimeString(),
-                ],
-            ]);
-
+        $user = Auth::user();
+        if (!$user || !$user->two_fa || empty($user->google2fa_secret)) {
             return response()->json([
-                'status' => 'success',
-                'message' => __('Authenticator verified. Proceeding with withdrawal.'),
-            ]);
+                'status' => 'error',
+                'message' => __('Two-factor authentication is not enabled for your account.'),
+            ], 400);
         }
 
-        public
-        function validateWithdrawal(Request $request)
-        {
-            $user = Auth::user();
-            $input = $request->all();
+        $google2fa = app('pragmarx.google2fa');
+        $isValid = false;
+        try {
+            $isValid = (bool) $google2fa->verifyKey($user->google2fa_secret, $request->input('one_time_password'));
+        } catch (\Throwable $e) {
+            $isValid = false;
+        }
 
-            if (!setting('user_withdraw', 'permission') || !$user->withdraw_status) {
-                abort('403', __('Withdraw Disabled Now'));
-            }
+        if (!$isValid) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('Invalid authenticator code.'),
+            ], 400);
+        }
 
-            if (!setting('withdraw_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
-                notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
-                return false;
-            }
-            // Check if today is a withdraw off day
-            $withdrawOffDays = WithdrawalSchedule::where('status', 0)->pluck('name')->toArray();
-            $date = Carbon::now();
-            $today = $date->format('l');
+        session([
+            'ga_verified_withdraw' => [
+                'verified' => true,
+                'expires_at' => Carbon::now()->addMinutes(2)->toDateTimeString(),
+            ],
+        ]);
 
-            if (in_array($today, $withdrawOffDays)) {
-                abort('403', __('Today is the off day for withdraw'));
-            }
+        return response()->json([
+            'status' => 'success',
+            'message' => __('Authenticator verified. Proceeding with withdrawal.'),
+        ]);
+    }
 
-            // Check daily send limit for successful transactions only
-            $pendingLimit = setting('pending_withdraw_limit', 'withdraw_settings');
-            $pendingWithdraws = Transaction::where('user_id', $user->id)
-                ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
-                ->where('status', TxnStatus::Pending)
-                ->count();
+    public function validateWithdrawal(Request $request)
+    {
+        $user = Auth::user();
+        $input = $request->all();
 
-            if ($pendingWithdraws >= $pendingLimit) {
-                notify()->error(
-                    __("You already have a pending withdrawal request. Please contact our support team at :email for assistance.", [
-                        'email' => setting('support_email', 'global')
-                    ]),
-                    __('Error')
-                );
-                return false;
-            }
-            // Check daily send limit for successful transactions only
-            $dailyLimit = setting('withdraw_day_limit', 'fee');
-            $todayTransfers = Transaction::where('user_id', $user->id)
-                ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
-                ->whereDate('created_at', today())
-                ->count();
+        $activityMeta = [
+            'amount' => $input['amount'].' '.setting('site_currency', 'global'),
+            'Account to withdraw' => getAccountDetails($input['target_id'], null, auth()->id())->wallet_name ?? getAccountDetails($input['target_id'], null, auth()->id())->account_name,
+            'Withdraw method' => getWithdrawAccountDetails($input['withdraw_account'], auth()->id())->method_name,
+        ];
 
-            if ($todayTransfers >= $dailyLimit) {
-                notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
-                return false;
-            }
-            // Add conditional validation based on the account type
-            $validator = Validator::make($input, [
-                'target_id' => ['required'],
-                'account_type' => ['required'],
-                'withdraw_account' => ['required'],
-                'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
-            ], [
-                'target_id.required' => __('Kindly select the account to withdraw'),
-            ]);
+        if (!setting('user_withdraw', 'permission') || !$user->withdraw_status) {
+            ActivityLogService::log('Withdraw', "Withdraw disabled", $activityMeta);
+            throw new \App\Exceptions\WithdrawDisabledException(__('Withdraw Disabled Now'));
+        }
 
-            if ($validator->fails()) {
-                // Send back validation errors with old input
-                notify()->error($validator->errors()->first(), 'Error');
-                return false;
-            }
-            // Decrypt the hashed target_id
-            $targetId = get_hash($input['target_id']);
-            $targetType = TxnTargetType::Wallet->value;  // Default to wallet
+        if (!setting('withdraw_amount', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            ActivityLogService::log('Withdraw', "KYC pending", $activityMeta);
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+            return false;
+        }
+        // Check if today is a withdraw off day
+        $withdrawOffDays = WithdrawalSchedule::where('status', 0)->pluck('name')->toArray();
+        $date = Carbon::now();
+        $today = $date->format('l');
+
+        if (in_array($today, $withdrawOffDays)) {
+            ActivityLogService::log('Withdraw', "Today is the off day for withdraw", $activityMeta);
+            throw new \App\Exceptions\WithdrawOffDayException(__('Today is the off day for withdraw'));
+        }
+
+        // Check daily send limit for successful transactions only
+        $pendingLimit = setting('pending_withdraw_limit', 'withdraw_settings');
+        $pendingWithdraws = Transaction::where('user_id', $user->id)
+            ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
+            ->where('status', TxnStatus::Pending)
+            ->count();
+
+        if ($pendingWithdraws >= $pendingLimit) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but pending withdraw limit is reached", $activityMeta);
+            notify()->error(
+                __("You already have a pending withdrawal request. Please contact our support team at :email for assistance.", [
+                    'email' => setting('support_email', 'global')
+                ]),
+                __('Error')
+            );
+            return false;
+        }
+        // Check daily send limit for successful transactions only
+        $dailyLimit = setting('withdraw_day_limit', 'fee');
+        $todayTransfers = Transaction::where('user_id', $user->id)
+            ->whereIn('type', [TxnType::WithdrawAuto, TxnType::Withdraw])
+            ->whereDate('created_at', today())
+            ->count();
+
+        if ($todayTransfers >= $dailyLimit) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but daily withdraw limit is reached", $activityMeta);
+            notify()->error(__('You have reached the daily withdraw limit.'), __('Error'));
+            return false;
+        }
+        // Add conditional validation based on the account type
+        $validator = Validator::make($input, [
+            'target_id' => ['required'],
+            'account_type' => ['required'],
+            'withdraw_account' => ['required'],
+            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+        ], [
+            'target_id.required' => __('Kindly select the account to withdraw'),
+        ]);
+
+        if ($validator->fails()) {
+            // Send back validation errors with old input
+            notify()->error($validator->errors()->first(), 'Error');
+            return false;
+        }
+        // Decrypt the hashed target_id
+        $targetId = get_hash($input['target_id']);
+        $targetType = TxnTargetType::Wallet->value;  // Default to wallet
 
         // Determine whether the target is a Forex account or wallet
         $accountType = $input['account_type'] ?? 'wallet';
@@ -1054,6 +1080,7 @@ class WithdrawController extends Controller
             ->first();
             
         if (!$withdrawAccount) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but invalid or unapproved withdraw account", $activityMeta);
             notify()->error(__('Invalid or unapproved withdraw account.'), 'Error');
             return false;
         }
@@ -1062,6 +1089,7 @@ class WithdrawController extends Controller
 
         // Check if the amount is within the allowed withdraw range
         if ($amount < $withdrawMethod->min_withdraw || $amount > $withdrawMethod->max_withdraw) {
+            ActivityLogService::log('Withdraw', "Attempted to withdraw but amount is out of range", $activityMeta);
             $currencySymbol = setting('currency_symbol', 'global');
             $message = __('Please withdraw the amount within the range') . ' ' . $currencySymbol . $withdrawMethod->min_withdraw . ' ' . __('to') . ' ' . $currencySymbol . $withdrawMethod->max_withdraw;
             notify()->error($message, 'Error');
@@ -1084,6 +1112,7 @@ class WithdrawController extends Controller
                 ->first();
 
             if (!$forexAccount) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but Forex account does not belong to you", $activityMeta);
                 notify()->error(__('The selected Forex account does not belong to you.'), 'Error');
                 return false;
             }
@@ -1093,6 +1122,7 @@ class WithdrawController extends Controller
             
 
             if (BigDecimal::of($scaledAmount)->compareTo(BigDecimal::of($balance)) > 0) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but insufficient balance in Forex account", $activityMeta);
                 notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
                 return false;
             }
@@ -1105,12 +1135,14 @@ class WithdrawController extends Controller
             // Validate wallet ownership
             $wallet = get_user_account_by_wallet_id($targetId, $user->id);
             if (!$wallet) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but wallet does not belong to you", $activityMeta);
                 notify()->error(__('The selected wallet does not belong to you.'), 'Error');
                 return false;
             }
 
             $balance = BigDecimal::of($wallet->amount);
             if ($totalAmount->compareTo($balance) > 0) {
+                ActivityLogService::log('Withdraw', "Attempted to withdraw but insufficient balance in wallet", $activityMeta);
                 notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
                 return false;
             }
@@ -1118,6 +1150,7 @@ class WithdrawController extends Controller
             if ($wallet->balance === AccountBalanceType::IB_WALLET) {
                 $ibMinLimit = setting('min_ib_wallet_withdraw_limit', 'withdraw_settings');
                 if ($amount < $ibMinLimit) {
+                    ActivityLogService::log('Withdraw', "Attempted to withdraw but amount is less than IB wallet minimum limit", $activityMeta);
                     notify()->error(__('You must withdraw at least :limit from IB Wallet.', [
                         'limit' => setting('currency_symbol', 'global') . $ibMinLimit
                     ]), 'Error');
@@ -1145,218 +1178,237 @@ class WithdrawController extends Controller
         ];
     }
 
-        public
-        function processWithdrawal(array $data)
-        {
-            $user = $data['user'];
-            $isForexAccount = $data['isForexAccount'];
-            $targetId = $data['targetId'];
-            $wallet = $data['wallet'];
-            $amount = $data['amount'];
-            $charge = $data['charge'];
-            $type = $data['type'];
-            $payAmount = $data['payAmount'];
-            $totalAmount = $data['totalAmount'];
-            $withdrawMethod = $data['withdrawMethod'];
-            $withdrawAccount = $data['withdrawAccount'];
-            $targetType = $data['targetType'];
+    public function processWithdrawal(array $data)
+    {
+        $user = $data['user'];
+        $isForexAccount = $data['isForexAccount'];
+        $targetId = $data['targetId'];
+        $wallet = $data['wallet'];
+        $amount = $data['amount'];
+        $charge = $data['charge'];
+        $type = $data['type'];
+        $payAmount = $data['payAmount'];
+        $totalAmount = $data['totalAmount'];
+        $withdrawMethod = $data['withdrawMethod'];
+        $withdrawAccount = $data['withdrawAccount'];
+        $targetType = $data['targetType'];
 
-            $txnInfo = Txn::new(
-                $amount, $charge, $totalAmount, $withdrawMethod->name,
-                'Withdraw With ' . $withdrawAccount->method_name, $type,
-                TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null,
-                'User', json_decode($withdrawAccount->credentials, true), 'none',
-                $targetId, $targetType
-            );
+        $txnInfo = Txn::new(
+            $amount, $charge, $totalAmount, $withdrawMethod->name,
+            'Withdraw With ' . $withdrawAccount->method_name, $type,
+            TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null,
+            'User', json_decode($withdrawAccount->credentials, true), 'none',
+            $targetId, $targetType
+        );
 
-            $isDeducted = false;
+        $isDeducted = false;
 
-            // Apply deduction logic for both Forex and wallet accounts
-            if (setting('withdraw_deduction', 'features')) {
-                if ($isForexAccount) {
-                    // Deduction logic for Forex
-                    $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
-                    $data = [
-                        'login' => $targetId,
-                        'Amount' => apply_cent_account_adjustment($targetId, $totalAmount),
-                        'type' => 2,  // Withdraw
-                        'TransactionComments' => $comment
-                    ];
+        // Apply deduction logic for both Forex and wallet accounts
+        if (setting('withdraw_deduction', 'features')) {
+            if ($isForexAccount) {
+                // Deduction logic for Forex
+                $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
+                $data = [
+                    'login' => $targetId,
+                    'Amount' => apply_cent_account_adjustment($targetId, $totalAmount),
+                    'type' => 2,  // Withdraw
+                    'TransactionComments' => $comment
+                ];
 
-                    // Simulate balance operation via Forex API
-                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                    if ($withdrawResponse['success'] && 
-                    ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
-                ) {
-                        $isDeducted = true; // Deduction applied
-                        $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
-                        if (!$updateResult) {
-                            DB::rollBack();
-                            notify()->error('Failed to update transaction. Please try again.');
-                            return redirect()->back();
-                        }
-                    } else {
-                        // Mark the transaction as failed if deduction fails
-                        Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, __('Insufficient Withdrawable Balance'));
-                        notify()->error(__('Insufficient Balance in Your account'), 'Error');
-                        return redirect()->back()->withInput();
+                // Simulate balance operation via Forex API
+                $withdrawResponse = $this->forexApiService->balanceOperation($data);
+                if ($withdrawResponse['success'] && 
+                ($withdrawResponse['result']['responseCode'] == 10009 || $withdrawResponse['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+            ) {
+                    $isDeducted = true; // Deduction applied
+                    $updateResult = Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
+                    if (!$updateResult) {
+                        DB::rollBack();
+                        notify()->error('Failed to update transaction. Please try again.');
+                        return redirect()->back();
                     }
                 } else {
-                    // Wallet deduction logic
-                    $walletService = new WalletService();
-                    $ledgerBalance = $walletService->getLedgerBalance($wallet->id);
-
-                    // Create ledger entry for the wallet deduction (Debit)
-                    $ledger = $walletService->createDebitLedgerEntry($txnInfo, $ledgerBalance);
-
-                    // Deduct the amount from the wallet
-                    $wallet->amount = BigDecimal::of($wallet->amount)->minus(BigDecimal::of($txnInfo->amount));
-                    $wallet->save();
-
-                    $isDeducted = true;  // Mark deduction as applied for wallet
-
-                    // Update transaction status
-                    Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
+                    // Mark the transaction as failed if deduction fails
+                    Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, __('Insufficient Withdrawable Balance'));
+                    notify()->error(__('Insufficient Balance in Your account'), 'Error');
+                    return redirect()->back()->withInput();
                 }
             } else {
-                // If deduction feature is disabled, mark the transaction as pending
+                // Wallet deduction logic
+                $walletService = new WalletService();
+                $ledgerBalance = $walletService->getLedgerBalance($wallet->id);
+
+                // Create ledger entry for the wallet deduction (Debit)
+                $ledger = $walletService->createDebitLedgerEntry($txnInfo, $ledgerBalance);
+
+                // Deduct the amount from the wallet
+                $wallet->amount = BigDecimal::of($wallet->amount)->minus(BigDecimal::of($txnInfo->amount));
+                $wallet->save();
+
+                $isDeducted = true;  // Mark deduction as applied for wallet
+
+                // Update transaction status
                 Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
             }
-
-            // Ensure $txnInfo->manual_field_data is decoded as an array
-            $manualFieldData = json_decode($txnInfo->manual_field_data, true);
-
-            // If manual_field_data is null or not an array, initialize it as an empty array
-            if (is_null($manualFieldData) || !is_array($manualFieldData)) {
-                $manualFieldData = [];
-            }
-
-            // Add the 'Deduction Status' field to the array, formatted like the other fields
-            $manualFieldData['Deduction Status'] = [
-                'type' => 'text',
-                'validation' => 'optional',
-                'value' => $isDeducted ? __('Deducted') : __('Not Deducted')
-            ];
-
-            // Re-encode and save the updated manual_field_data
-            $txnInfo->manual_field_data = json_encode($manualFieldData);
-            $txnInfo->save();
-            DB::commit();
-
-            // Handle automatic withdrawals
-            if ($withdrawMethod->type == 'auto') {
-                $gatewayCode = $withdrawMethod->gateway->gateway_code;
-                return self::withdrawAutoGateway($gatewayCode, $txnInfo);
-            }
-
-            // Notify user and admin
-            $symbol = setting('currency_symbol', 'global');
-            $notify = [
-                'card-header' => __('Withdraw Money'),
-                'title' => $symbol . $txnInfo->amount . ' ' . __('Withdraw Request Successful'),
-                'p' => __('The Withdraw Request has been successfully sent'),
-                'strong' => __('Transaction ID: ') . $txnInfo->tnx,
-                'action' => route('user.withdraw.view'),
-                'a' => __('WITHDRAW REQUEST AGAIN'),
-                'view_name' => 'withdraw',
-            ];
-            Session::put('user_notify', $notify);
-
-            $shortcodes = [
-                '[[full_name]]' => $txnInfo->user->full_name,
-                '[[txn]]' => $txnInfo->tnx,
-                '[[method_name]]' => $withdrawMethod->name,
-                '[[withdraw_amount]]' => $txnInfo->amount . setting('site_currency', 'global'),
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-            ];
-
-            // Send notifications
-            $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
-            $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
-            try {
-                $emails = getAttachedStaffAdminEmails($user->id);
-                foreach ($emails as $email) {
-                    $this->mailNotify($email, 'withdraw_request', $shortcodes, true);
-                }
-            } catch (\Throwable $e) {
-                \Log::warning('Failed to notify staff for deposit request', ['user_id' => $user->id, 'error' => $e->getMessage()]);
-            }
-            $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id, 'withdraw');
-            $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
-
-            if (session()->has('withdrawal_data')) {
-                Session::forget('withdrawal_data');
-            }
-
-            return redirect()->route('user.notify');
+        } else {
+            // If deduction feature is disabled, mark the transaction as pending
+            Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, null);
         }
 
-        public
-        function WithdrawApiCall($login, $totalAmount)
-        {
-            $withdrawUrl = config('forextrading.withdrawUrl');
-            $auth = config('forextrading.auth');
+        // Ensure $txnInfo->manual_field_data is decoded as an array
+        $manualFieldData = json_decode($txnInfo->manual_field_data, true);
 
-            $dataArray = [
-                'Login' => $login,
-                'Withdraw' => $totalAmount,
-                'Comment' => "Withdraw/USD",
-
-            ];
-//        dd($userAccount,$dataArray);
-            $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
-//        dd($userAccount,$withdrawResponse);
-            if ($withdrawResponse ? $withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0 : false) {
-                return true;
-            }
-
+        // If manual_field_data is null or not an array, initialize it as an empty array
+        if (is_null($manualFieldData) || !is_array($manualFieldData)) {
+            $manualFieldData = [];
         }
 
-        /**
-         * @return Application|Factory|View
-         */
-        public
-        function withdraw()
-        {
-            $user = auth()->user();
-            $userBranchId = getUserBranchId($user->id, $user);
+        // Add the 'Deduction Status' field to the array, formatted like the other fields
+        $manualFieldData['Deduction Status'] = [
+            'type' => 'text',
+            'validation' => 'optional',
+            'value' => $isDeducted ? __('Deducted') : __('Not Deducted')
+        ];
+
+        // Re-encode and save the updated manual_field_data
+        $txnInfo->manual_field_data = json_encode($manualFieldData);
+        $txnInfo->save();
+        DB::commit();
+
+        // Handle automatic withdrawals
+        if ($withdrawMethod->type == 'auto') {
+            $gatewayCode = $withdrawMethod->gateway->gateway_code;
+            return self::withdrawAutoGateway($gatewayCode, $txnInfo);
+        }
+
+        // Notify user and admin
+        $symbol = setting('currency_symbol', 'global');
+        $notify = [
+            'card-header' => __('Withdraw Money'),
+            'title' => $symbol . $txnInfo->amount . ' ' . __('Withdraw Request Successful'),
+            'p' => __('The Withdraw Request has been successfully sent'),
+            'strong' => __('Transaction ID: ') . $txnInfo->tnx,
+            'action' => route('user.withdraw.view'),
+            'a' => __('WITHDRAW REQUEST AGAIN'),
+            'view_name' => 'withdraw',
+        ];
+        Session::put('user_notify', $notify);
+
+        ActivityLogService::log('withdraw', "Withdraw request successful", [
+            'Transaction ID' => $txnInfo->tnx,
+            'Amount' => $txnInfo->amount . setting('site_currency', 'global'),
+            'Method Name' => $withdrawMethod->name,
+        ]);
+
+        $shortcodes = [
+            '[[full_name]]' => $txnInfo->user->full_name,
+            '[[txn]]' => $txnInfo->tnx,
+            '[[method_name]]' => $withdrawMethod->name,
+            '[[withdraw_amount]]' => $txnInfo->amount . setting('site_currency', 'global'),
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        // Send centralized notifications for manual withdrawal creation
+        try {
+            $notificationService = app(\App\Services\NotificationService::class);
             
-            $accountsQuery = WithdrawAccount::where('user_id', $user->id)
-                ->where('status', WithdrawAccount::STATUS_APPROVED)
-                ->whereHas('method', function($query) {
-                    $query->where('status', true);
-                });
-                
-            $accounts = $accountsQuery->get();
-            $forexAccounts = ForexAccount::with('schema')->traderType()
-                ->where('user_id', auth()->id())
-                ->where('account_type', 'real')
-                ->where('status', ForexAccountStatus::Ongoing)
-                ->orderBy('id', 'desc')
-                ->get();
-
-            return view('frontend::withdraw.now', compact('accounts', 'forexAccounts'));
+            // Refresh transaction to get latest status
+            $txnInfo->refresh();
+            
+            // Send user notification (email + push)
+            $notificationService->transactionStatus($txnInfo, 'pending');
+            
+            // Send admin/staff notifications (email + push)
+            $notificationService->adminTransactionAlert($txnInfo);
+        } catch (\Throwable $e) {
+            \Log::error('Manual withdrawal creation notification failed', [
+                'transaction_tnx' => $txnInfo->tnx,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+        
+        // Send SMS notification (if enabled)
+        try {
+            $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
+        } catch (\Throwable $e) {
+            \Log::warning('SMS notification failed for withdrawal', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        public
-        function withdrawLog()
-        {
-            $withdraws = Transaction::search(request('query'), function ($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
-                    ->where('type', TxnType::Withdraw)
-                    ->when(request('date'), function ($query) {
-                        $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
-                    });
-            })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-            return view('frontend::withdraw.log', compact('withdraws'));
+        if (session()->has('withdrawal_data')) {
+            Session::forget('withdrawal_data');
         }
 
-        public
-        function export(Request $request)
-        {
-            return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
-        }
+        return redirect()->route('user.notify');
     }
+
+    public function WithdrawApiCall($login, $totalAmount)
+    {
+        $withdrawUrl = config('forextrading.withdrawUrl');
+        $auth = config('forextrading.auth');
+
+        $dataArray = [
+            'Login' => $login,
+            'Withdraw' => $totalAmount,
+            'Comment' => "Withdraw/USD",
+
+        ];
+//        dd($userAccount,$dataArray);
+        $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
+//        dd($userAccount,$withdrawResponse);
+        if ($withdrawResponse ? $withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0 : false) {
+            return true;
+        }
+
+    }
+
+    /**
+     * @return Application|Factory|View
+     */
+    public function withdraw()
+    {
+        $user = auth()->user();
+        $userBranchId = getUserBranchId($user->id, $user);
+        
+        $accountsQuery = WithdrawAccount::where('user_id', $user->id)
+            ->where('status', WithdrawAccount::STATUS_APPROVED)
+            ->whereHas('method', function($query) {
+                $query->where('status', true);
+            });
+            
+        $accounts = $accountsQuery->get();
+        $forexAccounts = ForexAccount::with('schema')->traderType()
+            ->where('user_id', auth()->id())
+            ->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('frontend::withdraw.now', compact('accounts', 'forexAccounts'));
+    }
+
+    public function withdrawLog()
+    {
+        $withdraws = Transaction::search(request('query'), function ($query) {
+            $query->where('user_id', auth()->user()->id)
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status
+                ->where('type', TxnType::Withdraw)
+                ->when(request('date'), function ($query) {
+                    $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
+                });
+        })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        return view('frontend::withdraw.log', compact('withdraws'));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
+    }
+
+}

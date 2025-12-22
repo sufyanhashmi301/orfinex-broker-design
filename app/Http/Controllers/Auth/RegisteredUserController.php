@@ -16,6 +16,7 @@ use App\Models\ReferralLink;
 use App\Models\CompanyFormSubmission;
 use App\Providers\RouteServiceProvider;
 use App\Rules\Recaptcha;
+use App\Services\ActivityLogService;
 use App\Traits\NotifyTrait;
 use App\Traits\ImageUpload;
 use Carbon\Carbon;
@@ -127,7 +128,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
         LoginActivities::add();
-
+        ActivityLogService::log('Registration', "Registration Successfully", [
+            'User Name' => $input['first_name'] . ' ' . $input['last_name'],
+            'User Email' => $input['email'],
+        ]);
+        
         return redirect(RouteServiceProvider::HOME);
     }
     private function verifyEmail($email) {
@@ -161,7 +166,7 @@ class RegisteredUserController extends Controller
                 'first_name' => $socialUser->getName(),
                 'last_name' => $socialUser->getName(),
                 'username' => $socialUser->getNickname() ?? 'user_' . rand(1000, 9999),
-                'provider' => $provider,
+                'provider_name' => $provider,
                 'provider_id' => $socialUser->getId(),
                 'avatar' => $socialUser->getAvatar(),
                 'country' => $country,
@@ -173,6 +178,15 @@ class RegisteredUserController extends Controller
                 'in_grace_period' => setting('grace_period', 'customer_misc') && !$socialUser->getEmail(),
             ]
         );
+
+        // Update provider info if user already exists (in case they switch providers)
+        if (!$user->wasRecentlyCreated) {
+            $user->update([
+                'provider_name' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar() ?: $user->avatar,
+            ]);
+        }
 
         // If the user is newly created, handle bonuses, notifications, and referral
         if ($user->wasRecentlyCreated) {
@@ -194,7 +208,8 @@ class RegisteredUserController extends Controller
 
         // Log the activity
         LoginActivities::add();
-
+        ActivityLogService::log('Login', "Login Successfully via " . ucfirst($provider));
+        
         return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in via ' . ucfirst($provider));
     }
 

@@ -26,9 +26,9 @@ class StatusController extends Controller
     public function success(Request $request)
     {
         $data = $request->all();
-// dd($data);
+        // dd($data);
         Log::info('JenaPay success redirect received', $data);
-        dd($request->all());
+        // dd($request->all());
 
         // Handle JenaPay redirect with parameters
         // According to: https://docs.jenapay.com/docs/guides/checkout_integration
@@ -93,7 +93,7 @@ class StatusController extends Controller
     {
         // Handle JenaPay cancel redirect with parameters
         if ($request->has('order_id') || $request->has('payment_id')) {
-            try {
+            try { 
                 $orderId = $request->order_id ?? $request->trans_id ?? '';
                 
                 if ($orderId) {

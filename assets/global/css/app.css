@@ -16161,6 +16161,9 @@ table.dataTable thead th.sorting.sorting_desc:after {
   .md\:min-h-\[300px\]{
     min-height: 300px;
   }
+  .md\:w-auto{
+    width: auto;
+  }
   .md\:w-\[calc\(100\%-320px\)\]{
     width: calc(100% - 320px);
   }
@@ -16188,6 +16191,9 @@ table.dataTable thead th.sorting.sorting_desc:after {
   }
   .md\:w-12{
     width: 3rem;
+  }
+  .md\:min-w-\[310px\]{
+    min-width: 310px;
   }
   .md\:max-w-4xl{
     max-width: 56rem;

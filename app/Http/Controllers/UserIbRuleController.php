@@ -9,6 +9,7 @@ use App\Models\UserIbRuleLevel;
 use App\Models\UserIbRuleLevelShare;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Services\ActivityLogService;
 
 class UserIbRuleController extends Controller
 {
@@ -115,6 +116,11 @@ class UserIbRuleController extends Controller
                 );
             }
         }
+
+        ActivityLogService::log('ib_rule_update', "Updated IB level shares", [
+            'User Ib Rule ID' => $userIbRuleId,
+            'Shares' => $shares,
+        ]);
 
         return response()->json(['success' => true, 'message' => 'Shares updated successfully!']);
     }

@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\ActivityLogService;
 
 class ReferralController extends Controller
 {
@@ -113,11 +114,25 @@ class ReferralController extends Controller
 
         $user = auth()->user();
         if (setting('site_referral', 'global') == 'level') {
-            $referrals = Transaction::where('user_id', $user->id)->where('target_type', '!=', null)->where('is_level', '=', 1)->get()->groupBy('level');
+            $referrals = Transaction::where('user_id', $user->id)
+                ->where('target_type', '!=', null)
+                ->where('is_level', '=', 1)
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
+                ->get()
+                ->groupBy('level');
         } else {
-            $referrals = Transaction::where('user_id', $user->id)->where('target_type', '!=', null)->get()->groupBy('target');
+            $referrals = Transaction::where('user_id', $user->id)
+                ->where('target_type', '!=', null)
+                ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
+                ->get()
+                ->groupBy('target');
         }
-        $generalReferrals = Transaction::where('user_id', $user->id)->where('target_type', null)->where('type', TxnType::Referral)->latest()->paginate(8);
+        $generalReferrals = Transaction::where('user_id', $user->id)
+            ->where('target_type', null)
+            ->where('type', TxnType::Referral)
+            ->where('status', '!=', \App\Enums\TxnStatus::None) // Exclude none status transactions
+            ->latest()
+            ->paginate(8);
 
         $getReferral = $user->getReferrals()->first();
         $totalReferralProfit = $user->totalReferralProfit();
@@ -238,6 +253,10 @@ class ReferralController extends Controller
         
         $user = auth()->user();
         $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-ib-transactions.xlsx';
+
+        ActivityLogService::log('data_export', "Exported IB transactions history", [
+            'File Name' => $fileName,
+        ]);
         
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\ibTransactionsUsersExport($user->id, $filters), 

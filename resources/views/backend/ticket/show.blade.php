@@ -19,50 +19,69 @@
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                                     <div class="flex-none">
                                                         <div class="h-10 w-10 rounded-full relative">
-                                                            <img src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}" alt="" class="w-full h-full object-cover rounded-full">
+                                                            <img src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}"
+                                                                alt=""
+                                                                class="w-full h-full object-cover rounded-full">
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 text-start">
-                                                        <span class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate">
+                                                        <span
+                                                            class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate">
                                                             {{ $ticket->user->full_name }}
                                                         </span>
-                                                        <span class="block text-slate-500 dark:text-slate-300 text-xs font-normal">
+                                                        <span
+                                                            class="block text-slate-500 dark:text-slate-300 text-xs font-normal">
                                                             {{ $ticket->user->email }}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href="javascript:;" class="ticketDetail-open-btn lg:hidden items-center justify-center dark:text-white p-1">
-                                                <iconify-icon class="text-lg font-medium" icon="mdi:dots-vertical"></iconify-icon>
+                                            <a href="javascript:;"
+                                                class="ticketDetail-open-btn lg:hidden items-center justify-center dark:text-white p-1">
+                                                <iconify-icon class="text-lg font-medium"
+                                                    icon="mdi:dots-vertical"></iconify-icon>
                                             </a>
                                         </div>
                                     </header>
-                                    <div class="chat-content relative flex-grow bg-white dark:bg-dark overflow-x-hidden overflow-y-auto">
+                                    <div
+                                        class="chat-content relative flex-grow bg-white dark:bg-dark overflow-x-hidden overflow-y-auto">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
                                                 <div class="flex space-x-2 items-end rtl:space-x-reverse">
                                                     <div class="flex-none">
-                                                        @if( null != $ticket->user->avatar)
+                                                        @if (null != $ticket->user->avatar)
                                                             <div class="h-10 w-10 rounded-full">
-                                                                <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}" alt="">
+                                                                <img class="block w-full h-full object-cover rounded-full"
+                                                                    src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}"
+                                                                    alt="">
                                                             </div>
                                                         @else
-                                                            <div class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-sm bg-[#EAE6FF] dark:bg-slate-900 text-[#5743BE]">
-                                                                {{ $ticket->user->first_name[0] }} {{ $ticket->user->last_name[0] }}
+                                                            <div
+                                                                class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-sm bg-[#EAE6FF] dark:bg-slate-900 text-[#5743BE]">
+                                                                {{ $ticket->user->first_name[0] }}
+                                                                {{ $ticket->user->last_name[0] }}
                                                             </div>
                                                         @endif
                                                     </div>
                                                     <div class="flex-1 flex space-x-4 rtl:space-x-reverse">
                                                         <div>
-                                                            <span class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
-                                                                {{ $ticket->user->first_name }} {{ $ticket->user->last_name }}
+                                                            <span
+                                                                class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
+                                                                {{ $ticket->user->first_name }}
+                                                                {{ $ticket->user->last_name }}
                                                             </span>
-                                                            <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                            <div
+                                                                class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
                                                                 {!! $ticket->message !!}
-                                                                @if($ticket->attach)
+                                                                @if ($ticket->attach)
                                                                     <div class="mt-1">
-                                                                        <a href="{{ asset($ticket->attach) }}" class="inline-flex p-2 rounded-[6px] bg-[#EAE5FF] dark:bg-slate-900" target="_blank">
-                                                                            <img src="{{ asset($ticket->attach) }}" class="block h-[70px] w-[70px]" style="object-fit: scale-down;" alt="">
+                                                                        <a href="{{ asset($ticket->attach) }}"
+                                                                            class="inline-flex p-2 rounded-[6px] bg-[#EAE5FF] dark:bg-slate-900"
+                                                                            target="_blank">
+                                                                            <img src="{{ asset($ticket->attach) }}"
+                                                                                class="block h-[70px] w-[70px]"
+                                                                                style="object-fit: scale-down;"
+                                                                                alt="">
                                                                         </a>
                                                                     </div>
                                                                 @endif
@@ -71,31 +90,44 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @foreach($ticket->messages as $message)
+                                            @foreach ($ticket->messages as $message)
                                                 <div class="block md:px-6 px-4">
-                                                    <div class="flex space-x-2 items-end rtl:space-x-reverse @if( $message->model == 'admin') justify-end w-full @endif">
-                                                        @if( $message->model != 'admin')
+                                                    <div
+                                                        class="flex space-x-2 items-end rtl:space-x-reverse @if ($message->model == 'admin') justify-end w-full @endif">
+                                                        @if ($message->model != 'admin')
                                                             <div class="flex-none">
                                                                 <div class="h-10 w-10 rounded-full">
-                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}" alt="">
+                                                                    <img class="block w-full h-full object-cover rounded-full"
+                                                                        src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}"
+                                                                        alt="">
                                                                 </div>
                                                             </div>
                                                         @endif
-                                                        <div class="@if( $message->model == 'admin') no @else flex-1 @endif flex space-x-4 rtl:space-x-reverse">
-                                                            <div class="@if( $message->model == 'admin') text-right @endif">
-                                                                <span class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
-                                                                    @if( $message->model != 'admin')
-                                                                        {{ $ticket->user->first_name }} {{ $ticket->user->last_name }}
+                                                        <div
+                                                            class="@if ($message->model == 'admin') no @else flex-1 @endif flex space-x-4 rtl:space-x-reverse">
+                                                            <div
+                                                                class="@if ($message->model == 'admin') text-right @endif">
+                                                                <span
+                                                                    class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
+                                                                    @if ($message->model != 'admin')
+                                                                        {{ $ticket->user->first_name }}
+                                                                        {{ $ticket->user->last_name }}
                                                                     @else
                                                                         {{ $message->user->name }}
                                                                     @endif
                                                                 </span>
-                                                                <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                                <div
+                                                                    class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
                                                                     {!! $message->message !!}
-                                                                    @if($message->attach)
+                                                                    @if ($message->attach)
                                                                         <div class="flex items-start gap-3 mt-1">
-                                                                            <a href="{{ asset($message->attach) }}" class="inline-flex p-2 rounded-[6px] bg-[#EAE5FF] dark:bg-slate-900" target="_blank">
-                                                                                <img src="{{ asset($message->attach) }}" class="block h-[70px] w-[70px]" style="object-fit: scale-down;" alt="">
+                                                                            <a href="{{ asset($message->attach) }}"
+                                                                                class="inline-flex p-2 rounded-[6px] bg-[#EAE5FF] dark:bg-slate-900"
+                                                                                target="_blank">
+                                                                                <img src="{{ asset($message->attach) }}"
+                                                                                    class="block h-[70px] w-[70px]"
+                                                                                    style="object-fit: scale-down;"
+                                                                                    alt="">
                                                                             </a>
                                                                         </div>
                                                                     @endif
@@ -103,11 +135,13 @@
                                                             </div>
                                                         </div>
 
-                                                        @if( $message->model == 'admin')
-{{--                                                                {{dd($ticket->user)}}--}}
+                                                        @if ($message->model == 'admin')
+                                                            {{--                                                                {{dd($ticket->user)}} --}}
                                                             <div class="flex-none">
                                                                 <div class="h-10 w-10 rounded-full">
-                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($message->user->avatar, 'fallback/user.png') }}" alt="">
+                                                                    <img class="block w-full h-full object-cover rounded-full"
+                                                                        src="{{ getFilteredPath($message->user->avatar, 'fallback/user.png') }}"
+                                                                        alt="">
                                                                 </div>
                                                             </div>
                                                         @endif
@@ -117,31 +151,43 @@
                                         </div>
                                     </div>
                                     <!-- message -->
-                                    <footer class="relative md:px-6 px-4 border-t md:pt-6 py-3 border-slate-100 dark:border-slate-700">
+                                    <footer
+                                        class="relative md:px-6 px-4 border-t md:pt-6 py-3 border-slate-100 dark:border-slate-700">
                                         <div id="image-container" class="hidden bg-white flex items-center gap-3 pb-2">
                                             <div class="relative rounded border border-slate-100 dark:border-slate-700 p-2">
-                                                <img id="image-preview" src="" alt="Image Preview" class="h-16 object-cover rounded-md">
-                                                <button type="button" id="remove-image" class="h-6 w-6 flex flex-col justify-center items-center text-lg rounded-full absolute top-1 right-1 bg-red-500 text-white">
+                                                <img id="image-preview" src="" alt="Image Preview"
+                                                    class="h-16 object-cover rounded-md">
+                                                <button type="button" id="remove-image"
+                                                    class="h-6 w-6 flex flex-col justify-center items-center text-lg rounded-full absolute top-1 right-1 bg-red-500 text-white">
                                                     <iconify-icon icon="mdi:window-close"></iconify-icon>
                                                 </button>
                                             </div>
                                         </div>
-                                        <form action="{{ route('admin.ticket.reply') }}" method="post" enctype="multipart/form-data" class="sm:flex md:space-x-4 sm:space-x-2 rtl:space-x-reverse">
+                                        <form action="{{ route('admin.ticket.reply') }}" method="post"
+                                            enctype="multipart/form-data"
+                                            class="sm:flex md:space-x-4 sm:space-x-2 rtl:space-x-reverse">
                                             @csrf
                                             <input type="hidden" name="uuid" value="{{ $ticket->uuid }}">
-                                            <input type="file" name="attach" id="attach" class="hidden" accept=".gif, .jpg, .png" />
-                                            <div class="flex-none sm:flex hidden md:space-x-3 space-x-1 rtl:space-x-reverse">
-                                                <label class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full" for="attach">
+                                            <input type="file" name="attach" id="attach" class="hidden"
+                                                accept=".gif, .jpg, .png" />
+                                            <div
+                                                class="flex-none sm:flex hidden md:space-x-3 space-x-1 rtl:space-x-reverse">
+                                                <label
+                                                    class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full"
+                                                    for="attach">
                                                     <iconify-icon icon="heroicons-outline:link"> </iconify-icon>
                                                 </label>
                                             </div>
                                             <div class="flex-1 relative flex space-x-3 rtl:space-x-reverse">
                                                 <div class="flex-1">
-                                                    <textarea name="message" placeholder="Type your message..." class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none"></textarea>
+                                                    <textarea name="message" placeholder="Type your message..."
+                                                        class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none"></textarea>
                                                 </div>
                                                 <div class="flex-none md:pr-0 pr-3">
-                                                    <button type="submit" class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">
-                                                        <iconify-icon icon="heroicons-outline:paper-airplane" class="transform rotate-[60deg]"></iconify-icon>
+                                                    <button type="submit"
+                                                        class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">
+                                                        <iconify-icon icon="heroicons-outline:paper-airplane"
+                                                            class="transform rotate-[60deg]"></iconify-icon>
                                                     </button>
                                                 </div>
                                             </div>
@@ -162,7 +208,8 @@
         <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
             <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
             <div class="h-full" id="ticket-details__container">
-                <a href="javascript:;" class="ticketDetail-close-btn btn-primary absolute items-center justify-center p-2">
+                <a href="javascript:;"
+                    class="ticketDetail-close-btn btn-primary absolute items-center justify-center p-2">
                     <iconify-icon class="text-lg font-medium" icon="material-symbols:close-rounded"></iconify-icon>
                 </a>
                 <div class="profile-wrap h-full p-6 pt-10 rounded-lg bg-white dark:bg-dark relative z-[1]">
@@ -173,8 +220,11 @@
                         </p>
                     </div>
                     <div class="profile-box flex flex-col h-full">
-                        <div class="h-[100px] w-[100px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
-                            <img class="w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}" alt="{{$ticket->user->first_name}}">
+                        <div
+                            class="h-[100px] w-[100px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
+                            <img class="w-full h-full object-cover rounded-full"
+                                src="{{ getFilteredPath($ticket->user->avatar, 'fallback/user.png') }}"
+                                alt="{{ $ticket->user->first_name }}">
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
@@ -186,7 +236,7 @@
                             </div>
                         </div>
                         <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
-                            {{--@can('customer-mail-send')
+                            {{-- @can('customer-mail-send')
                                 <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
                                     <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
                                        data-tippy-theme="dark" data-tippy-content="Send Email">
@@ -195,27 +245,30 @@
                                 </span>
                             @endcan --}}
                             @can('customer-login')
-                                <a href="{{ route('admin.user.login',$ticket->user->id) }}" target="_blank"
-                                   class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark" data-tippy-content="Login As User">
+                                <a href="{{ route('admin.user.login', $ticket->user->id) }}" target="_blank"
+                                    class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark"
+                                    data-tippy-content="Login As User (Opens in New Tab)">
                                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                                 </a>
                             @endcan
                             @can('customer-funds')
                                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
-                                    <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
-                                       data-tippy-theme="dark" data-tippy-content="Add Funds">
+                                    <a href="javascript:void(0);" type="button"
+                                        class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark"
+                                        data-tippy-content="Add Funds">
                                         <iconify-icon icon="lucide:wallet"></iconify-icon>
                                     </a>
                                 </span>
                             @endcan
-                            {{--@can('Delete User')--}}
+                            {{-- @can('Delete User') --}}
                             @can('customer-delete')
-                            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
-                                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
-                                   data-tippy-theme="dark" data-tippy-content="Delete User">
-                                    <iconify-icon icon="lucide:user-minus"></iconify-icon>
-                                </a>
-                            </span>
+                                <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                                    <a href="javascript:void(0);" type="button"
+                                        class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark"
+                                        data-tippy-content="Delete User">
+                                        <iconify-icon icon="lucide:user-minus"></iconify-icon>
+                                    </a>
+                                </span>
                             @endcan
                         </div>
                         <div class="flex items-center justify-around border-t border-slate-100 dark:border-slate-700 pt-4">
@@ -225,13 +278,15 @@
                                 <div class="space-y-4">
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the current status of the ticket">
+                                            <span class="shift-Away inline-flex items-center gap-1"
+                                                data-tippy-content="Choose the current status of the ticket">
                                                 {{ __('status') }}
-                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                    class="text-[16px]"></iconify-icon>
                                             </span>
                                         </label>
                                         <select name="status" class="select2 form-control">
-                                            @foreach(\Coderflex\LaravelTicket\Enums\Status::cases() as $status)
+                                            @foreach (\Coderflex\LaravelTicket\Enums\Status::cases() as $status)
                                                 <option value="{{ $status->value }}" @selected(old('status', $ticket->status) == $status->value)>
                                                     {{ $status->name }}
                                                 </option>
@@ -240,13 +295,15 @@
                                     </div>
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the priority of the ticket">
+                                            <span class="shift-Away inline-flex items-center gap-1"
+                                                data-tippy-content="Choose the priority of the ticket">
                                                 {{ __('Priority') }}
-                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                    class="text-[16px]"></iconify-icon>
                                             </span>
                                         </label>
                                         <select name="priority" class="select2 form-control">
-                                            @foreach(\Coderflex\LaravelTicket\Enums\Priority::cases() as $priority)
+                                            @foreach (\Coderflex\LaravelTicket\Enums\Priority::cases() as $priority)
                                                 <option value="{{ $priority->value }}" @selected(old('priority', $ticket->priority) == $priority->value)>
                                                     {{ $priority->name }}
                                                 </option>
@@ -255,50 +312,57 @@
                                     </div>
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the type of the ticket">
+                                            <span class="shift-Away inline-flex items-center gap-1"
+                                                data-tippy-content="Choose the type of the ticket">
                                                 {{ __('Ticket Type') }}
-                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                    class="text-[16px]"></iconify-icon>
                                             </span>
                                         </label>
                                         <select name="label" class="select2 form-control">
-                                            @foreach($labels as $id => $name)
+                                            @foreach ($labels as $id => $name)
                                                 <option value="{{ $id }}">{{ $name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="input-area">
                                         <label for="" class="form-label">
-                                            <span class="shift-Away inline-flex items-center gap-1" data-tippy-content="Choose the agent assigned to the ticket">
+                                            <span class="shift-Away inline-flex items-center gap-1"
+                                                data-tippy-content="Choose the agent assigned to the ticket">
                                                 {{ __('Agent') }}
-                                                <iconify-icon icon="mdi:information-slab-circle-outline" class="text-[16px]"></iconify-icon>
+                                                <iconify-icon icon="mdi:information-slab-circle-outline"
+                                                    class="text-[16px]"></iconify-icon>
                                             </span>
                                         </label>
-                                        <select name="assigned_to" id="assigned_to" class="form-control" data-placeholder="Select Agent">
+                                        <select name="assigned_to" id="assigned_to" class="form-control"
+                                            data-placeholder="Select Agent">
                                             <option value="">{{ __('Select Agent') }}</option>
-                                            @foreach($staff as $staff)
+                                            @foreach ($staff as $staff)
                                                 <option
                                                     data-avatar="{{ getFilteredPath($staff->avatar, 'fallback/staff.png') }}"
                                                     data-role="{{ $staff->getRoleNames()->first() }}"
-                                                    value="{{ $staff->id }}"
-                                                    @selected(old('assigned_to', $ticket->assigned_to) == $staff->id)>
-                                                    {{ $staff->first_name.' '.$staff->last_name }}
+                                                    value="{{ $staff->id }}" @selected(old('assigned_to', $ticket->assigned_to) == $staff->id)>
+                                                    {{ $staff->first_name . ' ' . $staff->last_name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="flex gap-3 mt-10">
-                                    @if(!$ticket->is_resolved)
-                                        <button href="button" id="resolveButton" class="btn btn-dark inline-flex items-center justify-center w-full">
+                                    @if (!$ticket->is_resolved)
+                                        <button href="button" id="resolveButton"
+                                            class="btn btn-dark inline-flex items-center justify-center w-full">
                                             {{ __('Resolved') }}
                                         </button>
                                     @endif
-                                    <button type="submit" class="btn btn-outline-dark inline-flex items-center justify-center w-full">
+                                    <button type="submit"
+                                        class="btn btn-outline-dark inline-flex items-center justify-center w-full">
                                         {{ __('Update Ticket') }}
                                     </button>
                                 </div>
                             </form>
-                            <form id="resolveForm" action="{{ route('admin.ticket.resolve', $ticket) }}" method="POST" style="display: none;">
+                            <form id="resolveForm" action="{{ route('admin.ticket.resolve', $ticket) }}" method="POST"
+                                style="display: none;">
                                 @csrf
                                 @method('PATCH')
                             </form>
@@ -312,19 +376,21 @@
 
     <!-- Modal for Send Email -->
     @can('customer-mail-send')
-        @include('backend.user.include.__mail_send',['name' => $ticket->user->first_name.' '.$ticket->user->last_name, 'id' => $ticket->user->id])
+        @include('backend.user.include.__mail_send', [
+            'name' => $ticket->user->first_name . ' ' . $ticket->user->last_name,
+            'id' => $ticket->user->id,
+        ])
     @endcan
 
-    {{-- Modal for assign ticket--}}
+    {{-- Modal for assign ticket --}}
     @include('backend.ticket.modal.__assign_ticket')
 
-    {{--    @can('delete-user')--}}
-    @include('backend.user.include.__delete_user',[ 'id' => $ticket->user->id])
-
+    {{--    @can('delete-user') --}}
+    @include('backend.user.include.__delete_user', ['id' => $ticket->user->id])
 @endsection
 @section('style')
     <style>
-        .msgs > div:last-child {
+        .msgs>div:last-child {
             margin-bottom: 0.75rem !important;
         }
     </style>
@@ -357,11 +423,11 @@
             templateSelection: formatUser,
         });
 
-        $('.ticketDetail-open-btn').click(function(){
+        $('.ticketDetail-open-btn').click(function() {
             $('#ticket-details__container, .mobile-close-overlay').addClass('in');
         });
 
-        $('.ticketDetail-close-btn').click(function(){
+        $('.ticketDetail-close-btn').click(function() {
             $('#ticket-details__container, .mobile-close-overlay').removeClass('in');
         });
 
@@ -394,28 +460,27 @@
             const textarea = document.querySelector('textarea');
 
             textarea.addEventListener('input', () => {
-                textarea.style.height = 'auto';  // Reset height
-                textarea.style.height = textarea.scrollHeight + 'px';  // Set height to scrollHeight
+                textarea.style.height = 'auto'; // Reset height
+                textarea.style.height = textarea.scrollHeight + 'px'; // Set height to scrollHeight
             });
 
         });
 
-        $('body').on('click', '#assignTicket', function (event) {
+        $('body').on('click', '#assignTicket', function(event) {
             "use strict";
             event.preventDefault();
             $('#assign-ticket-body').empty();
             var id = $(this).data('id');
 
-            var url = '{{ route("admin.ticket.showAssignModal", ":id") }}';
+            var url = '{{ route('admin.ticket.showAssignModal', ':id') }}';
             url = url.replace(':id', id);
 
-            $.get(url , function (data) {
+            $.get(url, function(data) {
 
                 $('#assignTicketModal').modal('show');
                 $('#assign-ticket-body').append(data);
             });
 
         });
-
     </script>
 @endsection

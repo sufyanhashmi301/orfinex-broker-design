@@ -60,6 +60,7 @@ use Illuminate\Validation\Rules;
 use App\Models\Ranking;
 use App\Rules\Recaptcha;
 use Illuminate\Support\Facades\Artisan;
+use App\Services\NotificationService;
 class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
@@ -768,7 +769,7 @@ class UserController extends Controller
             ->values();
 
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
-        $branches = Branch::where('status', 1)->get();
+        $branches = Branch::where('status', 1)->get();  
 
         return view('backend.user.edit', compact(
             'users',
@@ -785,7 +786,7 @@ class UserController extends Controller
             'bonuses',
             'ibGroups',
             'referrals',
-            'branches'
+            'branches',
         ));
     }
 
@@ -1580,8 +1581,8 @@ class UserController extends Controller
                     $response = $this->forexApiService->balanceOperation($data);
 
                     if (!($response['success'] && 
-                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
-            )) {
+                        ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                    )) {
                         throw new \Exception(__('Forex deposit operation failed. Response: ') . json_encode($response));
                     }
 
@@ -1602,8 +1603,8 @@ class UserController extends Controller
                     $response = $this->forexApiService->balanceOperation($data);
 
                     if (!($response['success'] && 
-                ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
-            )) {
+                        ($response['result']['responseCode'] == 10009 || $response['result']['responseCode'] === 'MT_RET_REQUEST_DONE')
+                    )) {
                         throw new \Exception(__('Forex withdrawal operation failed. Response: ') . json_encode($response));
                     }
                 }
@@ -1629,6 +1630,31 @@ class UserController extends Controller
                 );
                 $txn->action_by = auth()->user()->id;
                 $txn->save();
+                
+                // Send centralized notifications for balance update
+                try {
+                    $notificationService = app(NotificationService::class);
+                    
+                    // Refresh transaction to get latest data
+                    $txn->refresh();
+                    
+                    // Send user notification (email + push) with balance-specific templates
+                    $userEmailTemplate = $type === 'add' ? 'balance_added_user' : 'balance_subtracted_user';
+                    $notificationService->transactionStatus($txn, 'success', $userEmailTemplate);
+                    
+                    // Send admin/staff notifications (email + push) with balance-specific templates
+                    $adminEmailTemplate = $type === 'add' ? 'balance_added_admin' : 'balance_subtracted_admin';
+                    $notificationService->adminTransactionAlert($txn, true, $adminEmailTemplate);
+                } catch (\Throwable $e) {
+                    Log::error('Balance update notification failed', [
+                        'transaction_id' => $txn->id,
+                        'user_id' => $user->id,
+                        'type' => $type,
+                        'target_type' => $targetType,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
             } elseif ($targetType === 'wallet') {
                 // Wallet account operations
                 $account = Account::where('wallet_id', $targetId)->where('user_id', $user->id)->firstOrFail();
@@ -1659,6 +1685,28 @@ class UserController extends Controller
                     $txn->save();
                     $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
                     $this->walletService->createCreditLedgerEntry($txn, $ledgerBalance);
+                    
+                    // Send centralized notifications for balance add
+                    try {
+                        $notificationService = app(NotificationService::class);
+                        
+                        // Refresh transaction to get latest data
+                        $txn->refresh();
+                        
+                        // Send user notification (email + push) with balance-specific template
+                        $notificationService->transactionStatus($txn, 'success', 'balance_added_user');
+                        
+                        // Send admin/staff notifications (email + push) with balance-specific template
+                        $notificationService->adminTransactionAlert($txn, true, 'balance_added_admin');
+                    } catch (\Throwable $e) {
+                        Log::error('Balance add notification failed', [
+                            'transaction_id' => $txn->id,
+                            'user_id' => $user->id,
+                            'target_type' => 'wallet',
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
 
                 } else {
                     if ($amount->compareTo(BigDecimal::of($account->amount)) > 0) {
@@ -1690,6 +1738,28 @@ class UserController extends Controller
                     $txn->save();
                     $ledgerBalance = $this->walletService->getLedgerBalance($account->id);
                     $this->walletService->createDebitLedgerEntry($txn, $ledgerBalance);
+                    
+                    // Send centralized notifications for balance subtract
+                    try {
+                        $notificationService = app(NotificationService::class);
+                        
+                        // Refresh transaction to get latest data
+                        $txn->refresh();
+                        
+                        // Send user notification (email + push) with balance-specific template
+                        $notificationService->transactionStatus($txn, 'success', 'balance_subtracted_user');
+                        
+                        // Send admin/staff notifications (email + push) with balance-specific template
+                        $notificationService->adminTransactionAlert($txn, true, 'balance_subtracted_admin');
+                    } catch (\Throwable $e) {
+                        Log::error('Balance subtract notification failed', [
+                            'transaction_id' => $txn->id,
+                            'user_id' => $user->id,
+                            'target_type' => 'wallet',
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
                 }
             }
 
@@ -1944,13 +2014,100 @@ class UserController extends Controller
     }
 
     /**
+     * Login as user - supports both same window and new tab/window
+     * 
      * @return RedirectResponse
      */
     public function userLogin($id)
     {
-        Auth::guard('web')->loginUsingId($id);
+        try {
+            // Check if admin is authenticated
+            if (!Auth::guard('admin')->check()) {
+                notify()->error('Admin authentication required.');
+                return redirect()->route('admin.login');
+            }
 
-        return redirect()->route('user.dashboard');
+            // Verify user exists
+            $user = User::find($id);
+            if (!$user) {
+                notify()->error('User not found.');
+                return redirect()->back();
+            }
+
+            // Store admin ID for this impersonation session
+            $adminId = Auth::guard('admin')->id();
+            
+            // Create a unique session key for this impersonation
+            $impersonationKey = 'impersonation_' . $adminId . '_' . $id . '_' . time();
+            
+            // Store impersonation data in cache (accessible across different sessions)
+            cache()->put($impersonationKey, [
+                'admin_id' => $adminId,
+                'user_id' => $id,
+                'started_at' => now(),
+            ], now()->addHours(12)); // 12 hour expiry
+            
+            // Store the impersonation key in session
+            session(['impersonation_key' => $impersonationKey]);
+            session(['impersonating_admin_id' => $adminId]);
+            session(['impersonating_user_id' => $id]);
+
+            // DON'T logout from admin - this allows simultaneous sessions
+            // Just login to the web guard (for this session/tab)
+            Auth::guard('web')->loginUsingId($id);
+
+            notify()->success('Logged in as user successfully');
+            return redirect()->route('user.dashboard');
+            
+        } catch (\Exception $e) {
+            Log::error('User impersonation error: ' . $e->getMessage());
+            notify()->error('An error occurred while logging in as user.');
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Stop impersonating user and return to admin session
+     * 
+     * @return RedirectResponse
+     */
+    public function stopUserImpersonation()
+    {
+        try {
+            // Check if we're actually impersonating
+            if (!session('impersonating_admin_id') || !session('impersonating_user_id')) {
+                notify()->error('No active impersonation session.');
+                return redirect()->route('admin.login');
+            }
+
+            $adminId = session('impersonating_admin_id');
+            $impersonationKey = session('impersonation_key');
+
+            // Clear cache entry if exists
+            if ($impersonationKey) {
+                cache()->forget($impersonationKey);
+            }
+
+            // Logout from user guard
+            Auth::guard('web')->logout();
+
+            // Check if admin is still authenticated (in case of same-window usage)
+            if (!Auth::guard('admin')->check()) {
+                // Login back as admin
+                Auth::guard('admin')->loginUsingId($adminId);
+            }
+
+            // Clear impersonation session data
+            session()->forget(['impersonating_admin_id', 'impersonating_user_id', 'impersonation_key']);
+
+            notify()->success('Returned to admin panel successfully');
+            return redirect()->route('admin.dashboard');
+            
+        } catch (\Exception $e) {
+            Log::error('Stop user impersonation error: ' . $e->getMessage());
+            notify()->error('An error occurred while returning to admin panel.');
+            return redirect()->route('admin.login');
+        }
     }
 
    public function createCustomer()
@@ -2457,7 +2614,7 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
 
         $user = User::findOrFail($userId);
 
-        try {
+        // try {
             Artisan::call('rebate:email-distribution', [
                 'email' => $user->email,
                 'start_date' => $request->input('date'),
@@ -2466,11 +2623,11 @@ if ($kycLevel === KYCStatus::PendingLevel3->value) {
             notify()->success("Rebate distribution triggered successfully for {$user->username}.");
 
             return redirect()->back();
-        } catch (\Exception $e) {
-            notify()->error('Command failed: ' . $e->getMessage());
+        // } catch (\Exception $e) {
+        //     notify()->error('Command failed: ' . $e->getMessage());
 
-            return redirect()->back();
-        }
+        //     return redirect()->back();
+        // }
     }
 
     public function getAllReferrals(User $user)

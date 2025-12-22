@@ -22,6 +22,7 @@ use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Services\x9ApiService;
+use App\Services\ActivityLogService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -49,6 +50,9 @@ class ForexAccountController extends GatewayController
     public function forexAccountCreateNow(Request $request)
     {
         if (!setting('account_creation', 'kyc_permissions') && auth()->user()->kyc < kyc_required_completed_level())  {
+            ActivityLogService::log('forex_account_create', "Account creation restricted due to KYC pending", [
+                'Account Type' => $request->account_type,
+            ]);
             notify()->error('KYC Pending: Please complete your KYC verification to proceed with your account creation', __('Error'));
             return redirect()->route('user.kyc');
         }
@@ -150,18 +154,33 @@ class ForexAccountController extends GatewayController
         $totalForexAccounts = ForexAccount::where(['user_id' => $user->id, 'account_type' => $accountType])->traderType()->count();
         if ($totalForexAccounts >= $totalLimit) {
             $message = __('Sorry, You have achieved your total account creation limit. Please contact support :support to increase your account limit.', ['title' => $schema->title,'support' => setting('support_email', 'common_settings')]);
+            ActivityLogService::log('forex_account_create', "Account creation failed due to total limit reached", [
+                'Account Type' => $accountType,
+                'Total Limit' => $totalLimit,
+                'Total Accounts' => $totalForexAccounts,
+            ]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }
         //specific type account creation limit check
         if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->traderType()->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.', ['title' => $schema->title]);
+            ActivityLogService::log('forex_account_create', "Account creation failed due to specific type limit reached", [
+                'Account Type' => $accountType,
+                'Total Limit' => $totalLimit,
+                'Total Accounts' => $totalForexAccounts,
+            ]);
             notify()->error($message, __('Error'));
             return redirect()->back();
         }
        //minimum balance limit check
         if ($schema->min_amount > $mainWalletBalance ) {
             $message = __('We’re sorry, but a minimum balance of :limit in your main wallet is required to create a new Forex account. Please make the necessary deposit and try again.', ['limit' => $schema->min_amount.' '.base_currency()]);
+            ActivityLogService::log('forex_account_create', "Account creation failed due to minimum balance limit not met", [
+                'Account Type' => $accountType,
+                'Minimum Balance' => $schema->min_amount.' '.base_currency(),
+                'Main Wallet Balance' => $mainWalletBalance,
+            ]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }
@@ -202,6 +221,12 @@ class ForexAccountController extends GatewayController
                 // Validate if login exceeds end_range
                 if ($login > $schema->end_range) {
                     $message = __('Account limit reached! Please ask the admin to increase the range.');
+                    ActivityLogService::log('forex_account_create', "Account creation failed due to account limit reached", [
+                        'Account Type' => $accountType,
+                        'Account Limit' => $schema->account_limit,
+                        'Total Accounts' => $totalForexAccounts,
+                        'Total Limit' => $totalLimit,
+                    ]);
                     notify()->error($message, 'Error');
                     return redirect()->back();
                 }
@@ -224,8 +249,32 @@ class ForexAccountController extends GatewayController
         }
 //        dd($traderType,$group,$server);
 
-        // If manual approval is enabled, do NOT call platform APIs here; create local pending record only
-        $manualApproval = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+        // Check if admin approval is enabled for this account type
+        $adminApprovalEnabled = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+        
+        // If admin approval is enabled, check account limit
+        $limitReached = false;
+        if ($adminApprovalEnabled) {
+            $accountLimit = ($accountType === 'real') ? ($schema->live_account_limit ?? 0) : ($schema->demo_account_limit ?? 0);
+            
+            // Only check limit if limit is set (greater than 0, 0 means unlimited)
+            if ($accountLimit > 0) {
+                $userAccountCount = ForexAccount::where('user_id', $user->id)
+                    ->where('forex_schema_id', $schema->id)
+                    ->where('account_type', $accountType)
+                    ->traderType()
+                    ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending])
+                    ->count();
+                
+                // If user has reached or exceeded the limit, require approval
+                $limitReached = ($userAccountCount >= $accountLimit);
+            }
+            // If limit is 0 (unlimited), limitReached remains false, so account will be auto-approved
+        }
+
+        // If admin approval is enabled AND limit is reached, do NOT call platform APIs here; create local pending record only
+        // If admin approval is enabled but limit NOT reached (or limit is 0/unlimited), proceed with normal flow (auto-approve)
+        $manualApproval = $adminApprovalEnabled && $limitReached;
 
         if ($manualApproval) {
             // Save local pending account and exit
@@ -244,6 +293,14 @@ class ForexAccountController extends GatewayController
                 '[[site_url]]' => route('home'),
             ];
             try { $this->mailNotify($user->email, 'user_forex_account_pending', $pendingShortcodes); } catch (\Exception $e) { /* ignore if template missing */ }
+
+            ActivityLogService::log('forex_account_create', "Account request submitted for approval", [
+                'Account Type' => $accountType,
+                'Login' => $login,
+                'Group' => $group,
+                'Server' => $server,
+                'Schema' => $schema->title,
+            ]);
             notify()->success(__('Your account request has been submitted for approval.'), 'success');
             return redirect()->route('user.forex-account-logs');
         }
@@ -300,6 +357,13 @@ class ForexAccountController extends GatewayController
                 $resResult = $response['result'];
                 $mt5Login = $resResult['login'];
                 if ($this->isAccountAlreadyExists(TraderType::MT5, $mt5Login)) {
+                    ActivityLogService::log('forex_account_create', "Account creation failed due to account already exists", [
+                        'Account Type' => $accountType,
+                        'Login' => $mt5Login,
+                        'Group' => $group,
+                        'Server' => $server,
+                        'Schema' => $schema->title,
+                    ]);
                     notify()->error(__('An account with the same login already exists in our records. Please contact support for assistance.'), __('Error'));
                     return redirect()->back();
                 }
@@ -324,6 +388,13 @@ class ForexAccountController extends GatewayController
                             ]);
                         }
                     }
+                    ActivityLogService::log('forex_account_create', "Account created successfully", [
+                        'Account Type' => $accountType,
+                        'Login' => $mt5Login,
+                        'Group' => $group,
+                        'Server' => $server,
+                        'Schema' => $schema->title,
+                    ]);
                     notify()->success(__('Successfully Created Account'), 'success');
                     return redirect()->route('user.forex-account-logs');
                 }
@@ -360,6 +431,13 @@ class ForexAccountController extends GatewayController
                 $mt5Login = $resResult['account_number'];
 
                 if ($this->isAccountAlreadyExists(TraderType::X9,$mt5Login)) {
+                    ActivityLogService::log('forex_account_create', "Account creation failed due to account already exists", [
+                        'Account Type' => $accountType,
+                        'Login' => $mt5Login,
+                        'Group' => $group,
+                        'Server' => $server,
+                        'Schema' => $schema->title,
+                    ]);
                     notify()->error(__('An account with the same login already exists in our records. Please contact support for assistance.'), __('Error'));
                     return redirect()->back();
                 }
@@ -382,10 +460,23 @@ class ForexAccountController extends GatewayController
                         ]);
                     }
                 }
+                ActivityLogService::log('forex_account_create', "Account created successfully", [
+                    'Account Type' => $accountType,
+                    'Login' => $mt5Login,
+                    'Group' => $group,
+                    'Server' => $server,
+                    'Schema' => $schema->title,
+                ]);
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');
             }
         }
+        ActivityLogService::log('forex_account_create', "Account creation failed due to unknown error", [
+            'Account Type' => $accountType,
+            'Group' => $group,
+            'Server' => $server,
+            'Schema' => $schema->title,
+        ]);
         notify()->error(__('Some error occurred! please try again'), __('Error'));
         return redirect()->route('user.schema.preview', the_hash($schema->id));
 
@@ -413,12 +504,32 @@ class ForexAccountController extends GatewayController
             $accountData['group'] = $data['group'];
             $accountData['leverage'] = $data['leverage'];
             $status = ForexAccountStatus::Ongoing;
-            if ($accountType === 'real' && setting('live_account_creation', 'features')) {
-                $status = ForexAccountStatus::Pending;
+            
+            // Check if admin approval is enabled for this account type
+            $adminApprovalEnabled = ($accountType === 'real' && setting('live_account_creation', 'features')) || ($accountType === 'demo' && setting('demo_account_creation', 'features'));
+            
+            // If admin approval is enabled, check account limit
+            if ($adminApprovalEnabled) {
+                $accountLimit = ($accountType === 'real') ? ($schema->live_account_limit ?? 0) : ($schema->demo_account_limit ?? 0);
+                
+                // Only check limit if limit is set (greater than 0, 0 means unlimited)
+                if ($accountLimit > 0) {
+                    $userAccountCount = ForexAccount::where('user_id', $user->id)
+                        ->where('forex_schema_id', $schema->id)
+                        ->where('account_type', $accountType)
+                        ->traderType()
+                        ->whereIn('status', [ForexAccountStatus::Ongoing, ForexAccountStatus::Pending])
+                        ->count();
+                    
+                    // If user has reached or exceeded the limit, set status to pending
+                    if ($userAccountCount >= $accountLimit) {
+                        $status = ForexAccountStatus::Pending;
+                    }
+                    // If limit not reached, status remains Ongoing (auto-approved)
+                }
+                // If limit is 0 (unlimited), status remains Ongoing (auto-approved)
             }
-            if ($accountType === 'demo' && setting('demo_account_creation', 'features')) {
-                $status = ForexAccountStatus::Pending;
-            }
+            
             $accountData['status'] = $status;
             $accountData['server'] = $server;
             $accountData['created_by'] = $user->id;
@@ -619,22 +730,33 @@ class ForexAccountController extends GatewayController
         if ($request->leverage) {
             $forexAccount = ForexAccount::where('login',$request->login)->first();
             if($forexAccount->leverage == $request->leverage){
+                ActivityLogService::log('forex_account_update', "Leverage update failed due to same leverage", [
+                    'Login' => $request->login,
+                    'Leverage' => $request->leverage,
+                ]);
                 return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
 
             }
             if(!$forexAccount) {
+                ActivityLogService::log('forex_account_update', "Leverage update failed due to account not found", [
+                    'Login' => $request->login,
+                ]);
                 return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
             }
-                $data = [
-                    'last_leverage' => $forexAccount->leverage,
-                    'updated_leverage' => $request->leverage,
-                ];
-//            dd(setting('leverage_approval','features'));
+            $data = [
+                'last_leverage' => $forexAccount->leverage,
+                'updated_leverage' => $request->leverage,
+            ];
+//          dd(setting('leverage_approval','features'));
             if(setting('leverage_approval','features')  == 'by_admin') {
                 LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id,
                     'forex_account_id' => $forexAccount->id], $data);
                 $mailType   = 'user_pending_leverage';
                 $this->leverageMailNotify($request,$mailType);
+                ActivityLogService::log('forex_account_update', "Leverage update request submitted for approval", [
+                    'Login' => $request->login,
+                    'Leverage' => $request->leverage,
+                ]);
                 return response()->json(['success' => __('Leverage update request successfully submitted. An admin will review and process it shortly.'), 'reload' => true]);
             }else{
                 // Prepare data for the API call
@@ -645,7 +767,10 @@ class ForexAccountController extends GatewayController
 
                 // Call the API to update leverage
                 $response = $this->forexApiService->setUserLeverage($data);
-
+                ActivityLogService::log('forex_account_update', "Leverage updated successfully", [
+                    'Login' => $request->login,
+                    'Leverage' => $request->leverage,
+                ]);
                 // Update leverage in ForexAccount model
 
                 $forexAccount->leverage = $request->leverage;
@@ -664,6 +789,10 @@ class ForexAccountController extends GatewayController
 
         if ($request->name) {
             ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
+            ActivityLogService::log('forex_account_update', "Account name updated successfully", [
+                'Login' => $request->login,
+                'Account Name' => $request->name,
+            ]);
             return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
 
         }
@@ -686,7 +815,10 @@ class ForexAccountController extends GatewayController
                 ];
 //
                 $this->mailNotify(auth()->user()->email, 'user_update_master_password', $shortcodes);
-
+                ActivityLogService::log('forex_account_update', "Password updated successfully", [
+                    'Login' => $request->login,
+                    'Password' => $request->main_password,
+                ]);
                 return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
@@ -711,7 +843,10 @@ class ForexAccountController extends GatewayController
                 ];
 //
                 $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
-
+                ActivityLogService::log('forex_account_update', "Investor password updated successfully", [
+                    'Login' => $request->login,
+                    'Investor Password' => $request->invest_password,
+                ]);
                 return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
@@ -723,7 +858,9 @@ class ForexAccountController extends GatewayController
 //        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
             ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
-
+            ActivityLogService::log('forex_account_update', "Account archived successfully", [
+                'Login' => $request->login,
+            ]);
             $shortcodes = [
                 '[[full_name]]' => auth()->user()->full_name,
                 '[[login]]' => $request->login,
@@ -733,7 +870,6 @@ class ForexAccountController extends GatewayController
             ];
 //
             $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
-
             return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
 //            } else {
 //                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
@@ -745,6 +881,9 @@ class ForexAccountController extends GatewayController
 ////        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
             ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
+            ActivityLogService::log('forex_account_update', "Account reactivated successfully", [
+                'Login' => $request->login,
+            ]);
             return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
 //            } else {
 //                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);

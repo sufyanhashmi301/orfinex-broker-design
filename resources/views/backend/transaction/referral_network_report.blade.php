@@ -67,7 +67,7 @@
         </div>
     </div>
     <div id="data__container" class="hidden">
-        <div id="network_totals_container" class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 place-content-center mb-6"></div>
+        <div id="network_totals_container" class="innerMenu grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 place-content-center mb-6"></div>
         <div class="card mb-6">
             <div class="card-body relative px-6">
                 <div class="overflow-x-auto -mx-6 dashcode-data-table">

@@ -120,20 +120,44 @@
                                 <input type="text" class="form-control" name="currency" value="{{ $method->currency }}"
                                     id="currency" />
                             </div>
+                            <input type="hidden" name="currency_symbol" value="{{ $method->currency_symbol ?? '' }}" />
                         @endif
+                        
+                         @if ($autoExchangeRatesEnabled)
                         <div class="input-area relative">
-                            <label class="form-label" for="">
-                                <span class="shift-Away inline-flex items-center gap-1"
-                                    data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
-                                    {{ __('Currency Symbol') }}
-                                    <iconify-icon icon="mdi:information-slab-circle-outline"
-                                        class="text-[16px]"></iconify-icon>
-                                </span>
+                            <label for="" class="form-label invisible">
+                                {{ __('Manual Override Rate') }}
                             </label>
-                            <input type="text" class="form-control currency-symbol"
-                                value="{{ $method->currency_symbol }}" name="currency_symbol"
-                                @if ($autoExchangeRatesEnabled) readonly @endif />
+                            <div class="flex items-center space-x-7 flex-wrap">
+                                <label class="form-label !w-auto pt-0">
+                                    <span class="shift-Away inline-flex items-center gap-1"
+                                        data-tippy-content="Enable to set manually coversion rate">
+                                        {{ __('Manual Conversion Rate') }}
+                                        <iconify-icon icon="mdi:information-slab-circle-outline"
+                                            class="text-[16px]"></iconify-icon>
+                                    </span>
+                                </label>
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="is_rate_override_enabled">
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="is_rate_override_enabled" value="1"
+                                            class="sr-only peer" @if ($method->is_rate_override_enabled ?? false) checked @endif>
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mt-1 text-xs text-slate-500">
+                                            {{ __('Manage Auto Exchange Rate main setting') }}
+                                            <a href="{{ route('admin.settings.company.permissions') }}"
+                                                class="text-primary hover:underline ml-1"
+                                               target="_blank" rel="noopener noreferrer">
+                                                {{ __('click here') }}
+                                            </a>
+                                        </div>
                         </div>
+                        @endif
                         <div class="input-area relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"
@@ -151,7 +175,7 @@
                                 <input type="text" name="rate"
                                     class="form-control !pl-16.5 !pr-12 display-conversion-rate"
                                     oninput="this.value = validateDouble(this.value)" value="{{ $method->rate }}"
-                                    @if ($autoExchangeRatesEnabled) readonly @endif />
+                                    @if ($autoExchangeRatesEnabled && !($method->is_rate_override_enabled ?? false)) readonly @endif />
                                 <span
                                     class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1"
                                     id="currency-selected">
@@ -159,6 +183,21 @@
                                 </span>
                             </div>
                         </div>
+                        @if ($type == 'auto')
+                       <div class="input-area relative">
+                            <label class="form-label" for="">
+                                <span class="shift-Away inline-flex items-center gap-1"
+                                    data-tippy-content="The symbol representing the transaction currency (e.g., $, €, ₿)">
+                                    {{ __('Currency Symbol') }}
+                                    <iconify-icon icon="mdi:information-slab-circle-outline"
+                                        class="text-[16px]"></iconify-icon>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control currency-symbol"
+                                value="{{ $method->currency_symbol }}" name="currency_symbol"
+                                @if ($autoExchangeRatesEnabled) readonly @endif />
+                        </div>
+                        @endif
                         <div class="input-area relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"
@@ -183,6 +222,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="input-area relative">
                             <label class="form-label" for="">
                                 <span class="shift-Away inline-flex items-center gap-1"
@@ -488,10 +528,55 @@
         const autoExchangeRatesEnabled = @json($autoExchangeRatesEnabled);
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
+        let get_rate = (code) => {
+            $.ajax({
+                url: '{{ route('admin.settings.currency.get-rate', ':code') }}'.replace(':code', code),
+                type: 'GET',
+                success: function(response) {
+                    // Handle the success response (you get the rate here)
+                    if (response.rate) {
+                        // Always update currency symbol
+                        $('.currency-symbol').val(response.symbol);
+                        
+                        // Only update rate when auto exchange rates are enabled
+                        if (autoExchangeRatesEnabled) {
+                            $('.display-conversion-rate').val(response.rate.toFixed(6));
+                            
+                            // When auto updates are enabled, respect the manual override toggle
+                            const $overrideToggle = $('input[name="is_rate_override_enabled"]');
+                            if ($overrideToggle.length) {
+                                const enabled = $overrideToggle.is(':checked');
+                                $('.display-conversion-rate').prop('readonly', !enabled);
+                            } else {
+                                $('.display-conversion-rate').prop('readonly', true);
+                            }
+                            $('.currency-symbol').prop('readonly', true);
+                        } else {
+                            // If auto exchange rates are disabled, make the fields editable
+                            $('.display-conversion-rate').prop('readonly', false);
+                            $('.currency-symbol').prop('readonly', false);
+                        }
+                    } else {
+                        console.log(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    console.log('Error fetching rate');
+                }
+            });
+        }
+
         $("#currency").on('change', function() {
             if (currency === null) {
                 $('#currency-selected').text(this.value);
+            } else {
+                // For custom rate gateways (nowpayments, coinremitter, blockchain)
+                // Update the currency display to show the selected currency
+                $('#currency-selected').text(this.value);
             }
+            // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+            get_rate($(this).val());
         });
 
         // If auto exchange rates are disabled, make the fields editable on page load
@@ -500,6 +585,19 @@
                 $('.display-conversion-rate').prop('readonly', false);
                 $('.currency-symbol').prop('readonly', false);
                 console.log('Auto exchange rates are disabled. Currency symbol and conversion rate are editable.');
+            } else {
+                // When auto updates are enabled, allow manual override toggle to control the rate field
+                const $overrideToggle = $('input[name="is_rate_override_enabled"]');
+                if ($overrideToggle.length) {
+                    const syncReadonly = () => {
+                        const enabled = $overrideToggle.is(':checked');
+                        $('.display-conversion-rate').prop('readonly', !enabled);
+                    };
+                    // Initial sync
+                    syncReadonly();
+                    // On change
+                    $overrideToggle.on('change', syncReadonly);
+                }
             }
         });
 
@@ -556,6 +654,10 @@
                 $('#currency').html(data.view);
                 $('#currency-selected').text(data.pay_currency);
                 currency = data.pay_currency
+                // Always fetch to update currency symbol, rate only updates if autoExchangeRatesEnabled
+                if ($('#currency').val()) {
+                    get_rate($('#currency').val());
+                }
             })
         })
 

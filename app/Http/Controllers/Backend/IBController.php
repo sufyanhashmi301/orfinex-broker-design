@@ -549,10 +549,40 @@ class IBController extends Controller
 
     public function answerView(User $user)
     {
-        $ibData = $user->ibQuestionAnswers; // Adjust this based on your actual relationship
-        return View::make('backend.ib.include.__ib_detail_render', ['user' => $user, 'ibData' => $ibData]);
-
-//        return response()->json($ibData);
+        try {
+            $ibData = $user->ibQuestionAnswers; // Adjust this based on your actual relationship
+            
+            // Check if IB data exists
+            if (!$ibData) {
+                return View::make('backend.ib.include.__ib_detail_render', [
+                    'user' => $user, 
+                    'ibData' => null,
+                    'noData' => true
+                ]);
+            }
+            
+            // Check if fields is null, string "null", or empty
+            if (!$ibData->fields || $ibData->fields === 'null' || $ibData->fields === '[]' || $ibData->fields === '{}') {
+                return View::make('backend.ib.include.__ib_detail_render', [
+                    'user' => $user, 
+                    'ibData' => $ibData,
+                    'isEmpty' => true
+                ]);
+            }
+            
+            return View::make('backend.ib.include.__ib_detail_render', ['user' => $user, 'ibData' => $ibData]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching IB answer data: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return View::make('backend.ib.include.__ib_detail_render', [
+                'user' => $user, 
+                'ibData' => null,
+                'error' => 'Error loading IB data: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function approveIbMember(Request $request)

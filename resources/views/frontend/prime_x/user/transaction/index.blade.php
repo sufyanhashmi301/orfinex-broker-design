@@ -27,10 +27,10 @@
                             <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
                         @endif
                     @endforeach
-{{--                    <option value="deposit">{{ __('Deposit') }}</option>--}}
-{{--                    <option value="withdraw">{{ __('Withdraw') }}</option>--}}
-{{--                    <option value="send_money">{{ __('Transfer') }}</option>--}}
-{{--                    <option value="ib_bonus">{{ __('IB Bonus') }}</option>--}}
+                    {{--                    <option value="deposit">{{ __('Deposit') }}</option> --}}
+                    {{--                    <option value="withdraw">{{ __('Withdraw') }}</option> --}}
+                    {{--                    <option value="send_money">{{ __('Transfer') }}</option> --}}
+                    {{--                    <option value="ib_bonus">{{ __('IB Bonus') }}</option> --}}
                 </select>
             </div>
             <div class="input-area relative">
@@ -38,22 +38,28 @@
                     <option value="">{{ __('All statuses') }}</option>
                     <option value="pending">{{ __('Pending') }}</option>
                     <option value="success">{{ __('Success') }}</option>
+                    <option value="failed">{{ __('Canceled') }}</option>
+                    <option value="review">{{ __('Review') }}</option>
+                    <option value="expired">{{ __('Expired') }}</option>
                 </select>
             </div>
             <div class="input-area relative">
                 <select id="forex-account" class="form-control">
                     <option value="">{{ __('All accounts') }}</option>
-                    @foreach($realForexAccounts as $account)
+                    @foreach ($realForexAccounts as $account)
                         <option value="{{ $account->login }}">{{ $account->account_name }}</option>
                     @endforeach
                 </select>
             </div>
-            <form method="POST" action="{{ route('user.history.transactions.export') }}">
+            <form id="export-form" method="POST" action="{{ route('user.history.transactions.export') }}">
                 @csrf
-                <input type="hidden" name="query" value="{{ request('query') }}">
-                <input type="hidden" name="date" value="{{ request('date') }}">
-                <button type="submit" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
-                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                <input type="hidden" id="export-date" name="date" value="">
+                <input type="hidden" id="export-status" name="status" value="">
+                <input type="hidden" id="export-type" name="type" value="">
+                <input type="hidden" id="export-forex-account" name="forex_account" value="">
+                <button type="button" id="export-btn" class="btn btn-sm btn-white inline-flex items-center justify-center min-w-max">
+                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
+                        icon="lets-icons:export-fill"></iconify-icon>
                     {{ __('Export') }}
                 </button>
             </form>
@@ -63,17 +69,24 @@
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
             <div class="card-body px-6 pt-3">
-                @if(count($transactions) == 0)
+                @if (count($transactions) == 0)
                     <div class="basicTable_wrapper flex items-center justify-center flex-col">
-                        <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <svg width="52" height="53" viewBox="0 0 52 53" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z"
+                                stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                             {{ __("You don't have any transactions yet.") }}
                         </p>
-                        <a href="{{ route('user.deposit.methods') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
+                        <a href="{{ route('user.deposit.methods') }}"
+                            class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                             {{ __('Deposit Now') }}
                         </a>
                     </div>
@@ -93,11 +106,15 @@
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="transaction-table-body">
-                                        @include('frontend::user.transaction.include.__transaction_row', ['transactions' => $transactions])
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700"
+                                        id="transaction-table-body">
+                                        @include('frontend::user.transaction.include.__transaction_row', [
+                                            'transactions' => $transactions,
+                                        ])
                                     </tbody>
                                 </table>
-                                <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
+                                <div
+                                    class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
                                     <div>
                                         @php
                                             $from = $transactions->firstItem(); // The starting item number on the current page
@@ -129,12 +146,18 @@
     </div>
     <div class="md:hidden block mobile-screen-show">
         <!-- Transactions -->
-        @if(count($transactions) == 0)
+        @if (count($transactions) == 0)
             <div class="basicTable_wrapper card flex items-center justify-center flex-col p-4">
-                <svg width="42" height="43" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg width="42" height="43" viewBox="0 0 52 53" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26 19.875V30.9167" stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M25.9999 47.2804H12.8699C5.3516 47.2804 2.20994 41.8037 5.84994 35.1125L12.6099 22.7017L18.9799 11.0417C22.8366 3.95291 29.1633 3.95291 33.0199 11.0417L39.3899 22.7237L46.1499 35.1346C49.7899 41.8258 46.6266 47.3025 39.1299 47.3025H25.9999V47.2804Z"
+                        stroke="#FF0000" stroke-opacity="0.66" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M25.988 37.5417H26.0075" stroke="#FF0000" stroke-opacity="0.66" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <p class="text-sm text-slate-600 dark:text-slate-100 my-3">
                     {{ __("You don't have any transactions yet.") }}
@@ -147,7 +170,9 @@
                 </div>
                 <div class="card-body p-3 mobile-transaction-filter">
                     <div class="contents space-y-3" id="mobile-transactions-container">
-                        @include('frontend::user.transaction.include.__transaction_row_mobile', ['transactions' => $transactions])
+                        @include('frontend::user.transaction.include.__transaction_row_mobile', [
+                            'transactions' => $transactions,
+                        ])
                     </div>
                     <div class="pagination-container">
                         {{ $transactions->onEachSide(1)->links() }}
@@ -159,8 +184,8 @@
 @endsection
 @section('script')
     <script !src="">
-        $(document).ready(function () {
-            function fetchTransactions(url = '{{ route("user.history.transactions") }}') {
+        $(document).ready(function() {
+            function fetchTransactions(url = '{{ route('user.history.transactions') }}') {
                 let status = $('#transaction-status').val();
                 let type = $('#transaction-type').val();
                 let date = $('#transaction-date').val();
@@ -175,13 +200,18 @@
                         transaction_date: date,
                         forex_account: account,
                     },
-                    beforeSend: function () {
-                        $('#transaction-table-body').html('<tr><td colspan="7" class="table-td text-center">Loading...</td></tr>');
+                    beforeSend: function() {
+                        $('#transaction-table-body').html(
+                            '<tr><td colspan="7" class="table-td text-center">Loading...</td></tr>');
                     },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.html.trim() === "") {
-                            $('#transaction-table-body').html('<tr><td colspan="7" class="table-td text-center">No transactions found</td></tr>');
-                            $('#mobile-transactions-container').html('<p class="text-center py-4 text-sm text-gray-500">{{ __("No transactions found") }}</p>');
+                            $('#transaction-table-body').html(
+                                '<tr><td colspan="7" class="table-td text-center">No transactions found</td></tr>'
+                                );
+                            $('#mobile-transactions-container').html(
+                                '<p class="text-center py-4 text-sm text-gray-500">{{ __('No transactions found') }}</p>'
+                                );
                         } else {
                             $('#transaction-table-body').html(response.html);
                             $('#mobile-transactions-container').html(response.mobile_html);
@@ -206,14 +236,14 @@
                         // Reattach event handlers
                         attachPaginationEvents();
                     },
-                    error: function () {
+                    error: function() {
                         alert('Error loading transactions.');
                     }
                 });
             }
 
             function attachPaginationEvents() {
-                $('.pagination a').off('click').on('click', function (e) {
+                $('.pagination a').off('click').on('click', function(e) {
                     e.preventDefault();
                     let url = $(this).attr('href');
                     if (url) {
@@ -223,7 +253,8 @@
             }
 
             function resetFiltersIfNavigatedBack() {
-                let isNavigatedBack = performance.navigation.type === 2 || sessionStorage.getItem('navigatedBack') === 'true';
+                let isNavigatedBack = performance.navigation.type === 2 || sessionStorage.getItem(
+                    'navigatedBack') === 'true';
 
                 if (isNavigatedBack) {
                     console.log("Navigated back - resetting filters");
@@ -260,8 +291,9 @@
             }
 
             // Detect if user navigated back
-            window.addEventListener('pageshow', function (event) {
-                if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type ===
+                        "back_forward")) {
                     sessionStorage.setItem('navigatedBack', 'true');
                 }
             });
@@ -273,13 +305,24 @@
             restoreSelections();
 
             // Attach event handlers to filters
-            $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function () {
+            $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function() {
                 fetchTransactions();
             });
 
             // Attach pagination event initially
             attachPaginationEvents();
-        });
 
+            // Export functionality
+            $('#export-btn').on('click', function() {
+                // Get current filter values
+                $('#export-date').val($('#transaction-date').val());
+                $('#export-status').val($('#transaction-status').val());
+                $('#export-type').val($('#transaction-type').val());
+                $('#export-forex-account').val($('#forex-account').val());
+                
+                // Submit the form
+                $('#export-form').submit();
+            });
+        });
     </script>
 @endsection

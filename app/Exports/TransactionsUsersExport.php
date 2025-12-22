@@ -21,8 +21,10 @@ class TransactionsUsersExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Transaction::where('user_id', $this->userId)->latest()
-        ->select('created_at', 'tnx', 'type', 'target_id', 'final_amount', 'method', 'status');
+        return Transaction::where('user_id', $this->userId)
+            ->where('status', '!=', TxnStatus::None) // Exclude none status transactions
+            ->latest()
+            ->select('created_at', 'tnx', 'type', 'target_id', 'final_amount', 'method', 'status');
     }
 
     public function headings(): array

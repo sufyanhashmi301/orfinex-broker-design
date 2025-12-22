@@ -65,12 +65,16 @@ class DocumentLinkController extends Controller
             $data = [
                 'title' => $input['title'],
                 'link' => $input['link'],
-                'slug' => str_replace(' ', '_', $input['title']),
+                'slug' => strtolower(str_replace(' ', '_', $input['title'])),
                 'is_deleteable' => $input['is_deleteable'],
                 'status' => $input['status'],
             ];
 
             $documentLink = DocumentLink::create($data);
+
+            // Sync with settings table based on slug
+            $this->syncDocumentLinkWithSettings($documentLink, $input);
+
             notify()->success('Document link created successfully');
             return redirect()->route('admin.links.document.index');
 
@@ -93,49 +97,139 @@ class DocumentLinkController extends Controller
 
     public function update(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'title' => 'required',
-            'link' => 'required',
-            'status' => 'required',
-        ]);
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'title' => 'required',
+                'link' => 'required',
+                'status' => 'required',
+            ]);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
+            if ($validator->fails()) {
+                notify()->error($validator->errors()->first(), 'Error');
+                return redirect()->back();
+            }
+
+            $input = $request->all();
+            $data = [
+                'title' => $input['title'],
+                'link' => $input['link'],
+                'status' => $input['status'],
+            ];
+
+            $documentLink = DocumentLink::find($input['id']);
+
+            if (!$documentLink) {
+                notify()->error('Document link not found');
+                return redirect()->route('admin.links.document.index');
+            }
+
+            // Update the document link
+            $documentLink->update($data);
+
+            // Sync with settings table based on slug
+            $this->syncDocumentLinkWithSettings($documentLink, $input);
+
+            notify()->success('Document link update successfully');
+            return redirect()->route('admin.links.document.index');
+            
+        } catch (\Exception $e) {
+            notify()->error(__('An error occurred while updating the document link.'));
+            return redirect()->route('admin.links.document.index');
         }
+    }
 
-        $input = $request->all();
-        $data = [
-            'title' => $input['title'],
-            'link' => $input['link'],
-            'status' => $input['status'],
+    /**
+     * Sync document link status and URL with settings table
+     *
+     * @param DocumentLink $documentLink
+     * @param array $input
+     * @return void
+     */
+    private function syncDocumentLinkWithSettings(DocumentLink $documentLink, array $input)
+    {
+        // Map document link slugs to their corresponding setting names
+        $settingMap = [
+            'ib_partner_agreement' => [
+                'link' => 'IB_partner_agreement_link',
+                'show' => 'IB_partner_agreement_show',
+            ],
+            'aml_policy' => [
+                'link' => 'aml_policy_link',
+                'show' => 'aml_policy_show',
+            ],
+            'cookies_policy' => [
+                'link' => 'cookies_policy_link',
+                'show' => 'cookies_policy_show',
+            ],
+            'order_execution_policy' => [
+                'link' => 'order_execution_policy_link',
+                'show' => 'order_execution_policy_show',
+            ],
+            'privacy_policy' => [
+                'link' => 'privacy_policy_link',
+                'show' => 'privacy_policy_show',
+            ],
+            'risk_disclosure' => [
+                'link' => 'risk_disclosure_link',
+                'show' => 'risk_disclosure_show',
+            ],
+            'terms_and_conditions' => [
+                'link' => 'terms_and_conditions_link',
+                'show' => 'terms_and_conditions_show',
+            ],
         ];
 
-        $documentLink = DocumentLink::find($input['id']);
+        // Check if this document link has corresponding settings
+        if (isset($settingMap[$documentLink->slug])) {
+            $settings = $settingMap[$documentLink->slug];
 
-        $documentLink->update($data);
+            // Update the link setting
+            \App\Models\Setting::set($settings['link'], $input['link'], 'string');
 
-        notify()->success('Document link update successfully');
-        return redirect()->route('admin.links.document.index');
+            // Update the show/status setting (convert to boolean)
+            \App\Models\Setting::set($settings['show'], $input['status'], 'boolean');
+        }
     }
 
     public function destroy($id)
     {
-        $documentLink = DocumentLink::find($id);
+        try {
+            $documentLink = DocumentLink::find($id);
 
-        if ($documentLink && $documentLink->is_deleteable == 1) {
+            if ($documentLink && $documentLink->is_deleteable == 1) {
 
-            $documentLink->delete();
-            notify()->success(__('Document link deleted successfully.'));
+                // Map document link slugs to their corresponding setting names
+                $settingMap = [
+                    'ib_partner_agreement' => 'IB_partner_agreement_show',
+                    'aml_policy' => 'aml_policy_show',
+                    'cookies_policy' => 'cookies_policy_show',
+                    'order_execution_policy' => 'order_execution_policy_show',
+                    'privacy_policy' => 'privacy_policy_show',
+                    'risk_disclosure' => 'risk_disclosure_show',
+                    'terms_and_conditions' => 'terms_and_conditions_show',
+                ];
 
-        } else {
+                // If this document link has a corresponding setting, disable it
+                if (isset($settingMap[$documentLink->slug])) {
+                    \App\Models\Setting::set($settingMap[$documentLink->slug], 0, 'boolean');
+                }
 
-            notify()->error(__('This document link cannot be deleted.'));
+                $documentLink->delete();
+                notify()->success(__('Document link deleted successfully.'));
 
+            } else {
+
+                notify()->error(__('This document link cannot be deleted.'));
+
+            }
+
+            return redirect()->route('admin.links.document.index');
+            
+        } catch (\Exception $e) {
+            notify()->error(__('An error occurred while deleting the document link.'));
+            return redirect()->route('admin.links.document.index');
         }
-
-        return redirect()->route('admin.links.document.index');
 
     }
 

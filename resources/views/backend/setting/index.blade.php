@@ -428,6 +428,16 @@
                             </span>
                         </a>
                     </li>
+                    @can('forex-reporting-settings')
+                        <li>
+                            <a href="{{ route('admin.settings.forex-daily-reporting') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                                {{ __('Forex Daily Reporting') }}
+                                <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                    {{ __('New') }}
+                                </span>
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </div>
         </div>

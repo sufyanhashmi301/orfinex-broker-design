@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class UpdateExchangeRates extends Command
 {
@@ -26,7 +27,7 @@ class UpdateExchangeRates extends Command
             // Check if auto exchange rates update is enabled (unless forced)
             if (!$this->option('force') && !$this->isAutoUpdateEnabled()) {
                 $this->info('Auto exchange rates update is disabled in company permissions. Use --force to override.');
-                Log::info('Auto exchange rates update skipped - disabled in company permissions.');
+                // Log::info('Auto exchange rates update skipped - disabled in company permissions.');
                 return 0;
             }
 
@@ -134,7 +135,7 @@ class UpdateExchangeRates extends Command
         $feednaxPlugin = Plugin::where('name', 'Feednax Exchange API')->where('status', 1)->first();
         
         if (!$feednaxPlugin) {
-            Log::info('Feednax Exchange API plugin not found or disabled.');
+            // Log::info('Feednax Exchange API plugin not found or disabled.');
             return null;
         }
 
@@ -148,13 +149,13 @@ class UpdateExchangeRates extends Command
 
         if ($response->successful()) {
             $data = $response->json();
-            
+            dd($data);
             if ($data['success'] ?? false) {
-                Log::info('Successfully fetched rates from Feednax API', [
-                    'timestamp' => $data['timestamp'] ?? null,
-                    'base_currency' => $data['base'] ?? 'USD',
-                    'rates_count' => count($data['rates'] ?? [])
-                ]);
+                // Log::info('Successfully fetched rates from Feednax API', [
+                //     'timestamp' => $data['timestamp'] ?? null,
+                //     'base_currency' => $data['base'] ?? 'USD',
+                //     'rates_count' => count($data['rates'] ?? [])
+                // ]);
                 return $data['rates'] ?? [];
             }
         }
@@ -174,7 +175,7 @@ class UpdateExchangeRates extends Command
         $rapidApiPlugin = Plugin::where('name', 'Currency Exchange API')->where('status', 1)->first();
         
         if (!$rapidApiPlugin) {
-            Log::info('Currency Exchange API plugin not found or disabled.');
+            // Log::info('Currency Exchange API plugin not found or disabled.');
             return null;
         }
 
@@ -194,10 +195,10 @@ class UpdateExchangeRates extends Command
             $data = $response->json();
             
             if (isset($data['result'])) {
-                Log::info('Successfully fetched rates from RapidAPI', [
-                    'base_currency' => $config['base_currency'] ?? 'USD',
-                    'rates_count' => count($data['result'])
-                ]);
+                // Log::info('Successfully fetched rates from RapidAPI', [
+                //     'base_currency' => $config['base_currency'] ?? 'USD',
+                //     'rates_count' => count($data['result'])
+                // ]);
                 return $data['result'];
             }
         }
@@ -247,6 +248,12 @@ class UpdateExchangeRates extends Command
                 $formattedRate = $this->truncateToTwoDecimals($rate);
                 $updated = DB::table('deposit_methods')
                     ->where('currency', $currencyCode)
+                    ->where(function ($q) {
+                        // Respect per-method manual override: skip rows with override enabled
+                        if (Schema::hasColumn('deposit_methods', 'is_rate_override_enabled')) {
+                            $q->where('is_rate_override_enabled', false);
+                        }
+                    })
                     ->update([
                         'rate' => $formattedRate,
                         'updated_at' => Carbon::now()
@@ -259,6 +266,12 @@ class UpdateExchangeRates extends Command
                 $formattedRate = $this->truncateToTwoDecimals($rate);
                 $updated = DB::table('withdraw_methods')
                     ->where('currency', $currencyCode)
+                    ->where(function ($q) {
+                        // Respect per-method manual override: skip rows with override enabled
+                        if (Schema::hasColumn('withdraw_methods', 'is_rate_override_enabled')) {
+                            $q->where('is_rate_override_enabled', false);
+                        }
+                    })
                     ->update([
                         'rate' => $formattedRate,
                         'updated_at' => Carbon::now()

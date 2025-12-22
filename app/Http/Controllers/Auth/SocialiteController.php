@@ -49,17 +49,17 @@ class SocialiteController extends Controller
 
             $socialUser = Socialite::driver($provider)->stateless()->user();
             $referralCode = request()->cookie('invite');
-//            dd($referralCode);
-            // Check for referral code in cookies or session
-//            $referralCode = request()->query('invite');
-//            dd($referralCode);
-
 
             // Pass referral code to handleSocialRegistration
             return app(RegisteredUserController::class)
                 ->handleSocialRegistration($socialUser, $provider, $referralCode);
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Social login failed.');
+            \Log::error('Social login callback failed', [
+                'provider' => $provider,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->route('login')->with('error', 'Social login failed. Please try again.');
         }
     }
 
@@ -72,7 +72,24 @@ class SocialiteController extends Controller
      */
     private function setSocialiteConfig($provider, $socialConfig)
     {
-        $redirectUrl = config('app.url') . "/{$provider}/callback";
+        // Use the actual request URL to ensure redirect URI matches exactly
+        // This handles subdirectories and different domains correctly
+        $scheme = request()->getScheme();
+        $host = request()->getHttpHost();
+        $path = request()->getBasePath(); // Gets the subdirectory path like '/brokeret'
+        
+        // Construct redirect URL with subdirectory if present
+        $baseUrl = rtrim("{$scheme}://{$host}{$path}", '/');
+        $redirectUrl = "{$baseUrl}/{$provider}/callback";
+
+        // Log for debugging (remove in production if needed)
+        \Log::info('Social login redirect URI configured', [
+            'provider' => $provider,
+            'redirect_uri' => $redirectUrl,
+            'scheme' => $scheme,
+            'host' => $host,
+            'path' => $path
+        ]);
 
         Config::set("services.{$provider}.client_id", $socialConfig->client_id);
         Config::set("services.{$provider}.client_secret", $socialConfig->client_secret);

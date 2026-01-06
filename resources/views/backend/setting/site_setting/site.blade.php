@@ -48,14 +48,13 @@
         siteCurrency('crypto')
         currencyShow(currencyType)
 
-        var timezoneData = JSON.parse(@json(getJsonData('timeZone')));
-        const convertedData = timezoneData.map(item => ({
-            id: item.name,
-            text: `${item.description} (${item.name})`
-        }));
-
+        // Initialize Select2 for timezone dropdown with search functionality
+        // Options are already populated in the blade template via PHP
         $('.site-timezone').select2({
-            data: convertedData
+            placeholder: 'Select timezone...',
+            allowClear: false,
+            width: '100%',
+            dropdownAutoWidth: true
         });
 
 

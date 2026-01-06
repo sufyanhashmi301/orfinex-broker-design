@@ -8,7 +8,7 @@
         <h4 class="text-lg font-medium dark:text-white">{{ __('Submission Details') }}</h4>
         <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('User:') }} {{ $user?->full_name }} ({{ $user?->email }})</p>
         <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('Branch:') }} {{ $submission->branch?->name }}</p>
-        <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('Submitted at:') }} {{ $submission->created_at->format('Y-m-d H:i') }}</p>
+        <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('Submitted at:') }} {{ toSiteTimezone($submission->created_at, 'Y-m-d H:i') }}</p>
     </div>
 
     <div class="space-y-3">

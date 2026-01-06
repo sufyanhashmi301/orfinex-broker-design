@@ -156,7 +156,7 @@
                                 </span>
                             </label>
                             <input type="text" class="form-control"
-                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}" required=""
+                                value="{{ toSiteTimezone($user->created_at, 'D, M d, Y h:i A') }}" required=""
                                 disabled>
                         </div>
                         @if ($user->notes)

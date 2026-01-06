@@ -2409,3 +2409,138 @@ if (!function_exists('getWithdrawAccountDetails')) {
         return \App\Models\WithdrawAccount::where('id', $withdrawAccountId)->where('user_id', $userId)->first();
     }
 }
+
+if (!function_exists('getAllTimezones')) {
+    /**
+     * Get all PHP timezones formatted for Select2 dropdown
+     * Returns array with id and text for each timezone including GMT offset
+     * 
+     * @return array Array of timezones formatted for Select2
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function getAllTimezones()
+    {
+        $timezones = [];
+        foreach (timezone_identifiers_list() as $tz) {
+            try {
+                $dt = new \DateTime('now', new \DateTimeZone($tz));
+                $offset = $dt->getOffset();
+                $offsetHours = intval($offset / 3600);
+                $offsetMinutes = abs(intval(($offset % 3600) / 60));
+                $offsetString = sprintf('%+03d:%02d', $offsetHours, $offsetMinutes);
+                
+                $timezones[] = [
+                    'id' => $tz,
+                    'text' => $tz . ' (GMT' . $offsetString . ')'
+                ];
+            } catch (\Exception $e) {
+                $timezones[] = [
+                    'id' => $tz,
+                    'text' => $tz
+                ];
+            }
+        }
+        return $timezones;
+    }
+}
+
+if (!function_exists('toSiteTimezone')) {
+    /**
+     * Convert UTC timestamp to site timezone for display
+     * Database stores all timestamps in UTC, this function converts them to the selected site timezone
+     * 
+     * @param mixed $timestamp Carbon instance, DateTime, or string timestamp
+     * @param string|null $format Date format string (default: 'M d, Y h:i A')
+     * @param string|null $timezone Optional timezone override (defaults to site_timezone setting)
+     * @return string|Carbon Formatted date string if format provided, Carbon instance otherwise
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function toSiteTimezone($timestamp, $format = 'M d, Y h:i A', $timezone = null)
+    {
+        if (is_null($timestamp)) {
+            return null;
+        }
+
+        // Get site timezone from settings with env fallback
+        $siteTimezone = $timezone ?? setting('site_timezone', 'global') ?: env('APP_TIMEZONE', 'UTC');
+        
+        // Ensure we have a valid timezone, fallback to UTC
+        if (empty($siteTimezone) || !in_array($siteTimezone, timezone_identifiers_list())) {
+            $siteTimezone = 'UTC';
+        }
+
+        try {
+            // Convert to Carbon if not already
+            if (!$timestamp instanceof Carbon) {
+                // Parse timestamp and explicitly set as UTC (database always stores in UTC)
+                $carbon = Carbon::parse($timestamp)->setTimezone('UTC');
+            } else {
+                $carbon = $timestamp->copy();
+                // Ensure it's in UTC if it's not already
+                if ($carbon->timezone->getName() !== 'UTC') {
+                    $carbon->setTimezone('UTC');
+                }
+            }
+
+            // Convert from UTC to site timezone for display
+            // Database always stores in UTC, we only convert for display
+            $carbon->setTimezone($siteTimezone);
+
+            // Return formatted string if format provided, otherwise return Carbon instance
+            return $format ? $carbon->format($format) : $carbon;
+        } catch (\Exception $e) {
+            \Log::error('toSiteTimezone error: ' . $e->getMessage(), [
+                'timestamp' => $timestamp,
+                'timezone' => $siteTimezone
+            ]);
+            return $timestamp;
+        }
+    }
+}
+
+if (!function_exists('toUTC')) {
+    /**
+     * Convert timestamp from site timezone to UTC for database storage
+     * This ensures all database records are stored in UTC
+     * Note: Laravel already stores timestamps in UTC by default, so this is mainly for manual conversions
+     * 
+     * @param mixed $timestamp Carbon instance, DateTime, or string timestamp
+     * @param string|null $timezone Source timezone (defaults to site_timezone setting)
+     * @return Carbon Carbon instance in UTC
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function toUTC($timestamp, $timezone = null)
+    {
+        if (is_null($timestamp)) {
+            return null;
+        }
+
+        try {
+            // Convert to Carbon if not already
+            if (!$timestamp instanceof Carbon) {
+                $carbon = Carbon::parse($timestamp);
+            } else {
+                $carbon = $timestamp->copy();
+            }
+
+            // If timestamp is already in UTC, just return it
+            // Laravel timestamps are already in UTC, so this is mainly for user input
+            if ($carbon->timezone->getName() === 'UTC') {
+                return $carbon;
+            }
+
+            // Convert from current timezone to UTC
+            $carbon->setTimezone('UTC');
+            return $carbon;
+        } catch (\Exception $e) {
+            \Log::error('toUTC error: ' . $e->getMessage(), [
+                'timestamp' => $timestamp,
+                'timezone' => $timezone
+            ]);
+            return $timestamp instanceof Carbon ? $timestamp : Carbon::parse($timestamp);
+        }
+    }
+}

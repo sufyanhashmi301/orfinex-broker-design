@@ -205,7 +205,15 @@ class PaymentDepositController extends Controller
                     ';
                 })
                 ->editColumn('submitted_at', function ($row) {
-                    return $row->submitted_at ? $row->submitted_at->format('M d, Y') . '<br><span class="text-xs text-slate-400">' . $row->submitted_at->format('h:i A') . '</span>' : 'N/A';
+                    if (!$row->submitted_at) {
+                        return 'N/A';
+                    }
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $submittedAt = $row->getOriginal('submitted_at');
+                    $formatted = toSiteTimezone($submittedAt, 'M d, Y');
+                    $timeFormatted = toSiteTimezone($submittedAt, 'h:i A');
+                    return $formatted . '<br><span class="text-xs text-slate-400">' . $timeFormatted . '</span>';
                 })
                 ->editColumn('status', function ($row) {
                     return '<span class="badge bg-warning-500 text-white">' . ucfirst($row->status) . '</span>';
@@ -287,7 +295,15 @@ class PaymentDepositController extends Controller
                     return '<span class="text-slate-400 text-sm">No bank details</span>';
                 })
                 ->editColumn('approved_at', function ($row) {
-                    return $row->approved_at ? $row->approved_at->format('M d, Y') . '<br><span class="text-xs text-slate-400">' . $row->approved_at->format('h:i A') . '</span>' : 'N/A';
+                    if (!$row->approved_at) {
+                        return 'N/A';
+                    }
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $approvedAt = $row->getOriginal('approved_at');
+                    $formatted = toSiteTimezone($approvedAt, 'M d, Y');
+                    $timeFormatted = toSiteTimezone($approvedAt, 'h:i A');
+                    return $formatted . '<br><span class="text-xs text-slate-400">' . $timeFormatted . '</span>';
                 })
                 ->addColumn('approved_by_name', function ($row) {
                     $approver = $row->approvedBy;
@@ -770,7 +786,15 @@ class PaymentDepositController extends Controller
                     return '<div class="text-slate-600 dark:text-slate-300 text-sm font-medium">#PDX' . $request->id . '</div>';
                 })
                 ->editColumn('updated_at', function ($request) {
-                    return $request->updated_at ? $request->updated_at->format('M d, Y') . '<br><span class="text-xs text-slate-400">' . $request->updated_at->format('h:i A') . '</span>' : 'N/A';
+                    if (!$request->updated_at) {
+                        return 'N/A';
+                    }
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $updatedAt = $request->getOriginal('updated_at');
+                    $formatted = toSiteTimezone($updatedAt, 'M d, Y');
+                    $timeFormatted = toSiteTimezone($updatedAt, 'h:i A');
+                    return $formatted . '<br><span class="text-xs text-slate-400">' . $timeFormatted . '</span>';
                 })
                 ->editColumn('status', function ($request) {
                     return '<span class="badge bg-danger-500 text-white">' . __('Rejected') . '</span>';

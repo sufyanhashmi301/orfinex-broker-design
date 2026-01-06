@@ -70,6 +70,12 @@ class SymbolGroupController extends Controller
                         'symbols' => $row->symbols
                     ])->render();
                 })
+                ->editColumn('created_at', function($row) {
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return toSiteTimezone($createdAt, 'd F Y h:i A');
+                })
                 ->addColumn('action', 'backend.symbol_groups.include.__action')
                 ->rawColumns(['symbols', 'action'])
                 ->make(true);

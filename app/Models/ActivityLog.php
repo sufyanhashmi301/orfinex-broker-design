@@ -26,6 +26,7 @@ class ActivityLog extends Model
 
     public function getCreatedAtAttribute(): string
     {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
+        // Database stores in UTC, convert to site timezone for display
+        return toSiteTimezone($this->attributes['created_at'], 'M d Y h:i');
     }
 }

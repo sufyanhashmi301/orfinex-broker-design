@@ -288,8 +288,11 @@ class ActivityLogController extends Controller
 
             // CSV Data
             foreach ($activities as $activity) {
+                // Database stores in UTC, convert to site timezone for display
+                // Use getOriginal to bypass accessor and get raw UTC timestamp
+                $createdAt = $activity->getOriginal('created_at');
                 fputcsv($file, [
-                    $activity->created_at->format('Y-m-d H:i:s'),
+                    toSiteTimezone($createdAt, 'Y-m-d H:i:s'),
                     $activity->action,
                     class_basename($activity->actor_type),
                     $activity->actor->full_name ?? '',

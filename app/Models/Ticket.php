@@ -13,10 +13,8 @@ class Ticket extends TicketModel implements HasMedia
 {
     use InteractsWithMedia;
 
-    public function getCreatedAtAttribute()
-    {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
-    }
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
 
     public function scopeUuid($query, $uuid)
     {

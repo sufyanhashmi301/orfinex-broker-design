@@ -33,7 +33,7 @@
         
         <li class="list-group-item dark:text-slate-300 block py-2 px-3">
             <span class="mr-2">{{ __('Created At:') }}</span>
-            <span class="font-medium">{{ $data->created_at->format('Y-m-d H:i:s') }}</span>
+            <span class="font-medium">{{ toSiteTimezone($data->created_at, 'Y-m-d H:i:s') }}</span>
         </li>
         <li class="list-group-item dark:text-slate-300 block py-2 px-3">
             <span class="mr-2">{{ __('Method Name:') }}</span>

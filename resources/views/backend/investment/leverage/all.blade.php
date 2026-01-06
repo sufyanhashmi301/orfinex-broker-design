@@ -58,7 +58,7 @@
                                                 {{ $update->forexAccount->schema->is_cent_account ? $update->forexAccount->currency . ' (Cents)' : $update->forexAccount->currency }}</strong>
                                         </td>
                                         <td><strong>{{ $update->forexAccount->equity }}</strong></td>
-                                        <td>{{ $update->created_at->format('M d, Y H:i') }}</td>
+                                        <td>{{ toSiteTimezone($update->created_at, 'M d, Y H:i') }}</td>
                                         <td>
                                             <div class="badge badge-warning capitalize">Pending</div>
                                         </td>

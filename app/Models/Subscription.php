@@ -12,8 +12,6 @@ class Subscription extends Model
 
     protected $guarded = ['id'];
 
-    public function getCreatedAtAttribute(): string
-    {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
-    }
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
 }

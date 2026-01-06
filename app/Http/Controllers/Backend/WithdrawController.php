@@ -328,7 +328,10 @@ class WithdrawController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'M d, Y h:i A') . '</span>';
                 })
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
@@ -416,7 +419,10 @@ class WithdrawController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'M d, Y h:i A') . '</span>';
                 })
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
@@ -757,7 +763,10 @@ class WithdrawController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'Y-m-d H:i:s') . '</span>';
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('method_name', function ($row) {
@@ -874,7 +883,10 @@ class WithdrawController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'Y-m-d H:i:s') . '</span>';
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('method_name', function ($row) {
@@ -991,7 +1003,10 @@ class WithdrawController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
-                    return '<span class="text-nowrap">' . $row->created_at->format('Y-m-d H:i:s') . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'Y-m-d H:i:s') . '</span>';
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('method_name', function ($row) {

@@ -42,13 +42,15 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        $timezone = setting('site_timezone', 'global');
+        // IMPORTANT: Always use UTC for database storage
+        // The site_timezone setting is ONLY for display purposes
+        // All database records are stored in UTC regardless of site_timezone setting
         config()->set([
-            'app.timezone' => $timezone,
+            'app.timezone' => 'UTC', // Always UTC for database storage
             'app.debug' => setting('debug_mode', 'permission'),
             'app.locale' => Language::where('is_default', '=', true)->first('locale')->locale ?? 'en',
         ]);
-        date_default_timezone_set($timezone);
+        date_default_timezone_set('UTC'); // Always UTC for PHP default timezone
 
         Blade::directive('lasset', function ($expression) {
             $customLandingTheme = Theme::where('type', 'landing')->where('status', true)->first();

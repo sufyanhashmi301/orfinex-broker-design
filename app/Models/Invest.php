@@ -29,27 +29,29 @@ class Invest extends Model
         return $this->belongsTo(User::class, 'user_id')->withDefault();
     }
 
-    public function getCreatedAtAttribute($value)
-    {
-        return date('M d, Y H:i', strtotime($value));
-    }
-
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
+    
     public function getNextProfitTimeAttribute($value)
     {
-        return date('M d, Y H:i', strtotime($value));
+        // Database stores in UTC, convert to site timezone for display
+        return $value ? toSiteTimezone($value, 'M d, Y H:i') : null;
     }
 
     public function getCreatedTimeAttribute(): string
     {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
+        // Database stores in UTC, convert to site timezone for display
+        return toSiteTimezone($this->attributes['created_at'], 'M d Y h:i');
     }
 
     public function getIsCancelAttribute(): string
     {
 
         if ($this->schema->schema_cancel) {
-            $expiryTime = Carbon::parse($this->created_at)->addMinute($this->schema->expiry_minute)->format('M d Y h:i');
-            $now = Carbon::now()->format('M d Y h:i');
+            // Use raw created_at attribute to avoid accessor recursion
+            $createdAt = Carbon::parse($this->attributes['created_at'])->setTimezone('UTC');
+            $expiryTime = $createdAt->copy()->addMinute($this->schema->expiry_minute);
+            $now = Carbon::now('UTC');
             if ($expiryTime >= $now) {
                 return true;
             }

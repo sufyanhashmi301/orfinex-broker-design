@@ -42,7 +42,13 @@ class DepositVoucherController extends Controller
                     return number_format($voucher->amount, 2);
                 })
                 ->addColumn('expiry_date', function ($voucher) {
-                    return $voucher->expiry_date->format('Y-m-d H:i');
+                    if (!$voucher->expiry_date) {
+                        return 'N/A';
+                    }
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $expiryDate = $voucher->getOriginal('expiry_date');
+                    return toSiteTimezone($expiryDate, 'Y-m-d H:i');
                 })
                 ->addColumn('status', fn($voucher) =>
                     view('backend.deposit-vouchers.include.__status', compact('voucher'))->render()

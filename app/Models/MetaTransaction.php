@@ -49,14 +49,15 @@ class MetaTransaction extends Model
         ];
     }
 
-    public function getCreatedAtAttribute(): string
-    {
-        return Carbon::parse($this->attributes['created_at'])->format('M d, Y h:i');
-    }
-
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
+    
     public function getDayAttribute(): string
     {
-        return Carbon::parse($this->attributes['created_at'])->format('d M');
+        // Database stores in UTC, convert to site timezone for display
+        // Use raw attribute to get UTC timestamp
+        $createdAt = $this->attributes['created_at'] ?? null;
+        return $createdAt ? toSiteTimezone($createdAt, 'd M') : '';
     }
 
     public function scopeTnx($query, $tnx)

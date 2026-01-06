@@ -95,10 +95,10 @@
 
                                         <td class="table-td">
                                             <span
-                                                class="text-slate-500 dark:text-slate-400">{{ $question->created_at->format('M d, Y') }}</span>
+                                                class="text-slate-500 dark:text-slate-400">{{ toSiteTimezone($question->created_at, 'M d, Y') }}</span>
                                             <br>
                                             <span
-                                                class="text-xs text-slate-400">{{ $question->created_at->format('h:i A') }}</span>
+                                                class="text-xs text-slate-400">{{ toSiteTimezone($question->created_at, 'h:i A') }}</span>
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">

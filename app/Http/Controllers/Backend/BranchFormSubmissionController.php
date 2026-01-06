@@ -74,7 +74,10 @@ class BranchFormSubmissionController extends Controller
 
         return DataTables::of($query)
             ->editColumn('created_at', function ($row) {
-                return $row->created_at->format('Y-m-d H:i');
+                // Database stores in UTC, convert to site timezone for display
+                // Use getOriginal to bypass accessor and get raw UTC timestamp
+                $createdAt = $row->getOriginal('created_at');
+                return toSiteTimezone($createdAt, 'Y-m-d H:i');
             })
             ->addColumn('username', function ($row) {
                 return view('backend.transaction.include.__user', ['user_id' => $row->user_id])->render();

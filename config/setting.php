@@ -538,12 +538,10 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_timezone', // unique name for field
                 'label' => 'Site Timezone', // you know what label it is
-                'description' => 'Sets the default timezone for all system timestamps and activities',
+                'description' => 'Sets the default timezone for all system timestamps and activities. All database records are stored in UTC and displayed according to this timezone.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
-                'options' => [
-                    'UTC' => 'UTC'
-                ],
+                'options' => [], // Options populated via JavaScript using getAllTimezones() helper
             ],
             [
                 'type' => 'dropdown', // input fields type

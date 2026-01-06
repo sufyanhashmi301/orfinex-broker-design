@@ -151,10 +151,14 @@ class TransactionController extends Controller
                     if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
                         $manualData = json_decode($row->manual_field_data, true);
                         if (is_array($manualData) && isset($manualData['time'])) {
-                            return '<span class="text-nowrap">' . \Carbon\Carbon::parse($manualData['time'])->format('M d, Y h:i A') . '</span>';
+                            // Database stores in UTC, convert to site timezone for display
+                            return '<span class="text-nowrap">' . toSiteTimezone($manualData['time'], 'M d, Y h:i A') . '</span>';
                         }
                     }
-                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return '<span class="text-nowrap">' . toSiteTimezone($createdAt, 'M d, Y h:i A') . '</span>';
                 })
                 ->rawColumns(['created_at', 'status', 'action_by', 'type', 'final_amount', 'username', 'action'])
                 ->with([

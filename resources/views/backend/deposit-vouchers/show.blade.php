@@ -27,7 +27,7 @@
                                 </tr>
                                 <tr>
                                     <th>Expiry Date</th>
-                                    <td>{{ $depositVoucher->expiry_date->format('Y-m-d H:i') }}</td>
+                                    <td>{{ toSiteTimezone($depositVoucher->expiry_date, 'Y-m-d H:i') }}</td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>
@@ -43,7 +43,7 @@
                                 </tr>
                                 <tr>
                                     <th>Used Date</th>
-                                    <td>{{ $depositVoucher->used_date ? $depositVoucher->used_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                    <td>{{ $depositVoucher->used_date ? toSiteTimezone($depositVoucher->used_date, 'Y-m-d H:i') : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Modal</th>
@@ -55,11 +55,11 @@
                                 </tr>
                                 <tr>
                                     <th>Created At</th>
-                                    <td>{{ $depositVoucher->created_at->format('Y-m-d H:i') }}</td>
+                                    <td>{{ toSiteTimezone($depositVoucher->created_at, 'Y-m-d H:i') }}</td>
                                 </tr>
                                 <tr>
                                     <th>Updated At</th>
-                                    <td>{{ $depositVoucher->updated_at->format('Y-m-d H:i') }}</td>
+                                    <td>{{ toSiteTimezone($depositVoucher->updated_at, 'Y-m-d H:i') }}</td>
                                 </tr>
                             </table>
                         </div>

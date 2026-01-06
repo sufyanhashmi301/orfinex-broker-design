@@ -94,10 +94,8 @@ class ForexAccount extends Model
         return $this->belongsTo(User::class, 'user_id')->withDefault();
     }
 
-    public function getCreatedAtAttribute($value)
-    {
-        return date('M d, Y H:i', strtotime($value));
-    }
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
     public function scopeApplyFilters(Builder $query, $filters)
     {
         if (!empty($filters['global_search'])) {

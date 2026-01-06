@@ -78,10 +78,14 @@ class IBTransactionController extends Controller
                     if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {
                         $manualData = json_decode($row->manual_field_data, true);
                         if (is_array($manualData) && isset($manualData['time'])) {
-                            return Carbon::parse($manualData['time'])->format('M d, Y h:i A');
+                            // Database stores in UTC, convert to site timezone for display
+                            return toSiteTimezone($manualData['time'], 'M d, Y h:i A');
                         }
                     }
-                    return Carbon::parse($row->created_at)->format('M d, Y h:i A');
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $createdAt = $row->getOriginal('created_at');
+                    return toSiteTimezone($createdAt, 'M d, Y h:i A');
                 })
                 ->addColumn('deal_info', function ($row) {
                     if (!empty($row->manual_field_data) && $row->manual_field_data !== '[]') {

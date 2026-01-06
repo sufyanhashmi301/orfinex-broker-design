@@ -171,14 +171,7 @@
                         data: 'created_at',
                         name: 'created_at',
                         orderable: true,
-                        render: function(data, type, row) {
-                            var date = new Date(data);
-                            var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-                            var timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-                            var dateString = date.toLocaleDateString('en-GB', dateOptions);
-                            var timeString = date.toLocaleTimeString('en-GB', timeOptions);
-                            return `${dateString} ${timeString}`;
-                        }
+                        // Server-side formatting is handled in SymbolGroupController using toSiteTimezone
                     },
                     { data: 'action', name: 'action', orderable: false },
                 ]

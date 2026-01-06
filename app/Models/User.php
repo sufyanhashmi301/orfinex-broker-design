@@ -142,7 +142,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     
     public function getUpdatedAtAttribute(): string
     {
-        return Carbon::parse($this->attributes['updated_at'])->format('M d Y h:i');
+        // Database stores in UTC, convert to site timezone for display
+        return toSiteTimezone($this->attributes['updated_at'], 'M d Y h:i');
     }
 
     public function getFullNameAttribute(): string

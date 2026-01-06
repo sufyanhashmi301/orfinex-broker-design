@@ -43,14 +43,14 @@
             <div>
                 <span class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Submitted At') }}:</span>
                 <span
-                    class="text-sm text-slate-900 dark:text-white ml-2">{{ $depositRequest->submitted_at ? $depositRequest->submitted_at->format('Y-m-d H:i:s') : 'N/A' }}</span>
+                    class="text-sm text-slate-900 dark:text-white ml-2">{{ $depositRequest->submitted_at ? toSiteTimezone($depositRequest->submitted_at, 'Y-m-d H:i:s') : 'N/A' }}</span>
             </div>
             @if ($depositRequest->approved_at)
                 <div>
                     <span
                         class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Processed At') }}:</span>
                     <span
-                        class="text-sm text-slate-900 dark:text-white ml-2">{{ $depositRequest->approved_at->format('Y-m-d H:i:s') }}</span>
+                        class="text-sm text-slate-900 dark:text-white ml-2">{{ toSiteTimezone($depositRequest->approved_at, 'Y-m-d H:i:s') }}</span>
                 </div>
             @endif
             @if ($depositRequest->approvedBy)

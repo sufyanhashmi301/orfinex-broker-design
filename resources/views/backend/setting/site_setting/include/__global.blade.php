@@ -108,9 +108,22 @@
                         @endif
 
                         @if($field['name'] == 'site_timezone')
-                            <select name="{{$field['name']}}" class="form-control w-100 site-timezone" id="">
-                                <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                </option>
+                            @php
+                                $currentTimezone = oldSetting($field['name'], $section) ?: setting($field['name'], $section, 'UTC');
+                                $allTimezones = function_exists('getAllTimezones') ? getAllTimezones() : [];
+                                // Fallback: if function doesn't exist, create basic timezone list
+                                if (empty($allTimezones)) {
+                                    foreach (timezone_identifiers_list() as $tz) {
+                                        $allTimezones[] = ['id' => $tz, 'text' => $tz];
+                                    }
+                                }
+                            @endphp
+                            <select name="{{$field['name']}}" class="form-control w-100 site-timezone" id="site_timezone_select">
+                                @foreach($allTimezones as $tz)
+                                    <option value="{{ $tz['id'] }}" {{ ($tz['id'] == $currentTimezone) ? 'selected' : '' }}>
+                                        {{ $tz['text'] }}
+                                    </option>
+                                @endforeach
                             </select>
                         @endif
 

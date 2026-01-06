@@ -53,10 +53,19 @@ class ForexAccountStatementLogController extends Controller
                     return $log->formatted_file_size;
                 })
                 ->editColumn('statement_date', function ($log) {
-                    return $log->statement_date->format('Y-m-d');
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $statementDate = $log->getOriginal('statement_date');
+                    return toSiteTimezone($statementDate, 'Y-m-d');
                 })
                 ->editColumn('sent_at', function ($log) {
-                    return $log->sent_at->format('Y-m-d H:i:s');
+                    if (!$log->sent_at) {
+                        return 'N/A';
+                    }
+                    // Database stores in UTC, convert to site timezone for display
+                    // Use getOriginal to bypass accessor and get raw UTC timestamp
+                    $sentAt = $log->getOriginal('sent_at');
+                    return toSiteTimezone($sentAt, 'Y-m-d H:i:s');
                 })
                 ->rawColumns(['account_login','user_email','status_badge'])
                 ->make(true);
@@ -181,13 +190,17 @@ class ForexAccountStatementLogController extends Controller
 
             // CSV data
             foreach ($logs as $log) {
+                // Database stores in UTC, convert to site timezone for display
+                // Use getOriginal to bypass accessor and get raw UTC timestamp
+                $statementDate = $log->getOriginal('statement_date');
+                $sentAt = $log->getOriginal('sent_at');
                 fputcsv($file, [
                     $log->account_login,
                     $log->user_email,
-                    $log->statement_date->format('Y-m-d'),
+                    toSiteTimezone($statementDate, 'Y-m-d'),
                     $log->status_text,
                     $log->formatted_file_size,
-                    $log->sent_at->format('Y-m-d H:i:s'),
+                    toSiteTimezone($sentAt, 'Y-m-d H:i:s'),
                     $log->error_message ?? ''
                 ]);
             }

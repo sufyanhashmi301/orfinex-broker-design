@@ -61,10 +61,8 @@ class Admin extends Authenticatable
 //        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
     }
 
-    public function getCreatedAtAttribute(): string
-    {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
-    }
+    // Removed getCreatedAtAttribute to allow proper timezone conversion in controllers/views
+    // Use toSiteTimezone() in DataTables and blade views for display
 
     public function department()
     {

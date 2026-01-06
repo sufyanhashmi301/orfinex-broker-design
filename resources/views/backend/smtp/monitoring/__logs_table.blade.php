@@ -17,7 +17,7 @@
                     <td class="table-td">{{ $log->id }}</td>
                     <td class="table-td">
                         <span class="text-gray-600 dark:text-gray-400">
-                            {{ $log->created_at->format('Y-m-d H:i:s') }}
+                            {{ toSiteTimezone($log->created_at, 'Y-m-d H:i:s') }}
                         </span>
                         <br>
                         <span class="text-gray-500">
@@ -54,7 +54,7 @@
                     </td>
                     <td class="table-td">
                         @if($log->resent_at)
-                            <span class="badge bg-success-500 text-white capitalize" data-tippy-content="Resent on {{ $log->resent_at->format('M d, Y H:i') }}">
+                            <span class="badge bg-success-500 text-white capitalize" data-tippy-content="Resent on {{ toSiteTimezone($log->resent_at, 'M d, Y H:i') }}">
                                 <iconify-icon icon="heroicons:check-circle" class="mr-1"></iconify-icon>
                                 {{ __('Resent') }}
                             </span>

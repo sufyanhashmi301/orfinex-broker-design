@@ -57,7 +57,7 @@
                 <div class="flex justify-between space-x-4 rtl:space-x-reverse">
                     <div>
                         <span class="block date-label">{{ __('Created At:') }}</span>
-                        <span class="block date-text">{{ $ticket->created_at }}</span>
+                        <span class="block date-text">{{ toSiteTimezone($ticket->created_at) }}</span>
                     </div>
                     <div>
                         <span class="block date-label">{{ __('Priority:') }}</span>

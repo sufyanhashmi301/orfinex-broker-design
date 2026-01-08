@@ -135,7 +135,7 @@
                                     class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">{{ __('Submitted Date') }}</label>
                                 <div class="text-sm text-slate-700 dark:text-slate-300 flex items-center">
                                     <iconify-icon icon="lucide:calendar" class="text-sm ltr:mr-2 rtl:ml-2"></iconify-icon>
-                                    {{ $request->submitted_at->format('M d, Y \a\t H:i') }}
+                                    {{ toSiteTimezone($request->submitted_at, 'M d, Y \a\t H:i') }}
                                 </div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                                         class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">{{ __('Processed Date') }}</label>
                                     <div class="text-sm text-slate-700 dark:text-slate-300 flex items-center">
                                         <iconify-icon icon="lucide:check" class="text-sm ltr:mr-2 rtl:ml-2"></iconify-icon>
-                                        {{ $request->approved_at->format('M d, Y \a\t H:i') }}
+                                        {{ toSiteTimezone($request->approved_at, 'M d, Y \a\t H:i') }}
                                     </div>
                                 </div>
                             @endif

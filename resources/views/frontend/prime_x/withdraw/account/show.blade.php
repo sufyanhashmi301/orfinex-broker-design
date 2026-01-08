@@ -25,7 +25,7 @@
             </div>
             <div class="flex items-center justify-between">
                 <span class="text-sm font-medium text-slate-600 dark:text-slate-300">{{ __('Created At:') }}</span>
-                <span class="text-sm text-slate-900 dark:text-white">{{ $account->created_at->format('Y-m-d H:i:s') }}</span>
+                <span class="text-sm text-slate-900 dark:text-white">{{ toSiteTimezone($account->created_at, 'Y-m-d H:i:s') }}</span>
             </div>
         </div>
     </div>

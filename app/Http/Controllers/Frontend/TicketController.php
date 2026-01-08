@@ -44,6 +44,9 @@ class TicketController extends Controller
             return Datatables::of($ticketsQuery)
                 ->addIndexColumn()
                 ->addColumn('title', 'frontend::ticket.include.__title')
+                ->editColumn('created_at', function ($ticket) {
+                    return toSiteTimezone($ticket->created_at);
+                })
                 ->addColumn('status', 'frontend::ticket.include.__status')
                 ->addColumn('action', 'frontend::ticket.include.__action')
                 ->rawColumns(['title', 'status', 'action'])

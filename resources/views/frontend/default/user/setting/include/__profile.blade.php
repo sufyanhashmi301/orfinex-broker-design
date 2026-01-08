@@ -66,7 +66,7 @@
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Joining Date') }}</label>
-                        <input type="text" class="form-control !text-lg disabled" value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}" placeholder="Joining Date" disabled />
+                        <input type="text" class="form-control !text-lg disabled" value="{{ toSiteTimezone($user->created_at, 'D, M d, Y h:i A') }}" placeholder="Joining Date" disabled />
                     </div>
 
                     <div class="mt-4">

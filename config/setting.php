@@ -538,7 +538,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_timezone', // unique name for field
                 'label' => 'Site Timezone', // you know what label it is
-                'description' => 'Sets the default timezone for all system timestamps and activities. All database records are stored in UTC and displayed according to this timezone.',
+                'description' => 'Sets your personal timezone preference for displaying timestamps. This setting is admin-specific and only affects your view. All database records are stored in UTC. Priority: Your timezone → Your location → UTC.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
                 'options' => [], // Options populated via JavaScript using getAllTimezones() helper

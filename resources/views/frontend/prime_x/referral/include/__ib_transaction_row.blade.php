@@ -18,7 +18,7 @@
                         @endif
                     </h4>
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                        {{ Carbon::parse($transaction->created_at)->format('M d, Y h:i A') }}
+                        {{ toSiteTimezone($transaction->created_at, 'M d, Y h:i A') }}
                     </div>
                 </div>
             </div>

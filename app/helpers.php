@@ -2445,14 +2445,257 @@ if (!function_exists('getAllTimezones')) {
     }
 }
 
+if (!function_exists('getTimezoneFromCountry')) {
+    /**
+     * Get timezone from country name
+     * Maps country names to their primary timezone
+     * 
+     * @param string|null $countryName Country name
+     * @return string|null Timezone identifier or null
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function getTimezoneFromCountry($countryName)
+    {
+        if (empty($countryName)) {
+            return null;
+        }
+
+        // Comprehensive country to timezone mapping
+        $countryTimezoneMap = [
+            // North America
+            'United States' => 'America/New_York',
+            'USA' => 'America/New_York',
+            'US' => 'America/New_York',
+            'Canada' => 'America/Toronto',
+            'Mexico' => 'America/Mexico_City',
+            
+            // Europe
+            'United Kingdom' => 'Europe/London',
+            'UK' => 'Europe/London',
+            'Germany' => 'Europe/Berlin',
+            'France' => 'Europe/Paris',
+            'Italy' => 'Europe/Rome',
+            'Spain' => 'Europe/Madrid',
+            'Netherlands' => 'Europe/Amsterdam',
+            'Belgium' => 'Europe/Brussels',
+            'Switzerland' => 'Europe/Zurich',
+            'Austria' => 'Europe/Vienna',
+            'Sweden' => 'Europe/Stockholm',
+            'Norway' => 'Europe/Oslo',
+            'Denmark' => 'Europe/Copenhagen',
+            'Finland' => 'Europe/Helsinki',
+            'Poland' => 'Europe/Warsaw',
+            'Portugal' => 'Europe/Lisbon',
+            'Greece' => 'Europe/Athens',
+            'Turkey' => 'Europe/Istanbul',
+            'Russia' => 'Europe/Moscow',
+            'Ireland' => 'Europe/Dublin',
+            'Czech Republic' => 'Europe/Prague',
+            'Hungary' => 'Europe/Budapest',
+            'Romania' => 'Europe/Bucharest',
+            'Bulgaria' => 'Europe/Sofia',
+            'Croatia' => 'Europe/Zagreb',
+            'Serbia' => 'Europe/Belgrade',
+            'Ukraine' => 'Europe/Kiev',
+            
+            // Asia
+            'Japan' => 'Asia/Tokyo',
+            'China' => 'Asia/Shanghai',
+            'India' => 'Asia/Kolkata',
+            'South Korea' => 'Asia/Seoul',
+            'Singapore' => 'Asia/Singapore',
+            'Malaysia' => 'Asia/Kuala_Lumpur',
+            'Thailand' => 'Asia/Bangkok',
+            'Indonesia' => 'Asia/Jakarta',
+            'Philippines' => 'Asia/Manila',
+            'Vietnam' => 'Asia/Ho_Chi_Minh',
+            'Pakistan' => 'Asia/Karachi',
+            'Afghanistan' => 'Asia/Kabul',
+            'Bangladesh' => 'Asia/Dhaka',
+            'Sri Lanka' => 'Asia/Colombo',
+            'Nepal' => 'Asia/Kathmandu',
+            'Myanmar' => 'Asia/Yangon',
+            'Cambodia' => 'Asia/Phnom_Penh',
+            'Laos' => 'Asia/Vientiane',
+            'Mongolia' => 'Asia/Ulaanbaatar',
+            'Taiwan' => 'Asia/Taipei',
+            'Hong Kong' => 'Asia/Hong_Kong',
+            'Macau' => 'Asia/Macau',
+            'North Korea' => 'Asia/Pyongyang',
+            'Kazakhstan' => 'Asia/Almaty',
+            'Uzbekistan' => 'Asia/Tashkent',
+            'Kyrgyzstan' => 'Asia/Bishkek',
+            'Tajikistan' => 'Asia/Dushanbe',
+            'Turkmenistan' => 'Asia/Ashgabat',
+            'Iran' => 'Asia/Tehran',
+            'Iraq' => 'Asia/Baghdad',
+            'Jordan' => 'Asia/Amman',
+            'Lebanon' => 'Asia/Beirut',
+            'Syria' => 'Asia/Damascus',
+            'Yemen' => 'Asia/Aden',
+            'Oman' => 'Asia/Muscat',
+            'United Arab Emirates' => 'Asia/Dubai',
+            'UAE' => 'Asia/Dubai',
+            'Saudi Arabia' => 'Asia/Riyadh',
+            'Qatar' => 'Asia/Qatar',
+            'Kuwait' => 'Asia/Kuwait',
+            'Bahrain' => 'Asia/Bahrain',
+            'Israel' => 'Asia/Jerusalem',
+            'Palestine' => 'Asia/Gaza',
+            
+            // Africa
+            'Egypt' => 'Africa/Cairo',
+            'South Africa' => 'Africa/Johannesburg',
+            'Algeria' => 'Africa/Algiers',
+            'Morocco' => 'Africa/Casablanca',
+            'Tunisia' => 'Africa/Tunis',
+            'Libya' => 'Africa/Tripoli',
+            'Sudan' => 'Africa/Khartoum',
+            'Ethiopia' => 'Africa/Addis_Ababa',
+            'Kenya' => 'Africa/Nairobi',
+            'Nigeria' => 'Africa/Lagos',
+            'Ghana' => 'Africa/Accra',
+            'Senegal' => 'Africa/Dakar',
+            'Tanzania' => 'Africa/Dar_es_Salaam',
+            'Uganda' => 'Africa/Kampala',
+            'Zimbabwe' => 'Africa/Harare',
+            'Mozambique' => 'Africa/Maputo',
+            'Angola' => 'Africa/Luanda',
+            'Zambia' => 'Africa/Lusaka',
+            'Botswana' => 'Africa/Gaborone',
+            'Namibia' => 'Africa/Windhoek',
+            'Mauritius' => 'Indian/Mauritius',
+            'Madagascar' => 'Indian/Antananarivo',
+            
+            // South America
+            'Brazil' => 'America/Sao_Paulo',
+            'Argentina' => 'America/Argentina/Buenos_Aires',
+            'Chile' => 'America/Santiago',
+            'Colombia' => 'America/Bogota',
+            'Peru' => 'America/Lima',
+            'Venezuela' => 'America/Caracas',
+            'Ecuador' => 'America/Guayaquil',
+            'Bolivia' => 'America/La_Paz',
+            'Paraguay' => 'America/Asuncion',
+            'Uruguay' => 'America/Montevideo',
+            
+            // Oceania
+            'Australia' => 'Australia/Sydney',
+            'New Zealand' => 'Pacific/Auckland',
+            'Fiji' => 'Pacific/Fiji',
+            'Papua New Guinea' => 'Pacific/Port_Moresby',
+        ];
+
+        // Normalize country name (trim and handle common variations)
+        $normalizedCountryName = trim($countryName);
+        
+        // Try exact match first
+        if (isset($countryTimezoneMap[$normalizedCountryName])) {
+            return $countryTimezoneMap[$normalizedCountryName];
+        }
+
+        // Try case-insensitive match
+        foreach ($countryTimezoneMap as $country => $timezone) {
+            if (strcasecmp($country, $normalizedCountryName) === 0) {
+                return $timezone;
+            }
+        }
+        
+        // Try partial match (in case country name has extra words)
+        foreach ($countryTimezoneMap as $country => $timezone) {
+            if (stripos($normalizedCountryName, $country) !== false || 
+                stripos($country, $normalizedCountryName) !== false) {
+                return $timezone;
+            }
+        }
+
+        // Try to find timezone by country code if available
+        $countryCode = getCountryCode($countryName);
+        if ($countryCode) {
+            // Use PHP's timezone_identifiers_list with country code
+            // This is a fallback - we'll try to match common patterns
+            $timezones = timezone_identifiers_list();
+            foreach ($timezones as $tz) {
+                // Try to match country code in timezone identifier
+                if (stripos($tz, $countryCode) !== false || 
+                    (strlen($countryCode) === 2 && stripos($tz, strtolower($countryCode)) !== false)) {
+                    // Return first reasonable match
+                    return $tz;
+                }
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('getCurrentUserTimezone')) {
+    /**
+     * Get timezone for current logged-in user (admin or user)
+     * Priority for admin: admin timezone column -> admin location column -> UTC
+     * Priority for user: country-based timezone -> UTC
+     * 
+     * @return string Timezone identifier
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function getCurrentUserTimezone()
+    {
+        // Check if admin is logged in
+        if (auth('admin')->check()) {
+            $admin = auth('admin')->user();
+            
+            // Priority 1: Admin's timezone column (if set and valid)
+            if (!empty($admin->timezone)) {
+                $adminTimezone = trim($admin->timezone);
+                if (in_array($adminTimezone, timezone_identifiers_list())) {
+                    return $adminTimezone;
+                }
+            }
+            
+            // Priority 2: Admin's location column (derive timezone from country name)
+            if (!empty($admin->location)) {
+                $locationTimezone = getTimezoneFromCountry($admin->location);
+                if ($locationTimezone && in_array($locationTimezone, timezone_identifiers_list())) {
+                    return $locationTimezone;
+                }
+            }
+            
+            // Priority 3: UTC fallback (if both timezone and location are empty or invalid)
+            return 'UTC';
+        }
+        
+        // Check if user is logged in
+        if (auth()->check()) {
+            $user = auth()->user();
+            
+            // Priority 1: User's country-based timezone (derive from country name)
+            if (!empty($user->country)) {
+                $countryTimezone = getTimezoneFromCountry($user->country);
+                if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                    return $countryTimezone;
+                }
+            }
+            
+            // Priority 2: UTC fallback (if country is empty or timezone not found)
+            return 'UTC';
+        }
+        
+        // No user logged in, return UTC
+        return 'UTC';
+    }
+}
+
 if (!function_exists('toSiteTimezone')) {
     /**
      * Convert UTC timestamp to site timezone for display
      * Database stores all timestamps in UTC, this function converts them to the selected site timezone
+     * Uses admin-specific or user-specific timezone based on who is logged in
      * 
      * @param mixed $timestamp Carbon instance, DateTime, or string timestamp
      * @param string|null $format Date format string (default: 'M d, Y h:i A')
-     * @param string|null $timezone Optional timezone override (defaults to site_timezone setting)
+     * @param string|null $timezone Optional timezone override (defaults to current user's timezone)
      * @return string|Carbon Formatted date string if format provided, Carbon instance otherwise
      * @version 1.0.0
      * @since 1.0
@@ -2463,8 +2706,8 @@ if (!function_exists('toSiteTimezone')) {
             return null;
         }
 
-        // Get site timezone from settings with env fallback
-        $siteTimezone = $timezone ?? setting('site_timezone', 'global') ?: env('APP_TIMEZONE', 'UTC');
+        // Get timezone: use override, or current user's timezone, or UTC fallback
+        $siteTimezone = $timezone ?? getCurrentUserTimezone();
         
         // Ensure we have a valid timezone, fallback to UTC
         if (empty($siteTimezone) || !in_array($siteTimezone, timezone_identifiers_list())) {

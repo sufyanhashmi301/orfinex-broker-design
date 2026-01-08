@@ -109,7 +109,31 @@
 
                         @if($field['name'] == 'site_timezone')
                             @php
-                                $currentTimezone = oldSetting($field['name'], $section) ?: setting($field['name'], $section, 'UTC');
+                                // Get admin's timezone preference (priority: admin timezone -> admin location -> UTC)
+                                $admin = auth('admin')->user();
+                                $currentTimezone = 'UTC';
+                                
+                                if ($admin) {
+                                    // Priority 1: Admin's timezone column (if set and valid)
+                                    if (!empty($admin->timezone)) {
+                                        $adminTz = trim($admin->timezone);
+                                        if (in_array($adminTz, timezone_identifiers_list())) {
+                                            $currentTimezone = $adminTz;
+                                        }
+                                    }
+                                    
+                                    // Priority 2: Admin's location-based timezone (if timezone column is empty)
+                                    if ($currentTimezone === 'UTC' && !empty($admin->location) && function_exists('getTimezoneFromCountry')) {
+                                        $locationTimezone = getTimezoneFromCountry($admin->location);
+                                        if ($locationTimezone && in_array($locationTimezone, timezone_identifiers_list())) {
+                                            $currentTimezone = $locationTimezone;
+                                        }
+                                    }
+                                }
+                                
+                                // Use old value if form was submitted with errors
+                                $currentTimezone = old($field['name'], $currentTimezone);
+                                
                                 $allTimezones = function_exists('getAllTimezones') ? getAllTimezones() : [];
                                 // Fallback: if function doesn't exist, create basic timezone list
                                 if (empty($allTimezones)) {

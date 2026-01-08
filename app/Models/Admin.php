@@ -36,6 +36,7 @@ class Admin extends Authenticatable
         'employment_status',
         'source_of_hire',
         'location',
+        'timezone',
         'date_of_joining',
         'date_of_birth',
         'gender',

@@ -54,7 +54,7 @@
                         @endif
                     </h4>
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-200">
-                        {{ $transaction->display_time->format('M d, Y h:i A') }}
+                        {{ $transaction->display_time }}
                     </div>
                 </div>
             </div>

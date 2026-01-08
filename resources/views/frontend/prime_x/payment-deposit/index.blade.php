@@ -19,7 +19,7 @@
                             {{ __("Your payment deposit request is under review and we'll provide bank details shortly. Stay tuned!") }}
                         </p>
                         <div class="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                            {{ __('Submitted on: ') }} {{ $latestRequest->submitted_at->format('M d, Y \a\t H:i') }}
+                            {{ __('Submitted on: ') }} {{ toSiteTimezone($latestRequest->submitted_at, 'M d, Y \a\t H:i') }}
                         </div>
                         <div class="flex flex-wrap items-center justify-center gap-3">
                             <a href="{{ route('user.payment-deposit.show', $latestRequest->id) }}"

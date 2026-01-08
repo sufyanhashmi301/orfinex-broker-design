@@ -11,7 +11,7 @@
                     {{ $transaction->tnx }}
                 </div>
                 <div class="transaction-date dark:text-white mb-1">
-                    {{ Carbon::parse($transaction->created_at)->format('M d, Y h:i A') }}
+                    {{ toSiteTimezone($transaction->created_at, 'M d, Y h:i A') }}
                 </div>
             </div>
         </div>

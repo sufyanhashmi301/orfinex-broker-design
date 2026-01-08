@@ -227,6 +227,17 @@ class SettingController extends Controller
             foreach ($data as $key => $val) {
                 if (in_array($key, $validSettings)) {
 
+                    // Special handling for site_timezone - save to admin table instead of settings
+                    if ($key === 'site_timezone' && $section === 'global') {
+                        $admin = auth('admin')->user();
+                        if ($admin) {
+                            $admin->update(['timezone' => $val]);
+                        }
+                        // Still save to settings as fallback for backward compatibility
+                        Setting::add($key, $val, Setting::getDataType($key, $section));
+                        continue;
+                    }
+
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);
                         $val = self::imageUploadTrait($val, $oldImage);

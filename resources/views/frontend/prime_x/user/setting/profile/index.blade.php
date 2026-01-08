@@ -40,7 +40,7 @@
                                 <span class="font-medium">
                                     {{ __('Member since: ') }}
                                 </span>
-                                {{ carbonInstance($user->created_at)->toDayDateTimeString() }}
+                                {{ toSiteTimezone($user->created_at, 'D, M d, Y h:i A') }}
                             </div>
                         </div>
                         <ul class="space-y-5">

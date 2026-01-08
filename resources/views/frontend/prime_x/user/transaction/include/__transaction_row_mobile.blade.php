@@ -9,7 +9,7 @@
                     {{ $transaction->tnx }}
                 </div>
                 <div class="transaction-date dark:text-white mb-1">
-                    {{ $transaction->display_time->format('M d, Y h:i A') }}
+                    {{ $transaction->display_time }}
                 </div>
             </div>
         </div>

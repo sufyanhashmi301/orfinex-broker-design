@@ -34,6 +34,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'first_name',
         'last_name',
         'country',
+        'timezone',
         'phone',
         'phone_verified_at',
         'username',
@@ -540,6 +541,34 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
+
+    /**
+     * Get the timezone attribute with getter
+     * 
+     * @return string|null
+     */
+    public function getTimezoneAttribute($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Set the timezone attribute with setter
+     * 
+     * @param string|null $value
+     * @return void
+     */
+    public function setTimezoneAttribute($value)
+    {
+        // Validate timezone if provided
+        if (!empty($value) && !in_array($value, timezone_identifiers_list())) {
+            // If invalid timezone, set to null
+            $this->attributes['timezone'] = null;
+        } else {
+            $this->attributes['timezone'] = $value ? trim($value) : null;
+        }
+    }
+
     protected static function booted()
     {
         static::addGlobalScope(new ExcludeGracePeriodScope);

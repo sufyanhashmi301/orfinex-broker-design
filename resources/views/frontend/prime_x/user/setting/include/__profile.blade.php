@@ -115,6 +115,48 @@
                     </div>
 
                     <div class="input-area relative">
+                        <label for="exampleFormControlInput1" class="form-label">{{ __('Timezone') }}</label>
+                        @php
+                            // Get user's timezone preference (priority: user timezone -> user country -> UTC)
+                            $currentTimezone = 'UTC';
+                            
+                            // Priority 1: User's timezone column (if set and valid)
+                            if (!empty($user->timezone)) {
+                                $userTz = trim($user->timezone);
+                                if (in_array($userTz, timezone_identifiers_list())) {
+                                    $currentTimezone = $userTz;
+                                }
+                            }
+                            
+                            // Priority 2: User's country-based timezone (if timezone column is empty)
+                            if ($currentTimezone === 'UTC' && !empty($user->country) && function_exists('getTimezoneByCountry')) {
+                                $countryTimezone = getTimezoneByCountry($user->country);
+                                if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                                    $currentTimezone = $countryTimezone;
+                                }
+                            }
+                            
+                            // Use old value if form was submitted with errors
+                            $currentTimezone = old('timezone', $currentTimezone);
+                            
+                            $allTimezones = function_exists('getAllTimezones') ? getAllTimezones() : [];
+                            // Fallback: if function doesn't exist, create basic timezone list
+                            if (empty($allTimezones)) {
+                                foreach (timezone_identifiers_list() as $tz) {
+                                    $allTimezones[] = ['id' => $tz, 'text' => $tz];
+                                }
+                            }
+                        @endphp
+                        <select name="timezone" class="select2 form-control w-full" id="user_timezone_select">
+                            @foreach($allTimezones as $tz)
+                                <option value="{{ $tz['id'] }}" {{ ($tz['id'] == $currentTimezone) ? 'selected' : '' }}>
+                                    {{ $tz['text'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('City') }}</label>
                         <input type="text" class="form-control" name="city" value="{{ $user->city }}"
                             placeholder="{{ __('City') }}" />

@@ -2461,7 +2461,7 @@ if (!function_exists('getTimezoneFromCountry')) {
             return null;
         }
 
-        // Comprehensive country to timezone mapping
+        // Comprehensive country to timezone mapping - covers all countries from CountryCodes.json
         $countryTimezoneMap = [
             // North America
             'United States' => 'America/New_York',
@@ -2469,122 +2469,234 @@ if (!function_exists('getTimezoneFromCountry')) {
             'US' => 'America/New_York',
             'Canada' => 'America/Toronto',
             'Mexico' => 'America/Mexico_City',
+            'AmericanSamoa' => 'Pacific/Pago_Pago',
+            'Anguilla' => 'America/Anguilla',
+            'Antigua and Barbuda' => 'America/Antigua',
+            'Aruba' => 'America/Aruba',
+            'Bahamas' => 'America/Nassau',
+            'Barbados' => 'America/Barbados',
+            'Belize' => 'America/Belize',
+            'Bermuda' => 'Atlantic/Bermuda',
+            'British Virgin Islands' => 'America/Tortola',
+            'Cayman Islands' => 'America/Cayman',
+            'Costa Rica' => 'America/Costa_Rica',
+            'Cuba' => 'America/Havana',
+            'Dominica' => 'America/Dominica',
+            'Dominican Republic' => 'America/Santo_Domingo',
+            'El Salvador' => 'America/El_Salvador',
+            'Greenland' => 'America/Godthab',
+            'Grenada' => 'America/Grenada',
+            'Guadeloupe' => 'America/Guadeloupe',
+            'Guatemala' => 'America/Guatemala',
+            'Haiti' => 'America/Port-au-Prince',
+            'Honduras' => 'America/Tegucigalpa',
+            'Jamaica' => 'America/Jamaica',
+            'Martinique' => 'America/Martinique',
+            'Montserrat' => 'America/Montserrat',
+            'Nicaragua' => 'America/Managua',
+            'Panama' => 'America/Panama',
+            'Puerto Rico' => 'America/Puerto_Rico',
+            'Saint Kitts and Nevis' => 'America/St_Kitts',
+            'Saint Lucia' => 'America/St_Lucia',
+            'Saint Vincent and the Grenadines' => 'America/St_Vincent',
+            'Trinidad and Tobago' => 'America/Port_of_Spain',
+            'Turks and Caicos Islands' => 'America/Grand_Turk',
+            'US Virgin Islands' => 'America/St_Thomas',
             
             // Europe
             'United Kingdom' => 'Europe/London',
             'UK' => 'Europe/London',
-            'Germany' => 'Europe/Berlin',
-            'France' => 'Europe/Paris',
-            'Italy' => 'Europe/Rome',
-            'Spain' => 'Europe/Madrid',
-            'Netherlands' => 'Europe/Amsterdam',
-            'Belgium' => 'Europe/Brussels',
-            'Switzerland' => 'Europe/Zurich',
+            'Aland Islands' => 'Europe/Mariehamn',
+            'Albania' => 'Europe/Tirane',
+            'Andorra' => 'Europe/Andorra',
+            'Armenia' => 'Asia/Yerevan',
             'Austria' => 'Europe/Vienna',
-            'Sweden' => 'Europe/Stockholm',
-            'Norway' => 'Europe/Oslo',
-            'Denmark' => 'Europe/Copenhagen',
-            'Finland' => 'Europe/Helsinki',
-            'Poland' => 'Europe/Warsaw',
-            'Portugal' => 'Europe/Lisbon',
-            'Greece' => 'Europe/Athens',
-            'Turkey' => 'Europe/Istanbul',
-            'Russia' => 'Europe/Moscow',
-            'Ireland' => 'Europe/Dublin',
-            'Czech Republic' => 'Europe/Prague',
-            'Hungary' => 'Europe/Budapest',
-            'Romania' => 'Europe/Bucharest',
+            'Azerbaijan' => 'Asia/Baku',
+            'Belarus' => 'Europe/Minsk',
+            'Belgium' => 'Europe/Brussels',
+            'Bosnia and Herzegovina' => 'Europe/Sarajevo',
             'Bulgaria' => 'Europe/Sofia',
             'Croatia' => 'Europe/Zagreb',
+            'Cyprus' => 'Asia/Nicosia',
+            'Czech Republic' => 'Europe/Prague',
+            'Denmark' => 'Europe/Copenhagen',
+            'Estonia' => 'Europe/Tallinn',
+            'Faroe Islands' => 'Atlantic/Faroe',
+            'Finland' => 'Europe/Helsinki',
+            'France' => 'Europe/Paris',
+            'Georgia' => 'Asia/Tbilisi',
+            'Germany' => 'Europe/Berlin',
+            'Gibraltar' => 'Europe/Gibraltar',
+            'Greece' => 'Europe/Athens',
+            'Guernsey' => 'Europe/Guernsey',
+            'Hungary' => 'Europe/Budapest',
+            'Iceland' => 'Atlantic/Reykjavik',
+            'Ireland' => 'Europe/Dublin',
+            'Isle of Man' => 'Europe/Isle_of_Man',
+            'Italy' => 'Europe/Rome',
+            'Jersey' => 'Europe/Jersey',
+            'Latvia' => 'Europe/Riga',
+            'Liechtenstein' => 'Europe/Vaduz',
+            'Lithuania' => 'Europe/Vilnius',
+            'Luxembourg' => 'Europe/Luxembourg',
+            'Malta' => 'Europe/Malta',
+            'Moldova' => 'Europe/Chisinau',
+            'Monaco' => 'Europe/Monaco',
+            'Montenegro' => 'Europe/Podgorica',
+            'Netherlands' => 'Europe/Amsterdam',
+            'North Macedonia' => 'Europe/Skopje',
+            'Norway' => 'Europe/Oslo',
+            'Poland' => 'Europe/Warsaw',
+            'Portugal' => 'Europe/Lisbon',
+            'Romania' => 'Europe/Bucharest',
+            'Russia' => 'Europe/Moscow',
+            'San Marino' => 'Europe/San_Marino',
             'Serbia' => 'Europe/Belgrade',
+            'Slovakia' => 'Europe/Bratislava',
+            'Slovenia' => 'Europe/Ljubljana',
+            'Spain' => 'Europe/Madrid',
+            'Svalbard and Jan Mayen' => 'Arctic/Longyearbyen',
+            'Sweden' => 'Europe/Stockholm',
+            'Switzerland' => 'Europe/Zurich',
+            'Turkey' => 'Europe/Istanbul',
             'Ukraine' => 'Europe/Kiev',
+            'Vatican' => 'Europe/Vatican',
             
             // Asia
-            'Japan' => 'Asia/Tokyo',
-            'China' => 'Asia/Shanghai',
-            'India' => 'Asia/Kolkata',
-            'South Korea' => 'Asia/Seoul',
-            'Singapore' => 'Asia/Singapore',
-            'Malaysia' => 'Asia/Kuala_Lumpur',
-            'Thailand' => 'Asia/Bangkok',
-            'Indonesia' => 'Asia/Jakarta',
-            'Philippines' => 'Asia/Manila',
-            'Vietnam' => 'Asia/Ho_Chi_Minh',
-            'Pakistan' => 'Asia/Karachi',
             'Afghanistan' => 'Asia/Kabul',
+            'Bahrain' => 'Asia/Bahrain',
             'Bangladesh' => 'Asia/Dhaka',
-            'Sri Lanka' => 'Asia/Colombo',
-            'Nepal' => 'Asia/Kathmandu',
-            'Myanmar' => 'Asia/Yangon',
+            'Bhutan' => 'Asia/Thimphu',
+            'Brunei' => 'Asia/Brunei',
             'Cambodia' => 'Asia/Phnom_Penh',
-            'Laos' => 'Asia/Vientiane',
-            'Mongolia' => 'Asia/Ulaanbaatar',
-            'Taiwan' => 'Asia/Taipei',
+            'China' => 'Asia/Shanghai',
             'Hong Kong' => 'Asia/Hong_Kong',
-            'Macau' => 'Asia/Macau',
-            'North Korea' => 'Asia/Pyongyang',
-            'Kazakhstan' => 'Asia/Almaty',
-            'Uzbekistan' => 'Asia/Tashkent',
-            'Kyrgyzstan' => 'Asia/Bishkek',
-            'Tajikistan' => 'Asia/Dushanbe',
-            'Turkmenistan' => 'Asia/Ashgabat',
+            'India' => 'Asia/Kolkata',
+            'Indonesia' => 'Asia/Jakarta',
             'Iran' => 'Asia/Tehran',
             'Iraq' => 'Asia/Baghdad',
+            'Israel' => 'Asia/Jerusalem',
+            'Japan' => 'Asia/Tokyo',
             'Jordan' => 'Asia/Amman',
+            'Kazakhstan' => 'Asia/Almaty',
+            'Kuwait' => 'Asia/Kuwait',
+            'Kyrgyzstan' => 'Asia/Bishkek',
+            'Laos' => 'Asia/Vientiane',
             'Lebanon' => 'Asia/Beirut',
-            'Syria' => 'Asia/Damascus',
-            'Yemen' => 'Asia/Aden',
+            'Macau' => 'Asia/Macau',
+            'Malaysia' => 'Asia/Kuala_Lumpur',
+            'Maldives' => 'Indian/Maldives',
+            'Mongolia' => 'Asia/Ulaanbaatar',
+            'Myanmar' => 'Asia/Yangon',
+            'Nepal' => 'Asia/Kathmandu',
+            'North Korea' => 'Asia/Pyongyang',
             'Oman' => 'Asia/Muscat',
+            'Pakistan' => 'Asia/Karachi',
+            'Palestine' => 'Asia/Gaza',
+            'Philippines' => 'Asia/Manila',
+            'Qatar' => 'Asia/Qatar',
+            'Saudi Arabia' => 'Asia/Riyadh',
+            'Singapore' => 'Asia/Singapore',
+            'South Korea' => 'Asia/Seoul',
+            'Sri Lanka' => 'Asia/Colombo',
+            'Syria' => 'Asia/Damascus',
+            'Taiwan' => 'Asia/Taipei',
+            'Tajikistan' => 'Asia/Dushanbe',
+            'Thailand' => 'Asia/Bangkok',
+            'Turkmenistan' => 'Asia/Ashgabat',
             'United Arab Emirates' => 'Asia/Dubai',
             'UAE' => 'Asia/Dubai',
-            'Saudi Arabia' => 'Asia/Riyadh',
-            'Qatar' => 'Asia/Qatar',
-            'Kuwait' => 'Asia/Kuwait',
-            'Bahrain' => 'Asia/Bahrain',
-            'Israel' => 'Asia/Jerusalem',
-            'Palestine' => 'Asia/Gaza',
+            'Uzbekistan' => 'Asia/Tashkent',
+            'Vietnam' => 'Asia/Ho_Chi_Minh',
+            'Yemen' => 'Asia/Aden',
             
             // Africa
-            'Egypt' => 'Africa/Cairo',
-            'South Africa' => 'Africa/Johannesburg',
             'Algeria' => 'Africa/Algiers',
-            'Morocco' => 'Africa/Casablanca',
-            'Tunisia' => 'Africa/Tunis',
-            'Libya' => 'Africa/Tripoli',
-            'Sudan' => 'Africa/Khartoum',
-            'Ethiopia' => 'Africa/Addis_Ababa',
-            'Kenya' => 'Africa/Nairobi',
-            'Nigeria' => 'Africa/Lagos',
-            'Ghana' => 'Africa/Accra',
-            'Senegal' => 'Africa/Dakar',
-            'Tanzania' => 'Africa/Dar_es_Salaam',
-            'Uganda' => 'Africa/Kampala',
-            'Zimbabwe' => 'Africa/Harare',
-            'Mozambique' => 'Africa/Maputo',
             'Angola' => 'Africa/Luanda',
-            'Zambia' => 'Africa/Lusaka',
+            'Benin' => 'Africa/Porto-Novo',
             'Botswana' => 'Africa/Gaborone',
-            'Namibia' => 'Africa/Windhoek',
-            'Mauritius' => 'Indian/Mauritius',
+            'Burkina Faso' => 'Africa/Ouagadougou',
+            'Burundi' => 'Africa/Bujumbura',
+            'Cameroon' => 'Africa/Douala',
+            'Cape Verde' => 'Atlantic/Cape_Verde',
+            'Central African Republic' => 'Africa/Bangui',
+            'Chad' => 'Africa/Ndjamena',
+            'Comoros' => 'Indian/Comoro',
+            'Congo' => 'Africa/Brazzaville',
+            'Cote d\'Ivoire' => 'Africa/Abidjan',
+            'Djibouti' => 'Africa/Djibouti',
+            'Egypt' => 'Africa/Cairo',
+            'Equatorial Guinea' => 'Africa/Malabo',
+            'Eritrea' => 'Africa/Asmara',
+            'Ethiopia' => 'Africa/Addis_Ababa',
+            'Gabon' => 'Africa/Libreville',
+            'Gambia' => 'Africa/Banjul',
+            'Ghana' => 'Africa/Accra',
+            'Guinea' => 'Africa/Conakry',
+            'Guinea-Bissau' => 'Africa/Bissau',
+            'Kenya' => 'Africa/Nairobi',
+            'Lesotho' => 'Africa/Maseru',
+            'Liberia' => 'Africa/Monrovia',
+            'Libya' => 'Africa/Tripoli',
             'Madagascar' => 'Indian/Antananarivo',
+            'Malawi' => 'Africa/Blantyre',
+            'Mali' => 'Africa/Bamako',
+            'Mauritania' => 'Africa/Nouakchott',
+            'Mauritius' => 'Indian/Mauritius',
+            'Morocco' => 'Africa/Casablanca',
+            'Mozambique' => 'Africa/Maputo',
+            'Namibia' => 'Africa/Windhoek',
+            'Niger' => 'Africa/Niamey',
+            'Nigeria' => 'Africa/Lagos',
+            'Rwanda' => 'Africa/Kigali',
+            'Sao Tome and Principe' => 'Africa/Sao_Tome',
+            'Senegal' => 'Africa/Dakar',
+            'Seychelles' => 'Indian/Mahe',
+            'Sierra Leone' => 'Africa/Freetown',
+            'Somalia' => 'Africa/Mogadishu',
+            'South Africa' => 'Africa/Johannesburg',
+            'South Sudan' => 'Africa/Juba',
+            'Sudan' => 'Africa/Khartoum',
+            'Swaziland' => 'Africa/Mbabane',
+            'Tanzania' => 'Africa/Dar_es_Salaam',
+            'Togo' => 'Africa/Lome',
+            'Tunisia' => 'Africa/Tunis',
+            'Uganda' => 'Africa/Kampala',
+            'Zambia' => 'Africa/Lusaka',
+            'Zimbabwe' => 'Africa/Harare',
             
             // South America
-            'Brazil' => 'America/Sao_Paulo',
             'Argentina' => 'America/Argentina/Buenos_Aires',
+            'Bolivia' => 'America/La_Paz',
+            'Brazil' => 'America/Sao_Paulo',
             'Chile' => 'America/Santiago',
             'Colombia' => 'America/Bogota',
-            'Peru' => 'America/Lima',
-            'Venezuela' => 'America/Caracas',
             'Ecuador' => 'America/Guayaquil',
-            'Bolivia' => 'America/La_Paz',
+            'Falkland Islands' => 'Atlantic/Stanley',
+            'French Guiana' => 'America/Cayenne',
+            'Guyana' => 'America/Guyana',
             'Paraguay' => 'America/Asuncion',
+            'Peru' => 'America/Lima',
+            'Suriname' => 'America/Paramaribo',
             'Uruguay' => 'America/Montevideo',
+            'Venezuela' => 'America/Caracas',
             
             // Oceania
             'Australia' => 'Australia/Sydney',
-            'New Zealand' => 'Pacific/Auckland',
             'Fiji' => 'Pacific/Fiji',
+            'French Polynesia' => 'Pacific/Tahiti',
+            'Guam' => 'Pacific/Guam',
+            'Kiribati' => 'Pacific/Tarawa',
+            'Marshall Islands' => 'Pacific/Majuro',
+            'Micronesia' => 'Pacific/Chuuk',
+            'New Caledonia' => 'Pacific/Noumea',
+            'New Zealand' => 'Pacific/Auckland',
+            'Palau' => 'Pacific/Palau',
             'Papua New Guinea' => 'Pacific/Port_Moresby',
+            'Samoa' => 'Pacific/Apia',
+            'Solomon Islands' => 'Pacific/Guadalcanal',
+            'Tonga' => 'Pacific/Tongatapu',
+            'Vanuatu' => 'Pacific/Efate',
         ];
 
         // Normalize country name (trim and handle common variations)
@@ -2630,55 +2742,106 @@ if (!function_exists('getTimezoneFromCountry')) {
     }
 }
 
+if (!function_exists('getTimezoneByCountry')) {
+    /**
+     * Get timezone from country name or location
+     * This is a wrapper function that can handle both country and location parameters
+     * 
+     * @param string|null $country Country name
+     * @param string|null $location Location name (used if country is null)
+     * @return string|null Timezone identifier or null
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function getTimezoneByCountry($country = null, $location = null)
+    {
+        // Priority: country parameter > location parameter
+        $nameToCheck = $country ?? $location;
+        
+        if (empty($nameToCheck)) {
+            return null;
+        }
+        
+        // Use getTimezoneFromCountry function
+        return getTimezoneFromCountry($nameToCheck);
+    }
+}
+
 if (!function_exists('getCurrentUserTimezone')) {
     /**
      * Get timezone for current logged-in user (admin or user)
      * Priority for admin: admin timezone column -> admin location column -> UTC
-     * Priority for user: country-based timezone -> UTC
+     * Priority for user: user timezone column -> country-based timezone -> UTC
      * 
      * @return string Timezone identifier
-     * @version 1.0.0
+     * @version 2.0.0
      * @since 1.0
      */
     function getCurrentUserTimezone()
     {
         // Check if admin is logged in
         if (auth('admin')->check()) {
-            $admin = auth('admin')->user();
+            $adminId = auth('admin')->id();
             
-            // Priority 1: Admin's timezone column (if set and valid)
-            if (!empty($admin->timezone)) {
-                $adminTimezone = trim($admin->timezone);
-                if (in_array($adminTimezone, timezone_identifiers_list())) {
-                    return $adminTimezone;
+            // Get timezone and location directly from database to ensure we have latest values
+            $adminData = \DB::table('admins')->where('id', $adminId)->first(['timezone', 'location']);
+            
+            if ($adminData) {
+                // 1. First priority: Check timezone column - if has value (not null, not empty string), use it as site_timezone
+                $adminTimezone = $adminData->timezone;
+                if ($adminTimezone !== null && $adminTimezone !== '' && $adminTimezone !== '0') {
+                    $adminTimezone = trim((string)$adminTimezone);
+                    if ($adminTimezone !== '' && in_array($adminTimezone, timezone_identifiers_list())) {
+                        return $adminTimezone; // Use admin's timezone column as site_timezone
+                    }
+                }
+                
+                // 2. Second priority: Check location column - if has value, use location-based timezone as site_timezone
+                $adminLocation = $adminData->location;
+                if ($adminLocation !== null && $adminLocation !== '' && $adminLocation !== '0') {
+                    $adminLocation = trim((string)$adminLocation);
+                    if ($adminLocation !== '') {
+                        $locationTimezone = getTimezoneByCountry(null, $adminLocation);
+                        // Return location-based timezone (even if it's UTC, it means location was checked)
+                        return $locationTimezone; // Use location-based timezone as site_timezone
+                    }
                 }
             }
             
-            // Priority 2: Admin's location column (derive timezone from country name)
-            if (!empty($admin->location)) {
-                $locationTimezone = getTimezoneFromCountry($admin->location);
-                if ($locationTimezone && in_array($locationTimezone, timezone_identifiers_list())) {
-                    return $locationTimezone;
-                }
-            }
-            
-            // Priority 3: UTC fallback (if both timezone and location are empty or invalid)
+            // 3. If no location, fallback to UTC
             return 'UTC';
         }
         
         // Check if user is logged in
         if (auth()->check()) {
-            $user = auth()->user();
+            $userId = auth()->id();
             
-            // Priority 1: User's country-based timezone (derive from country name)
-            if (!empty($user->country)) {
-                $countryTimezone = getTimezoneFromCountry($user->country);
-                if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
-                    return $countryTimezone;
+            // Get timezone and country directly from database to ensure we have latest values
+            $userData = \DB::table('users')->where('id', $userId)->first(['timezone', 'country']);
+            
+            if ($userData) {
+                // 1. First priority: Check timezone column - if has value (not null, not empty string), use it
+                $userTimezone = $userData->timezone;
+                if ($userTimezone !== null && $userTimezone !== '' && $userTimezone !== '0') {
+                    $userTimezone = trim((string)$userTimezone);
+                    if ($userTimezone !== '' && in_array($userTimezone, timezone_identifiers_list())) {
+                        return $userTimezone; // Use user's timezone column
+                    }
+                }
+                
+                // 2. Second priority: Check country column - if has value, use country-based timezone
+                $userCountry = $userData->country;
+                if ($userCountry !== null && $userCountry !== '' && $userCountry !== '0') {
+                    $userCountry = trim((string)$userCountry);
+                    if ($userCountry !== '') {
+                        $countryTimezone = getTimezoneByCountry($userCountry);
+                        // Return country-based timezone (even if it's UTC, it means country was checked)
+                        return $countryTimezone; // Use country-based timezone
+                    }
                 }
             }
             
-            // Priority 2: UTC fallback (if country is empty or timezone not found)
+            // 3. If no country, fallback to UTC
             return 'UTC';
         }
         

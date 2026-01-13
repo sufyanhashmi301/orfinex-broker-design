@@ -66,6 +66,16 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
+        // Set timezone based on country if timezone column is empty
+        $user = Auth::user();
+        if ($user && empty($user->timezone) && !empty($user->country) && function_exists('getTimezoneByCountry')) {
+            $countryTimezone = getTimezoneByCountry($user->country);
+            if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                $user->timezone = $countryTimezone;
+                $user->save();
+            }
+        }
+
         LoginActivities::add();
         ActivityLogService::log('user_login', "Login Successfully");
 

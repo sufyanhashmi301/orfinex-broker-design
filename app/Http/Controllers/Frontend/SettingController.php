@@ -189,6 +189,13 @@ class SettingController extends Controller
         
         if ($countryEditEnabled && $request->has('country')) {
             $data['country'] = $input['country'];
+            // If country changed and timezone is empty, set timezone based on country
+            if (empty($user->timezone) && !empty($input['country']) && function_exists('getTimezoneByCountry')) {
+                $countryTimezone = getTimezoneByCountry($input['country']);
+                if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                    $data['timezone'] = $countryTimezone;
+                }
+            }
         }
         
         if (($dobEditEnabled || !$user->date_of_birth) && $request->has('date_of_birth')) {
@@ -208,10 +215,26 @@ class SettingController extends Controller
         if ($request->has('address')) {
             $data['address'] = $input['address'];
         }
+        
+        // Handle timezone update
+        if ($request->has('timezone')) {
+            $timezoneValue = $request->input('timezone');
+            if (!empty($timezoneValue) && in_array($timezoneValue, timezone_identifiers_list())) {
+                $data['timezone'] = trim($timezoneValue);
+            } elseif (empty($timezoneValue)) {
+                // If empty timezone provided, clear it (will fallback to country-based)
+                $data['timezone'] = null;
+            }
+        }
 
         // Only update if we have data to update
         if (!empty($data)) {
             $user->update($data);
+            // Refresh user in session to ensure updated values are available
+            $user->refresh();
+            Auth::setUser($user);
+            // Clear cache to ensure getCurrentUserTimezone() gets latest value
+            \Cache::forget('user_timezone_' . $user->id);
         }
 
         ActivityLogService::log('profile_update', "Updated profile");

@@ -159,6 +159,15 @@ class RegisteredUserController extends Controller
         $phone = $location->dial_code . ' ';
         $country = $location->name;
 
+        // Set timezone based on country if country is provided
+        $timezone = null;
+        if (!empty($country) && function_exists('getTimezoneByCountry')) {
+            $countryTimezone = getTimezoneByCountry($country);
+            if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                $timezone = $countryTimezone;
+            }
+        }
+
         // Find or create user
         $user = User::firstOrCreate(
             ['email' => $socialUser->getEmail()],
@@ -170,6 +179,7 @@ class RegisteredUserController extends Controller
                 'provider_id' => $socialUser->getId(),
                 'avatar' => $socialUser->getAvatar(),
                 'country' => $country,
+                'timezone' => $timezone,
                 'phone' => $phone,
                 'password' => Hash::make(Str::random(12)),
                 'ranking_id' => $rank->id,
@@ -242,6 +252,15 @@ class RegisteredUserController extends Controller
     }
     private function createUser(array $input, $rank, $phone, $country)
     {
+        // Set timezone based on country if country is provided
+        $timezone = null;
+        if (!empty($country) && function_exists('getTimezoneByCountry')) {
+            $countryTimezone = getTimezoneByCountry($country);
+            if ($countryTimezone && in_array($countryTimezone, timezone_identifiers_list())) {
+                $timezone = $countryTimezone;
+            }
+        }
+        
         return User::create([
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
@@ -249,6 +268,7 @@ class RegisteredUserController extends Controller
             'last_name' => $input['last_name'],
             'username' => $input['username'] ?? $input['first_name'] . $input['last_name'] . rand(1000, 9999),
             'country' => $country,
+            'timezone' => $timezone,
             'phone' => $phone,
             'email' => $input['email'],
             'account_limit' => setting('forex_account_create_limit', 'forex_account_settings'),

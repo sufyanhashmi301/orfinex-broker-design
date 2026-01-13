@@ -45,7 +45,8 @@ class TicketController extends Controller
                 ->addIndexColumn()
                 ->addColumn('title', 'frontend::ticket.include.__title')
                 ->editColumn('created_at', function ($ticket) {
-                    return toSiteTimezone($ticket->created_at);
+                    // Use getOriginal to get raw UTC timestamp from database
+                    return toSiteTimezone($ticket->getOriginal('created_at'), 'M d, Y h:i A');
                 })
                 ->addColumn('status', 'frontend::ticket.include.__status')
                 ->addColumn('action', 'frontend::ticket.include.__action')

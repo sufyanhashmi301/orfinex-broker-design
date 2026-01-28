@@ -139,16 +139,16 @@ class MT5DatabaseService
         }
 
         return $this->executeWithTimeout(function () use ($login, $lastTime, $symbols) {
-            // $table = 'mt5_deals_' . Carbon::now()->year;
+            $table = 'mt5_deals_' . Carbon::now()->year;
             // For Qorva - uncomment if needed
-            $table = 'mt5_deals';
+            // $table = 'mt5_deals';
 
             return DB::connection('mt5_db')
                 ->table($table)
                 ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
                 ->where('Login', $login)
-                // ->whereIn('Symbol', $symbols)
-                // ->where('Time', '>', $lastTime)
+                ->whereIn('Symbol', $symbols)
+                ->where('Time', '>', $lastTime)
                 ->where('Volume', '>', 0)
                 ->whereColumn('Volume', 'VolumeClosed')
                 ->get();
